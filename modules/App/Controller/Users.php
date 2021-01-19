@@ -119,6 +119,23 @@ class Users extends App {
         return $user;
     }
 
+    public function remove() {
+
+        $user = $this->param('user');
+
+        if (!$user || !isset($user['_id'])) {
+            return $this->stop(['error' => 'User is missing'], 412);
+        }
+
+        if ($user['_id'] == $this->user['_id']) {
+            return $this->stop(['error' => "User can't delete himself"], 412);
+        }
+
+        $this->app->data->remove('system/users', ['_id' => $user['_id']]);
+
+        return ['success' => true];
+    }
+
     public function load() {
 
         \session_write_close();

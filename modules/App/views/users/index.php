@@ -85,8 +85,10 @@
 
                         App.ui.confirm('Are you sure?', () => {
 
+                            App.request('/users/remove', {user}).then(res => {
+                                this.users.splice(this.users.indexOf(user), 1);
+                            });
                         });
-
                     }
                 }
             }
