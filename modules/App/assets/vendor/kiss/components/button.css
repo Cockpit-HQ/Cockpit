@@ -16,6 +16,14 @@
     text-align: center;
     text-decoration: none;
     text-transform: uppercase;
+
+    background-color: var(--kiss-button-default-background, rgba(0,0,0,.5));
+    color: var(--kiss-button-default-color, #fff);
+}
+
+.kiss-button:hover,
+.kiss-button:focus {
+    color: inherit;
 }
 
 .kiss-button-outline {

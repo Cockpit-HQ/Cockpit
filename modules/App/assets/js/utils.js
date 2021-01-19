@@ -1,4 +1,3 @@
-
 let formatSize = function (bytes) {
     if (bytes == 0) { return "0.00 B"; }
     let e = Math.floor(Math.log(bytes) / Math.log(1024));

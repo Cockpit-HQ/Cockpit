@@ -230,12 +230,12 @@ App.ui = {
             </div>
         `, options, 'confirm');
 
-        on(dialog, 'click', '.kiss-button-confirm', () => {
+        utils.on(dialog, 'click', '.kiss-button-confirm', () => {
             if(onconfirm) onconfirm();
             dialog.close();
         });
 
-        on(dialog, 'click', '.kiss-button-cancel', () => {
+        utils.on(dialog, 'click', '.kiss-button-cancel', () => {
             if(oncancel) onconfirm();
             dialog.close();
         });

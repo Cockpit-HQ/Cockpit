@@ -19,7 +19,7 @@ if (!isset($user['twofa'])) {
                 <span v-if="user._id"><?=_t('Edit user')?></span>
             </h1>
 
-            <div class="kiss-flex kiss-flex-middle" v-if="user._id">
+            <div class="kiss-flex kiss-flex-middle kiss-has-transition" v-if="user._id" :class="{'kiss-inactive': !user.active}">
                 <div>
                     <app-avatar size="50" :name="user.name"></app-avatar>
                 </div>
@@ -99,7 +99,10 @@ if (!isset($user['twofa'])) {
                         <span v-if="!user._id"><?=_t('Create user')?></span>
                         <span v-if="user._id"><?=_t('Update user')?></span>
                     </button>
-                    <a class="kiss-margin-left kiss-button kiss-button-large kiss-button-link" href="<?=$this->route('/users')?>"><?=_t('Cancel')?></a>
+                    <a class="kiss-margin-left kiss-button kiss-button-large kiss-button-link" href="<?=$this->route('/users')?>">
+                        <span v-if="!user._id"><?=_t('Cancel')?></span>
+                        <span v-if="user._id"><?=_t('Close')?></span>
+                    </a>
                 </div>
 
             </form>

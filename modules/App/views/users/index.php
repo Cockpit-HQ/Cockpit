@@ -15,18 +15,22 @@
 
             <div class="animated fadeIn" v-if="users && users.length">
 
-                <div v-for="(user, idx) in users">
+                <div v-for="(user, idx) in users" :class="{'kiss-inactive': !user.active}">
 
                     <div class="kiss-margin kiss-flex">
                         <div class="kiss-margin-right kiss-position-relative">
                             <app-avatar size="50" :name="user.name"></app-avatar>
                             <a class="kiss-cover" :href="App.route('/users/user/'+user._id)"></a>
                         </div>
-                        <div class="kiss-flex-1">
+                        <div class="kiss-flex-1 kiss-position-relative">
                             <div class="kiss-size-5"><strong>{{user.name}}</strong></div>
                             <div class="kiss-color-muted kiss-size-small">
                                 <span class="kiss-color-primary">{{user.user}}</span> &bullet; {{user.email}}
                             </div>
+                            <a class="kiss-cover" :href="App.route('/users/user/'+user._id)"></a>
+                        </div>
+                        <div class="kiss-margin-left" v-if="user._id != '<?=$this['user/_id']?>'">
+                            <a class="kiss-size-large kiss-color-danger" @click="remove(user)"><icon>delete</icon></a>
                         </div>
                     </div>
 
@@ -75,6 +79,14 @@
                             this.loading = false;
 
                         })
+                    },
+
+                    remove(user) {
+
+                        App.ui.confirm('Are you sure?', () => {
+
+                        });
+
                     }
                 }
             }
