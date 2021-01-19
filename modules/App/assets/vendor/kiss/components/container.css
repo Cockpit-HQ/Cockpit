@@ -1,0 +1,31 @@
+[kiss-container],
+kiss-container {
+    display: block;
+    padding-left: var(--kiss-container-padding, 30px);
+    padding-right: var(--kiss-container-padding, 30px);
+    margin-right: auto;
+    margin-left: auto;
+    box-sizing: border-box;
+    max-width: var(--kiss-container-max-width, 1200px);
+}
+
+[kiss-container="small"],
+kiss-container[size="small"] {
+    max-width: var(--kiss-container-small-max-width, 900px);
+}
+
+[kiss-container="large"],
+kiss-container[size="large"] {
+    max-width: var(--kiss-container-small-max-width, 1600px);
+}
+
+kiss-container::before,
+kiss-container::after {
+    content: "";
+    display: table;
+}
+
+kiss-container kiss-container {
+    padding-left: 0;
+    padding-right: 0;
+}

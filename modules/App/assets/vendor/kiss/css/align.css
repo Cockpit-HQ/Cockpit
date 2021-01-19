@@ -1,0 +1,48 @@
+.kiss-align-center {
+  text-align: center !important;
+}
+
+.kiss-align-justified {
+  text-align: justify !important;
+}
+
+.kiss-align-left {
+  text-align: left !important;
+}
+
+.kiss-align-right {
+  text-align: right !important;
+}
+
+
+/* Phone landscape and bigger */
+@media (min-width: 640px) {
+  .kiss-align-center\@s { text-align: center !important; }
+  .kiss-align-justified\@s { text-align: justify !important; }
+  .kiss-align-left\@s { text-align: left !important; }
+  .kiss-align-right\@s { text-align: right !important; }
+}
+
+/* Tablet landscape and bigger */
+@media (min-width: 960px) {
+  .kiss-align-center\@m { text-align: center !important; }
+  .kiss-align-justified\@m { text-align: justify !important; }
+  .kiss-align-left\@m { text-align: left !important; }
+  .kiss-align-right\@m { text-align: right !important; }
+}
+
+/* Desktop and bigger */
+@media (min-width: 1200px) {
+  .kiss-align-center\@l { text-align: center !important; }
+  .kiss-align-justified\@l { text-align: justify !important; }
+  .kiss-align-left\@l { text-align: left !important; }
+  .kiss-align-right\@l { text-align: right !important; }
+}
+
+/* Large screen and bigger */
+@media (min-width: 1600px) {
+  .kiss-align-center\@xl { text-align: center !important; }
+  .kiss-align-justified\@xl { text-align: justify !important; }
+  .kiss-align-left\@xl { text-align: left !important; }
+  .kiss-align-right\@xl { text-align: right !important; }
+}

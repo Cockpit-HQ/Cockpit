@@ -1,0 +1,21 @@
+.kiss-badge {
+    display: inline-flex;
+    box-sizing: border-box;
+    font-size: .6em;
+    padding: .2em .4em;
+    vertical-align: middle;
+    justify-content: center;
+    align-items: center;
+    min-width: 20px;
+    background: var(--kiss-badge-bgcolor, var(--kiss-color-primrary, hsl(210, 100%, 50%)));
+    border: .1em var(--kiss-badge-bgcolor, var(--kiss-color-primrary, hsl(210, 100%, 50%))) solid;
+    color: var(--kiss-badge-color, #fff);
+    font-weight: bold;
+}
+
+.kiss-badge-outline {
+    background: none;
+    background-color: transparent;
+    border-color: currentColor;
+    color: currentColor;
+}

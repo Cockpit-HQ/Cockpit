@@ -1,0 +1,15 @@
+# Composer
+composer.phar
+composer.lock
+vendor/
+
+# PHPUnit
+phpunit.phar
+phpunit.xml
+.phpunit.result.cache
+
+# phpcs
+.phpcs-cache
+phpcs.xml
+
+mongocryptd.pid

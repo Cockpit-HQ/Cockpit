@@ -1,0 +1,56 @@
+@import url("../../../vendor/tinymce/skins/ui/oxide/skin.min.css");
+
+
+.tox-tinymce {
+    background: var(--kiss-base-background-color); 
+    color: var(--kiss-base-text-color);
+    border-radius: var(--app-border-radius);
+    border: 1px var(--kiss-hr-color) solid;
+}
+
+.tox .tox-menubar,
+.tox .tox-toolbar-overlord,
+.tox .tox-toolbar, 
+.tox .tox-toolbar__overflow, 
+.tox .tox-toolbar__primary,
+.tox .tox-statusbar {
+    background: var(--kiss-base-background-color);
+}
+
+.tox .tox-menubar+.tox-toolbar, 
+.tox .tox-menubar+.tox-toolbar-overlord .tox-toolbar__primary,
+.tox:not([dir=rtl]) .tox-toolbar__group:not(:last-of-type){
+    border-color: var(--kiss-hr-color);
+}
+
+.tox .tox-mbtn,
+.tox .tox-tbtn {
+    color: inherit;
+}
+
+.tox .tox-tbtn svg {
+    fill: var(--kiss-base-text-color);
+}
+
+.tox .tox-mbtn:hover:not(:disabled):not(.tox-mbtn--active),
+.tox .tox-tbtn:hover {
+    background: var(--kiss-color-primary);
+    color: inherit;
+}
+
+.tox .tox-tbtn--disabled svg, 
+.tox .tox-tbtn--disabled:hover svg, 
+.tox .tox-tbtn:disabled svg, 
+.tox .tox-tbtn:disabled:hover svg {
+    fill: var(--kiss-color-muted);
+}
+
+.tox .tox-statusbar a, 
+.tox .tox-statusbar__path-item, 
+.tox .tox-statusbar__wordcount {
+    color: var(--kiss-color-muted);
+}
+
+.tox-statusbar__branding {
+    display: none;
+}

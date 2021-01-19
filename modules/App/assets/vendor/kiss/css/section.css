@@ -1,0 +1,15 @@
+.kiss-section {
+    padding-top: var(--kiss-section-padding, 3vh);
+    padding-bottom: var(--kiss-section-padding, 3vh);
+}
+
+.kiss-section-large {
+    padding-top: calc(2 * var(--kiss-section-large-padding, 3vh));
+    padding-bottom: calc(2 * var(--kiss-section-large-padding, 3vh));
+}
+
+.kiss-section-xlarge {
+    padding-top: calc(4 * var(--kiss-section-large-padding, 3vh));
+    padding-bottom: calc(4 * var(--kiss-section-large-padding, 3vh));
+}
+

@@ -1,0 +1,73 @@
+.kiss-flex { display: flex; }
+.kiss-flex-inline { display: inline-flex; }
+
+.kiss-flex::before,
+.kiss-flex::after,
+.kiss-flex-inline::before,
+.kiss-flex-inline::after { display: none; }
+
+.kiss-flex-left { justify-content: flex-start; }
+.kiss-flex-center { justify-content: center; }
+.kiss-flex-right { justify-content: flex-end; }
+.kiss-flex-between { justify-content: space-between; }
+.kiss-flex-around { justify-content: space-around; }
+
+.kiss-flex-stretch { align-items: stretch; }
+.kiss-flex-top { align-items: flex-start; }
+.kiss-flex-middle { align-items: center; }
+.kiss-flex-bottom { align-items: flex-end; }
+
+.kiss-flex-row { flex-direction: row; }
+.kiss-flex-row-reverse { flex-direction: row-reverse; }
+.kiss-flex-column { flex-direction: column; }
+.kiss-flex-column-reverse { flex-direction: column-reverse; }
+
+.kiss-flex-nowrap { flex-wrap: nowrap; }
+.kiss-flex-wrap { flex-wrap: wrap; }
+.kiss-flex-wrap-reverse { flex-wrap: wrap-reverse; }
+
+.kiss-flex-wrap-stretch { align-content: stretch; }
+.kiss-flex-wrap-top { align-content: flex-start; }
+.kiss-flex-wrap-middle { align-content: center; }
+.kiss-flex-wrap-bottom { align-content: flex-end; }
+.kiss-flex-wrap-between { align-content: space-between; }
+.kiss-flex-wrap-around { align-content: space-around; }
+
+.kiss-flex-first { order: -1;}
+.kiss-flex-last { order: 99;}
+
+/* Phone landscape and bigger */
+@media (min-width: 640px) {
+
+    .uk-flex-first\@s { order: -1; }
+    .uk-flex-last\@s { order: 99; }
+
+}
+
+/* Tablet landscape and bigger */
+@media (min-width: 960px) {
+
+    .uk-flex-first\@m { order: -1; }
+    .uk-flex-last\@m { order: 99; }
+
+}
+
+/* Desktop and bigger */
+@media (min-width: 1200px) {
+
+    .uk-flex-first\@l { order: -1; }
+    .uk-flex-last\@l { order: 99; }
+
+}
+
+/* Large screen and bigger */
+@media (min-width: 1600px) {
+
+    .uk-flex-first\@xl { order: -1; }
+    .uk-flex-last\@xl { order: 99; }
+
+}
+
+.kiss-flex-none { flex: none; }
+.kiss-flex-auto { flex: auto; }
+.kiss-flex-1 { flex: 1; }

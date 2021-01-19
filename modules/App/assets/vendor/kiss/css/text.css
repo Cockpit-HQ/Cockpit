@@ -1,0 +1,47 @@
+
+.kiss-text-bold {
+    font-weight: bold !important;
+}
+
+.kiss-text-normal {
+    font-weight: normal !important;
+}
+
+.kiss-text-capitalize {
+    text-transform: capitalize !important;
+}
+
+.kiss-text-upper {
+    text-transform: uppercase !important;
+}
+
+.kiss-text-caption {
+    font-size: .65em;
+    line-height: inherit;
+    letter-spacing: .015em;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+.kiss-text-truncate {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+th.kiss-text-truncate,
+td.kiss-text-truncate { max-width: 0; }
+
+
+.kiss-text-pacing-loose {
+    letter-spacing: .05em !important;
+}
+
+.kiss-text-pacing-looser {
+    letter-spacing: .1em !important;
+}
+
+.kiss-text-monospace {
+    font-family: 'Courier New', Courier, monospace;
+}

@@ -1,0 +1,16 @@
+kiss-svg {
+    display: block;
+}
+
+kiss-svg[inline] {
+    display: inline-block;
+}
+
+kiss-svg > svg,
+kiss-svg:not([preserve]) [fill*='#']:not(.kiss-preserve) { fill: currentcolor; }
+kiss-svg:not([preserve]) [stroke*='#']:not(.kiss-preserve) { stroke: currentcolor; }
+
+/*
+ * Fix Firefox blurry SVG rendering: https://bugzilla.mozilla.org/show_bug.cgi?id=1046835
+ */
+kiss-svg > svg { transform: translate(0,0); }

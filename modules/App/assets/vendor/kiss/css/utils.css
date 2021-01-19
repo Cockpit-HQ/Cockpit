@@ -1,0 +1,34 @@
+
+.kiss-disabled { pointer-events: none; }
+
+.kiss-link-muted, 
+.kiss-link-muted:hover, 
+.kiss-link-muted:active, 
+.kiss-link-muted:visited 
+{ color: inherit; }
+
+.kiss-overflow-hidden { overflow: hidden; }
+
+.kiss-display-block { display: block !important; }
+.kiss-display-inline { display: inline !important; }
+.kiss-display-inline-block { display: inline-block !important; }
+
+.kiss-border-circle { border-radius: 50%; }
+
+.kiss-svg,
+.kiss-svg:not(.kiss-preserve) [fill*='#']:not(.kiss-preserve) { fill: currentcolor; }
+.kiss-svg:not(.kiss-preserve) [stroke*='#']:not(.kiss-preserve) { stroke: currentcolor; }
+
+/*
+ * Fix Firefox blurry SVG rendering: https://bugzilla.mozilla.org/show_bug.cgi?id=1046835
+ */
+.kiss-svg { transform: translate(0,0); }
+
+
+.kiss-cover {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}

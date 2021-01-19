@@ -1,0 +1,97 @@
+
+[hidden],
+.kiss-hidden { display: none !important; }
+
+.kiss-hidden-visually {
+    position: absolute !important;
+    overflow: hidden !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    border: 0 !important;
+    clip: rect(1px, 1px, 1px, 1px) !important
+}
+
+.kiss-invisible {
+    visibility: hidden !important;
+}
+
+.kiss-visible {
+    visibility: visible !important;
+}
+
+/* Phone landscape and bigger */
+@media (min-width: 640px) {
+    .kiss-hidden\@s { display: none !important; }
+}
+
+/* Tablet landscape and bigger */
+@media (min-width: 960px) {
+    .kiss-hidden\@m { display: none !important; }
+}
+
+/* Desktop and bigger */
+@media (min-width: 1200px) {
+    .kiss-hidden\@l { display: none !important; }
+}
+
+/* Large screen and bigger */
+@media (min-width: 1600px) {
+    .kiss-hidden\@xl { display: none !important; }
+}
+
+/*
+ * Visible
+ */
+
+/* Phone portrait and smaller */
+@media (max-width: 639px) {
+    .kiss-visible\@s { display: none !important; }
+}
+
+/* Phone landscape and smaller */
+@media (max-width: 959px) {
+    .kiss-visible\@m { display: none !important; }
+}
+
+/* Tablet landscape and smaller */
+@media (max-width: 1199px) {
+    .kiss-visible\@l { display: none !important; }
+}
+
+/* Desktop and smaller */
+@media (max-width: 1599px) {
+    .kiss-visible\@xl { display: none !important; }
+}
+
+.kiss-invisible { visibility: hidden !important; }
+
+.kiss-visible-toggle:not(:hover):not(:focus) .kiss-hidden-hover:not(:focus-within) {
+    position: absolute !important;
+    width: 0 !important;
+    height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+}
+
+.kiss-visible-toggle:not(:hover):not(:focus) .kiss-invisible-hover:not(:focus-within) {
+    opacity: 0 !important;
+}
+
+
+.kiss-visible-toggle {
+    -webkit-tap-highlight-color: transparent;
+}
+
+.kiss-visible-toggle:focus { outline: none; }
+
+@media (pointer: coarse) {
+    .kiss-hidden-touch { display: none !important; }
+}
+
+.kiss-hidden-notouch { display: none !important; }
+
+@media (pointer: coarse) {
+    .kiss-hidden-notouch { display: block !important; }
+}

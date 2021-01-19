@@ -1,0 +1,40 @@
+kiss-offcanvas {
+    display: block;
+    position: fixed;
+    background: var(--kiss-offcanvas-background, rgba(0,0,0,.1));
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    touch-action: none;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+kiss-offcanvas > kiss-content {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    background: var(--kiss-offcanvas-content-background, #000);
+    color: var(--kiss-offcanvas-content-color,  #fff);
+    min-width: 300px;
+    overflow-y: auto;
+    box-sizing: border-box;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+}
+
+kiss-offcanvas[flip] > kiss-content {
+    right: 0;
+    transform: translateX(100%);
+}
+
+kiss-offcanvas[open] {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+kiss-offcanvas[open] > kiss-content {
+    transform: translateX(0);
+}

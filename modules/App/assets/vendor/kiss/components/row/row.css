@@ -1,0 +1,81 @@
+kiss-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+kiss-row > * { margin: 0; }
+kiss-row > * > :last-child { margin-bottom: 0; }
+
+
+
+/* Horizontal */
+kiss-row { margin-left: calc(-1 * var(--kiss-row-gutter-horizontal, 20px)); }
+kiss-row > * { padding-left: var(--kiss-row-gutter-horizontal, 20px); }
+
+/* Vertical */
+kiss-row + .kiss-row,
+kiss-row > .kiss-row-margin,
+* + .kiss-row-margin { margin-top: var(--kiss-row-gutter-vertical, 20px); }
+
+/*
+ * Small
+ */
+
+/* Horizontal */
+.kiss-row-small { margin-left: calc(-1 * var(--kiss-row-small-gutter-horizontal, 10px)); }
+.kiss-row-small > * { padding-left: var(--kiss-row-small-gutter-horizontal, 10px); }
+
+/* Vertical */
+kiss-row + .kiss-row-small,
+.kiss-row-small > .kiss-row-margin,
+* + .kiss-row-margin-small { margin-top: var(--kiss-row-small-gutter-vertical, 10px); }
+
+/*
+ * Large
+ */
+
+/* Horizontal */
+.kiss-row-large { margin-left: calc(-1 * var(--kiss-row-large-gutter-horizontal, 3vw)); }
+.kiss-row-large > * { padding-left: var(--kiss-row-large-gutter-horizontal, 3vw); }
+
+/* Vertical */
+kiss-row + .kiss-row-large,
+.kiss-row-large > .kiss-row-margin,
+* + .kiss-row-margin-small { margin-top: var(--kiss-row-large-gutter-vertical, 3vw); }
+
+/*
+ * xLarge
+ */
+
+/* Horizontal */
+.kiss-row-xlarge { margin-left: calc(-1 * var(--kiss-row-xlarge-gutter-horizontal, 5vw)); }
+.kiss-row-xlarge > * { padding-left: var(--kiss-row-xlarge-gutter-horizontal, 5vw); }
+
+/* Vertical */
+kiss-row + .kiss-row-xlarge,
+.kiss-row-xlarge > .kiss-row-margin,
+* + .kiss-row-margin-small { margin-top: var(--kiss-row-xlarge-gutter-vertical, 5vw); }
+
+
+kiss-row[collapse] { margin-left: 0; }
+kiss-row[collapse] > * { padding-left: 0; }
+
+kiss-row + kiss-row[collapse],
+kiss-row[collapse] > .kiss-row-margin { margin-top: 0; }
+
+
+kiss-row[match] > *,
+.kiss-row-item-match {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+kiss-row[match] > * > :not([class*='kiss-width']),
+.kiss-row-item-match > :not([class*='kiss-width']) {
+    box-sizing: border-box;
+    width: 100%;
+    flex: auto;
+}

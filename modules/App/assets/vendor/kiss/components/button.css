@@ -1,0 +1,75 @@
+.kiss-button {
+    margin: 0;
+    border: none;
+    overflow: visible;
+    font: inherit;
+    font-weight: bold;
+    color: inherit;
+    text-transform: none;
+    display: inline-block;
+    box-sizing: border-box;
+    padding: 0 var(--kiss-button-padding, 2em);
+    vertical-align: middle;
+    font-size: .65em;
+    line-height: 4em;
+    letter-spacing: .1em;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+.kiss-button-outline {
+    background: rgba(0, 0, 0, 0);
+    border: 1px currentColor solid;
+    color: currentColor;
+}
+
+.kiss-button:not(:disabled) { cursor: pointer; }
+
+.kiss-button:disabled {
+    opacity: .8;
+}
+
+.kiss-button:hover {
+    text-decoration: none;
+}
+
+
+.kiss-button-primary {
+    background-color: var(--kiss-button-primary-background, hsl(210, 100%, 50%));
+    color: var(--kiss-button-primary-color, #fff);
+}
+
+.kiss-button-primary:hover,
+.kiss-button-primary:focus {
+    background-color: var(--kiss-button-primary-background-hover, var(--kiss-button-primary-background, hsl(210, 100%, 50%)));
+    color: var(--kiss-button-primary-color-hover, var(--kiss-button-primary-color, #fff));
+}
+
+.kiss-button-primary:active,
+.kiss-button-primary.kiss-active {
+    background-color: var(--kiss-button-primary-background-active, var(--kiss-button-primary-background, hsl(210, 100%, 50%)));
+    color: var(--kiss-button-primary-color-active, var(--kiss-button-primary-color, #fff));
+}
+
+.kiss-button-danger {
+    background-color: var(--kiss-button-danger-background, red);
+    color: var(--kiss-button-danger-color, #fff);
+}
+
+.kiss-button-danger:hover,
+.kiss-button-danger:focus {
+    background-color: var(--kiss-button-danger-background-hover, var(--kiss-button-danger-background, red));
+    color: var(--kiss-button-danger-color-hover, var(--kiss-button-danger-color, #fff));
+}
+
+.kiss-button-danger:active,
+.kiss-button-danger.kiss-active {
+    background-color: var(--kiss-button-danger-background-active, var(--kiss-button-danger-background, red));
+    color: var(--kiss-button-danger-color-active, var(--kiss-button-danger-color, #fff));
+}
+
+.kiss-button-large {
+    padding: 0 var(--kiss-button-large-padding-horizontal, 5em);
+    line-height: var(--kiss-button-large-font-size, 5em);
+}

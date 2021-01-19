@@ -1,0 +1,185 @@
+app-loader {
+    display: block;
+    position: relative;
+    width: 40px;
+    height: 40px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+app-loader[size="large"] {
+    width: 80px;
+    height: 80px;
+}
+
+app-loader[size="small"] {
+    width: 20px;
+    height: 20px;
+}
+
+
+/**
+ * ORBIT
+ **/
+
+app-loader[mode="orbit"] > div {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    animation: app-loader-orbit-rotate 8000ms infinite linear;
+}
+
+app-loader[mode="orbit"] div div {
+    border-radius: 50%;
+    transform: scale(0.1);
+    opacity: 0.1;
+}
+
+app-loader[mode="orbit"] div div:nth-child(1) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50%;
+    height: 50%;
+    background: var(--app-loader-color1, #0e8fff);
+    animation: app-loader-orbit-pulse 1000ms infinite ease alternate;
+    animation-delay: 0;
+}
+
+app-loader[mode="orbit"] div div:nth-child(2) {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 50%;
+    height: 50%;
+    background: var(--app-loader-color2, #000);
+    animation: app-loader-orbit-pulse 1000ms infinite ease alternate;
+    animation-delay: 250ms;
+}
+
+app-loader[mode="orbit"] div div:nth-child(3) {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 50%;
+    height: 50%;
+    background: var(--app-loader-color3, #3c4bbf);
+    animation: app-loader-orbit-pulse 1000ms infinite ease alternate;
+    animation-delay: 500ms;
+}
+
+app-loader[mode="orbit"] div div:nth-child(4) {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 50%;
+    height: 50%;
+    background: var(--app-loader-color4, #0e8fff);
+    animation: app-loader-orbit-pulse 1000ms infinite ease alternate;
+    animation-delay: 750ms;
+}
+
+@keyframes app-loader-orbit-rotate {
+    from { transform: rotate(-180deg); }
+    to { transform: rotate(180deg); }
+}
+
+@keyframes app-loader-orbit-pulse {
+    from {
+        top: -50%;
+        left: -50%;
+        transform: scale(1.0);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(0.2);
+        opacity: 0.8;
+    }
+}
+
+
+/**
+ * DOTS
+ **/
+
+app-loader[mode="dots"] {
+    position: relative;
+}
+app-loader[mode="dots"] div {
+    position: absolute;
+    top: 40%;
+    width: 16%;
+    height: 16%;
+    border-radius: 50%;
+    background: var(--app-loader-color1, #0e8fff);
+    animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+app-loader[mode="dots"] div:nth-child(1) {
+    left: 10%;
+    animation: app-loader-dots-1 0.6s infinite;
+}
+app-loader[mode="dots"] div:nth-child(2) {
+    left: 10%;
+    animation: app-loader-dots-2 0.6s infinite;
+}
+app-loader[mode="dots"] div:nth-child(3) {
+    left: 45%;
+    animation: app-loader-dots-4 0.6s infinite;
+}
+app-loader[mode="dots"] div:nth-child(4) {
+    left: 80%;
+    animation: app-loader-dots-3 0.6s infinite;
+}
+@keyframes app-loader-dots-1 {
+    0% { transform: scale(0); }
+    100% { transform: scale(1); }
+}
+@keyframes app-loader-dots-3 {
+    0% { transform: scale(1); }
+    100% { transform: scale(0); }
+}
+@keyframes app-loader-dots-2 {
+    0% { left: 10%; }
+    100% { left: 45%; }
+}
+@keyframes app-loader-dots-4 {
+    0% { left: 45%; }
+    100% { left: 80%; }
+}
+
+/**
+ * COVER LOADER
+ **/
+
+app-loader-cover {
+    position: fixed;
+    display: flex;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.8);
+    z-index: 1000000000000000;
+}
+
+app-loader-cover[cover="area"] {
+    position: absolute;
+}
+
+app-loader-cover app-loader {
+    display: inline-block;
+}
+
+.app-loader-cover-label {
+    display: none;
+    margin-top: 2rem;
+    font-weight: bold;
+}
+
+app-loader-cover[label] .app-loader-cover-label {
+    display: block;
+}

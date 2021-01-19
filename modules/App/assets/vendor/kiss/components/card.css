@@ -1,0 +1,12 @@
+kiss-card {
+    display: block;
+    position: relative;
+}
+
+kiss-card[theme*="shadowed"] {
+    box-shadow: 0 1px 2px 0 var(--kiss-card-shadowed-color, rgba(0,0,0,0.22));
+}
+
+kiss-card[theme*="bordered"] {
+    border: 1px solid var(--kiss-card-bordered-color, rgba(0,0,0,0.22));
+}
