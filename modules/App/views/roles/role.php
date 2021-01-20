@@ -1,3 +1,16 @@
+<?php
+
+    $permissions = new ArrayObject([
+        'Users' => [
+            'app.users.manage' => 'Manage users',
+            'app.roles.manage' => 'Manage roles',
+        ]
+    ]);
+
+    $this->trigger('app.permissions.collect', [$permissions]);
+
+
+?>
 <kiss-container class="kiss-margin-large" size="small">
 
     <vue-view>
@@ -25,6 +38,22 @@
                     <textarea class="kiss-input kiss-textarea" style="height:150px;" v-model="role.info"></textarea>
                 </div>
 
+                <div class="kiss-margin kiss-margin-large-top kiss-size-3"><strong><?=_t('Permissions')?></strong></div>
+
+                <div class="kiss-margin" v-for="(permissions, group) in permissions">
+
+                    <strong class="kiss-text-caption">{{ group }}</strong>
+
+                    <div class="kiss-margin-small kiss-size-small kiss-flex kiss-middle" v-for="(label, permission) in permissions">
+                        <div class="kiss-flex kiss-flex-middle kiss-flex-1" :class="{'kiss-color-muted':!role.permissions[permission], 'kiss-text-bold':role.permissions[permission]}">
+                            <icon class="kiss-margin-small-right">vpn_key</icon> {{label}}
+                        </div>
+                        <div><field-boolean v-model="role.permissions[permission]"></field-boolean></div>
+                    </div>
+
+                </div>
+
+
                 <div class="kiss-margin-large kiss-flex kiss-flex-middle">
                     <button type="submit" class="kiss-button kiss-button-primary">
                         <span v-if="!role._id"><?=_t('Create role')?></span>
@@ -44,9 +73,11 @@
 
             export default {
                 data() {
+
                     return {
                         saving: false,
-                        role: <?=json_encode($role)?>
+                        role: <?=json_encode($role)?>,
+                        permissions: <?=json_encode($permissions)?>
                     };
                 },
 

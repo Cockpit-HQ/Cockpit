@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use ArrayObject;
 
 class Roles extends App {
 
@@ -21,6 +22,8 @@ class Roles extends App {
             return false;
         }
 
+        $role['permissions'] = new ArrayObject( $role['permissions']);
+
         return $this->render('app:views/roles/role.php', compact('role'));
     }
 
@@ -29,7 +32,8 @@ class Roles extends App {
         $role = [
             'appid' => '',
             'name'  => '',
-            'info'  => ''
+            'info'  => '',
+            'permissions' => new ArrayObject([])
         ];
         
         return $this->render('app:views/roles/role.php', compact('role'));
@@ -80,18 +84,31 @@ class Roles extends App {
         $_role = $this->app->data->findOne('system/roles', ['appid' => $role['appid']]);
 
         if ($_role && (!isset($role['_id']) || $role['_id'] != $_role['_id'])) {
-            $this->app->stop(['error' =>  'appid is already used!'], 412);
+            $this->app->stop(['error' => 'appid is already used!'], 412);
         }
 
         // admin role is protected (superadmin)
         if ($role['appid'] == 'admin') {
-            $this->app->stop(['error' =>  'appid is already used!'], 412);
+            $this->app->stop(['error' => 'appid is already used!'], 412);
         }
+
+        // cleanup permissions
+        if (isset($role['permissions']) && \is_array($role['permissions'])) {
+
+            foreach ($role['permissions'] as $key => $value) {
+                if (!$value) unset($role['permissions'][$key]);
+            }
+        } else {
+            $role['permissions'] = [];
+        }
+
 
         $this->app->trigger('app.roles.save', [&$role, $isUpdate]);
         $this->app->data->save('system/roles', $role);
 
         $role = $this->app->data->findOne('system/roles', ['_id' => $role['_id']]);
+
+        $role['permissions'] = new ArrayObject( $role['permissions']);
 
         $this->cache();
 
