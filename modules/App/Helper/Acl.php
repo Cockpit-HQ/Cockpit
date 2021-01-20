@@ -7,7 +7,7 @@ class Acl extends \Lime\Helper {
 
     protected $roles;
 
-    public function initialize() {
+    protected function initialize() {
 
         $this->roles = $this->app->helper('cache')->read('app.roles.permissions', function() {
             return $this->cache();
@@ -29,6 +29,17 @@ class Acl extends \Lime\Helper {
         }
 
         return $roles;
+    }
+
+    public function isAllowed($permission, $role = null) {
+
+        $role = $role ?? $this->app->helper('auth')->getUser('role');
+
+        if ($role == 'admin') {
+            return true;
+        }
+
+        return isset($this->roles[$role][$permission]) && $this->roles[$role][$permission];
     }
 
     public function cache() {

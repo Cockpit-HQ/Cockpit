@@ -10,22 +10,22 @@ class Authenticated extends Base {
 
     protected $user;
 
-    public function __construct($app) {
+    protected function initialize() {
 
-        $user = $app->helper('auth')->getUser();
+        $user = $this->app->helper('auth')->getUser();
 
         if (!$user) {
-            $app->reroute('/auth/login?to='.$app->retrieve('route'));
-            $app->stop();
+            $this->app->reroute('/auth/login?to='.$app->retrieve('route'));
+            $this->app->stop();
         }
-
-        parent::__construct($app);
-
+        
         $this->user = $user;
-        $app->set('user', $user);
+        $this->app->set('user', $user);
+        
+        parent::initialize();
+    }
 
-        $controller = \strtolower(\str_replace('\\', '.', \get_class($this)));
-
-        $app->trigger("app.{$controller}.init", [$this]);
+    public function isAllowed($permission) {
+        return $this->helper('acl')->isAllowed($permission);
     }
 }

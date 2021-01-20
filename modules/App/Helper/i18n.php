@@ -533,7 +533,7 @@ class i18n extends \Lime\Helper {
     /**
      * @inherit
      */
-    public function initialize(){
+    protected function initialize(){
 
         $locale = $this->app->getClientLang();
 

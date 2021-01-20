@@ -8,7 +8,7 @@ class Cache extends \Lime\Helper {
     protected $cachePath = null;
 
 
-    public function initialize(){
+    protected function initialize(){
         $this->cachePath = \rtrim(\sys_get_temp_dir(),"/\\").'/';
         $this->prefix    = $this->app['app.name'];
     }

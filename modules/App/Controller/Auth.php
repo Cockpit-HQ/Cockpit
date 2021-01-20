@@ -67,5 +67,4 @@ class Auth extends Base {
 
         return ['success' => false];
     }
-
 }

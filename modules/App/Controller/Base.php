@@ -13,8 +13,11 @@ class Base extends \Lime\AppAware {
     /**
      * @param $app
      */
-    public function __construct($app) {
-        parent::__construct($app);
+    protected function initialize() {
+
+        $controller = \strtolower(\str_replace('\\', '.', \get_class($this)));
+
+        $this->app->trigger("app.{$controller}.init", [$this]);
 
         $this->before();
     }

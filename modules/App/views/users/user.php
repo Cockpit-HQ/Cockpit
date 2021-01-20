@@ -14,10 +14,12 @@ if (!isset($user['twofa'])) {
     <vue-view>
         <template>
 
+            <?php if (!$isAccountView): ?>
             <h1 class="kiss-margin-large-bottom">
                 <span v-if="!user._id"><?=_t('Create user')?></span>
                 <span v-if="user._id"><?=_t('Edit user')?></span>
             </h1>
+            <?php endif ?>
 
             <div class="kiss-flex kiss-flex-middle kiss-has-transition" v-if="user._id" :class="{'kiss-inactive': !user.active}">
                 <div>
@@ -33,7 +35,7 @@ if (!isset($user['twofa'])) {
 
             <form :class="{'kiss-disabled':saving}" @submit.prevent="save">
                 
-                <?php if(isset($user['_id']) && $user['_id'] != $this['user/_id']):?>
+                <?php if (!isset($user['_id']) || $user['_id'] != $this['user/_id']):?>
                 <div class="kiss-margin">
                     <label><?=_t('Active')?></label>
                     <field-boolean class="kiss-size-3" v-model="user.active"></field-boolean>
@@ -106,13 +108,15 @@ if (!isset($user['twofa'])) {
 
                 <div class="kiss-margin-large kiss-flex kiss-flex-middle">
                     <button type="submit" class="kiss-button kiss-button-primary">
-                        <span v-if="!user._id"><?=_t('Create user')?></span>
-                        <span v-if="user._id"><?=_t('Update user')?></span>
+                        <span v-if="!user._id"><?=_t('Create')?></span>
+                        <span v-if="user._id"><?=_t('Update')?></span>
                     </button>
+                    <?php if (!$isAccountView && _allowed('app.users.manage')): ?>
                     <a class="kiss-margin-left kiss-button kiss-button-link" href="<?=$this->route('/users')?>">
                         <span v-if="!user._id"><?=_t('Cancel')?></span>
                         <span v-if="user._id"><?=_t('Close')?></span>
                     </a>
+                    <?php endif ?>
                 </div>
 
             </form>

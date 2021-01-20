@@ -14,7 +14,7 @@ class TWFA extends \Lime\Helper {
     
     protected $tfa;
 
-    public function initialize() {
+    protected function initialize() {
         $this->tfa = new \RobThree\Auth\TwoFactorAuth($this->app['app.name'], 6, 30, 'sha1', new TWFAQRCodeRenderer());
     }
 

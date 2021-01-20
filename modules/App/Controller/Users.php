@@ -5,12 +5,23 @@ namespace App\Controller;
 
 class Users extends App {
 
+    protected function before() {
+
+        $isAccountView = $this->context['action'] == 'user' && !count($this->context['params']);
+
+        if (!$isAccountView && !$this->isAllowed('app.users.manage')) {
+            $this->stop(401);
+        }
+    }
+
     public function index() {
 
         return $this->render('app:views/users/index.php');
     }
 
     public function user($id = null) {
+
+        $isAccountView = !$id;
 
         if (!$id) {
             $id = $this->user['_id'];
@@ -24,7 +35,7 @@ class Users extends App {
 
         unset($user["password"]);
 
-        return $this->render('app:views/users/user.php', compact('user'));
+        return $this->render('app:views/users/user.php', compact('user', 'isAccountView'));
     }
 
     public function create() {
@@ -36,8 +47,10 @@ class Users extends App {
             'role'  => 'admin',
             'i18n'   => $this->app->helper('i18n')->locale
         ];
+
+        $isAccountView = false;
         
-        return $this->render('app:views/users/user.php', compact('user'));
+        return $this->render('app:views/users/user.php', compact('user', 'isAccountView'));
     }
 
     public function save() {

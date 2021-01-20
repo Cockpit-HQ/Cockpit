@@ -38,15 +38,18 @@
                     <textarea class="kiss-input kiss-textarea" style="height:150px;" v-model="role.info"></textarea>
                 </div>
 
-                <div class="kiss-margin kiss-margin-large-top kiss-size-3"><strong><?=_t('Permissions')?></strong></div>
+                <div class="kiss-margin kiss-margin-large-top kiss-size-4"><strong><?=_t('Permissions')?></strong></div>
 
                 <div class="kiss-margin" v-for="(permissions, group) in permissions">
 
                     <strong class="kiss-text-caption">{{ group }}</strong>
 
                     <div class="kiss-margin-small kiss-size-small kiss-flex kiss-middle" v-for="(label, permission) in permissions">
-                        <div class="kiss-flex kiss-flex-middle kiss-flex-1" :class="{'kiss-color-muted':!role.permissions[permission], 'kiss-text-bold':role.permissions[permission]}">
-                            <icon class="kiss-margin-small-right">vpn_key</icon> {{label}}
+                        <div class="kiss-flex-1 kiss-margin-small-right">
+                            <div :class="{'kiss-color-muted':!role.permissions[permission]}">
+                                {{label}}
+                            </div>
+                            <div class="kiss-text-monospace kiss-color-muted">{{ permission }}</div>
                         </div>
                         <div><field-boolean v-model="role.permissions[permission]"></field-boolean></div>
                     </div>

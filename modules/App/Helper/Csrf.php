@@ -6,7 +6,7 @@ use Firebase\JWT\JWT;
 
 class Csrf extends \Lime\Helper {
 
-    public function initialize(){
+    protected function initialize(){
 
     }
 

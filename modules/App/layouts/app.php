@@ -36,7 +36,9 @@
                                 <li><a href="<?=$this->route('/')?>"><?=_t('Dashboard')?></a></li>
                                 <li class="kiss-nav-divider"></li>
                                 <li class="kiss-nav-header"><?=_t('System')?></li>
+                                <?php if (_allowed('app.users.manage')): ?>
                                 <li><a class="kiss-flex kiss-flex-middle" href="<?=$this->route('/users')?>"><icon class="kiss-margin-small-right">people_alt</icon> <?=_t('Users')?></a></li>
+                                <?php endif ?>
                                 <li><a class="kiss-flex kiss-flex-middle" href="<?=$this->route('/settings')?>"><icon class="kiss-margin-small-right">settings</icon> <?=_t('Settings')?></a></li>
                             </ul>
                         </nav-list>

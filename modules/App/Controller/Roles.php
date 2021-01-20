@@ -6,6 +6,13 @@ use ArrayObject;
 
 class Roles extends App {
 
+    protected function before() {
+
+        if (!$this->isAllowed('app.roles.manage')) {
+            $this->stop(401);
+        }
+    }
+
     public function index() {
         return $this->render('app:views/roles/index.php');
     }

@@ -190,6 +190,8 @@ class App implements \ArrayAccess {
             }
         }
 
+        $this->trigger('after', [true]);
+
         if ($data || $status) {
             echo $this->response->flush();
         }
@@ -938,8 +940,9 @@ class App implements \ArrayAccess {
     * @return Mixed
     */
     public function invoke($class, $action="index", $params=[]) {
-
-        $controller = new $class($this);
+        
+        $context = compact('action', 'params');
+        $controller = new $class($this, $context);
 
         return \method_exists($controller, $action) && \is_callable([$controller, $action])
                 ? \call_user_func_array([$controller,$action], $params)
@@ -1176,13 +1179,17 @@ class AppAware {
     /** @var App */
     public $app;
 
-    public function __construct($app) {
+    /** @var Mixed */
+    public $context;
+
+    public function __construct($app, $context = null) {
         $this->app = $app;
+        $this->context = $context;
 
         $this->initialize();
     }
 
-    public function initialize() {}
+    protected function initialize() {}
 
     public function __call($name, $arguments) {
 
