@@ -95,11 +95,11 @@ if (!isset($user['twofa'])) {
                 </kiss-card>
 
                 <div class="kiss-margin-large kiss-flex kiss-flex-middle">
-                    <button type="submit" class="kiss-button kiss-button-large kiss-button-primary">
+                    <button type="submit" class="kiss-button kiss-button-primary">
                         <span v-if="!user._id"><?=_t('Create user')?></span>
                         <span v-if="user._id"><?=_t('Update user')?></span>
                     </button>
-                    <a class="kiss-margin-left kiss-button kiss-button-large kiss-button-link" href="<?=$this->route('/users')?>">
+                    <a class="kiss-margin-left kiss-button kiss-button-link" href="<?=$this->route('/users')?>">
                         <span v-if="!user._id"><?=_t('Cancel')?></span>
                         <span v-if="user._id"><?=_t('Close')?></span>
                     </a>

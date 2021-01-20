@@ -4,14 +4,13 @@
     <vue-view>
         <template>
 
-            <h1 class="kiss-margin-large-bottom"><?=_t('Users')?></h1>
-
+            <div class="kiss-margin-large-bottom kiss-flex kiss-flex-middle">
+                <div class="kiss-size-1 kiss-flex-1"><strong><?=_t('Users')?></strong></div>
+                <a class="kiss-button kiss-margin-small-right" href="<?=$this->route('/users/roles')?>"><?=_t('Manage roles')?></a>
+                <a class="kiss-button kiss-button-primary" href="<?=$this->route('/users/create')?>"><?=_t('Add user')?></a>
+            </div>
 
             <app-loader v-if="loading"></app-loader>
-
-            <div class="animated fadeIn" v-if="users && !users.length">
-
-            </div>
 
             <div class="animated fadeIn" v-if="users && users.length">
 
@@ -77,8 +76,7 @@
                             this.count = data.count;
 
                             this.loading = false;
-
-                        })
+                        });
                     },
 
                     remove(user) {

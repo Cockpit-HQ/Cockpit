@@ -5,6 +5,7 @@ $this->helpers['twfa'] = 'App\\Helper\\TWFA';
 
 // Register routes
 $this->bindClass('App\\Controller\\Auth', 'auth');
+$this->bindClass('App\\Controller\\Roles', 'users/roles');
 $this->bindClass('App\\Controller\\Users', 'users');
 $this->bindClass('App\\Controller\\Settings', 'settings');
 $this->bindClass('App\\Controller\\Utils', 'utils');

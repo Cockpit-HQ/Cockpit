@@ -17,12 +17,12 @@
     <kiss-container class="kiss-align-center">
 
         <div class="kiss-margin-bottom">
-                <img class="app-logo kiss-margin-auto" src="<?=$this->base('/logo.svg')?>" width="60" alt="Logo">
+                <img class="app-logo kiss-margin-auto" src="<?=$this->base('/logo.svg')?>" width="40" alt="Logo">
         </div>
 
         <h1>401</h1>
 
-        <p class="kiss-margin kiss-size-large kiss-color-muted"><?=_t('Unauthorized request')?></p>
+        <p class="kiss-margin kiss-color-muted"><?=_t('Unauthorized request')?></p>
 
     </kiss-container>
     

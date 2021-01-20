@@ -1,0 +1,104 @@
+<?php
+
+namespace App\Controller;
+
+
+class Roles extends App {
+
+    public function index() {
+        return $this->render('app:views/roles/index.php');
+    }
+
+    public function role($id = null) {
+
+        if (!$id) {
+            return $this->stop(['error' => 'Role id is missing'], 412);
+        }
+
+        $role = $this->app->data->findOne('system/roles', ['_id' => $id]);
+
+        if (!$role) {
+            return false;
+        }
+
+        return $this->render('app:views/roles/role.php', compact('role'));
+    }
+
+    public function create() {
+
+        $role = [
+            'appid' => '',
+            'name'  => '',
+            'info'  => ''
+        ];
+        
+        return $this->render('app:views/roles/role.php', compact('role'));
+    }
+
+    public function remove() {
+
+        $role = $this->param('role');
+
+        if (!$role || !isset($role['_id'], $role['appid'])) {
+            return $this->stop(['error' => 'Role is missing'], 412);
+        }
+
+        $this->app->data->remove('system/roles', ['_id' => $role['_id']]);
+        $this->app->data->update('system/users', ['role' => $role['appid']], ['role' => 'user']);
+
+        return ['success' => true];
+    }
+
+    public function save() {
+
+        $role = $this->param('role');
+
+        if (!$role) {
+            return $this->stop(['error' => 'Role data is missing'], 412);
+        }
+
+        $role['_modified'] = time();
+        $isUpdate = isset($role['_id']);
+
+        if (!$isUpdate) {
+            $role['appid'] = \strtolower($role['appid']);
+            $role['_created'] = $role['_modified'];
+        }
+
+        if (!isset($role['appid']) || !trim($role['appid'])) {
+            return $this->stop(['error' => 'appid required'], 412);
+        }
+
+        foreach (['appid', 'name', 'info'] as $key) {
+            $role[$key] = strip_tags(trim($role[$key]));
+        }
+
+        // unique check
+
+        $_role = $this->app->data->findOne('system/roles', ['appid' => $role['appid']]);
+
+        if ($_role) {
+            $this->app->stop(['error' =>  'appid is already used!'], 412);
+        }
+
+        $this->app->trigger('app.roles.save', [&$role, $isUpdate]);
+        $this->app->data->save('system/roles', $role);
+
+        $role = $this->app->data->findOne('system/roles', ['_id' => $role['_id']]);
+
+        return $role;
+    }
+
+
+    public function load() {
+
+        \session_write_close();
+
+        $roles = $this->app->data->find('system/roles', [
+            'sort' => ['name' => 1]
+        ])->toArray();
+
+        return $roles;
+    }
+
+}

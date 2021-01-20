@@ -65,6 +65,9 @@ body {
     filter: grayscale(1);
 }
 
+.kiss-height-30vh { min-height: 30vh; }
+.kiss-height-50vh { min-height: 50vh; }
+
 kiss-dialog kiss-content {
     box-shadow: 0 0 40px var(--kiss-color-contrast);
 }

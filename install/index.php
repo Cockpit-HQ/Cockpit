@@ -18,7 +18,7 @@ $user = [
     'email' => 'admin@admin.com',
     'password' => $app->hash('admin'),
     'i18n' => 'en',
-    'group' => 'admin',
+    'role' => 'admin',
     '_modified' => $created,
     '_created' => $created
 ];
