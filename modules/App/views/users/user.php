@@ -60,6 +60,16 @@ if (!isset($user['twofa'])) {
                     <input class="kiss-input" type="password" v-model="user.password" :placeholder="user._id ? '<?=_t('Keep current password')?>':''" :required="!user._id" autocomplete="off">
                 </div>
 
+                <?php if (!isset($user['_id']) || $user['_id'] != $this['user/_id']):?>
+                <div class="kiss-margin-large">
+                    <label><?=_t('Role')?></label>
+                    <select class="kiss-select kiss-input" v-model="user.role" required>
+                        <option value=""></option>
+                        <option :value="role.appid" v-for="role in roles">{{ role.name }}</option>
+                    </select>
+                </div>
+                <?php endif ?>
+
                 <kiss-card class="kiss-margin kiss-margin-large-top kiss-padding" theme="bordered">
                     <label><?=_t('API Key')?></label>
                     <div class="kiss-flex kiss-flex-middle">
@@ -115,7 +125,8 @@ if (!isset($user['twofa'])) {
                 data() {
                     return {
                         saving: false,
-                        user: <?=json_encode($user)?>
+                        user: <?=json_encode($user)?>,
+                        roles: <?=json_encode($this->helper('acl')->roles())?>
                     };
                 },
 

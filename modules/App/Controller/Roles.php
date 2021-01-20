@@ -46,6 +46,8 @@ class Roles extends App {
         $this->app->data->remove('system/roles', ['_id' => $role['_id']]);
         $this->app->data->update('system/users', ['role' => $role['appid']], ['role' => 'user']);
 
+        $this->cache();
+
         return ['success' => true];
     }
 
@@ -77,7 +79,12 @@ class Roles extends App {
 
         $_role = $this->app->data->findOne('system/roles', ['appid' => $role['appid']]);
 
-        if ($_role) {
+        if ($_role && (!isset($role['_id']) || $role['_id'] != $_role['_id'])) {
+            $this->app->stop(['error' =>  'appid is already used!'], 412);
+        }
+
+        // admin role is protected (superadmin)
+        if ($role['appid'] == 'admin') {
             $this->app->stop(['error' =>  'appid is already used!'], 412);
         }
 
@@ -85,6 +92,8 @@ class Roles extends App {
         $this->app->data->save('system/roles', $role);
 
         $role = $this->app->data->findOne('system/roles', ['_id' => $role['_id']]);
+
+        $this->cache();
 
         return $role;
     }
@@ -99,6 +108,10 @@ class Roles extends App {
         ])->toArray();
 
         return $roles;
+    }
+
+    protected function cache() {
+        $this->helper('acl')->cache();
     }
 
 }

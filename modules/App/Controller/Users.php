@@ -33,7 +33,7 @@ class Users extends App {
             'active' => true,
             'user'   => '',
             'email'  => '',
-            'group'  => 'admin',
+            'role'  => 'admin',
             'i18n'   => $this->app->helper('i18n')->locale
         ];
         

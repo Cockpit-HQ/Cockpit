@@ -41,14 +41,14 @@ class Cache extends \Lime\Helper {
         $var = @\file_get_contents($this->cachePath.\md5($this->prefix.'-'.$key).".cache");
 
         if (!$var) {
-            return $default;
+            return \is_callable($default) ? \call_user_func($default):$default;
         } else {
 
             $time = \time();
             $var  = \unserialize($var);
 
             if (!isset($var['expire'])) {
-                return $default;
+                return \is_callable($default) ? \call_user_func($default):$default;
             }
 
             if (($var['expire'] < $time) && $var['expire']!=-1) {
