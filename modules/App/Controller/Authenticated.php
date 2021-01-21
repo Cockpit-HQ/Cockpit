@@ -15,8 +15,8 @@ class Authenticated extends Base {
         $user = $this->app->helper('auth')->getUser();
 
         if (!$user) {
-            $this->app->reroute('/auth/login?to='.$app->retrieve('route'));
-            $this->app->stop();
+            $route = $this->app->request->route;
+            $this->app->reroute("/auth/login?to={$route}");
         }
         
         $this->user = $user;
