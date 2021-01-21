@@ -62,9 +62,9 @@
                             this.saving = false;
 
                             if (isUpdate) {
-                                App.ui.notify('locale updated!');
+                                App.ui.notify('Locale updated!');
                             } else {
-                                App.ui.notify('locale created!');
+                                App.ui.notify('Locale created!');
                             }
                         }).catch(res => {
                             this.saving = false;

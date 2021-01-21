@@ -119,6 +119,6 @@ class Locales extends App {
     }
 
     protected function cache() {
-        //$this->helper('acl')->cache();
+        $this->helper('locales')->cache();
     }
 }

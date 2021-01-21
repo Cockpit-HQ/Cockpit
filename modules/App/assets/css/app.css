@@ -123,7 +123,16 @@ kiss-dropdownbox nav-list ul > li > a:hover {
 
 kiss-offcanvas nav-list ul > li > *,
 kiss-offcanvas nav-list .kiss-nav-header {
+    display: flex;
+    align-items: center;
     padding: 8px 0;
+    letter-spacing: 2px;
+}
+
+kiss-dropdownbox nav-list ul > li a icon,
+kiss-offcanvas nav-list ul > li a icon {
+    font-size: 1.2em;
+    margin-right: 5px;
 }
 
 label {

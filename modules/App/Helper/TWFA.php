@@ -7,9 +7,6 @@ use BaconQrCode\Renderer\Image\SvgImageBackEnd;
 use BaconQrCode\Renderer\RendererStyle\RendererStyle;
 use BaconQrCode\Writer;
 
-/**
- * Admin Helper class.
- */
 class TWFA extends \Lime\Helper {
     
     protected $tfa;

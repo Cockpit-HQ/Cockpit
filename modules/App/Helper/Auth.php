@@ -2,9 +2,6 @@
 
 namespace App\Helper;
 
-/**
- * Admin Helper class.
- */
 class Auth extends \Lime\Helper {
 
     public $sessionKey = 'app.auth.user';

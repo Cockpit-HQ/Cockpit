@@ -40,7 +40,7 @@
                         <a class="kiss-cover" :href="App.route('/users/roles/role/'+role._id)"></a>
                     </div>
                     <div class="kiss-margin-left">
-                        <a class="kiss-size-large kiss-color-danger" @click="remove(role)"><icon>delete</icon></a>
+                        <a class="kiss-color-danger" @click="remove(role)"><icon>delete</icon></a>
                     </div>
                 </div>
 

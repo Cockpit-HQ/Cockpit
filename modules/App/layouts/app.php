@@ -73,9 +73,16 @@
                 <nav-list>
                     <ul>
                         <li class="kiss-nav-header kiss-flex kiss-flex-middle"><?=_t('System')?></li>
-                        <li><a class="kiss-flex kiss-flex-middle" href="<?=$this->route('/settings')?>"><?=_t('Settings')?></a></li>
+                        <li>
+                            <a class="kiss-flex kiss-flex-middle" href="<?=$this->route('/settings')?>">
+                                <icon>settings</icon> <?=_t('Settings')?>
+                            </a>
+                        </li>
                         <?php if (_allowed('app.users.manage')): ?>
-                        <li><a class="kiss-flex kiss-flex-middle" href="<?=$this->route('/users')?>"><?=_t('Users')?></a></li>
+                        <li>
+                            <a class="kiss-flex kiss-flex-middle" href="<?=$this->route('/users')?>">
+                                <icon>supervisor_account</icon> <?=_t('Users')?>
+                            </a></li>
                         <?php endif ?>
                     </ul>
                 </nav-list>
