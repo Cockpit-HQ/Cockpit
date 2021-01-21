@@ -39,9 +39,9 @@ vue-view:not([init="true"]) { display: none; }
 
     --kiss-container-max-width: 1800px;
 
-    --kiss-offcanvas-content-background: var(--kiss-color-contrast);
-    --kiss-offcanvas-background: rgba(14, 143, 255, .5);
-    --kiss-offcanvas-content-color: #000;
+    --kiss-offcanvas-content-background: var(--kiss-base-background-color);
+    --kiss-offcanvas-background: rgba(0, 0, 0, .5);
+    --kiss-offcanvas-content-color: var(--kiss-base-text-color);
 
     --kiss-nav-list-font-size: 14px;
 
@@ -68,6 +68,7 @@ body {
 .kiss-height-30vh { min-height: 30vh; }
 .kiss-height-50vh { min-height: 50vh; }
 
+kiss-offcanvas kiss-content,
 kiss-dialog kiss-content {
     box-shadow: 0 0 40px var(--kiss-color-contrast);
 }
@@ -107,11 +108,14 @@ kiss-dialog kiss-content,
 .kiss-disabled { opacity: .6; }
 
 
+kiss-offcanvas nav-list ul > li > a,
 kiss-dropdownbox nav-list ul > li > a {
     color: inherit;
     opacity: .6;
     transition: all 250ms;
 }
+
+kiss-offcanvas nav-list ul > li > a:hover,
 kiss-dropdownbox nav-list ul > li > a:hover {
     color: var(--kiss-color-primary);
     opacity: 1;
@@ -134,4 +138,8 @@ app-header {
     padding: 15px 0;
     background: var(--app-header-background, rgba(0, 0, 0, .6));
     box-shadow: 0 0 40px rgba(87, 87, 87, 0.05);
+}
+
+.app-offcanvas-content {
+    overflow-y: scroll;
 }

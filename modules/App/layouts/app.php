@@ -24,26 +24,11 @@
             <div>
                 <a class="kiss-display-block" href="<?=$this->route('/')?>"><img class="app-logo kiss-margin-auto" src="<?=$this->base('/logo.svg')?>" width="30" alt="Logo"></a>
             </div>
-            <div class="kiss-margin-left kiss-flex kiss-flex-middle">
-                <strong><?=$this['app.name']?></strong>
-                <kiss-dropdown class="kiss-margin-small-left">
-                    <a class="kiss-link-muted kiss-flex kiss-flex-middle">
-                        <icon>menu</icon>
-                    </a>
-                    <kiss-dropdownbox pos="left">
-                        <nav-list>
-                            <ul>
-                                <li><a href="<?=$this->route('/')?>"><?=_t('Dashboard')?></a></li>
-                                <li class="kiss-nav-divider"></li>
-                                <li class="kiss-nav-header"><?=_t('System')?></li>
-                                <?php if (_allowed('app.users.manage')): ?>
-                                <li><a class="kiss-flex kiss-flex-middle" href="<?=$this->route('/users')?>"><icon class="kiss-margin-small-right">people_alt</icon> <?=_t('Users')?></a></li>
-                                <?php endif ?>
-                                <li><a class="kiss-flex kiss-flex-middle" href="<?=$this->route('/settings')?>"><icon class="kiss-margin-small-right">settings</icon> <?=_t('Settings')?></a></li>
-                            </ul>
-                        </nav-list>
-                    </kiss-dropdownbox>
-                </kiss-dropdown>
+            <div class="kiss-margin-left">
+                <a href="#app-offcanvas" class="kiss-link-muted kiss-flex kiss-flex-middle" kiss-offcanvas>
+                    <strong><?=$this['app.name']?></strong>
+                    <icon class="kiss-margin-small-left">menu</icon>
+                </a>
             </div>
             <div class="kiss-flex-1 kiss-margin-left">
                 
@@ -69,6 +54,29 @@
     </app-header>
     
     <?=$content_for_layout?>
+
+    <kiss-offcanvas id="app-offcanvas">
+        <kiss-content class="kiss-flex kiss-flex-column">
+            <div>Header</div>
+            <div class="kiss-flex-1 app-offcanvas-content">
+                <div class="kiss-padding">
+                    <nav-list>
+                        <ul>
+                            <li><a href="<?=$this->route('/')?>"><?=_t('Dashboard')?></a></li>
+                            <li class="kiss-nav-divider"></li>
+                            <li class="kiss-nav-header"><?=_t('System')?></li>
+                            <?php if (_allowed('app.users.manage')): ?>
+                            <li><a class="kiss-flex kiss-flex-middle" href="<?=$this->route('/users')?>"><icon class="kiss-margin-small-right">people_alt</icon> <?=_t('Users')?></a></li>
+                            <?php endif ?>
+                            <li><a class="kiss-flex kiss-flex-middle" href="<?=$this->route('/settings')?>"><icon class="kiss-margin-small-right">settings</icon> <?=_t('Settings')?></a></li>
+                        </ul>
+                    </nav-list>
+                </div>
+            </div>
+            <div>Footer</div>
+        </kiss-content>
+    </kiss-offcanvas>
+
 
     <?php $this->block('app.layout.footer') ?>
 
