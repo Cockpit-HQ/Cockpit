@@ -11,4 +11,4 @@
 .kiss-bgcolor-danger { background-color: var(--kiss-color-danger, red) !important; }
 .kiss-bgcolor-warning { background-color: var(--kiss-color-warning, orange) !important; }
 .kiss-bgcolor-muted { background-color: var(--kiss-color-muted, #6d6f79) !important; }
-.kiss-bgcolor-contrast { background-color: var(--kiss-color-warning, #fff) !important; }
+.kiss-bgcolor-contrast { background-color: var(--kiss-color-contrast, #fff) !important; }

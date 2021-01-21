@@ -121,6 +121,11 @@ kiss-dropdownbox nav-list ul > li > a:hover {
     opacity: 1;
 }
 
+kiss-offcanvas nav-list ul > li > *,
+kiss-offcanvas nav-list .kiss-nav-header {
+    padding: 8px 0;
+}
+
 label {
     display: block;
     font-weight: bold;
@@ -135,7 +140,7 @@ label {
 
 app-header {
     display: block;
-    padding: 15px 0;
+    padding: 10px 0;
     background: var(--app-header-background, rgba(0, 0, 0, .6));
     box-shadow: 0 0 40px rgba(87, 87, 87, 0.05);
 }
