@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Users;
 
+use App\Controller\App;
 use ArrayObject;
 
 class Roles extends App {
@@ -14,7 +15,7 @@ class Roles extends App {
     }
 
     public function index() {
-        return $this->render('app:views/roles/index.php');
+        return $this->render('app:views/users/roles/index.php');
     }
 
     public function role($id = null) {
@@ -31,7 +32,7 @@ class Roles extends App {
 
         $role['permissions'] = new ArrayObject( $role['permissions']);
 
-        return $this->render('app:views/roles/role.php', compact('role'));
+        return $this->render('app:views/users/roles/role.php', compact('role'));
     }
 
     public function create() {
@@ -43,7 +44,7 @@ class Roles extends App {
             'permissions' => new ArrayObject([])
         ];
         
-        return $this->render('app:views/roles/role.php', compact('role'));
+        return $this->render('app:views/users/roles/role.php', compact('role'));
     }
 
     public function remove() {
