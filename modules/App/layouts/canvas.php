@@ -9,7 +9,7 @@
 
     <?=$this->assets([
         'app:assets/css/app.css',
-        'app:assets/vendor/JSON5.min.js',
+        'app:assets/vendor/JSON5.js',
         'app:assets/vendor/noty/noty.min.js',
         ['src' => 'app:assets/js/app.js', 'type' => 'module']
     ], APP_VERSION)?>
