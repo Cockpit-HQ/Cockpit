@@ -39,11 +39,6 @@ $this->on('after', function() {
             if ($this->request->is('ajax')) {
                 $this->response->body = '{"error": "404", "message":"Requested resource is not available"}';
             } else {
-
-                if (!$this->helper('auth')->getUser()) {
-                    $this->reroute('/auth/login?to='.$this->request->route);
-                }
-
                 $this->response->body = $this->render('app:views/errors/404.php');
             }
 
