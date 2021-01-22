@@ -122,6 +122,13 @@ if (!count($failed)) {
 
         ul li {
             padding: 5px 0;
+            color: #636363;
+
+            font-size: .85em;
+            line-height: inherit;
+            letter-spacing: .015em;
+            text-decoration: none;
+            text-transform: uppercase;
         }
 
         a {
@@ -145,6 +152,13 @@ if (!count($failed)) {
             color: #fff;
             background-color: #0e8fff;
             width: 100%;
+        }
+
+        .credentials {
+            border: 1px #636363 solid;
+            padding: 20px;
+            border-radius: 4px;
+            font-family: monospace;
         }
 
     </style>
@@ -182,8 +196,7 @@ if (!count($failed)) {
                 <h1>Installation completed</h1>
 
                 <div>
-                    <strong>Login Credentials</strong>
-                    <p>admin / admin</p>
+                    <p class="credentials">admin / admin</p>
                 </div>
 
                 <div class="uk-margin-top">
