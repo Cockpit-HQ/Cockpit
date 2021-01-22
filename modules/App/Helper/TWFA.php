@@ -2,6 +2,7 @@
 
 namespace App\Helper;
 
+use RobThree\Auth\Providers\Qr\IQRCodeProvider;
 use BaconQrCode\Renderer\ImageRenderer;
 use BaconQrCode\Renderer\Image\SvgImageBackEnd;
 use BaconQrCode\Renderer\RendererStyle\RendererStyle;
@@ -22,9 +23,15 @@ class TWFA extends \Lime\Helper {
     public function getQRCodeImageAsDataUri($secret, $size = 150) {
         return $this->tfa->getQRCodeImageAsDataUri($this->app['app.name'], $secret, $size);
     }
+
+    public function getQRCodeImage($secret, $size = 150) {
+        $uri = $this->tfa->getQRCodeImageAsDataUri($this->app['app.name'], $secret, $size);
+        $binary = file_get_contents($uri);
+        return $binary;
+    }
 }
 
-class TWFAQRCodeRenderer implements \RobThree\Auth\Providers\Qr\IQRCodeProvider {
+class TWFAQRCodeRenderer implements IQRCodeProvider {
 
     public function getMimeType() {
         return 'image/svg+xml';

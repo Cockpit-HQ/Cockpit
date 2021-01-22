@@ -90,7 +90,7 @@ if (!isset($user['twofa'])) {
                         <field-boolean class="kiss-size-3" v-model="user.twofa.enabled"></field-boolean>
                     </div>
                     <kiss-row class="kiss-margin animated fadeIn" v-if="user.twofa.enabled">
-                        <div><img src="<?=$this->helper('twfa')->getQRCodeImageAsDataUri($user['twofa']['secret'], 150)?>" width="150" style="border:10px #fff solid;"></div>
+                        <div><img src="<?=$this->route("/users/getSecretQRCode/{$user['twofa']['secret']}/150")?>" width="150" height="150" lazy-load style="background:#fff;border:10px #fff solid;"></div>
                         <div class="kiss-flex-1">
 
                             <p class="kiss-text-caption">

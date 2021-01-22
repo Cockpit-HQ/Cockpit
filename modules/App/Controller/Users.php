@@ -196,4 +196,17 @@ class Users extends App {
 
         return compact('users', 'count', 'pages', 'page');
     }
+
+    public function getSecretQRCode($secret = null, $size = 150) {
+
+        \session_write_close();
+
+        if (!$secret) {
+            return false;
+        }
+
+        $this->app->response->mime = 'svg';
+
+        return $this->helper('twfa')->getQRCodeImage($secret, intval($size));
+    }
 }
