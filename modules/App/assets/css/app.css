@@ -18,13 +18,13 @@ vue-view:not([init="true"]) { display: none; }
     --kiss-base-text-color: #fff;
     --kiss-font-size-1: 2rem;
     --kiss-hr-color: rgba(255,255,255,.1);
+    --kiss-link-color: var(--kiss-color-primary);
 
     --kiss-button-default-background: #333;
 
     --kiss-color-contrast: #000;
     --kiss-color-primary: #0e8fff;
     --kiss-color-success: #4caf50;
-    --kiss-link-color: var(--kiss-color-primary);
     --kiss-color-muted: rgba(255,255,255,.25);
 
     --kiss-input-border-color: rgba(255,255,255,.1);

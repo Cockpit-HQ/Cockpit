@@ -56,9 +56,12 @@ a:hover {
 }
 
 a:focus {
-    box-shadow: 0 0 0 var(--kiss-outline-width, .2rem) var(--kiss-outline-color, hsl(210, 100%, 85%));
     outline: none;
     color: var(--kiss-link-focus-color, hsl(210, 100%, 25%));
+}
+
+a:focus-visible {
+    box-shadow: 0 0 0 var(--kiss-outline-width, .2rem) var(--kiss-outline-color, hsl(210, 100%, 85%));
 }
 
 a:active {

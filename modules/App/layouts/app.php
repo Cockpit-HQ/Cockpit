@@ -57,9 +57,15 @@
 
     <kiss-offcanvas id="app-offcanvas">
         <kiss-content class="kiss-flex kiss-flex-column">
-            <div class="kiss-padding">
-                <a class="kiss-display-block" href="<?=$this->route('/')?>"><img class="app-logo" src="<?=$this->base('/logo.svg')?>" width="30" alt="Logo"></a>
+            <div class="kiss-padding kiss-flex">
+                <div><app-avatar size="40" name="<?=$this['user/name']?>"></app-avatar></div>
+                <div class="kiss-margin-left kiss-flex-1 kiss-size-small">
+                    <div class="kiss-text-bold kiss-text-truncate"><?=$this->escape($this['user/name'])?></div>
+                    <div class="kiss-color-muted kiss-text-truncate"><?=$this->escape($this['user/email'])?></div>
+                </div>
+
             </div>
+            <div><hr></div>
             <div class="kiss-flex-1 app-offcanvas-content">
                 <div class="kiss-padding">
                     <nav-list>
@@ -88,7 +94,7 @@
                 </nav-list>
             </div>
             <div class="kiss-padding kiss-bgcolor-contrast">
-                    
+                
             </div>
         </kiss-content>
     </kiss-offcanvas>
