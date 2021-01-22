@@ -23,5 +23,16 @@
 
     <?php $this->block('app.layout.footer') ?>
 
+    <script type="module">
+
+        let paths = {};
+
+        <?php foreach($this['modules'] as $name => $module): ?>
+            paths['<?=$name?>'] = '<?=$this->base("{$name}:")?>';
+        <?php endforeach ?>
+
+        App._paths = paths;
+    </script>
+
 </body>
 </html>

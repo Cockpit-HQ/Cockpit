@@ -17,8 +17,16 @@ let App = {
     version: (html.getAttribute("data-version") || '0.0.1'),
 
     _events: {},
+    _paths: {},
 
     base: function (url) {
+
+        let path = url.match(/^(\w+)\:/);
+
+        if (path && this._paths[path[1]]) {
+            return url.replace(path[0], this._paths[path[1]]);
+        }
+
         return this.base_url + url;
     },
 
@@ -348,6 +356,7 @@ App.memory = window.JSONStorage ? window.JSONStorage.select("app", "memory") : n
 App.i18n = window.i18n || null;
 App.utils = utils;
 
+// custom utils
 App.utils.import = function(uri) {
     return importModule(App.base(uri)+'?v='+App.version);
 };

@@ -40,10 +40,6 @@
     
             def = Object.assign({}, def || {});
     
-            if (!def.components) {
-                def.components = {};
-            }
-    
             def.components = Object.assign({}, VueView.components, def.components || {});
     
             Object.keys(def.components).forEach(name => {
