@@ -16,6 +16,8 @@ class Auth extends Base {
             $this->app->reroute('/');
         }
 
+        $this->app->response->nocache = true;
+
         $redirectTo = $this->param('to', '/');
 
         if (\substr($redirectTo, 0, 1) !== '/') {

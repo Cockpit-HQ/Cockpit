@@ -147,27 +147,32 @@ class Response {
         if (!headers_sent($filename, $linenum)) {
 
             $body = $this->body;
+            $headers = [];
 
             if (\is_array($this->body) || \is_object($this->body)) {
                 $body = \json_encode($this->body);
                 $this->mime = 'json';
             }
 
+            $headers['Content-type'] = self::$mimeTypes[$this->mime] ?? 'text/html';
+
             if ($this->nocache){
-                \header('Cache-Control: no-cache, must-revalidate'); // HTTP/1.1
-                \header('Expires: Sat, 26 Jul 1997 05:00:00 GMT');
-                \header('Pragma: no-cache');
+                $headers['Clear-Site-Data'] = 'cache'; // HTTP/1.1
+                $headers['Cache-Control'] = 'no-cache, must-revalidate'; // HTTP/1.1
+                $headers['Expires'] = 'Sat, 26 Jul 1997 05:00:00 GMT';
+                $headers['Pragma'] = 'no-cache';
             }
 
             if ($this->etag){
-                \header('ETag: "'.md5($this->body).'"');
+                $headers['ETag'] = md5($this->body);
             }
 
             \header('HTTP/1.0 '.$this->status.' '.self::$statusCodes[$this->status]);
-            \header('Content-type: '.(self::$mimeTypes[$this->mime] ?? 'text/html'));
 
-            foreach ($this->headers as $h) {
-                \header($h);
+            $headers = array_merge($headers, $this->headers);
+
+            foreach ($headers as $h => $v) {
+                \header(\is_numeric($h) ? $v : "{$h}: {$v}");
             }
 
             echo $body;
