@@ -1,6 +1,3 @@
-import "../polyfill/custom-elements.js";
-import "../polyfill/import-module.js";
-
 import "../vendor/vue/vue.js";
 import "../vendor/kiss/lib.js"
 import "../vendor/storage.js";
@@ -213,10 +210,10 @@ App.ui = {
                 <button type="button" class="kiss-button kiss-button-primary" kiss-dialog-close>Ok</button>
             </div>
         `, options, 'alert');
-        
+
         dialog.show();
 
-        
+
     },
 
     confirm: function (text, onconfirm, oncancel, options) {
@@ -358,7 +355,7 @@ App.utils = utils;
 
 // custom utils
 App.utils.import = function(uri) {
-    return importModule(App.base(uri)+'?v='+App.version);
+    return import(App.base(uri)+'?v='+App.version);
 };
 
 App.utils.vueModal = function(url, data, events, options) {
@@ -367,7 +364,7 @@ App.utils.vueModal = function(url, data, events, options) {
 
     let dialog = this.dialog(/*html*/`
         <vue-view class="vue-modal" >
-            
+
             <vue-modal ${Object.keys(data).map(key => `:${App.utils.toKebabCase(key)}="${key}"`).join(' ')} ref="view"></vue-modal>
 
             <script type="module">
@@ -384,7 +381,7 @@ App.utils.vueModal = function(url, data, events, options) {
                     mounted() {
 
                         const old_on = this.$on;
-                        
+
                     }
                 }
             </script>
