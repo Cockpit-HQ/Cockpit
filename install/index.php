@@ -50,10 +50,11 @@ foreach ($checks as $info => $check) {
     if (!$check) $failed[] = $info;
 }
 
-
 if (!count($failed)) {
 
-    include (__DIR__.'/../bootstrap.php');
+    if (!class_exists('App')) {
+        include (__DIR__.'/../bootstrap.php');
+    }
 
     $app = APP::instance();
 
@@ -61,6 +62,7 @@ if (!count($failed)) {
     try {
 
         if ($app->data->getCollection('system/users')->count()) {
+
             header('Location: ../');
             exit;
         }

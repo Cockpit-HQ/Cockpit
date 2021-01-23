@@ -21,10 +21,39 @@ if (strpos($APP_DIR, $APP_DOCUMENT_ROOT)!==0 && isset($_SERVER['SCRIPT_NAME'])) 
     $APP_DOCUMENT_ROOT = str_replace(dirname(str_replace(DIRECTORY_SEPARATOR, '/', $_SERVER['SCRIPT_NAME'])), '', $APP_DIR);
 }
 
-$APP_BASE        = trim(str_replace($APP_DOCUMENT_ROOT, '', $APP_DIR), "/");
-$APP_BASE_URL    = strlen($APP_BASE) ? "/{$APP_BASE}": $APP_BASE;
-$APP_BASE_ROUTE  = $APP_BASE_URL;
-$APP_ROUTE       = preg_replace('#'.preg_quote($APP_BASE_URL, '#').'#', '', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), 1);
+// Support php debug webserver: e.g. php -S localhost:8080 index.php
+if (PHP_SAPI == 'cli-server') {
+    
+    $file  = $_SERVER['SCRIPT_FILENAME'];
+    $path  = pathinfo($file);
+    $index = realpath($path['dirname'].'/index.php');
+
+    /* "dot" routes (see: https://bugs.php.net/bug.php?id=61286) */
+    $_SERVER['PATH_INFO'] = explode('?', $_SERVER['REQUEST_URI'] ?? '')[0];
+
+    /* static files (eg. assets/app/css/style.css) */
+    if (is_file($file) && $path['extension'] != 'php') {
+        return false;
+    }
+
+    /* index files (eg. install/index.php) */
+    if (is_file($index) && $index != __FILE__) {
+        include($index);
+        return;
+    }
+
+    $APP_BASE = "";
+    $APP_BASE_URL = "";
+    $APP_BASE_ROUTE  = $APP_BASE_URL;
+    $APP_ROUTE = $_SERVER['PATH_INFO'];
+
+} else {
+
+    $APP_BASE        = trim(str_replace($APP_DOCUMENT_ROOT, '', $APP_DIR), "/");
+    $APP_BASE_URL    = strlen($APP_BASE) ? "/{$APP_BASE}": $APP_BASE;
+    $APP_BASE_ROUTE  = $APP_BASE_URL;
+    $APP_ROUTE       = preg_replace('#'.preg_quote($APP_BASE_URL, '#').'#', '', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), 1);
+}
 
 if ($APP_ROUTE == '') {
     $APP_ROUTE = '/';
@@ -64,7 +93,6 @@ set_exception_handler(function($exception) use($app) {
     header('HTTP/1.0 500 Internal Server Error');
     echo $body;
 });
-
 
 // create request object
 $request = Lime\Request::fromGlobalRequest([
