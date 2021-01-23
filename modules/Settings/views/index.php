@@ -8,7 +8,7 @@
 
         <?php foreach ($items as $item):?>
         <div>
-            <kiss-card class="kiss-position-relative" theme="bordered">
+            <kiss-card class="kiss-position-relative" theme="bordered" hover="shadow">
 
                 <div class="kiss-position-relative">
                     <div class="kiss-position-absolute kiss-size-xlarge" center="true"><icon>blur_on</icon></div>
