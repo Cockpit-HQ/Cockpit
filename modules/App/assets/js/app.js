@@ -153,7 +153,7 @@ App.ui = {
             text: message,
             timeout: timeout,
             layout: 'topCenter',
-            theme: 'sunset',
+            theme: 'app',
             progressBar: true
         }).show();
     },

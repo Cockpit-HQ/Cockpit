@@ -66,6 +66,7 @@
 
             </div>
             <div><hr></div>
+            <?php $this->trigger('app.layout.offcanvas.header') ?>
             <div class="kiss-flex-1 app-offcanvas-content">
                 <div class="kiss-padding">
                     <nav-list>
@@ -74,6 +75,7 @@
                         </ul>
                     </nav-list>
                 </div>
+                <?php $this->trigger('app.layout.offcanvas.content') ?>
             </div>
             <div class="kiss-padding kiss-bgcolor-contrast">
                 <nav-list>
@@ -93,14 +95,12 @@
                     </ul>
                 </nav-list>
             </div>
-            <div class="kiss-padding kiss-bgcolor-contrast">
-                
-            </div>
+            <?php $this->trigger('app.layout.offcanvas.footer') ?>
         </kiss-content>
     </kiss-offcanvas>
 
 
-    <?php $this->block('app.layout.footer') ?>
+    <?php $this->trigger('app.layout.footer') ?>
 
     <script type="module">
 
@@ -112,6 +112,8 @@
 
         App._paths = paths;
     </script>
+
+    <?php $this->block('app.layout.footer') ?>
 
 </body>
 </html>

@@ -2,6 +2,13 @@
 .kiss-position-relative { position: relative; }
 .kiss-position-fixed { position: fixed; }
 
+
+.kiss-position-absolute[center] { 
+    top: 50%; 
+    left: 50%;
+    transform: translate3d(-50%, -50%, 0);
+}
+
 .kiss-position-top-left {
     position: absolute;
     top: 0;
