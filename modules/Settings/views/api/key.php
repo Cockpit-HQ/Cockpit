@@ -27,16 +27,22 @@
                     </div>
                 </kiss-card>
 
-                <div class="kiss-margin-large kiss-flex kiss-flex-middle">
-                    <button type="submit" class="kiss-button kiss-button-primary">
-                        <span v-if="!key._id"><?=_t('Create key')?></span>
-                        <span v-if="key._id"><?=_t('Update key')?></span>
-                    </button>
-                    <a class="kiss-margin-left kiss-button kiss-button-link" href="<?=$this->route('/settings/api')?>">
-                        <span v-if="!key._id"><?=_t('Cancel')?></span>
-                        <span v-if="key._id"><?=_t('Close')?></span>
-                    </a>
-                </div>
+                <app-actionbar>
+
+                    <kiss-container size="small">
+                        <div class="kiss-flex kiss-flex-middle kiss-flex-right">
+                            <a class="kiss-margin-right kiss-button kiss-button-link" href="<?=$this->route('/settings/api')?>">
+                                <span v-if="!key._id"><?=_t('Cancel')?></span>
+                                <span v-if="key._id"><?=_t('Close')?></span>
+                            </a>
+                            <button type="submit" class="kiss-button kiss-button-primary">
+                                <span v-if="!key._id"><?=_t('Create key')?></span>
+                                <span v-if="key._id"><?=_t('Update key')?></span>
+                            </button>
+                        </div>
+                    </kiss-container>
+
+                </app-actionbar>
 
             </form>
 

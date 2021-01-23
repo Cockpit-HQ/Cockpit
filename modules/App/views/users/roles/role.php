@@ -56,17 +56,22 @@
 
                 </div>
 
+                <app-actionbar>
 
-                <div class="kiss-margin-large kiss-flex kiss-flex-middle">
-                    <button type="submit" class="kiss-button kiss-button-primary">
-                        <span v-if="!role._id"><?=_t('Create role')?></span>
-                        <span v-if="role._id"><?=_t('Update role')?></span>
-                    </button>
-                    <a class="kiss-margin-left kiss-button kiss-button-link" href="<?=$this->route('/users/roles')?>">
-                        <span v-if="!role._id"><?=_t('Cancel')?></span>
-                        <span v-if="role._id"><?=_t('Close')?></span>
-                    </a>
-                </div>
+                    <kiss-container size="small">
+                        <div class="kiss-flex kiss-flex-middle kiss-flex-right">
+                            <a class="kiss-margin-right kiss-button kiss-button-link" href="<?=$this->route('/users/roles')?>">
+                                <span v-if="!role._id"><?=_t('Cancel')?></span>
+                                <span v-if="role._id"><?=_t('Close')?></span>
+                            </a>
+                            <button type="submit" class="kiss-button kiss-button-primary">
+                                <span v-if="!role._id"><?=_t('Create role')?></span>
+                                <span v-if="role._id"><?=_t('Update role')?></span>
+                            </button>
+                        </div>
+                    </kiss-container>
+
+                </app-actionbar>
 
             </form>
 
@@ -93,7 +98,7 @@
                         this.saving = true;
 
                         App.request('/users/roles/save', {role: this.role}).then(role => {
-                            
+
                             this.role = role;
                             this.saving = false;
 

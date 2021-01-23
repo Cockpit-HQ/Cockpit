@@ -6,6 +6,7 @@
 @import "../components/switch.css";
 @import "../components/app-loader/app-loader.css";
 @import "../components/app-avatar/app-avatar.css";
+@import "../components/app-actionbar/app-actionbar.css";
 
 @import "../vendor/kiss/lib.css";
 
@@ -153,6 +154,11 @@ app-header {
     padding: 10px 0;
     background: var(--app-header-background, rgba(0, 0, 0, .6));
     box-shadow: 0 0 40px rgba(87, 87, 87, 0.05);
+}
+
+app-actionbar kiss-container {
+    padding-left: var(--kiss-container-padding, 30px);
+    padding-right: var(--kiss-container-padding, 30px);
 }
 
 .app-offcanvas-content {

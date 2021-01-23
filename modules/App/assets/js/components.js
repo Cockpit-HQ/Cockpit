@@ -2,6 +2,7 @@ import "./vue-view.js";
 
 import "../components/app-avatar/app-avatar.js";
 import "../components/app-loader/app-loader.js";
+import "../components/app-actionbar/app-actionbar.js";
 
 
 VueView.component('field-boolean', 'app:assets/vue-components/field-boolean.js');

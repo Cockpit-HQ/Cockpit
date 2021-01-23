@@ -106,18 +106,24 @@ if (!isset($user['twofa'])) {
 
                 </kiss-card>
 
-                <div class="kiss-margin-large kiss-flex kiss-flex-middle">
-                    <button type="submit" class="kiss-button kiss-button-primary">
-                        <span v-if="!user._id"><?=_t('Create')?></span>
-                        <span v-if="user._id"><?=_t('Update')?></span>
-                    </button>
-                    <?php if (!$isAccountView && _allowed('app.users.manage')): ?>
-                    <a class="kiss-margin-left kiss-button kiss-button-link" href="<?=$this->route('/users')?>">
-                        <span v-if="!user._id"><?=_t('Cancel')?></span>
-                        <span v-if="user._id"><?=_t('Close')?></span>
-                    </a>
-                    <?php endif ?>
-                </div>
+                <app-actionbar>
+
+                    <kiss-container size="small">
+                        <div class="kiss-flex kiss-flex-middle kiss-flex-right">
+                            <?php if (!$isAccountView && _allowed('app.users.manage')): ?>
+                            <a class="kiss-margin-right kiss-button kiss-button-link" href="<?=$this->route('/users')?>">
+                                <span v-if="!user._id"><?=_t('Cancel')?></span>
+                                <span v-if="user._id"><?=_t('Close')?></span>
+                            </a>
+                            <?php endif ?>
+                            <button type="submit" class="kiss-button kiss-button-primary">
+                                <span v-if="!user._id"><?=_t('Create')?></span>
+                                <span v-if="user._id"><?=_t('Update')?></span>
+                            </button>
+                        </div>
+                    </kiss-container>
+
+                </app-actionbar>
 
             </form>
 
