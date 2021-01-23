@@ -13,7 +13,7 @@
             <kiss-card class="kiss-margin kiss-margin-large-bottom kiss-padding" theme="bordered">
                 <label><?=('API endpoint')?></label>
                 <div class="kiss-flex kiss-flex-middle">
-                    <div class="kiss-text-truncate kiss-text-monospace kiss-color-muted">
+                    <div class="kiss-text-truncate kiss-text-monospace">
                         <?=$this->getSiteUrl(true)?>/api
                     </div>
                     <div class="kiss-margin-left"><a href="#" @click="copyEndpoint"><icon>content_copy</icon></a></div>

@@ -1,6 +1,6 @@
 <kiss-container class="kiss-margin-large" size="small">
 
-    <?php foreach ($this->helper('settings')->groups() as $group => $items):?>
+    <?php foreach ($this->helper('settings')->groups(true) as $group => $items):?>
 
     <div class="kiss-text-bold kiss-text-caption"><?=$this->escape(_t($group))?></div>
 
@@ -15,7 +15,7 @@
                     <canvas width="800" height="500"></canvas>
                 </div>
 
-                <div class="kiss-padding kiss-size-small kiss-align-center">
+                <div class="kiss-padding kiss-size-small kiss-align-center kiss-text-caption">
                     <?=$this->escape(_t($item['label'] ?? 'n/a'))?>
                 </div>
                 <a class="kiss-cover" href="<?=$this->route($item['route'])?>"></a>
