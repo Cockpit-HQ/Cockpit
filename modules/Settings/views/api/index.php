@@ -33,22 +33,22 @@
 
                 <div class="kiss-margin kiss-text-caption"><strong><?=_t('Api keys')?></strong></div>
 
-                <div v-for="(key, idx) in keys">
+                <ul class="app-list-items">
 
-                    <div class="kiss-margin kiss-flex kiss-flex-middle">
-                        <div class="kiss-margin-small-right"><icon>vpn_key</icon></div>
-                        <div class="kiss-size-5 kiss-flex-1 kiss-position-relative">
-                            <strong>{{key.name}}</strong>
-                            <a class="kiss-cover" :href="App.route('/settings/api/key/'+key._id)"></a>
+                    <li v-for="(key, idx) in keys">
+                        <div class="kiss-margin kiss-flex kiss-flex-middle">
+                            <div class="kiss-margin-small-right"><icon>vpn_key</icon></div>
+                            <div class="kiss-size-5 kiss-flex-1 kiss-position-relative">
+                                <strong>{{key.name}}</strong>
+                                <a class="kiss-cover" :href="App.route('/settings/api/key/'+key._id)"></a>
+                            </div>
+                            <div class="kiss-margin-left kiss-align-right kiss-text-monospace kiss-color-muted">*****{{ key.key.substr(-5, 5)}}</div>
+                            <a class="kiss-margin-left" href="#" @click="copyApiKey(key.key)"><icon>content_copy</icon></a>
+                            <a class="kiss-margin-small-left kiss-color-danger" @click="remove(key)"><icon>delete</icon></a>
                         </div>
-                        <div class="kiss-margin-left kiss-align-right kiss-text-monospace kiss-color-muted">*****{{ key.key.substr(-5, 5)}}</div>
-                        <a class="kiss-margin-left" href="#" @click="copyApiKey(key.key)"><icon>content_copy</icon></a>
-                        <a class="kiss-margin-small-left kiss-color-danger" @click="remove(key)"><icon>delete</icon></a>
-                    </div>
+                    </li>
 
-                    <hr v-if="(idx+1) < keys.length">
-
-                </div>
+                </ul>
 
             </div>
 

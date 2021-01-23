@@ -5,21 +5,21 @@
         <template>
 
             <div class="kiss-margin-large-bottom kiss-flex kiss-flex-middle">
-                
+
                 <div class="kiss-size-1 kiss-flex-1"><strong><?=_t('Users')?></strong></div>
 
                 <?php if (_allowed('app.roles.manage')): ?>
                 <a class="kiss-button kiss-margin-small-right" href="<?=$this->route('/users/roles')?>"><?=_t('Manage roles')?></a>
                 <?php endif ?>
-                
+
                 <a class="kiss-button kiss-button-primary" href="<?=$this->route('/users/create')?>"><?=_t('Add user')?></a>
             </div>
 
             <app-loader v-if="loading"></app-loader>
 
-            <div class="animated fadeIn" v-if="users && users.length">
+            <ul class="app-list-items animated fadeIn" v-if="users && users.length">
 
-                <div v-for="(user, idx) in users" :class="{'kiss-inactive': !user.active}">
+                <li v-for="(user, idx) in users" :class="{'kiss-inactive': !user.active}">
 
                     <div class="kiss-margin kiss-flex">
                         <div class="kiss-margin-right kiss-position-relative">
@@ -38,18 +38,15 @@
                         </div>
                     </div>
 
-                    <hr v-if="(idx+1) < users.length">
+                </li>
 
-                </div>
-
-            </div>
-
+            </ul>
 
         </template>
         <script type="module">
 
             export default {
-                
+
                 data() {
                     return {
                         users: null,
@@ -68,11 +65,11 @@
 
                 methods: {
 
-                    
+
                     load() {
 
                         this.loading = true;
-                        
+
                         App.request('/users/load', {options:{}}).then(data => {
 
                             this.users = data.users;

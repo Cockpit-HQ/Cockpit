@@ -6,11 +6,11 @@
 
         <div class="kiss-margin-large-bottom kiss-flex kiss-flex-middle">
             <div class="kiss-size-1 kiss-flex-1"><strong><?=_t('Roles')?></strong></div>
-            
+
             <?php if (_allowed('app.users.manage')): ?>
             <a class="kiss-button kiss-margin-small-right" href="<?=$this->route('/users')?>"><?=_t('Manage users')?></a>
             <?php endif ?>
-            
+
             <a class="kiss-button kiss-button-primary" href="<?=$this->route('/users/roles/create')?>"><?=_t('Add role')?></a>
         </div>
 
@@ -23,9 +23,9 @@
             </div>
         </div>
 
-        <div class="animated fadeIn" v-if="roles && roles.length">
+        <ul class="app-list-items animated fadeIn" v-if="roles && roles.length">
 
-            <div v-for="(role, idx) in roles">
+            <li v-for="(role, idx) in roles">
 
                 <div class="kiss-margin kiss-flex">
                     <div class="kiss-margin-right kiss-position-relative">
@@ -44,18 +44,16 @@
                     </div>
                 </div>
 
-                <hr v-if="(idx+1) < roles.length">
+            </li>
 
-            </div>
-
-        </div>
+        </ul>
 
 
     </template>
     <script type="module">
 
         export default {
-            
+
             data() {
                 return {
                     roles: null,
@@ -70,11 +68,11 @@
 
             methods: {
 
-                
+
                 load() {
 
                     this.loading = true;
-                    
+
                     App.request('/users/roles/load', {options:{}}).then(roles => {
 
                         this.roles = roles;

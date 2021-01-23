@@ -18,9 +18,9 @@
             </div>
         </div>
 
-        <div class="animated fadeIn" v-if="locales && locales.length">
+        <ul class="app-list-items animated fadeIn" v-if="locales && locales.length">
 
-            <div v-for="(locale, idx) in locales">
+            <li v-for="(locale, idx) in locales">
 
                 <div class="kiss-margin kiss-flex kiss-flex-middle">
                     <div class="kiss-margin-small-right"><icon>language</icon></div>
@@ -32,11 +32,9 @@
                     <a class="kiss-display-block kiss-margin-left kiss-color-danger" @click="remove(locale)"><icon>delete</icon></a>
                 </div>
 
-                <hr v-if="(idx+1) < locales.length">
+            </li>
 
-            </div>
-
-        </div>
+        </ul>
 
 
     </template>
