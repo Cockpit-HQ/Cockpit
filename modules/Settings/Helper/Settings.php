@@ -18,6 +18,12 @@ class Settings extends \Lime\Helper {
                 ],
                 [
                     'icon' => null,
+                    'route' => '/settings/api',
+                    'label' => 'Api & Security',
+                    'permissions' => null
+                ],
+                [
+                    'icon' => null,
                     'route' => '/settings/locales',
                     'label' => 'Locals',
                     'permissions' => null
@@ -25,7 +31,7 @@ class Settings extends \Lime\Helper {
             ]
         ]);
 
-        $this->app->trigger('app.settings.groups', [$config]);
+        $this->app->trigger('app.settings.collect', [$config]);
 
         return $config;
     }

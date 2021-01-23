@@ -99,6 +99,7 @@ kiss-dialog kiss-content {
 app-avatar canvas,
 kiss-card,
 .kiss-button,
+.kiss-badge,
 kiss-dialog kiss-content,
 .app-switch,
 .app-switch::before {

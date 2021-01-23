@@ -23,7 +23,7 @@ if (strpos($APP_DIR, $APP_DOCUMENT_ROOT)!==0 && isset($_SERVER['SCRIPT_NAME'])) 
 
 // Support php debug webserver: e.g. php -S localhost:8080 index.php
 if (PHP_SAPI == 'cli-server') {
-    
+
     $file  = $_SERVER['SCRIPT_FILENAME'];
     $path  = pathinfo($file);
     $index = realpath($path['dirname'].'/index.php');

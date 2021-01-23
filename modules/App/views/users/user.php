@@ -34,7 +34,7 @@ if (!isset($user['twofa'])) {
             <hr class="kiss-margin-large" v-if="user._id">
 
             <form :class="{'kiss-disabled':saving}" @submit.prevent="save">
-                
+
                 <?php if (!isset($user['_id']) || $user['_id'] != $this['user/_id']):?>
                 <div class="kiss-margin">
                     <label><?=_t('Active')?></label>
@@ -77,7 +77,7 @@ if (!isset($user['twofa'])) {
                     <div class="kiss-flex kiss-flex-middle">
                         <div class="kiss-flex-1 kiss-margin-small-right kiss-text-truncate kiss-disabled">
                             <span class="kiss-text-caption" v-if="!user.apiKey"><?=_t('No api key created yet')?></span>
-                            <span class="kiss-tex-monospace kiss-text-bold" v-if="user.apiKey">{{ user.apiKey }}</span>
+                            <span class="kiss-text-monospace kiss-text-bold" v-if="user.apiKey">{{ user.apiKey }}</span>
                         </div>
                         <a @click="generateToken"><icon>refresh</icon></a>
                         <a class="kiss-margin-small-left" v-if="user.apiKey" @click="copyToken"><icon>content_copy</icon></a>
@@ -103,7 +103,7 @@ if (!isset($user['twofa'])) {
                             </div>
                         </div>
                     </kiss-row>
-                    
+
                 </kiss-card>
 
                 <div class="kiss-margin-large kiss-flex kiss-flex-middle">

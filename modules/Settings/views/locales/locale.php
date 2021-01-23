@@ -43,8 +43,7 @@
 
                     return {
                         saving: false,
-                        locale: <?=json_encode($locale)?>,
-                        permissions: <?=json_encode($permissions)?>
+                        locale: <?=json_encode($locale)?>
                     };
                 },
 
@@ -57,7 +56,7 @@
                         this.saving = true;
 
                         App.request('/settings/locales/save', {locale: this.locale}).then(locale => {
-                            
+
                             this.locale = locale;
                             this.saving = false;
 

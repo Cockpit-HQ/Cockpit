@@ -6,7 +6,6 @@
 
         <div class="kiss-margin-large-bottom kiss-flex kiss-flex-middle">
             <div class="kiss-size-1 kiss-flex-1"><strong><?=_t('Locales')?></strong></div>
-            
             <a class="kiss-button kiss-button-primary" href="<?=$this->route('/settings/locales/create')?>"><?=_t('Add locale')?></a>
         </div>
 
@@ -44,7 +43,7 @@
     <script type="module">
 
         export default {
-            
+
             data() {
                 return {
                     locales: null,
@@ -52,18 +51,17 @@
                 }
             },
 
-
             mounted() {
                 this.load()
             },
 
             methods: {
 
-                
+
                 load() {
 
                     this.loading = true;
-                    
+
                     App.request('/settings/locales/load', {options:{}}).then(locales => {
 
                         this.locales = locales;

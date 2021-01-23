@@ -42,7 +42,7 @@ class Locales extends App {
             'name'  => '',
             'meta' => new ArrayObject([])
         ];
-        
+
         return $this->render('settings:views/locales/locale.php', compact('locale'));
     }
 
@@ -99,13 +99,12 @@ class Locales extends App {
 
         $locale = $this->app->data->findOne('system/locales', ['_id' => $locale['_id']]);
 
-        $locale['meta'] = new ArrayObject( $locale['meta']);
+        $locale['meta'] = new ArrayObject(is_array($locale['meta']) ? $locale['meta'] : []);
 
         $this->cache();
 
         return $locale;
     }
-
 
     public function load() {
 

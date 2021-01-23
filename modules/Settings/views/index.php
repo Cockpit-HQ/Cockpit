@@ -1,7 +1,7 @@
 <kiss-container class="kiss-margin-large" size="small">
 
     <?php foreach ($this->helper('settings')->groups() as $group => $items):?>
-    
+
     <div class="kiss-text-bold kiss-text-caption"><?=$this->escape(_t($group))?></div>
 
     <kiss-row class="kiss-margin kiss-child-width-1-4@m">
@@ -22,7 +22,7 @@
             </kiss-card>
         </div>
         <?php endforeach ?>
-        
+
     </kiss-row>
     <?php endforeach ?>
 

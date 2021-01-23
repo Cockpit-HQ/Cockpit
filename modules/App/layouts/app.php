@@ -31,7 +31,7 @@
                 </a>
             </div>
             <div class="kiss-flex-1 kiss-margin-left">
-                
+
             </div>
             <div class="kiss-margin-left">
                 <kiss-dropdown>
@@ -52,7 +52,7 @@
             </div>
         </kiss-container>
     </app-header>
-    
+
     <?=$content_for_layout?>
 
     <kiss-offcanvas id="app-offcanvas">
