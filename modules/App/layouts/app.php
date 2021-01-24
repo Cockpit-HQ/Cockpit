@@ -72,9 +72,14 @@
                     <nav-list>
                         <ul>
                             <li><a href="<?=$this->route('/')?>"><?=_t('Dashboard')?></a></li>
+                            <li>&nbsp;</li>
+                            <?php foreach ($this->helper('menus')->menu('modules') as $link): ?>
+                                <li><a href="<?=$this->route($link['route'])?>"><?=_t($link['label'])?></a></li>
+                            <?php endforeach ?>
                         </ul>
                     </nav-list>
                 </div>
+
                 <?php $this->trigger('app.layout.offcanvas.content') ?>
             </div>
             <div class="kiss-padding kiss-bgcolor-contrast">
