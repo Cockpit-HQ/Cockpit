@@ -1,12 +1,4 @@
 <?php
-/**
- * This file is part of the Cockpit project.
- *
- * (c) Artur Heinze - 🅰🅶🅴🅽🆃🅴🅹🅾, http://agentejo.com
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 namespace App\Helper;
 
@@ -222,7 +214,7 @@ class Utils extends \Lime\Helper {
      * @return array
      */
     public function resolveDependencies(array $data) {
-        
+
         $new_data = array();
         $original_count = \count($data);
         while (\count($new_data) < $original_count) {
@@ -508,16 +500,16 @@ class Utils extends \Lime\Helper {
      * @return void
      */
     function var_export($expr, $return=false) {
-        
+
         $export = var_export($expr, true);
         $array  = preg_split("/\r\n|\n|\r/", $export);
         $array  = preg_replace(["/\s*array\s\($/", "/\)(,)?$/", "/\s=>\s$/"], [NULL, ']$1', ' => ['], $array);
         $export = join(PHP_EOL, array_filter(["["] + $array));
-        
+
         if ($return) {
             return $export;
         }
-        
+
         echo $export;
     }
 }

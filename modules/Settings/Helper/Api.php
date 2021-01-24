@@ -2,7 +2,6 @@
 
 namespace Settings\Helper;
 
-
 class Api extends \Lime\Helper {
 
     protected $keys;

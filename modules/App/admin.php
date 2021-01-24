@@ -2,6 +2,7 @@
 
 // Register helpers
 $this->helpers['twfa'] = 'App\\Helper\\TWFA';
+$this->helpers['menus'] = 'App\\Helper\\Menus';
 
 // Register routes
 $this->bindClass('App\\Controller\\Auth', 'auth');
