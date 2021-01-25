@@ -69,9 +69,14 @@ kiss-offcanvas nav-list .kiss-nav-header {
 }
 
 kiss-dropdownbox nav-list ul > li a icon,
-kiss-offcanvas nav-list ul > li a icon {
+kiss-offcanvas nav-list ul > li a icon,
+kiss-offcanvas nav-list ul > li a kiss-svg {
     font-size: 1.2em;
     margin-right: 5px;
+}
+
+.kiss-nav-spacer {
+    margin-top: 5px;
 }
 
 kiss-card[hover="shadow"]:hover {

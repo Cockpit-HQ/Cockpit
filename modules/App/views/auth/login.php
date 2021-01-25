@@ -25,24 +25,24 @@
 
                 <form class="animated" :class="{'kiss-disabled': loading}" @submit.prevent="login" v-if="view=='form'">
 
-                    <div class="kiss-text-bold kiss-text-caption kiss-margin-bottom"><?=_t('Welcome')?></div>
+                    <div class="kiss-text-bold kiss-text-caption kiss-margin-bottom"><?=t('Welcome')?></div>
 
                     <div class="kiss-margin">
-                        <input class="kiss-input" type="text" autocomplete="username" placeholder="<?=_t('Username or Email')?>" v-model="auth.user" required>
+                        <input class="kiss-input" type="text" autocomplete="username" placeholder="<?=t('Username or Email')?>" v-model="auth.user" required>
                     </div>
 
                     <div class="kiss-margin">
-                        <input class="kiss-input" type="password" autocomplete="current-password" placeholder="<?=_t('Password')?>" v-model="auth.password" required>
+                        <input class="kiss-input" type="password" autocomplete="current-password" placeholder="<?=t('Password')?>" v-model="auth.password" required>
                     </div>
 
                     <div class="kiss-margin">
-                        <button class="kiss-button kiss-button-primary kiss-width-1-1"><?=_t('Login')?></button>
+                        <button class="kiss-button kiss-button-primary kiss-width-1-1"><?=t('Login')?></button>
                     </div>
 
                 </form>
 
                 <div class="animated fadeInUp" v-if="!loading && view=='success'">
-                    
+
                     <kiss-row>
                         <div><app-avatar size="50" :name="user.name"></app-avatar></div>
                         <div>
@@ -50,7 +50,7 @@
                             <div class="kiss-color-muted">{{ user.email }}</div>
                         </div>
                     </kiss-row>
-                    
+
                 </div>
 
                 <app-loader class="animated fadeIn kiss-margin-large-top" v-if="loading"></app-loader>
@@ -78,7 +78,7 @@
                     methods: {
 
                         login() {
-                            
+
                             this.loading = true;
 
                             App.request('/auth/check', {
@@ -109,7 +109,7 @@
                                 }, 1500)
 
                             }, rsp => {
-                                App.ui.notify(rsp && (rsp.message || rsp.error) ? (rsp.message || rsp.error) : '<?=_t('Login failed.')?>', 'error');
+                                App.ui.notify(rsp && (rsp.message || rsp.error) ? (rsp.message || rsp.error) : '<?=t('Login failed.')?>', 'error');
                             });
                         }
                     }

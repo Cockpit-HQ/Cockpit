@@ -22,9 +22,9 @@
 
         <h1>500</h1>
 
-        <p class="kiss-margin kiss-color-muted"><?=_t('Internal Server Error')?></p>
+        <p class="kiss-margin kiss-color-muted"><?=t('Internal Server Error')?></p>
 
     </kiss-container>
-    
+
 </body>
 </html>

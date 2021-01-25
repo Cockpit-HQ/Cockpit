@@ -6,8 +6,8 @@
         <template>
 
             <div class="kiss-flex kiss-flex-middle">
-                <div class="kiss-size-1 kiss-flex-1"><strong><?=_t('API & Security')?></strong></div>
-                <a class="kiss-button kiss-button-primary" href="<?=$this->route('/settings/api/create')?>"><?=_t('Add key')?></a>
+                <div class="kiss-size-1 kiss-flex-1"><strong><?=t('API & Security')?></strong></div>
+                <a class="kiss-button kiss-button-primary" href="<?=$this->route('/settings/api/create')?>"><?=t('Add key')?></a>
             </div>
 
             <kiss-card class="kiss-margin kiss-margin-large-bottom kiss-padding" theme="bordered">
@@ -25,13 +25,13 @@
             <div class="animated fadeIn kiss-height-30vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted" v-if="keys && !keys.length">
                 <div>
                     <icon class="kiss-size-xlarge">vpn_key</icon>
-                    <p class="kiss-size-large kiss-text-bold"><?=_t('No api keys')?></p>
+                    <p class="kiss-size-large kiss-text-bold"><?=t('No api keys')?></p>
                 </div>
             </div>
 
             <div class="animated fadeIn kiss-margin-large" v-if="keys && keys.length">
 
-                <div class="kiss-margin kiss-text-caption"><strong><?=_t('Api keys')?></strong></div>
+                <div class="kiss-margin kiss-text-caption"><strong><?=t('Api keys')?></strong></div>
 
                 <ul class="app-list-items">
 

@@ -24,9 +24,9 @@
 
         <h1>404</h1>
 
-        <p class="kiss-margin kiss-color-muted"><?=_t('Requested resource is not available')?></p>
+        <p class="kiss-margin kiss-color-muted"><?=t('Requested resource is not available')?></p>
 
     </kiss-container>
-    
+
 </body>
 </html>

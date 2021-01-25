@@ -41,10 +41,10 @@
                     <kiss-dropdownbox>
                         <nav-list>
                             <ul>
-                                <li class="kiss-nav-header"><?=_t('System')?></li>
-                                <li><a class="kiss-flex kiss-flex-middle" href="<?=$this->route('/users/user')?>"><icon class="kiss-margin-small-right">account_circle</icon> <?=_t('Account')?></a></li>
+                                <li class="kiss-nav-header"><?=t('System')?></li>
+                                <li><a class="kiss-flex kiss-flex-middle" href="<?=$this->route('/users/user')?>"><icon class="kiss-margin-small-right">account_circle</icon> <?=t('Account')?></a></li>
                                 <li class="kiss-nav-divider"></li>
-                                <li><a class="kiss-flex kiss-flex-middle kiss-color-danger" href="<?=$this->route('/auth/logout')?>"><icon class="kiss-margin-small-right">power_settings_new</icon> <?=_t('Logout')?></a></li>
+                                <li><a class="kiss-flex kiss-flex-middle kiss-color-danger" href="<?=$this->route('/auth/logout')?>"><icon class="kiss-margin-small-right">power_settings_new</icon> <?=t('Logout')?></a></li>
                             </ul>
                         </nav-list>
                     </kiss-dropdownbox>
@@ -71,10 +71,15 @@
                 <div class="kiss-padding">
                     <nav-list>
                         <ul>
-                            <li><a href="<?=$this->route('/')?>"><?=_t('Dashboard')?></a></li>
-                            <li>&nbsp;</li>
+                            <li><a href="<?=$this->route('/')?>"><?=t('Dashboard')?></a></li>
+                            <li class="kiss-nav-spacer"></li>
                             <?php foreach ($this->helper('menus')->menu('modules') as $link): ?>
-                                <li><a href="<?=$this->route($link['route'])?>"><?=_t($link['label'])?></a></li>
+                                <li>
+                                    <a href="<?=$this->route($link['route'])?>">
+                                        <kiss-svg src="<?=$this->base($link['icon'])?>" width="20" height="20"></kiss-svg>
+                                        <?=t($link['label'])?>
+                                    </a>
+                                </li>
                             <?php endforeach ?>
                         </ul>
                     </nav-list>
@@ -85,16 +90,16 @@
             <div class="kiss-padding kiss-bgcolor-contrast">
                 <nav-list>
                     <ul>
-                        <li class="kiss-nav-header kiss-flex kiss-flex-middle"><?=_t('System')?></li>
+                        <li class="kiss-nav-header kiss-flex kiss-flex-middle"><?=t('System')?></li>
                         <li>
                             <a class="kiss-flex kiss-flex-middle" href="<?=$this->route('/settings')?>">
-                                <icon>settings</icon> <?=_t('Settings')?>
+                                <icon>settings</icon> <?=t('Settings')?>
                             </a>
                         </li>
                         <?php if (_allowed('app.users.manage')): ?>
                         <li>
                             <a class="kiss-flex kiss-flex-middle" href="<?=$this->route('/users')?>">
-                                <icon>supervisor_account</icon> <?=_t('Users')?>
+                                <icon>supervisor_account</icon> <?=t('Users')?>
                             </a></li>
                         <?php endif ?>
                     </ul>

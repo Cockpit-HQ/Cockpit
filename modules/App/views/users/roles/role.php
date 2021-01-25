@@ -17,28 +17,28 @@
         <template>
 
             <h1 class="kiss-margin-large-bottom">
-                <span v-if="!role._id"><?=_t('Create role')?></span>
-                <span v-if="role._id"><?=_t('Edit role')?></span>
+                <span v-if="!role._id"><?=t('Create role')?></span>
+                <span v-if="role._id"><?=t('Edit role')?></span>
             </h1>
 
             <form :class="{'kiss-disabled':saving}" @submit.prevent="save">
 
                 <div class="kiss-margin" :class="{'kiss-disabled': role._id}">
-                    <label><?=_t('APPID')?></label>
+                    <label><?=t('APPID')?></label>
                     <input class="kiss-input" type="text" pattern="[a-zA-Z0-9_]+" v-model="role.appid" :disabled="role._id" required>
                 </div>
 
                 <div class="kiss-margin">
-                    <label><?=_t('Name')?></label>
+                    <label><?=t('Name')?></label>
                     <input class="kiss-input" type="text" v-model="role.name" required>
                 </div>
 
                 <div class="kiss-margin">
-                    <label><?=_t('Info')?></label>
+                    <label><?=t('Info')?></label>
                     <textarea class="kiss-input kiss-textarea" style="height:150px;" v-model="role.info"></textarea>
                 </div>
 
-                <div class="kiss-margin kiss-margin-large-top kiss-size-4"><strong><?=_t('Permissions')?></strong></div>
+                <div class="kiss-margin kiss-margin-large-top kiss-size-4"><strong><?=t('Permissions')?></strong></div>
 
                 <div class="kiss-margin" v-for="(permissions, group) in permissions">
 
@@ -61,12 +61,12 @@
                     <kiss-container size="small">
                         <div class="kiss-flex kiss-flex-middle kiss-flex-right">
                             <a class="kiss-margin-right kiss-button kiss-button-link" href="<?=$this->route('/users/roles')?>">
-                                <span v-if="!role._id"><?=_t('Cancel')?></span>
-                                <span v-if="role._id"><?=_t('Close')?></span>
+                                <span v-if="!role._id"><?=t('Cancel')?></span>
+                                <span v-if="role._id"><?=t('Close')?></span>
                             </a>
                             <button type="submit" class="kiss-button kiss-button-primary">
-                                <span v-if="!role._id"><?=_t('Create role')?></span>
-                                <span v-if="role._id"><?=_t('Update role')?></span>
+                                <span v-if="!role._id"><?=t('Create role')?></span>
+                                <span v-if="role._id"><?=t('Update role')?></span>
                             </button>
                         </div>
                     </kiss-container>

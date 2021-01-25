@@ -5,17 +5,17 @@
 (function() {
 
     let VueView = {
-        
+
         ready: new Promise(function(resolve) {
             document.addEventListener('DOMContentLoaded', e => resolve())
         }),
-        
+
         components: {},
 
         component(name, def) {
             this.components[name] = def;
         },
-        
+
         compile(el) {
             this.ready.then(() => {
                 this._compile(el);
@@ -27,23 +27,23 @@
             let script = el.querySelector('script');
             let template = el.querySelector('template');
             let def = {}, app;
-    
+
             if (script) {
                 def = (new Function(script.innerHTML.replace('export default', 'return ')))();
                 script.parentNode.removeChild(script);
             }
-    
+
             if (template) {
                 def.template = template.innerHTML;
                 template.parentNode.removeChild(template);
             }
-    
+
             def = Object.assign({}, def || {});
-    
+
             def.components = Object.assign({}, VueView.components, def.components || {});
-    
+
             Object.keys(def.components).forEach(name => {
-    
+
                 if (typeof(def.components[name]) == 'string') {
                     def.components[name] = (function(url) {
                         return Vue.defineAsyncComponent(() => App.utils.import(url));
@@ -61,15 +61,15 @@
                 },
 
                 methods: {
-                    _t(key) {
+                    t(key) {
                         return App.i18n.get(key);
                     }
                 }
             });
-    
+
             app.mount(el);
             el.setAttribute('init', true);
-            
+
             return app;
         }
     };
@@ -81,7 +81,7 @@
     }
 
     customElements.define('vue-view', VueElement);
-    
+
     window.VueView = VueView;
 
 })();

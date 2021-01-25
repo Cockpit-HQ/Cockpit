@@ -16,8 +16,8 @@ if (!isset($user['twofa'])) {
 
             <?php if (!$isAccountView): ?>
             <h1 class="kiss-margin-large-bottom">
-                <span v-if="!user._id"><?=_t('Create user')?></span>
-                <span v-if="user._id"><?=_t('Edit user')?></span>
+                <span v-if="!user._id"><?=t('Create user')?></span>
+                <span v-if="user._id"><?=t('Edit user')?></span>
             </h1>
             <?php endif ?>
 
@@ -37,34 +37,34 @@ if (!isset($user['twofa'])) {
 
                 <?php if (!isset($user['_id']) || $user['_id'] != $this['user/_id']):?>
                 <div class="kiss-margin">
-                    <label><?=_t('Active')?></label>
+                    <label><?=t('Active')?></label>
                     <field-boolean class="kiss-size-3" v-model="user.active"></field-boolean>
                 </div>
                 <?php endif ?>
 
                 <div class="kiss-margin">
-                    <label><?=_t('Name')?></label>
+                    <label><?=t('Name')?></label>
                     <input class="kiss-input" type="text" v-model="user.name" required>
                 </div>
 
                 <div class="kiss-margin">
-                    <label><?=_t('User')?></label>
+                    <label><?=t('User')?></label>
                     <input class="kiss-input" type="text" v-model="user.user" required>
                 </div>
 
                 <div class="kiss-margin">
-                    <label><?=_t('Email')?></label>
+                    <label><?=t('Email')?></label>
                     <input class="kiss-input" type="email" v-model="user.email" required>
                 </div>
 
                 <div class="kiss-margin">
-                    <label><?=_t('Password')?></label>
-                    <input class="kiss-input" type="password" v-model="user.password" :placeholder="user._id ? '<?=_t('Keep current password')?>':''" :required="!user._id" autocomplete="off">
+                    <label><?=t('Password')?></label>
+                    <input class="kiss-input" type="password" v-model="user.password" :placeholder="user._id ? '<?=t('Keep current password')?>':''" :required="!user._id" autocomplete="off">
                 </div>
 
                 <?php if (!isset($user['_id']) || $user['_id'] != $this['user/_id']):?>
                 <div class="kiss-margin-large">
-                    <label><?=_t('Role')?></label>
+                    <label><?=t('Role')?></label>
                     <select class="kiss-select kiss-input" v-model="user.role" required>
                         <option value=""></option>
                         <option :value="role.appid" v-for="role in roles">{{ role.name }}</option>
@@ -73,10 +73,10 @@ if (!isset($user['twofa'])) {
                 <?php endif ?>
 
                 <kiss-card class="kiss-margin kiss-margin-large-top kiss-padding" theme="bordered">
-                    <label><?=_t('API Key')?></label>
+                    <label><?=t('API Key')?></label>
                     <div class="kiss-flex kiss-flex-middle">
                         <div class="kiss-flex-1 kiss-margin-small-right kiss-text-truncate kiss-disabled">
-                            <span class="kiss-text-caption" v-if="!user.apiKey"><?=_t('No api key created yet')?></span>
+                            <span class="kiss-text-caption" v-if="!user.apiKey"><?=t('No api key created yet')?></span>
                             <span class="kiss-text-monospace kiss-text-bold" v-if="user.apiKey">{{ user.apiKey }}</span>
                         </div>
                         <a @click="generateToken"><icon>refresh</icon></a>
@@ -85,7 +85,7 @@ if (!isset($user['twofa'])) {
                 </kiss-card>
 
                 <kiss-card class="kiss-margin kiss-padding" theme="bordered">
-                    <label><?=_t('Two-factor authentication (2FA)')?></label>
+                    <label><?=t('Two-factor authentication (2FA)')?></label>
                     <div class="kiss-margin-small-top">
                         <field-boolean class="kiss-size-3" v-model="user.twofa.enabled"></field-boolean>
                     </div>
@@ -112,13 +112,13 @@ if (!isset($user['twofa'])) {
                         <div class="kiss-flex kiss-flex-middle kiss-flex-right">
                             <?php if (!$isAccountView && _allowed('app.users.manage')): ?>
                             <a class="kiss-margin-right kiss-button kiss-button-link" href="<?=$this->route('/users')?>">
-                                <span v-if="!user._id"><?=_t('Cancel')?></span>
-                                <span v-if="user._id"><?=_t('Close')?></span>
+                                <span v-if="!user._id"><?=t('Cancel')?></span>
+                                <span v-if="user._id"><?=t('Close')?></span>
                             </a>
                             <?php endif ?>
                             <button type="submit" class="kiss-button kiss-button-primary">
-                                <span v-if="!user._id"><?=_t('Create')?></span>
-                                <span v-if="user._id"><?=_t('Update')?></span>
+                                <span v-if="!user._id"><?=t('Create')?></span>
+                                <span v-if="user._id"><?=t('Update')?></span>
                             </button>
                         </div>
                     </kiss-container>

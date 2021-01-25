@@ -2,7 +2,7 @@
 
 // Register global functions
 
-function _t($key, $alternative=null, $lang=null) {
+function t($key, $alternative=null, $lang=null) {
     static $i18n;
     if (!$i18n) $i18n = APP::instance()->helper('i18n');
     return $i18n->get($key, $alternative, $lang);

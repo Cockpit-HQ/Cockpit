@@ -5,13 +5,13 @@
     <template>
 
         <div class="kiss-margin-large-bottom kiss-flex kiss-flex-middle">
-            <div class="kiss-size-1 kiss-flex-1"><strong><?=_t('Roles')?></strong></div>
+            <div class="kiss-size-1 kiss-flex-1"><strong><?=t('Roles')?></strong></div>
 
             <?php if (_allowed('app.users.manage')): ?>
-            <a class="kiss-button kiss-margin-small-right" href="<?=$this->route('/users')?>"><?=_t('Manage users')?></a>
+            <a class="kiss-button kiss-margin-small-right" href="<?=$this->route('/users')?>"><?=t('Manage users')?></a>
             <?php endif ?>
 
-            <a class="kiss-button kiss-button-primary" href="<?=$this->route('/users/roles/create')?>"><?=_t('Add role')?></a>
+            <a class="kiss-button kiss-button-primary" href="<?=$this->route('/users/roles/create')?>"><?=t('Add role')?></a>
         </div>
 
         <app-loader v-if="loading"></app-loader>
@@ -19,7 +19,7 @@
         <div class="animated fadeIn kiss-height-30vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted" v-if="roles && !roles.length">
             <div>
                 <icon class="kiss-size-xlarge">admin_panel_settings</icon>
-                <p class="kiss-size-large kiss-text-bold"><?=_t('No roles')?></p>
+                <p class="kiss-size-large kiss-text-bold"><?=t('No roles')?></p>
             </div>
         </div>
 

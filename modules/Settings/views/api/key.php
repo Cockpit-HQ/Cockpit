@@ -4,22 +4,22 @@
         <template>
 
             <h1 class="kiss-margin-large-bottom">
-                <span v-if="!key._id"><?=_t('Create key')?></span>
-                <span v-if="key._id"><?=_t('Edit key')?></span>
+                <span v-if="!key._id"><?=t('Create key')?></span>
+                <span v-if="key._id"><?=t('Edit key')?></span>
             </h1>
 
             <form :class="{'kiss-disabled':saving}" @submit.prevent="save">
 
                 <div class="kiss-margin">
-                    <label><?=_t('Name')?></label>
+                    <label><?=t('Name')?></label>
                     <input class="kiss-input" type="text" v-model="key.name" required>
                 </div>
 
                 <kiss-card class="kiss-margin kiss-margin-large-top kiss-padding" theme="bordered">
-                    <label><?=_t('API Key')?></label>
+                    <label><?=t('API Key')?></label>
                     <div class="kiss-flex kiss-flex-middle">
                         <div class="kiss-flex-1 kiss-margin-small-right kiss-text-truncate kiss-disabled">
-                            <span class="kiss-text-caption" v-if="!key.key"><?=_t('No api key created yet')?></span>
+                            <span class="kiss-text-caption" v-if="!key.key"><?=t('No api key created yet')?></span>
                             <span class="kiss-text-monospace kiss-text-bold" v-if="key.key">{{ key.key }}</span>
                         </div>
                         <a @click="generateToken"><icon>refresh</icon></a>
@@ -32,12 +32,12 @@
                     <kiss-container size="small">
                         <div class="kiss-flex kiss-flex-middle kiss-flex-right">
                             <a class="kiss-margin-right kiss-button kiss-button-link" href="<?=$this->route('/settings/api')?>">
-                                <span v-if="!key._id"><?=_t('Cancel')?></span>
-                                <span v-if="key._id"><?=_t('Close')?></span>
+                                <span v-if="!key._id"><?=t('Cancel')?></span>
+                                <span v-if="key._id"><?=t('Close')?></span>
                             </a>
                             <button type="submit" class="kiss-button kiss-button-primary">
-                                <span v-if="!key._id"><?=_t('Create key')?></span>
-                                <span v-if="key._id"><?=_t('Update key')?></span>
+                                <span v-if="!key._id"><?=t('Create key')?></span>
+                                <span v-if="key._id"><?=t('Update key')?></span>
                             </button>
                         </div>
                     </kiss-container>

@@ -4,19 +4,19 @@
         <template>
 
             <h1 class="kiss-margin-large-bottom">
-                <span v-if="!locale._id"><?=_t('Create locale')?></span>
-                <span v-if="locale._id"><?=_t('Edit locale')?></span>
+                <span v-if="!locale._id"><?=t('Create locale')?></span>
+                <span v-if="locale._id"><?=t('Edit locale')?></span>
             </h1>
 
             <form :class="{'kiss-disabled':saving}" @submit.prevent="save">
 
                 <div class="kiss-margin" :class="{'kiss-disabled': locale._id}">
-                    <label><?=_t('i18n')?></label>
+                    <label><?=t('i18n')?></label>
                     <input class="kiss-input" type="text" pattern="[a-zA-Z0-9_]+" v-model="locale.i18n" :disabled="locale._id" required>
                 </div>
 
                 <div class="kiss-margin">
-                    <label><?=_t('Name')?></label>
+                    <label><?=t('Name')?></label>
                     <input class="kiss-input" type="text" v-model="locale.name" required>
                 </div>
 
@@ -25,12 +25,12 @@
                     <kiss-container size="small">
                         <div class="kiss-flex kiss-flex-middle kiss-flex-right">
                             <a class="kiss-margin-right kiss-button kiss-button-link" href="<?=$this->route('/settings/locales')?>">
-                                <span v-if="!locale._id"><?=_t('Cancel')?></span>
-                                <span v-if="locale._id"><?=_t('Close')?></span>
+                                <span v-if="!locale._id"><?=t('Cancel')?></span>
+                                <span v-if="locale._id"><?=t('Close')?></span>
                             </a>
                             <button type="submit" class="kiss-button kiss-button-primary">
-                                <span v-if="!locale._id"><?=_t('Create locale')?></span>
-                                <span v-if="locale._id"><?=_t('Update locale')?></span>
+                                <span v-if="!locale._id"><?=t('Create locale')?></span>
+                                <span v-if="locale._id"><?=t('Update locale')?></span>
                             </button>
                         </div>
                     </kiss-container>

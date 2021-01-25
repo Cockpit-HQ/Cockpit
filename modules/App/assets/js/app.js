@@ -1,6 +1,7 @@
 import "../vendor/vue/vue.js";
 import "../vendor/kiss/lib.js"
 import "../vendor/storage.js";
+import "../vendor/i18n.js";
 
 import utils from "./utils.js";
 

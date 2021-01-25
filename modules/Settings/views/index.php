@@ -2,7 +2,7 @@
 
     <?php foreach ($this->helper('settings')->groups(true) as $group => $items):?>
 
-    <div class="kiss-text-bold kiss-text-caption"><?=$this->escape(_t($group))?></div>
+    <div class="kiss-text-bold kiss-text-caption"><?=$this->escape(t($group))?></div>
 
     <kiss-row class="kiss-margin kiss-child-width-1-4@m">
 
@@ -16,7 +16,7 @@
                 </div>
 
                 <div class="kiss-padding kiss-size-small kiss-align-center kiss-text-caption">
-                    <?=$this->escape(_t($item['label'] ?? 'n/a'))?>
+                    <?=$this->escape(t($item['label'] ?? 'n/a'))?>
                 </div>
                 <a class="kiss-cover" href="<?=$this->route($item['route'])?>"></a>
             </kiss-card>

@@ -5,8 +5,8 @@
     <template>
 
         <div class="kiss-margin-large-bottom kiss-flex kiss-flex-middle">
-            <div class="kiss-size-1 kiss-flex-1"><strong><?=_t('Locales')?></strong></div>
-            <a class="kiss-button kiss-button-primary" href="<?=$this->route('/settings/locales/create')?>"><?=_t('Add locale')?></a>
+            <div class="kiss-size-1 kiss-flex-1"><strong><?=t('Locales')?></strong></div>
+            <a class="kiss-button kiss-button-primary" href="<?=$this->route('/settings/locales/create')?>"><?=t('Add locale')?></a>
         </div>
 
         <app-loader v-if="loading"></app-loader>
@@ -14,7 +14,7 @@
         <div class="animated fadeIn kiss-height-30vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted" v-if="locales && !locales.length">
             <div>
                 <icon class="kiss-size-xlarge">language</icon>
-                <p class="kiss-size-large kiss-text-bold"><?=_t('No locales')?></p>
+                <p class="kiss-size-large kiss-text-bold"><?=t('No locales')?></p>
             </div>
         </div>
 

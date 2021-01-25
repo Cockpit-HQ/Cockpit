@@ -22,9 +22,9 @@
 
         <h1>401</h1>
 
-        <p class="kiss-margin kiss-color-muted"><?=_t('Unauthorized request')?></p>
+        <p class="kiss-margin kiss-color-muted"><?=t('Unauthorized request')?></p>
 
     </kiss-container>
-    
+
 </body>
 </html>
