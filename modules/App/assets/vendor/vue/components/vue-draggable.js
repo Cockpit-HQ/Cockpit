@@ -5171,4 +5171,3 @@ module.exports = NATIVE_SYMBOL
 
 /******/ })["default"];
 });
-//# sourceMappingURL=vuedraggable.umd.js.map

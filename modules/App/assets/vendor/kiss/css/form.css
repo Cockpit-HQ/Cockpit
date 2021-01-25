@@ -38,6 +38,11 @@
     padding: 0;
 }
 
+.kiss-input-blank {
+    background: none;
+    border: none;
+    color: inherit;
+}
 
 .kiss-input,
 .kiss-textarea { -webkit-appearance: none; }

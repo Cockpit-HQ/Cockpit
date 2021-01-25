@@ -10,6 +10,11 @@ let ready = new Promise(function(resolve) {
 
 export default {
 
+    _meta: {
+        label: 'Wysiwyg',
+        info: 'A rich text field with formatting options'
+    },
+
     data() {
         return {
 
@@ -44,11 +49,11 @@ export default {
             tinymce.init({
                 target: this.$el.querySelector('textarea'),
                 setup: (editor) => {
-                    
+
                     this.editor = editor;
-                    
+
                     editor.on('init', e => {
-                        
+
                         editor.setContent(this.modelValue);
 
                         editor.on('input ExecCommand', e => {
@@ -57,7 +62,7 @@ export default {
 
                         editor.on('focus blur', e => editor.isFocused = !editor.isFocused);
                     });
-                    
+
                 },
                 skin_url: App.base('/modules/App/assets/css/vendor/tinymce')
             });

@@ -1,6 +1,11 @@
 
 export default {
 
+    _meta: {
+        label: 'Text',
+        info: 'Simple text'
+    },
+
     data() {
         return {
             val: this.modelValue

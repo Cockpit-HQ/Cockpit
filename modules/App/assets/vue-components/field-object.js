@@ -2,6 +2,11 @@ import FieldCode from "./field-code.js"
 
 export default {
 
+    _meta: {
+        label: 'Object',
+        info: 'Object input'
+    },
+
     data() {
         return {
             val: null,
@@ -24,7 +29,7 @@ export default {
             this.update();
         },
         modelValue(val) {
-            
+
             if (this.code.editor && !this.code.editor.hasFocus()) {
                 this.val = JSON5.stringify(this.modelValue, null, 2);
             }

@@ -1,5 +1,9 @@
-
 export default {
+
+    _meta: {
+        label: 'Boolean',
+        info: 'An input that is either true or false'
+    },
 
     data() {
         return {

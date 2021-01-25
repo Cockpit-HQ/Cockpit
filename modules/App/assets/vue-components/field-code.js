@@ -10,6 +10,11 @@ let ready = new Promise(function(resolve) {
 
 export default {
 
+    _meta: {
+        label: 'Code',
+        info: 'Code input'
+    },
+
     data() {
         return {
 

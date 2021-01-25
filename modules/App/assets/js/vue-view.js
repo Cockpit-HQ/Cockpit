@@ -58,7 +58,6 @@
                 if (typeof(VueView.components[name]) == 'string') {
                     app.component(name, Vue.defineAsyncComponent(() => App.utils.import(VueView.components[name])));
                 } else {
-                    console.log(name, VueView.components[name])
                     app.component(name, VueView.components[name]);
                 }
             });
