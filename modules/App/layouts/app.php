@@ -70,10 +70,10 @@
                 <div class="kiss-padding">
                     <nav-list>
                         <ul>
-                            <li><a href="<?=$this->route('/')?>"><?=t('Dashboard')?></a></li>
+                            <li class="<?=($this->request->route == '/') ? 'active':''?>"><a href="<?=$this->route('/')?>"><?=t('Dashboard')?></a></li>
                             <li class="kiss-nav-spacer"></li>
                             <?php foreach ($this->helper('menus')->menu('modules') as $link): ?>
-                                <li>
+                                <li class="<?=(strpos($this->request->route, $link['route']) === 0) ? 'active':''?>">
                                     <a href="<?=$this->route($link['route'])?>">
                                         <kiss-svg src="<?=$this->base($link['icon'])?>" width="20" height="20"></kiss-svg>
                                         <?=t($link['label'])?>
@@ -90,13 +90,13 @@
                 <nav-list>
                     <ul>
                         <li class="kiss-nav-header kiss-flex kiss-flex-middle"><?=t('System')?></li>
-                        <li>
+                        <li class="<?=(strpos($this->request->route, '/settings') === 0) ? 'active':''?>">
                             <a class="kiss-flex kiss-flex-middle" href="<?=$this->route('/settings')?>">
                                 <icon>settings</icon> <?=t('Settings')?>
                             </a>
                         </li>
                         <?php if (_allowed('app.users.manage')): ?>
-                        <li>
+                        <li class="<?=(strpos($this->request->route, '/users') === 0) ? 'active':''?>">
                             <a class="kiss-flex kiss-flex-middle" href="<?=$this->route('/users')?>">
                                 <icon>supervisor_account</icon> <?=t('Users')?>
                             </a></li>

@@ -60,6 +60,11 @@ kiss-dropdownbox nav-list ul > li > a:hover {
     opacity: 1;
 }
 
+kiss-offcanvas nav-list ul > li.active > a {
+    color: var(--kiss-color-primary);
+    font-weight: bolder;
+}
+
 kiss-offcanvas nav-list ul > li > *,
 kiss-offcanvas nav-list .kiss-nav-header {
     display: flex;
