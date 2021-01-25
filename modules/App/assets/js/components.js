@@ -5,6 +5,16 @@ import "../components/app-loader/app-loader.js";
 import "../components/app-actionbar/app-actionbar.js";
 
 
+VueView.component('vue-draggable', Vue.defineAsyncComponent(() => {
+    return new Promise(resolve => {
+        App.assets.require([
+            'app:assets/vendor/Sortable.js',
+            'app:assets/vendor/vue/components/vue-draggable.js'
+        ]).then(() => resolve(window.vuedraggable))
+    })
+}));
+
+
 VueView.component('field-boolean', 'app:assets/vue-components/field-boolean.js');
 VueView.component('field-code', 'app:assets/vue-components/field-code.js');
 VueView.component('field-object', 'app:assets/vue-components/field-object.js');

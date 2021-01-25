@@ -6,7 +6,6 @@
     <title><?=$this['app.name']?></title>
 
     <link rel="icon" type="image/png"  href="<?=$this->base('/favicon.png')?>">
-
     <?=$this->assets([
         'app:assets/css/app.css',
         'app:assets/vendor/JSON5.js',

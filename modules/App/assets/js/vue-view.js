@@ -40,7 +40,7 @@
 
             def = Object.assign({}, def || {});
 
-            def.components = Object.assign({}, VueView.components, def.components || {});
+            def.components = def.components || {};
 
             Object.keys(def.components).forEach(name => {
 
@@ -52,6 +52,16 @@
             });
 
             app = Vue.createApp(def);
+
+            Object.keys(VueView.components).forEach(name => {
+
+                if (typeof(VueView.components[name]) == 'string') {
+                    app.component(name, Vue.defineAsyncComponent(() => App.utils.import(VueView.components[name])));
+                } else {
+                    console.log(name, VueView.components[name])
+                    app.component(name, VueView.components[name]);
+                }
+            });
 
             app.mixin({
                 data() {
