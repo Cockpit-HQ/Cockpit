@@ -144,7 +144,7 @@ if (!isset($user['twofa'])) {
 
                     generateToken() {
 
-                        App.request('/utils/generateToken').then(res => {
+                        this.$request('/utils/generateToken').then(res => {
                             this.user.apiKey = `USR-${res.token}`;
                         });
                     },
@@ -161,7 +161,7 @@ if (!isset($user['twofa'])) {
 
                         this.saving = true;
 
-                        App.request('/users/save', {user: this.user}).then(user => {
+                        this.$request('/users/save', {user: this.user}).then(user => {
                             this.user = user;
                             this.saving = false;
 

@@ -97,7 +97,7 @@
 
                         this.saving = true;
 
-                        App.request('/users/roles/save', {role: this.role}).then(role => {
+                        this.$request('/users/roles/save', {role: this.role}).then(role => {
 
                             this.role = role;
                             this.saving = false;

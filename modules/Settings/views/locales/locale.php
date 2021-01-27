@@ -60,7 +60,7 @@
 
                         this.saving = true;
 
-                        App.request('/settings/locales/save', {locale: this.locale}).then(locale => {
+                        this.$request('/settings/locales/save', {locale: this.locale}).then(locale => {
 
                             this.locale = locale;
                             this.saving = false;

@@ -60,7 +60,7 @@
 
                     this.loading = true;
 
-                    App.request('/settings/locales/load', {options:{}}).then(locales => {
+                    this.$request('/settings/locales/load', {options:{}}).then(locales => {
 
                         this.locales = locales;
                         this.loading = false;
@@ -71,7 +71,7 @@
 
                     App.ui.confirm('Are you sure?', () => {
 
-                        App.request('/settings/locales/remove', {locale}).then(res => {
+                        this.$request('/settings/locales/remove', {locale}).then(res => {
                             this.locales.splice(this.locales.indexOf(locale), 1);
                         });
                     });

@@ -70,7 +70,7 @@
 
                         this.loading = true;
 
-                        App.request('/users/load', {options:{}}).then(data => {
+                        this.$request('/users/load', {options:{}}).then(data => {
 
                             this.users = data.users;
                             this.pages = data.pages;
@@ -85,7 +85,7 @@
 
                         App.ui.confirm('Are you sure?', () => {
 
-                            App.request('/users/remove', {user}).then(res => {
+                            this.$request('/users/remove', {user}).then(res => {
                                 this.users.splice(this.users.indexOf(user), 1);
                             });
                         });

@@ -81,7 +81,7 @@
 
                             this.loading = true;
 
-                            App.request('/auth/check', {
+                            this.$request('/auth/check', {
                                 auth: this.auth,
                                 csrf : "<?=$this->helper('csrf')->token('login')?>"
                             }).then(rsp => {

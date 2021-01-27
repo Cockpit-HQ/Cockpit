@@ -72,6 +72,18 @@
                 methods: {
                     t(key) {
                         return App.i18n.get(key);
+                    },
+
+                    $route(url) {
+                        return App.route(url);
+                    },
+
+                    $base(url) {
+                        return App.base(url);
+                    },
+
+                    $request(url, data) {
+                        return App.request(url, data);
                     }
                 }
             });

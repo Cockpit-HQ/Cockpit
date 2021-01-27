@@ -30,14 +30,14 @@
                 <div class="kiss-margin kiss-flex">
                     <div class="kiss-margin-right kiss-position-relative">
                         <app-avatar size="50" :name="role.name"></app-avatar>
-                        <a class="kiss-cover" :href="App.route('/users/roles/role/'+role._id)"></a>
+                        <a class="kiss-cover" :href="$route('/users/roles/role/'+role._id)"></a>
                     </div>
                     <div class="kiss-flex-1 kiss-position-relative">
                         <div class="kiss-size-5"><strong>{{role.name || role.appid}}</strong></div>
                         <div class="kiss-color-muted kiss-size-small">
                             {{role.info}}
                         </div>
-                        <a class="kiss-cover" :href="App.route('/users/roles/role/'+role._id)"></a>
+                        <a class="kiss-cover" :href="$route('/users/roles/role/'+role._id)"></a>
                     </div>
                     <div class="kiss-margin-left">
                         <a class="kiss-color-danger" @click="remove(role)"><icon>delete</icon></a>
@@ -73,7 +73,7 @@
 
                     this.loading = true;
 
-                    App.request('/users/roles/load', {options:{}}).then(roles => {
+                    this.$request('/users/roles/load', {options:{}}).then(roles => {
 
                         this.roles = roles;
                         this.loading = false;
@@ -84,7 +84,7 @@
 
                     App.ui.confirm('Are you sure?', () => {
 
-                        App.request('/users/roles/remove', {role}).then(res => {
+                        this.$request('/users/roles/remove', {role}).then(res => {
                             this.roles.splice(this.roles.indexOf(role), 1);
                         });
                     });

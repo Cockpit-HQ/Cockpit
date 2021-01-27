@@ -67,7 +67,7 @@
 
                         this.saving = true;
 
-                        App.request('/settings/api/save', {key: this.key}).then(key => {
+                        this.$request('/settings/api/save', {key: this.key}).then(key => {
 
                             this.key = key;
                             this.saving = false;
@@ -86,7 +86,7 @@
 
                     generateToken() {
 
-                        App.request('/utils/generateToken').then(res => {
+                        this.$request('/utils/generateToken').then(res => {
                             this.key.key = `API-${res.token}`;
                         });
                     },
