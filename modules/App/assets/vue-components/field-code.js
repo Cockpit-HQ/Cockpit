@@ -25,6 +25,10 @@ export default {
         modelValue: {
             type: String,
             default: false
+        },
+        height: {
+            type: Number,
+            default: null
         }
     },
 
@@ -44,15 +48,33 @@ export default {
 
     mounted() {
 
+
+        let observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.intersectionRatio > 0 && this.editor) {
+                    this.editor.refresh()
+                }
+            });
+        }, {root: this.$el.parentNode});
+
+        observer.observe(this.$el);
+
         ready.then(CodeMirror => {
 
             let wrapper = this.$el.querySelector('.codemirror-wrapper');
 
+            wrapper.innerHTML = '';
+
             this.editor = CodeMirror(wrapper, {
                 value: this.modelValue || '',
                 lineNumbers: true,
-                mode: null
+                mode: null,
+                height: this.height
             });
+
+            if (this.height) {
+                this.editor.setSize('100%', this.height);
+            }
 
             this.$el.editor = this.editor;
 

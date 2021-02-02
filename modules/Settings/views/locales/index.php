@@ -26,7 +26,7 @@
                     <div class="kiss-margin-small-right"><icon>language</icon></div>
                     <div class="kiss-size-5 kiss-flex-1 kiss-position-relative">
                         <strong>{{locale.name || locale.i18n}}</strong>
-                        <a class="kiss-cover" :href="App.route('/settings/locales/locale/'+locale._id)"></a>
+                        <a class="kiss-cover" :href="$route('/settings/locales/locale/'+locale._id)"></a>
                     </div>
                     <div class="kiss-margin-left kiss-size-small kiss-align-right kiss-text-caption" :class="locale.i18n == 'default' ? 'kiss-color-primary' : 'kiss-color-muted'"><strong>{{ locale.i18n }}</strong></div>
                     <a class="kiss-display-block kiss-margin-left kiss-color-danger" @click="remove(locale)"><icon>delete</icon></a>

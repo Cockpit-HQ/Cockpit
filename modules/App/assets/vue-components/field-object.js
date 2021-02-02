@@ -17,6 +17,9 @@ export default {
     props: {
         modelValue: {
             default: null
+        },
+        height: {
+            default: null
         }
     },
 
@@ -38,7 +41,7 @@ export default {
 
     template: /*html*/`
         <div class="kiss-position-relative">
-            <field-code class="field-object-code" v-model="val"></field-code>
+            <field-code class="field-object-code" v-model="val" :height="height"></field-code>
 
             <div class="kiss-margin kiss-text-monospace kiss-size-small kiss-bgcolor-danger kiss-position-absolute animated fadeIn" style="left:0;right:0;bottom:0;z-index:3;padding:5px;" v-if="error">
                 {{ error }}

@@ -3,6 +3,7 @@ import "./vue-view.js";
 import "../components/app-avatar/app-avatar.js";
 import "../components/app-loader/app-loader.js";
 import "../components/app-actionbar/app-actionbar.js";
+import "../components/app-tabs/app-tabs.js";
 
 
 VueView.component('vue-draggable', Vue.defineAsyncComponent(() => {
@@ -15,6 +16,7 @@ VueView.component('vue-draggable', Vue.defineAsyncComponent(() => {
 }));
 
 
+// Fields
 VueView.component('field-boolean', 'app:assets/vue-components/field-boolean.js');
 VueView.component('field-code', 'app:assets/vue-components/field-code.js');
 VueView.component('field-object', 'app:assets/vue-components/field-object.js');

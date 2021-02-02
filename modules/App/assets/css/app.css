@@ -7,6 +7,7 @@
 @import "../components/app-loader/app-loader.css";
 @import "../components/app-avatar/app-avatar.css";
 @import "../components/app-actionbar/app-actionbar.css";
+@import "../components/app-tabs/app-tabs.css";
 
 @import "../vendor/kiss/lib.css";
 @import "./vendor/kiss.css";
@@ -29,6 +30,9 @@ vue-view:not([init="true"]) { display: none; }
     --kiss-color-success: #4caf50;
     --kiss-color-muted: rgba(255,255,255,.25);
 
+    --kiss-container-max-width: 1800px;
+    --kiss-container-small-max-width: 900px;
+
     --kiss-input-border-color: rgba(255,255,255,.1);
     --kiss-input-background: rgba(255,255,255,.05);
 
@@ -36,13 +40,13 @@ vue-view:not([init="true"]) { display: none; }
     --kiss-button-large-padding-horizontal: 5em;
     --kiss-button-large-font-size: 5em;
 
+    --kiss-dialog-background: rgba(0,0,0,.8);
     --kiss-dialog-content-background: var(--kiss-base-background-color);
     --kiss-dialog-content-spacing: 20px;
-
-    --kiss-container-max-width: 1800px;
+    --kiss-dialog-large-width: 840px;
 
     --kiss-offcanvas-content-background: var(--kiss-base-background-color);
-    --kiss-offcanvas-background: rgba(0, 0, 0, .5);
+    --kiss-offcanvas-background: rgba(0, 0, 0, .8);
     --kiss-offcanvas-content-color: var(--kiss-base-text-color);
 
     --kiss-nav-list-font-size: 14px;

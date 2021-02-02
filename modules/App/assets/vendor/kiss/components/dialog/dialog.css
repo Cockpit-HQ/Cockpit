@@ -27,15 +27,15 @@ kiss-dialog > kiss-content {
 
     background: var(--kiss-dialog-content-background, #fff);
     color: var(--kiss-dialog-content-color, inherit);
-    
-    min-width: 300px;
+
+    width: var(--kiss-dialog-width, 300px);
     max-width: calc(100% - 0.01px) !important;
 
     box-sizing: border-box;
 }
 
 kiss-dialog[size="large"] > kiss-content {
-    width: 600px;
+    width: var(--kiss-dialog-large-width, 600px);
 }
 
 kiss-dialog[open] {
