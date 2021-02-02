@@ -170,7 +170,7 @@ App.ui = {
 
         document.body.insertAdjacentHTML('beforeend', `
             <kiss-dialog id="dialog-${id}" size="${(options && options.size) || ''}" type="${dialogtype}">
-                <kiss-content>
+                <kiss-content class="animated fadeInUp faster">
                     ${content}
                 </kiss-content>
             </kiss-dialog>
