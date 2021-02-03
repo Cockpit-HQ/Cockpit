@@ -10,10 +10,10 @@ class Request {
     public $files = [];
     public $cookies = [];
     public $headers = [];
-    
+
     public $server = [];
     public $body = [];
-    
+
     public $site_url = '';
     public $base_url = '';
     public $base_route = '';
@@ -60,7 +60,7 @@ class Request {
         $this->body = $config['body'] ?? [];
         $this->headers = $config['headers'] ?? [];
         $this->cookies = $config['cookies'] ?? [];
-        
+
         $this->site_url = $config['site_url'] ?? '';
         $this->base_url = $config['base_url'] ?? '';
         $this->base_route = $config['base_route'] ?? '';
@@ -150,23 +150,36 @@ class Request {
                 break;
 
             case 'post':
-                return (\strtolower($this->server['REQUEST_METHOD']) == 'post');
+                return (isset($this->server['REQUEST_METHOD']) && \strtolower($this->server['REQUEST_METHOD']) == 'post');
                 break;
 
             case 'get':
-                return (\strtolower($this->server['REQUEST_METHOD']) == 'get');
+                return (isset($this->server['REQUEST_METHOD']) && \strtolower($this->server['REQUEST_METHOD']) == 'get');
                 break;
 
             case 'put':
-                return (\strtolower($this->server['REQUEST_METHOD']) == 'put');
+                return (isset($this->server['REQUEST_METHOD']) && \strtolower($this->server['REQUEST_METHOD']) == 'put');
                 break;
 
             case 'delete':
-                return (\strtolower($this->server['REQUEST_METHOD']) == 'delete');
+                return (isset($this->server['REQUEST_METHOD']) && \strtolower($this->server['REQUEST_METHOD']) == 'delete');
                 break;
 
             case 'ssl':
                 return (!empty($this->server['HTTPS']) && $this->server['HTTPS'] !== 'off');
+                break;
+
+            case 'preflight':
+                return (isset($this->server['REQUEST_METHOD']) && \strtolower($this->server['REQUEST_METHOD']) == 'options');
+                break;
+
+            case 'cors':
+
+                if (!isset($this->headers['Origin'])) {
+                    return false;
+                }
+
+                return $this->headers['Origin'] == $this->getSiteUrl();
                 break;
         }
 

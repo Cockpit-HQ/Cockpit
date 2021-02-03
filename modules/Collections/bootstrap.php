@@ -4,7 +4,7 @@
 $this->helpers['collections'] = 'Collections\\Helper\\Collections';
 
 // load admin related code
-$this->on('app.admin.request', function() {
+$this->on('app.admin.init', function() {
     include(__DIR__.'/admin.php');
 });
 

@@ -8,7 +8,7 @@ $this->helpers['fs']    = 'App\\Helper\\Filesystem';
 $this->helpers['i18n']  = 'App\\Helper\\i18n';
 $this->helpers['utils'] = 'App\\Helper\\Utils';
 
-$this->on('app.admin.request', function() {
+$this->on('app.admin.init', function() {
     include(__DIR__.'/admin.php');
 }, 1000);
 

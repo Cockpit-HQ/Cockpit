@@ -102,4 +102,24 @@ $request = Lime\Request::fromGlobalRequest([
     'base_route' => $APP_BASE_ROUTE
 ]);
 
+// CORS handling
+if (APP_API_REQUEST) {
+
+    $app->on('before', function() {
+
+        $cors = $this->retrieve('config/cors', []);
+
+        $this->response['Access-Control-Allow-Origin']      = $cors['allowedOrigins'] ?? '*';
+        $this->response['Access-Control-Allow-Credentials'] = $cors['allowCredentials'] ?? 'true';
+        $this->response['Access-Control-Max-Age']           = $cors['maxAge'] ?? '1000';
+        $this->response['Access-Control-Allow-Headers']     = $cors['allowedHeaders'] ?? 'X-Requested-With, Content-Type, Origin, Cache-Control, Pragma, Authorization, Accept, Accept-Encoding, Cockpit-Token';
+        $this->response['Access-Control-Allow-Methods']     = $cors['allowedMethods'] ?? 'PUT, POST, GET, OPTIONS, DELETE';
+        $this->response['Access-Control-Expose-Headers']    = $cors['exposedHeaders'] ?? 'true';
+    });
+
+    if ($request->is('preflight')) {
+        exit(0);
+    }
+}
+
 $app->trigger(APP_API_REQUEST ? 'app.api.request':'app.admin.request', [$request])->run($request->route, $request);

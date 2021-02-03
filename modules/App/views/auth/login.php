@@ -109,6 +109,7 @@
                                 }, 1500)
 
                             }, rsp => {
+                                this.loading = false;
                                 App.ui.notify(rsp && (rsp.message || rsp.error) ? (rsp.message || rsp.error) : '<?=t('Login failed.')?>', 'error');
                             });
                         }

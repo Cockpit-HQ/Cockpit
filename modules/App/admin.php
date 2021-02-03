@@ -16,6 +16,38 @@ $this->bind('/', function() {
 });
 
 
+// check + validate session time
+$this->on('app.admin.request', function($request) {
+
+    $user = $this->helper('auth')->getUser();
+
+    if ($request->route == '/check-session') {
+
+        $status = $user ? true : false;
+        $start  = $this->helper('session')->read('app.session.start', 0);
+
+        // check for inactivity: 45min by default
+        if ($status && $start && ($start + $this->retrieve('session.lifetime', 2700) < time())) {
+            $this->helper('auth')->logout();
+            $status = false;
+        }
+
+        $this->bind('/check-session', function() use($status) {
+            return compact('status');
+        });
+
+        return;
+    }
+
+    if (!$user) {
+        return;
+    }
+
+    // update session time
+    $this->helper('session')->write('app.session.start', time());
+});
+
+
 /**
  * handle after request
  */

@@ -362,60 +362,56 @@ App.utils.import = function(uri) {
 App.utils.vueModal = function(url, data, events, options) {
 
     data = data || {};
+    events = events || {};
 
-    let dialog = this.dialog(/*html*/`
+    let dialog = App.ui.dialog(/*html*/`
         <vue-view class="vue-modal" >
 
-            <vue-modal ${Object.keys(data).map(key => `:${App.utils.toKebabCase(key)}="${key}"`).join(' ')} ref="view"></vue-modal>
+            <vue-dialog-content v-bind="data"></vue-dialog-content>
 
             <script type="module">
 
                 export default {
                     data() {
-                        return ${JSON.stringify(data)}
+                        return  {
+                            data: ${JSON.stringify(data)}
+                        }
                     },
 
                     components: {
-                        'vue-modal':  () => App.utils.import(url)
-                    },
-
-                    mounted() {
-
-                        const old_on = this.$on;
-
+                        'vue-dialog-content':  '${url}'
                     }
                 }
             </script>
         </vue-view>
     `, options || {});
 
-    let _element, _component, _$emit, _args, idle;
+    let _element, _app, idle;
 
     idle = setInterval(() => {
 
-        _element = dialog.querySelector('.dialog-vue');
+        _element = dialog.querySelector('.vue-modal');
 
-        if (!_element.__vue__) {
-            return;
-        }
-
-        if (!_element.__vue__.$refs.view) {
-            return;
-        }
+        if (!_element.__vue_app__) return;
 
         clearInterval(idle);
 
-        _component = _element.__vue__.$refs.view;
-        _$emit = _component.$emit;
+        _app = _element.__vue_app__;
 
-        _component.$emit = (...args) => {
+        _app.mixin({
 
-            if (events && events[args[0]]) {
-                _args = args.slice(1);
-                events[args[0]](..._args);
+            methods: {
+                $closeDialog() {
+                    dialog.close();
+                },
+                $event(name, ...args) {
+
+                    if (!events[name]) return;
+
+                    events[name](...args);
+                }
             }
-            _$emit.apply(_component, args);
-        };
+        });
 
     }, 1);
 
