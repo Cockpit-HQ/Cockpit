@@ -17,7 +17,7 @@ vue-view:not([init="true"]) { display: none; }
 
 :root {
     --kiss-base-font-family: Inter, -apple-system, system-ui, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
-    --kiss-base-background-color: #0C0E0C;
+    --kiss-base-background-color: #131720;
     --kiss-base-text-color: #fff;
     --kiss-font-size-1: 2rem;
     --kiss-hr-color: rgba(255,255,255,.1);
@@ -45,6 +45,8 @@ vue-view:not([init="true"]) { display: none; }
     --kiss-dialog-content-spacing: 20px;
     --kiss-dialog-large-width: 840px;
 
+    --kiss-dropdown-background: rgba(0,0,0,.8);
+
     --kiss-offcanvas-content-background: var(--kiss-base-background-color);
     --kiss-offcanvas-background: rgba(0, 0, 0, .8);
     --kiss-offcanvas-content-color: var(--kiss-base-text-color);
@@ -54,7 +56,7 @@ vue-view:not([init="true"]) { display: none; }
     --kiss-card-shadowed-color: var(--kiss-color-muted);
     --kiss-card-bordered-color: var(--kiss-input-border-color);
 
-    --app-border-radius: 3px;
+    --app-border-radius: 4px;
 }
 
 body {
@@ -84,7 +86,7 @@ label {
 app-header {
     display: block;
     padding: 10px 0;
-    background: var(--app-header-background, rgba(0, 0, 0, .6));
+    background: var(--app-header-background, rgba(0, 0, 0, .2));
     box-shadow: 0 0 40px rgba(87, 87, 87, 0.05);
 }
 

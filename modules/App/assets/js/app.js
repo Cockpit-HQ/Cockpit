@@ -204,11 +204,11 @@ App.ui = {
     alert: function (content, options) {
 
         let dialog = this.dialog(`
-            <div class="kiss-margin-bottom">
+            <div class="kiss-margin">
                 ${content}
             </div>
-            <div class="kiss-margin-top kiss-flex kiss-flex-right kiss-flex-middle">
-                <button type="button" class="kiss-button kiss-button-primary" kiss-dialog-close>Ok</button>
+            <div class="kiss-margin-top kiss-flex kiss-flex-middle">
+                <button type="button" class="kiss-button kiss-button-primary kiss-flex-1" kiss-dialog-close>${App.i18n.get('Ok')}</button>
             </div>
         `, options, 'alert');
 
@@ -219,20 +219,13 @@ App.ui = {
 
     confirm: function (text, onconfirm, oncancel, options) {
 
-        // if (confirm(text)) {
-        //     (onconfirm || function () { })();
-        // } else {
-        //     (oncancel || function () { })();
-        // }
-
-
         let dialog = this.dialog(`
             <div class="kiss-margin-bottom">
                 ${text}
             </div>
-            <div class="kiss-margin-top kiss-flex kiss-flex-right kiss-flex-middle">
-                <button type="button" class="kiss-button-cancel kiss-button kiss-button-link">Cancel</button>
-                <button type="button" class="kiss-button-confirm kiss-button kiss-button-primary kiss-margin-small-left">Ok</button>
+            <div class="kiss-margin-top kiss-flex kiss-flex-middle">
+                <button type="button" class="kiss-button-cancel kiss-button kiss-button-link kiss-flex-1">${App.i18n.get('Cancel')}</button>
+                <button type="button" class="kiss-button-confirm kiss-button kiss-button-primary kiss-margin-small-left kiss-flex-1">${App.i18n.get('Ok')}</button>
             </div>
         `, options, 'confirm');
 

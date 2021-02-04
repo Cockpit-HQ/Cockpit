@@ -19,7 +19,7 @@
 
 .noty_theme__app.noty_type__alert,
 .noty_theme__app.noty_type__notification {
-    background-color: #073B4C;
+    background-color: var(--kiss-color-contrast)
     color: #fff
 }
 
@@ -29,12 +29,12 @@
 }
 
 .noty_theme__app.noty_type__warning {
-    background-color: #FA6800;
+    background-color: var(--kiss-color-warning);
     color: #fff
 }
 
 .noty_theme__app.noty_type__error {
-    background-color: #CE352C;
+    background-color: var(--kiss-color-danger);
     color: #fff
 }
 
@@ -44,7 +44,7 @@
 
 .noty_theme__app.noty_type__info,
 .noty_theme__app.noty_type__information {
-    background-color: #1BA1E2;
+    background-color: var(--kiss-color-primary);
     color: #fff
 }
 
@@ -54,6 +54,6 @@
 }
 
 .noty_theme__app.noty_type__success {
-    background-color: #60A917;
+    background-color: var(--kiss-color-success);
     color: #fff
 }

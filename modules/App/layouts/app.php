@@ -87,7 +87,7 @@
 
                 <?php $this->trigger('app.layout.offcanvas.content') ?>
             </div>
-            <div class="kiss-padding kiss-bgcolor-contrast">
+            <div class="kiss-padding">
                 <nav-list>
                     <ul>
                         <li class="kiss-nav-header kiss-flex kiss-flex-middle"><?=t('System')?></li>

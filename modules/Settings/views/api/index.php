@@ -10,7 +10,7 @@
                 <a class="kiss-button kiss-button-primary" href="<?=$this->route('/settings/api/create')?>"><?=t('Add key')?></a>
             </div>
 
-            <kiss-card class="kiss-margin kiss-margin-large-bottom kiss-padding" theme="bordered">
+            <kiss-card class="kiss-margin kiss-margin-large-bottom kiss-padding kiss-bgcolor-contrast">
                 <label><?=('API endpoint')?></label>
                 <div class="kiss-flex kiss-flex-middle">
                     <div class="kiss-text-truncate kiss-text-monospace">
