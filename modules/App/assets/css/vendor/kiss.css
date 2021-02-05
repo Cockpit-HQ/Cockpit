@@ -50,19 +50,20 @@ kiss-dialog kiss-content {
 kiss-offcanvas nav-list ul > li > a,
 kiss-dropdownbox nav-list ul > li > a {
     color: inherit;
-    opacity: .6;
+    opacity: .45;
     transition: all 250ms;
 }
 
 kiss-offcanvas nav-list ul > li > a:hover,
 kiss-dropdownbox nav-list ul > li > a:hover {
-    color: var(--kiss-color-primary);
+    color: inherit;
     opacity: 1;
 }
 
 kiss-offcanvas nav-list ul > li.active > a {
     color: var(--kiss-color-primary);
-    font-weight: bolder;
+    font-weight: bold;
+    opacity: 1;
 }
 
 kiss-offcanvas nav-list ul > li > *,

@@ -57,21 +57,24 @@
 
     <kiss-offcanvas id="app-offcanvas">
         <kiss-content class="kiss-flex kiss-flex-column">
-            <div class="kiss-padding kiss-flex">
+            <div class="kiss-padding kiss-flex kiss-bgcolor-contrast">
                 <div><app-avatar size="40" name="<?=$this['user/name']?>"></app-avatar></div>
                 <div class="kiss-margin-left kiss-flex-1 kiss-size-small">
                     <div class="kiss-text-bold kiss-text-truncate"><?=$this->escape($this['user/name'])?></div>
                     <div class="kiss-color-muted kiss-text-truncate"><?=$this->escape($this['user/email'])?></div>
                 </div>
-
             </div>
-            <div><hr></div>
             <?php $this->trigger('app.layout.offcanvas.header') ?>
             <div class="kiss-flex-1 app-offcanvas-content">
                 <div class="kiss-padding">
                     <nav-list>
                         <ul>
-                            <li class="<?=($this->request->route == '/') ? 'active':''?>"><a href="<?=$this->route('/')?>"><?=t('Dashboard')?></a></li>
+                            <li class="<?=($this->request->route == '/') ? 'active':''?>">
+                                <a href="<?=$this->route('/')?>">
+                                    <kiss-svg src="<?=$this->base('app:icon.svg')?>" width="20" height="20"></kiss-svg>
+                                    <?=t('Dashboard')?>
+                                </a>
+                            </li>
                             <li class="kiss-nav-spacer"></li>
                             <?php foreach ($this->helper('menus')->menu('modules') as $link): ?>
                                 <li class="<?=(strpos($this->request->route, $link['route']) === 0) ? 'active':''?>">
