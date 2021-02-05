@@ -10,6 +10,7 @@ kiss-offcanvas {
     opacity: 0;
     pointer-events: none;
     z-index: 1000;
+    transition: opacity 0.3s ease-in-out;
 }
 
 kiss-offcanvas > kiss-content {

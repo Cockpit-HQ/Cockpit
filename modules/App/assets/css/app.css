@@ -45,7 +45,7 @@ vue-view:not([init="true"]) { display: none; }
     --kiss-dialog-content-spacing: 20px;
     --kiss-dialog-large-width: 840px;
 
-    --kiss-dropdown-background: rgba(0,0,0,.8);
+    --kiss-dropdown-background: rgba(0,0,0,.95);
 
     --kiss-offcanvas-content-background: var(--kiss-base-background-color);
     --kiss-offcanvas-background: rgba(0, 0, 0, .8);
