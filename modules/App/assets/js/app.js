@@ -164,6 +164,46 @@ App.ui = {
 
     },
 
+    offcanvas: function (content, options) {
+
+        let id = Math.random().toString(36).substring(2) + Date.now().toString(36);
+
+        document.body.insertAdjacentHTML('beforeend', `
+            <kiss-offcanvas id="offcanvas-${id}" flip="${(options && options.flip && 'true') || ''}">
+                <kiss-content>
+                    ${content}
+                </kiss-content>
+            </kiss-offcanvas>
+        `);
+
+        let offcanvas = document.getElementById(`offcanvas-${id}`);
+
+        offcanvas.__close = offcanvas.close;
+        offcanvas.__show = offcanvas.show;
+
+        offcanvas.close = function() {
+            offcanvas.__close();
+            setTimeout(() => {
+                offcanvas.parentNode.removeChild(offcanvas);
+            }, 300)
+        };
+
+        offcanvas.show = function() {
+            offcanvas.__show();
+
+            setTimeout(() => {
+                let ele = offcanvas.querySelector('[autofocus]');
+
+                if (ele) {
+                    ele.focus();
+                }
+            }, 300)
+        };
+
+        return offcanvas;
+    },
+
+
     dialog: function (content, options, dialogtype) {
 
         let id = Math.random().toString(36).substring(2) + Date.now().toString(36);
@@ -352,6 +392,77 @@ App.utils.import = function(uri) {
     return import(App.base(uri)+'?v='+App.version);
 };
 
+App.utils.vueOffcanvas = function(url, data, callbacks, options) {
+
+    data = data || {};
+    callbacks = callbacks || {};
+
+    let offcanvas = App.ui.offcanvas(/*html*/`
+        <vue-view class="vue-modal" >
+
+            <vue-offcanvas-content v-bind="data"></vue-offcanvas-content>
+
+            <script type="module">
+
+                export default {
+
+                    $viewSetup(app) {
+
+                        app.mixin({
+                            methods: {
+                                $close() {
+                                    this.$el.closest('kiss-offcanvas').close();
+                                },
+                                $call(name, ...args) {
+                                    this.$el.closest('kiss-offcanvas').$call(name, ...args);
+                                }
+                            }
+                        });
+                    },
+
+                    data() {
+                        return  {
+                            data: ${JSON.stringify(data)}
+                        }
+                    },
+
+                    components: {
+                        'vue-offcanvas-content':  '${url}'
+                    },
+
+                    mounted() {
+                        this.$nextTick(() => {
+                            this.$el.parentNode.closest('kiss-offcanvas').$mounted(this)
+                        })
+                    }
+                }
+            </script>
+        </vue-view>
+    `, options || {});
+
+    offcanvas.$view = offcanvas.querySelector('vue-view');
+
+    offcanvas.$mounted = function(instance) {
+        // ???
+    }
+
+    offcanvas.$call = function(name, ...args) {
+
+        if (callbacks[name]) {
+            callbacks[name](...args);
+        }
+    }
+
+    setTimeout(() => {
+        offcanvas.show();
+    })
+
+    return offcanvas;
+
+};
+
+
+
 App.utils.vueModal = function(url, data, callbacks, options) {
 
     data = data || {};
@@ -370,7 +481,7 @@ App.utils.vueModal = function(url, data, callbacks, options) {
 
                         app.mixin({
                             methods: {
-                                $closeDialog() {
+                                $close() {
                                     this.$el.closest('kiss-dialog').close();
                                 },
                                 $call(name, ...args) {

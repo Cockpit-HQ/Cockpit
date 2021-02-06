@@ -65,7 +65,7 @@ export default {
                     return;
                 }
 
-                this.$closeDialog();
+                this.$close();
 
             }, rsp => {
                 this.loading = false;

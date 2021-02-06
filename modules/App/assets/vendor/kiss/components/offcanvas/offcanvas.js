@@ -6,8 +6,8 @@ on(document.documentElement, 'click', '[kiss-offcanvas]', function (e) {
 
     let offcanvas = document.querySelector(this.getAttribute('kiss-offcanvas') || this.getAttribute('href'));
 
-    if (offcanvas && offcanvas.open) {
-        offcanvas.open();
+    if (offcanvas && offcanvas.show) {
+        offcanvas.show();
     }
 });
 
@@ -35,7 +35,7 @@ customElements.define('kiss-offcanvas', class extends HTMLElement {
 
     }
 
-    open() {
+    show() {
         this.setAttribute('open', 'true');
     }
 

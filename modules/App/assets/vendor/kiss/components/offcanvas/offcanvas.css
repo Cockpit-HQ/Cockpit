@@ -26,7 +26,7 @@ kiss-offcanvas > kiss-content {
     transition: transform 0.3s ease-in-out;
 }
 
-kiss-offcanvas[flip] > kiss-content {
+kiss-offcanvas[flip="true"] > kiss-content {
     right: 0;
     transform: translateX(100%);
 }
