@@ -63,6 +63,7 @@ class Auth extends Base {
 
         if ($user) {
             $this->helper('auth')->setUser($user);
+            $this->helper('session')->write('app.session.start', time());
 
             return ['success' => true, 'user' => $user];
         }

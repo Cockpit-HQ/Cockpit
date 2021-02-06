@@ -365,6 +365,18 @@ App.utils.vueModal = function(url, data, events, options) {
             <script type="module">
 
                 export default {
+
+                    $viewSetup(app) {
+
+                        app.mixin({
+                            methods: {
+                                $closeDialog() {
+                                    this.$el.closest('kiss-dialog').close();
+                                }
+                            }
+                        });
+                    },
+
                     data() {
                         return  {
                             data: ${JSON.stringify(data)}
@@ -379,34 +391,6 @@ App.utils.vueModal = function(url, data, events, options) {
         </vue-view>
     `, options || {});
 
-    let _element, _app, idle;
-
-    idle = setInterval(() => {
-
-        _element = dialog.querySelector('.vue-modal');
-
-        if (!_element.__vue_app__) return;
-
-        clearInterval(idle);
-
-        _app = _element.__vue_app__;
-
-        _app.mixin({
-
-            methods: {
-                $closeDialog() {
-                    dialog.close();
-                },
-                $event(name, ...args) {
-
-                    if (!events[name]) return;
-
-                    events[name](...args);
-                }
-            }
-        });
-
-    }, 1);
 
     dialog.show();
 };

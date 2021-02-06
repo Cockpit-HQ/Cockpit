@@ -22,14 +22,16 @@
             });
         },
 
-        _compile(el) {
+        _compile: async function(el) {
 
             let script = el.querySelector('script');
             let template = el.querySelector('template');
             let def = {}, app;
 
             if (script) {
-                def = (new Function(script.innerHTML.replace('export default', 'return ')))();
+
+                let module = await import(`data:text/javascript;charset=utf-8,${encodeURIComponent(script.innerHTML)}`);
+                def = module.default;
                 script.parentNode.removeChild(script);
             }
 
@@ -87,6 +89,10 @@
                     }
                 }
             });
+
+            if (def.$viewSetup) {
+                def.$viewSetup(app);
+            }
 
             app.mount(el);
             el.setAttribute('init', true);
