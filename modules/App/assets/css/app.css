@@ -28,6 +28,8 @@ vue-view:not([init="true"]) { display: none; }
     --kiss-color-contrast: #000;
     --kiss-color-primary: #0e8fff;
     --kiss-color-success: #4caf50;
+    --kiss-color-warning: orange;
+    --kiss-color-danger: red;
     --kiss-color-muted: rgba(255,255,255,.25);
 
     --kiss-container-max-width: 1800px;

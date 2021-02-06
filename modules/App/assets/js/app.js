@@ -352,10 +352,10 @@ App.utils.import = function(uri) {
     return import(App.base(uri)+'?v='+App.version);
 };
 
-App.utils.vueModal = function(url, data, events, options) {
+App.utils.vueModal = function(url, data, callbacks, options) {
 
     data = data || {};
-    events = events || {};
+    callbacks = callbacks || {};
 
     let dialog = App.ui.dialog(/*html*/`
         <vue-view class="vue-modal" >
@@ -372,6 +372,9 @@ App.utils.vueModal = function(url, data, events, options) {
                             methods: {
                                 $closeDialog() {
                                     this.$el.closest('kiss-dialog').close();
+                                },
+                                $call(name, ...args) {
+                                    this.$el.closest('kiss-dialog').$call(name, ...args);
                                 }
                             }
                         });
@@ -385,14 +388,34 @@ App.utils.vueModal = function(url, data, events, options) {
 
                     components: {
                         'vue-dialog-content':  '${url}'
+                    },
+
+                    mounted() {
+                        this.$nextTick(() => {
+                            this.$el.parentNode.closest('kiss-dialog').$mounted(this)
+                        })
                     }
                 }
             </script>
         </vue-view>
     `, options || {});
 
+    dialog.$view = dialog.querySelector('vue-view');
+
+    dialog.$mounted = function(instance) {
+        // ???
+    }
+
+    dialog.$call = function(name, ...args) {
+
+        if (callbacks[name]) {
+            callbacks[name](...args);
+        }
+    }
 
     dialog.show();
+
+    return dialog;
 };
 
 window.App = App;

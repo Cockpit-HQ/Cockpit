@@ -19,7 +19,7 @@
 
 .noty_theme__app.noty_type__alert,
 .noty_theme__app.noty_type__notification {
-    background-color: var(--kiss-color-contrast)
+    background-color: var(--kiss-color-contrast);
     color: #fff
 }
 
