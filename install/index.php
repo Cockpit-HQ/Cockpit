@@ -7,7 +7,7 @@ function hasSQLiteSupport() {
             $test = new PDO('sqlite::memory:');
             return true;
         }
-    
+
     } catch (Exception $e) {}
 
     return false;
@@ -36,7 +36,6 @@ $checks = array(
     'Php version >= 7.4.0'                              => (version_compare(PHP_VERSION, '7.4.0') >= 0),
     'Missing PDO extension with Sqlite support'         => hasSQLiteSupport(),
     'GD extension not available'                        => extension_loaded('gd'),
-    'MBString extension not available'                  => extension_loaded('mbstring'),
     'Data folder is not writable: /storage/data'        => ensureWritableStorageFolder('/data'),
     'Cache folder is not writable: /storage/cache'      => ensureWritableStorageFolder('/cache'),
     'Temp folder is not writable: /storage/tmp'         => ensureWritableStorageFolder('/tmp'),
@@ -68,7 +67,7 @@ if (!count($failed)) {
         }
 
     } catch(Throwable $e) { }
-    
+
     $created = time();
 
     $user = [
@@ -182,7 +181,7 @@ if (!count($failed)) {
 
                     <?php foreach ($failed as &$info): ?>
                     <li>
-                        🔥  &nbsp; <?php echo @$info;?> &nbsp; 🔥 
+                        🔥  &nbsp; <?php echo @$info;?> &nbsp; 🔥
                     </li>
                     <?php endforeach; ?>
 

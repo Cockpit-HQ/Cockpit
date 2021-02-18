@@ -263,6 +263,7 @@ return array(
     'RobThree\\Auth\\TwoFactorAuth' => $vendorDir . '/robthree/twofactorauth/lib/TwoFactorAuth.php',
     'RobThree\\Auth\\TwoFactorAuthException' => $vendorDir . '/robthree/twofactorauth/lib/TwoFactorAuthException.php',
     'Stringable' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',
+    'Symfony\\Polyfill\\Mbstring\\Mbstring' => $vendorDir . '/symfony/polyfill-mbstring/Mbstring.php',
     'Symfony\\Polyfill\\Php80\\Php80' => $vendorDir . '/symfony/polyfill-php80/Php80.php',
     'UnhandledMatchError' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/UnhandledMatchError.php',
     'ValueError' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/ValueError.php',

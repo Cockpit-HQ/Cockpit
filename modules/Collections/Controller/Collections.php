@@ -38,4 +38,8 @@ class Collections extends App {
         return $collection;
     }
 
+    public function find() {
+
+    }
+
 }

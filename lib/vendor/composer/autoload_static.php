@@ -4,11 +4,12 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit3043aff3db8446d21c22f36f77adce25
+class ComposerStaticInit10b5b570dd603c008988edaf9063c3c3
 {
     public static $files = array (
         'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
         '7aed44d824e149ce152c0fb82af9379a' => __DIR__ . '/..' . '/colinodell/json5/src/global.php',
+        '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         '3a37ebac017bc098e9a86b35401e7a68' => __DIR__ . '/..' . '/mongodb/mongodb/src/functions.php',
     );
 
@@ -20,6 +21,7 @@ class ComposerStaticInit3043aff3db8446d21c22f36f77adce25
         'S' => 
         array (
             'Symfony\\Polyfill\\Php80\\' => 23,
+            'Symfony\\Polyfill\\Mbstring\\' => 26,
         ),
         'R' => 
         array (
@@ -70,6 +72,10 @@ class ComposerStaticInit3043aff3db8446d21c22f36f77adce25
         'Symfony\\Polyfill\\Php80\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-php80',
+        ),
+        'Symfony\\Polyfill\\Mbstring\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-mbstring',
         ),
         'RobThree\\Auth\\' => 
         array (
@@ -393,6 +399,7 @@ class ComposerStaticInit3043aff3db8446d21c22f36f77adce25
         'RobThree\\Auth\\TwoFactorAuth' => __DIR__ . '/..' . '/robthree/twofactorauth/lib/TwoFactorAuth.php',
         'RobThree\\Auth\\TwoFactorAuthException' => __DIR__ . '/..' . '/robthree/twofactorauth/lib/TwoFactorAuthException.php',
         'Stringable' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',
+        'Symfony\\Polyfill\\Mbstring\\Mbstring' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/Mbstring.php',
         'Symfony\\Polyfill\\Php80\\Php80' => __DIR__ . '/..' . '/symfony/polyfill-php80/Php80.php',
         'UnhandledMatchError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/UnhandledMatchError.php',
         'ValueError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/ValueError.php',
@@ -408,11 +415,11 @@ class ComposerStaticInit3043aff3db8446d21c22f36f77adce25
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit3043aff3db8446d21c22f36f77adce25::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit3043aff3db8446d21c22f36f77adce25::$prefixDirsPsr4;
-            $loader->fallbackDirsPsr4 = ComposerStaticInit3043aff3db8446d21c22f36f77adce25::$fallbackDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit3043aff3db8446d21c22f36f77adce25::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit3043aff3db8446d21c22f36f77adce25::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit10b5b570dd603c008988edaf9063c3c3::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit10b5b570dd603c008988edaf9063c3c3::$prefixDirsPsr4;
+            $loader->fallbackDirsPsr4 = ComposerStaticInit10b5b570dd603c008988edaf9063c3c3::$fallbackDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit10b5b570dd603c008988edaf9063c3c3::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit10b5b570dd603c008988edaf9063c3c3::$classMap;
 
         }, null, ClassLoader::class);
     }

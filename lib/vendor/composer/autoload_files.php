@@ -8,5 +8,6 @@ $baseDir = dirname(dirname($vendorDir));
 return array(
     'a4a119a56e50fbb293281d9a48007e0e' => $vendorDir . '/symfony/polyfill-php80/bootstrap.php',
     '7aed44d824e149ce152c0fb82af9379a' => $vendorDir . '/colinodell/json5/src/global.php',
+    '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => $vendorDir . '/symfony/polyfill-mbstring/bootstrap.php',
     '3a37ebac017bc098e9a86b35401e7a68' => $vendorDir . '/mongodb/mongodb/src/functions.php',
 );
