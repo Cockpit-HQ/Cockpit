@@ -8,6 +8,7 @@
 .vscode
 .env
 composer.lock
+composer.phar
 package-lock.json
 /lib/**/.github/*
 /lib/**/bin/*
