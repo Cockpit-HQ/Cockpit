@@ -38,8 +38,11 @@ class Collections extends App {
         return $collection;
     }
 
-    public function find() {
+    public function load() {
 
+        $collections = array_values($this->module('collections')->collections());
+
+        return $collections;
     }
 
 }

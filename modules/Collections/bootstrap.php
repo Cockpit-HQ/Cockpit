@@ -123,6 +123,8 @@ $this->module('collections')->extend([
             $stores[$store['name']] = $store;
         }
 
+        ksort($stores);
+
         return $stores;
     },
 
