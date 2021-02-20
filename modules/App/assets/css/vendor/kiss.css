@@ -88,3 +88,21 @@ kiss-offcanvas nav-list ul > li a kiss-svg {
 kiss-card[hover="shadow"]:hover {
     box-shadow: 0 25px 80px rgba(0,0,0, 0.8), 0 3px 12px rgba(0,0,0,1);
 }
+
+.kiss-button-group {
+    display: inline-flex;
+}
+
+.kiss-button-group .kiss-button {
+    border-radius: 0;
+}
+
+.kiss-button-group .kiss-button:first-child {
+    border-top-left-radius: var(--app-border-radius);
+    border-bottom-left-radius: var(--app-border-radius);
+}
+
+.kiss-button-group .kiss-button:last-child {
+    border-top-right-radius: var(--app-border-radius);
+    border-bottom-right-radius: var(--app-border-radius);
+}

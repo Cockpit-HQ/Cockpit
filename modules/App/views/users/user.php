@@ -110,16 +110,18 @@ if (!isset($user['twofa'])) {
 
                     <kiss-container size="small">
                         <div class="kiss-flex kiss-flex-middle kiss-flex-right">
-                            <?php if (!$isAccountView && _allowed('app.users.manage')): ?>
-                            <a class="kiss-margin-right kiss-button kiss-button-link" href="<?=$this->route('/users')?>">
-                                <span v-if="!user._id"><?=t('Cancel')?></span>
-                                <span v-if="user._id"><?=t('Close')?></span>
-                            </a>
-                            <?php endif ?>
-                            <button type="submit" class="kiss-button kiss-button-primary">
-                                <span v-if="!user._id"><?=t('Create')?></span>
-                                <span v-if="user._id"><?=t('Update')?></span>
-                            </button>
+                            <div class="kiss-button-group">
+                                <?php if (!$isAccountView && _allowed('app.users.manage')): ?>
+                                <a class="kiss-button kiss-button-link" href="<?=$this->route('/users')?>">
+                                    <span v-if="!user._id"><?=t('Cancel')?></span>
+                                    <span v-if="user._id"><?=t('Close')?></span>
+                                </a>
+                                <?php endif ?>
+                                <button type="submit" class="kiss-button kiss-button-primary">
+                                    <span v-if="!user._id"><?=t('Create')?></span>
+                                    <span v-if="user._id"><?=t('Update')?></span>
+                                </button>
+                            </div>
                         </div>
                     </kiss-container>
 

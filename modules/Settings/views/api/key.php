@@ -31,14 +31,16 @@
 
                     <kiss-container size="small">
                         <div class="kiss-flex kiss-flex-middle kiss-flex-right">
-                            <a class="kiss-margin-right kiss-button kiss-button-link" href="<?=$this->route('/settings/api')?>">
-                                <span v-if="!key._id"><?=t('Cancel')?></span>
-                                <span v-if="key._id"><?=t('Close')?></span>
-                            </a>
-                            <button type="submit" class="kiss-button kiss-button-primary">
-                                <span v-if="!key._id"><?=t('Create key')?></span>
-                                <span v-if="key._id"><?=t('Update key')?></span>
-                            </button>
+                            <div class="kiss-button-group">
+                                <a class="kiss-button kiss-button-link" href="<?=$this->route('/settings/api')?>">
+                                    <span v-if="!key._id"><?=t('Cancel')?></span>
+                                    <span v-if="key._id"><?=t('Close')?></span>
+                                </a>
+                                <button type="submit" class="kiss-button kiss-button-primary">
+                                    <span v-if="!key._id"><?=t('Create key')?></span>
+                                    <span v-if="key._id"><?=t('Update key')?></span>
+                                </button>
+                            </div>
                         </div>
                     </kiss-container>
 

@@ -5,7 +5,6 @@
 
             <div class="kiss-flex kiss-flex-middle">
                 <div class="kiss-flex-1"></div>
-                <a class="kiss-button kiss-button-primary" href="<?=$this->route('/collections/create')?>"><?=t('Add collection')?></a>
             </div>
 
 
@@ -27,8 +26,8 @@
 
                             <div class="kiss-padding kiss-position-relative">
                                 <canvas width="600" height="300"></canvas>
-                                <div class="kiss-cover kiss-flex kiss-flex-middle kiss-flex-center">
-                                    <div><kiss-svg src="<?=$this->base('collections:icon.svg')?>" width="60" height="60"></kiss-svg></div>
+                                <div class="kiss-cover kiss-flex kiss-flex-middle kiss-flex-center kiss-padding">
+                                    <div><kiss-svg src="<?=$this->base('collections:icon.svg')?>" width="80" height="60"></kiss-svg></div>
                                 </div>
 
                             </div>
@@ -43,8 +42,18 @@
 
                 </kiss-row>
 
-
             </div>
+
+
+            <app-actionbar>
+
+                <kiss-container size="small">
+                    <div class="kiss-flex kiss-flex-middle kiss-flex-right">
+                        <a class="kiss-button kiss-button-primary" href="<?=$this->route('/collections/create')?>"><?=t('Add collection')?></a>
+                    </div>
+                </kiss-container>
+
+            </app-actionbar>
 
 
         </template>

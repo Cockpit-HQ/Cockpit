@@ -8,11 +8,12 @@
 
                 <div class="kiss-size-1 kiss-flex-1"><strong><?=t('Users')?></strong></div>
 
-                <?php if (_allowed('app.roles.manage')): ?>
-                <a class="kiss-button kiss-margin-small-right" href="<?=$this->route('/users/roles')?>"><?=t('Manage roles')?></a>
-                <?php endif ?>
-
-                <a class="kiss-button kiss-button-primary" href="<?=$this->route('/users/create')?>"><?=t('Add user')?></a>
+                <div class="kiss-button-group">
+                    <?php if (_allowed('app.roles.manage')): ?>
+                    <a class="kiss-button" href="<?=$this->route('/users/roles')?>"><?=t('Manage roles')?></a>
+                    <?php endif ?>
+                    <a class="kiss-button kiss-button-primary" href="<?=$this->route('/users/create')?>"><?=t('Add user')?></a>
+                </div>
             </div>
 
             <app-loader v-if="loading"></app-loader>

@@ -24,14 +24,16 @@
 
                     <kiss-container size="small">
                         <div class="kiss-flex kiss-flex-middle kiss-flex-right">
-                            <a class="kiss-margin-right kiss-button kiss-button-link" href="<?=$this->route('/settings/locales')?>">
-                                <span v-if="!locale._id"><?=t('Cancel')?></span>
-                                <span v-if="locale._id"><?=t('Close')?></span>
-                            </a>
-                            <button type="submit" class="kiss-button kiss-button-primary">
-                                <span v-if="!locale._id"><?=t('Create locale')?></span>
-                                <span v-if="locale._id"><?=t('Update locale')?></span>
-                            </button>
+                            <div class="kiss-button-group">
+                                <a class="kiss-button kiss-button-link" href="<?=$this->route('/settings/locales')?>">
+                                    <span v-if="!locale._id"><?=t('Cancel')?></span>
+                                    <span v-if="locale._id"><?=t('Close')?></span>
+                                </a>
+                                <button type="submit" class="kiss-button kiss-button-primary">
+                                    <span v-if="!locale._id"><?=t('Create locale')?></span>
+                                    <span v-if="locale._id"><?=t('Update locale')?></span>
+                                </button>
+                            </div>
                         </div>
                     </kiss-container>
 

@@ -26,6 +26,12 @@
                     <textarea class="kiss-input kiss-textarea" style="height:100px;" v-model="collection.info"></textarea>
                 </div>
 
+                <div class="kiss-margin">
+                    <label><?=t('Color')?></label>
+                    <field-color v-model="collection.color"></field-color>
+                    {{ collection.color }}
+                </div>
+
                 <div class="kiss-margin kiss-margin-large-top">
 
                     <div class="kiss-text-bold kiss-text-caption kiss-margin"><?=t('Fields')?></div>
@@ -34,19 +40,21 @@
 
                 </div>
 
-
                 <app-actionbar>
 
                     <kiss-container size="small">
                         <div class="kiss-flex kiss-flex-middle kiss-flex-right">
-                            <a class="kiss-margin-right kiss-button kiss-button-link" href="<?=$this->route('/collections')?>">
-                                <span v-if="!isUpdate"><?=t('Cancel')?></span>
-                                <span v-if="isUpdate"><?=t('Close')?></span>
-                            </a>
-                            <button type="submit" class="kiss-button kiss-button-primary">
-                                <span v-if="!isUpdate"><?=t('Create collection')?></span>
-                                <span v-if="isUpdate"><?=t('Update collection')?></span>
-                            </button>
+
+                            <div class="kiss-button-group">
+                                <a class="kiss-button kiss-button-link" href="<?=$this->route('/collections')?>">
+                                    <span v-if="!isUpdate"><?=t('Cancel')?></span>
+                                    <span v-if="isUpdate"><?=t('Close')?></span>
+                                </a>
+                                <button type="submit" class="kiss-button kiss-button-primary">
+                                    <span v-if="!isUpdate"><?=t('Create collection')?></span>
+                                    <span v-if="isUpdate"><?=t('Update collection')?></span>
+                                </button>
+                            </div>
                         </div>
                     </kiss-container>
 

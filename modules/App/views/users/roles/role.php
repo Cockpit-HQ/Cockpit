@@ -60,14 +60,16 @@
 
                     <kiss-container size="small">
                         <div class="kiss-flex kiss-flex-middle kiss-flex-right">
-                            <a class="kiss-margin-right kiss-button kiss-button-link" href="<?=$this->route('/users/roles')?>">
-                                <span v-if="!role._id"><?=t('Cancel')?></span>
-                                <span v-if="role._id"><?=t('Close')?></span>
-                            </a>
-                            <button type="submit" class="kiss-button kiss-button-primary">
-                                <span v-if="!role._id"><?=t('Create role')?></span>
-                                <span v-if="role._id"><?=t('Update role')?></span>
-                            </button>
+                            <div class="kiss-button-group">
+                                <a class="kiss-button kiss-button-link" href="<?=$this->route('/users/roles')?>">
+                                    <span v-if="!role._id"><?=t('Cancel')?></span>
+                                    <span v-if="role._id"><?=t('Close')?></span>
+                                </a>
+                                <button type="submit" class="kiss-button kiss-button-primary">
+                                    <span v-if="!role._id"><?=t('Create role')?></span>
+                                    <span v-if="role._id"><?=t('Update role')?></span>
+                                </button>
+                            </div>
                         </div>
                     </kiss-container>
 
