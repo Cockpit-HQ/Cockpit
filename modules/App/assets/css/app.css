@@ -18,12 +18,12 @@ vue-view:not([init="true"]) { display: none; }
 :root {
     --kiss-base-font-family: Inter, -apple-system, system-ui, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
     --kiss-base-background-color: #131720;
-    --kiss-base-text-color: #fff;
+    --kiss-base-text-color: #fafafa;
     --kiss-font-size-1: 2rem;
     --kiss-hr-color: rgba(255,255,255,.1);
     --kiss-link-color: var(--kiss-color-primary);
 
-    --kiss-button-default-background: #333;
+    --kiss-button-default-background: #2b2d42;
 
     --kiss-color-contrast: #000;
     --kiss-color-primary: #0e8fff;

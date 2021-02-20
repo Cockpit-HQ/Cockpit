@@ -96,7 +96,7 @@
                         <li class="kiss-nav-header kiss-flex kiss-flex-middle"><?=t('System')?></li>
                         <li class="<?=(strpos($this->request->route, '/settings') === 0) ? 'active':''?>">
                             <a class="kiss-flex kiss-flex-middle" href="<?=$this->route('/settings')?>">
-                                <icon class="kiss-margin-small-right">settings</icon> <?=t('Settings')?>
+                                <icon class="kiss-margin-small-right">tune</icon> <?=t('Settings')?>
                             </a>
                         </li>
                         <?php if (_allowed('app.users.manage')): ?>

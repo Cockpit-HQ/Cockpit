@@ -3,11 +3,6 @@
     <vue-view>
         <template>
 
-            <div class="kiss-flex kiss-flex-middle">
-                <div class="kiss-flex-1"></div>
-            </div>
-
-
             <app-loader class="kiss-margin-large" v-if="loading"></app-loader>
 
             <div class="animated fadeIn kiss-height-30vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted kiss-margin-large" v-if="!loading && !collections.length">
@@ -19,22 +14,26 @@
 
             <div class="kiss-margin-large" v-if="!loading && collections.length">
 
-                <kiss-row class="kiss-child-width-1-4@m kiss-child-width-1-5@l">
+                <kiss-row class="kiss-child-width-1-2 kiss-child-width-1-4@m kiss-child-width-1-6@l" v-if="mode=='grid'">
 
                     <div v-for="collection in collections">
-                        <kiss-card class="kiss-position-relative" theme="bordered" hover="shadow">
+                        <kiss-card class="animated fadeIn kiss-position-relative" theme="bordered" hover="shadow">
 
                             <div class="kiss-padding kiss-position-relative">
-                                <canvas width="600" height="300"></canvas>
-                                <div class="kiss-cover kiss-flex kiss-flex-middle kiss-flex-center kiss-padding">
-                                    <div><kiss-svg src="<?=$this->base('collections:icon.svg')?>" width="80" height="60"></kiss-svg></div>
+                                <canvas width="600" height="450"></canvas>
+                                <div class="kiss-cover kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-padding">
+                                    <div>
+                                        <div :style="{color: collection.color || 'inherit' }">
+                                            <kiss-svg class="kiss-margin-auto" src="<?=$this->base('collections:icon.svg')?>" width="80" height="60"></kiss-svg>
+                                        </div>
+                                        <div class="kiss-padding kiss-size-small kiss-text-truncate">
+                                            <strong>{{ collection.label || collection.name }}</strong>
+                                        </div>
+                                    </div>
                                 </div>
 
                             </div>
 
-                            <div class="kiss-padding">
-                                {{ collection.label || collection.name }}
-                            </div>
                             <a class="kiss-cover" href=""></a>
 
                         </kiss-card>
@@ -42,13 +41,33 @@
 
                 </kiss-row>
 
+                <div v-if="mode=='list'">
+
+                    <div class="kiss-margin-small" v-for="collection in collections">
+                        <kiss-card class="animated fadeIn" theme="bordered" hover="shadow">
+                            <div class="kiss-padding kiss-flex kiss-flex-middle">
+                                <div class="kiss-margin-small-right" :style="{color: collection.color || 'inherit' }">
+                                    <kiss-svg class="kiss-margin-auto" src="<?=$this->base('collections:icon.svg')?>" width="30" height="30"></kiss-svg>
+                                </div>
+                                <div class="kiss-flex-1"><a class="kiss-link-muted"><strong>{{ collection.label || collection.name }}</strong></a></div>
+                            </div>
+                        </kiss-card>
+                    </div>
+
+                </div>
+
             </div>
 
 
             <app-actionbar>
 
-                <kiss-container size="small">
-                    <div class="kiss-flex kiss-flex-middle kiss-flex-right">
+                <kiss-container>
+                    <div class="kiss-flex kiss-flex-middle">
+                        <div class="kiss-button-group">
+                            <button class="kiss-button" :class="{'kiss-button-primary': (mode=='list')}" @click="mode='list'"><icon>list</icon></button>
+                            <button class="kiss-button" :class="{'kiss-button-primary': (mode=='grid')}" @click="mode='grid'"><icon>view_comfy</icon></button>
+                        </div>
+                        <div class="kiss-flex-1"></div>
                         <a class="kiss-button kiss-button-primary" href="<?=$this->route('/collections/create')?>"><?=t('Add collection')?></a>
                     </div>
                 </kiss-container>
@@ -64,6 +83,7 @@
                 data() {
                     return {
                         collections: [],
+                        mode: 'list',
                         loading: false
                     }
                 },
