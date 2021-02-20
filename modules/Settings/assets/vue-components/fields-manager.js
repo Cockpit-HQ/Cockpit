@@ -26,12 +26,11 @@ let FieldsCollection = {
 
 }
 
-
 export default {
     data() {
 
         return {
-            fields: [],
+            fields: this.modelValue || [],
             availableFields: [],
             field: null,
             ready: false,

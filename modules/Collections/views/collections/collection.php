@@ -29,7 +29,6 @@
                 <div class="kiss-margin">
                     <label><?=t('Color')?></label>
                     <field-color v-model="collection.color"></field-color>
-                    {{ collection.color }}
                 </div>
 
                 <div class="kiss-margin kiss-margin-large-top">

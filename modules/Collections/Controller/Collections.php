@@ -25,6 +25,23 @@ class Collections extends App {
         return $this->render('collections:views/collections/collection.php', compact('collection', 'isUpdate'));
     }
 
+    public function edit($name = null) {
+
+        if (!$name) {
+            return $this->stop(412);
+        }
+
+        $collection = $this->module('collections')->collection($name);
+
+        if (!$collection) {
+            return $this->stop(404);
+        }
+
+        $isUpdate = true;
+
+        return $this->render('collections:views/collections/collection.php', compact('collection', 'isUpdate'));
+    }
+
 
     public function save() {
 
