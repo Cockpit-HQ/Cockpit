@@ -61,7 +61,7 @@ if ($APP_ROUTE == '') {
 
 define('APP_DOCUMENT_ROOT', $APP_DOCUMENT_ROOT);
 define('APP_BASE_URL', $APP_BASE_URL);
-define('APP_API_REQUEST', strpos($_SERVER['REQUEST_URI'], APP_BASE_URL.'/api/') !== false ? 1:0);
+define('APP_API_REQUEST', strpos($APP_ROUTE, '/api/') === 0 ? 1:0);
 
 
 $app = APP::instance();
