@@ -3,8 +3,8 @@
     .login-wrapper {
         width:450px;
         max-width: 90%;
-        margin-top: 20vh;
-        margin-bottom: 20vh;
+        padding-top: 20vh;
+        padding-bottom: 20vh;
     }
 </style>
 <?php $this->end('app.layout.header') ?>
@@ -12,12 +12,9 @@
 
 <kiss-container class="login-wrapper">
 
-        <div class="kiss-display-inline-block">
+        <div class="kiss-flex kiss-flex-center kiss-margin-large">
             <img class="app-logo" src="<?=$this->base('/logo.svg')?>" width="40" alt="Logo">
-            <hr>
         </div>
-
-        <h1><?=$this['app.name']?></h1>
 
         <vue-view class="kiss-margin-large-top">
 

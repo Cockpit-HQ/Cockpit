@@ -1,5 +1,5 @@
-.kiss-flex { display: flex; }
-.kiss-flex-inline { display: inline-flex; }
+.kiss-flex { display: flex !important; }
+.kiss-flex-inline { display: inline-flex !important; }
 
 .kiss-flex::before,
 .kiss-flex::after,

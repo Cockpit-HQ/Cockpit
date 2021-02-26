@@ -90,7 +90,7 @@ kiss-card[hover="shadow"]:hover {
 }
 
 kiss-card[theme*="bordered"] {
-    background: linear-gradient(135deg, var(--kiss-base-background-color) 0%, var(--kiss-base-background-color) 50%, rgba(0,0,0,.4) 100%);
+    background: linear-gradient(135deg, var(--kiss-base-background-color) 0%, var(--kiss-base-background-color) 50%, rgba(0,0,0,.1) 100%);
 }
 
 .kiss-button-group {

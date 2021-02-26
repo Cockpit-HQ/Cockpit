@@ -135,15 +135,17 @@ export default {
                         </app-tabs>
 
 
-                        <div class="kiss-margin-large-top kiss-flex kiss-flex-right kiss-flex-middle">
+                        <div class="kiss-margin-large-top kiss-flex kiss-flex-right">
 
-                            <a class="kiss-button" @click="field=null" v-if="!state.editField">
-                                {{ t('Cancel') }}
-                            </a>
-                            <button class="kiss-button kiss-button-primary kiss-margin-left">
-                                <span v-if="!state.editField">{{ t('Add field') }}</span>
-                                <span v-if="state.editField">{{ t('Close') }}</span>
-                            </button>
+                            <div class="kiss-button-group">
+                                <a class="kiss-button" @click="field=null" v-if="!state.editField">
+                                    {{ t('Cancel') }}
+                                </a>
+                                <button class="kiss-button kiss-button-primary">
+                                    <span v-if="!state.editField">{{ t('Add field') }}</span>
+                                    <span v-if="state.editField">{{ t('Close') }}</span>
+                                </button>
+                            </div>
                         </div>
 
 
