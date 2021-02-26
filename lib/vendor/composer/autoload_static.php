@@ -4,12 +4,13 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit10b5b570dd603c008988edaf9063c3c3
+class ComposerStaticInitd6476b87a1291aeecebd7e38eaddedff
 {
     public static $files = array (
         'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
         '7aed44d824e149ce152c0fb82af9379a' => __DIR__ . '/..' . '/colinodell/json5/src/global.php',
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
+        '23c18046f52bef3eea034657bafda50f' => __DIR__ . '/..' . '/symfony/polyfill-php81/bootstrap.php',
         '3a37ebac017bc098e9a86b35401e7a68' => __DIR__ . '/..' . '/mongodb/mongodb/src/functions.php',
     );
 
@@ -20,6 +21,7 @@ class ComposerStaticInit10b5b570dd603c008988edaf9063c3c3
         ),
         'S' => 
         array (
+            'Symfony\\Polyfill\\Php81\\' => 23,
             'Symfony\\Polyfill\\Php80\\' => 23,
             'Symfony\\Polyfill\\Mbstring\\' => 26,
         ),
@@ -68,6 +70,10 @@ class ComposerStaticInit10b5b570dd603c008988edaf9063c3c3
         'ZipStream\\' => 
         array (
             0 => __DIR__ . '/..' . '/maennchen/zipstream-php/src',
+        ),
+        'Symfony\\Polyfill\\Php81\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-php81',
         ),
         'Symfony\\Polyfill\\Php80\\' => 
         array (
@@ -401,6 +407,7 @@ class ComposerStaticInit10b5b570dd603c008988edaf9063c3c3
         'Stringable' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',
         'Symfony\\Polyfill\\Mbstring\\Mbstring' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/Mbstring.php',
         'Symfony\\Polyfill\\Php80\\Php80' => __DIR__ . '/..' . '/symfony/polyfill-php80/Php80.php',
+        'Symfony\\Polyfill\\Php81\\Php81' => __DIR__ . '/..' . '/symfony/polyfill-php81/Php81.php',
         'UnhandledMatchError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/UnhandledMatchError.php',
         'ValueError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/ValueError.php',
         'ZipStream\\Exception' => __DIR__ . '/..' . '/maennchen/zipstream-php/src/Exception.php',
@@ -415,11 +422,11 @@ class ComposerStaticInit10b5b570dd603c008988edaf9063c3c3
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit10b5b570dd603c008988edaf9063c3c3::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit10b5b570dd603c008988edaf9063c3c3::$prefixDirsPsr4;
-            $loader->fallbackDirsPsr4 = ComposerStaticInit10b5b570dd603c008988edaf9063c3c3::$fallbackDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit10b5b570dd603c008988edaf9063c3c3::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit10b5b570dd603c008988edaf9063c3c3::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitd6476b87a1291aeecebd7e38eaddedff::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitd6476b87a1291aeecebd7e38eaddedff::$prefixDirsPsr4;
+            $loader->fallbackDirsPsr4 = ComposerStaticInitd6476b87a1291aeecebd7e38eaddedff::$fallbackDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInitd6476b87a1291aeecebd7e38eaddedff::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInitd6476b87a1291aeecebd7e38eaddedff::$classMap;
 
         }, null, ClassLoader::class);
     }

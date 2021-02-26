@@ -46,11 +46,12 @@ final class Versions
   'league/mime-type-detection' => '1.7.0@3b9dff8aaf7323590c1d2e443db701eb1f9aa0d3',
   'maennchen/zipstream-php' => 'v0.5.2@95922b6324955974675fd4923f987faa598408af',
   'mongodb/mongodb' => '1.8.0@953dbc19443aa9314c44b7217a16873347e6840d',
-  'phpmailer/phpmailer' => 'v6.2.0@e38888a75c070304ca5514197d4847a59a5c853f',
+  'phpmailer/phpmailer' => 'v6.3.0@4a08cf4cdd2c38d12ee2b9fa69e5d235f37a6dcb',
   'robthree/twofactorauth' => '1.7.0@37983bf675c5baca09d19d6705170489d0df0002',
   'symfony/polyfill-mbstring' => 'v1.22.1@5232de97ee3b75b0360528dae24e73db49566ab1',
   'symfony/polyfill-php80' => 'v1.22.1@dc3063ba22c2a1fd2f45ed856374d79114998f91',
-  'agentejo/cockpit' => 'dev-master@ead8f60d2218624889da3c2adfa780e0d0937eac',
+  'symfony/polyfill-php81' => 'v1.22.1@00dedc6d362a1b863dda3f8243516da9fdfbe657',
+  'agentejo/cockpit' => 'dev-master@271625958d729430097583c4d3637855fe91289c',
 );
 
     private function __construct()

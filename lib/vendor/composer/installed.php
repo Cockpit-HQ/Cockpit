@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => 'ead8f60d2218624889da3c2adfa780e0d0937eac',
+    'reference' => '271625958d729430097583c4d3637855fe91289c',
     'name' => 'agentejo/cockpit',
   ),
   'versions' => 
@@ -18,7 +18,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => 'ead8f60d2218624889da3c2adfa780e0d0937eac',
+      'reference' => '271625958d729430097583c4d3637855fe91289c',
     ),
     'bacon/bacon-qr-code' => 
     array (
@@ -153,12 +153,12 @@
     ),
     'phpmailer/phpmailer' => 
     array (
-      'pretty_version' => 'v6.2.0',
-      'version' => '6.2.0.0',
+      'pretty_version' => 'v6.3.0',
+      'version' => '6.3.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'e38888a75c070304ca5514197d4847a59a5c853f',
+      'reference' => '4a08cf4cdd2c38d12ee2b9fa69e5d235f37a6dcb',
     ),
     'robthree/twofactorauth' => 
     array (
@@ -186,6 +186,15 @@
       array (
       ),
       'reference' => 'dc3063ba22c2a1fd2f45ed856374d79114998f91',
+    ),
+    'symfony/polyfill-php81' => 
+    array (
+      'pretty_version' => 'v1.22.1',
+      'version' => '1.22.1.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '00dedc6d362a1b863dda3f8243516da9fdfbe657',
     ),
   ),
 );
