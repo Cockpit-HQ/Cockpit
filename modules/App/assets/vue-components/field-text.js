@@ -35,7 +35,7 @@ export default {
     },
 
     template: /*html*/`
-        <div>
+        <div field="text">
             <input type="text" class="kiss-input kiss-width-1-1" v-model="val" @input="update" v-if="!multiline">
             <textarea class="kiss-textarea kiss-input kiss-width-1-1" v-model="val" @input="update" :style="{height}" v-if="multiline"></textarea>
         </div>

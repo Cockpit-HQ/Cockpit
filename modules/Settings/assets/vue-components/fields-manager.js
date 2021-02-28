@@ -69,7 +69,7 @@ export default {
 
             <vue-draggable class="animated fadeIn" v-model="fields" v-if="ready && fields.length" handle=".fm-handle">
                 <template #item="{ element }">
-                    <kiss-card class="kiss-padding kiss-flex kiss-flex-middle" theme="bordered" style="margin: 8px 0;">
+                    <kiss-card class="kiss-padding-small kiss-flex kiss-flex-middle" theme="bordered" style="margin: 8px 0;">
                         <div class="kiss-size-small kiss-flex-1">{{ element.label || element.name }}</div>
                         <div class="kiss-badge kiss-text-caption">{{element.type}}</div>
                         <a class="kiss-margin-left" @click="edit(element)"><icon>settings</icon></a>

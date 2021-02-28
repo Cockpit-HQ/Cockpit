@@ -41,7 +41,7 @@ export default {
     },
 
     template: /*html*/`
-        <div>
+        <div field="code">
             <div class="codemirror-wrapper"></div>
         </div>
     `,

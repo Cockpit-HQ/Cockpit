@@ -42,6 +42,22 @@ class Collections extends App {
         return $this->render('collections:views/collections/collection.php', compact('collection', 'isUpdate'));
     }
 
+    public function remove($name = null) {
+
+        if (!$name) {
+            return $this->stop(412);
+        }
+
+        $collection = $this->module('collections')->collection($name);
+
+        if (!$collection) {
+            return $this->stop(404);
+        }
+
+        $this->module('collections')->removeCollection($name);
+
+        return ['success' => true];
+    }
 
     public function save() {
 

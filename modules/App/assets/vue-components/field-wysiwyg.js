@@ -37,7 +37,7 @@ export default {
     },
 
     template: /*html*/`
-        <div>
+        <div field="wysiwyg">
             <textarea hidden></textarea>
         </div>
     `,

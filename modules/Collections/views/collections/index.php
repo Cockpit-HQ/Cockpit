@@ -45,9 +45,9 @@
 
                     <div class="kiss-margin-small" v-for="collection in collections">
                         <kiss-card class="animated fadeIn" theme="bordered" hover="shadow">
-                            <div class="kiss-padding kiss-flex kiss-flex-middle">
+                            <div class="kiss-padding-small kiss-flex kiss-flex-middle">
                                 <div class="kiss-margin-small-right" :style="{color: collection.color || 'inherit' }">
-                                    <kiss-svg class="kiss-margin-auto" src="<?=$this->base('collections:icon.svg')?>" width="30" height="30"></kiss-svg>
+                                    <kiss-svg class="kiss-margin-auto" src="<?=$this->base('collections:icon.svg')?>" width="25" height="25"></kiss-svg>
                                 </div>
                                 <div class="kiss-flex-1"><a class="kiss-link-muted"><strong>{{ collection.label || collection.name }}</strong></a></div>
                                 <div>
@@ -58,6 +58,8 @@
                                                 <ul>
                                                     <li class="kiss-nav-header">{{ collection.label || collection.name }}</li>
                                                     <li><a :href="$route(`/collections/edit/${collection.name}`)"><?=t('Edit')?></a></li>
+                                                    <li class="kiss-nav-divider"></li>
+                                                    <a class="kiss-color-danger" @click="remove(collection)"><?=t('Delete')?></a>
                                                 </ul>
                                             </navlist>
                                         </kiss-dropdownbox>
@@ -111,10 +113,20 @@
 
                         this.loading = true;
 
-                        App.request('/collections/load').then(collections => {
+                        this.$request('/collections/load').then(collections => {
                             this.collections = collections;
                             this.loading = false;
                         })
+                    },
+
+                    remove(collection) {
+
+                        App.ui.confirm('Are you sure?', () => {
+
+                            this.$request(`/collections/remove/${collection.name}`, {}).then(res => {
+                                this.collections.splice(this.collections.indexOf(collection), 1);
+                            });
+                        });
                     }
                 }
             }

@@ -28,7 +28,7 @@ export default {
     },
 
     template: /*html*/`
-        <div class="kiss-overlay-input">
+        <div class="kiss-overlay-input" field="color">
             <canvas :width="size" :height="size" :style="val ? { background: val } : transparent"></canvas>
             <input v-model="val" type="color" style="cursor:pointer;" @change="update">
         </div>

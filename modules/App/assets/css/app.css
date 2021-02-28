@@ -58,7 +58,7 @@ vue-view:not([init="true"]) { display: none; }
     --kiss-card-shadowed-color: var(--kiss-color-muted);
     --kiss-card-bordered-color: var(--kiss-input-border-color);
 
-    --app-border-radius: 4px;
+    --app-border-radius: 3px;
 }
 
 body {
@@ -66,7 +66,8 @@ body {
     min-height: 100vh;
 }
 
-app-avatar canvas {
+app-avatar canvas,
+[field="color"] {
     border-radius: var(--app-border-radius);
 }
 
