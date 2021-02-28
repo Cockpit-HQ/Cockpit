@@ -50,6 +50,19 @@
                                     <kiss-svg class="kiss-margin-auto" src="<?=$this->base('collections:icon.svg')?>" width="30" height="30"></kiss-svg>
                                 </div>
                                 <div class="kiss-flex-1"><a class="kiss-link-muted"><strong>{{ collection.label || collection.name }}</strong></a></div>
+                                <div>
+                                    <kiss-dropdown>
+                                        <a><icon>menu</icon></a>
+                                        <kiss-dropdownbox pos="aside-left">
+                                            <kiss-navlist>
+                                                <ul>
+                                                    <li class="kiss-nav-header">{{ collection.label || collection.name }}</li>
+                                                    <li><a :href="$route(`/collections/edit/${collection.name}`)"><?=t('Edit')?></a></li>
+                                                </ul>
+                                            </navlist>
+                                        </kiss-dropdownbox>
+                                    </kiss-dropdown>
+                                </div>
                             </div>
                         </kiss-card>
                     </div>

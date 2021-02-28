@@ -39,14 +39,14 @@
                         <app-avatar size="30" name="<?=$this['user/name']?>"></app-avatar>
                     </a>
                     <kiss-dropdownbox>
-                        <nav-list>
+                        <kiss-navlist>
                             <ul>
                                 <li class="kiss-nav-header"><?=t('System')?></li>
                                 <li><a class="kiss-flex kiss-flex-middle" href="<?=$this->route('/users/user')?>"><icon class="kiss-margin-small-right">account_circle</icon> <?=t('Account')?></a></li>
                                 <li class="kiss-nav-divider"></li>
                                 <li><a class="kiss-flex kiss-flex-middle kiss-color-danger" href="<?=$this->route('/auth/logout')?>"><icon class="kiss-margin-small-right">power_settings_new</icon> <?=t('Logout')?></a></li>
                             </ul>
-                        </nav-list>
+                        </navlist>
                     </kiss-dropdownbox>
                 </kiss-dropdown>
             </div>
@@ -67,7 +67,7 @@
             <?php $this->trigger('app.layout.offcanvas.header') ?>
             <div class="kiss-flex-1 app-offcanvas-content">
                 <div class="kiss-padding">
-                    <nav-list>
+                    <kiss-navlist>
                         <ul>
                             <li class="<?=($this->request->route == '/') ? 'active':''?>">
                                 <a href="<?=$this->route('/')?>">
@@ -85,13 +85,13 @@
                                 </li>
                             <?php endforeach ?>
                         </ul>
-                    </nav-list>
+                    </navlist>
                 </div>
 
                 <?php $this->trigger('app.layout.offcanvas.content') ?>
             </div>
             <div class="kiss-padding">
-                <nav-list>
+                <kiss-navlist>
                     <ul>
                         <li class="kiss-nav-header kiss-flex kiss-flex-middle"><?=t('System')?></li>
                         <li class="<?=(strpos($this->request->route, '/settings') === 0) ? 'active':''?>">
@@ -106,7 +106,7 @@
                             </a></li>
                         <?php endif ?>
                     </ul>
-                </nav-list>
+                </navlist>
             </div>
             <?php $this->trigger('app.layout.offcanvas.footer') ?>
         </kiss-content>

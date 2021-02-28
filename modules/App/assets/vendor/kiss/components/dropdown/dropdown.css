@@ -42,3 +42,16 @@ kiss-dropdownbox[pos="center"] {
     right: 50%;
     transform: translateY(10px) translateX(50%);
 }
+
+kiss-dropdownbox[pos="aside-left"] {
+    top: 0;
+    left: 0;
+    margin-top: 0;
+    margin-left: -10px;
+    transform: translateY(20px) translateX(-100%);
+    right: auto;
+}
+
+kiss-dropdown[open="true"] kiss-dropdownbox[pos="aside-left"] {
+    transform: translateY(0px) translateX(-100%);
+}

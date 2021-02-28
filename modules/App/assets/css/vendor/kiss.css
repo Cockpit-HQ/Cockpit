@@ -47,36 +47,36 @@ kiss-dialog kiss-content {
 
 .kiss-disabled { opacity: .6; }
 
-kiss-offcanvas nav-list ul > li > a,
-kiss-dropdownbox nav-list ul > li > a {
+kiss-offcanvas kiss-navlist ul > li > a,
+kiss-dropdownbox kiss-navlist ul > li > a {
     color: inherit;
     opacity: .45;
     transition: all 250ms;
 }
 
-kiss-offcanvas nav-list ul > li > a:hover,
-kiss-dropdownbox nav-list ul > li > a:hover {
+kiss-offcanvas kiss-navlist ul > li > a:hover,
+kiss-dropdownbox kiss-navlist ul > li > a:hover {
     color: inherit;
     opacity: 1;
 }
 
-kiss-offcanvas nav-list ul > li.active > a {
+kiss-offcanvas kiss-navlist ul > li.active > a {
     color: var(--kiss-color-primary);
     font-weight: bold;
     opacity: 1;
 }
 
-kiss-offcanvas nav-list ul > li > *,
-kiss-offcanvas nav-list .kiss-nav-header {
+kiss-offcanvas kiss-navlist ul > li > *,
+kiss-offcanvas kiss-navlist .kiss-nav-header {
     display: flex;
     align-items: center;
     padding: 8px 0;
     letter-spacing: 2px;
 }
 
-kiss-dropdownbox nav-list ul > li a icon,
-kiss-offcanvas nav-list ul > li a icon,
-kiss-offcanvas nav-list ul > li a kiss-svg {
+kiss-dropdownbox kiss-navlist ul > li a icon,
+kiss-offcanvas kiss-navlist ul > li a icon,
+kiss-offcanvas kiss-navlist ul > li a kiss-svg {
     font-size: 1.2em;
     margin-right: 5px;
 }
@@ -109,4 +109,9 @@ kiss-card[theme*="bordered"] {
 .kiss-button-group .kiss-button:last-child {
     border-top-right-radius: var(--app-border-radius);
     border-bottom-right-radius: var(--app-border-radius);
+}
+
+.kiss-button icon {
+    transform: scale(2);
+    line-height: 1;
 }

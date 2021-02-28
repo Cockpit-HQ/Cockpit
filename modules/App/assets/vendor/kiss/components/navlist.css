@@ -1,0 +1,31 @@
+kiss-navlist {
+    display: block;
+}
+
+kiss-navlist ul {
+    margin: 0;
+    padding: 0;
+    font-size: var(--kiss-navlist-font-size, inherit);
+    list-style: none;
+}
+
+kiss-navlist ul > li > * {
+    display: block;
+    text-decoration: none;
+    font-size: inherit;
+    padding: var(--kiss-navlist-padding-vertical, 5px) var(--kiss-navlist-padding-horizontal, 0);
+    line-height: 1;
+}
+
+.kiss-nav-header {
+    padding: var(--kiss-navlist-padding-vertical, 5px) var(--kiss-navlist-padding-horizontal, 0);
+    text-transform: uppercase;
+    font-size: .8em;
+    font-weight: bold;
+    letter-spacing: .1em;
+}
+
+.kiss-nav-divider {
+    margin: var(--kiss-navlist-padding-vertical, 5px) var(--kiss-navlist-padding-horizontal, 0);
+    border-top: 1px solid var(--kiss-navlist-divider-color, var(--kiss-hr-color, rgba(0,0,0,.1)));
+}
