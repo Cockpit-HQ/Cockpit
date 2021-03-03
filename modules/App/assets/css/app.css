@@ -119,3 +119,7 @@ app-actionbar kiss-container {
     margin-top: 10px;
     border-top: 1px var(--kiss-hr-color) solid;
 }
+
+[field="boolean"] {
+    font-size: .95em;
+}

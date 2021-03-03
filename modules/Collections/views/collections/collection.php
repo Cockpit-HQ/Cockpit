@@ -22,6 +22,11 @@
                 </kiss-row>
 
                 <div class="kiss-margin">
+                    <label><?=t('Group')?></label>
+                    <input class="kiss-input" type="text" v-model="collection.group">
+                </div>
+
+                <div class="kiss-margin">
                     <label><?=t('Info')?></label>
                     <textarea class="kiss-input kiss-textarea" style="height:100px;" v-model="collection.info"></textarea>
                 </div>

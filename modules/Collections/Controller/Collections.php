@@ -16,6 +16,7 @@ class Collections extends App {
         $collection = [
             'name' => '',
             'label' => '',
+            'group' => '',
             'color' => null,
             'fields' => []
         ];

@@ -120,10 +120,17 @@ export default {
                                 </div>
 
                                 <div class="kiss-margin">
+                                    <field-boolean class="kiss-margin-small" v-model="field.required" :label="t('Required')"></field-boolean>
+                                    <field-boolean class="kiss-margin-small" v-model="field.i18n" :label="t('Localize field')"></field-boolean>
+                                </div>
+
+                            </tab>
+                            <tab class="animated fadeIn faster" :title="t('Options')">
+
+                                <div class="kiss-margin">
                                     <label>{{t('Options')}}</label>
                                     <field-object v-model="field.opts"></field-object>
                                 </div>
-
 
                             </tab>
                             <tab class="animated fadeIn faster" :title="t('Meta')">

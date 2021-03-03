@@ -15,12 +15,17 @@ export default {
         modelValue: {
             type: Boolean,
             default: false
+        },
+        label: {
+            type: Boolean,
+            default: false
         }
     },
 
     template: /*html*/`
-        <div>
-            <input class="app-switch" type="checkbox" v-model="val" @change="update">
+        <div class="kiss-flex kiss-flex-middle" field="boolean">
+            <div class="kiss-flex kiss-flex-middle"><input class="app-switch" type="checkbox" v-model="val" @change="update"></div>
+            <span class="kiss-margin-left" :class="{'kiss-color-muted':!val}" v-if="label">{{ label }}</span>
         </div>
     `,
 
