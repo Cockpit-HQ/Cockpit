@@ -2,7 +2,9 @@ export default {
 
     _meta: {
         label: 'Boolean',
-        info: 'An input that is either true or false'
+        info: 'An input that is either true or false',
+        icon: 'settings:assets/icons/boolean.svg',
+        color: 'rgb(253, 229, 227)'
     },
 
     data() {

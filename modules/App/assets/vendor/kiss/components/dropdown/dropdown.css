@@ -39,8 +39,13 @@ kiss-dropdownbox[pos="left"] {
 }
 
 kiss-dropdownbox[pos="center"] {
-    right: 50%;
-    transform: translateY(10px) translateX(50%);
+    right: auto;
+    left: 50%;
+    transform: translateY(-40%) translateX(-50%);
+}
+
+kiss-dropdown[open="true"] kiss-dropdownbox[pos="center"] {
+    transform: translateY(-50%) translateX(-50%);
 }
 
 kiss-dropdownbox[pos="aside-left"] {

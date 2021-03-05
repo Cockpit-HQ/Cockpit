@@ -4,7 +4,8 @@ export default {
 
     _meta: {
         label: 'Object',
-        info: 'Object input'
+        info: 'Object input',
+        icon: 'settings:assets/icons/object.svg'
     },
 
     data() {

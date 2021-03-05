@@ -12,7 +12,8 @@ export default {
 
     _meta: {
         label: 'Code',
-        info: 'Code input'
+        info: 'Code input',
+        icon: 'settings:assets/icons/code.svg'
     },
 
     data() {

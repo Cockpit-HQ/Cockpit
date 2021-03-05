@@ -14,27 +14,45 @@
 
             <div class="kiss-margin-large" v-if="!loading && collections.length">
 
-                <kiss-row class="kiss-child-width-1-2 kiss-child-width-1-4@m kiss-child-width-1-6@l" v-if="mode=='grid'">
+                <kiss-row class="kiss-child-width-1-2 kiss-child-width-1-4@m kiss-child-width-1-5@l" v-if="mode=='grid'">
 
                     <div v-for="collection in collections">
                         <kiss-card class="animated fadeIn kiss-position-relative" theme="bordered" hover="shadow">
 
-                            <div class="kiss-padding kiss-position-relative">
-                                <canvas width="600" height="450"></canvas>
-                                <div class="kiss-cover kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-padding">
-                                    <div>
-                                        <div :style="{color: collection.color || 'inherit' }">
-                                            <kiss-svg class="kiss-margin-auto" src="<?=$this->base('collections:icon.svg')?>" width="80" height="60"></kiss-svg>
-                                        </div>
-                                        <div class="kiss-padding kiss-size-small kiss-text-truncate">
-                                            <strong>{{ collection.label || collection.name }}</strong>
+                            <div class="kiss-padding">
+
+                                <div class="kiss-position-relative">
+                                    <canvas width="600" height="450"></canvas>
+                                    <div class="kiss-cover kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-padding">
+                                        <div>
+                                            <div :style="{color: collection.color || 'inherit' }">
+                                                <kiss-svg class="kiss-margin-auto" src="<?=$this->base('collections:icon.svg')?>" width="60" height="60"></kiss-svg>
+                                            </div>
+                                            <div class="kiss-padding kiss-margin-top kiss-text-truncate">
+                                                <strong>{{ collection.label || collection.name }}</strong>
+                                            </div>
                                         </div>
                                     </div>
+                                    <a class="kiss-cover" :href="$route(`/collections/entries/list/${collection.name}`)"></a>
+                                </div>
+
+                                <div class="kiss-align-center">
+                                    <kiss-dropdown class="kiss-display-inline-block">
+                                        <a><icon>more_horiz</icon></a>
+                                        <kiss-dropdownbox class="kiss-align-left" pos="center">
+                                            <kiss-navlist>
+                                                <ul>
+                                                    <li class="kiss-nav-header">{{ collection.label || collection.name }}</li>
+                                                    <li><a :href="$route(`/collections/edit/${collection.name}`)"><?=t('Edit')?></a></li>
+                                                    <li class="kiss-nav-divider"></li>
+                                                    <a class="kiss-color-danger" @click="remove(collection)"><?=t('Delete')?></a>
+                                                </ul>
+                                            </navlist>
+                                        </kiss-dropdownbox>
+                                    </kiss-dropdown>
                                 </div>
 
                             </div>
-
-                            <a class="kiss-cover" href=""></a>
 
                         </kiss-card>
                     </div>
@@ -49,7 +67,7 @@
                                 <div class="kiss-margin-small-right" :style="{color: collection.color || 'inherit' }">
                                     <kiss-svg class="kiss-margin-auto" src="<?=$this->base('collections:icon.svg')?>" width="25" height="25"></kiss-svg>
                                 </div>
-                                <div class="kiss-flex-1"><a class="kiss-link-muted"><strong>{{ collection.label || collection.name }}</strong></a></div>
+                                <div class="kiss-flex-1"><a class="kiss-link-muted"><a class="kiss-link-muted" :href="$route(`/collections/entries/list/${collection.name}`)"><strong>{{ collection.label || collection.name }}</strong></a></div>
                                 <div>
                                     <kiss-dropdown>
                                         <a><icon>menu</icon></a>
@@ -98,7 +116,7 @@
                 data() {
                     return {
                         collections: [],
-                        mode: 'list',
+                        mode: 'grid',
                         loading: false
                     }
                 },

@@ -7,7 +7,19 @@ use ArrayObject;
 
 class Entries extends App {
 
-    public function index() {
+    public function list($collection = null) {
+
+        if (!$collection) {
+            return false;
+        }
+
+        $collection = $this->module('collections')->collection($collection);
+
+        if (!$collection) {
+            return $this->stop(404);
+        }
+
+        return $this->render('collections:views/entries/list.php', compact('collection'));
 
     }
 

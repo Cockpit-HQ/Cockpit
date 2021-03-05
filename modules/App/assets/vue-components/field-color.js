@@ -2,7 +2,8 @@ export default {
 
     _meta: {
         label: 'Color',
-        info: 'Color input'
+        info: 'Color input',
+        icon: 'settings:assets/icons/color.svg'
     },
 
     data() {
@@ -29,7 +30,7 @@ export default {
 
     template: /*html*/`
         <div class="kiss-overlay-input" field="color">
-            <canvas :width="size" :height="size" :style="val ? { background: val } : transparent"></canvas>
+            <canvas class="app-border-radius" :width="size" :height="size" :style="val ? { background: val } : transparent"></canvas>
             <input v-model="val" type="color" style="cursor:pointer;" @change="update">
         </div>
     `,

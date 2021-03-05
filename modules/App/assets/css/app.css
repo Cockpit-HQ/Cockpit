@@ -67,7 +67,7 @@ body {
 }
 
 app-avatar canvas,
-[field="color"] {
+.app-border-radius {
     border-radius: var(--app-border-radius);
 }
 

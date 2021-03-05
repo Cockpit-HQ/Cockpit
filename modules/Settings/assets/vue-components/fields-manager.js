@@ -31,7 +31,7 @@ export default {
 
         return {
             fields: this.modelValue || [],
-            availableFields: [],
+            availableFields: {},
             field: null,
             ready: false,
 
@@ -70,7 +70,12 @@ export default {
             <vue-draggable class="animated fadeIn" v-model="fields" v-if="ready && fields.length" handle=".fm-handle">
                 <template #item="{ element }">
                     <kiss-card class="kiss-padding-small kiss-flex kiss-flex-middle" theme="bordered" style="margin: 8px 0;">
-                        <div class="kiss-size-small kiss-flex-1">{{ element.label || element.name }}</div>
+                        <div class="kiss-margin-right">
+                            <div class="kiss-padding-small app-border-radius" :style="{background: _.get(availableFields, element.type+'.color', 'rgb(255, 248, 214)')}">
+                                <img :src="$base(_.get(availableFields, element.type+'.icon', 'settings:assets/icons/edit.svg'))" width="20" height="20" style="opacity:.6">
+                            </div>
+                        </div>
+                        <div class="kiss-flex-1 kiss-text-bold">{{ element.label || element.name }}</div>
                         <div class="kiss-badge kiss-text-caption">{{element.type}}</div>
                         <a class="kiss-margin-left" @click="edit(element)"><icon>settings</icon></a>
                         <a class="kiss-margin-left kiss-color-danger" @click="remove(element)"><icon>delete</icon></a>
@@ -80,7 +85,7 @@ export default {
             </vue-draggable>
 
             <div class="kiss-margin kiss-align-center" v-if="ready">
-                <a @click="add"><icon>control_point</icon></a>
+                <a class="kiss-size-large" @click="add"><icon>control_point</icon></a>
             </div>
 
         </div>
@@ -112,6 +117,11 @@ export default {
                                 <div class="kiss-margin">
                                     <label>{{t('Display name')}}</label>
                                     <input class="kiss-input kiss-width-1-1" type="text" v-model="field.label">
+                                </div>
+
+                                <div class="kiss-margin">
+                                    <label>{{t('Info')}}</label>
+                                    <input class="kiss-input kiss-width-1-1" type="text" v-model="field.info">
                                 </div>
 
                                 <div class="kiss-margin">
@@ -180,6 +190,7 @@ export default {
                 name: '',
                 type: 'text',
                 label: '',
+                info: '',
                 group: '',
                 i18n: false,
                 required: false,

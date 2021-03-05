@@ -10,6 +10,7 @@
         'app:assets/css/app.css',
         'app:assets/vendor/JSON5.js',
         'app:assets/vendor/noty/noty.min.js',
+        'app:assets/vendor/lodash.js',
         ['src' => 'app:assets/js/app.js', 'type' => 'module'],
         ['src' => 'app:assets/js/admin.js', 'type' => 'module']
     ], APP_VERSION)?>

@@ -3,7 +3,8 @@ export default {
 
     _meta: {
         label: 'Text',
-        info: 'Simple text'
+        info: 'Simple text',
+        icon: 'settings:assets/icons/text.svg'
     },
 
     data() {
