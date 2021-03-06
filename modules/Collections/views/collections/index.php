@@ -14,7 +14,7 @@
 
             <div class="kiss-margin-large" v-if="!loading && collections.length">
 
-                <kiss-row class="kiss-child-width-1-2 kiss-child-width-1-4@m kiss-child-width-1-5@l" v-if="mode=='grid'">
+                <kiss-row class="kiss-child-width-1-4@m kiss-child-width-1-5@l kiss-child-width-1-6@xl" v-if="mode=='grid'">
 
                     <div v-for="collection in collections">
                         <kiss-card class="animated fadeIn kiss-position-relative" theme="bordered" hover="shadow">
@@ -26,7 +26,7 @@
                                     <div class="kiss-cover kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-padding">
                                         <div>
                                             <div :style="{color: collection.color || 'inherit' }">
-                                                <kiss-svg class="kiss-margin-auto" src="<?=$this->base('collections:icon.svg')?>" width="60" height="60"></kiss-svg>
+                                                <kiss-svg class="kiss-margin-auto" src="<?=$this->base('collections:icon.svg')?>" width="80" height="80"></kiss-svg>
                                             </div>
                                             <div class="kiss-padding kiss-margin-top kiss-text-truncate">
                                                 <strong>{{ collection.label || collection.name }}</strong>
@@ -38,7 +38,7 @@
 
                                 <div class="kiss-align-center">
                                     <kiss-dropdown class="kiss-display-inline-block">
-                                        <a><icon>more_horiz</icon></a>
+                                        <a class="kiss-size-large"><icon>more_horiz</icon></a>
                                         <kiss-dropdownbox class="kiss-align-left" pos="center">
                                             <kiss-navlist>
                                                 <ul>

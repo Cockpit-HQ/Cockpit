@@ -21,6 +21,7 @@ icon,
     white-space: nowrap;
     word-wrap: normal;
     direction: ltr;
+    vertical-align: middle;
     -webkit-font-feature-settings: 'liga';
     -webkit-font-smoothing: antialiased;
 }
