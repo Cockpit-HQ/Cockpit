@@ -49,6 +49,10 @@
                     <kiss-container size="small">
                         <div class="kiss-flex kiss-flex-middle kiss-flex-right">
 
+                            <div class="kiss-flex-1" v-if="isUpdate">
+                                <a class="kiss-button" :href="$route(`/collections/entries/list/${collection.name}`)"><?=t('Goto entries')?></a>
+                            </div>
+
                             <div class="kiss-button-group">
                                 <a class="kiss-button kiss-button-link" href="<?=$this->route('/collections')?>">
                                     <span v-if="!isUpdate"><?=t('Cancel')?></span>
