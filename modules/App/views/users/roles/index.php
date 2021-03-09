@@ -6,13 +6,6 @@
 
         <div class="kiss-margin-large-bottom kiss-flex kiss-flex-middle">
             <div class="kiss-size-1 kiss-flex-1"><strong><?=t('Roles')?></strong></div>
-
-            <div class="kiss-button-group">
-                <?php if (_allowed('app.users.manage')): ?>
-                <a class="kiss-button" href="<?=$this->route('/users')?>"><?=t('Manage users')?></a>
-                <?php endif ?>
-                <a class="kiss-button kiss-button-primary" href="<?=$this->route('/users/roles/create')?>"><?=t('Add role')?></a>
-            </div>
         </div>
 
         <app-loader v-if="loading"></app-loader>
@@ -48,6 +41,21 @@
             </li>
 
         </ul>
+
+        <app-actionbar>
+
+            <kiss-container size="small">
+                <div class="kiss-flex kiss-flex-middle kiss-flex-right">
+                    <div class="kiss-button-group">
+                        <?php if (_allowed('app.users.manage')): ?>
+                        <a class="kiss-button" href="<?=$this->route('/users')?>"><?=t('Manage users')?></a>
+                        <?php endif ?>
+                        <a class="kiss-button kiss-button-primary" href="<?=$this->route('/users/roles/create')?>"><?=t('Add role')?></a>
+                    </div>
+                </div>
+            </kiss-container>
+
+        </app-actionbar>
 
 
     </template>

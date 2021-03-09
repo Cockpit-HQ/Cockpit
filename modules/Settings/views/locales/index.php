@@ -6,7 +6,6 @@
 
         <div class="kiss-margin-large-bottom kiss-flex kiss-flex-middle">
             <div class="kiss-size-1 kiss-flex-1"><strong><?=t('Locales')?></strong></div>
-            <a class="kiss-button kiss-button-primary" href="<?=$this->route('/settings/locales/create')?>"><?=t('Add locale')?></a>
         </div>
 
         <app-loader v-if="loading"></app-loader>
@@ -35,6 +34,16 @@
             </li>
 
         </ul>
+
+        <app-actionbar>
+
+            <kiss-container size="small">
+                <div class="kiss-flex kiss-flex-middle kiss-flex-right">
+                    <a class="kiss-button kiss-button-primary" href="<?=$this->route('/settings/locales/create')?>"><?=t('Add locale')?></a>
+                </div>
+            </kiss-container>
+
+        </app-actionbar>
 
 
     </template>

@@ -21,7 +21,7 @@ if (!isset($user['twofa'])) {
             </h1>
             <?php endif ?>
 
-            <div class="kiss-flex kiss-flex-middle kiss-has-transition" v-if="user._id" :class="{'kiss-inactive': !user.active}">
+            <div class="kiss-flex kiss-flex-middle kiss-has-transition kiss-margin-large-bottom" v-if="user._id" :class="{'kiss-inactive': !user.active}">
                 <div>
                     <app-avatar size="50" :name="user.name"></app-avatar>
                 </div>
@@ -31,7 +31,6 @@ if (!isset($user['twofa'])) {
                 </div>
             </div>
 
-            <hr class="kiss-margin-large" v-if="user._id">
 
             <form :class="{'kiss-disabled':saving}" @submit.prevent="save">
 

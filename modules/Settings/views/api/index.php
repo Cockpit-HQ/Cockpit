@@ -7,7 +7,6 @@
 
             <div class="kiss-flex kiss-flex-middle">
                 <div class="kiss-size-1 kiss-flex-1"><strong><?=t('API & Security')?></strong></div>
-                <a class="kiss-button kiss-button-primary" href="<?=$this->route('/settings/api/create')?>"><?=t('Add key')?></a>
             </div>
 
             <kiss-card class="kiss-margin kiss-margin-large-bottom kiss-padding kiss-bgcolor-contrast">
@@ -51,6 +50,16 @@
                 </ul>
 
             </div>
+
+            <app-actionbar>
+
+                <kiss-container size="small">
+                    <div class="kiss-flex kiss-flex-middle kiss-flex-right">
+                        <a class="kiss-button kiss-button-primary" href="<?=$this->route('/settings/api/create')?>"><?=t('Add key')?></a>
+                    </div>
+                </kiss-container>
+
+            </app-actionbar>
 
         </template>
 
