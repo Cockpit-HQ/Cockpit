@@ -1,7 +1,8 @@
 kiss-card,
 .kiss-button,
 .kiss-badge,
-kiss-dialog kiss-content {
+kiss-dialog kiss-content,
+kiss-popoutmenu kiss-content {
     border-radius: var(--app-border-radius);
 }
 
@@ -18,8 +19,9 @@ kiss-dialog kiss-content {
 .kiss-height-50vh { min-height: 50vh; }
 
 kiss-offcanvas kiss-content,
-kiss-dialog kiss-content {
-    box-shadow: 0 0 40px var(--kiss-color-contrast);
+kiss-dialog kiss-content,
+kiss-popoutmenu kiss-content {
+    box-shadow: 0 1px 1px var(--app-shadow-color), 0 2px 2px var(--app-shadow-color), 0 4px 4px var(--app-shadow-color), 0 8px 8px var(--app-shadow-color), 0 16px 16px var(--app-shadow-color);
 }
 
 .kiss-input {
@@ -86,7 +88,7 @@ kiss-offcanvas kiss-navlist ul > li a kiss-svg {
 }
 
 kiss-card[hover="shadow"]:hover {
-    box-shadow: 0 25px 80px rgba(0,0,0, 0.8), 0 3px 12px rgba(0,0,0,1);
+    box-shadow: 0 1px 1px var(--app-shadow-color), 0 2px 2px var(--app-shadow-color), 0 4px 4px var(--app-shadow-color), 0 8px 8px var(--app-shadow-color), 0 16px 16px var(--app-shadow-color);
 }
 
 kiss-card[theme*="bordered"] {

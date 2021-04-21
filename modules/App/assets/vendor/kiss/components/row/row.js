@@ -1,5 +1,5 @@
 import { debounce } from "../../js/utils.js";
-
+import { onMutation } from '../../js/events.js';
 
 customElements.define('kiss-row', class extends HTMLElement {
 
@@ -13,15 +13,10 @@ customElements.define('kiss-row', class extends HTMLElement {
             }, 500)
         }));
 
-        window.addEventListener('resize', () => this.update());
+        let debouncedUpdate = debounce(() => this.update() , 15);
 
-        (new MutationObserver(() => {
-            this.update();
-        })).observe(this, {
-            childList: true,
-            subtree: true
-        });
-
+        window.addEventListener('resize', debouncedUpdate);
+        onMutation(debouncedUpdate, this);
         setTimeout(() => this.update(), 0);
     }
 
@@ -47,7 +42,7 @@ customElements.define('kiss-row', class extends HTMLElement {
         top = firstVisible.offsetTop;
 
         for (let i = 0; i < children.length; i++) {
-            
+
             diff = Math.abs(top - (!this._isHidden(children[i]) ? children[i].offsetTop : top));
 
             if (diff > 1) {

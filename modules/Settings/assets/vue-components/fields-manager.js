@@ -112,7 +112,7 @@ export default {
                         </div>
 
                         <app-tabs class="kiss-margin-large">
-                            <tab class="animated fadeIn faster" :title="t('General')">
+                            <tab class="animated fadeIn faster" :caption="t('General')">
 
                                 <div class="kiss-margin">
                                     <label>{{t('Display name')}}</label>
@@ -135,7 +135,7 @@ export default {
                                 </div>
 
                             </tab>
-                            <tab class="animated fadeIn faster" :title="t('Options')">
+                            <tab class="animated fadeIn faster" :caption="t('Options')">
 
                                 <div class="kiss-margin">
                                     <label>{{t('Options')}}</label>
@@ -143,7 +143,7 @@ export default {
                                 </div>
 
                             </tab>
-                            <tab class="animated fadeIn faster" :title="t('Meta')">
+                            <tab class="animated fadeIn faster" :caption="t('Meta')">
                                 <div class="kiss-margin">
                                     <label>{{t('Meta')}}</label>
                                     <field-object v-model="field.meta" :height="150"></field-object>

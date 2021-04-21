@@ -54,7 +54,7 @@ customElements.define('app-tabs', class extends HTMLElement {
             if (this.children[i].tagName.toLowerCase() == 'tab') {
 
                 item = document.createElement("li");
-                item.innerHTML = `<a class="app-tabs-nav-link" index="${this.tabs.length}">${this.children[i].getAttribute('title') || 'Tab'}</a>`
+                item.innerHTML = `<a class="app-tabs-nav-link" index="${this.tabs.length}">${this.children[i].getAttribute('caption') || 'Tab'}</a>`
                 this.nav.append(item);
 
                 this.tabs.push(this.children[i]);
