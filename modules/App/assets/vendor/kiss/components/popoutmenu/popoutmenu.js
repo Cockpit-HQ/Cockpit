@@ -8,7 +8,10 @@ on(document.documentElement, 'click', '[kiss-popoutmenu]', function (e) {
     let menu = document.querySelector(this.getAttribute('kiss-popoutmenu') || this.getAttribute('href'));
 
     if (menu && menu.show) {
-        menu.show(this);
+
+        let position = this.getAttribute('kiss-popoutmenu-pos');
+
+        menu.show(position ? this : null, position);
     }
 });
 
@@ -21,27 +24,45 @@ customElements.define('kiss-popoutmenu', class extends HTMLElement {
         });
     }
 
-    show(ele) {
+    show(ele, position = 'left') {
 
-        if (ele) {
+        let content = this.querySelector('kiss-content');
 
-            let content = this.querySelector('kiss-content');
+        if (content) {
+            content.style.position = '';
+            content.style.top = '';
+            content.style.left = '';
+        }
 
-            if (content) {
+        if (content && ele) {
 
-                let rect = ele.getBoundingClientRect(),
-                    left = rect.left,
-                    top = rect.top + ele.offsetHeight;
+            let rect = ele.getBoundingClientRect(),
+                left = rect.left,
+                top = rect.top + ele.offsetHeight;
 
-                if (left + content.offsetWidth > this.offsetWidth) {
+            switch (position) {
+                case "right":
                     left = rect.right - content.offsetWidth;
-                }
+                    break;
 
-                content.style.position = 'absolute';
-                content.style.top = `${top}px`;
-                content.style.left = `${left}px`;
+                case "center":
+                    left = (rect.right - ele.offsetWidth/2) - content.offsetWidth / 2;
+                    break;
 
+                case "left":
+                default:
+                    left = rect.left;
+                    break;
             }
+
+            if (left + content.offsetWidth > this.offsetWidth) {
+                left = rect.right - content.offsetWidth;
+            }
+
+            content.style.position = 'absolute';
+            content.style.top = `${top}px`;
+            content.style.left = `${left}px`;
+
         }
 
         this.setAttribute('open', 'true');

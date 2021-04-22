@@ -23,7 +23,7 @@ kiss-popoutmenu > kiss-content {
     margin-left: auto;
     margin-right: auto;
 
-    padding: var(--kiss-popoutmenu-content-spacing, 10px);
+    padding: var(--kiss-popoutmenu-content-spacing, 15px);
 
     background: var(--kiss-popoutmenu-content-background, #fff);
     color: var(--kiss-popoutmenu-content-color, inherit);

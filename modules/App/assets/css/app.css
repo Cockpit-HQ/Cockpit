@@ -53,7 +53,7 @@ vue-view:not([init="true"]) { display: none; }
     --kiss-offcanvas-background: var(--kiss-dialog-background);
     --kiss-offcanvas-content-color: var(--kiss-base-text-color);
 
-    --kiss-popoutmenu-content-background: #202735;
+    --kiss-popoutmenu-content-background: var(--kiss-dropdown-background);
 
     --kiss-navlist-font-size: 14px;
 
