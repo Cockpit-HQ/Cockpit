@@ -104,7 +104,10 @@ class App implements \ArrayAccess {
         self::$apps[$this['app.name']] = $this;
 
         // default helpers
-        $this->helpers = new \ArrayObject(\array_merge(['session' => 'Lime\\Helper\\Session', 'cache' => 'Lime\\Helper\\Cache'], $this->registry['helpers']));
+        $this->helpers = new \ArrayObject(\array_merge([
+            'session' => 'Lime\\Helper\\Session',
+            'cache' => 'Lime\\Helper\\Cache'
+        ], $this->registry['helpers']));
 
         // register simple autoloader
         spl_autoload_register(function ($class) use($self){
@@ -122,12 +125,39 @@ class App implements \ArrayAccess {
     }
 
     /**
+     * Object behavior on clone
+     *
+     * @return void
+     */
+    public function __clone() {
+
+        // update app instance on appaware objects
+
+        $this->helpers = clone $this->helpers;
+
+        foreach ($this->helpers as $name => $helper) {
+            if (is_string($helper)) continue;
+            $helper = clone $helper;
+            $helper->app = $this;
+            $this->helpers[$name] = $helper;
+        }
+
+        $this->registry['modules'] = clone $this->registry['modules'];
+
+        foreach ($this->registry['modules'] as $name => $module) {
+            $module = clone $module;
+            $module->app = $this;
+            $this->registry['modules'][$name] = $module;
+        }
+    }
+
+    /**
     * Get App instance
     * @param  String $name Lime app name
     * @return Object       Lime app object
     */
-    public static function instance($name) {
-        return self::$apps[$name];
+    public static function instance($name, $clone = false) {
+        return $clone ? clone self::$apps[$name] : self::$apps[$name];
     }
 
     /**
@@ -159,7 +189,7 @@ class App implements \ArrayAccess {
         $this->exit = true;
 
         if (!isset($this->response)) {
-            
+
             if (\is_array($data) || \is_object($data)) {
                 $data = \json_encode($data);
             }
@@ -167,7 +197,7 @@ class App implements \ArrayAccess {
             if ($data) {
                 echo $data;
             }
-            
+
             exit;
         }
 
@@ -940,7 +970,7 @@ class App implements \ArrayAccess {
     * @return Mixed
     */
     public function invoke($class, $action="index", $params=[]) {
-        
+
         $context = compact('action', 'params');
         $controller = new $class($this, $context);
 

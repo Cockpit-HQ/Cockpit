@@ -5,12 +5,12 @@ define('APP_DIR', str_replace(DIRECTORY_SEPARATOR, '/', __DIR__));
 if (!defined('APP_CLI')) define('APP_CLI', PHP_SAPI == 'cli');
 if (!defined('APP_ADMIN')) define('APP_ADMIN', false);
 
-// check for custom defines
-if (file_exists(__DIR__.'/config/defines.php')) {
-    include(__DIR__.'/config/defines.php');
-}
-
 if (!defined('APP_ENV_DIR')) define('APP_ENV_DIR', APP_DIR);
+
+// check for custom defines
+if (file_exists(APP_ENV_DIR.'/config/defines.php')) {
+    include(APP_ENV_DIR.'/config/defines.php');
+}
 
 // Autoload vendor libs
 include(__DIR__.'/lib/vendor/autoload.php');
@@ -24,14 +24,24 @@ spl_autoload_register(function($class) {
 });
 
 // load .env file if exists
-DotEnv::load(__DIR__);
+DotEnv::load(APP_ENV_DIR);
+
+if (APP_ENV_DIR != APP_DIR) {
+    DotEnv::load(APP_ENV_DIR);
+}
+
 
 class APP {
 
     protected static $instance = null;
 
-    public static function instance() {
-        return static::$instance ?? static::init();
+    public static function instance($clone = false) {
+
+        if (!static::$instance) {
+            static::init();
+        }
+
+        return !$clone ? static::$instance : clone static::$instance;
     }
 
     protected static function init() {
@@ -44,7 +54,7 @@ class APP {
         }
 
         $config = array_replace_recursive([
-            
+
             'docs_root' => defined('APP_DOCUMENT_ROOT') ? APP_DOCUMENT_ROOT : null,
             'debug' => APP_CLI ? true : preg_match('/(localhost|::1|\.local)$/', @$_SERVER['SERVER_NAME']),
             'app.name' => 'Cockpit',
@@ -82,7 +92,7 @@ class APP {
 
         // mailer service
         $app->service('mailer', function() use($app, $config){
-            
+
             $options = isset($config['mailer']) ? $config['mailer']:[];
 
             if (is_string($options)) {
