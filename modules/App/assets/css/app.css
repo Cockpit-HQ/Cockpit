@@ -60,6 +60,8 @@ vue-view:not([init="true"]) { display: none; }
     --kiss-card-shadowed-color: var(--kiss-color-muted);
     --kiss-card-bordered-color: rgb(106, 85, 85, .15);
 
+    --kiss-breadcrumb-size: 11px;
+
     --app-border-radius: 3px;
     --app-shadow-color: rgba(0,0,0,0.12);
 }

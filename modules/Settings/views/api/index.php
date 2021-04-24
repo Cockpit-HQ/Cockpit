@@ -1,5 +1,9 @@
 
-<kiss-container class="kiss-margin-large" size="small">
+<kiss-container class="kiss-margin" size="small">
+
+    <ul class="kiss-breadcrumb">
+        <li><a href="<?=$this->route('/settings')?>"><?=t('Settings')?></a></li>
+    </ul>
 
     <vue-view>
 

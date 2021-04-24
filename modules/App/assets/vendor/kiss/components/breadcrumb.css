@@ -1,0 +1,19 @@
+.kiss-breadcrumb {
+    padding: 0;
+    list-style: none;
+}
+
+.kiss-breadcrumb > * { display: contents; }
+
+.kiss-breadcrumb > * > * {
+    font-size: var(--kiss-breadcrumb-size, 85%);
+    color: var(--kiss-breadcrumb-color, inherit);
+}
+
+.kiss-breadcrumb > :nth-child(n+2)::before {
+    content: var(--kiss-breadcrumb-divider, "−");
+    display: inline-block;
+    margin: 0 var(--kiss-breadcrumb-divider-margin-horizontal, 5px) 0 calc(var(--kiss-breadcrumb-divider-margin-horizontal, 5px) - 4px);
+    font-size: var(--kiss-breadcrumb-divider-size, var(--kiss-breadcrumb-size, 85%));
+    color: var(--kiss-breadcrumb-divider-color, inherit);
+}

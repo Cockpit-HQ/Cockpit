@@ -1,5 +1,9 @@
 
-<kiss-container class="kiss-margin-large">
+<kiss-container class="kiss-margin">
+
+    <ul class="kiss-breadcrumb">
+        <li><a href="<?=$this->route('/collections')?>"><?=t('Collections')?></a></li>
+    </ul>
 
     <div class="kiss-flex kiss-flex-middle">
         <div class="kiss-margin-right">
@@ -9,7 +13,7 @@
             <div class="kiss-size-large kiss-text-bold"><?=$this->escape($collection['label'] ? $collection['label'] : $collection['name'])?></div>
         </div>
         <div>
-            <a class="kiss-size-large" kiss-popoutmenu="#menu" kiss-popoutmenu-pos="left"><icon>more_horiz</icon></a>
+            <a class="kiss-size-large" kiss-popoutmenu="#menu"><icon>more_horiz</icon></a>
         </div>
     </div>
 

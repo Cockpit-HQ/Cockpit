@@ -117,3 +117,22 @@ kiss-card[theme*="bordered"] {
     transform: scale(2);
     line-height: 1;
 }
+
+.kiss-breadcrumb {
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 1rem;
+}
+
+.kiss-breadcrumb > *:not(.active) > *  {
+    opacity: .6;
+}
+
+.kiss-breadcrumb > *:not(.active):hover > *  {
+    opacity: 1;
+    color: inherit;
+}
+
+.kiss-breadcrumb > .active > *  {
+    font-weight: bold;
+}
