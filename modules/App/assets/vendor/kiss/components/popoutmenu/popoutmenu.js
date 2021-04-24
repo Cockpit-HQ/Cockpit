@@ -1,4 +1,4 @@
-import { on } from '../../js/events.js';
+import { on, trigger } from '../../js/events.js';
 
 
 on(document.documentElement, 'click', '[kiss-popoutmenu]', function (e) {
@@ -70,5 +70,6 @@ customElements.define('kiss-popoutmenu', class extends HTMLElement {
 
     close() {
         this.removeAttribute('open');
+        trigger(this, 'popoutmenuclose');
     }
 });

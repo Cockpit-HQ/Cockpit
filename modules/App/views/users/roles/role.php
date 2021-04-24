@@ -11,7 +11,12 @@
 
 
 ?>
-<kiss-container class="kiss-margin-large" size="small">
+<kiss-container class="kiss-margin" size="small">
+
+    <ul class="kiss-breadcrumb">
+        <li><a href="<?=$this->route('/users')?>"><?=t('Users')?></a></li>
+        <li><a href="<?=$this->route('/users/roles')?>"><?=t('Roles')?></a></li>
+    </ul>
 
     <vue-view>
         <template>

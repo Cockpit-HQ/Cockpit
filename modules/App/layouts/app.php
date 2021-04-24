@@ -35,26 +35,28 @@
 
             </div>
             <div class="kiss-margin-left">
-                <kiss-dropdown>
-                    <a>
-                        <app-avatar size="30" name="<?=$this['user/name']?>"></app-avatar>
-                    </a>
-                    <kiss-dropdownbox>
-                        <kiss-navlist>
-                            <ul>
-                                <li class="kiss-nav-header"><?=t('System')?></li>
-                                <li><a class="kiss-flex kiss-flex-middle" href="<?=$this->route('/users/user')?>"><icon class="kiss-margin-small-right">account_circle</icon> <?=t('Account')?></a></li>
-                                <li class="kiss-nav-divider"></li>
-                                <li><a class="kiss-flex kiss-flex-middle kiss-color-danger" href="<?=$this->route('/auth/logout')?>"><icon class="kiss-margin-small-right">power_settings_new</icon> <?=t('Logout')?></a></li>
-                            </ul>
-                        </navlist>
-                    </kiss-dropdownbox>
-                </kiss-dropdown>
+                <a kiss-popoutmenu="#app-account-menu">
+                    <app-avatar size="30" name="<?=$this['user/name']?>"></app-avatar>
+                </a>
             </div>
         </kiss-container>
     </app-header>
 
     <?=$content_for_layout?>
+
+    <kiss-popoutmenu id="app-account-menu">
+        <kiss-content>
+
+            <kiss-navlist>
+                <ul>
+                    <li class="kiss-nav-header"><?=t('System')?></li>
+                    <li><a class="kiss-flex kiss-flex-middle" href="<?=$this->route('/users/user')?>"><icon class="kiss-margin-small-right">account_circle</icon> <?=t('Account')?></a></li>
+                    <li class="kiss-nav-divider"></li>
+                    <li><a class="kiss-flex kiss-flex-middle kiss-color-danger" href="<?=$this->route('/auth/logout')?>"><icon class="kiss-margin-small-right">power_settings_new</icon> <?=t('Logout')?></a></li>
+                </ul>
+            </navlist>
+        </kiss-content>
+    </kiss-popoutmenu>
 
     <kiss-offcanvas id="app-offcanvas">
         <kiss-content class="kiss-flex kiss-flex-column">

@@ -13,7 +13,7 @@
             <div class="kiss-size-large kiss-text-bold"><?=$this->escape($collection['label'] ? $collection['label'] : $collection['name'])?></div>
         </div>
         <div>
-            <a class="kiss-size-large" kiss-popoutmenu="#menu"><icon>more_horiz</icon></a>
+            <a class="kiss-size-large" kiss-popoutmenu="#collection-menu-actions"><icon>more_horiz</icon></a>
         </div>
     </div>
 
@@ -30,13 +30,11 @@
 
 </kiss-container>
 
-<kiss-popoutmenu id="menu">
+<kiss-popoutmenu id="collection-menu-actions">
     <kiss-content>
-
-        <strong class="kiss-size-small kiss-text-upper"><?=t('Actions')?></strong>
-
         <kiss-navlist class="kiss-margin">
             <ul>
+                <li class="kiss-nav-header"><?=t('Actions')?></li>
                 <li><a href="<?=$this->route("/collections/edit/{$collection['name']}")?>"><?=t('Edit')?></a></li>
             </ul>
         </kiss-navlist>

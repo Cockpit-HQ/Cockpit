@@ -25,7 +25,7 @@ vue-view:not([init="true"]) { display: none; }
 
     --kiss-button-default-background: #2b2d42;
 
-    --kiss-color-contrast: #1f242B;
+    --kiss-color-contrast: rgba(0, 0, 0, .2);
     --kiss-color-primary: #0e8fff;
     --kiss-color-success: #4caf50;
     --kiss-color-warning: orange;
@@ -62,6 +62,7 @@ vue-view:not([init="true"]) { display: none; }
 
     --kiss-breadcrumb-size: 11px;
 
+    --app-header-background: rgba(0, 0, 0, .2);
     --app-border-radius: 3px;
     --app-shadow-color: rgba(0,0,0,0.12);
 }
@@ -96,7 +97,7 @@ label {
 app-header {
     display: block;
     padding: 10px 0;
-    background: var(--app-header-background, rgba(0, 0, 0, .2));
+    background: var(--app-header-background);
     box-shadow: 0 0 40px rgba(87, 87, 87, 0.05);
 }
 

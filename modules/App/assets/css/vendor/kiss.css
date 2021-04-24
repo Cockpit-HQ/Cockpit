@@ -126,6 +126,7 @@ kiss-card[theme*="bordered"] {
 
 .kiss-breadcrumb > *:not(.active) > *  {
     opacity: .6;
+    transition: opacity .3s;
 }
 
 .kiss-breadcrumb > *:not(.active):hover > *  {

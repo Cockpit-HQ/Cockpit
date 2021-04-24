@@ -37,19 +37,7 @@
                                 </div>
 
                                 <div class="kiss-align-center">
-                                    <kiss-dropdown class="kiss-display-inline-block">
-                                        <a class="kiss-size-large"><icon>more_horiz</icon></a>
-                                        <kiss-dropdownbox class="kiss-align-left" pos="center">
-                                            <kiss-navlist>
-                                                <ul>
-                                                    <li class="kiss-nav-header">{{ collection.label || collection.name }}</li>
-                                                    <li><a :href="$route(`/collections/edit/${collection.name}`)"><?=t('Edit')?></a></li>
-                                                    <li class="kiss-nav-divider"></li>
-                                                    <a class="kiss-color-danger" @click="remove(collection)"><?=t('Delete')?></a>
-                                                </ul>
-                                            </navlist>
-                                        </kiss-dropdownbox>
-                                    </kiss-dropdown>
+                                    <a class="kiss-size-large" @click="toggleCollectionActions(collection)"><icon>more_horiz</icon></a>
                                 </div>
 
                             </div>
@@ -69,19 +57,7 @@
                                 </div>
                                 <div class="kiss-flex-1"><a class="kiss-link-muted"><a class="kiss-link-muted" :href="$route(`/collections/entries/list/${collection.name}`)"><strong>{{ collection.label || collection.name }}</strong></a></div>
                                 <div>
-                                    <kiss-dropdown>
-                                        <a><icon>menu</icon></a>
-                                        <kiss-dropdownbox pos="aside-left">
-                                            <kiss-navlist>
-                                                <ul>
-                                                    <li class="kiss-nav-header">{{ collection.label || collection.name }}</li>
-                                                    <li><a :href="$route(`/collections/edit/${collection.name}`)"><?=t('Edit')?></a></li>
-                                                    <li class="kiss-nav-divider"></li>
-                                                    <a class="kiss-color-danger" @click="remove(collection)"><?=t('Delete')?></a>
-                                                </ul>
-                                            </navlist>
-                                        </kiss-dropdownbox>
-                                    </kiss-dropdown>
+                                    <a @click="toggleCollectionActions(collection)"><icon>menu</icon></a>
                                 </div>
                             </div>
                         </kiss-card>
@@ -107,6 +83,19 @@
 
             </app-actionbar>
 
+            <kiss-popoutmenu :open="actionCollection && 'true'" @popoutmenuclose="toggleCollectionActions(null)">
+                <kiss-content>
+                        <kiss-navlist v-if="actionCollection">
+                            <ul>
+                                <li class="kiss-nav-header">{{ actionCollection.label || actionCollection.name }}</li>
+                                <li><a :href="$route(`/collections/edit/${actionCollection.name}`)"><?=t('Edit')?></a></li>
+                                <li class="kiss-nav-divider"></li>
+                                <a class="kiss-color-danger" @click="remove(actionCollection)"><?=t('Delete')?></a>
+                            </ul>
+                        </kiss-navlist>
+                </kiss-content>
+            </kiss-popoutmenu>
+
 
         </template>
 
@@ -117,7 +106,8 @@
                     return {
                         collections: [],
                         mode: 'grid',
-                        loading: false
+                        loading: false,
+                        actionCollection: null
                     }
                 },
 
@@ -135,6 +125,16 @@
                             this.collections = collections;
                             this.loading = false;
                         })
+                    },
+
+                    toggleCollectionActions(collection) {
+
+                        if (!collection) {
+                            setTimeout(() => this.actionCollection = null, 300);
+                            return;
+                        }
+
+                        this.actionCollection = collection;
                     },
 
                     remove(collection) {

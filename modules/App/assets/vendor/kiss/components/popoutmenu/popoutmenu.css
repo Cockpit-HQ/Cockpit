@@ -13,6 +13,7 @@ kiss-popoutmenu {
     pointer-events: none;
     overflow-y: auto;
     z-index: 1000;
+    transition: opacity .3s;
 }
 
 kiss-popoutmenu > kiss-content {
