@@ -1,5 +1,7 @@
 <kiss-container class="kiss-margin-large">
 
+    <h1><?=t('Collections')?></h1>
+
     <vue-view>
         <template>
 

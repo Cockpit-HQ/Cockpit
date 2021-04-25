@@ -65,6 +65,9 @@ vue-view:not([init="true"]) { display: none; }
     --app-header-background: rgba(0, 0, 0, .2);
     --app-border-radius: 3px;
     --app-shadow-color: rgba(0,0,0,0.12);
+
+    --app-loader-color1: #0e8fff;
+    --app-loader-color2: #fff;
 }
 
 body {
