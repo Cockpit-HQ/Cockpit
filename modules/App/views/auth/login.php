@@ -1,7 +1,7 @@
 <?php $this->start('app.layout.header') ?>
 <style>
     .login-wrapper {
-        width:450px;
+        width:400px;
         max-width: 90%;
         padding-top: 20vh;
         padding-bottom: 20vh;
@@ -25,7 +25,7 @@
                     <div class="kiss-text-bold kiss-text-caption kiss-margin-bottom"><?=t('Welcome')?></div>
 
                     <div class="kiss-margin">
-                        <input class="kiss-input" type="text" autocomplete="username" placeholder="<?=t('Username or Email')?>" v-model="auth.user" required>
+                        <input class="kiss-input" type="text" placeholder="<?=t('Username or Email')?>" v-model="auth.user" autocomplete="off" required>
                     </div>
 
                     <div class="kiss-margin">

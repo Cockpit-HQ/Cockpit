@@ -20,7 +20,7 @@ export default {
             <form class="app-login-form animated" :class="{'kiss-disabled': loading}" @submit.prevent="login">
 
                 <div class="kiss-margin">
-                    <input class="kiss-input" type="text" autocomplete="username" :placeholder="t('Username or Email')" v-model="auth.user" required>
+                    <input class="kiss-input" type="text" :placeholder="t('Username or Email')" v-model="auth.user" autocomplete="off" required>
                 </div>
 
                 <div class="kiss-margin">

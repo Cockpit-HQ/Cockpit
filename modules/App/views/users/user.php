@@ -111,7 +111,7 @@ if (!isset($user['twofa'])) {
                         <div class="kiss-flex kiss-flex-middle kiss-flex-right">
                             <div class="kiss-button-group">
                                 <?php if (!$isAccountView && _allowed('app.users.manage')): ?>
-                                <a class="kiss-button kiss-button-link" href="<?=$this->route('/users')?>">
+                                <a class="kiss-button" href="<?=$this->route('/users')?>">
                                     <span v-if="!user._id"><?=t('Cancel')?></span>
                                     <span v-if="user._id"><?=t('Close')?></span>
                                 </a>

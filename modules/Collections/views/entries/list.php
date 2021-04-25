@@ -22,7 +22,10 @@
         <kiss-container>
             <div class="kiss-flex kiss-flex-middle">
                 <div class="kiss-flex-1"></div>
-                <a class="kiss-button kiss-button-primary" href="<?=$this->route("/collections/entries/item/{$collection['name']}")?>"><?=t('Add entry')?></a>
+                <div class="kiss-button-group">
+                    <a class="kiss-button" href="<?=$this->route("/collections")?>"><?=t('Close')?></a>
+                    <a class="kiss-button kiss-button-primary" href="<?=$this->route("/collections/entries/item/{$collection['name']}")?>"><?=t('Add entry')?></a>
+                </div>
             </div>
         </kiss-container>
 

@@ -37,7 +37,7 @@
                     <kiss-container size="small">
                         <div class="kiss-flex kiss-flex-middle kiss-flex-right">
                             <div class="kiss-button-group">
-                                <a class="kiss-button kiss-button-link" href="<?=$this->route('/settings/api')?>">
+                                <a class="kiss-button" href="<?=$this->route('/settings/api')?>">
                                     <span v-if="!key._id"><?=t('Cancel')?></span>
                                     <span v-if="key._id"><?=t('Close')?></span>
                                 </a>

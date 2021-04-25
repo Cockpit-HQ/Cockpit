@@ -66,7 +66,7 @@
                     <kiss-container size="small">
                         <div class="kiss-flex kiss-flex-middle kiss-flex-right">
                             <div class="kiss-button-group">
-                                <a class="kiss-button kiss-button-link" href="<?=$this->route('/users/roles')?>">
+                                <a class="kiss-button" href="<?=$this->route('/users/roles')?>">
                                     <span v-if="!role._id"><?=t('Cancel')?></span>
                                     <span v-if="role._id"><?=t('Close')?></span>
                                 </a>

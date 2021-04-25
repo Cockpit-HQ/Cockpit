@@ -58,7 +58,7 @@
                             </div>
 
                             <div class="kiss-button-group">
-                                <a class="kiss-button kiss-button-link" href="<?=$this->route('/collections')?>">
+                                <a class="kiss-button" href="<?=$this->route('/collections')?>">
                                     <span v-if="!isUpdate"><?=t('Cancel')?></span>
                                     <span v-if="isUpdate"><?=t('Close')?></span>
                                 </a>
