@@ -264,7 +264,7 @@ App.ui = {
                 ${text}
             </div>
             <div class="kiss-margin-top kiss-flex kiss-flex-middle kiss-button-group">
-                <button type="button" class="kiss-button-cancel kiss-button kiss-button-link kiss-flex-1">${App.i18n.get('Cancel')}</button>
+                <button type="button" class="kiss-button-cancel kiss-button kiss-flex-1">${App.i18n.get('Cancel')}</button>
                 <button type="button" class="kiss-button-confirm kiss-button kiss-button-primary kiss-flex-1">${App.i18n.get('Ok')}</button>
             </div>
         `, options, 'confirm');

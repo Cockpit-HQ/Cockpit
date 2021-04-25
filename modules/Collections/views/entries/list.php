@@ -7,7 +7,7 @@
 
     <div class="kiss-flex kiss-flex-middle">
         <div class="kiss-margin-right">
-            <kiss-svg class="kiss-margin-auto" src="<?=$this->base('collections:icon.svg')?>" width="35" height="35"><canvas width="35" height="35"></canvas></kiss-svg>
+            <kiss-svg class="kiss-margin-auto" src="<?=$this->base('collections:icon.svg')?>" width="35" height="35" style="color:<?=($this->escape($collection['color'] ?? 'inherit'))?>"><canvas width="35" height="35"></canvas></kiss-svg>
         </div>
         <div class="kiss-margin-small-right">
             <div class="kiss-size-large kiss-text-bold"><?=$this->escape($collection['label'] ? $collection['label'] : $collection['name'])?></div>
