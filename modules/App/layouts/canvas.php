@@ -8,17 +8,18 @@
     <link rel="icon" type="image/png"  href="<?=$this->base('/favicon.png')?>">
 
     <?=$this->assets([
-        'app:assets/css/app.css',
+        $this['debug'] ? 'app:assets/css/app.css' : 'app:assets/app.bundle.css',
         'app:assets/vendor/JSON5.js',
         'app:assets/vendor/noty/noty.min.js',
-        ['src' => 'app:assets/js/app.js', 'type' => 'module']
+        'app:assets/vendor/lodash.js',
+        $this['debug'] ? ['src' => 'app:assets/js/app.js', 'type' => 'module'] : 'app:assets/app.bundle.js',
     ], APP_VERSION)?>
 
     <?php $this->block('app.layout.header') ?>
 
 </head>
 <body>
-    
+
     <?=$content_for_layout?>
 
     <?php $this->block('app.layout.footer') ?>
