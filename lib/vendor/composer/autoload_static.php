@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitd6476b87a1291aeecebd7e38eaddedff
+class ComposerStaticInitcbdb0eb2ae69d2acca0ed79efa61c2f2
 {
     public static $files = array (
         'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
@@ -388,9 +388,13 @@ class ComposerStaticInitd6476b87a1291aeecebd7e38eaddedff
         'PackageVersions\\FallbackVersions' => __DIR__ . '/..' . '/composer/package-versions-deprecated/src/PackageVersions/FallbackVersions.php',
         'PackageVersions\\Installer' => __DIR__ . '/..' . '/composer/package-versions-deprecated/src/PackageVersions/Installer.php',
         'PackageVersions\\Versions' => __DIR__ . '/..' . '/composer/package-versions-deprecated/src/PackageVersions/Versions.php',
+        'RobThree\\Auth\\Providers\\Qr\\BaconQrCodeProvider' => __DIR__ . '/..' . '/robthree/twofactorauth/lib/Providers/Qr/BaconQrCodeProvider.php',
         'RobThree\\Auth\\Providers\\Qr\\BaseHTTPQRCodeProvider' => __DIR__ . '/..' . '/robthree/twofactorauth/lib/Providers/Qr/BaseHTTPQRCodeProvider.php',
+        'RobThree\\Auth\\Providers\\Qr\\EndroidQrCodeProvider' => __DIR__ . '/..' . '/robthree/twofactorauth/lib/Providers/Qr/EndroidQrCodeProvider.php',
+        'RobThree\\Auth\\Providers\\Qr\\EndroidQrCodeWithLogoProvider' => __DIR__ . '/..' . '/robthree/twofactorauth/lib/Providers/Qr/EndroidQrCodeWithLogoProvider.php',
         'RobThree\\Auth\\Providers\\Qr\\IQRCodeProvider' => __DIR__ . '/..' . '/robthree/twofactorauth/lib/Providers/Qr/IQRCodeProvider.php',
         'RobThree\\Auth\\Providers\\Qr\\ImageChartsQRCodeProvider' => __DIR__ . '/..' . '/robthree/twofactorauth/lib/Providers/Qr/ImageChartsQRCodeProvider.php',
+        'RobThree\\Auth\\Providers\\Qr\\QRException' => __DIR__ . '/..' . '/robthree/twofactorauth/lib/Providers/Qr/QRException.php',
         'RobThree\\Auth\\Providers\\Qr\\QRServerProvider' => __DIR__ . '/..' . '/robthree/twofactorauth/lib/Providers/Qr/QRServerProvider.php',
         'RobThree\\Auth\\Providers\\Qr\\QRicketProvider' => __DIR__ . '/..' . '/robthree/twofactorauth/lib/Providers/Qr/QRicketProvider.php',
         'RobThree\\Auth\\Providers\\Rng\\CSRNGProvider' => __DIR__ . '/..' . '/robthree/twofactorauth/lib/Providers/Rng/CSRNGProvider.php',
@@ -398,10 +402,12 @@ class ComposerStaticInitd6476b87a1291aeecebd7e38eaddedff
         'RobThree\\Auth\\Providers\\Rng\\IRNGProvider' => __DIR__ . '/..' . '/robthree/twofactorauth/lib/Providers/Rng/IRNGProvider.php',
         'RobThree\\Auth\\Providers\\Rng\\MCryptRNGProvider' => __DIR__ . '/..' . '/robthree/twofactorauth/lib/Providers/Rng/MCryptRNGProvider.php',
         'RobThree\\Auth\\Providers\\Rng\\OpenSSLRNGProvider' => __DIR__ . '/..' . '/robthree/twofactorauth/lib/Providers/Rng/OpenSSLRNGProvider.php',
+        'RobThree\\Auth\\Providers\\Rng\\RNGException' => __DIR__ . '/..' . '/robthree/twofactorauth/lib/Providers/Rng/RNGException.php',
         'RobThree\\Auth\\Providers\\Time\\HttpTimeProvider' => __DIR__ . '/..' . '/robthree/twofactorauth/lib/Providers/Time/HttpTimeProvider.php',
         'RobThree\\Auth\\Providers\\Time\\ITimeProvider' => __DIR__ . '/..' . '/robthree/twofactorauth/lib/Providers/Time/ITimeProvider.php',
         'RobThree\\Auth\\Providers\\Time\\LocalMachineTimeProvider' => __DIR__ . '/..' . '/robthree/twofactorauth/lib/Providers/Time/LocalMachineTimeProvider.php',
         'RobThree\\Auth\\Providers\\Time\\NTPTimeProvider' => __DIR__ . '/..' . '/robthree/twofactorauth/lib/Providers/Time/NTPTimeProvider.php',
+        'RobThree\\Auth\\Providers\\Time\\TimeException' => __DIR__ . '/..' . '/robthree/twofactorauth/lib/Providers/Time/TimeException.php',
         'RobThree\\Auth\\TwoFactorAuth' => __DIR__ . '/..' . '/robthree/twofactorauth/lib/TwoFactorAuth.php',
         'RobThree\\Auth\\TwoFactorAuthException' => __DIR__ . '/..' . '/robthree/twofactorauth/lib/TwoFactorAuthException.php',
         'Stringable' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',
@@ -422,11 +428,11 @@ class ComposerStaticInitd6476b87a1291aeecebd7e38eaddedff
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitd6476b87a1291aeecebd7e38eaddedff::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitd6476b87a1291aeecebd7e38eaddedff::$prefixDirsPsr4;
-            $loader->fallbackDirsPsr4 = ComposerStaticInitd6476b87a1291aeecebd7e38eaddedff::$fallbackDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInitd6476b87a1291aeecebd7e38eaddedff::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInitd6476b87a1291aeecebd7e38eaddedff::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitcbdb0eb2ae69d2acca0ed79efa61c2f2::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitcbdb0eb2ae69d2acca0ed79efa61c2f2::$prefixDirsPsr4;
+            $loader->fallbackDirsPsr4 = ComposerStaticInitcbdb0eb2ae69d2acca0ed79efa61c2f2::$fallbackDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInitcbdb0eb2ae69d2acca0ed79efa61c2f2::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInitcbdb0eb2ae69d2acca0ed79efa61c2f2::$classMap;
 
         }, null, ClassLoader::class);
     }

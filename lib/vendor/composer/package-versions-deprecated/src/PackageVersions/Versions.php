@@ -34,7 +34,7 @@ final class Versions
      */
     const VERSIONS          = array (
   'bacon/bacon-qr-code' => '2.0.3@3e9d791b67d0a2912922b7b7c7312f4b37af41e4',
-  'claviska/simpleimage' => '3.6.0@d4652ab80aa87d3f5bb6daa857ca6d57c1b421a1',
+  'claviska/simpleimage' => '3.6.3@21b6f4bf4ef1927158b3e29bd0c2d99c6681c750',
   'colinodell/json5' => 'v2.2.0@dd7f788c5de3837d1483a216dc9b30e5d9c8c00a',
   'composer/package-versions-deprecated' => '1.11.99.1@7413f0b55a051e89485c5cb9f765fe24bb02a7b6',
   'dasprid/enum' => '1.0.3@5abf82f213618696dda8e3bf6f64dd042d8542b2',
@@ -46,12 +46,12 @@ final class Versions
   'league/mime-type-detection' => '1.7.0@3b9dff8aaf7323590c1d2e443db701eb1f9aa0d3',
   'maennchen/zipstream-php' => 'v0.5.2@95922b6324955974675fd4923f987faa598408af',
   'mongodb/mongodb' => '1.8.0@953dbc19443aa9314c44b7217a16873347e6840d',
-  'phpmailer/phpmailer' => 'v6.3.0@4a08cf4cdd2c38d12ee2b9fa69e5d235f37a6dcb',
-  'robthree/twofactorauth' => '1.7.0@37983bf675c5baca09d19d6705170489d0df0002',
+  'phpmailer/phpmailer' => 'v6.4.0@050d430203105c27c30efd1dce7aa421ad882d01',
+  'robthree/twofactorauth' => '1.8.0@30a38627ae1e7c9399dae67e265063cd6ec5276c',
   'symfony/polyfill-mbstring' => 'v1.22.1@5232de97ee3b75b0360528dae24e73db49566ab1',
   'symfony/polyfill-php80' => 'v1.22.1@dc3063ba22c2a1fd2f45ed856374d79114998f91',
   'symfony/polyfill-php81' => 'v1.22.1@00dedc6d362a1b863dda3f8243516da9fdfbe657',
-  'agentejo/cockpit' => 'dev-master@271625958d729430097583c4d3637855fe91289c',
+  'agentejo/cockpit' => 'dev-master@9c0028c66688309bbca2f66a74afc776bbfdb1e8',
 );
 
     private function __construct()

@@ -29,7 +29,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '271625958d729430097583c4d3637855fe91289c',
+    'reference' => '9c0028c66688309bbca2f66a74afc776bbfdb1e8',
     'name' => 'agentejo/cockpit',
   ),
   'versions' => 
@@ -41,7 +41,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '271625958d729430097583c4d3637855fe91289c',
+      'reference' => '9c0028c66688309bbca2f66a74afc776bbfdb1e8',
     ),
     'bacon/bacon-qr-code' => 
     array (
@@ -54,12 +54,12 @@ private static $installed = array (
     ),
     'claviska/simpleimage' => 
     array (
-      'pretty_version' => '3.6.0',
-      'version' => '3.6.0.0',
+      'pretty_version' => '3.6.3',
+      'version' => '3.6.3.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'd4652ab80aa87d3f5bb6daa857ca6d57c1b421a1',
+      'reference' => '21b6f4bf4ef1927158b3e29bd0c2d99c6681c750',
     ),
     'colinodell/json5' => 
     array (
@@ -176,21 +176,21 @@ private static $installed = array (
     ),
     'phpmailer/phpmailer' => 
     array (
-      'pretty_version' => 'v6.3.0',
-      'version' => '6.3.0.0',
+      'pretty_version' => 'v6.4.0',
+      'version' => '6.4.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '4a08cf4cdd2c38d12ee2b9fa69e5d235f37a6dcb',
+      'reference' => '050d430203105c27c30efd1dce7aa421ad882d01',
     ),
     'robthree/twofactorauth' => 
     array (
-      'pretty_version' => '1.7.0',
-      'version' => '1.7.0.0',
+      'pretty_version' => '1.8.0',
+      'version' => '1.8.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '37983bf675c5baca09d19d6705170489d0df0002',
+      'reference' => '30a38627ae1e7c9399dae67e265063cd6ec5276c',
     ),
     'symfony/polyfill-mbstring' => 
     array (
