@@ -5,7 +5,7 @@ namespace Collections\Controller;
 use App\Controller\App;
 use ArrayObject;
 
-class Entries extends App {
+class Items extends App {
 
     public function list($collection = null) {
 
@@ -19,7 +19,7 @@ class Entries extends App {
             return $this->stop(404);
         }
 
-        return $this->render('collections:views/entries/list.php', compact('collection'));
+        return $this->render('collections:views/items/list.php', compact('collection'));
 
     }
 
@@ -35,15 +35,17 @@ class Entries extends App {
             return $this->stop(404);
         }
 
-        $item = [
+        $item = new \ArrayObject([
 
-        ];
+        ]);
 
         if ($id) {
 
         }
 
-        return $this->render('collections:views/entries/item.php', compact('collection', 'item'));
+        $fields = $collection['fields'];
+
+        return $this->render('collections:views/items/item.php', compact('collection', 'fields', 'item'));
     }
 
 }

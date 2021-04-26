@@ -26,7 +26,7 @@
                                 </div>
                                 <div class="kiss-flex-1 kiss-position-relative"><a class="kiss-link-muted">
                                     {{ collection.label || collection.name }}
-                                    <a class="kiss-cover" :href="$route(`/collections/entries/list/${collection.name}`)"></a>
+                                    <a class="kiss-cover" :href="$route(`/collections/items/list/${collection.name}`)"></a>
                                 </div>
                                 <div>
                                     <a @click="toggleCollectionActions(collection)"><icon>more_horiz</icon></a>

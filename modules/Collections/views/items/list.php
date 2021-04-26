@@ -24,7 +24,7 @@
                 <div class="kiss-flex-1"></div>
                 <div class="kiss-button-group">
                     <a class="kiss-button" href="<?=$this->route("/collections")?>"><?=t('Close')?></a>
-                    <a class="kiss-button kiss-button-primary" href="<?=$this->route("/collections/entries/item/{$collection['name']}")?>"><?=t('Add entry')?></a>
+                    <a class="kiss-button kiss-button-primary" href="<?=$this->route("/collections/items/item/{$collection['name']}")?>"><?=t('Create item')?></a>
                 </div>
             </div>
         </kiss-container>

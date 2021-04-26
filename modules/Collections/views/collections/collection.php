@@ -54,7 +54,7 @@
                         <div class="kiss-flex kiss-flex-middle kiss-flex-right">
 
                             <div class="kiss-flex-1" v-if="isUpdate">
-                                <a class="kiss-button" :href="$route(`/collections/entries/list/${collection.name}`)"><?=t('Goto entries')?></a>
+                                <a class="kiss-button" :href="$route(`/collections/items/list/${collection.name}`)"><?=t('Goto items')?></a>
                             </div>
 
                             <div class="kiss-button-group">

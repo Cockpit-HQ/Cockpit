@@ -3,6 +3,10 @@
     font-weight: bold !important;
 }
 
+.kiss-text-bolder {
+    font-weight: bolder !important;
+}
+
 .kiss-text-normal {
     font-weight: normal !important;
 }

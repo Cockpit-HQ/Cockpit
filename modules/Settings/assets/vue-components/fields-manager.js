@@ -26,10 +26,13 @@ let FieldsCollection = {
 
 }
 
+let instanceCount = 0;
+
 export default {
     data() {
 
         return {
+            uid: `fm-${++instanceCount}`,
             fields: this.modelValue || [],
             availableFields: {},
             field: null,
@@ -58,6 +61,19 @@ export default {
         }
     },
 
+    computed: {
+        fieldGroups() {
+
+            let groups = [];
+
+            this.fields.forEach(f => {
+                if (f.group.trim() && this.field !==  f) groups.push(f.group);
+            })
+
+            return _.uniq(groups).sort();
+        }
+    },
+
     template: /*html*/`
         <div>
 
@@ -76,7 +92,8 @@ export default {
                             </div>
                         </div>
                         <div class="kiss-flex-1 kiss-text-bold">{{ element.label || element.name }}</div>
-                        <div class="kiss-badge kiss-text-caption">{{element.type}}</div>
+                        <div class="kiss-margin-small-right kiss-size-small kiss-color-muted">{{ element.group || '' }}</div>
+                        <div class="kiss-badge kiss-badge-outline kiss-color-muted kiss-text-caption">{{element.type}}</div>
                         <a class="kiss-margin-left" @click="edit(element)"><icon>settings</icon></a>
                         <a class="kiss-margin-left kiss-color-danger" @click="remove(element)"><icon>delete</icon></a>
                         <a class="fm-handle kiss-margin-left kiss-color-muted"><icon>drag_handle</icon></a>
@@ -122,16 +139,21 @@ export default {
                                 <div class="kiss-margin">
                                     <label>{{t('Info')}}</label>
                                     <input class="kiss-input kiss-width-1-1" type="text" v-model="field.info">
+                                    <div class="kiss-size-small kiss-color-muted kiss-margin-small-top">{{ t('Displays a hint for content editors') }}</div>
                                 </div>
 
                                 <div class="kiss-margin">
                                     <label>{{t('Group')}}</label>
-                                    <input class="kiss-input kiss-width-1-1" type="text" v-model="field.group">
+                                    <input class="kiss-input kiss-width-1-1" type="text" v-model="field.group" :list="uid+'-field-group'">
                                 </div>
+                                <datalist :id="uid+'-field-group'" v-if="fieldGroups.length">
+                                    <option v-for="group in fieldGroups">{{ group }}</option>
+                                </datalist>
 
                                 <div class="kiss-margin">
-                                    <field-boolean class="kiss-margin-small" v-model="field.required" :label="t('Required')"></field-boolean>
-                                    <field-boolean class="kiss-margin-small" v-model="field.i18n" :label="t('Localize field')"></field-boolean>
+                                <field-boolean class="kiss-margin-small" v-model="field.required" :label="t('Required')"></field-boolean>
+                                <field-boolean class="kiss-margin-small" v-model="field.i18n" :label="t('Localize field')"></field-boolean>
+                                <field-boolean class="kiss-margin-small" v-model="field.multiple" :label="t('Allow multiple values')"></field-boolean>
                                 </div>
 
                             </tab>
@@ -194,6 +216,7 @@ export default {
                 group: '',
                 i18n: false,
                 required: false,
+                multiple: false,
                 meta: {},
                 opts: {},
             };

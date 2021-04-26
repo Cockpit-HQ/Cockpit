@@ -13,6 +13,9 @@ $this->on('app.permissions.collect', function ($permissions) {
 
     $permissions['Locales'] = [
         'app.locales.manage' => 'Manage locales',
+    ];
+
+    $permissions['Api & Security'] = [
         'app.api.manage' => 'Manage Api access',
     ];
 
