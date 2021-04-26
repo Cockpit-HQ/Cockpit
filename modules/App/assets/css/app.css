@@ -4,9 +4,10 @@
 
 @import "../components/tooltip.css";
 @import "../components/switch.css";
-@import "../components/app-loader/app-loader.css";
 @import "../components/app-avatar/app-avatar.css";
 @import "../components/app-actionbar/app-actionbar.css";
+@import "../components/app-fieldcontainer/app-fieldcontainer.css";
+@import "../components/app-loader/app-loader.css";
 @import "../components/app-tabs/app-tabs.css";
 
 @import "../vendor/kiss/lib.css";
@@ -69,6 +70,9 @@ vue-view:not([init="true"]) { display: none; }
 
     --app-loader-color1: #0e8fff;
     --app-loader-color2: #fff;
+
+    --app-fieldcontainer-border-color-active: var(--kiss-color-primary);
+    --app-fieldcontainer-border-color-inactive: rgba(255, 255, 255, .1);
 }
 
 body {

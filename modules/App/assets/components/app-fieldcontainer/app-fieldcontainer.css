@@ -1,0 +1,26 @@
+app-fieldcontainer {
+    display: block;
+}
+
+app-field.kiss-disabled {
+    opacity: .6;
+}
+
+@media (min-width:1220px) {
+
+    app-fieldcontainer {
+        padding-left: 15px;
+        border-left: 2px var(--app-fieldcontainer-border-color-inactive, rgba(0,0,0,.1)) solid;
+        transition: border-color 200ms, opacity 100ms ease;
+        opacity: .7;
+    }
+
+    app-fieldcontainer:hover {
+        opacity: 1;
+    }
+
+    app-fieldcontainer[active="true"] {
+        border-color: var(--app-fieldcontainer-border-color-active, blue);
+        opacity: 1;
+    }
+}
