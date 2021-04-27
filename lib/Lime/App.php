@@ -149,6 +149,14 @@ class App implements \ArrayAccess {
             $module->app = $this;
             $this->registry['modules'][$name] = $module;
         }
+
+        foreach ($this->events as $name => &$list) {
+            foreach ($list as &$meta) {
+                if (\is_object($meta['fn']) && $meta['fn'] instanceof \Closure) {
+                    $meta['fn'] = $meta['fn']->bindTo($this, $this);
+                }
+            }
+        }
     }
 
     /**

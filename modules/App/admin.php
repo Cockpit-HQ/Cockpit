@@ -83,7 +83,7 @@ $this->on('after', function() {
      * send some debug information
      * back to client (visible in the network panel)
      */
-    if ($this['debug'] && !headers_sent()) {
+    if ($this['debug'] && $this->response) {
 
         /**
         * some system info
@@ -92,8 +92,8 @@ $this->on('after', function() {
         $DURATION_TIME = microtime(true) - APP_START_TIME;
         $MEMORY_USAGE  = memory_get_peak_usage(false)/1024/1024;
 
-        header("APP_DURATION_TIME: {$DURATION_TIME}SEC");
-        header("APP_MEMORY_USAGE: {$MEMORY_USAGE}MB");
-        header("APP_LOADED_FILES: ".count(get_included_files()));
+        $this->response->headers["APP_DURATION_TIME"] = "{$DURATION_TIME}SEC";
+        $this->response->headers["APP_MEMORY_USAGE"] = "{$MEMORY_USAGE}MB";
+        $this->response->headers["APP_LOADED_FILES"] = count(get_included_files());
     }
 });
