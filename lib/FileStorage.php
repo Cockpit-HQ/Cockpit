@@ -55,7 +55,7 @@ class FileStorage {
 
             if (!$path) {
                 $url = $this->config[$prefix]['url'];
-            } elseif ($this->has($file)) {
+            } elseif ($this->fileExists($file)) {
                 $url = rtrim($this->config[$prefix]['url'], '/').'/'.ltrim($path, '/');
             }
         }
@@ -65,12 +65,19 @@ class FileStorage {
 
     protected function initStorage(string $name): Filesystem  {
 
+        static $mountMethod;
+
+        if (!$mountMethod) {
+            $mountMethod = new \ReflectionMethod('League\Flysystem\MountManager', 'mountFilesystem');
+            $mountMethod->setAccessible(true);
+        }
+
         $config = $this->config[$name];
         $adapter = new \ReflectionClass($config['adapter']);
         $this->storages[$name] = new Filesystem($adapter->newInstanceArgs($config['args'] ?: []));
 
         if (isset($config['mount']) && $config['mount']) {
-            $this->manager->mountFilesystem($name, $this->storages[$name]);
+            $mountMethod->invokeArgs($this->manager, [$name, $this->storages[$name]]);
         }
 
         return $this->storages[$name];

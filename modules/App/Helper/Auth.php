@@ -24,7 +24,7 @@ class Auth extends \Lime\Helper {
             $filter['user'] = $data['user'];
         }
 
-        $user = $this->app->data->findOne('system/users', $filter);
+        $user = $this->app->dataStorage->findOne('system/users', $filter);
 
         if ($user && (password_verify($data['password'], $user['password']))){
 

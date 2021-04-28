@@ -24,7 +24,7 @@ class Roles extends App {
             return $this->stop(['error' => 'Role id is missing'], 412);
         }
 
-        $role = $this->app->data->findOne('system/roles', ['_id' => $id]);
+        $role = $this->app->dataStorage->findOne('system/roles', ['_id' => $id]);
 
         if (!$role) {
             return false;
@@ -43,7 +43,7 @@ class Roles extends App {
             'info'  => '',
             'permissions' => new ArrayObject([])
         ];
-        
+
         return $this->render('app:views/users/roles/role.php', compact('role'));
     }
 
@@ -55,8 +55,8 @@ class Roles extends App {
             return $this->stop(['error' => 'Role is missing'], 412);
         }
 
-        $this->app->data->remove('system/roles', ['_id' => $role['_id']]);
-        $this->app->data->update('system/users', ['role' => $role['appid']], ['role' => 'user']);
+        $this->app->dataStorage->remove('system/roles', ['_id' => $role['_id']]);
+        $this->app->dataStorage->update('system/users', ['role' => $role['appid']], ['role' => 'user']);
 
         $this->cache();
 
@@ -89,7 +89,7 @@ class Roles extends App {
 
         // unique check
 
-        $_role = $this->app->data->findOne('system/roles', ['appid' => $role['appid']]);
+        $_role = $this->app->dataStorage->findOne('system/roles', ['appid' => $role['appid']]);
 
         if ($_role && (!isset($role['_id']) || $role['_id'] != $_role['_id'])) {
             $this->app->stop(['error' => 'appid is already used!'], 412);
@@ -112,9 +112,9 @@ class Roles extends App {
 
 
         $this->app->trigger('app.roles.save', [&$role, $isUpdate]);
-        $this->app->data->save('system/roles', $role);
+        $this->app->dataStorage->save('system/roles', $role);
 
-        $role = $this->app->data->findOne('system/roles', ['_id' => $role['_id']]);
+        $role = $this->app->dataStorage->findOne('system/roles', ['_id' => $role['_id']]);
 
         $role['permissions'] = new ArrayObject( $role['permissions']);
 
@@ -128,7 +128,7 @@ class Roles extends App {
 
         \session_write_close();
 
-        $roles = $this->app->data->find('system/roles', [
+        $roles = $this->app->dataStorage->find('system/roles', [
             'sort' => ['name' => 1]
         ])->toArray();
 

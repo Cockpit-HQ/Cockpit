@@ -21,7 +21,7 @@ class Acl extends \Lime\Helper {
         ];
 
         foreach ($this->roles as $role) {
-            
+
             $roles[] = [
                 'appid' => $role['appid'],
                 'name' => $role['name'],
@@ -46,7 +46,7 @@ class Acl extends \Lime\Helper {
 
         $cache = [];
 
-        $roles = $this->app->data->find('system/roles', [
+        $roles = $this->app->dataStorage->find('system/roles', [
             'sort' => ['name' => 1]
         ])->toArray();
 

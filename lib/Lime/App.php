@@ -192,7 +192,7 @@ class App implements \ArrayAccess {
     /**
     * stop application (exit)
     */
-    public function stop(mixed $data = false, ?int $status = null): void {
+    public function stop(mixed $data = null, ?int $status = null): void {
 
         $this->exit = true;
 
@@ -550,7 +550,7 @@ class App implements \ArrayAccess {
         $this->trigger('app.render.view', [&$____template, &$_____slots]);
 
         if (\is_string($____template) && $____template) {
-            $this->trigger("app.render.view/{$____template}", [&$____template, &$slots]);
+            $this->trigger("app.render.view/{$____template}", [&$____template, &$_____slots]);
         }
 
         $____layout = $this->layout;
@@ -1130,7 +1130,7 @@ class App implements \ArrayAccess {
         return $this->registry['modules'][$name];
     }
 
-    public function loadModules(mixed $dirs, bool $autoload = true, mixed $prefix = false): array {
+    public function loadModules(mixed $dirs, bool $autoload = true, mixed $prefix = null): array {
 
         $modules  = [];
         $dirs     = (array)$dirs;
@@ -1140,7 +1140,7 @@ class App implements \ArrayAccess {
 
             if (\file_exists($dir)){
 
-                $pfx = \is_bool($prefix) ? \strtolower(basename($dir)) : $prefix;
+                $pfx = \is_bool($prefix) && $prefix ? \strtolower(basename($dir)) : $prefix;
 
                 // load modules
                 foreach (new \DirectoryIterator($dir) as $module) {

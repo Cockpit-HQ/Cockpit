@@ -237,7 +237,7 @@ class Cursor implements \Iterator {
     /**
      * Iterator implementation
      */
-    public function rewind(): void {
+    public function rewind() {
 
         if ($this->position!==false) {
             $this->position = 0;

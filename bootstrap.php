@@ -71,7 +71,7 @@ class APP {
                 '#modules' => APP_ENV_DIR.'/modules',
                 '#addons'  => APP_ENV_DIR.'/addons',
                 '#storage' => APP_ENV_DIR.'/storage',
-                '#uploads' => APP_ENV_DIR.'/storage/uploads',
+                '#tmp'     => APP_ENV_DIR.'/storage/tmp',
             ]
         ], $config ?? []);
 
@@ -84,8 +84,37 @@ class APP {
             $app->path($key, $path);
         }
 
+        // file storage
+        $app->service('fileStorage', function() use($config, $app) {
+
+            $storages = array_replace_recursive([
+
+                'root' => [
+                    'adapter' => 'League\Flysystem\Local\LocalFilesystemAdapter',
+                    'args' => [$app->path('#root:')],
+                    'mount' => true,
+                    'url' => $app->pathToUrl('#root:', true)
+                ],
+
+                'tmp' => [
+                    'adapter' => 'League\Flysystem\Local\LocalFilesystemAdapter',
+                    'args' => [$app->path('#tmp:')],
+                    'mount' => true,
+                    'url' => $app->pathToUrl('#tmp:', true)
+                ],
+
+            ], $config['fileStorage'] ?? []);
+
+            $app->trigger('app.filestorage.init', [&$storages]);
+
+            $filestorage = new FileStorage($storages);
+
+            return $filestorage;
+        });
+
+
         // nosql storage
-        $app->service('data', function() use($config) {
+        $app->service('dataStorage', function() use($config) {
             $client = new MongoHybrid\Client($config['database']['server'], $config['database']['options'], $config['database']['driverOptions']);
             return $client;
         });

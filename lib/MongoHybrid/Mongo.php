@@ -10,6 +10,8 @@
 
 namespace MongoHybrid;
 
+use MongoDB\BSON\ObjectID;
+
 class Mongo {
 
     protected $client;
@@ -77,7 +79,7 @@ class Mongo {
 
     public function findOneById(string $collection, mixed $id): ?array {
 
-        if (is_string($id)) $id = new \MongoDB\BSON\ObjectID($id);
+        if (is_string($id)) $id = new ObjectID($id);
 
         $doc =  $this->getCollection($collection)->findOne(['_id' => $id]);
 
@@ -157,7 +159,7 @@ class Mongo {
         return $return;
     }
 
-    public function save(string $collection, array &$data, bool $create = false): array {
+    public function save(string $collection, array &$data, bool $create = false): mixed {
 
         $data = $this->_fixMongoIds($data);
         $ref  = $data;
@@ -247,7 +249,7 @@ class Mongo {
 
                 if (is_string($v)) {
 
-                    $v = $v[0] === '@' ? \substr($v, 1) : new \MongoDB\BSON\ObjectID($v);
+                    $v = $v[0] === '@' ? \substr($v, 1) : new ObjectID($v);
 
                 } elseif (is_array($v)) {
 
@@ -255,7 +257,7 @@ class Mongo {
 
                         foreach ($v['$in'] as &$id) {
                             if (is_string($id)) {
-                                $id = new \MongoDB\BSON\ObjectID($id);
+                                $id = new ObjectID($id);
                             }
                         }
                     }
@@ -264,14 +266,14 @@ class Mongo {
 
                         foreach ($v['$nin'] as &$id) {
                             if (is_string($id)) {
-                                $id = new \MongoDB\BSON\ObjectID($id);
+                                $id = new ObjectID($id);
                             }
                         }
                     }
 
                     if (isset($v['$ne']) && is_string($v['$ne'])) {
 
-                        $v['$ne'] = new \MongoDB\BSON\ObjectID($v['$ne']);
+                        $v['$ne'] = new ObjectID($v['$ne']);
                     }
 
                 }

@@ -42,7 +42,7 @@ final class Versions
   'jean85/pretty-package-versions' => '1.6.0@1e0104b46f045868f11942aea058cd7186d6c303',
   'ksubileau/color-thief-php' => 'v1.4.1@fc2acefacbd037f68cf61bcc62b30ac1bb16ed59',
   'league/color-extractor' => '0.3.2@837086ec60f50c84c611c613963e4ad2e2aec806',
-  'league/flysystem' => '1.1.3@9be3b16c877d477357c015cec057548cf9b2a14a',
+  'league/flysystem' => '2.0.5@27ea64cc9d61ae7b6a5f04bebf062d89dd18e8f7',
   'league/mime-type-detection' => '1.7.0@3b9dff8aaf7323590c1d2e443db701eb1f9aa0d3',
   'maennchen/zipstream-php' => 'v0.5.2@95922b6324955974675fd4923f987faa598408af',
   'mongodb/mongodb' => '1.8.0@953dbc19443aa9314c44b7217a16873347e6840d',
@@ -51,7 +51,7 @@ final class Versions
   'symfony/polyfill-mbstring' => 'v1.22.1@5232de97ee3b75b0360528dae24e73db49566ab1',
   'symfony/polyfill-php80' => 'v1.22.1@dc3063ba22c2a1fd2f45ed856374d79114998f91',
   'symfony/polyfill-php81' => 'v1.22.1@00dedc6d362a1b863dda3f8243516da9fdfbe657',
-  'agentejo/cockpit' => 'dev-master@fa6a37435fddb874e20107ffd4009f412be5548d',
+  'agentejo/cockpit' => 'dev-master@e54041f204421c6df2e185c52229c3ea3b97325f',
 );
 
     private function __construct()

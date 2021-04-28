@@ -100,7 +100,7 @@ $this->module('collections')->extend([
         }
 
         $this->app->helper('fs')->delete("#storage:collections/{$name}.collection.php");
-        $this->app->data->dropCollection("collections/{$name}");
+        $this->app->dataStorage->dropCollection("collections/{$name}");
 
         $this->app->trigger('collections.remove.collection', [$name]);
         $this->app->trigger("collections.remove.collection.{$name}", [$name]);

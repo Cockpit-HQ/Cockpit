@@ -60,7 +60,7 @@ if (!count($failed)) {
     // check whether cockpit is already installed
     try {
 
-        if ($app->data->getCollection('system/users')->count()) {
+        if ($app->dataStorage->getCollection('system/users')->count()) {
 
             header('Location: ../');
             exit;
@@ -82,7 +82,7 @@ if (!count($failed)) {
         '_created' => $created
     ];
 
-    $app->data->save('system/users', $user);
+    $app->dataStorage->save('system/users', $user);
 }
 
 ?><!doctype html>

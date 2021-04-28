@@ -31,7 +31,7 @@ class Api extends \Lime\Helper {
     public function cache() {
 
         $cache = [];
-        $keys = $this->app->data->find('system/api_keys')->toArray();
+        $keys = $this->app->dataStorage->find('system/api_keys')->toArray();
 
         foreach ($keys as $key) {
             $cache[$key['key']] = $key;

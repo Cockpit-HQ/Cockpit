@@ -19,7 +19,7 @@ class Locales extends \Lime\Helper {
         $locales = [];
 
         foreach ($this->locales as $locale) {
-            
+
             $locales[] = [
                 'i18n' => $locale['i18n'],
                 'name' => $locale['name'],
@@ -35,7 +35,7 @@ class Locales extends \Lime\Helper {
             'default' => 'Default'
         ];
 
-        $locales = $this->app->data->find('system/locales', [
+        $locales = $this->app->dataStorage->find('system/locales', [
             'sort' => ['name' => 1]
         ])->toArray();
 

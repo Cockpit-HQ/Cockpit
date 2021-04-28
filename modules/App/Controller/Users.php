@@ -27,7 +27,7 @@ class Users extends App {
             $id = $this->user['_id'];
         }
 
-        $user = $this->app->data->findOne('system/users', ['_id' => $id]);
+        $user = $this->app->dataStorage->findOne('system/users', ['_id' => $id]);
 
         if (!$user) {
             return false;
@@ -49,7 +49,7 @@ class Users extends App {
         ];
 
         $isAccountView = false;
-        
+
         return $this->render('app:views/users/user.php', compact('user', 'isAccountView'));
     }
 
@@ -77,7 +77,7 @@ class Users extends App {
 
             $user['_created'] = $user['_modified'];
         }
-        
+
         if (isset($user['password'])) {
 
             if (strlen($user['password'])){
@@ -105,13 +105,13 @@ class Users extends App {
 
         // unique check
 
-        $_user = $this->app->data->findOne('system/users', ['user' => $user['user']]);
+        $_user = $this->app->dataStorage->findOne('system/users', ['user' => $user['user']]);
 
         if ($_user && (!isset($user['_id']) || $user['_id'] != $_user['_id'])) {
             $this->app->stop(['error' =>  'Username is already used!'], 412);
         }
 
-        $_user = $this->app->data->findOne('system/users', ['email'  => $user['email']]);
+        $_user = $this->app->dataStorage->findOne('system/users', ['email'  => $user['email']]);
 
         if ($_user && (!isset($user['_id']) || $user['_id'] != $_user['_id'])) {
             $this->app->stop(['error' =>  'Email is already used!'], 412);
@@ -119,9 +119,9 @@ class Users extends App {
         // --
 
         $this->app->trigger('app.users.save', [&$user, $isUpdate]);
-        $this->app->data->save('system/users', $user);
+        $this->app->dataStorage->save('system/users', $user);
 
-        $user = $this->app->data->findOne('system/users', ['_id' => $user['_id']]);
+        $user = $this->app->dataStorage->findOne('system/users', ['_id' => $user['_id']]);
 
         unset($user['password'], $user['_reset_token']);
 
@@ -144,7 +144,7 @@ class Users extends App {
             return $this->stop(['error' => "User can't delete himself"], 412);
         }
 
-        $this->app->data->remove('system/users', ['_id' => $user['_id']]);
+        $this->app->dataStorage->remove('system/users', ['_id' => $user['_id']]);
 
         return ['success' => true];
     }
@@ -181,8 +181,8 @@ class Users extends App {
             $options['filter'] = $filter;
         }
 
-        $users = $this->app->data->find('system/users', $options)->toArray();
-        $count = (!isset($options['skip']) && !isset($options['limit'])) ? count($users) : $this->app->data->count('system/users', isset($options['filter']) ? $options['filter'] : []);
+        $users = $this->app->dataStorage->find('system/users', $options)->toArray();
+        $count = (!isset($options['skip']) && !isset($options['limit'])) ? count($users) : $this->app->dataStorage->count('system/users', isset($options['filter']) ? $options['filter'] : []);
         $pages = isset($options['limit']) ? ceil($count / $options['limit']) : 1;
         $page  = 1;
 
