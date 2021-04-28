@@ -14,13 +14,13 @@ class MongoLite {
 
     protected $client;
 
-    public function __construct($server, $options=[]) {
+    public function __construct(string $server, array $options = []) {
 
         $this->client = new \MongoLite\Client(str_replace('mongolite://', '', $server));
         $this->db     = $options['db'];
     }
 
-    public function getCollection($name, $db = null){
+    public function getCollection(string $name, ?string $db = null) {
 
         if (strpos($name, '/') !== false) {
             list($db, $name) = explode('/', $name, 2);
@@ -35,7 +35,7 @@ class MongoLite {
         return $this->client->selectCollection($db, $name);
     }
 
-    public function dropCollection($name, $db = null){
+    public function dropCollection(string $name, ?string $db = null) {
 
         if (strpos($name, '/') !== false) {
             list($db, $name) = explode('/', $name, 2);
@@ -50,7 +50,7 @@ class MongoLite {
         return $this->client->selectDB($db)->dropCollection($name);
     }
 
-    public function renameCollection($name, $newname, $db = null) {
+    public function renameCollection(string $name, string $newname, ?string $db = null): bool {
 
         if (strpos($name, '/') !== false) {
             list($db, $name) = explode('/', $name, 2);
@@ -74,16 +74,15 @@ class MongoLite {
         return true;
     }
 
-    public function findOne($collection, $filter = [], $projection = null) {
+    public function findOne(string $collection, array $filter = [], ?array $projection = null): ?array {
         return $this->getCollection($collection)->findOne($filter, $projection);
     }
 
-    public function findOneById($collection, $id){
-
+    public function findOneById(string $collection, string $id): ?array {
         return $this->getCollection($collection)->findOne(['_id' => $id]);
     }
 
-    public function find($collection, $options = []){
+    public function find(string $collection, array $options = []): ResultSet {
 
         $filter = isset($options['filter']) ? $options['filter'] : null;
         $fields = isset($options['fields']) && $options['fields'] ? $options['fields'] : null;
@@ -103,23 +102,23 @@ class MongoLite {
         return $resultSet;
     }
 
-    public function insert($collection, &$doc) {
+    public function insert(string $collection, array &$doc) {
         return $this->getCollection($collection)->insert($doc);
     }
 
-    public function save($collection, &$data, $create = false) {
+    public function save(string $collection, array &$data, bool $create = false) {
         return $this->getCollection($collection)->save($data, $create);
     }
 
-    public function update($collection, $criteria, $data) {
+    public function update(string $collection, mixed $criteria, array $data) {
         return $this->getCollection($collection)->update($criteria, $data);
     }
 
-    public function remove($collection, $filter=[]) {
+    public function remove(string $collection, array $filter = []) {
         return $this->getCollection($collection)->remove($filter);
     }
 
-    public function removeField($collection, $field, $filter = []) {
+    public function removeField(string $collection, string $field, array $filter = []): bool {
 
         $collection = $this->getCollection($collection);
 
@@ -134,7 +133,7 @@ class MongoLite {
         return true;
     }
 
-    public function renameField($collection, $field, $newfield, $filter = []) {
+    public function renameField(string $collection, string $field, string $newfield, array $filter = []): bool {
 
         $collection = $this->getCollection($collection);
 
@@ -150,7 +149,7 @@ class MongoLite {
         return true;
     }
 
-    public function count($collection, $filter=[]) {
+    public function count(string $collection, array $filter=[]): int {
         return $this->getCollection($collection)->count($filter);
     }
 }

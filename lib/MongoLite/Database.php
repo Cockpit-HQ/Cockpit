@@ -1,12 +1,4 @@
 <?php
-/**
- * This file is part of the Cockpit project.
- *
- * (c) Artur Heinze - 🅰🅶🅴🅽🆃🅴🅹🅾, http://agentejo.com
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 namespace MongoLite;
 
@@ -46,7 +38,7 @@ class Database {
      * @param string $path
      * @param array  $options
      */
-    public function __construct($path = self::DSN_PATH_MEMORY, $options = []) {
+    public function __construct(string $path = self::DSN_PATH_MEMORY, array $options = []) {
 
         $dns = "sqlite:{$path}";
 
@@ -100,7 +92,7 @@ class Database {
      * @param  mixed $criteria
      * @return mixed
      */
-    public function registerCriteriaFunction($criteria) {
+    public function registerCriteriaFunction(mixed $criteria): ?string {
 
         $id = \uniqid('criteria');
 
@@ -130,22 +122,21 @@ class Database {
      * @param  array $document
      * @return boolean
      */
-    public function callCriteriaFunction($id, $document) {
-
+    public function callCriteriaFunction(string $id, array $document): mixed {
         return isset($this->document_criterias[$id]) ? $this->document_criterias[$id]($document):false;
     }
 
     /**
      * Vacuum database
      */
-    public function vacuum() {
+    public function vacuum(): void {
         $this->connection->query('VACUUM');
     }
 
     /**
      * Drop database
      */
-    public function drop() {
+    public function drop(): void {
         if ($this->path != static::DSN_PATH_MEMORY) {
             \unlink($this->path);
         }
@@ -156,7 +147,7 @@ class Database {
      *
      * @param  string $name
      */
-    public function createCollection($name) {
+    public function createCollection(string $name): void {
         $this->connection->exec("CREATE TABLE `{$name}` ( id INTEGER PRIMARY KEY AUTOINCREMENT, document TEXT )");
     }
 
@@ -165,7 +156,7 @@ class Database {
      *
      * @param  string $name
      */
-    public function dropCollection($name) {
+    public function dropCollection(string $name): void {
         $this->connection->exec("DROP TABLE `{$name}`");
 
         // Remove collection from cache
@@ -177,7 +168,7 @@ class Database {
      *
      * @return array
      */
-    public function getCollectionNames() {
+    public function getCollectionNames(): array {
 
         $stmt   = $this->connection->query("SELECT name FROM sqlite_master WHERE type='table' AND name!='sqlite_sequence';");
         $tables = $stmt->fetchAll( \PDO::FETCH_ASSOC);
@@ -195,7 +186,7 @@ class Database {
      *
      * @return array
      */
-    public function listCollections() {
+    public function listCollections(): array {
 
         foreach ($this->getCollectionNames() as $name) {
             if(!isset($this->collections[$name])) {
@@ -212,7 +203,7 @@ class Database {
      * @param  string $name
      * @return object
      */
-    public function selectCollection($name) {
+    public function selectCollection(string $name): Collection {
 
         if (!isset($this->collections[$name])) {
 
@@ -237,11 +228,11 @@ class UtilArrayQuery {
 
     protected static $closures = [];
 
-    public static function closureCall($uid, $doc) {
+    public static function closureCall(string $uid, mixed $doc) {
         return call_user_func_array(self::$closures[$uid], [$doc]);
     }
 
-    public static function buildCondition($criteria, $concat = ' && ') {
+    public static function buildCondition(mixed $criteria, string $concat = ' && '): string {
 
         $fn = [];
 
@@ -333,7 +324,7 @@ class UtilArrayQuery {
     }
 
 
-    public static function check($value, $condition) {
+    public static function check(mixed $value, array $condition): bool {
 
         $keys = \array_keys($condition);
 
@@ -349,7 +340,7 @@ class UtilArrayQuery {
         return true;
     }
 
-    private static function evaluate($func, $a, $b) {
+    private static function evaluate(string $func, mixed $a, mixed $b): mixed {
 
         $r = false;
 
@@ -473,7 +464,7 @@ class UtilArrayQuery {
 
 
 // Helper Functions
-function levenshtein_utf8($s1, $s2) {
+function levenshtein_utf8(string $s1, string $s2): int {
 
     $map = [];
     $utf8_to_extended_ascii = function($str) use($map) {
@@ -495,7 +486,7 @@ function levenshtein_utf8($s1, $s2) {
     return levenshtein($utf8_to_extended_ascii($s1), $utf8_to_extended_ascii($s2));
 }
 
-function fuzzy_search($search, $text, $distance = 3){
+function fuzzy_search(string $search, string $text, $distance = 3): float {
 
     $needles = \explode(' ', \mb_strtolower($search, 'UTF-8'));
     $tokens  = \explode(' ', \mb_strtolower($text, 'UTF-8'));
@@ -524,7 +515,7 @@ function fuzzy_search($search, $text, $distance = 3){
     return $score / \count($needles);
 }
 
-function createMongoDbLikeId() {
+function createMongoDbLikeId(): string {
 
     // use native MongoDB ObjectId if available
     if (class_exists('MongoDB\\BSON\\ObjectId')) {

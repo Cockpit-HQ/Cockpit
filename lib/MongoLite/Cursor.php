@@ -1,12 +1,4 @@
 <?php
-/**
- * This file is part of the Cockpit project.
- *
- * (c) Artur Heinze - 🅰🅶🅴🅽🆃🅴🅹🅾, http://agentejo.com
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 namespace MongoLite;
 
@@ -61,7 +53,7 @@ class Cursor implements \Iterator {
      * @param object $collection
      * @param mixed $criteria
      */
-    public function __construct($collection, $criteria, $projection = null) {
+    public function __construct(Collection $collection, mixed $criteria, ?array $projection = null) {
         $this->collection  = $collection;
         $this->criteria    = $criteria;
         $this->projection  = $projection;
@@ -72,7 +64,7 @@ class Cursor implements \Iterator {
      *
      * @return integer
      */
-    public function count() {
+    public function count(): int {
 
         if (!$this->criteria) {
 
@@ -99,12 +91,12 @@ class Cursor implements \Iterator {
     /**
      * Set limit
      *
-     * @param  mixed $limit
+     * @param  int $limit
      * @return object       Cursor
      */
-    public function limit($limit) {
+    public function limit(int $limit): self {
 
-        $this->limit = intval($limit);
+        $this->limit = $limit;
 
         return $this;
     }
@@ -115,7 +107,7 @@ class Cursor implements \Iterator {
      * @param  mixed $sorts
      * @return object       Cursor
      */
-    public function sort($sorts) {
+    public function sort(?array $sorts): self {
 
         $this->sort = $sorts;
 
@@ -125,10 +117,10 @@ class Cursor implements \Iterator {
     /**
      * Set skip
      *
-     * @param  mixed $skip
+     * @param  int $skip
      * @return object       Cursor
      */
-    public function skip($skip) {
+    public function skip(int $skip): self {
 
         $this->skip = $skip;
 
@@ -141,7 +133,7 @@ class Cursor implements \Iterator {
      * @param  mixed $callable
      * @return object
      */
-    public function each($callable) {
+    public function each(mixed $callable): self {
 
         foreach ($this->rewind() as $document) {
             $callable($document);
@@ -155,7 +147,7 @@ class Cursor implements \Iterator {
      *
      * @return array
      */
-    public function toArray() {
+    public function toArray(): array {
         return $this->getData();
     }
 
@@ -165,7 +157,7 @@ class Cursor implements \Iterator {
      *
      * @return array
      */
-    protected function getData() {
+    protected function getData(): array {
 
         $conn = $this->collection->database->connection;
         $sql = ['SELECT document FROM '.$conn->quote($this->collection->name)];
@@ -245,27 +237,27 @@ class Cursor implements \Iterator {
     /**
      * Iterator implementation
      */
-    public function rewind() {
+    public function rewind(): void {
 
         if ($this->position!==false) {
             $this->position = 0;
         }
     }
 
-    public function current() {
+    public function current(): array {
 
         return $this->data[$this->position];
     }
 
-    public function key() {
+    public function key(): int {
         return $this->position;
     }
 
-    public function next() {
+    public function next(): void {
         ++$this->position;
     }
 
-    public function valid() {
+    public function valid(): bool {
 
         if ($this->position===false) {
 
@@ -278,7 +270,7 @@ class Cursor implements \Iterator {
 
 }
 
-function array_key_intersect(&$a, &$b) {
+function array_key_intersect(&$a, &$b): array {
 
     $array = [];
 

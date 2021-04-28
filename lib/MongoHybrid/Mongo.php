@@ -16,7 +16,7 @@ class Mongo {
     protected $db;
     protected $options;
 
-    public function __construct($server, $options=[], $driverOptions=[]) {
+    public function __construct(string $server, array $options=[], array $driverOptions=[]) {
 
         $driverOptions = array_merge([
             'typeMap' => ['root' => 'array', 'document' => 'array', 'array' => 'array']
@@ -27,7 +27,7 @@ class Mongo {
         $this->options = $options;
     }
 
-    public function getCollection($name, $db = null){
+    public function getCollection(string $name, ?string $db = null) {
 
         if ($db) {
             $name = "{$db}/{$name}";
@@ -38,7 +38,7 @@ class Mongo {
         return $this->db->selectCollection($name);
     }
 
-    public function dropCollection($name, $db = null){
+    public function dropCollection(string $name, ?string $db = null) {
 
         if ($db) {
             $name = "{$db}/{$name}";
@@ -49,7 +49,7 @@ class Mongo {
         return $this->db->dropCollection($name);
     }
 
-    public function renameCollection($name, $newname, $db = null) {
+    public function renameCollection(string $name, string $newname, ?string $db = null): bool {
 
         if ($db) {
             $name = "{$db}/{$name}";
@@ -75,7 +75,7 @@ class Mongo {
         return true;
     }
 
-    public function findOneById($collection, $id){
+    public function findOneById(string $collection, mixed $id): ?array {
 
         if (is_string($id)) $id = new \MongoDB\BSON\ObjectID($id);
 
@@ -86,7 +86,7 @@ class Mongo {
         return $doc;
     }
 
-    public function findOne($collection, $filter = [], $projection = []) {
+    public function findOne(string $collection, array $filter = [], array $projection = []): ?array {
 
         if (!$filter) $filter = [];
 
@@ -98,7 +98,7 @@ class Mongo {
         return $doc;
     }
 
-    public function find($collection, $options = []){
+    public function find(string $collection, array $options = []): ResultSet {
 
         $filter = isset($options['filter']) && $options['filter'] ? $options['filter'] : [];
         $fields = isset($options['fields']) && $options['fields'] ? $options['fields'] : [];
@@ -132,7 +132,7 @@ class Mongo {
         return $resultSet;
     }
 
-    public function insert($collection, &$doc) {
+    public function insert(string $collection, array &$doc): array {
 
         if (isset($doc[0])) {
 
@@ -157,7 +157,7 @@ class Mongo {
         return $return;
     }
 
-    public function save($collection, &$data, $create = false) {
+    public function save(string $collection, array &$data, bool $create = false): array {
 
         $data = $this->_fixMongoIds($data);
         $ref  = $data;
@@ -182,7 +182,7 @@ class Mongo {
         return $return;
     }
 
-    public function update($collection, $criteria, $data) {
+    public function update(string $collection, mixed $criteria, array $data) {
 
         $criteria = $this->_fixMongoIds($criteria);
         $data     = $this->_fixMongoIds($data);
@@ -190,7 +190,7 @@ class Mongo {
         return $this->getCollection($collection)->updateMany($criteria, ['$set' => $data]);
     }
 
-    public function remove($collection, $filter=[]) {
+    public function remove(string $collection, array $filter = []) {
 
         if (!$filter) $filter = [];
 
@@ -199,7 +199,7 @@ class Mongo {
         return $this->getCollection($collection)->deleteMany($filter);
     }
 
-    public function removeField($collection, $field, $filter = []) {
+    public function removeField(string $collection, string $field, array $filter = []) {
 
         $opts = ['$unset' => []];
         $opts['$unset'][$field] = 1;
@@ -207,7 +207,7 @@ class Mongo {
         return $this->getCollection($collection)->updateMany($filter, $opts);
     }
 
-    public function renameField($collection, $field, $newfield, $filter = []) {
+    public function renameField(string $collection, string $field, string $newfield, array $filter = []) {
 
         $opts = ['$rename' => []];
         $opts['$rename'][$field] = $newfield;
@@ -215,7 +215,7 @@ class Mongo {
         return $this->getCollection($collection)->updateMany($filter, $opts);
     }
 
-    public function count($collection, $filter=[], $options=[]) {
+    public function count(string $collection, array $filter = [], array $options = []) {
 
         if (!$filter) $filter = [];
 
@@ -224,7 +224,7 @@ class Mongo {
         return $this->getCollection($collection)->countDocuments($filter, $options);
     }
 
-    protected function _fixMongoIds(&$data, $infinite = false, $_level = 0) {
+    protected function _fixMongoIds(mixed &$data, bool $infinite = false, int $_level = 0): mixed {
 
         if (!is_array($data)) {
             return $data;
@@ -246,7 +246,7 @@ class Mongo {
             if ($k === '_id') {
 
                 if (is_string($v)) {
-                    
+
                     $v = $v[0] === '@' ? \substr($v, 1) : new \MongoDB\BSON\ObjectID($v);
 
                 } elseif (is_array($v)) {
@@ -259,9 +259,9 @@ class Mongo {
                             }
                         }
                     }
-    
+
                     if (isset($v['$nin'])) {
-    
+
                         foreach ($v['$nin'] as &$id) {
                             if (is_string($id)) {
                                 $id = new \MongoDB\BSON\ObjectID($id);
@@ -270,8 +270,8 @@ class Mongo {
                     }
 
                     if (isset($v['$ne']) && is_string($v['$ne'])) {
-    
-                        $v['$ne'] = new \MongoDB\BSON\ObjectID($v['$ne']);                    
+
+                        $v['$ne'] = new \MongoDB\BSON\ObjectID($v['$ne']);
                     }
 
                 }

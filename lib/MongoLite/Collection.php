@@ -1,12 +1,4 @@
 <?php
-/**
- * This file is part of the Cockpit project.
- *
- * (c) Artur Heinze - 🅰🅶🅴🅽🆃🅴🅹🅾, http://agentejo.com
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 namespace MongoLite;
 
@@ -29,9 +21,9 @@ class Collection {
      * Constructor
      *
      * @param string $name
-     * @param object $database
+     * @param Database $database
      */
-    public function __construct($name, $database) {
+    public function __construct(string $name, Database $database) {
         $this->name = $name;
         $this->database = $database;
     }
@@ -39,7 +31,7 @@ class Collection {
     /**
      * Drop collection
      */
-    public function drop() {
+    public function drop(): void {
         $this->database->dropCollection($this->name);
     }
 
@@ -49,7 +41,7 @@ class Collection {
      * @param array $documents
      * @return count of inserted documents for arrays
      */
-    public function insertMany($documents) {
+    public function insertMany(array $documents): int {
         return $this->insert($documents);
     }
 
@@ -60,7 +52,7 @@ class Collection {
      * @return mixed last_insert_id for single document or
      * count count of inserted documents for arrays
      */
-    public function insert(&$document) {
+    public function insert(array &$document): int {
 
         if (isset($document[0])) {
 
@@ -89,7 +81,7 @@ class Collection {
      * @param  array $document
      * @return mixed
      */
-    protected function _insert(&$document) {
+    protected function _insert(array &$document): mixed {
 
         $table           = $this->name;
         $document['_id'] = isset($document['_id']) ? $document['_id'] : createMongoDbLikeId();
@@ -123,7 +115,7 @@ class Collection {
      * @param  array $document
      * @return mixed
      */
-    public function save(&$document, $create = false) {
+    public function save(array &$document, bool $create = false): mixed {
 
         if (isset($document['_id'])) {
             $ret = $this->update(['_id' => $document['_id']], ['$set' => $document]);
@@ -147,7 +139,7 @@ class Collection {
      * @param  array $data
      * @return integer
      */
-    public function update($criteria, $data, $merge = true) {
+    public function update(mixed $criteria, array $data, bool $merge = true): int {
 
         $conn   = $this->database->connection;
         $sql    = 'SELECT id, document FROM `'.$this->name.'` WHERE document_criteria("'.$this->database->registerCriteriaFunction($criteria).'", document)';
@@ -174,7 +166,7 @@ class Collection {
      * @param  mixed $criteria
      * @return mixed
      */
-    public function remove($criteria) {
+    public function remove(mixed $criteria): mixed {
 
         $sql = 'DELETE FROM `'.$this->name.'` WHERE document_criteria("'.$this->database->registerCriteriaFunction($criteria).'", document)';
 
@@ -187,7 +179,7 @@ class Collection {
      * @param  mixed $criteria
      * @return integer
      */
-    public function count($criteria = null) {
+    public function count(mixed $criteria = null): int {
 
         return $this->find($criteria)->count();
     }
@@ -196,9 +188,9 @@ class Collection {
      * Find documents
      *
      * @param  mixed $criteria
-     * @return object Cursor
+     * @return Cursor Cursor
      */
-    public function find($criteria = null, $projection = null) {
+    public function find(mixed $criteria = null, ?array $projection = null): Cursor {
         return new Cursor($this, $this->database->registerCriteriaFunction($criteria), $projection);
     }
 
@@ -208,7 +200,7 @@ class Collection {
      * @param  mixed $criteria
      * @return array
      */
-    public function findOne($criteria = null, $projection = null) {
+    public function findOne(mixed $criteria = null, ?array $projection = null): ?array {
 
         $items = $this->find($criteria, $projection)->limit(1)->toArray();
 
@@ -221,7 +213,7 @@ class Collection {
      * @param  string $newname [description]
      * @return boolean
      */
-    public function renameCollection($newname) {
+    public function renameCollection(string $newname): bool {
 
         if (!in_array($newname, $this->database->getCollectionNames())) {
 

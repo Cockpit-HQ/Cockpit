@@ -15,7 +15,7 @@ class Client {
     protected $driver;
     public $type;
 
-    public function __construct($server, $options=[], $driverOptions=[]) {
+    public function __construct(string $server, array $options = [], array $driverOptions = []) {
 
         if (strpos($server, 'mongodb://')===0 || strpos($server, 'mongodb+srv://')===0) {
 
@@ -29,19 +29,19 @@ class Client {
         }
     }
 
-    public function dropCollection($name, $db = null) {
+    public function dropCollection(string $name, ?string $db = null): mixed {
         return $this->driver->getCollection($name, $db)->drop();
     }
 
-    public function renameCollection($name, $newname, $db = null) {
+    public function renameCollection(string $name, string $newname, ?string $db = null): mixed {
         return $this->driver->renameCollection($name, $newname, $db);
     }
 
-    public function save($collection, &$data) {
+    public function save(string $collection, array &$data): mixed {
         return $this->driver->save($collection, $data);
     }
 
-    public function insert($collection, &$doc) {
+    public function insert(string $collection, array &$doc): mixed {
         return $this->driver->insert($collection, $doc);
     }
 
@@ -58,7 +58,7 @@ class Client {
      * @param  mixed $default
      * @return mixed
      */
-    public function getKey($collection, $key, $default = null) {
+    public function getKey(string $collection, string $key, mixed $default = null): mixed {
 
         $entry = $this->driver->findOne($collection, ['key' => $key]);
 
@@ -72,7 +72,7 @@ class Client {
      * @param  string $key
      * @param  mixed $value
      */
-    public function setKey($collection, $key, $value) {
+    public function setKey(string $collection, string $key, mixed $value): mixed {
 
         $entry = $this->driver->findOne($collection, ['key' => $key]);
 
@@ -96,7 +96,7 @@ class Client {
      * @param  string $key
      * @return integer
      */
-    public function removeKey($collection, $key) {
+    public function removeKey(string $collection, string $key): mixed {
         return $this->driver->remove($collection, ['key' => (is_array($key) ? ['$in' => $key] : $key)]);
     }
 
@@ -106,7 +106,7 @@ class Client {
      * @param  string $collection @param  string $collection
      * @param  string $key
      */
-    public function keyExists($collection, $key) {
+    public function keyExists(string $collection, string $key): mixed {
         return $this->driver->count($collection, ['key' => $key]);;
     }
 
@@ -118,7 +118,7 @@ class Client {
      * @param  integer $by
      * @return integer
      */
-    public function incrKey($collection, $key, $by = 1) {
+    public function incrKey(string $collection, string $key, int $by = 1): int {
 
         $current = $this->getKey($collection, $key, 0);
         $newone  = $current + $by;
@@ -136,7 +136,7 @@ class Client {
      * @param  integer $by
      * @return integer
      */
-    public function decrKey($collection, $key, $by = 1) {
+    public function decrKey(string $collection, string $key, int $by = 1): int {
         return $this->incr($collection, $key, ($by * -1));
     }
 
@@ -148,7 +148,7 @@ class Client {
      * @param  mixed $value
      * @return integer
      */
-    public function rpush($collection, $key, $value) {
+    public function rpush(string $collection, string $key, mixed $value): int {
 
         $list = $this->getKey($collection, $key, []);
 
@@ -167,7 +167,7 @@ class Client {
      * @param  mixed $value
      * @return integer
      */
-    public function lpush($collection, $key, $value) {
+    public function lpush(string $collection, string $key, mixed $value): int {
 
         $list = $this->getKey($collection, $key, []);
 
@@ -189,7 +189,7 @@ class Client {
      * @param  mixed $value
      * @return boolean
      */
-    public function lset($collection, $key, $index, $value) {
+    public function lset(string $collection, string $key, int $index, mixed $value): bool {
 
         $list = $this->getKey($collection, $key, []);
 
@@ -215,7 +215,7 @@ class Client {
      * @param  integer $index
      * @return mixed
      */
-    public function lindex($collection, $key, $index) {
+    public function lindex(string $collection, string $key, int $index): mixed {
 
         $list = $this->getKey($collection, $key, []);
 
@@ -234,7 +234,7 @@ class Client {
      * @param  string $field
      * @param  mixed $value
      */
-    public function hset($collection, $key, $field, $value) {
+    public function hset(string $collection, string $key, string $field, mixed $value): void {
 
         $set = $this->getKey($collection, $key, []);
 
@@ -251,7 +251,7 @@ class Client {
      * @param  mixed $default
      * @return mixed
      */
-    public function hget($collection, $key, $field, $default=null) {
+    public function hget(string $collection, string $key, string $field, mixed $default = null): mixed {
 
         $set = $this->getKey($collection, $key, []);
 
@@ -265,7 +265,7 @@ class Client {
      * @param  string $key
      * @return array
      */
-    public function hgetall($key) {
+    public function hgetall(string $collection, string $key): array {
 
         $set = $this->getKey($collection, $key, []);
 
@@ -280,7 +280,7 @@ class Client {
      * @param  string $field
      * @return boolean
      */
-    public function hexists($collection, $key, $field) {
+    public function hexists(string $collection, string $key, string $field): bool {
 
         $set = $this->getKey($collection, $key, []);
 
@@ -294,7 +294,7 @@ class Client {
      * @param  string $key
      * @return array
      */
-    public function hkeys($key) {
+    public function hkeys(string $collection, string $key): array {
 
         $set = $this->getKey($collection, $key, []);
 
@@ -308,7 +308,7 @@ class Client {
      * @param  string $key
      * @return array
      */
-    public function hvals($key) {
+    public function hvals(string $collection, string $key): array {
 
         $set = $this->getKey($collection, $key, []);
 
@@ -322,9 +322,9 @@ class Client {
      * @param  string $key
      * @return integer
      */
-    public function hlen($key) {
+    public function hlen(string $collection, string $key): int {
 
-        return count($this->hkeys($key));
+        return count($this->hkeys($collection, $key));
     }
 
     /**
@@ -334,7 +334,7 @@ class Client {
      * @param  string $key
      * @return integer
      */
-    public function hdel($key) {
+    public function hdel(string $collection, string $key): int {
 
         $set = $this->getKey($collection, $key, []);
 
@@ -366,7 +366,7 @@ class Client {
      * @param  integer $by
      * @return integer
      */
-    public function hincrby($collection, $key, $field, $by = 1) {
+    public function hincrby(string $collection, string $key, string $field, int $by = 1): int {
 
         $current = $this->hget($collection, $key, $field, 0);
         $newone  = $current+$by;
@@ -383,7 +383,7 @@ class Client {
      * @param  string $key
      * @return array
      */
-    public function hmget($key) {
+    public function hmget(string $collection, string $key): array {
 
         $set     = $this->getKey($collection, $key, []);
         $fields  = func_get_args();
@@ -403,7 +403,7 @@ class Client {
      * @param  string $collection
      * @param  string $key
      */
-    public function hmset($key) {
+    public function hmset(string $collection, string $key): void {
 
         $set     = $this->getKey($collection, $key, []);
         $args    = func_get_args();

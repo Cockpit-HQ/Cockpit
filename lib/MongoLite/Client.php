@@ -1,12 +1,4 @@
 <?php
-/**
- * This file is part of the Cockpit project.
- *
- * (c) Artur Heinze - 🅰🅶🅴🅽🆃🅴🅹🅾, http://agentejo.com
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 namespace MongoLite;
 
@@ -36,7 +28,7 @@ class Client {
      * @param string $path - Pathname to database file or :memory:
      * @param array  $options
      */
-    public function __construct($path, $options = []) {
+    public function __construct(string $path, array $options = []) {
         $this->path    = \rtrim($path, '\\');
         $this->options = $options;
     }
@@ -46,7 +38,7 @@ class Client {
      *
      * @return array List of database names
      */
-    public function listDBs() {
+    public function listDBs(): array {
 
         // Return all databases available in memory
         if ($this->path === Database::DSN_PATH_MEMORY) {
@@ -72,8 +64,7 @@ class Client {
      * @param  string $collection
      * @return Collection
      */
-    public function selectCollection($database, $collection) {
-
+    public function selectCollection(string $database, string $collection): Collection {
         return $this->selectDB($database)->selectCollection($collection);
     }
 
@@ -83,7 +74,7 @@ class Client {
      * @param  string $name
      * @return Database
      */
-    public function selectDB($name) {
+    public function selectDB(string $name): Database {
 
         if (!isset($this->databases[$name])) {
             $this->databases[$name] = new Database(
