@@ -8,23 +8,22 @@ class Cache extends \Lime\Helper {
     protected $cachePath = null;
 
 
-    protected function initialize(){
+    protected function initialize() {
         $this->cachePath = \rtrim(\sys_get_temp_dir(),"/\\").'/';
         $this->prefix    = $this->app['app.name'];
     }
 
-    public function setCachePath($path){
+    public function setCachePath(string $path): void {
         if ($path) {
             $this->cachePath = rtrim($this->app->path($path), "/\\").'/';
         }
     }
 
-    public function getCachePath(){
-
+    public function getCachePath() {
         return $this->cachePath;
     }
 
-    public function write($key, $value, $duration = -1){
+    public function write(string $key, mixed $value, int $duration = -1): void {
 
         $expire = ($duration==-1) ? -1:(\time() + (\is_string($duration) ? \strtotime($duration):$duration));
 
@@ -36,7 +35,7 @@ class Cache extends \Lime\Helper {
         \file_put_contents($this->cachePath.\md5($this->prefix.'-'.$key).".cache" , \serialize($safe_var));
     }
 
-    public function read($key, $default=null){
+    public function read(string $key, mixed $default = null): mixed {
 
         $var = @\file_get_contents($this->cachePath.\md5($this->prefix.'-'.$key).".cache");
 
@@ -60,17 +59,16 @@ class Cache extends \Lime\Helper {
         }
     }
 
-    public function delete($key){
+    public function delete(string $key): void {
 
         $file = $this->cachePath.\md5($this->prefix.'-'.$key).".cache";
 
         if (\file_exists($file)) {
             @unlink($file);
         }
-
     }
 
-    public function clear(){
+    public function clear(): void {
 
         $iterator = new \RecursiveDirectoryIterator($this->cachePath);
 

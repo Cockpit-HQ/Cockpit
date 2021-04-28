@@ -19,7 +19,7 @@ class Request {
     public $base_route = '';
     public $route = '/';
 
-    public static function fromGlobalRequest($config = []) {
+    public static function fromGlobalRequest(array $config = []): self {
 
         $config = array_merge([
             'site_url'   => '',
@@ -51,7 +51,7 @@ class Request {
         return $request;
     }
 
-    public function __construct($config = []) {
+    public function __construct(array $config = []) {
 
         $this->request = $config['request'] ?? [];
         $this->post = $config['post'] ?? [];
@@ -67,7 +67,7 @@ class Request {
         $this->route = $config['route'] ?? '/';
     }
 
-    public function param($index=null, $default = null, $source = null) {
+    public function param(?string $index = null, mixed $default = null, mixed $source = null): mixed {
 
         $src = $source ? $source : $this->request;
         $cast = null;
@@ -90,7 +90,7 @@ class Request {
         return $value;
     }
 
-    public function getClientIp(){
+    public function getClientIp(): ?string {
 
         if (isset($this->server['HTTP_X_FORWARDED_FOR'])){
             // Use the forwarded IP address, typically set when the
@@ -109,14 +109,14 @@ class Request {
         return null;
     }
 
-    public function getClientLang($default="en") {
+    public function getClientLang(string $default = 'en'): string {
         if (!isset($this->server['HTTP_ACCEPT_LANGUAGE'])) {
             return $default;
         }
         return \strtolower(\substr($this->server['HTTP_ACCEPT_LANGUAGE'], 0, 2));
     }
 
-    public function getSiteUrl($withpath = false) {
+    public function getSiteUrl(bool $withpath = false): string {
 
         $url = $this->site_url;
 
@@ -127,7 +127,7 @@ class Request {
         return \rtrim($url, '/');
     }
 
-    public function is($type){
+    public function is(string $type): bool {
 
         switch (\strtolower($type)){
             case 'ajax':
@@ -186,7 +186,7 @@ class Request {
         return false;
     }
 
-    public function getBearerToken() {
+    public function getBearerToken(): ?string {
 
         $headers = null;
         $token   = null;
@@ -215,7 +215,7 @@ class Request {
         return $token;
     }
 
-    public static function getAllHeaders($server) {
+    public static function getAllHeaders(array $server): array {
 
         if (!$server) {
             $server = $_SERVER;

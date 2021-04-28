@@ -10,7 +10,7 @@
 
 class DotEnv {
 
-    public static function load($dir = '.') {
+    public static function load(string $dir = '.'): bool {
 
         $config = is_file($dir) ? $dir : "{$dir}/.env";
 
@@ -29,7 +29,7 @@ class DotEnv {
         return false;
     }
 
-    public static function parse($str, $expand = true) {
+    public static function parse(string $str, bool $expand = true): array {
 
         $lines = explode("\n", $str);
         $vars = [];

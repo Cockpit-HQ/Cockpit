@@ -138,7 +138,7 @@ class Response {
 
     }
 
-    public function flush() {
+    public function flush(): void {
 
         if ($this->gzip && !\ob_start('ob_gzhandler')) {
             \ob_start();

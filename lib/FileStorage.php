@@ -17,7 +17,7 @@ class FileStorage {
     protected $storages = [];
     protected $manager;
 
-    public function __construct($config = []) {
+    public function __construct(array $config = []) {
 
         $this->manager = new MountManager();
 
@@ -26,7 +26,7 @@ class FileStorage {
         }
     }
 
-    public function addStorage($name, $config) {
+    public function addStorage(string $name, array $config): self {
 
         $this->config[$name] = $config;
 
@@ -37,7 +37,7 @@ class FileStorage {
         return $this;
     }
 
-    public function use($name) {
+    public function use(string $name): ?Filesystem {
 
         if (!isset($this->storages[$name]) && isset($this->config[$name])) {
             $this->initStorage($name);
@@ -46,7 +46,7 @@ class FileStorage {
         return $this->storages[$name] ?? null;
     }
 
-    public function getURL($file) {
+    public function getURL(string $file): ?string {
         $url = null;
 
         list($prefix, $path) = explode('://', $file, 2);
@@ -63,7 +63,7 @@ class FileStorage {
         return $url;
     }
 
-    protected function initStorage($name) {
+    protected function initStorage(string $name): Filesystem  {
 
         $config = $this->config[$name];
         $adapter = new \ReflectionClass($config['adapter']);

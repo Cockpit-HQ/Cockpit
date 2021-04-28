@@ -10,11 +10,11 @@
 
 class CLI {
 
-    public static function beep() {
+    public static function beep(): void {
         echo "\x7";
     }
 
-    public static function opts($name = null, $default = null){
+    public static function opts(?string $name = null, mixed $default = null): mixed {
 
         static $opts;
 
@@ -62,7 +62,7 @@ class CLI {
     }
 
 
-    public static function write($out, $fgcolor = null, $bgcolor = null) {
+    public static function write(string $out, ?string $fgcolor = null, ?string $bgcolor = null): void {
 
         if ($fgcolor === true) $fgcolor = 'green';
         if ($fgcolor === false) $fgcolor = 'red';
@@ -109,11 +109,11 @@ class CLI {
         echo "{$out}";
     }
 
-    public static function writeln($out, $fgcolor = null, $bgcolor = null) {
+    public static function writeln(string $out, ?string $fgcolor = null, ?string $bgcolor = null): void {
         self::write("{$out}\n", $fgcolor, $bgcolor);
     }
 
-    public static function progress($percent, $dec = 0) {
+    public static function progress(mixed $percent = false, mixed $dec = 0): void {
 
         if ($percent === false) {
             echo PHP_EOL;

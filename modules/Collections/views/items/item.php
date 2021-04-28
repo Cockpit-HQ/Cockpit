@@ -2,7 +2,6 @@
 
     <ul class="kiss-breadcrumb">
         <li><a href="<?=$this->route('/collections')?>"><?=t('Collections')?></a></li>
-        <li><a href="<?=$this->route("/collections/items/list/{$collection['name']}")?>"><?=$this->escape($collection['label'] ? $collection['label'] : $collection['name'])?></a></li>
     </ul>
 
     <vue-view>
@@ -10,10 +9,11 @@
         <template>
 
             <div class="kiss-flex kiss-flex-middle">
-                <div class="kiss-margin-small-right kiss-size-5">
-                    <a class="kiss-link-muted" href="<?=$this->route("/collections/items/list/{$collection['name']}")?>"><icon>arrow_back_ios</icon></a>
+                <div class="kiss-flex kiss-position-relative">
+                    <span class="kiss-badge" style="<?=($collection['color'] ? "background:{$collection['color']};border-color:{$collection['color']}":"")?>"><?=$this->escape($collection['label'] ? $collection['label'] : $collection['name'])?></span>
+                    <a class="kiss-cover" href="<?=$this->route("/collections/items/list/{$collection['name']}")?>"></a>
                 </div>
-                <div class="kiss-margin-small-right kiss-size-5 kiss-text-bolder">
+                <div class="kiss-margin-small-left kiss-size-5 kiss-text-bolder">
                     <span v-if="!item._id"><?=t('New Item')?></span>
                     <span v-if="item._id"><?=t('Edit Item')?></span>
                 </div>

@@ -9,7 +9,7 @@ class Session extends \Lime\Helper {
     protected $initialized = false;
     public $name;
 
-    public function init($sessionname=null){
+    public function init(?string $sessionname = null) {
 
         if ($this->initialized) return;
 
@@ -25,19 +25,19 @@ class Session extends \Lime\Helper {
         $this->initialized = true;
     }
 
-    public function write($key, $value){
+    public function write(string $key, mixed $value): void {
         $_SESSION[$key] = $value;
     }
 
-    public function read($key, $default=null){
+    public function read(string $key, mixed $default = null) {
         return fetch_from_array($_SESSION, $key, $default);
     }
 
-    public function delete($key){
+    public function delete(string $key): void {
         unset($_SESSION[$key]);
     }
 
-    public function destroy(){
+    public function destroy(): void {
         \session_destroy();
     }
 }

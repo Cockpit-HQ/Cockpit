@@ -17,13 +17,13 @@ class Mailer {
     protected $transport;
     protected $options;
 
-    public function __construct($transport = 'mail', $options = array()) {
+    public function __construct(string $transport = 'mail', array $options = []) {
 
         $this->transport = $transport;
         $this->options = $options;
     }
 
-    public function mail($to, $subject, $message, $options = []) {
+    public function mail(mixed $to, string $subject, string $message, array $options = []) {
 
         $options = array_merge($this->options, is_array($options) ? $options: []);
 
@@ -40,7 +40,7 @@ class Mailer {
         return $message->send();
     }
 
-    public function createMessage($to, $subject, $message, $options=[]) {
+    public function createMessage(mixed $to, string $subject, string $message, array $options=[]) {
 
         $mail = new PHPMailer(true);
 
@@ -139,40 +139,40 @@ class Mailer_Message {
 
     public $mail;
 
-    public function __construct($mail) {
+    public function __construct(PHPMailer $mail) {
         $this->mail = $mail;
     }
 
-    public function setCharset($charset) {
+    public function setCharset(string $charset): void {
         $this->mail->CharSet = $charset;
     }
 
-    public function setSubject($subject) {
+    public function setSubject(string $subject): void {
         $this->mail->Subject = $subject;
     }
 
-    public function setFrom($email, $name=false) {
+    public function setFrom(string $email, ?string $name = null): void {
         $this->mail->From = $email;
         $this->mail->FromName = $name ? $name : $email;
     }
 
-    public function addReplyTo($email, $name='') {
+    public function addReplyTo(string $email, string $name = ''): void {
         $this->mail->addReplyTo($email, $name);
     }
 
-    public function addTo($email, $name = '') {
+    public function addTo(string $email, string $name = ''): void {
         $this->mail->AddAddress($email, $name);
     }
 
-    public function addCC($email, $name = '') {
+    public function addCC(string $email, string $name = ''): void {
         $this->mail->AddCC($email, $name);
     }
 
-    public function send() {
+    public function send(): mixed {
         return $this->mail->Send();
     }
 
-    public function attach($file, $alias='') {
+    public function attach(mixed $file, string $alias = ''): mixed {
         return $this->mail->AddAttachment($file, $alias);
     }
 }

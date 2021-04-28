@@ -35,7 +35,7 @@ class APP {
 
     protected static $instance = null;
 
-    public static function instance($clone = false) {
+    public static function instance(bool $clone = false): Lime\App {
 
         if (!static::$instance) {
             static::init();
@@ -44,7 +44,7 @@ class APP {
         return !$clone ? static::$instance : clone static::$instance;
     }
 
-    protected static function init() {
+    protected static function init(): Lime\App {
 
         $app = null;
         $config = null;
