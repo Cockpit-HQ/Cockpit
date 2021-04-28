@@ -29,7 +29,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '9c0028c66688309bbca2f66a74afc776bbfdb1e8',
+    'reference' => 'fa6a37435fddb874e20107ffd4009f412be5548d',
     'name' => 'agentejo/cockpit',
   ),
   'versions' => 
@@ -41,7 +41,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '9c0028c66688309bbca2f66a74afc776bbfdb1e8',
+      'reference' => 'fa6a37435fddb874e20107ffd4009f412be5548d',
     ),
     'bacon/bacon-qr-code' => 
     array (

@@ -51,7 +51,7 @@ final class Versions
   'symfony/polyfill-mbstring' => 'v1.22.1@5232de97ee3b75b0360528dae24e73db49566ab1',
   'symfony/polyfill-php80' => 'v1.22.1@dc3063ba22c2a1fd2f45ed856374d79114998f91',
   'symfony/polyfill-php81' => 'v1.22.1@00dedc6d362a1b863dda3f8243516da9fdfbe657',
-  'agentejo/cockpit' => 'dev-master@9c0028c66688309bbca2f66a74afc776bbfdb1e8',
+  'agentejo/cockpit' => 'dev-master@fa6a37435fddb874e20107ffd4009f412be5548d',
 );
 
     private function __construct()

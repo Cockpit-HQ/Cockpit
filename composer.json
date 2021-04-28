@@ -34,7 +34,6 @@
         "robthree/twofactorauth": "^1.8",
         "bacon/bacon-qr-code": "^2.0",
         "symfony/polyfill-mbstring": "^1.22",
-        "symfony/polyfill-php80": "^1.22",
         "symfony/polyfill-php81": "^1.22"
     },
 
