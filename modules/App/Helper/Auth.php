@@ -6,7 +6,7 @@ class Auth extends \Lime\Helper {
 
     public $sessionKey = 'app.auth.user';
 
-    public function authenticate($data) {
+    public function authenticate(array $data): mixed {
 
         $data = array_merge([
             'user'     => '',
@@ -40,7 +40,7 @@ class Auth extends \Lime\Helper {
         return false;
     }
 
-    public function getUser($prop = null, $default = null) {
+    public function getUser(?string $prop = null, mixed $default = null): mixed {
 
         $user = $this->app->retrieve($this->sessionKey);
 
@@ -55,7 +55,7 @@ class Auth extends \Lime\Helper {
         return $user;
     }
 
-    public function setUser($user, $permanent = true) {
+    public function setUser(array $user, bool $permanent = true): void {
 
         if (isset($user['name'])) {
             $user['name_short'] = explode(' ', $user['name'])[0];
@@ -69,7 +69,7 @@ class Auth extends \Lime\Helper {
         $this->app->set($this->sessionKey, $user);
     }
 
-    public function logout() {
+    public function logout(): void {
         $this->app->trigger('app.user.logout', [$this->getUser()]);
         $this->app->helper('session')->delete($this->sessionKey);
         $this->app->set($this->sessionKey, null);

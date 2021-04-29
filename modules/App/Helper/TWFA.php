@@ -9,22 +9,22 @@ use BaconQrCode\Renderer\RendererStyle\RendererStyle;
 use BaconQrCode\Writer;
 
 class TWFA extends \Lime\Helper {
-    
+
     protected $tfa;
 
     protected function initialize() {
         $this->tfa = new \RobThree\Auth\TwoFactorAuth($this->app['app.name'], 6, 30, 'sha1', new TWFAQRCodeRenderer());
     }
 
-    public function createSecret($length = 160) {
+    public function createSecret(int $length = 160) {
         return $this->tfa->createSecret($length);
     }
 
-    public function getQRCodeImageAsDataUri($secret, $size = 150) {
+    public function getQRCodeImageAsDataUri(string $secret, int $size = 150): string {
         return $this->tfa->getQRCodeImageAsDataUri($this->app['app.name'], $secret, $size);
     }
 
-    public function getQRCodeImage($secret, $size = 150) {
+    public function getQRCodeImage(string $secret, int $size = 150): mixed {
         $uri = $this->tfa->getQRCodeImageAsDataUri($this->app['app.name'], $secret, $size);
         $binary = file_get_contents($uri);
         return $binary;
@@ -33,11 +33,11 @@ class TWFA extends \Lime\Helper {
 
 class TWFAQRCodeRenderer implements IQRCodeProvider {
 
-    public function getMimeType() {
+    public function getMimeType(): string {
         return 'image/svg+xml';
     }
 
-    public function getQRCodeImage($qrtext, $size = 200, $margin = 0) {
+    public function getQRCodeImage($qrtext, $size = 200, $margin = 0): string {
 
         $renderer = new ImageRenderer(
             new RendererStyle($size, $margin),

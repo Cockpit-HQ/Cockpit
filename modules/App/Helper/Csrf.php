@@ -6,11 +6,7 @@ use Firebase\JWT\JWT;
 
 class Csrf extends \Lime\Helper {
 
-    protected function initialize(){
-
-    }
-
-    public function generateToken($key, $expire = null) {
+    public function generateToken(string $key, ?int $expire = null): string {
 
         $payload = ['csrf' => $key];
 
@@ -25,7 +21,7 @@ class Csrf extends \Lime\Helper {
         return $token;
     }
 
-    public function token($key, $generate = false, $expire = null) {
+    public function token(string $key, bool $generate = false, ?int $expire = null): string {
 
         $token = $this->app->helper('session')->read("app.csrf.token.{$key}", null);
 
@@ -36,7 +32,7 @@ class Csrf extends \Lime\Helper {
         return $token;
     }
 
-    public function isValid($key, $token, $checkpayload = false) {
+    public function isValid(string $key, string $token, bool $checkpayload = false): bool {
 
         if (!$token) {
             return false;

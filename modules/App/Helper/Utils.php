@@ -12,8 +12,8 @@ class Utils extends \Lime\Helper {
      * @param $size
      * @return string
      */
-    public function formatSize($size) {
-        $sizes = array(' Bytes', ' KB', ' MB', ' GB', ' TB', ' PB', ' EB', ' ZB', ' YB');
+    public function formatSize(int $size): string {
+        $sizes = [' Bytes', ' KB', ' MB', ' GB', ' TB', ' PB', ' EB', ' ZB', ' YB'];
         return ($size == 0) ? 'n/a' : (\round($size/\pow(1024, ($i = \floor(\log($size, 1024)))), 2) . $sizes[$i]);
     }
 
@@ -22,7 +22,7 @@ class Utils extends \Lime\Helper {
      *
      * @return int
      */
-    public function getMaxUploadSize() {
+    public function getMaxUploadSize(): int {
         static $max_size = -1;
 
         if ($max_size < 0) {
@@ -48,7 +48,7 @@ class Utils extends \Lime\Helper {
      * @param string $size
      * @return void
      */
-    public function parseSize($size) {
+    public function parseSize(string $size): int {
 
         $unit = preg_replace('/[^bkmgtpezy]/i', '', $size); // Remove the non-unit characters from the size.
         $size = preg_replace('/[^0-9\.]/', '', $size); // Remove the non-numeric characters from the size.
@@ -66,7 +66,7 @@ class Utils extends \Lime\Helper {
      * @param string $base
      * @return mixed
      */
-    public function fixRelativeUrls($content, $base = '/') {
+    public function fixRelativeUrls(string $content, string $base = '/'): string {
 
         $protocols = '[a-zA-Z0-9\-]+:';
         $regex     = '#\s+(src|href|poster)="(?!/|' . $protocols . '|\#|\')([^"]*)"#m';
@@ -90,7 +90,6 @@ class Utils extends \Lime\Helper {
         $content   = \preg_replace($regex, 'style="$1: url(\'' . $base . '$2$3\')', $content);
 
         return $content;
-
     }
 
     /**
@@ -99,7 +98,7 @@ class Utils extends \Lime\Helper {
      * @param bool|true $tolower
      * @return mixed|string
      */
-    public function sluggify($string, $replacement = '-', $tolower = true) {
+    public function sluggify(string $string, string $replacement = '-', bool $tolower = true): string {
         $quotedReplacement = \preg_quote($replacement, '/');
 
         $merge = array(
@@ -201,21 +200,21 @@ class Utils extends \Lime\Helper {
      * resolves complicated dependencies to determine what order something can run in
      *
      * start with an array like:
-     * array(
-     *     'a' => array('b', 'c'),
-     *     'b' => array(),
-     *     'c' => array('b')
-     * )
+     * [
+     *     'a' => ['b', 'c'],
+     *     'b' => [],
+     *     'c' => ['b']
+     * ]
      *
      * a depends on b and c, c depends on b, and b depends on nobody
-     * in this case we would return array('b', 'c', 'a')
+     * in this case we would return ['b', 'c', 'a']
      *
      * @param array $data
      * @return array
      */
-    public function resolveDependencies(array $data) {
+    public function resolveDependencies(array $data): array {
 
-        $new_data = array();
+        $new_data = [];
         $original_count = \count($data);
         while (\count($new_data) < $original_count) {
             foreach ($data as $name => $dependencies) {
@@ -224,7 +223,6 @@ class Utils extends \Lime\Helper {
                     unset($data[$name]);
                     continue;
                 }
-
                 foreach ($dependencies as $key => $dependency) {
                     if (\in_array($dependency, $new_data)) {
                         unset($data[$name][$key]);
@@ -245,7 +243,7 @@ class Utils extends \Lime\Helper {
     *                          yes/no words
     * @return boolean
     */
-    public function strToBool($string, $default = false) {
+    public function strToBool(string $string, bool $default = false): bool {
 
         $yes_words = 'affirmative|all right|aye|indubitably|most assuredly|ok|of course|okay|sure thing|y|yes+|yea|yep|sure|yeah|true|t|on|1|oui|vrai';
         $no_words  = 'no*|no way|nope|nah|na|never|absolutely not|by no means|negative|never ever|false|f|off|0|non|faux';
@@ -268,7 +266,7 @@ class Utils extends \Lime\Helper {
     *                           truncated, defaults to '...'
     * @return  string
     */
-    public function safeTruncate($string, $length, $append = '...') {
+    public function safeTruncate(string $string, int $length, string $append = '...'): string {
 
         $ret        = \substr($string, 0, $length);
         $last_space = \strrpos($ret, ' ');
@@ -290,7 +288,7 @@ class Utils extends \Lime\Helper {
     * @param   string  $url
     * @return  string
     */
-    public function urlGetContents($url) {
+    public function urlGetContents(string $url): string {
 
         $content = '';
 
@@ -316,7 +314,7 @@ class Utils extends \Lime\Helper {
         return $content;
     }
 
-    public function buildTree(array $elements, $options = [], $parentId = null) {
+    public function buildTree(array $elements, array $options = [], mixed $parentId = null): array {
 
         $options = \array_merge([
             'parent_id_column_name' => '_pid',
@@ -362,7 +360,7 @@ class Utils extends \Lime\Helper {
         return $branch;
     }
 
-    public function buildTreeList($items, $options = [], $parent = null, $result = null, $depth = 0, $path = '-') {
+    public function buildTreeList(array $items, array $options = [], mixed $parent = null, mixed $result = null, int $depth = 0, string $path = '-'): array {
 
         $options = \array_merge([
               'parent_id_column_name' => '_pid',
@@ -400,7 +398,7 @@ class Utils extends \Lime\Helper {
      * @param  string  $email
      * @return boolean
      */
-    public function isEmail($email) {
+    public function isEmail(string $email): bool {
 
         if (\function_exists('idn_to_ascii')) {
             $email = @\idn_to_ascii($email);
@@ -414,7 +412,7 @@ class Utils extends \Lime\Helper {
      * @param  mixed $input
      * @return mixed
      */
-    public function fixStringBooleanValues(&$input) {
+    public function fixStringBooleanValues(mixed &$input): mixed {
 
         if (!\is_array($input)) {
 
@@ -445,7 +443,7 @@ class Utils extends \Lime\Helper {
      * @param  mixed $input
      * @return mixed
      */
-    public function fixStringNumericValues(&$input) {
+    public function fixStringNumericValues(mixed &$input): mixed {
 
         if (!\is_array($input)) {
 
@@ -477,7 +475,7 @@ class Utils extends \Lime\Helper {
      * @param  callable $fn
      * @return null
      */
-    public function retry($times, callable $fn) {
+    public function retry(int $times, callable $fn): mixed {
 
         retrybeginning:
         try {
@@ -499,7 +497,7 @@ class Utils extends \Lime\Helper {
      * @param boolean $return
      * @return void
      */
-    function var_export($expr, $return=false) {
+    function var_export(mixed $expr, bool $return = false): mixed {
 
         $export = var_export($expr, true);
         $array  = preg_split("/\r\n|\n|\r/", $export);

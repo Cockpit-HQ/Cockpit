@@ -14,7 +14,7 @@ class Acl extends \Lime\Helper {
         });
     }
 
-    public function roles() {
+    public function roles(): array {
 
         $roles = [
             ['appid' => 'admin', 'name' => 'Admin']
@@ -31,7 +31,7 @@ class Acl extends \Lime\Helper {
         return $roles;
     }
 
-    public function isAllowed($permission, $role = null) {
+    public function isAllowed(string $permission, ?string $role = null): bool {
 
         $role = $role ?? $this->app->helper('auth')->getUser('role');
 
@@ -42,7 +42,7 @@ class Acl extends \Lime\Helper {
         return isset($this->roles[$role][$permission]) && $this->roles[$role][$permission];
     }
 
-    public function cache() {
+    public function cache(): array {
 
         $cache = [];
 

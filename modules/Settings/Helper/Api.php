@@ -13,7 +13,7 @@ class Api extends \Lime\Helper {
         });
     }
 
-    public function keys() {
+    public function keys(): array {
 
         $keys = [];
 
@@ -28,7 +28,7 @@ class Api extends \Lime\Helper {
         return $keys;
     }
 
-    public function cache() {
+    public function cache(): array {
 
         $cache = [];
         $keys = $this->app->dataStorage->find('system/api_keys')->toArray();

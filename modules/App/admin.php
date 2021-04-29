@@ -17,7 +17,7 @@ $this->bind('/', function() {
 
 
 // check + validate session time
-$this->on('app.admin.request', function($request) {
+$this->on('app.admin.request', function(Lime\Request $request) {
 
     $user = $this->helper('auth')->getUser();
 

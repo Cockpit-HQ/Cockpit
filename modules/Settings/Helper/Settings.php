@@ -6,7 +6,7 @@ use ArrayObject;
 
 class Settings extends \Lime\Helper {
 
-    public function groups($filter = false) {
+    public function groups(bool $filter = false): ArrayObject {
 
         $settings = new ArrayObject([
             'System' => [
@@ -37,7 +37,7 @@ class Settings extends \Lime\Helper {
             ]
         ]);
 
-        $this->app->trigger('app.settings.collect', [$config]);
+        $this->app->trigger('app.settings.collect', [$settings]);
 
         if ($filter) {
 

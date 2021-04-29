@@ -376,7 +376,7 @@ class App implements \ArrayAccess {
     * Path helper method
     * @return Mixed
     */
-    public function path(): mixed{
+    public function path(): mixed {
 
         $args = \func_get_args();
 
@@ -393,7 +393,7 @@ class App implements \ArrayAccess {
                 $parts = \explode(':', $file, 2);
 
                 if (count($parts)==2){
-                    if (!isset($this->paths[$parts[0]])) return false;
+                    if (!isset($this->paths[$parts[0]])) return null;
 
                     foreach ($this->paths[$parts[0]] as &$path) {
                         if (\file_exists($path.$parts[1])){
@@ -402,7 +402,7 @@ class App implements \ArrayAccess {
                     }
                 }
 
-                return false;
+                return null;
 
             case 2:
 

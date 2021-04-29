@@ -14,7 +14,7 @@ class Locales extends \Lime\Helper {
         });
     }
 
-    public function locales() {
+    public function locales(): array {
 
         $locales = [];
 
@@ -29,7 +29,7 @@ class Locales extends \Lime\Helper {
         return $locales;
     }
 
-    public function cache() {
+    public function cache(): array {
 
         $cache = [
             'default' => 'Default'

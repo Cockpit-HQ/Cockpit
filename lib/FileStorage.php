@@ -47,6 +47,7 @@ class FileStorage {
     }
 
     public function getURL(string $file): ?string {
+
         $url = null;
 
         list($prefix, $path) = explode('://', $file, 2);

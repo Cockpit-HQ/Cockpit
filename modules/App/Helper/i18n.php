@@ -533,7 +533,7 @@ class i18n extends \Lime\Helper {
     /**
      * @inherit
      */
-    protected function initialize(){
+    protected function initialize() {
 
         $locale = $this->app->getClientLang();
 
@@ -546,20 +546,20 @@ class i18n extends \Lime\Helper {
      * Get translated string by key
      *
      * @param   string $key translation key
-     * @param   array $alternative  returns if $key doesn''t exist
+     * @param   string $alternative  returns if $key doesn't exist
      * @return  string
      */
-    public function get($key, $alternative=null, $lang=null){
+    public function get(string $key, ?string $alternative = null, ?string $lang = null): ?string {
 
         if (!$lang) {
             $lang = $this->locale;
         }
 
-        if (!$alternative){
+        if (!$alternative) {
             $alternative = $key;
         }
 
-        return isset($this->_languages[$lang][$key]) ? $this->_languages[$lang][$key]:$alternative;
+        return isset($this->_languages[$lang][$key]) ? $this->_languages[$lang][$key] : $alternative;
     }
 
     /**
@@ -570,17 +570,17 @@ class i18n extends \Lime\Helper {
      * @param   array $alternative  returns if $key doesn''t exist
      * @return  string
      */
-    public function getstr($key, $params=[], $alternative=null, $lang=null){
+    public function getstr(string $key, array $params = [], ?string $alternative = null, ?string $lang = null): ?string {
 
         if (!$lang) {
             $lang = $this->locale;
         }
 
-        if (!$alternative){
+        if (!$alternative) {
             $alternative = $key;
         }
 
-        return \vsprintf(isset($this->_languages[$lang][$key]) ? $this->_languages[$lang][$key]:$alternative, $params);
+        return \vsprintf(isset($this->_languages[$lang][$key]) ? $this->_languages[$lang][$key] : $alternative, $params);
     }
 
 
@@ -590,15 +590,15 @@ class i18n extends \Lime\Helper {
      * @param  string $lang     language to merge to
      * @return boolean
      */
-    public function load($langfile, $lang=null) {
+    public function load(string $langfile, ?string $lang = null): bool {
 
         if (!$lang) {
             $lang = $this->locale;
         }
 
-        if ($path = $this->app->path($langfile)){
+        if ($path = $this->app->path($langfile)) {
 
-            if (!isset($this->_languages[$lang])){
+            if (!isset($this->_languages[$lang])) {
                 $this->_languages[$lang] = [];
             }
 
@@ -617,7 +617,7 @@ class i18n extends \Lime\Helper {
      * @param  string $lang     language
      * @return array
      */
-    public function data($lang=null) {
+    public function data(?string $lang = null): array {
 
         if ($lang) {
             return isset($this->_languages[$lang]) ? $this->_languages[$lang] : [];

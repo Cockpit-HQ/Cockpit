@@ -11,7 +11,7 @@ $this->on('app.admin.init', function() {
 // collections api
 $this->module('collections')->extend([
 
-    'createCollection' => function($name, $data = []) {
+    'createCollection' => function(string $name, array $data = []): mixed {
 
         if (!trim($name)) {
             return false;
@@ -54,7 +54,7 @@ $this->module('collections')->extend([
         return $collection;
     },
 
-    'updateCollection' => function($name, $data) {
+    'updateCollection' => function(string $name, array $data): mixed {
 
         if (!$this->exists($name)) {
             return false;
@@ -84,7 +84,7 @@ $this->module('collections')->extend([
         return $collection;
     },
 
-    'saveCollection' => function($name, $data) {
+    'saveCollection' => function(string $name, array $data): mixed {
 
         if (!trim($name)) {
             return false;
@@ -93,7 +93,7 @@ $this->module('collections')->extend([
         return $this->exists($name) ? $this->updateCollection($name, $data) : $this->createCollection($name, $data);
     },
 
-    'removeCollection' => function($name) {
+    'removeCollection' => function(string $name): bool {
 
         if (!$this->exists($name)) {
             return false;
@@ -108,7 +108,7 @@ $this->module('collections')->extend([
         return true;
     },
 
-    'collections' => function($extended = false) {
+    'collections' => function(bool $extended = false): array {
 
         $stores = [];
 
@@ -128,11 +128,11 @@ $this->module('collections')->extend([
         return $stores;
     },
 
-    'exists' => function($name) {
-        return $this->app->path("#storage:collections/{$name}.collection.php");
+    'exists' => function(string $name): bool {
+        return $this->app->path("#storage:collections/{$name}.collection.php") ? true : false;
     },
 
-    'collection' => function($name) {
+    'collection' => function(string $name): mixed {
 
         static $collections; // cache
 

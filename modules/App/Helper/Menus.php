@@ -8,7 +8,7 @@ class Menus extends \Lime\Helper {
 
     protected $menus = [];
 
-    public function addLink($menu, $link) {
+    public function addLink(string $menu, array $link): void {
 
         if (!isset($this->menus[$menu])) {
             $this->menus[$menu] = [];
@@ -25,7 +25,7 @@ class Menus extends \Lime\Helper {
         $this->menus[$menu][] = $link;
     }
 
-    public function menu($name) {
+    public function menu(string $name): array {
 
         if (!isset($this->menus[$name]) || !count($this->menus[$name])) {
             return [];
