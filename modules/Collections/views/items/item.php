@@ -67,6 +67,10 @@
                     }
                 },
 
+                components: {
+                    'fields-renderer': 'settings:assets/vue-components/fields-renderer.js'
+                },
+
                 mounted() {
                     console.log(this.fields)
                 }
