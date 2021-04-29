@@ -57,6 +57,7 @@
                             <ul>
                                 <li class="kiss-nav-header">{{ actionCollection.label || actionCollection.name }}</li>
                                 <li><a :href="$route(`/collections/edit/${actionCollection.name}`)"><?=t('Edit')?></a></li>
+                                <li><a :href="$route(`/collections/items/item/${actionCollection.name}`)"><?=t('Create item')?></a></li>
                                 <li class="kiss-nav-divider"></li>
                                 <a class="kiss-color-danger" @click="remove(actionCollection)"><?=t('Delete')?></a>
                             </ul>

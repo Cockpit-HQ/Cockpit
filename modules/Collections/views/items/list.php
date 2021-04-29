@@ -39,6 +39,7 @@
             <ul>
                 <li class="kiss-nav-header"><?=t('Actions')?></li>
                 <li><a href="<?=$this->route("/collections/edit/{$collection['name']}")?>"><?=t('Edit')?></a></li>
+                <li><a href="<?=$this->route("/collections/items/item/{$collection['name']}")?>"><?=t('Create item')?></a></li>
             </ul>
         </kiss-navlist>
     </kiss-content>

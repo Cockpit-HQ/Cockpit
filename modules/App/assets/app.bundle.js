@@ -1433,8 +1433,8 @@
 
     const fn = e => {
 
-        let closest = e.target.closest('cp-fieldcontainer');
-        let containers = document.querySelectorAll('cp-fieldcontainer');
+        let closest = e.target.closest('app-fieldcontainer');
+        let containers = document.querySelectorAll('app-fieldcontainer');
 
         containers.forEach(container => {
 
@@ -1619,6 +1619,7 @@
         })
     }));
 
+    VueView.component('fields-renderer', 'app:assets/vue-components/fields-renderer.js');
 
     // Fields
     VueView.component('field-boolean', 'app:assets/vue-components/field-boolean.js');

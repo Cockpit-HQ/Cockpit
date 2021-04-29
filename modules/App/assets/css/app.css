@@ -58,6 +58,7 @@ vue-view:not([init="true"]) { display: none; }
     --kiss-popoutmenu-content-background: var(--kiss-dropdown-background);
 
     --kiss-navlist-font-size: 14px;
+    --kiss-navlist-padding-vertical: 6px;
 
     --kiss-card-shadowed-color: var(--kiss-color-muted);
     --kiss-card-bordered-color: rgb(106, 85, 85, .15);

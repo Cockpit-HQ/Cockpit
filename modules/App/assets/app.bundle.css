@@ -3159,11 +3159,11 @@ small,
 /**
  * margins
  */
-.kiss-margin { margin-bottom: var(--kiss-block-element-margin, 1rem); }
-* + .kiss-margin { margin-top: var(--kiss-block-element-margin, 1rem) !important; }
+* + .kiss-margin,
 .kiss-margin-top {
     margin-top: var(--kiss-block-element-margin, 1rem) !important;
 }
+.kiss-margin:not(:last-child),
 .kiss-margin-bottom {
     margin-bottom: var(--kiss-block-element-margin, 1rem) !important;
 }
@@ -3173,11 +3173,11 @@ small,
 .kiss-margin-right {
     margin-right: var(--kiss-block-element-margin, 1rem) !important;
 }
-.kiss-margin-small { margin-bottom: var(--kiss-block-element-margin-small, .6rem); }
-* + .kiss-margin-small { margin-top: var(--kiss-block-element-margin-small, .6rem) !important; }
+* + .kiss-margin-small,
 .kiss-margin-small-top {
     margin-top: var(--kiss-block-element-margin-small, .6rem) !important;
 }
+.kiss-margin-small:not(:last-child),
 .kiss-margin-small-bottom {
     margin-bottom: var(--kiss-block-element-margin-small, .6rem) !important;
 }
@@ -3187,11 +3187,11 @@ small,
 .kiss-margin-small-right {
     margin-right: var(--kiss-block-element-margin-small, .6rem) !important;
 }
-.kiss-margin-large { margin-bottom: var(--kiss-block-element-margin-large, 3rem); }
-* + .kiss-margin-large { margin-top: var(--kiss-block-element-margin-large, 3rem) !important; }
+* + .kiss-margin-large,
 .kiss-margin-large-top {
     margin-top: var(--kiss-block-element-margin-large, 3rem) !important;
 }
+.kiss-margin-large:not(:last-child),
 .kiss-margin-large-bottom {
     margin-bottom: var(--kiss-block-element-margin-large, 3rem) !important;
 }
@@ -3806,6 +3806,7 @@ vue-view:not([init="true"]) { display: none; }
     --kiss-popoutmenu-content-background: var(--kiss-dropdown-background);
 
     --kiss-navlist-font-size: 14px;
+    --kiss-navlist-padding-vertical: 6px;
 
     --kiss-card-shadowed-color: var(--kiss-color-muted);
     --kiss-card-bordered-color: rgb(106, 85, 85, .15);
@@ -3841,9 +3842,11 @@ label {
     line-height: inherit;
     letter-spacing: .015em;
     text-decoration: none;
-    text-transform: uppercase;
     margin-bottom: 5px;
     color: var(--kiss-color-muted);
+}
+app-fieldcontainer label {
+    color: inherit;
 }
 app-header {
     display: block;
