@@ -25,7 +25,6 @@
         "ext-json": "*",
         "phpmailer/phpmailer": "^6.4",
         "claviska/simpleimage": "^3.6",
-        "ksubileau/color-thief-php": "^1.4",
         "league/flysystem": "^2.0",
         "firebase/php-jwt": "^5.2",
         "mongodb/mongodb": "^1.8",

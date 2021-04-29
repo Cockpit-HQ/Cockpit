@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitb70a719658f504d6afa734557382fac5
+class ComposerStaticInit04174e382a93b6500ed1030f56b3b08e
 {
     public static $files = array (
         'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
@@ -57,7 +57,6 @@ class ComposerStaticInitb70a719658f504d6afa734557382fac5
         ),
         'C' => 
         array (
-            'ColorThief\\' => 11,
             'ColinODell\\Json5\\' => 17,
         ),
         'B' => 
@@ -118,10 +117,6 @@ class ComposerStaticInitb70a719658f504d6afa734557382fac5
         'DASPRiD\\Enum\\' => 
         array (
             0 => __DIR__ . '/..' . '/dasprid/enum/src',
-        ),
-        'ColorThief\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/ksubileau/color-thief-php/lib/ColorThief',
         ),
         'ColinODell\\Json5\\' => 
         array (
@@ -211,16 +206,6 @@ class ComposerStaticInitb70a719658f504d6afa734557382fac5
         'BaconQrCode\\Writer' => __DIR__ . '/..' . '/bacon/bacon-qr-code/src/Writer.php',
         'ColinODell\\Json5\\Json5Decoder' => __DIR__ . '/..' . '/colinodell/json5/src/Json5Decoder.php',
         'ColinODell\\Json5\\SyntaxError' => __DIR__ . '/..' . '/colinodell/json5/src/SyntaxError.php',
-        'ColorThief\\CMap' => __DIR__ . '/..' . '/ksubileau/color-thief-php/lib/ColorThief/CMap.php',
-        'ColorThief\\ColorThief' => __DIR__ . '/..' . '/ksubileau/color-thief-php/lib/ColorThief/ColorThief.php',
-        'ColorThief\\Image\\Adapter\\GDImageAdapter' => __DIR__ . '/..' . '/ksubileau/color-thief-php/lib/ColorThief/Image/Adapter/GDImageAdapter.php',
-        'ColorThief\\Image\\Adapter\\GmagickImageAdapter' => __DIR__ . '/..' . '/ksubileau/color-thief-php/lib/ColorThief/Image/Adapter/GmagickImageAdapter.php',
-        'ColorThief\\Image\\Adapter\\IImageAdapter' => __DIR__ . '/..' . '/ksubileau/color-thief-php/lib/ColorThief/Image/Adapter/IImageAdapter.php',
-        'ColorThief\\Image\\Adapter\\ImageAdapter' => __DIR__ . '/..' . '/ksubileau/color-thief-php/lib/ColorThief/Image/Adapter/ImageAdapter.php',
-        'ColorThief\\Image\\Adapter\\ImagickImageAdapter' => __DIR__ . '/..' . '/ksubileau/color-thief-php/lib/ColorThief/Image/Adapter/ImagickImageAdapter.php',
-        'ColorThief\\Image\\ImageLoader' => __DIR__ . '/..' . '/ksubileau/color-thief-php/lib/ColorThief/Image/ImageLoader.php',
-        'ColorThief\\PQueue' => __DIR__ . '/..' . '/ksubileau/color-thief-php/lib/ColorThief/PQueue.php',
-        'ColorThief\\VBox' => __DIR__ . '/..' . '/ksubileau/color-thief-php/lib/ColorThief/VBox.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'DASPRiD\\Enum\\AbstractEnum' => __DIR__ . '/..' . '/dasprid/enum/src/AbstractEnum.php',
         'DASPRiD\\Enum\\EnumMap' => __DIR__ . '/..' . '/dasprid/enum/src/EnumMap.php',
@@ -417,11 +402,11 @@ class ComposerStaticInitb70a719658f504d6afa734557382fac5
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitb70a719658f504d6afa734557382fac5::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitb70a719658f504d6afa734557382fac5::$prefixDirsPsr4;
-            $loader->fallbackDirsPsr4 = ComposerStaticInitb70a719658f504d6afa734557382fac5::$fallbackDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInitb70a719658f504d6afa734557382fac5::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInitb70a719658f504d6afa734557382fac5::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit04174e382a93b6500ed1030f56b3b08e::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit04174e382a93b6500ed1030f56b3b08e::$prefixDirsPsr4;
+            $loader->fallbackDirsPsr4 = ComposerStaticInit04174e382a93b6500ed1030f56b3b08e::$fallbackDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit04174e382a93b6500ed1030f56b3b08e::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit04174e382a93b6500ed1030f56b3b08e::$classMap;
 
         }, null, ClassLoader::class);
     }

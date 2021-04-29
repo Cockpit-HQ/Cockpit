@@ -40,18 +40,17 @@ final class Versions
   'dasprid/enum' => '1.0.3@5abf82f213618696dda8e3bf6f64dd042d8542b2',
   'firebase/php-jwt' => 'v5.2.1@f42c9110abe98dd6cfe9053c49bc86acc70b2d23',
   'jean85/pretty-package-versions' => '1.6.0@1e0104b46f045868f11942aea058cd7186d6c303',
-  'ksubileau/color-thief-php' => 'v1.4.1@fc2acefacbd037f68cf61bcc62b30ac1bb16ed59',
   'league/color-extractor' => '0.3.2@837086ec60f50c84c611c613963e4ad2e2aec806',
   'league/flysystem' => '2.0.5@27ea64cc9d61ae7b6a5f04bebf062d89dd18e8f7',
   'league/mime-type-detection' => '1.7.0@3b9dff8aaf7323590c1d2e443db701eb1f9aa0d3',
   'maennchen/zipstream-php' => 'v0.5.2@95922b6324955974675fd4923f987faa598408af',
   'mongodb/mongodb' => '1.8.0@953dbc19443aa9314c44b7217a16873347e6840d',
-  'phpmailer/phpmailer' => 'v6.4.0@050d430203105c27c30efd1dce7aa421ad882d01',
+  'phpmailer/phpmailer' => 'v6.4.1@9256f12d8fb0cd0500f93b19e18c356906cbed3d',
   'robthree/twofactorauth' => '1.8.0@30a38627ae1e7c9399dae67e265063cd6ec5276c',
   'symfony/polyfill-mbstring' => 'v1.22.1@5232de97ee3b75b0360528dae24e73db49566ab1',
   'symfony/polyfill-php80' => 'v1.22.1@dc3063ba22c2a1fd2f45ed856374d79114998f91',
   'symfony/polyfill-php81' => 'v1.22.1@00dedc6d362a1b863dda3f8243516da9fdfbe657',
-  'agentejo/cockpit' => 'dev-master@e54041f204421c6df2e185c52229c3ea3b97325f',
+  'agentejo/cockpit' => 'dev-master@37395d9e3259c5f3ce140ce1b237220f9b7decb0',
 );
 
     private function __construct()

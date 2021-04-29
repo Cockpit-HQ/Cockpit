@@ -19,7 +19,6 @@ return array(
     'Jean85\\' => array($vendorDir . '/jean85/pretty-package-versions/src'),
     'Firebase\\JWT\\' => array($vendorDir . '/firebase/php-jwt/src'),
     'DASPRiD\\Enum\\' => array($vendorDir . '/dasprid/enum/src'),
-    'ColorThief\\' => array($vendorDir . '/ksubileau/color-thief-php/lib/ColorThief'),
     'ColinODell\\Json5\\' => array($vendorDir . '/colinodell/json5/src'),
     'BaconQrCode\\' => array($vendorDir . '/bacon/bacon-qr-code/src'),
     '' => array($vendorDir . '/league/color-extractor/src'),

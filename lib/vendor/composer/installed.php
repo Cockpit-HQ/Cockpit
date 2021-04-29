@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => 'e54041f204421c6df2e185c52229c3ea3b97325f',
+    'reference' => '37395d9e3259c5f3ce140ce1b237220f9b7decb0',
     'name' => 'agentejo/cockpit',
   ),
   'versions' => 
@@ -18,7 +18,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => 'e54041f204421c6df2e185c52229c3ea3b97325f',
+      'reference' => '37395d9e3259c5f3ce140ce1b237220f9b7decb0',
     ),
     'bacon/bacon-qr-code' => 
     array (
@@ -83,15 +83,6 @@
       ),
       'reference' => '1e0104b46f045868f11942aea058cd7186d6c303',
     ),
-    'ksubileau/color-thief-php' => 
-    array (
-      'pretty_version' => 'v1.4.1',
-      'version' => '1.4.1.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => 'fc2acefacbd037f68cf61bcc62b30ac1bb16ed59',
-    ),
     'league/color-extractor' => 
     array (
       'pretty_version' => '0.3.2',
@@ -153,12 +144,12 @@
     ),
     'phpmailer/phpmailer' => 
     array (
-      'pretty_version' => 'v6.4.0',
-      'version' => '6.4.0.0',
+      'pretty_version' => 'v6.4.1',
+      'version' => '6.4.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => '050d430203105c27c30efd1dce7aa421ad882d01',
+      'reference' => '9256f12d8fb0cd0500f93b19e18c356906cbed3d',
     ),
     'robthree/twofactorauth' => 
     array (
