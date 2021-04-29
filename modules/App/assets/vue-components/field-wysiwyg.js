@@ -42,19 +42,27 @@ export default {
         </div>
     `,
 
+    beforeUnmount() {
+
+        if (this.editor) {
+            tinymce.remove(this.editor)
+        }
+    },
+
     mounted() {
 
         ready.then(() => {
 
             tinymce.init({
                 target: this.$el.querySelector('textarea'),
+                height: 300,
                 setup: (editor) => {
 
                     this.editor = editor;
 
                     editor.on('init', e => {
 
-                        editor.setContent(this.modelValue);
+                        editor.setContent(this.modelValue || '');
 
                         editor.on('input ExecCommand', e => {
                             this.$emit('update:modelValue', editor.getContent())

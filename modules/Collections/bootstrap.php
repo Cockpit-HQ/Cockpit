@@ -164,7 +164,15 @@ $this->module('collections')->extend([
         $fields = $collection['fields'];
 
         foreach ($fields as $field) {
-            $item[$field['name']] =  $field['opts']['default'] ?? null;
+
+            $default = $field['opts']['default'] ?? null;
+            $multiple = $field['multiple'] ?? false;
+
+            if ($multiple) {
+                $item[$field['name']] =  $default ?? [];
+            } else {
+                $item[$field['name']] =  $default ?? null;
+            }
         }
 
         return new ArrayObject($item);
