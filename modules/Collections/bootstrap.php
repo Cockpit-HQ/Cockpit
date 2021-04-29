@@ -128,8 +128,8 @@ $this->module('collections')->extend([
         return $stores;
     },
 
-    'exists' => function(string $name): bool {
-        return $this->app->path("#storage:collections/{$name}.collection.php") ? true : false;
+    'exists' => function(string $name): ?string {
+        return $this->app->path("#storage:collections/{$name}.collection.php");
     },
 
     'collection' => function(string $name): mixed {
