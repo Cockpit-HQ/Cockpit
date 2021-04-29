@@ -10,13 +10,14 @@
 
 namespace MongoHybrid;
 
+use MongoDB\Client as MongoDBClient;
 use MongoDB\BSON\ObjectID;
 
 class Mongo {
 
-    protected $client;
-    protected $db;
-    protected $options;
+    protected MongoDBClient $client;
+    protected \MongoDB\Database $db;
+    protected array $options;
 
     public function __construct(string $server, array $options=[], array $driverOptions=[]) {
 
@@ -24,12 +25,12 @@ class Mongo {
             'typeMap' => ['root' => 'array', 'document' => 'array', 'array' => 'array']
         ], $driverOptions);
 
-        $this->client  = new \MongoDB\Client($server, $options, $driverOptions);
+        $this->client  = new MongoDBClient($server, $options, $driverOptions);
         $this->db      = $this->client->selectDatabase($options['db']);
         $this->options = $options;
     }
 
-    public function getCollection(string $name, ?string $db = null) {
+    public function getCollection(string $name, ?string $db = null): \MongoDB\Collection {
 
         if ($db) {
             $name = "{$db}/{$name}";
@@ -40,7 +41,7 @@ class Mongo {
         return $this->db->selectCollection($name);
     }
 
-    public function dropCollection(string $name, ?string $db = null) {
+    public function dropCollection(string $name, ?string $db = null): array|object {
 
         if ($db) {
             $name = "{$db}/{$name}";

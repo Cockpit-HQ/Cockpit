@@ -2,6 +2,8 @@
 
 namespace MongoLite;
 
+use PDO;
+
 /**
  * Database object.
  */
@@ -15,22 +17,22 @@ class Database {
     /**
      * @var PDO object
      */
-    public $connection;
+    public PDO $connection;
 
     /**
      * @var array
      */
-    protected $collections = [];
+    protected array $collections = [];
 
     /**
      * @var string
      */
-    protected $path;
+    protected string $path;
 
     /**
      * @var array
      */
-    protected $document_criterias = [];
+    protected array $document_criterias = [];
 
     /**
      * Constructor
@@ -43,7 +45,7 @@ class Database {
         $dns = "sqlite:{$path}";
 
         $this->path = $path;
-        $this->connection = new \PDO($dns, null, null, $options);
+        $this->connection = new PDO($dns, null, null, $options);
 
         $database = $this;
 

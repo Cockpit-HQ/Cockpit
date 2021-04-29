@@ -10,17 +10,17 @@ class Client {
     /**
      * @var array
      */
-    protected $databases = [];
+    protected array $databases = [];
 
     /**
      * @var string
      */
-    protected $path;
+    protected string $path;
 
     /**
      * @var array
      */
-    protected $options;
+    protected array $options;
 
     /**
      * Constructor

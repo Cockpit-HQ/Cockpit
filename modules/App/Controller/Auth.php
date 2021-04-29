@@ -59,9 +59,11 @@ class Auth extends Base {
 
         $user = $this->helper('auth')->authenticate($auth);
 
-        $this->app->trigger('app.user.disguise', [&$user]);
 
         if ($user) {
+
+            $this->app->trigger('app.user.disguise', [&$user]);
+
             $this->helper('auth')->setUser($user);
             $this->helper('session')->write('app.session.start', time());
 

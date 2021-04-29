@@ -12,8 +12,8 @@ namespace MongoHybrid;
 
 class Client {
 
-    protected $driver;
-    public $type;
+    protected Mongo|MongoLite $driver;
+    public ?string $type = null;
 
     public function __construct(string $server, array $options = [], array $driverOptions = []) {
 

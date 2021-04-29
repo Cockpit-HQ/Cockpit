@@ -5,7 +5,7 @@ namespace App\Helper;
 
 class Acl extends \Lime\Helper {
 
-    protected $roles;
+    protected array $roles = [];
 
     protected function initialize() {
 

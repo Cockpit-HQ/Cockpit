@@ -4,7 +4,7 @@ namespace App\Helper;
 
 class Auth extends \Lime\Helper {
 
-    public $sessionKey = 'app.auth.user';
+    public string $sessionKey = 'app.auth.user';
 
     public function authenticate(array $data): mixed {
 

@@ -13,9 +13,8 @@ use PHPMailer\PHPMailer\Exception;
 
 class Mailer {
 
-    protected $mailer;
-    protected $transport;
-    protected $options;
+    protected string $transport;
+    protected array $options;
 
     public function __construct(string $transport = 'mail', array $options = []) {
 

@@ -11,10 +11,10 @@ class i18n extends \Lime\Helper {
     /**
      * @var $locale current language
      */
-    public  $locale     = 'en';
-    private $_languages = [];
+    public string $locale     = 'en';
+    private array $_languages = [];
 
-    public static $locals = array(
+    public static array $locals = [
 
         'aa' => 'Afar',
         'ab' => 'Abkhazian',
@@ -200,10 +200,10 @@ class i18n extends \Lime\Helper {
         'za' => 'Zhuang',
         'zh' => 'Chinese',
         'zu' => 'Zulu'
-    );
+    ];
 
 
-    public static $countries = array(
+    public static array $countries = [
 
         'AF' => 'Afghanistan',
         'AL' => 'Albania',
@@ -444,9 +444,9 @@ class i18n extends \Lime\Helper {
         'YE' => 'Yemen',
         'ZM' => 'Zambia',
         'ZW' => 'Zimbabwe'
-    );
+    ];
 
-    public static $currencies = array(
+    public static array $currencies = [
         'ALL' => 'Lek',
         'ARS' => '$',
         'AWG' => 'f',
@@ -528,7 +528,7 @@ class i18n extends \Lime\Helper {
         'UYU' => '$U',
         'VEF' => 'Bs',
         'ZWD' => 'Z$'
-    );
+    ];
 
     /**
      * @inherit

@@ -2,6 +2,7 @@
 
 namespace App\Helper;
 
+use RobThree\Auth\TwoFactorAuth;
 use RobThree\Auth\Providers\Qr\IQRCodeProvider;
 use BaconQrCode\Renderer\ImageRenderer;
 use BaconQrCode\Renderer\Image\SvgImageBackEnd;
@@ -10,10 +11,10 @@ use BaconQrCode\Writer;
 
 class TWFA extends \Lime\Helper {
 
-    protected $tfa;
+    protected TwoFactorAuth $tfa;
 
     protected function initialize() {
-        $this->tfa = new \RobThree\Auth\TwoFactorAuth($this->app['app.name'], 6, 30, 'sha1', new TWFAQRCodeRenderer());
+        $this->tfa = new TwoFactorAuth($this->app['app.name'], 6, 30, 'sha1', new TWFAQRCodeRenderer());
     }
 
     public function createSecret(int $length = 160) {

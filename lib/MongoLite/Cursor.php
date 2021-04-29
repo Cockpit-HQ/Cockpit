@@ -10,42 +10,42 @@ class Cursor implements \Iterator {
     /**
      * @var boolean|integer
      */
-    protected $position = false;
+    protected bool|int $position = false;
 
     /**
      * @var array
      */
-    protected $data = [];
+    protected array $data = [];
 
     /**
      * @var Collection object
      */
-    protected $collection;
+    protected Collection $collection;
 
     /**
      * @var string|null
      */
-    protected $criteria;
+    protected ?string $criteria;
 
     /**
      * @var array|null
      */
-    protected $projection;
+    protected ?array $projection;
 
     /**
      * @var null|integer
      */
-    protected $limit;
+    protected ?int $limit = null;
 
     /**
      * @var null|integer
      */
-    protected $skip;
+    protected ?int $skip = null;
 
     /**
      * @var null|array
      */
-    protected $sort;
+    protected ?array $sort = null;
 
     /**
      * Constructor
@@ -94,7 +94,7 @@ class Cursor implements \Iterator {
      * @param  int $limit
      * @return object       Cursor
      */
-    public function limit(int $limit): self {
+    public function limit(?int $limit): self {
 
         $this->limit = $limit;
 
@@ -120,7 +120,7 @@ class Cursor implements \Iterator {
      * @param  int $skip
      * @return object       Cursor
      */
-    public function skip(int $skip): self {
+    public function skip(?int $skip): self {
 
         $this->skip = $skip;
 

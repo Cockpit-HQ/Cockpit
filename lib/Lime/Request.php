@@ -4,20 +4,20 @@ namespace Lime;
 
 class Request {
 
-    public $request = [];
-    public $post = [];
-    public $query = [];
-    public $files = [];
-    public $cookies = [];
-    public $headers = [];
+    public array $request = [];
+    public array $post = [];
+    public array $query = [];
+    public array $files = [];
+    public array $cookies = [];
+    public array $headers = [];
 
-    public $server = [];
-    public $body = [];
+    public array $server = [];
+    public array $body = [];
 
-    public $site_url = '';
-    public $base_url = '';
-    public $base_route = '';
-    public $route = '/';
+    public string $site_url = '';
+    public string $base_url = '';
+    public string $base_route = '';
+    public string $route = '/';
 
     public static function fromGlobalRequest(array $config = []): self {
 

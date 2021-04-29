@@ -6,7 +6,7 @@ use SplPriorityQueue;
 
 class Menus extends \Lime\Helper {
 
-    protected $menus = [];
+    protected array $menus = [];
 
     public function addLink(string $menu, array $link): void {
 

@@ -5,7 +5,7 @@ namespace Settings\Helper;
 
 class Locales extends \Lime\Helper {
 
-    protected $locales;
+    protected array $locales = [];
 
     protected function initialize() {
 

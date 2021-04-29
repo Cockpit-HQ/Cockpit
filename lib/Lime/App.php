@@ -25,6 +25,8 @@
 
 namespace Lime;
 
+use ArrayObject;
+
 include(__DIR__.'/Request.php');
 include(__DIR__.'/Response.php');
 
@@ -33,22 +35,22 @@ class App implements \ArrayAccess {
 
     protected static $apps = [];
 
-    protected $registry = [];
-    protected $routes   = [];
-    protected $paths    = [];
-    protected $events   = [];
-    protected $blocks   = [];
+    protected array $registry = [];
+    protected array $routes   = [];
+    protected array $paths    = [];
+    protected array $events   = [];
+    protected array $blocks   = [];
 
-    protected $exit     = false;
+    protected bool $exit = false;
 
     /** @var Response|null  */
-    public $response    = null;
+    public ?Response $response = null;
 
     /** @var Request|null  */
-    public $request    = null;
+    public ?Request $request = null;
 
-    public $helpers;
-    public $layout      = false;
+    public ArrayObject $helpers;
+    public mixed $layout = false;
 
     /**
     * Constructor
@@ -63,7 +65,7 @@ class App implements \ArrayAccess {
             'debug'        => true,
             'app.name'     => 'LimeApp',
             'session.name' => 'limeappsession',
-            'autoload'     => new \ArrayObject([]),
+            'autoload'     => new ArrayObject([]),
             'sec-key'      => 'xxxxx-SiteSecKeyPleaseChangeMe-xxxxx',
             'route'        => $_SERVER['PATH_INFO'] ?? '/',
             'charset'      => 'UTF-8',
@@ -77,7 +79,7 @@ class App implements \ArrayAccess {
         ], $settings);
 
         // app modules container
-        $this->registry['modules'] = new \ArrayObject([]);
+        $this->registry['modules'] = new ArrayObject([]);
 
         // try to guess site url
         if (!isset($this['site_url']) && \PHP_SAPI !== 'cli') {
@@ -104,7 +106,7 @@ class App implements \ArrayAccess {
         self::$apps[$this['app.name']] = $this;
 
         // default helpers
-        $this->helpers = new \ArrayObject(\array_merge([
+        $this->helpers = new ArrayObject(\array_merge([
             'session' => 'Lime\\Helper\\Session',
             'cache' => 'Lime\\Helper\\Cache'
         ], $this->registry['helpers']));

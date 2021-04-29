@@ -4,9 +4,8 @@ namespace Lime\Helper;
 
 class Cache extends \Lime\Helper {
 
-    public $prefix = null;
-    protected $cachePath = null;
-
+    public ?string $prefix = null;
+    protected ?string $cachePath = null;
 
     protected function initialize() {
         $this->cachePath = \rtrim(\sys_get_temp_dir(),"/\\").'/';

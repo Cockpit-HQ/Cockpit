@@ -13,9 +13,9 @@ use League\Flysystem\MountManager;
 
 class FileStorage {
 
-    protected $config  = [];
-    protected $storages = [];
-    protected $manager;
+    protected array $config = [];
+    protected array $storages = [];
+    protected MountManager $manager;
 
     public function __construct(array $config = []) {
 

@@ -4,7 +4,7 @@ namespace Settings\Helper;
 
 class Api extends \Lime\Helper {
 
-    protected $keys;
+    protected array $keys = [];
 
     protected function initialize() {
 

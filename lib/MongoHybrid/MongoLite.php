@@ -10,17 +10,19 @@
 
 namespace MongoHybrid;
 
+use MongoLite\Client as MongoLiteClient;
+
 class MongoLite {
 
-    protected $client;
+    protected MongoLiteClient $client;
 
     public function __construct(string $server, array $options = []) {
 
-        $this->client = new \MongoLite\Client(str_replace('mongolite://', '', $server));
+        $this->client = new MongoLiteClient(str_replace('mongolite://', '', $server));
         $this->db     = $options['db'];
     }
 
-    public function getCollection(string $name, ?string $db = null) {
+    public function getCollection(string $name, ?string $db = null): \MongoLite\Collection {
 
         if (strpos($name, '/') !== false) {
             list($db, $name) = explode('/', $name, 2);

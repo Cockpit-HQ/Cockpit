@@ -4,17 +4,16 @@ namespace Lime;
 
 class Response {
 
-    public $body    = '';
-    public $status  = 200;
-    public $mime    = 'html';
-    public $gzip    = false;
-    public $nocache = false;
-    public $etag    = false;
-    public $headers = [];
-
+    public mixed $body    = '';
+    public int $status    = 200;
+    public string $mime   = 'html';
+    public bool $gzip     = false;
+    public bool $nocache  = false;
+    public bool $etag     = false;
+    public array $headers = [];
 
     /* status codes */
-    public static $statusCodes = [
+    public static array $statusCodes = [
     // Informational 1xx
     100 => 'Continue',
     101 => 'Switching Protocols',
@@ -63,7 +62,7 @@ class Response {
     ];
 
     /* mime types */
-    public static $mimeTypes = [
+    public static array $mimeTypes = [
         'asc'   => 'text/plain',
         'au'    => 'audio/basic',
         'avi'   => 'video/x-msvideo',
@@ -133,10 +132,6 @@ class Response {
         'xhtml' => 'application/xhtml+xml',
         'text'  => 'text/plain',
     ];
-
-    public function __construct() {
-
-    }
 
     public function flush(): void {
 

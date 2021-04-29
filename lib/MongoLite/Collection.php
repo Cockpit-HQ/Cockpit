@@ -10,12 +10,12 @@ class Collection {
     /**
      * @var object Database
      */
-    public $database;
+    public Database $database;
 
     /**
      * @var string
      */
-    public $name;
+    public string $name;
 
     /**
      * Constructor

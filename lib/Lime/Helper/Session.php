@@ -6,8 +6,8 @@ use function \Lime\fetch_from_array;
 
 class Session extends \Lime\Helper {
 
-    protected $initialized = false;
-    public $name;
+    protected bool $initialized = false;
+    public string $name;
 
     public function init(?string $sessionname = null) {
 
