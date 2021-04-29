@@ -140,10 +140,6 @@ $this->module('collections')->extend([
             $collections = [];
         }
 
-        if (!is_string($name)) {
-            return false;
-        }
-
         if (!isset($collections[$name])) {
 
             $collections[$name] = false;
@@ -155,5 +151,23 @@ $this->module('collections')->extend([
 
         return $collections[$name];
     },
+
+    'getDefaultItem' => function(string $collection): ArrayObject {
+
+        $item = [];
+        $collection = $this->collection($collection);
+
+        if (!$collection) {
+            return $item;
+        }
+
+        $fields = $collection['fields'];
+
+        foreach ($fields as $field) {
+            $item[$field['name']] =  $field['opts']['default'] ?? null;
+        }
+
+        return new ArrayObject($item);
+    }
 
 ]);

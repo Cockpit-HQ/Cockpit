@@ -97,9 +97,12 @@ label {
     line-height: inherit;
     letter-spacing: .015em;
     text-decoration: none;
-    text-transform: uppercase;
     margin-bottom: 5px;
     color: var(--kiss-color-muted);
+}
+
+app-fieldcontainer label {
+    color: inherit;
 }
 
 app-header {

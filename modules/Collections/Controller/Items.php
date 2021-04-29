@@ -35,9 +35,7 @@ class Items extends App {
             return $this->stop(404);
         }
 
-        $item = new \ArrayObject([
-
-        ]);
+        $item = $this->module('collections')->getDefaultItem($collection['name']);
 
         if ($id) {
 

@@ -8,7 +8,7 @@
 
         <template>
 
-            <div class="kiss-flex kiss-flex-middle">
+            <div class="kiss-flex kiss-flex-middle kiss-margin-large-bottom">
                 <div class="kiss-flex kiss-position-relative">
                     <span class="kiss-badge" style="<?=($collection['color'] ? "background:{$collection['color']};border-color:{$collection['color']}":"")?>"><?=$this->escape($collection['label'] ? $collection['label'] : $collection['name'])?></span>
                     <a class="kiss-cover" href="<?=$this->route("/collections/items/list/{$collection['name']}")?>"></a>
@@ -19,12 +19,20 @@
                 </div>
             </div>
 
-            <hr>
-
             <div class="kiss-margin-large kiss-size-5 kiss-align-center kiss-text-bolder" v-if="!fields.length">
                 <?=t('No fields defined')?>
             </div>
 
+            <kiss-row class="kiss-margin-large" v-if="fields.length">
+                <div class="kiss-flex-1">
+                    <div class="kiss-width-2-3@xl">
+                        <fields-renderer v-model="item" :fields="fields"></fields-renderer>
+                    </div>
+                </div>
+                <div class="kiss-width-1-4@m">
+
+                </div>
+            </kiss-row>
 
             <app-actionbar>
 
@@ -58,6 +66,10 @@
                         saving: false
                     }
                 },
+
+                mounted() {
+                    console.log(this.fields)
+                }
 
             }
         </script>

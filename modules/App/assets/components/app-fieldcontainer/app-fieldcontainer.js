@@ -1,7 +1,7 @@
 const fn = e => {
 
-    let closest = e.target.closest('cp-fieldcontainer');
-    let containers = document.querySelectorAll('cp-fieldcontainer');
+    let closest = e.target.closest('app-fieldcontainer');
+    let containers = document.querySelectorAll('app-fieldcontainer');
 
     containers.forEach(container => {
 
