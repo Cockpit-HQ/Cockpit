@@ -4,7 +4,27 @@ let ready = new Promise(function(resolve) {
         '/modules/App/assets/vendor/codemirror/lib/codemirror.js',
         '/modules/App/assets/css/vendor/codemirror.css',
     ], function() {
-        resolve(window.CodeMirror);
+
+        App.assets.require([
+            // Modes
+            '/modules/App/assets/vendor/codemirror/mode/clike/clike.js',
+            '/modules/App/assets/vendor/codemirror/mode/css/css.js',
+            '/modules/App/assets/vendor/codemirror/mode/gfm/gfm.js',
+            '/modules/App/assets/vendor/codemirror/mode/htmlembedded/htmlembedded.js',
+            '/modules/App/assets/vendor/codemirror/mode/htmlmixed/htmlmixed.js',
+            '/modules/App/assets/vendor/codemirror/mode/javascript/javascript.js',
+            '/modules/App/assets/vendor/codemirror/mode/markdown/markdown.js',
+            '/modules/App/assets/vendor/codemirror/mode/php/php.js',
+            '/modules/App/assets/vendor/codemirror/mode/sql/sql.js',
+            '/modules/App/assets/vendor/codemirror/mode/twig/twig.js',
+            '/modules/App/assets/vendor/codemirror/mode/xml/xml.js',
+            '/modules/App/assets/vendor/codemirror/mode/xquery/xquery.js',
+            '/modules/App/assets/vendor/codemirror/mode/yaml/yaml.js',
+            '/modules/App/assets/vendor/codemirror/mode/yaml-frontmatter/yaml-frontmatter.js',
+
+        ], function() {
+            resolve(window.CodeMirror);
+        });
     });
 });
 
@@ -29,7 +49,19 @@ export default {
         },
         height: {
             type: Number,
+            default: 350
+        },
+        size: {
+            type: Number,
+            default: 14
+        },
+        mode: {
+            type: String,
             default: null
+        },
+        codemirror: {
+            type: Object,
+            default: {}
         }
     },
 
@@ -43,7 +75,7 @@ export default {
 
     template: /*html*/`
         <div field="code">
-            <div class="codemirror-wrapper"></div>
+            <div class="codemirror-wrapper" :style="{fontSize: size+'px'}"></div>
         </div>
     `,
 
@@ -63,15 +95,26 @@ export default {
         ready.then(CodeMirror => {
 
             let wrapper = this.$el.querySelector('.codemirror-wrapper');
+            let mode = this.mode;
+
+            // mode fallback
+            if (['css', 'json', 'json5', 'js', 'javascript', 'php'].indexOf(mode) > -1) {
+                mode = 'text/x-csrc';
+            }
+
+            if (mode == 'html') {
+                mode = { name: 'htmlmixed' };
+            }
 
             wrapper.innerHTML = '';
 
-            this.editor = CodeMirror(wrapper, {
+            this.editor = CodeMirror(wrapper, Object.assign({
                 value: this.modelValue || '',
                 lineNumbers: true,
                 mode: null,
-                height: this.height
-            });
+                height: this.height,
+                mode,
+            }, this.codemirror || {}));
 
             if (this.height) {
                 this.editor.setSize('100%', this.height);

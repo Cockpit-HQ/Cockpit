@@ -99,7 +99,7 @@ export default {
                                 <kiss-card class="kiss-flex-1 kiss-padding-small kiss-size-small" theme="bordered" @click="editFieldItem(field, index)">
                                     {{ val[field.name][index] }}
                                 </kiss-card>
-                                <a class="kiss-margin-left kiss-color-danger" @click="removeFieldItem(val[field.name], index)"><icon>delete</icon></a>
+                                <a class="kiss-margin-small-left kiss-color-danger" @click="removeFieldItem(val[field.name], index)"><icon>delete</icon></a>
                                 <a class="fm-handle kiss-margin-left kiss-color-muted"><icon>drag_handle</icon></a>
                             </div>
                         </template>
@@ -118,7 +118,10 @@ export default {
 
                     <div class="kiss-size-4 kiss-text-bold kiss-margin">{{fieldItem.create ? t('Add item'):t('Edit item')}}</div>
 
-                    <field-renderer class="kiss-margin-small-top" :field="fieldItem.field" v-model="fieldItem.value"></field-renderer>
+                    <div class="kiss-margin-top">
+                        <div><span class="kiss-badge kiss-text-upper">{{fieldItem.field.type}}</span></div>
+                        <field-renderer class="kiss-margin-small-top" :field="fieldItem.field" v-model="fieldItem.value"></field-renderer>
+                    </div>
 
                     <div class="kiss-button-group kiss-child-width-1-2 kiss-flex kiss-margin-top">
                         <a class="kiss-button" @click="fieldItem=null">

@@ -81,7 +81,7 @@ export default {
 
                 },
                 skin_url: App.base('/modules/App/assets/css/vendor/tinymce')
-            }, this.tinymce));
+            }, this.tinymce || {}));
         })
     },
 

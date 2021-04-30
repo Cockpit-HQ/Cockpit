@@ -1,4 +1,6 @@
 
+let instanceCount = 0;
+
 export default {
 
     _meta: {
@@ -9,6 +11,7 @@ export default {
 
     data() {
         return {
+            uid: `field-text-${++instanceCount}`,
             val: this.modelValue
         }
     },
@@ -36,6 +39,10 @@ export default {
         maxlength: {
             type: Number
         },
+        list: {
+            type: Array,
+            default: []
+        },
         multiline: {
             type: Boolean,
             default: false
@@ -57,11 +64,15 @@ export default {
 
     template: /*html*/`
         <div field="text">
-            <input type="text" class="kiss-input kiss-width-1-1" v-model="val" @input="update" :placeholder="placeholder" :maxlength="maxlength" :minlength="minlength" v-if="!multiline">
+            <input type="text" class="kiss-input kiss-width-1-1" v-model="val" @input="update" :placeholder="placeholder" :maxlength="maxlength" :minlength="minlength" v-if="!multiline" :list="uid+'-list'">
             <textarea class="kiss-textarea kiss-input kiss-width-1-1" v-model="val" @input="update" :placeholder="placeholder" :maxlength="maxlength" :minlength="minlength" :style="{height}" v-if="multiline"></textarea>
             <div class="kiss-margin-xsmall-top" v-if="showCount">
                 <span class="kiss-badge kiss-badge-outline kiss-color-muted">{{countIndicator}}</span>
             </div>
+
+            <datalist :id="uid+'-list'" v-if="list.length">
+                <option v-for="option in list">{{ option }}</option>
+            </datalist>
         </div>
     `,
 

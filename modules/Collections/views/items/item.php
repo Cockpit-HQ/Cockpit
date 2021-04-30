@@ -72,7 +72,7 @@
                 },
 
                 mounted() {
-                    console.log(this.fields)
+
                 }
 
             }
