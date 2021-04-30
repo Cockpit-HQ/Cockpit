@@ -88,12 +88,11 @@ export default {
                     <kiss-card class="kiss-padding-small kiss-flex kiss-flex-middle" theme="bordered" style="margin: 8px 0;">
                         <div class="kiss-margin-right">
                             <div class="kiss-padding-small app-border-radius" :style="{background: _.get(availableFields, element.type+'.color', 'rgb(255, 248, 214)')}">
-                                <img :src="$base(_.get(availableFields, element.type+'.icon', 'settings:assets/icons/edit.svg'))" width="20" height="20" style="opacity:.6">
+                                <img :src="$base(_.get(availableFields, element.type+'.icon', 'settings:assets/icons/edit.svg'))" width="20" height="20" style="opacity:.6" :title="element.type">
                             </div>
                         </div>
                         <div class="kiss-flex-1 kiss-text-bold">{{ element.label || element.name }}</div>
                         <div class="kiss-margin-small-right kiss-size-small kiss-color-muted">{{ element.group || '' }}</div>
-                        <div class="kiss-badge kiss-badge-outline kiss-color-muted kiss-text-caption">{{element.type}}</div>
                         <a class="kiss-margin-left" @click="edit(element)"><icon>settings</icon></a>
                         <a class="kiss-margin-left kiss-color-danger" @click="remove(element)"><icon>delete</icon></a>
                         <a class="fm-handle kiss-margin-left kiss-color-muted"><icon>drag_handle</icon></a>
