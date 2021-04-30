@@ -20,6 +20,10 @@ VueView.component('vue-draggable', Vue.defineAsyncComponent(() => {
 VueView.component('field-boolean', 'app:assets/vue-components/field-boolean.js');
 VueView.component('field-code', 'app:assets/vue-components/field-code.js');
 VueView.component('field-color', 'app:assets/vue-components/field-color.js');
+VueView.component('field-date', 'app:assets/vue-components/field-date.js');
+VueView.component('field-datetime', 'app:assets/vue-components/field-datetime.js');
+VueView.component('field-number', 'app:assets/vue-components/field-number.js');
 VueView.component('field-object', 'app:assets/vue-components/field-object.js');
 VueView.component('field-text', 'app:assets/vue-components/field-text.js');
+VueView.component('field-time', 'app:assets/vue-components/field-time.js');
 VueView.component('field-wysiwyg', 'app:assets/vue-components/field-wysiwyg.js');

@@ -43,6 +43,10 @@ export default {
             type: Array,
             default: []
         },
+        readonly: {
+            type: Boolean,
+            default: false
+        },
         multiline: {
             type: Boolean,
             default: false
@@ -64,8 +68,8 @@ export default {
 
     template: /*html*/`
         <div field="text">
-            <input type="text" class="kiss-input kiss-width-1-1" v-model="val" @input="update" :placeholder="placeholder" :maxlength="maxlength" :minlength="minlength" v-if="!multiline" :list="uid+'-list'">
-            <textarea class="kiss-textarea kiss-input kiss-width-1-1" v-model="val" @input="update" :placeholder="placeholder" :maxlength="maxlength" :minlength="minlength" :style="{height}" v-if="multiline"></textarea>
+            <input type="text" class="kiss-input kiss-width-1-1" v-model="val" @input="update" :placeholder="placeholder" :maxlength="maxlength" :minlength="minlength" :list="uid+'-list'" :readonly="readonly" v-if="!multiline">
+            <textarea class="kiss-textarea kiss-input kiss-width-1-1" v-model="val" @input="update" :placeholder="placeholder" :maxlength="maxlength" :minlength="minlength" :style="{height}" :readonly="readonly" v-if="multiline"></textarea>
             <div class="kiss-margin-xsmall-top" v-if="showCount">
                 <span class="kiss-badge kiss-badge-outline kiss-color-muted">{{countIndicator}}</span>
             </div>
