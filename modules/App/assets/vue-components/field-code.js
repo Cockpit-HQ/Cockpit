@@ -125,6 +125,14 @@ export default {
             this.editor.on('change', () => {
                 this.$emit('update:modelValue', this.editor.getValue())
             });
+
+            this.editor.on('focus', () => {
+                this.$el.dispatchEvent(new Event('focusin', { bubbles: true, cancelable: true }));
+            });
+
+            this.editor.on('blur', () => {
+                this.$el.dispatchEvent(new Event('focusout', { bubbles: true, cancelable: true }));
+            });
         })
     },
 

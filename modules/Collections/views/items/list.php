@@ -38,8 +38,18 @@
         <kiss-navlist class="kiss-margin">
             <ul>
                 <li class="kiss-nav-header"><?=t('Actions')?></li>
-                <li><a href="<?=$this->route("/collections/edit/{$collection['name']}")?>"><?=t('Edit')?></a></li>
-                <li><a href="<?=$this->route("/collections/items/item/{$collection['name']}")?>"><?=t('Create item')?></a></li>
+                <li>
+                    <a class="kiss-flex kiss-flex-middle" href="<?=$this->route("/collections/edit/{$collection['name']}")?>">
+                        <icon class="kiss-margin-small-right">create</icon>
+                        <?=t('Edit')?>
+                    </a>
+                </li>
+                <li>
+                    <a class="kiss-flex kiss-flex-middle" href="<?=$this->route("/collections/items/item/{$collection['name']}")?>">
+                        <icon class="kiss-margin-small-right">add_circle_outline</icon>
+                        <?=t('Create item')?>
+                    </a>
+                </li>
             </ul>
         </kiss-navlist>
     </kiss-content>

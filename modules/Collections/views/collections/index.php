@@ -56,10 +56,25 @@
                         <kiss-navlist v-if="actionCollection">
                             <ul>
                                 <li class="kiss-nav-header">{{ actionCollection.label || actionCollection.name }}</li>
-                                <li><a :href="$route(`/collections/edit/${actionCollection.name}`)"><?=t('Edit')?></a></li>
-                                <li><a :href="$route(`/collections/items/item/${actionCollection.name}`)"><?=t('Create item')?></a></li>
+                                <li>
+                                    <a class="kiss-flex kiss-flex-middle" :href="$route(`/collections/edit/${actionCollection.name}`)">
+                                        <icon class="kiss-margin-small-right">create</icon>
+                                        <?=t('Edit')?>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="kiss-flex kiss-flex-middle" :href="$route(`/collections/items/item/${actionCollection.name}`)">
+                                        <icon class="kiss-margin-small-right">add_circle_outline</icon>
+                                        <?=t('Create item')?>
+                                    </a>
+                                </li>
                                 <li class="kiss-nav-divider"></li>
-                                <a class="kiss-color-danger" @click="remove(actionCollection)"><?=t('Delete')?></a>
+                                <li>
+                                    <a class="kiss-color-danger kiss-flex kiss-flex-middle" @click="remove(actionCollection)">
+                                        <icon class="kiss-margin-small-right">delete</icon>
+                                        <?=t('Delete')?>
+                                    </a>
+                                </li>
                             </ul>
                         </kiss-navlist>
                 </kiss-content>

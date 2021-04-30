@@ -15,6 +15,11 @@ app-field.kiss-disabled {
         opacity: .7;
     }
 
+    app-fieldcontainer app-fieldcontainer {
+        all: unset;
+        display: block;
+    }
+
     app-fieldcontainer:hover {
         opacity: 1;
     }
