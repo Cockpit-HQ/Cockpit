@@ -1845,13 +1845,16 @@ icon,
 }
 [tooltip]::after {
     content: attr(tooltip); /* magic! */
-    
+
     /* most of the rest of this is opinion */
     font-family: Helvetica, sans-serif;
     text-align: center;
-    
-    /* 
-      Let the content set the size of the tooltips 
+    font-size: 12px;
+    font-weight: bolder;
+    letter-spacing: .5px;
+
+    /*
+      Let the content set the size of the tooltips
       but this will also keep them from being obnoxious
       */
     min-width: 3em;
@@ -1862,8 +1865,8 @@ icon,
     padding: 1ch 1.5ch;
     border-radius: .3ch;
     box-shadow: 0 1em 2em -.5em rgba(0, 0, 0, 0.35);
-    background: #333;
-    color: #fff;
+    background: var(--tooltip-bgcolor, #000);
+    color: var(--tooltip-color,#fff);
     z-index: 1000; /* absurdity 2 */
   }
 /* Make the tooltips respond to hover */
@@ -1881,7 +1884,7 @@ icon,
 [tooltip][flow^="up"]::before {
     bottom: 100%;
     border-bottom-width: 0;
-    border-top-color: #333;
+    border-top-color: #000;
 }
 [tooltip]:not([flow])::after,
 [tooltip][flow^="up"]::after {
@@ -1891,6 +1894,7 @@ icon,
 [tooltip]:not([flow])::after,
 [tooltip][flow^="up"]::before,
 [tooltip][flow^="up"]::after {
+    margin-bottom: var(--tooltip-offset, 10px);
     left: 50%;
     transform: translate(-50%, -.5em);
 }
@@ -1898,38 +1902,43 @@ icon,
 [tooltip][flow^="down"]::before {
     top: 100%;
     border-top-width: 0;
-    border-bottom-color: #333;
+    border-bottom-color: var(--tooltip-bgcolor, #000);;
 }
 [tooltip][flow^="down"]::after {
     top: calc(100% + 5px);
 }
 [tooltip][flow^="down"]::before,
 [tooltip][flow^="down"]::after {
+    margin-top: var(--tooltip-offset, 10px);
     left: 50%;
     transform: translate(-50%, .5em);
 }
 /* FLOW: LEFT */
 [tooltip][flow^="left"]::before {
+    margin-right: var(--tooltip-offset, 10px);
     top: 50%;
     border-right-width: 0;
-    border-left-color: #333;
+    border-left-color: var(--tooltip-bgcolor, #000);;
     left: calc(0em - 5px);
     transform: translate(-.5em, -50%);
 }
 [tooltip][flow^="left"]::after {
+    margin-right: var(--tooltip-offset, 10px);
     top: 50%;
     right: calc(100% + 5px);
     transform: translate(-.5em, -50%);
 }
 /* FLOW: RIGHT */
 [tooltip][flow^="right"]::before {
+    margin-left: var(--tooltip-offset, 10px);
     top: 50%;
     border-left-width: 0;
-    border-right-color: #333;
+    border-right-color: var(--tooltip-bgcolor, #000);;
     right: calc(0em - 5px);
     transform: translate(.5em, -50%);
 }
 [tooltip][flow^="right"]::after {
+    margin-left: var(--tooltip-offset, 10px);
     top: 50%;
     left: calc(100% + 5px);
     transform: translate(.5em, -50%);
@@ -3186,6 +3195,20 @@ small,
 }
 .kiss-margin-small-right {
     margin-right: var(--kiss-block-element-margin-small, .6rem) !important;
+}
+* + .kiss-margin-xsmall,
+.kiss-margin-xsmall-top {
+    margin-top: var(--kiss-block-element-margin-xsmall, 4px) !important;
+}
+.kiss-margin-xsmall:not(:last-child),
+.kiss-margin-xsmall-bottom {
+    margin-bottom: var(--kiss-block-element-margin-xsmall, 4px) !important;
+}
+.kiss-margin-xsmall-left {
+    margin-left: var(--kiss-block-element-margin-xsmall, 4px) !important;
+}
+.kiss-margin-xsmall-right {
+    margin-right: var(--kiss-block-element-margin-xsmall, 4px) !important;
 }
 * + .kiss-margin-large,
 .kiss-margin-large-top {

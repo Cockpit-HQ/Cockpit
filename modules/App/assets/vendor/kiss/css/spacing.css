@@ -35,6 +35,22 @@
     margin-right: var(--kiss-block-element-margin-small, .6rem) !important;
 }
 
+* + .kiss-margin-xsmall,
+.kiss-margin-xsmall-top {
+    margin-top: var(--kiss-block-element-margin-xsmall, 4px) !important;
+}
+
+.kiss-margin-xsmall:not(:last-child),
+.kiss-margin-xsmall-bottom {
+    margin-bottom: var(--kiss-block-element-margin-xsmall, 4px) !important;
+}
+.kiss-margin-xsmall-left {
+    margin-left: var(--kiss-block-element-margin-xsmall, 4px) !important;
+}
+.kiss-margin-xsmall-right {
+    margin-right: var(--kiss-block-element-margin-xsmall, 4px) !important;
+}
+
 * + .kiss-margin-large,
 .kiss-margin-large-top {
     margin-top: var(--kiss-block-element-margin-large, 3rem) !important;

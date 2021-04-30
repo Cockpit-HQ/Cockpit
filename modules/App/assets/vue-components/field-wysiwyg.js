@@ -25,6 +25,11 @@ export default {
         modelValue: {
             type: String,
             default: false
+        },
+
+        tinymce: {
+            type: Object,
+            default: {}
         }
     },
 
@@ -53,9 +58,9 @@ export default {
 
         ready.then(() => {
 
-            tinymce.init({
+            tinymce.init(Object.assign({
                 target: this.$el.querySelector('textarea'),
-                height: 300,
+                height: 350,
                 setup: (editor) => {
 
                     this.editor = editor;
@@ -76,7 +81,7 @@ export default {
 
                 },
                 skin_url: App.base('/modules/App/assets/css/vendor/tinymce')
-            });
+            }, this.tinymce));
         })
     },
 

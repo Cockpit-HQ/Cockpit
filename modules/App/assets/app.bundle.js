@@ -1619,8 +1619,6 @@
         })
     }));
 
-    //VueView.component('fields-renderer', 'app:assets/vue-components/fields-renderer.js');
-
     // Fields
     VueView.component('field-boolean', 'app:assets/vue-components/field-boolean.js');
     VueView.component('field-code', 'app:assets/vue-components/field-code.js');

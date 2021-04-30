@@ -91,7 +91,7 @@ export default {
 
                 <div class="kiss-margin-small-top" v-if="field.multiple">
 
-                    <kiss-card class="kiss-padding-small kiss-size-small kiss-color-muted" theme="bordered" v-show="!val[field.name] || !val[field.name].length">{{ t('No items') }}</kiss-card>
+                    <kiss-card class="kiss-padding-small kiss-size-small kiss-color-muted" theme="bordered" v-show="!val[field.name] || !Array.isArray(val[field.name]) || !val[field.name].length">{{ t('No items') }}</kiss-card>
 
                     <vue-draggable v-model="val[field.name]" handle=".fm-handle" v-if="Array.isArray(val[field.name])">
                         <template #item="{ element, index }">
@@ -106,7 +106,7 @@ export default {
                     </vue-draggable>
 
                     <div class="kiss-margin kiss-align-center">
-                        <a class="kiss-size-large" @click="addFieldItem(field)"><icon>control_point</icon></a>
+                        <a @click="addFieldItem(field)" :tooltip="t('Add item')" flow="down"><icon class="kiss-size-large">control_point</icon></a>
                     </div>
                 </div>
 

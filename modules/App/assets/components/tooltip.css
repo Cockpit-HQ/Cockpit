@@ -3,7 +3,7 @@
 [tooltip] {
     position: relative; /* opinion 1 */
 }
-  
+
 /* Applies to all tooltips */
 [tooltip]::before,
 [tooltip]::after {
@@ -23,13 +23,16 @@
 }
 [tooltip]::after {
     content: attr(tooltip); /* magic! */
-    
+
     /* most of the rest of this is opinion */
     font-family: Helvetica, sans-serif;
     text-align: center;
-    
-    /* 
-      Let the content set the size of the tooltips 
+    font-size: 12px;
+    font-weight: bolder;
+    letter-spacing: .5px;
+
+    /*
+      Let the content set the size of the tooltips
       but this will also keep them from being obnoxious
       */
     min-width: 3em;
@@ -40,17 +43,17 @@
     padding: 1ch 1.5ch;
     border-radius: .3ch;
     box-shadow: 0 1em 2em -.5em rgba(0, 0, 0, 0.35);
-    background: #333;
-    color: #fff;
+    background: var(--tooltip-bgcolor, #000);
+    color: var(--tooltip-color,#fff);
     z-index: 1000; /* absurdity 2 */
   }
-  
+
 /* Make the tooltips respond to hover */
 [tooltip]:hover::before,
 [tooltip]:hover::after {
     display: block;
   }
-  
+
 /* don't show empty tooltips */
 [tooltip='']::before,
 [tooltip='']::after {
@@ -62,7 +65,7 @@
 [tooltip][flow^="up"]::before {
     bottom: 100%;
     border-bottom-width: 0;
-    border-top-color: #333;
+    border-top-color: #000;
 }
 [tooltip]:not([flow])::after,
 [tooltip][flow^="up"]::after {
@@ -72,34 +75,38 @@
 [tooltip]:not([flow])::after,
 [tooltip][flow^="up"]::before,
 [tooltip][flow^="up"]::after {
+    margin-bottom: var(--tooltip-offset, 10px);
     left: 50%;
     transform: translate(-50%, -.5em);
 }
-  
+
 /* FLOW: DOWN */
 [tooltip][flow^="down"]::before {
     top: 100%;
     border-top-width: 0;
-    border-bottom-color: #333;
+    border-bottom-color: var(--tooltip-bgcolor, #000);;
 }
 [tooltip][flow^="down"]::after {
     top: calc(100% + 5px);
 }
 [tooltip][flow^="down"]::before,
 [tooltip][flow^="down"]::after {
+    margin-top: var(--tooltip-offset, 10px);
     left: 50%;
     transform: translate(-50%, .5em);
 }
-  
+
 /* FLOW: LEFT */
 [tooltip][flow^="left"]::before {
+    margin-right: var(--tooltip-offset, 10px);
     top: 50%;
     border-right-width: 0;
-    border-left-color: #333;
+    border-left-color: var(--tooltip-bgcolor, #000);;
     left: calc(0em - 5px);
     transform: translate(-.5em, -50%);
 }
 [tooltip][flow^="left"]::after {
+    margin-right: var(--tooltip-offset, 10px);
     top: 50%;
     right: calc(100% + 5px);
     transform: translate(-.5em, -50%);
@@ -107,18 +114,20 @@
 
 /* FLOW: RIGHT */
 [tooltip][flow^="right"]::before {
+    margin-left: var(--tooltip-offset, 10px);
     top: 50%;
     border-left-width: 0;
-    border-right-color: #333;
+    border-right-color: var(--tooltip-bgcolor, #000);;
     right: calc(0em - 5px);
     transform: translate(.5em, -50%);
 }
 [tooltip][flow^="right"]::after {
+    margin-left: var(--tooltip-offset, 10px);
     top: 50%;
     left: calc(100% + 5px);
     transform: translate(.5em, -50%);
 }
-  
+
 /* KEYFRAMES */
 @keyframes tooltips-vert {
     to {
@@ -133,8 +142,8 @@
       transform: translate(0, -50%);
   }
 }
-  
-/* FX All The Things */ 
+
+/* FX All The Things */
 [tooltip]:not([flow]):hover::before,
 [tooltip]:not([flow]):hover::after,
 [tooltip][flow^="up"]:hover::before,
