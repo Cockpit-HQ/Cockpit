@@ -43,7 +43,7 @@ export default {
 
     template: /*html*/`
         <div field="wysiwyg">
-            <textarea hidden></textarea>
+            <div class="wysiwyg-container"></div>
         </div>
     `,
 
@@ -59,8 +59,14 @@ export default {
         ready.then(() => {
 
             tinymce.init(Object.assign({
-                target: this.$el.querySelector('textarea'),
-                height: 350,
+                target: this.$el.querySelector('.wysiwyg-container'),
+                height: 400,
+                content_style: `
+                    html,body {
+                        background-color: ${getComputedStyle(document.documentElement).getPropertyValue('background-color')};
+                        color: ${getComputedStyle(document.documentElement).getPropertyValue('color')};
+                    }
+                `,
                 setup: (editor) => {
 
                     this.editor = editor;
