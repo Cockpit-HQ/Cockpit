@@ -68,7 +68,7 @@ export default {
     watch: {
         modelValue() {
             if (this.editor && !this.editor.hasFocus()) {
-                this.editor.setValue(this.modelValue);
+                this.editor.setValue(this.modelValue || '');
             }
         }
     },

@@ -42,3 +42,7 @@ small,
 .kiss-size-small {
   font-size: var(--kiss-font-size-small, var(--kiss-font-size-6, 0.875rem));
 }
+
+.kiss-size-xsmall {
+  font-size: var(--kiss-font-size-small, 11px);
+}
