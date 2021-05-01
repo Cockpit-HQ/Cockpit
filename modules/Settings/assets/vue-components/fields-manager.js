@@ -3,7 +3,11 @@ import { FieldTypes } from "../js/settings.js"
 let fieldTypes = await FieldTypes.get();
 let instanceCount = 0;
 
+
 export default {
+
+    name: 'fields-manager',
+
     data() {
 
         return {
@@ -41,7 +45,7 @@ export default {
             let groups = [];
 
             this.fields.forEach(f => {
-                if (f.group.trim() && this.field !==  f) groups.push(f.group);
+                if (f.group && f.group.trim() && this.field !==  f) groups.push(f.group);
             })
 
             return _.uniq(groups).sort();
@@ -72,7 +76,7 @@ export default {
                 </template>
             </vue-draggable>
 
-            <div class="kiss-margin kiss-align-center" v-if="ready">
+            <div class="kiss-margin kiss-align-center">
                 <a class="kiss-size-large" @click="add"><icon>control_point</icon></a>
             </div>
 
@@ -129,6 +133,12 @@ export default {
 
                             </tab>
                             <tab :caption="t('Options')">
+
+                                <div class="kiss-margin" v-if="field.type == 'set'">
+                                    <div class="kiss-text-bold kiss-text-caption kiss-margin">{{ t('Fields') }}</div>
+                                    <fields-manager v-model="field.opts.fields"></fields-manager>
+                                </div>
+
 
                                 <div class="kiss-margin">
                                     <label>{{t('Options')}}</label>
