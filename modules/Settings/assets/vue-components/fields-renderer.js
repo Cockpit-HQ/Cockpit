@@ -5,7 +5,9 @@ let FieldRenderer = {
     data() {
 
         return {
-            val: this.modelValue
+            val: this.modelValue,
+            fieldItem: null,
+            fieldTypes: null,
         }
     },
 
@@ -35,11 +37,117 @@ let FieldRenderer = {
         }
     },
 
+    mounted() {
+        FieldTypes.get().then(types => {
+            this.fieldTypes = types;
+        })
+    },
+
     template: /*html*/`
-        <div v-is="'field-'+field.type" v-model="val" v-bind="field.opts"></div>
+        <div v-if="fieldTypes">
+
+            <div v-is="'field-'+field.type" v-model="val" v-bind="field.opts" v-if="!field.multiple"></div>
+
+            <div v-if="field.multiple">
+                <kiss-card class="kiss-padding-small kiss-size-small kiss-color-muted" theme="bordered" v-show="!val || !Array.isArray(val) || !val.length">{{ t('No items') }}</kiss-card>
+
+                <vue-draggable v-model="val" handle=".fm-handle" v-if="Array.isArray(val)">
+                    <template #item="{ element, index }">
+                        <div class="kiss-margin-small kiss-flex kiss-flex-middle">
+                            <kiss-card class="kiss-flex-1 kiss-padding-small kiss-size-small" theme="bordered" @click="editFieldItem(field, index)">
+                                {{ getPreview(val[index], field) }}
+                            </kiss-card>
+                            <a class="kiss-margin-small-left kiss-color-danger" @click="removeFieldItem(val, index)"><icon>delete</icon></a>
+                            <a class="fm-handle kiss-margin-left kiss-color-muted"><icon>drag_handle</icon></a>
+                        </div>
+                    </template>
+                </vue-draggable>
+
+                <div class="kiss-margin kiss-align-center">
+                    <a @click="addFieldItem(field)" :tooltip="t('Add item')" flow="down"><icon class="kiss-size-large">control_point</icon></a>
+                </div>
+            </div>
+        </div>
+
+        <teleport to="body">
+            <kiss-dialog open="true" size="large" v-if="fieldItem">
+                <kiss-content class="animated fadeInUp faster">
+
+                    <div class="kiss-size-4 kiss-text-bold kiss-margin">{{fieldItem.create ? t('Add item'):t('Edit item')}}</div>
+
+                    <div class="kiss-margin-top">
+                        <div><span class="kiss-badge kiss-text-upper">{{fieldItem.field.type}}</span></div>
+                        <div v-is="'field-'+field.type" v-model="fieldItem.value" v-bind="field.opts"></div>
+                    </div>
+
+                    <div class="kiss-button-group kiss-child-width-1-2 kiss-flex kiss-margin-top">
+                        <a class="kiss-button" @click="fieldItem=null">
+                            {{ t('Cancel') }}
+                        </a>
+                        <button class="kiss-button kiss-button-primary" @click="saveFieldItem">
+                            <span v-if="!fieldItem.create">{{ t('Edit item') }}</span>
+                            <span v-if="fieldItem.create">{{ t('Add item') }}</span>
+                        </button>
+                    </div>
+
+                </kiss-content>
+            </kiss-dialog>
+        </teleport>
     `,
 
     methods: {
+
+        addFieldItem(field) {
+
+            if (!Array.isArray(this.val)) {
+                this.val = [];
+            }
+
+            this.fieldItem = {
+                field,
+                value: JSON.parse(JSON.stringify(field.default || null)),
+                create: true
+            };
+        },
+
+        editFieldItem(field, index) {
+
+            this.fieldItem = {
+                field,
+                value: JSON.parse(JSON.stringify(this.val[index])),
+                index
+            };
+        },
+
+        saveFieldItem() {
+
+            if (this.fieldItem.value === null) {
+                this.fieldItem = null;
+                return;
+            }
+
+            if (this.fieldItem.create) {
+                this.val.push(this.fieldItem.value);
+            } else {
+                this.val[this.fieldItem.index] = this.fieldItem.value;
+            }
+
+            this.fieldItem = null;
+        },
+
+        removeFieldItem(list, index) {
+            list.splice(index, 1);
+        },
+
+        getPreview(value, field) {
+
+            if (this.fieldTypes[field.type] && this.fieldTypes[field.type].render) {
+               return this.fieldTypes[field.type].render(value, field);
+            }
+
+            return value;
+        },
+
         update() {
             this.$emit('update:modelValue', this.val)
         }
@@ -53,8 +161,6 @@ export default {
 
         return {
             val: this.modelValue,
-            fieldItem: null,
-            fieldTypes: null,
             group: null
         }
     },
@@ -67,7 +173,7 @@ export default {
             type: Array,
             default: []
         },
-        locales: {
+        locals: {
             type: Array,
             default: []
         },
@@ -113,8 +219,7 @@ export default {
     },
 
     template: /*html*/`
-        <div class="fields-renderer" :nested="nested" v-if="fieldTypes">
-
+        <div class="fields-renderer" :nested="nested">
 
             <app-tabs class="kiss-margin-large-bottom" v-if="groups.length">
                 <ul class="app-tabs-nav">
@@ -130,119 +235,30 @@ export default {
             <app-fieldcontainer class="kiss-margin" v-for="field in visibleFields">
                 <div>
                     <div class="kiss-flex kiss-flex-middle">
-                        <label class="fields-renderer-field kiss-text-capitalize kiss-flex-1">{{field.label || field.name}}</label>
-                        <a class="app-fieldcontainer-visible-hover kiss-size-xsmall" @click="val[field.name] = ((field.opts && field.opts.default) || null)">{{ t('Clear') }}</a>
+                        <label class="fields-renderer-field kiss-text-capitalize kiss-flex kiss-flex-middle kiss-flex-1">
+                            {{field.label || field.name}}
+                            <icon class="kiss-size-5 kiss-margin-small-left kiss-color-muted" v-if="field.i18n && locals.length">language</icon>
+                        </label>
+                        <a class="app-fieldcontainer-visible-hover kiss-size-xsmall kiss-margin-left" @click="val[field.name] = ((field.opts && field.opts.default) || null)">{{ t('Clear') }}</a>
                     </div>
                 <div class="kiss-color-muted kiss-size-small" v-if="field.info">{{ field.info }}</div>
-                <field-renderer class="kiss-margin-small-top" :field="field" v-model="val[field.name]" v-if="!field.multiple"></field-renderer>
 
-                <div class="kiss-margin-small-top" v-if="field.multiple">
+                <div class="kiss-margin-small-top" v-if="!field.i18n || !locals.length">
+                    <field-renderer :field="field" v-model="val[field.name]"></field-renderer>
+                </div>
 
-                    <kiss-card class="kiss-padding-small kiss-size-small kiss-color-muted" theme="bordered" v-show="!val[field.name] || !Array.isArray(val[field.name]) || !val[field.name].length">{{ t('No items') }}</kiss-card>
-
-                    <vue-draggable v-model="val[field.name]" handle=".fm-handle" v-if="Array.isArray(val[field.name])">
-                        <template #item="{ element, index }">
-                            <div class="kiss-margin-small kiss-flex kiss-flex-middle">
-                                <kiss-card class="kiss-flex-1 kiss-padding-small kiss-size-small" theme="bordered" @click="editFieldItem(field, index)">
-                                    {{ getPreview(val[field.name][index], field) }}
-                                </kiss-card>
-                                <a class="kiss-margin-small-left kiss-color-danger" @click="removeFieldItem(val[field.name], index)"><icon>delete</icon></a>
-                                <a class="fm-handle kiss-margin-left kiss-color-muted"><icon>drag_handle</icon></a>
-                            </div>
-                        </template>
-                    </vue-draggable>
-
-                    <div class="kiss-margin kiss-align-center">
-                        <a @click="addFieldItem(field)" :tooltip="t('Add item')" flow="down"><icon class="kiss-size-large">control_point</icon></a>
+                <div class="kiss-margin-small-top" v-if="field.i18n && locals.length">
+                    <div class="kiss-margin" v-for="local in locals">
+                        <span class="kiss-badge kiss-badge-outline kiss-color-muted kiss-margin-small">{{ local.i18n }}</span>
+                        <field-renderer :field="field" v-model="val[field.name+(local.i18n == 'default' ? '': '_'+local.i18n)]"></field-renderer>
                     </div>
                 </div>
 
             </app-fieldcontainer>
         </div>
-        <teleport to="body">
-            <kiss-dialog open="true" size="large" v-if="fieldItem">
-                <kiss-content class="animated fadeInUp faster">
-
-                    <div class="kiss-size-4 kiss-text-bold kiss-margin">{{fieldItem.create ? t('Add item'):t('Edit item')}}</div>
-
-                    <div class="kiss-margin-top">
-                        <div><span class="kiss-badge kiss-text-upper">{{fieldItem.field.type}}</span></div>
-                        <field-renderer class="kiss-margin-small-top" :field="fieldItem.field" v-model="fieldItem.value"></field-renderer>
-                    </div>
-
-                    <div class="kiss-button-group kiss-child-width-1-2 kiss-flex kiss-margin-top">
-                        <a class="kiss-button" @click="fieldItem=null">
-                            {{ t('Cancel') }}
-                        </a>
-                        <button class="kiss-button kiss-button-primary" @click="saveFieldItem">
-                            <span v-if="!fieldItem.create">{{ t('Edit item') }}</span>
-                            <span v-if="fieldItem.create">{{ t('Add item') }}</span>
-                        </button>
-                    </div>
-
-                </kiss-content>
-            </kiss-dialog>
-        </teleport>
     `,
 
-    mounted() {
-        FieldTypes.get().then(types => {
-            this.fieldTypes = types;
-        })
-    },
-
     methods: {
-
-        addFieldItem(field) {
-
-            if (!Array.isArray(this.val[field.name])) {
-                this.val[field.name] = [];
-            }
-
-            this.fieldItem = {
-                field,
-                value: JSON.parse(JSON.stringify(field.default || null)),
-                create: true
-            };
-        },
-
-        editFieldItem(field, index) {
-
-            this.fieldItem = {
-                field,
-                value: JSON.parse(JSON.stringify(this.val[field.name][index])),
-                index
-            };
-        },
-
-        saveFieldItem() {
-
-            if (this.fieldItem.value === null) {
-                this.fieldItem = null;
-                return;
-            }
-
-            if (this.fieldItem.create) {
-                this.val[this.fieldItem.field.name].push(this.fieldItem.value);
-            } else {
-                this.val[this.fieldItem.field.name][this.fieldItem.index] = this.fieldItem.value;
-            }
-
-            this.fieldItem = null;
-        },
-
-        removeFieldItem(list, index) {
-            list.splice(index, 1);
-        },
-
-        getPreview(value, field) {
-
-            if (this.fieldTypes[field.type] && this.fieldTypes[field.type].render) {
-               return this.fieldTypes[field.type].render(value, field);
-            }
-
-            return value;
-        },
 
         update() {
             this.$emit('update:modelValue', this.val)
