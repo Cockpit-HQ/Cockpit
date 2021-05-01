@@ -52,7 +52,7 @@ class Collection {
      * @return mixed last_insert_id for single document or
      * count count of inserted documents for arrays
      */
-    public function insert(array &$document): int {
+    public function insert(array &$document): mixed {
 
         if (isset($document[0])) {
 

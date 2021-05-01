@@ -55,7 +55,7 @@ export default {
                 <div class="kiss-text-bold">{{ t('No fields') }}</div>
             </kiss-card>
 
-            <vue-draggable class="animated fadeIn" v-model="fields" v-if="fields.length" handle=".fm-handle">
+            <vue-draggable v-model="fields" v-if="fields.length" handle=".fm-handle">
                 <template #item="{ element }">
                     <kiss-card class="kiss-padding-small kiss-flex kiss-flex-middle" theme="bordered" style="margin: 8px 0;">
                         <div class="kiss-margin-right">
@@ -100,7 +100,7 @@ export default {
                         </div>
 
                         <app-tabs class="kiss-margin-large">
-                            <tab class="animated fadeIn faster" :caption="t('General')">
+                            <tab :caption="t('General')">
 
                                 <div class="kiss-margin">
                                     <label>{{t('Display name')}}</label>
@@ -128,7 +128,7 @@ export default {
                                 </div>
 
                             </tab>
-                            <tab class="animated fadeIn faster" :caption="t('Options')">
+                            <tab :caption="t('Options')">
 
                                 <div class="kiss-margin">
                                     <label>{{t('Options')}}</label>
@@ -136,7 +136,7 @@ export default {
                                 </div>
 
                             </tab>
-                            <tab class="animated fadeIn faster" :caption="t('Meta')">
+                            <tab :caption="t('Meta')">
                                 <div class="kiss-margin">
                                     <label>{{t('Meta')}}</label>
                                     <field-object v-model="field.meta" :height="150"></field-object>

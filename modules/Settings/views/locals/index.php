@@ -9,30 +9,30 @@
         <template>
 
             <div class="kiss-margin-large-bottom kiss-flex kiss-flex-middle">
-                <div class="kiss-size-1 kiss-flex-1"><strong><?=t('Locales')?></strong></div>
+                <div class="kiss-size-1 kiss-flex-1"><strong><?=t('Locals')?></strong></div>
             </div>
 
             <app-loader v-if="loading"></app-loader>
 
-            <div class="animated fadeIn kiss-height-30vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted" v-if="locales && !locales.length">
+            <div class="animated fadeIn kiss-height-30vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted" v-if="locals && !locals.length">
                 <div>
                     <icon class="kiss-size-xlarge">language</icon>
-                    <p class="kiss-size-large kiss-text-bold"><?=t('No locales')?></p>
+                    <p class="kiss-size-large kiss-text-bold"><?=t('No locals')?></p>
                 </div>
             </div>
 
-            <ul class="app-list-items animated fadeIn" v-if="locales && locales.length">
+            <ul class="app-list-items animated fadeIn" v-if="locals && locals.length">
 
-                <li v-for="(locale, idx) in locales">
+                <li v-for="(local, idx) in locals">
 
                     <div class="kiss-margin kiss-flex kiss-flex-middle">
                         <div class="kiss-margin-small-right"><icon>language</icon></div>
                         <div class="kiss-size-5 kiss-flex-1 kiss-position-relative">
-                            <strong>{{locale.name || locale.i18n}}</strong>
-                            <a class="kiss-cover" :href="$route('/settings/locales/locale/'+locale._id)"></a>
+                            <strong>{{local.name || local.i18n}}</strong>
+                            <a class="kiss-cover" :href="$route('/settings/locals/local/'+local._id)"></a>
                         </div>
-                        <div class="kiss-margin-left kiss-size-small kiss-align-right kiss-text-caption" :class="locale.i18n == 'default' ? 'kiss-color-primary' : 'kiss-color-muted'"><strong>{{ locale.i18n }}</strong></div>
-                        <a class="kiss-display-block kiss-margin-left kiss-color-danger" @click="remove(locale)"><icon>delete</icon></a>
+                        <div class="kiss-margin-left kiss-size-small kiss-align-right kiss-text-caption" :class="local.i18n == 'default' ? 'kiss-color-primary' : 'kiss-color-muted'"><strong>{{ local.i18n }}</strong></div>
+                        <a class="kiss-display-block kiss-margin-left kiss-color-danger" @click="remove(local)"><icon>delete</icon></a>
                     </div>
 
                 </li>
@@ -43,7 +43,7 @@
 
                 <kiss-container size="small">
                     <div class="kiss-flex kiss-flex-middle kiss-flex-right">
-                        <a class="kiss-button kiss-button-primary" href="<?=$this->route('/settings/locales/create')?>"><?=t('Add locale')?></a>
+                        <a class="kiss-button kiss-button-primary" href="<?=$this->route('/settings/locals/create')?>"><?=t('Add local')?></a>
                     </div>
                 </kiss-container>
 
@@ -57,7 +57,7 @@
 
                 data() {
                     return {
-                        locales: null,
+                        locals: null,
                         loading: false
                     }
                 },
@@ -73,19 +73,19 @@
 
                         this.loading = true;
 
-                        this.$request('/settings/locales/load', {options:{}}).then(locales => {
+                        this.$request('/settings/locals/load', {options:{}}).then(locals => {
 
-                            this.locales = locales;
+                            this.locals = locals;
                             this.loading = false;
                         });
                     },
 
-                    remove(locale) {
+                    remove(local) {
 
                         App.ui.confirm('Are you sure?', () => {
 
-                            this.$request('/settings/locales/remove', {locale}).then(res => {
-                                this.locales.splice(this.locales.indexOf(locale), 1);
+                            this.$request('/settings/locals/remove', {local}).then(res => {
+                                this.locals.splice(this.locals.indexOf(local), 1);
                             });
                         });
                     }

@@ -23,13 +23,25 @@
                 <?=t('No fields defined')?>
             </div>
 
-            <kiss-row class="kiss-margin-large" v-if="fields.length">
+            <kiss-row class="kiss-row-large kiss-margin-large" v-if="fields.length">
                 <div class="kiss-flex-1">
                     <div class="kiss-width-2-3@xl">
-                        <fields-renderer v-model="item" :fields="fields"></fields-renderer>
+                        <fields-renderer v-model="item" :fields="fields" :locals></fields-renderer>
                     </div>
                 </div>
-                <div class="kiss-width-1-4@m">
+                <div class="kiss-width-1-4@m kiss-width-1-5@xl">
+
+                    <div v-if="locals.length > 1">
+
+                        <div class="kiss-text-bold kiss-size-small kiss-text-upper">{{ t('Localizations') }}</div>
+
+                        <kiss-card class="kiss-position-relative kiss-padding-small kiss-margin-small kiss-size-small kiss-text-bolder kiss-flex kiss-flex-middle" :class="{'kiss-color-muted': !loc.visible}" theme="bordered" v-for="loc in locals">
+                            <icon class="kiss-margin-small-right" :class="{'kiss-color-primary': loc.visible}">{{ loc.visible ? 'visibility' : 'visibility_off' }}</icon>
+                            <span class="kiss-flex-1">{{ loc.name }}</span>
+                            <span class="kiss-color-muted kiss-size-xsmall" v-if="loc.i18n == 'default'">{{ t('Default') }}</span>
+                            <a class="kiss-cover" @click="loc.visible = !loc.visible"></a>
+                        </kiss-card>
+                    </div>
 
                 </div>
             </kiss-row>
@@ -63,12 +75,19 @@
                     return {
                         item: <?=json_encode($item)?>,
                         fields: <?=json_encode($fields)?>,
+                        locals: <?=json_encode($this->helper('locals')->locals())?>,
                         saving: false
                     }
                 },
 
                 components: {
                     'fields-renderer': 'settings:assets/vue-components/fields-renderer.js'
+                },
+
+                computed: {
+                    visibleLocals() {
+                        return this.locals.filter(L => l.visible);
+                    }
                 },
 
                 mounted() {

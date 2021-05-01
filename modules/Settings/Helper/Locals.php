@@ -3,30 +3,30 @@
 namespace Settings\Helper;
 
 
-class Locales extends \Lime\Helper {
+class Locals extends \Lime\Helper {
 
-    protected array $locales = [];
+    protected array $locals = [];
 
     protected function initialize() {
 
-        $this->locales = $this->app->helper('cache')->read('app.locales', function() {
+        $this->locals = $this->app->helper('cache')->read('app.locals', function() {
             return $this->cache();
         });
     }
 
-    public function locales(): array {
+    public function locals(): array {
 
-        $locales = [];
+        $locals = [];
 
-        foreach ($this->locales as $locale) {
+        foreach ($this->locals as $locale) {
 
-            $locales[] = [
+            $locals[] = [
                 'i18n' => $locale['i18n'],
                 'name' => $locale['name'],
             ];
         }
 
-        return $locales;
+        return $locals;
     }
 
     public function cache(): array {
@@ -35,15 +35,15 @@ class Locales extends \Lime\Helper {
             'default' => 'Default'
         ];
 
-        $locales = $this->app->dataStorage->find('system/locales', [
+        $locals = $this->app->dataStorage->find('system/locals', [
             'sort' => ['name' => 1]
         ])->toArray();
 
-        foreach ($locales as $locale) {
+        foreach ($locals as $locale) {
             $cache[$locale['i18n']] = $locale;
         }
 
-        $this->app->helper('cache')->write('app.locales', $cache);
+        $this->app->helper('cache')->write('app.locals', $cache);
 
         return $cache;
     }

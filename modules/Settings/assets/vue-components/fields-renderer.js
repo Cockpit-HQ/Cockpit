@@ -67,7 +67,7 @@ export default {
             type: Array,
             default: []
         },
-        languages: {
+        locales: {
             type: Array,
             default: []
         },
