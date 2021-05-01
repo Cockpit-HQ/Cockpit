@@ -56,7 +56,7 @@ class App implements \ArrayAccess {
     * Constructor
     * @param Array $settings initial registry settings
     */
-    public function __construct ($settings = []) {
+    public function __construct (array $settings = []) {
 
         $self = $this;
         $base_url = implode('/', \array_slice(explode('/', $_SERVER['SCRIPT_NAME']), 0, -1));

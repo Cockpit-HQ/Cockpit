@@ -3900,6 +3900,11 @@ app-actionbar kiss-container {
 [field="boolean"] {
     font-size: .95em;
 }
+.fields-renderer[nested="true"] .fields-renderer-field {
+    display: inline-block;
+    font-weight: normal;
+    font-size: 11px;
+}
 app-fieldcontainer app-fieldcontainer {
     all: unset;
     display: block;

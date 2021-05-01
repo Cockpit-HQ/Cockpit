@@ -41,7 +41,7 @@ export default {
 
     template: /*html*/`
         <div class="kiss-position-relative" field="set">
-            <fields-renderer v-model="val" :fields="fields"></fields-renderer>
+            <fields-renderer v-model="val" :fields="fields" :nested="true"></fields-renderer>
         </div>
     `,
 
