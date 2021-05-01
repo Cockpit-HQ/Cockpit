@@ -54,7 +54,8 @@ export default {
         return {
             val: this.modelValue,
             fieldItem: null,
-            fieldTypes: null
+            fieldTypes: null,
+            group: null
         }
     },
 
@@ -86,13 +87,47 @@ export default {
         }
     },
 
+    computed: {
+        groups() {
+
+            let groups = [];
+
+            (this.fields || []).forEach(field => {
+                if (!field.group || groups.indexOf(field.group) > -1) return;
+                groups.push(field.group);
+            });
+
+            return groups;
+        },
+
+        visibleFields() {
+
+            return this.fields.filter(field => {
+                return !this.group || this.group == field.group;
+            });
+        }
+    },
+
     components: {
         fieldRenderer: FieldRenderer
     },
 
     template: /*html*/`
         <div class="fields-renderer" :nested="nested" v-if="fieldTypes">
-            <app-fieldcontainer class="kiss-margin" v-for="field in fields">
+
+
+            <app-tabs class="kiss-margin-large-bottom" v-if="groups.length">
+                <ul class="app-tabs-nav">
+                    <li :active="group === null">
+                        <a class="app-tabs-nav-link" @click="group = null">{{t('All')}}</a>
+                    </li>
+                    <li :active="group == name" v-for="name in groups">
+                        <a class="app-tabs-nav-link" @click="group = name">{{ name }}</a>
+                    </li>
+                </ul>
+            </app-tabs>
+
+            <app-fieldcontainer class="kiss-margin" v-for="field in visibleFields">
                 <div>
                     <div class="kiss-flex kiss-flex-middle">
                         <label class="fields-renderer-field kiss-text-capitalize kiss-flex-1">{{field.label || field.name}}</label>
