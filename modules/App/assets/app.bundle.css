@@ -2226,6 +2226,7 @@ app-tabs tab[active="true"] {
     list-style: none;
     padding: 0;
     justify-content: center;
+    margin: 0 0 20px 0;
 }
 .app-tabs-nav-link:hover {
     color: inherit;
@@ -3814,7 +3815,7 @@ vue-view:not([init="true"]) { display: none; }
     --kiss-color-success: #4caf50;
     --kiss-color-warning: orange;
     --kiss-color-danger: #f91941;
-    --kiss-color-muted: rgba(255,255,255,.25);
+    --kiss-color-muted: rgba(255,255,255,.5);
 
     --kiss-container-max-width: 1800px;
     --kiss-container-small-max-width: 900px;

@@ -162,16 +162,25 @@ $this->module('collections')->extend([
         }
 
         $fields = $collection['fields'];
+        $locals = $this->app->helper('locals')->locals();
 
         foreach ($fields as $field) {
 
+            $name = $field['name'];
             $default = $field['opts']['default'] ?? null;
             $multiple = $field['multiple'] ?? false;
+            $i18n = $field['i18n'] ?? false;
 
-            if ($multiple) {
-                $item[$field['name']] =  $default ?? [];
-            } else {
-                $item[$field['name']] =  $default ?? null;
+            $item[$name] = $multiple ? ($default ?? []) : ($default ?? null);
+
+            if ($i18n) {
+
+                foreach ($locals as $local) {
+                    if ($local['i18n'] == 'default') continue;
+                    $localName = "{$name}_{$local['i18n']}";
+                    $locDefault = $field['opts']["default_{$local['i18n']}"] ?? null;
+                    $item[$localName] = $multiple ? ($locDefault ?? []) : ($locDefault ?? null);
+                }
             }
         }
 

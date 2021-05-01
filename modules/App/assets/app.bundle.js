@@ -1559,6 +1559,10 @@
 
         connectedCallback() {
 
+            if (this.getAttribute('static') == 'true') {
+                return;
+            }
+
             this.activeIndex = Number(this.getAttribute('index') || 0);
 
             this.nav = document.createElement("ul");
@@ -1591,6 +1595,10 @@
         }
 
         render() {
+
+            if (this.getAttribute('static') == 'true') {
+                return;
+            }
 
             this.tabs = [];
 
