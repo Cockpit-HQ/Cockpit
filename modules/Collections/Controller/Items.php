@@ -43,7 +43,15 @@ class Items extends App {
 
         $fields = $collection['fields'];
 
-        return $this->render('collections:views/items/item.php', compact('collection', 'fields', 'item'));
+        $locals = $this->helper('locals')->locals();
+
+        if (count($locals) == 1) {
+            $locals = [];
+        } else {
+            $locals[0]['visible'] = true;
+        }
+
+        return $this->render('collections:views/items/item.php', compact('collection', 'fields', 'locals', 'item'));
     }
 
 }

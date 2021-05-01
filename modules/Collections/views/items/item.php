@@ -31,16 +31,25 @@
                 </div>
                 <div class="kiss-width-1-4@m kiss-width-1-5@xl">
 
-                    <div v-if="locals.length > 1">
+                    <div class="kiss-margin">
 
                         <div class="kiss-text-bold kiss-size-xsmall kiss-text-upper">{{ t('Localizations') }}</div>
 
-                        <kiss-card class="kiss-position-relative kiss-padding-small kiss-margin-small kiss-text-bolder kiss-flex kiss-flex-middle" :class="{'kiss-color-muted': !loc.visible}" theme="bordered" v-for="loc in locals">
-                            <icon class="kiss-margin-small-right" :class="{'kiss-color-primary': loc.visible}">{{ loc.visible ? 'visibility' : 'visibility_off' }}</icon>
-                            <span class="kiss-size-small kiss-flex-1">{{ loc.name }}</span>
-                            <span class="kiss-color-muted kiss-size-xsmall" v-if="loc.i18n == 'default'">{{ t('Default') }}</span>
-                            <a class="kiss-cover" @click="loc.visible = !loc.visible"></a>
+                        <kiss-card class="kiss-padding-small kiss-margin kiss-text-bolder kiss-text-muted kiss-size-small kiss-color-muted kiss-flex kiss-flex-middle" theme="bordered" v-if="!locals.length">
+                            <span class="kiss-flex-1 kiss-margin-small-right">{{ t('No locals.') }}</span>
+                            <a class="kiss-size-xsmall" href="<?=$this->route('/settings/locals')?>">{{ t('Manage') }}</a>
                         </kiss-card>
+
+                        <div class="kiss-margin" v-if="locals.length">
+
+                            <kiss-card class="kiss-position-relative kiss-padding-small kiss-margin-small kiss-text-bolder kiss-flex kiss-flex-middle" :class="{'kiss-color-muted': !loc.visible}" theme="bordered" v-for="loc in locals">
+                                <icon class="kiss-margin-small-right" :class="{'kiss-color-primary': loc.visible}">{{ loc.visible ? 'visibility' : 'visibility_off' }}</icon>
+                                <span class="kiss-size-small kiss-flex-1">{{ loc.name }}</span>
+                                <span class="kiss-color-muted kiss-size-xsmall" v-if="loc.i18n == 'default'">{{ t('Default') }}</span>
+                                <a class="kiss-cover" @click="loc.visible = !loc.visible"></a>
+                            </kiss-card>
+                        </div>
+
                     </div>
 
                 </div>
@@ -75,10 +84,7 @@
                     return {
                         item: <?=json_encode($item)?>,
                         fields: <?=json_encode($fields)?>,
-                        locals: <?=json_encode($this->helper('locals')->locals())?>.map(l => {
-                            if (l.i18n == 'default') l.visible = true;
-                            return l;
-                        }),
+                        locals: <?=json_encode($locals)?>,
                         saving: false
                     }
                 },

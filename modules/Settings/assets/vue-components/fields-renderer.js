@@ -54,8 +54,9 @@ let FieldRenderer = {
                 <vue-draggable v-model="val" handle=".fm-handle" v-if="Array.isArray(val)">
                     <template #item="{ element, index }">
                         <div class="kiss-margin-small kiss-flex kiss-flex-middle">
-                            <kiss-card class="kiss-flex-1 kiss-padding-small kiss-size-small" theme="bordered" @click="editFieldItem(field, index)">
+                            <kiss-card class="kiss-flex-1 kiss-padding-small kiss-size-small kiss-position-relative" theme="bordered">
                                 {{ getPreview(val[index], field) }}
+                                <a class="kiss-cover" @click="editFieldItem(field, index)"></a>
                             </kiss-card>
                             <a class="kiss-margin-small-left kiss-color-danger" @click="removeFieldItem(val, index)"><icon>delete</icon></a>
                             <a class="fm-handle kiss-margin-left kiss-color-muted"><icon>drag_handle</icon></a>
