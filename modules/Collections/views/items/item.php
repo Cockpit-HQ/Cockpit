@@ -17,6 +17,7 @@
                     <span v-if="!item._id"><?=t('New Item')?></span>
                     <span v-if="item._id"><?=t('Edit Item')?></span>
                 </div>
+                <a class="kiss-size-large kiss-margin-small-left" kiss-popoutmenu="#collection-item-menu-actions"><icon>more_horiz</icon></a>
             </div>
 
             <div class="kiss-margin-large kiss-size-5 kiss-align-center kiss-text-bolder" v-if="!fields.length">
@@ -74,6 +75,22 @@
                 </kiss-container>
 
             </app-actionbar>
+
+            <kiss-popoutmenu id="collection-item-menu-actions">
+                <kiss-content>
+                    <kiss-navlist class="kiss-margin">
+                        <ul>
+                            <li class="kiss-nav-header"><?=t('Actions')?></li>
+                            <li>
+                                <a class="kiss-flex kiss-flex-middle" href="<?=$this->route("/collections/edit/{$collection['name']}")?>">
+                                    <icon class="kiss-margin-small-right">create</icon>
+                                    <?=t('Edit')?>
+                                </a>
+                            </li>
+                        </ul>
+                    </kiss-navlist>
+                </kiss-content>
+            </kiss-popoutmenu>
 
         </template>
 
