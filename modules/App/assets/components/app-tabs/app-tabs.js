@@ -10,6 +10,10 @@ customElements.define('app-tabs', class extends HTMLElement {
 
     connectedCallback() {
 
+        if (this.getAttribute('static') == 'true') {
+            return;
+        }
+
         this.activeIndex = Number(this.getAttribute('index') || 0);
 
         this.nav = document.createElement("ul");
@@ -42,6 +46,10 @@ customElements.define('app-tabs', class extends HTMLElement {
     }
 
     render() {
+
+        if (this.getAttribute('static') == 'true') {
+            return;
+        }
 
         this.tabs = [];
 

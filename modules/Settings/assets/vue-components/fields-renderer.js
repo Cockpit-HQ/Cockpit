@@ -222,7 +222,7 @@ export default {
     template: /*html*/`
         <div class="fields-renderer" :nested="nested">
 
-            <app-tabs class="kiss-margin-large-bottom" v-if="groups.length">
+            <app-tabs class="kiss-margin-large-bottom" static="true" v-if="groups.length">
                 <ul class="app-tabs-nav">
                     <li :active="group === null">
                         <a class="app-tabs-nav-link" @click="group = null">{{t('All')}}</a>

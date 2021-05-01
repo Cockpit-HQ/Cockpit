@@ -15,6 +15,7 @@ app-tabs tab[active="true"] {
     list-style: none;
     padding: 0;
     justify-content: center;
+    margin: 0 0 20px 0;
 }
 
 .app-tabs-nav-link:hover {
