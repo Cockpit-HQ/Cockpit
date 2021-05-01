@@ -29,7 +29,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '37395d9e3259c5f3ce140ce1b237220f9b7decb0',
+    'reference' => '5d94e0929bfd8037b5e5d25f27c42082ee0a60db',
     'name' => 'agentejo/cockpit',
   ),
   'versions' => 
@@ -41,7 +41,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '37395d9e3259c5f3ce140ce1b237220f9b7decb0',
+      'reference' => '5d94e0929bfd8037b5e5d25f27c42082ee0a60db',
     ),
     'bacon/bacon-qr-code' => 
     array (
@@ -209,6 +209,15 @@ private static $installed = array (
       array (
       ),
       'reference' => '00dedc6d362a1b863dda3f8243516da9fdfbe657',
+    ),
+    'webonyx/graphql-php' => 
+    array (
+      'pretty_version' => 'v14.6.2',
+      'version' => '14.6.2.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'bcbb6926bbf2d0cf466c63d0b9edc90e44d5dd3f',
     ),
   ),
 );

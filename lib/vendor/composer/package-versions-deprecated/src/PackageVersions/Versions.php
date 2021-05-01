@@ -50,7 +50,8 @@ final class Versions
   'symfony/polyfill-mbstring' => 'v1.22.1@5232de97ee3b75b0360528dae24e73db49566ab1',
   'symfony/polyfill-php80' => 'v1.22.1@dc3063ba22c2a1fd2f45ed856374d79114998f91',
   'symfony/polyfill-php81' => 'v1.22.1@00dedc6d362a1b863dda3f8243516da9fdfbe657',
-  'agentejo/cockpit' => 'dev-master@37395d9e3259c5f3ce140ce1b237220f9b7decb0',
+  'webonyx/graphql-php' => 'v14.6.2@bcbb6926bbf2d0cf466c63d0b9edc90e44d5dd3f',
+  'agentejo/cockpit' => 'dev-master@5d94e0929bfd8037b5e5d25f27c42082ee0a60db',
 );
 
     private function __construct()

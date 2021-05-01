@@ -131,7 +131,7 @@ export default {
                 <div>
                     <div class="kiss-flex kiss-flex-middle">
                         <label class="fields-renderer-field kiss-text-capitalize kiss-flex-1">{{field.label || field.name}}</label>
-                        <a class="app-fieldcontainer-visible-hover kiss-size-xsmall" @click="val[field.name] = null">{{ t('Clear') }}</a>
+                        <a class="app-fieldcontainer-visible-hover kiss-size-xsmall" @click="val[field.name] = ((field.opts && field.opts.default) || null)">{{ t('Clear') }}</a>
                     </div>
                 <div class="kiss-color-muted kiss-size-small" v-if="field.info">{{ field.info }}</div>
                 <field-renderer class="kiss-margin-small-top" :field="field" v-model="val[field.name]" v-if="!field.multiple"></field-renderer>
