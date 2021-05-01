@@ -77,7 +77,7 @@ let FieldRenderer = {
                     <div class="kiss-size-4 kiss-text-bold kiss-margin">{{fieldItem.create ? t('Add item'):t('Edit item')}}</div>
 
                     <div class="kiss-margin-top">
-                        <div><span class="kiss-badge kiss-text-upper">{{fieldItem.field.type}}</span></div>
+                        <div class="kiss-margin-bottom"><span class="kiss-badge kiss-text-upper">{{fieldItem.field.type}}</span></div>
                         <div v-is="'field-'+field.type" v-model="fieldItem.value" v-bind="field.opts"></div>
                     </div>
 
