@@ -1,6 +1,9 @@
+import { FieldTypes } from "../js/settings.js"
+
 let FieldRenderer = {
 
     data() {
+
         return {
             val: this.modelValue
         }
@@ -47,9 +50,11 @@ let FieldRenderer = {
 export default {
 
     data() {
+
         return {
             val: this.modelValue,
-            fieldItem: null
+            fieldItem: null,
+            fieldTypes: null
         }
     },
 
@@ -83,7 +88,7 @@ export default {
     },
 
     template: /*html*/`
-        <div>
+        <div v-if="fieldTypes">
             <app-fieldcontainer class="kiss-margin" v-for="field in fields">
                 <label class="kiss-text-capitalize">{{field.label || field.name}}</label>
                 <div class="kiss-color-muted kiss-size-small" v-if="field.info">{{ field.info }}</div>
@@ -97,7 +102,7 @@ export default {
                         <template #item="{ element, index }">
                             <div class="kiss-margin-small kiss-flex kiss-flex-middle">
                                 <kiss-card class="kiss-flex-1 kiss-padding-small kiss-size-small" theme="bordered" @click="editFieldItem(field, index)">
-                                    {{ val[field.name][index] }}
+                                    {{ getPreview(val[field.name][index], field) }}
                                 </kiss-card>
                                 <a class="kiss-margin-small-left kiss-color-danger" @click="removeFieldItem(val[field.name], index)"><icon>delete</icon></a>
                                 <a class="fm-handle kiss-margin-left kiss-color-muted"><icon>drag_handle</icon></a>
@@ -137,6 +142,12 @@ export default {
             </kiss-dialog>
         </teleport>
     `,
+
+    mounted() {
+        FieldTypes.get().then(types => {
+            this.fieldTypes = types;
+        })
+    },
 
     methods: {
 
@@ -180,6 +191,15 @@ export default {
 
         removeFieldItem(list, index) {
             list.splice(index, 1);
+        },
+
+        getPreview(value, field) {
+
+            if (this.fieldTypes[field.type] && this.fieldTypes[field.type].render) {
+               return this.fieldTypes[field.type].render(value, field);
+            }
+
+            return value;
         },
 
         update() {

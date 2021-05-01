@@ -141,3 +141,8 @@ app-actionbar kiss-container {
 [field="boolean"] {
     font-size: .95em;
 }
+
+app-fieldcontainer app-fieldcontainer {
+    all: unset;
+    display: block;
+}

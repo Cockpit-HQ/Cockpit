@@ -1,31 +1,6 @@
-let FieldsCollection = {
+import { FieldTypes } from "../js/settings.js"
 
-    fields : {},
-
-    collect() {
-
-        let promises = [];
-
-        Object.keys(VueView.components).forEach((c, match, promise) => {
-
-            match = c.match(/^field\-(.*)/);
-
-            if (match && typeof(VueView.components[c]) == 'string') {
-
-                promises.push(App.utils.import(VueView.components[c]).then(def => {
-
-                    if (!def.default._meta) return;
-
-                    this.fields[c.replace('field-', '')] = def.default._meta;
-                }));
-            }
-        });
-
-        return Promise.all(promises).then(() => this.fields);
-    }
-
-}
-
+let fieldTypes = await FieldTypes.get();
 let instanceCount = 0;
 
 export default {
@@ -34,9 +9,8 @@ export default {
         return {
             uid: `fm-${++instanceCount}`,
             fields: this.modelValue || [],
-            availableFields: {},
+            fieldTypes,
             field: null,
-            ready: false,
 
             state: {
                 editField: false
@@ -77,18 +51,16 @@ export default {
     template: /*html*/`
         <div>
 
-            <app-loader size="small" v-if="!ready"></app-loader>
-
-            <kiss-card class="animated fadeIn kiss-padding kiss-align-center kiss-text-caption" theme="bordered" v-if="ready && !fields.length">
+            <kiss-card class="animated fadeIn kiss-padding kiss-align-center kiss-text-caption" theme="bordered" v-if="!fields.length">
                 <div class="kiss-text-bold">{{ t('No fields') }}</div>
             </kiss-card>
 
-            <vue-draggable class="animated fadeIn" v-model="fields" v-if="ready && fields.length" handle=".fm-handle">
+            <vue-draggable class="animated fadeIn" v-model="fields" v-if="fields.length" handle=".fm-handle">
                 <template #item="{ element }">
                     <kiss-card class="kiss-padding-small kiss-flex kiss-flex-middle" theme="bordered" style="margin: 8px 0;">
                         <div class="kiss-margin-right">
-                            <div class="kiss-padding-small app-border-radius" :style="{background: _.get(availableFields, element.type+'.color', 'rgb(255, 248, 214)')}">
-                                <img :src="$base(_.get(availableFields, element.type+'.icon', 'settings:assets/icons/edit.svg'))" width="20" height="20" style="opacity:.6" :title="element.type">
+                            <div class="kiss-padding-small app-border-radius" :style="{background: _.get(fieldTypes, element.type+'.color', 'rgb(255, 248, 214)')}">
+                                <img :src="$base(_.get(fieldTypes, element.type+'.icon', 'settings:assets/icons/edit.svg'))" width="20" height="20" style="opacity:.6" :title="element.type">
                             </div>
                         </div>
                         <div class="kiss-flex-1 kiss-text-bold">{{ element.label || element.name }}</div>
@@ -123,7 +95,7 @@ export default {
                             <label>{{t('Type')}}</label>
                             <select class="kiss-input kiss-width-1-1" type="text" v-model="field.type" required>
                                 <option></option>
-                                <option :value="fieldType" v-for="(f,fieldType) in availableFields">{{ f.label || fieldType }}</option>
+                                <option :value="fieldType" v-for="(f,fieldType) in fieldTypes">{{ f.label || fieldType }}</option>
                             </select>
                         </div>
 
@@ -192,14 +164,6 @@ export default {
             </kiss-dialog>
         </teleport>
     `,
-
-    mounted() {
-
-        FieldsCollection.collect().then(fields => {
-            this.availableFields = fields;
-            this.ready = true;
-        });
-    },
 
     methods: {
 

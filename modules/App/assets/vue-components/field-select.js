@@ -4,7 +4,10 @@ export default {
     _meta: {
         label: 'Select',
         info: 'Select from a list',
-        icon: 'settings:assets/icons/select.svg'
+        icon: 'settings:assets/icons/select.svg',
+        render(value, field) {
+            return Array.isArray(value) ? value.join(', ') : value;
+        }
     },
 
     data() {
