@@ -82,15 +82,30 @@
                         <ul>
                             <li class="kiss-nav-header"><?=t('Actions')?></li>
                             <li>
+                                <a class="kiss-flex kiss-flex-middle" href="#collections-item-json" kiss-offcanvas>
+                                    <icon class="kiss-margin-small-right">code</icon>
+                                    <?=t('JSON Object')?>
+                                </a>
+                            </li>
+                            <li>
                                 <a class="kiss-flex kiss-flex-middle" href="<?=$this->route("/collections/edit/{$collection['name']}")?>">
                                     <icon class="kiss-margin-small-right">create</icon>
-                                    <?=t('Edit')?>
+                                    <?=t('Edit collection')?>
                                 </a>
                             </li>
                         </ul>
                     </kiss-navlist>
                 </kiss-content>
             </kiss-popoutmenu>
+
+            <kiss-offcanvas id="collections-item-json" flip="true">
+                <kiss-content class="kiss-width-1-3">
+                    <div class="kiss-padding">
+                        <strong class="kiss-size-small kiss-text-upper">{{ t('JSON Viewer') }}</strong>
+                    </div>
+                    <json-viewer class="kiss-padding kiss-size-small kiss-bgcolor-contrast" :object="item"></json-viewer>
+                </kiss-content>
+            </kiss-offcanvas>
 
         </template>
 
@@ -107,7 +122,8 @@
                 },
 
                 components: {
-                    'fields-renderer': 'settings:assets/vue-components/fields-renderer.js'
+                    'fields-renderer': 'settings:assets/vue-components/fields-renderer.js',
+                    'json-viewer': 'settings:assets/vue-components/json-viewer.js',
                 },
 
                 computed: {
