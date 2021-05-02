@@ -2,7 +2,7 @@
 
 
 .tox-tinymce {
-    background: var(--kiss-base-background-color); 
+    background: var(--kiss-base-background-color);
     color: var(--kiss-base-text-color);
     border-radius: var(--app-border-radius);
     border: 1px var(--kiss-hr-color) solid;
@@ -10,22 +10,24 @@
 
 .tox .tox-menubar,
 .tox .tox-toolbar-overlord,
-.tox .tox-toolbar, 
-.tox .tox-toolbar__overflow, 
+.tox .tox-toolbar,
+.tox .tox-toolbar__overflow,
 .tox .tox-toolbar__primary,
 .tox .tox-statusbar {
     background: var(--kiss-base-background-color);
 }
 
-.tox .tox-menubar+.tox-toolbar, 
+.tox .tox-menubar+.tox-toolbar,
 .tox .tox-menubar+.tox-toolbar-overlord .tox-toolbar__primary,
 .tox:not([dir=rtl]) .tox-toolbar__group:not(:last-of-type){
     border-color: var(--kiss-hr-color);
+    border: none;
 }
 
 .tox .tox-mbtn,
 .tox .tox-tbtn {
     color: inherit;
+    border-radius: 0;
 }
 
 .tox .tox-tbtn svg {
@@ -38,19 +40,46 @@
     color: inherit;
 }
 
-.tox .tox-tbtn--disabled svg, 
-.tox .tox-tbtn--disabled:hover svg, 
-.tox .tox-tbtn:disabled svg, 
+.tox .tox-tbtn--disabled svg,
+.tox .tox-tbtn--disabled:hover svg,
+.tox .tox-tbtn:disabled svg,
 .tox .tox-tbtn:disabled:hover svg {
     fill: var(--kiss-color-muted);
 }
 
-.tox .tox-statusbar a, 
-.tox .tox-statusbar__path-item, 
+.tox .tox-statusbar {
+    border-top: none;
+}
+
+.tox .tox-statusbar a,
+.tox .tox-statusbar__path-item,
 .tox .tox-statusbar__wordcount {
     color: var(--kiss-color-muted);
 }
 
 .tox-statusbar__branding {
     display: none;
+}
+
+.tox .tox-menu {
+    background-color: var(--kiss-dropdown-background);
+    border: none;
+}
+
+.tox .tox-collection--list .tox-collection__item {
+    padding: 4px 8px;
+}
+.tox .tox-collection__item {
+    color: inherit;
+}
+
+.tox .tox-collection--list .tox-collection__group {
+    border-color: var(--kiss-hr-color);
+}
+
+.tox .tox-collection--list .tox-collection__item--active {
+    background-color: var(--kiss-dropdown-background);
+}
+.tox .tox-collection--list .tox-collection__item--active:not(.tox-collection__item--state-disabled) {
+    color: var(--kiss-base-text-color);
 }

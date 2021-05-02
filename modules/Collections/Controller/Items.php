@@ -19,7 +19,17 @@ class Items extends App {
             return $this->stop(404);
         }
 
-        return $this->render('collections:views/items/list.php', compact('collection'));
+        $fields = $collection['fields'];
+
+        $locals = $this->helper('locals')->locals();
+
+        if (count($locals) == 1) {
+            $locals = [];
+        } else {
+            $locals[0]['visible'] = true;
+        }
+
+        return $this->render('collections:views/items/list.php', compact('collection', 'fields', 'locals'));
 
     }
 
@@ -35,11 +45,11 @@ class Items extends App {
             return $this->stop(404);
         }
 
-        $item = $this->module('collections')->getDefaultItem($collection['name']);
-
         if ($id) {
 
         }
+
+        $item = $this->module('collections')->getDefaultItem($collection['name']);
 
         $fields = $collection['fields'];
 

@@ -17,6 +17,12 @@
         </div>
     </div>
 
+
+    <vue-view>
+
+
+    </vue-view>
+
     <app-actionbar>
 
         <kiss-container>
