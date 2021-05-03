@@ -1,6 +1,7 @@
 <?php
 
 // Register Helpers
+$this->helpers['app']   = 'App\\Helper\\App';
 $this->helpers['acl']   = 'App\\Helper\\Acl';
 $this->helpers['auth']  = 'App\\Helper\\Auth';
 $this->helpers['csrf']  = 'App\\Helper\\Csrf';

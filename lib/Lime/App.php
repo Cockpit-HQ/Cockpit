@@ -767,18 +767,18 @@ class App implements \ArrayAccess {
     public function bindClass(string $class, ?string $alias = null): void {
 
         $self  = $this;
-        $clean = $alias ? $alias : \trim(\strtolower(\str_replace("\\", "/", $class)), "\\");
+        $clean = ltrim($alias ? $alias : \trim(\strtolower(\str_replace("\\", "/", $class)), "\\"), '/');
 
-        $this->bind('/'.$clean.'/*', function() use($self, $class, $clean) {
+        $this->bind("/{$clean}/*", function() use($self, $class, $clean) {
 
             $parts  = \explode('/', \trim(\preg_replace("#$clean#", "", $self->request->route,1),'/'));
             $action = isset($parts[0]) ? $parts[0]:"index";
             $params = \count($parts)>1 ? \array_slice($parts, 1):[];
 
-            return $self->invoke($class,$action, $params);
+            return $self->invoke($class, $action, $params);
         });
 
-        $this->bind('/'.$clean, function() use($self, $class) {
+        $this->bind("/{$clean}", function() use($self, $class) {
             return $self->invoke($class, 'index', []);
         });
     }

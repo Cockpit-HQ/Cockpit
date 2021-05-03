@@ -1,7 +1,7 @@
 <kiss-container class="kiss-margin">
 
     <ul class="kiss-breadcrumb">
-        <li><a href="<?=$this->route('/collections')?>"><?=t('Collections')?></a></li>
+        <li><a href="<?=$this->route('/content')?>"><?=t('Content')?></a></li>
     </ul>
 
     <vue-view>
@@ -10,14 +10,14 @@
 
             <div class="kiss-flex kiss-flex-middle kiss-margin-large-bottom">
                 <div class="kiss-flex kiss-position-relative">
-                    <span class="kiss-badge" style="<?=($collection['color'] ? "background:{$collection['color']};border-color:{$collection['color']}":"")?>"><?=$this->escape($collection['label'] ? $collection['label'] : $collection['name'])?></span>
-                    <a class="kiss-cover" href="<?=$this->route("/collections/items/list/{$collection['name']}")?>"></a>
+                    <span class="kiss-badge" style="<?=($model['color'] ? "background:{$model['color']};border-color:{$model['color']}":"")?>"><?=$this->escape($model['label'] ? $model['label'] : $model['name'])?></span>
+                    <a class="kiss-cover" href="<?=$this->route("/content/collection/items/{$model['name']}")?>"></a>
                 </div>
                 <div class="kiss-margin-small-left kiss-size-5 kiss-text-bolder">
                     <span v-if="!item._id"><?=t('New Item')?></span>
                     <span v-if="item._id"><?=t('Edit Item')?></span>
                 </div>
-                <a class="kiss-size-large kiss-margin-small-left" kiss-popoutmenu="#collection-item-menu-actions"><icon>more_horiz</icon></a>
+                <a class="kiss-size-large kiss-margin-small-left" kiss-popoutmenu="#model-item-menu-actions"><icon>more_horiz</icon></a>
             </div>
 
             <div class="kiss-margin-large kiss-size-5 kiss-align-center kiss-text-bolder" v-if="!fields.length">
@@ -32,7 +32,7 @@
                 </div>
                 <div class="kiss-width-1-4@m kiss-width-1-5@xl">
 
-                    <div class="kiss-margin">
+                    <div class="kiss-margin" v-if="hasLocales">
 
                         <div class="kiss-text-bold kiss-size-xsmall kiss-text-upper">{{ t('Localeizations') }}</div>
 
@@ -62,11 +62,11 @@
                     <div class="kiss-flex kiss-flex-middle">
                         <div class="kiss-flex-1"></div>
                         <div class="kiss-button-group">
-                            <a class="kiss-button" href="<?=$this->route("/collections/items/list/{$collection['name']}")?>">
+                            <a class="kiss-button" href="<?=$this->route("/content/collection/items/{$model['name']}")?>">
                                 <span v-if="!item._id"><?=t('Cancel')?></span>
                                 <span v-if="item._id"><?=t('Close')?></span>
                             </a>
-                            <a class="kiss-button kiss-button-primary" href="<?=$this->route("/collections/items/item/{$collection['name']}")?>">
+                            <a class="kiss-button kiss-button-primary" href="<?=$this->route("/models/items/item/{$model['name']}")?>">
                                 <span v-if="!item._id"><?=t('Create item')?></span>
                                 <span v-if="item._id"><?=t('Update item')?></span>
                             </a>
@@ -76,22 +76,22 @@
 
             </app-actionbar>
 
-            <kiss-popoutmenu id="collection-item-menu-actions">
+            <kiss-popoutmenu id="model-item-menu-actions">
                 <kiss-content>
                     <kiss-navlist class="kiss-margin">
                         <ul>
                             <li class="kiss-nav-header"><?=t('Actions')?></li>
                             <li>
-                                <a class="kiss-flex kiss-flex-middle" href="#collections-item-json" kiss-offcanvas>
+                                <a class="kiss-flex kiss-flex-middle" href="#models-item-json" kiss-offcanvas>
                                     <icon class="kiss-margin-small-right">code</icon>
                                     <?=t('Json Object')?>
                                 </a>
                             </li>
                             <li class="kiss-nav-divider"></li>
                             <li>
-                                <a class="kiss-flex kiss-flex-middle" href="<?=$this->route("/collections/edit/{$collection['name']}")?>">
+                                <a class="kiss-flex kiss-flex-middle" href="<?=$this->route("/content/models/edit/{$model['name']}")?>">
                                     <icon class="kiss-margin-small-right">create</icon>
-                                    <?=t('Edit collection')?>
+                                    <?=t('Edit model')?>
                                 </a>
                             </li>
                         </ul>
@@ -99,7 +99,7 @@
                 </kiss-content>
             </kiss-popoutmenu>
 
-            <kiss-offcanvas id="collections-item-json" flip="true">
+            <kiss-offcanvas id="models-item-json" flip="true">
                 <kiss-content class="kiss-width-1-3">
                     <div class="kiss-padding">
                         <strong class="kiss-size-small kiss-text-upper">{{ t('JSON Viewer') }}</strong>
@@ -128,6 +128,13 @@
                 },
 
                 computed: {
+                    hasLocales() {
+
+                        for (let i=0;i<this.fields.length;i++) {
+                            if (this.fields[i].i18n) return true;
+                        }
+                        return false;
+                    },
                     visibleLocales() {
                         return this.locales.filter(l => l.visible);
                     }

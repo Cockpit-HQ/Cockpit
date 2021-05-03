@@ -5,10 +5,10 @@ $this->helpers['twfa'] = 'App\\Helper\\TWFA';
 $this->helpers['menus'] = 'App\\Helper\\Menus';
 
 // Register routes
-$this->bindClass('App\\Controller\\Auth', 'auth');
-$this->bindClass('App\\Controller\\Users\\Roles', 'users/roles');
-$this->bindClass('App\\Controller\\Users', 'users');
-$this->bindClass('App\\Controller\\Utils', 'utils');
+$this->bindClass('App\\Controller\\Auth', '/auth');
+$this->bindClass('App\\Controller\\Users\\Roles', '/users/roles');
+$this->bindClass('App\\Controller\\Users', '/users');
+$this->bindClass('App\\Controller\\Utils', '/utils');
 
 $this->bind('/', function() {
 

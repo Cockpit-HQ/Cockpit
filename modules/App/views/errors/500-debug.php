@@ -6,7 +6,7 @@
 
     * { box-sizing: border-box; }
 
-    html, body {background-color: #141414; }
+    html, body {background-color: #131720; }
 
     body {
         font-family: "Helvetica Neue", "HelveticaNeue", Helvetica, Arial, "Lucida Grande", sans-serif;
@@ -32,7 +32,7 @@
     }
 
     .content {
-        background-color: #1b1b1b;
+        background-color: #1c1d2b;
         padding: 20px;
         border-radius: 4px;
         margin-top: 40px;
@@ -61,7 +61,7 @@
 
     .sysinfo {
         margin-top: 10px;
-        color: rgba(255,255,255,.1);
+        color: rgba(255, 255, 255,.2);
         font-size: 12px;
     }
     </style>
