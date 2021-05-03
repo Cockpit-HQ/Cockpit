@@ -14,6 +14,19 @@
 
             <form :class="{'kiss-disabled':saving}" @submit.prevent="save">
 
+                <div class="kiss-margin-large" v-if="!isUpdate">
+                    <label><?=t('Type')?></label>
+                    <select class="kiss-input kiss-select" v-model="model.type">
+                        <option value="collection">{{ t('Collection') }}</option>
+                        <option value="singleton">{{ t('Singleton') }}</option>
+                    </select>
+
+                </div>
+
+                <div class="kiss-margin" v-if="isUpdate">
+                    <span class="kiss-badge kiss-text-upper">{{ model.type }}</span>
+                </div>
+
                 <kiss-row class="kiss-margin kiss-child-width-1-2@m">
                     <div :class="{'kiss-disabled': isUpdate}">
                         <label><?=t('Name')?></label>
