@@ -1,3 +1,9 @@
+[kiss-container="medium"],
+kiss-container[size="medium"] {
+    max-width: var(--kiss-container-medium-max-width, 1200px);
+}
+
+
 kiss-card,
 .kiss-button,
 .kiss-badge,

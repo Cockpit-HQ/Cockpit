@@ -2519,7 +2519,7 @@ kiss-container[size="small"] {
 }
 [kiss-container="large"],
 kiss-container[size="large"] {
-    max-width: var(--kiss-container-small-max-width, 1600px);
+    max-width: var(--kiss-container-large-max-width, 1600px);
 }
 kiss-container::before,
 kiss-container::after {
@@ -3675,6 +3675,10 @@ td.kiss-text-truncate { max-width: 0; }
     right: 0;
     bottom: 0;
 }
+[kiss-container="medium"],
+kiss-container[size="medium"] {
+    max-width: var(--kiss-container-medium-max-width, 1200px);
+}
 kiss-card,
 .kiss-button,
 .kiss-badge,
@@ -3842,7 +3846,7 @@ vue-view:not([init="true"]) { display: none; }
     --kiss-popoutmenu-content-background: var(--kiss-dropdown-background);
 
     --kiss-navlist-font-size: 14px;
-    --kiss-navlist-padding-vertical: 6px;
+    --kiss-navlist-padding-vertical: 8px;
 
     --kiss-card-shadowed-color: var(--kiss-color-muted);
     --kiss-card-bordered-color: rgb(106, 85, 85, .15);

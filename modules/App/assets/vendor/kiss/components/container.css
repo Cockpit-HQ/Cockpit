@@ -16,7 +16,7 @@ kiss-container[size="small"] {
 
 [kiss-container="large"],
 kiss-container[size="large"] {
-    max-width: var(--kiss-container-small-max-width, 1600px);
+    max-width: var(--kiss-container-large-max-width, 1600px);
 }
 
 kiss-container::before,

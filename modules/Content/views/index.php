@@ -1,4 +1,4 @@
-<kiss-container class="kiss-margin">
+<kiss-container class="kiss-margin" size="medium">
 
     <ul class="kiss-breadcrumb">
         <li class="active"><span><?=t('Content')?></span></li>
@@ -12,7 +12,7 @@
 
             <div class="animated fadeIn kiss-height-30vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted kiss-margin-large" v-if="!loading && !models.length">
                 <div>
-                    <kiss-svg src="<?=$this->base('models:icon.svg')?>" width="40" height="40"></kiss-svg>
+                    <kiss-svg src="<?=$this->base('content:icon.svg')?>" width="40" height="40"></kiss-svg>
                     <p class="kiss-size-large kiss-text-bold kiss-margin-top"><?=t('No models')?></p>
                 </div>
             </div>
@@ -21,13 +21,13 @@
 
                 <div class="kiss-margin-large" v-if="singletons.length">
 
-                    <kiss-row class="kiss-child-width-1-5@xl kiss-child-width-1-4@m" match="true">
+                    <kiss-row class="kiss-child-width-1-4@m" match="true">
                         <div v-for="model in singletons">
                             <kiss-card class="animated fadeIn" theme="bordered" hover="shadow">
                                 <div class="kiss-position-relative kiss-bgcolor-contrast">
-                                    <canvas width="600" height="200"></canvas>
+                                    <canvas width="600" height="400"></canvas>
                                     <div class="kiss-cover kiss-flex kiss-flex-middle kiss-flex-center">
-                                        <div :style="{color: model.color || 'inherit' }"><kiss-svg src="<?=$this->base('content:icon.svg')?>" width="50" height="50"></kiss-svg></div>
+                                        <div :style="{color: model.color || 'inherit' }"><kiss-svg src="<?=$this->base('content:assets/icons/singleton.svg')?>" width="50" height="50"></kiss-svg></div>
                                     </div>
                                     <a class="kiss-cover" :href="$route(`/content/singleton/item/${model.name}`)"></a>
                                 </div>
@@ -48,7 +48,7 @@
                         <kiss-card class="animated fadeIn" theme="bordered" hover="shadow">
                             <div class="kiss-padding-small kiss-flex kiss-flex-middle">
                                 <div class="kiss-margin-small-right" :style="{color: model.color || 'inherit' }">
-                                    <kiss-svg class="kiss-margin-auto" src="<?=$this->base('content:icon.svg')?>" width="30" height="30"></kiss-svg>
+                                    <kiss-svg class="kiss-margin-auto" src="<?=$this->base('content:assets/icons/collection.svg')?>" width="30" height="30"></kiss-svg>
                                 </div>
                                 <div class="kiss-flex-1 kiss-position-relative kiss-margin-right" :style="{color: model.color || 'inherit' }">
                                     {{ model.label || model.name }}
@@ -68,7 +68,7 @@
 
             <app-actionbar>
 
-                <kiss-container>
+                <kiss-container size="medium">
                     <div class="kiss-flex kiss-flex-middle">
                         <div class="kiss-flex-1"></div>
                         <a class="kiss-button kiss-button-primary" href="<?=$this->route('/content/models/create')?>"><?=t('Create model')?></a>
