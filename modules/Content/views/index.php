@@ -19,20 +19,31 @@
 
             <div class="kiss-margin-large" v-if="!loading && models.length">
 
-                <div class="kiss-margin-large" v-if="singletons.length">
+                <app-tabs class="kiss-margin-large-bottom" static="true" v-if="groups.length">
+                    <ul class="app-tabs-nav">
+                        <li :active="group === null">
+                            <a class="app-tabs-nav-link" @click="group = null">{{t('All')}}</a>
+                        </li>
+                        <li :active="group == name" v-for="name in groups">
+                            <a class="app-tabs-nav-link" @click="group = name">{{ name }}</a>
+                        </li>
+                    </ul>
+                </app-tabs>
+
+                <div class="kiss-margin-large-top" v-if="singletons.length">
 
                     <kiss-row class="kiss-child-width-1-4@m" match="true">
                         <div v-for="model in singletons">
                             <kiss-card class="animated fadeIn" theme="bordered" hover="shadow">
                                 <div class="kiss-position-relative kiss-bgcolor-contrast">
-                                    <canvas width="600" height="400"></canvas>
+                                    <canvas width="600" height="350"></canvas>
                                     <div class="kiss-cover kiss-flex kiss-flex-middle kiss-flex-center">
                                         <div :style="{color: model.color || 'inherit' }"><kiss-svg src="<?=$this->base('content:assets/icons/singleton.svg')?>" width="50" height="50"></kiss-svg></div>
                                     </div>
                                     <a class="kiss-cover" :href="$route(`/content/singleton/item/${model.name}`)"></a>
                                 </div>
                                 <div class="kiss-padding-small kiss-flex kiss-flex-middle">
-                                    <a class="kiss-flex-1 kiss-margin-right" :href="$route(`/content/singleton/item/${model.name}`)" :style="{color: model.color || 'inherit' }">{{ model.label || model.name }}</a>
+                                    <a class="kiss-flex-1 kiss-margin-right kiss-text-bold kiss-link-muted" :href="$route(`/content/singleton/item/${model.name}`)">{{ model.label || model.name }}</a>
                                     <a @click="toggleModelActions(model)"><icon>more_horiz</icon></a>
                                 </div>
                             </kiss-card>
@@ -50,7 +61,7 @@
                                 <div class="kiss-margin-small-right" :style="{color: model.color || 'inherit' }">
                                     <kiss-svg class="kiss-margin-auto" src="<?=$this->base('content:assets/icons/collection.svg')?>" width="30" height="30"></kiss-svg>
                                 </div>
-                                <div class="kiss-flex-1 kiss-position-relative kiss-margin-right" :style="{color: model.color || 'inherit' }">
+                                <div class="kiss-flex-1 kiss-position-relative kiss-margin-right kiss-text-bold kiss-link-muted">
                                     {{ model.label || model.name }}
                                     <a class="kiss-cover" :href="$route(`/content/collection/items/${model.name}`)"></a>
                                 </div>
@@ -116,18 +127,31 @@
                     return {
                         models: [],
                         loading: false,
-                        actionModel: null
+                        actionModel: null,
+                        group: null
                     }
                 },
 
                 computed: {
 
                     collections() {
-                        return this.models.filter(model => model.type == 'collection');
+                        return this.models.filter(model => model.type == 'collection' && (!this.group || this.group == model.group));
                     },
 
                     singletons() {
-                        return this.models.filter(model => model.type == 'singleton');
+                        return this.models.filter(model => model.type == 'singleton' && (!this.group || this.group == model.group));
+                    },
+
+                    groups() {
+
+                        let groups = [];
+
+                        (this.models || []).forEach(model => {
+                            if (!model.group || groups.indexOf(model.group) > -1) return;
+                            groups.push(model.group);
+                        });
+
+                        return groups;
                     }
                 },
 
