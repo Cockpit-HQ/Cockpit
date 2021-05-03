@@ -16,7 +16,7 @@ class Collection extends App {
 
         $model = $this->module('content')->model($model);
 
-        if (!$model) {
+        if (!$model || $model['type'] != 'collection') {
             return $this->stop(404);
         }
 
@@ -42,7 +42,7 @@ class Collection extends App {
 
         $model = $this->module('content')->model($model);
 
-        if (!$model) {
+        if (!$model || $model['type'] != 'collection') {
             return $this->stop(404);
         }
 

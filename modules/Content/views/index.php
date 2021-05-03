@@ -1,4 +1,8 @@
-<kiss-container class="kiss-margin-large">
+<kiss-container class="kiss-margin">
+
+    <ul class="kiss-breadcrumb">
+        <li class="active"><span><?=t('Content')?></span></li>
+    </ul>
 
 
     <vue-view>
@@ -125,6 +129,7 @@
 
                             this.$request(`/content/models/remove/${model.name}`, {}).then(res => {
                                 this.models.splice(this.models.indexOf(model), 1);
+                                App.ui.notify('Model removed!');
                             });
                         });
                     }

@@ -54,7 +54,8 @@
                         <div class="kiss-flex kiss-flex-middle kiss-flex-right">
 
                             <div class="kiss-flex-1" v-if="isUpdate">
-                                <a class="kiss-button" :href="$route(`/content/collection/items/${model.name}`)"><?=t('Goto items')?></a>
+                                <a class="kiss-button" :href="$route(`/content/collection/items/${model.name}`)" v-if="model.type == 'collection'"><?=t('Goto items')?></a>
+                                <a class="kiss-button" :href="$route(`/content/singleton/item/${model.name}`)" v-if="model.type == 'singleton'"><?=t('Goto form')?></a>
                             </div>
 
                             <div class="kiss-button-group">

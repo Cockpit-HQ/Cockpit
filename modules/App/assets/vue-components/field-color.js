@@ -28,9 +28,21 @@ export default {
         }
     },
 
+    watch: {
+
+        val() {
+            this.update();
+        },
+        modelValue() {
+            this.val = this.modelValue;
+            this.update();
+        }
+    },
+
     template: /*html*/`
         <div class="kiss-overlay-input" field="color">
-            <canvas class="app-border-radius" :width="size" :height="size" :style="val ? { background: val } : transparent"></canvas>
+            <canvas class="app-border-radius" :width="size" :height="size" :style="{ background: val }" v-if="val"></canvas>
+            <canvas class="app-border-radius" :width="size" :height="size" :style="transparent" v-if="!val"></canvas>
             <input v-model="val" type="color" style="cursor:pointer;" @change="update">
         </div>
     `,

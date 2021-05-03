@@ -2,6 +2,7 @@
 
 // Register routes
 $this->bindClass('Content\\Controller\\Collection', '/content/collection');
+$this->bindClass('Content\\Controller\\Singleton', '/content/singleton');
 $this->bindClass('Content\\Controller\\Models', '/content/models');
 $this->bindClass('Content\\Controller\\Content', '/content');
 

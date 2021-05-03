@@ -101,7 +101,7 @@ $this->module('content')->extend([
         }
 
         $this->app->helper('fs')->delete("#storage:content/{$name}.model.php");
-        $this->app->dataStorage->dropmodel("content/{$name}");
+        $this->app->dataStorage->dropCollection("content/{$name}");
 
         $this->app->trigger('content.remove.model', [$name]);
         $this->app->trigger("content.remove.model.{$name}", [$name]);
