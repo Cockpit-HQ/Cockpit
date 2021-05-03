@@ -30,8 +30,8 @@ class Settings extends \Lime\Helper {
                 ],
                 [
                     'icon' => null,
-                    'route' => '/settings/locals',
-                    'label' => 'Locals',
+                    'route' => '/settings/locales',
+                    'label' => 'Locales',
                     'permission' => null
                 ],
             ]

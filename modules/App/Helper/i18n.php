@@ -14,7 +14,7 @@ class i18n extends \Lime\Helper {
     public string $locale     = 'en';
     private array $_languages = [];
 
-    public static array $locals = [
+    public static array $locales = [
 
         'aa' => 'Afar',
         'ab' => 'Abkhazian',

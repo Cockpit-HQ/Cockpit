@@ -27,23 +27,23 @@
             <kiss-row class="kiss-row-large kiss-margin-large" v-if="fields.length">
                 <div class="kiss-flex-1">
                     <div class="kiss-width-2-3@xl">
-                        <fields-renderer v-model="item" :fields="fields" :locals="visibleLocals"></fields-renderer>
+                        <fields-renderer v-model="item" :fields="fields" :locales="visibleLocales"></fields-renderer>
                     </div>
                 </div>
                 <div class="kiss-width-1-4@m kiss-width-1-5@xl">
 
                     <div class="kiss-margin">
 
-                        <div class="kiss-text-bold kiss-size-xsmall kiss-text-upper">{{ t('Localizations') }}</div>
+                        <div class="kiss-text-bold kiss-size-xsmall kiss-text-upper">{{ t('Localeizations') }}</div>
 
-                        <kiss-card class="kiss-padding-small kiss-margin kiss-text-bolder kiss-text-muted kiss-size-small kiss-color-muted kiss-flex kiss-flex-middle" theme="bordered" v-if="!locals.length">
-                            <span class="kiss-flex-1 kiss-margin-small-right">{{ t('No locals.') }}</span>
-                            <a class="kiss-size-xsmall" href="<?=$this->route('/settings/locals')?>">{{ t('Manage') }}</a>
+                        <kiss-card class="kiss-padding-small kiss-margin kiss-text-bolder kiss-text-muted kiss-size-small kiss-color-muted kiss-flex kiss-flex-middle" theme="bordered" v-if="!locales.length">
+                            <span class="kiss-flex-1 kiss-margin-small-right">{{ t('No locales.') }}</span>
+                            <a class="kiss-size-xsmall" href="<?=$this->route('/settings/locales')?>">{{ t('Manage') }}</a>
                         </kiss-card>
 
-                        <div class="kiss-margin" v-if="locals.length">
+                        <div class="kiss-margin" v-if="locales.length">
 
-                            <kiss-card class="kiss-position-relative kiss-padding-small kiss-margin-small kiss-text-bolder kiss-flex kiss-flex-middle" :class="{'kiss-color-muted': !loc.visible}" theme="bordered" v-for="loc in locals">
+                            <kiss-card class="kiss-position-relative kiss-padding-small kiss-margin-small kiss-text-bolder kiss-flex kiss-flex-middle" :class="{'kiss-color-muted': !loc.visible}" theme="bordered" v-for="loc in locales">
                                 <icon class="kiss-margin-small-right" :class="{'kiss-color-primary': loc.visible}">{{ loc.visible ? 'visibility' : 'visibility_off' }}</icon>
                                 <span class="kiss-size-small kiss-flex-1">{{ loc.name }}</span>
                                 <span class="kiss-color-muted kiss-size-xsmall" v-if="loc.i18n == 'default'">{{ t('Default') }}</span>
@@ -84,9 +84,10 @@
                             <li>
                                 <a class="kiss-flex kiss-flex-middle" href="#collections-item-json" kiss-offcanvas>
                                     <icon class="kiss-margin-small-right">code</icon>
-                                    <?=t('JSON Object')?>
+                                    <?=t('Json Object')?>
                                 </a>
                             </li>
+                            <li class="kiss-nav-divider"></li>
                             <li>
                                 <a class="kiss-flex kiss-flex-middle" href="<?=$this->route("/collections/edit/{$collection['name']}")?>">
                                     <icon class="kiss-margin-small-right">create</icon>
@@ -116,7 +117,7 @@
                     return {
                         item: <?=json_encode($item)?>,
                         fields: <?=json_encode($fields)?>,
-                        locals: <?=json_encode($locals)?>,
+                        locales: <?=json_encode($locales)?>,
                         saving: false
                     }
                 },
@@ -127,8 +128,8 @@
                 },
 
                 computed: {
-                    visibleLocals() {
-                        return this.locals.filter(l => l.visible);
+                    visibleLocales() {
+                        return this.locales.filter(l => l.visible);
                     }
                 },
 

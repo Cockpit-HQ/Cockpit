@@ -54,8 +54,8 @@
         color: yellow;
     }
 
-    .file { 
-        font-family: monospace; 
+    .file {
+        font-family: monospace;
         font-size: 14px;
     }
 
@@ -74,7 +74,7 @@
     </div>
     <div class="wrapper content">
 
-            <span class="file"><?=str_replace(COCKPIT_DIR, '', $error['file']);?></span>
+            <span class="file"><?=str_replace(APP_DIR, '', $error['file']);?></span>
 
 <div class="code">
 <pre><?php

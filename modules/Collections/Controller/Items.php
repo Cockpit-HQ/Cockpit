@@ -21,15 +21,15 @@ class Items extends App {
 
         $fields = $collection['fields'];
 
-        $locals = $this->helper('locals')->locals();
+        $locales = $this->helper('locales')->locales();
 
-        if (count($locals) == 1) {
-            $locals = [];
+        if (count($locales) == 1) {
+            $locales = [];
         } else {
-            $locals[0]['visible'] = true;
+            $locales[0]['visible'] = true;
         }
 
-        return $this->render('collections:views/items/list.php', compact('collection', 'fields', 'locals'));
+        return $this->render('collections:views/items/list.php', compact('collection', 'fields', 'locales'));
 
     }
 
@@ -53,15 +53,15 @@ class Items extends App {
 
         $fields = $collection['fields'];
 
-        $locals = $this->helper('locals')->locals();
+        $locales = $this->helper('locales')->locales();
 
-        if (count($locals) == 1) {
-            $locals = [];
+        if (count($locales) == 1) {
+            $locales = [];
         } else {
-            $locals[0]['visible'] = true;
+            $locales[0]['visible'] = true;
         }
 
-        return $this->render('collections:views/items/item.php', compact('collection', 'fields', 'locals', 'item'));
+        return $this->render('collections:views/items/item.php', compact('collection', 'fields', 'locales', 'item'));
     }
 
 }

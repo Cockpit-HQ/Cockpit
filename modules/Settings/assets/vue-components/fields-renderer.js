@@ -174,7 +174,7 @@ export default {
             type: Array,
             default: []
         },
-        locals: {
+        locales: {
             type: Array,
             default: []
         },
@@ -238,20 +238,20 @@ export default {
                     <div class="kiss-flex kiss-flex-middle">
                         <label class="fields-renderer-field kiss-text-capitalize kiss-flex kiss-flex-middle kiss-flex-1">
                             {{field.label || field.name}}
-                            <icon class="kiss-size-5 kiss-margin-small-left kiss-color-muted" v-if="field.i18n && locals.length">language</icon>
+                            <icon class="kiss-size-5 kiss-margin-small-left kiss-color-muted" v-if="field.i18n && locales.length">language</icon>
                         </label>
                         <a class="app-fieldcontainer-visible-hover kiss-size-xsmall kiss-margin-left" @click="val[field.name] = ((field.opts && field.opts.default) || null)">{{ t('Clear') }}</a>
                     </div>
                 <div class="kiss-color-muted kiss-size-small" v-if="field.info">{{ field.info }}</div>
 
-                <div class="kiss-margin-small-top" v-if="!field.i18n || !locals.length">
+                <div class="kiss-margin-small-top" v-if="!field.i18n || !locales.length">
                     <field-renderer :field="field" v-model="val[field.name]"></field-renderer>
                 </div>
 
-                <div class="kiss-margin-small-top" v-if="field.i18n && locals.length">
-                    <div class="kiss-margin" v-for="local in locals">
-                        <span class="kiss-badge kiss-badge-outline kiss-color-muted kiss-margin-small">{{ local.i18n }}</span>
-                        <field-renderer :field="field" v-model="val[field.name+(local.i18n == 'default' ? '': '_'+local.i18n)]"></field-renderer>
+                <div class="kiss-margin-small-top" v-if="field.i18n && locales.length">
+                    <div class="kiss-margin" v-for="locale in locales">
+                        <span class="kiss-badge kiss-badge-outline kiss-color-muted kiss-margin-small">{{ locale.i18n }}</span>
+                        <field-renderer :field="field" v-model="val[field.name+(locale.i18n == 'default' ? '': '_'+locale.i18n)]"></field-renderer>
                     </div>
                 </div>
 

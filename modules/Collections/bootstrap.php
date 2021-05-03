@@ -162,7 +162,7 @@ $this->module('collections')->extend([
         }
 
         $fields = $collection['fields'];
-        $locals = $this->app->helper('locals')->locals();
+        $locales = $this->app->helper('locales')->locales();
 
         foreach ($fields as $field) {
 
@@ -175,11 +175,11 @@ $this->module('collections')->extend([
 
             if ($i18n) {
 
-                foreach ($locals as $local) {
-                    if ($local['i18n'] == 'default') continue;
-                    $localName = "{$name}_{$local['i18n']}";
-                    $locDefault = $field['opts']["default_{$local['i18n']}"] ?? null;
-                    $item[$localName] = $multiple ? ($locDefault ?? []) : ($locDefault ?? null);
+                foreach ($locales as $locale) {
+                    if ($locale['i18n'] == 'default') continue;
+                    $localeName = "{$name}_{$locale['i18n']}";
+                    $locDefault = $field['opts']["default_{$locale['i18n']}"] ?? null;
+                    $item[$localeName] = $multiple ? ($locDefault ?? []) : ($locDefault ?? null);
                 }
             }
         }
