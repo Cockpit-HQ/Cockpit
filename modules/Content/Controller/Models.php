@@ -62,7 +62,7 @@ class Models extends App {
         $model = $this->param('model');
 
         if (!$model) {
-            return $this->stop(['error' => 'model data is missing'], 412);
+            return $this->stop(['error' => 'Model data is missing'], 412);
         }
 
         $model = $this->module('content')->saveModel($model['name'], $model);
@@ -75,5 +75,22 @@ class Models extends App {
         $models = array_values($this->module('content')->models());
 
         return $models;
+    }
+
+    public function saveItem($model = null) {
+
+        $item = $this->param('item');
+
+        if (!$model || !$this->module('content')->exists($model)) {
+            return $this->stop(['error' => 'Model unkmown'], 404);
+        }
+
+        if (!$item) {
+            return $this->stop(['error' => 'Item item is missing'], 412);
+        }
+
+        $item = $this->module('content')->saveItem($model, $item);
+
+        return $item;
     }
 }

@@ -250,7 +250,7 @@ export default {
 
                 <div class="kiss-margin-small-top" v-if="field.i18n && locales.length">
                     <div class="kiss-margin" v-for="locale in locales">
-                        <span class="kiss-badge kiss-badge-outline kiss-color-muted kiss-margin-small">{{ locale.i18n }}</span>
+                        <span class="kiss-badge kiss-badge-outline kiss-color-primary kiss-margin-small">{{ locale.i18n }}</span>
                         <field-renderer :field="field" v-model="val[field.name+(locale.i18n == 'default' ? '': '_'+locale.i18n)]"></field-renderer>
                     </div>
                 </div>

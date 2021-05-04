@@ -70,8 +70,8 @@ export default {
         <div field="text">
             <input type="text" class="kiss-input kiss-width-1-1" v-model="val" @input="update" :placeholder="placeholder" :maxlength="maxlength" :minlength="minlength" :list="uid+'-list'" :readonly="readonly" v-if="!multiline">
             <textarea class="kiss-textarea kiss-input kiss-width-1-1" v-model="val" @input="update" :placeholder="placeholder" :maxlength="maxlength" :minlength="minlength" :style="{height}" :readonly="readonly" v-if="multiline"></textarea>
-            <div class="kiss-margin-xsmall-top" v-if="showCount">
-                <span class="kiss-badge kiss-badge-outline kiss-color-muted">{{countIndicator}}</span>
+            <div v-if="showCount">
+                <span class="kiss-size-xsmall kiss-color-muted">{{countIndicator}}</span>
             </div>
 
             <datalist :id="uid+'-list'" v-if="list.length">

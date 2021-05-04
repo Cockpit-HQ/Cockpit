@@ -8,7 +8,7 @@ use ArrayObject;
 class Singleton extends App {
 
 
-    public function item($model = null, $id = null) {
+    public function item($model = null) {
 
         if (!$model) {
             return false;
@@ -20,11 +20,7 @@ class Singleton extends App {
             return $this->stop(404);
         }
 
-        if ($id) {
-
-        }
-
-        $item = $this->module('content')->getDefaultModelItem($model['name']);
+        $item = $this->module('content')->item($model['name']);
 
         $fields = $model['fields'];
 

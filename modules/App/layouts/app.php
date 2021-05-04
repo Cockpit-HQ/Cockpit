@@ -28,7 +28,7 @@
             <div class="kiss-margin-left">
                 <a href="#app-offcanvas" class="kiss-link-muted kiss-flex kiss-flex-middle" kiss-offcanvas>
                     <strong><?=$this['app.name']?></strong>
-                    <icon class="kiss-margin-small-left">menu</icon>
+                    <icon class="kiss-margin-small-left">more_horiz</icon>
                 </a>
             </div>
             <div class="kiss-flex-1 kiss-margin-left">

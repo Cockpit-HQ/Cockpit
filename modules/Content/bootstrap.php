@@ -153,7 +153,7 @@ $this->module('content')->extend([
         return $models[$name];
     },
 
-    'getDefaultModelItem' => function(string $model): ArrayObject {
+    'getDefaultModelItem' => function(string $model): array {
 
         $item = [];
         $model = $this->model($model);
@@ -185,7 +185,71 @@ $this->module('content')->extend([
             }
         }
 
-        return new ArrayObject($item);
+        return $item;
+    },
+
+    'saveItem' => function(string $modelName, array $item): ?array {
+
+        $model = $this->model($modelName);
+
+        if (!$model) {
+            throw new Exception('Try to access unknown model "'.$modelName.'"');
+        }
+
+        $time = time();
+        $default = $this->getDefaultModelItem($modelName);
+        $keys = array_keys($default);
+
+        $collection = null;
+
+        if ($model['type'] == 'singleton') {
+
+            $collection = 'content/singletons';
+            $current = $this->app->dataStorage->findOne('content/singletons', ['_model' => $modelName]);
+
+            if (!$current) {
+                $current = $default;
+                $current['_model'] = $modelName;
+                $current['_created'] = $time;
+            }
+
+            $item = array_merge($current, $item);
+
+        } elseif ($model['type'] == 'collection') {
+
+        }
+
+        $item['_modified'] = $time;
+
+        if (!$collection) {
+            return null;
+        }
+
+        $this->app->dataStorage->save($collection, $item);
+
+        return $item;
+    },
+
+    'item' => function(string $modelName, array $filter = []) {
+
+        $model = $this->model($modelName);
+
+        if (!$model) {
+            throw new Exception('Try to access unknown model "'.$modelName.'"');
+        }
+
+        if ($model['type'] == 'singleton') {
+
+            $item = $this->app->dataStorage->findOne('content/singletons', ['_model' => $modelName]);
+
+            if (!$item) {
+                $item = $this->getDefaultModelItem($modelName);
+            }
+
+            $item['_model'] = $modelName;
+        }
+
+        return $item;
     }
 
 ]);

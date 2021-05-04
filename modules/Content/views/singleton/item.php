@@ -24,7 +24,7 @@
                 <?=t('No fields defined')?>
             </div>
 
-            <kiss-row class="kiss-row-large kiss-margin-large" v-if="fields.length">
+            <kiss-row class="kiss-row-large kiss-margin-large" :class="{'kiss-disabled': saving}" v-if="fields.length">
                 <div class="kiss-flex-1">
                     <div class="kiss-width-2-3@xl">
                         <fields-renderer v-model="item" :fields="fields" :locales="visibleLocales"></fields-renderer>
@@ -56,7 +56,7 @@
                 </div>
             </kiss-row>
 
-            <app-actionbar>
+            <app-actionbar :class="{'kiss-disabled': saving}">
 
                 <kiss-container>
                     <div class="kiss-flex kiss-flex-middle">
@@ -65,7 +65,7 @@
                             <a class="kiss-button" href="<?=$this->route("/content")?>">
                                 <?=t('Close')?>
                             </a>
-                            <a class="kiss-button kiss-button-primary">
+                            <a class="kiss-button kiss-button-primary" @click="save()">
                                 <?=t('Save')?>
                             </a>
                         </div>
@@ -115,6 +115,7 @@
             export default {
                 data() {
                     return {
+                        model: <?=json_encode($model)?>,
                         item: <?=json_encode($item)?>,
                         fields: <?=json_encode($fields)?>,
                         locales: <?=json_encode($locales)?>,
@@ -142,6 +143,26 @@
 
                 mounted() {
 
+                },
+
+                methods: {
+
+                    save() {
+
+                        let model = this.model.name;
+
+                        this.saving = true;
+
+                        this.$request(`/content/models/saveItem/${model}`, {item: this.item}).then(item => {
+                            this.item = Object.assign(this.item, item);
+                            this.saving = false;
+                            App.ui.notify('Data updated!');
+                        }).catch(res => {
+                            this.saving = false;
+                            App.ui.notify(res.error || 'Saving failed!', 'error');
+                        });
+
+                    }
                 }
 
             }
