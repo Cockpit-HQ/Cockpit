@@ -37,7 +37,7 @@ class Locales extends App {
 
     public function create() {
 
-        $local = [
+        $locale = [
             'i18n' => '',
             'name'  => '',
             'meta' => new ArrayObject([])
