@@ -240,7 +240,7 @@ export default {
                             {{field.label || field.name}}
                             <icon class="kiss-size-5 kiss-margin-small-left kiss-color-muted" v-if="field.i18n && locales.length">language</icon>
                         </label>
-                        <a class="app-fieldcontainer-visible-hover kiss-size-xsmall kiss-margin-left" @click="val[field.name] = ((field.opts && field.opts.default) || null)" v-if="!nested">{{ t('Clear') }}</a>
+                        <a class="app-fieldcontainer-visible-hover kiss-size-xsmall kiss-margin-left" @click="clear(field, val)" v-if="!nested">{{ t('Clear') }}</a>
                     </div>
                 <div class="kiss-color-muted kiss-size-small" v-if="field.info">{{ field.info }}</div>
 
@@ -260,6 +260,18 @@ export default {
     `,
 
     methods: {
+
+        clear(field, val) {
+
+            val[field.name] = ((field.opts && field.opts.default) || null);
+
+            if (field.i18n  && this.locales.length) {
+
+                this.locales.forEach(l => {
+                    val[`${field.name}_${l.i18n}`] = ((field.opts && field.opts[`default_${l.i18n}`]) || null)
+                })
+            }
+        },
 
         update() {
             this.$emit('update:modelValue', this.val)
