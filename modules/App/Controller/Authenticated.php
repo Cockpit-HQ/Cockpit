@@ -18,14 +18,14 @@ class Authenticated extends Base {
             $route = $this->app->request->route;
             $this->app->reroute("/auth/login?to={$route}");
         }
-        
+
         $this->user = $user;
         $this->app->set('user', $user);
-        
+
         parent::initialize();
     }
 
-    public function isAllowed($permission) {
+    protected function isAllowed(string $permission): bool {
         return $this->helper('acl')->isAllowed($permission);
     }
 }

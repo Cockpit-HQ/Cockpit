@@ -98,11 +98,13 @@
             </kiss-popoutmenu>
 
             <kiss-offcanvas id="models-item-json" flip="true">
-                <kiss-content class="kiss-width-1-3">
+                <kiss-content class="kiss-width-1-3 kiss-flex kiss-flex-column fiss-flex">
                     <div class="kiss-padding">
                         <strong class="kiss-size-small kiss-text-upper">{{ t('JSON Viewer') }}</strong>
                     </div>
-                    <json-viewer class="kiss-padding kiss-size-small kiss-bgcolor-contrast" :object="item"></json-viewer>
+                    <div class="kiss-padding kiss-size-small kiss-bgcolor-contrast kiss-flex-1 kiss-overflow-y-auto">
+                        <json-viewer :object="item"></json-viewer>
+                    </div>
                 </kiss-content>
             </kiss-offcanvas>
 

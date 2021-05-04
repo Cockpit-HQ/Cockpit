@@ -1,12 +1,15 @@
 
 .kiss-disabled { pointer-events: none; }
 
-.kiss-link-muted, 
-.kiss-link-muted:hover, 
-.kiss-link-muted:active, 
-.kiss-link-muted:visited 
+.kiss-link-muted,
+.kiss-link-muted:hover,
+.kiss-link-muted:active,
+.kiss-link-muted:visited
 { color: inherit; }
 
+.kiss-overflow-auto { overflow: auto; }
+.kiss-overflow-x-auto { overflow-x: auto; }
+.kiss-overflow-y-auto { overflow-y: auto; }
 .kiss-overflow-hidden { overflow: hidden; }
 
 .kiss-display-block { display: block !important; }
@@ -23,7 +26,6 @@
  * Fix Firefox blurry SVG rendering: https://bugzilla.mozilla.org/show_bug.cgi?id=1046835
  */
 .kiss-svg { transform: translate(0,0); }
-
 
 .kiss-cover {
     position: absolute;

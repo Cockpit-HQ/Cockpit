@@ -240,7 +240,7 @@ export default {
                             {{field.label || field.name}}
                             <icon class="kiss-size-5 kiss-margin-small-left kiss-color-muted" v-if="field.i18n && locales.length">language</icon>
                         </label>
-                        <a class="app-fieldcontainer-visible-hover kiss-size-xsmall kiss-margin-left" @click="val[field.name] = ((field.opts && field.opts.default) || null)">{{ t('Clear') }}</a>
+                        <a class="app-fieldcontainer-visible-hover kiss-size-xsmall kiss-margin-left" @click="val[field.name] = ((field.opts && field.opts.default) || null)" v-if="!nested">{{ t('Clear') }}</a>
                     </div>
                 <div class="kiss-color-muted kiss-size-small" v-if="field.info">{{ field.info }}</div>
 

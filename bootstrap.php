@@ -34,14 +34,16 @@ if (APP_ENV_DIR != APP_DIR) {
 class APP {
 
     protected static $instance = null;
+    protected static $app = null;
 
     public static function instance(bool $clone = false): Lime\App {
 
         if (!static::$instance) {
             static::init();
+            static::$app = clone static::$instance;
         }
 
-        return !$clone ? static::$instance : clone static::$instance;
+        return !$clone ? static::$app : clone static::$instance;
     }
 
     protected static function init(): Lime\App {

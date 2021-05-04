@@ -1,8 +1,4 @@
-<kiss-container class="kiss-margin" size="medium">
-
-    <ul class="kiss-breadcrumb">
-        <li class="active"><span><?=t('Content')?></span></li>
-    </ul>
+<kiss-container class="kiss-margin-large" size="medium">
 
 
     <vue-view>
@@ -32,19 +28,24 @@
 
                 <div class="kiss-margin-large-top" v-if="singletons.length">
 
-                    <kiss-row class="kiss-child-width-1-4@m" match="true">
+                    <kiss-row class="kiss-child-width-1-5@m" match="true">
                         <div v-for="model in singletons">
                             <kiss-card class="animated fadeIn" theme="bordered" hover="shadow">
-                                <div class="kiss-position-relative kiss-bgcolor-contrast">
+                                <div class="kiss-position-relative kiss-padding-small kiss-bgcolor-contrast">
                                     <canvas width="600" height="350"></canvas>
                                     <div class="kiss-cover kiss-flex kiss-flex-middle kiss-flex-center">
                                         <div :style="{color: model.color || 'inherit' }"><kiss-svg src="<?=$this->base('content:assets/icons/singleton.svg')?>" width="50" height="50"></kiss-svg></div>
                                     </div>
                                     <a class="kiss-cover" :href="$route(`/content/singleton/item/${model.name}`)"></a>
                                 </div>
-                                <div class="kiss-padding-small kiss-flex kiss-flex-middle">
-                                    <a class="kiss-flex-1 kiss-margin-right kiss-text-bold kiss-link-muted" :href="$route(`/content/singleton/item/${model.name}`)">{{ model.label || model.name }}</a>
-                                    <a @click="toggleModelActions(model)"><icon>more_horiz</icon></a>
+                                <div>
+                                    <div class="kiss-padding-small">
+                                        <div class="kiss-flex kiss-flex-middle">
+                                            <a class="kiss-flex-1 kiss-margin-right kiss-size-small kiss-text-bold kiss-link-muted" :href="$route(`/content/singleton/item/${model.name}`)">{{ model.label || model.name }}</a>
+                                            <a @click="toggleModelActions(model)"><icon>more_horiz</icon></a>
+                                        </div>
+                                        <div class="kiss-margin-small-top kiss-color-muted kiss-size-xsmall" v-if="model.info">{{model.info}}</div>
+                                    </div>
                                 </div>
                             </kiss-card>
                         </div>
@@ -64,6 +65,9 @@
                                 <div class="kiss-flex-1 kiss-position-relative kiss-margin-right kiss-text-bold kiss-link-muted">
                                     {{ model.label || model.name }}
                                     <a class="kiss-cover" :href="$route(`/content/collection/items/${model.name}`)"></a>
+                                </div>
+                                <div class="kiss-color-muted kiss-size-xsmall kiss-margin-right kiss-visible@m " v-if="model.info">
+                                    {{model.info}}
                                 </div>
                                 <div>
                                     <a @click="toggleModelActions(model)"><icon>more_horiz</icon></a>
