@@ -2450,6 +2450,11 @@ template { display: none; }
     padding: 0 var(--kiss-button-large-padding-horizontal, 5em);
     line-height: var(--kiss-button-large-font-size, 5em);
 }
+.kiss-button-small {
+    padding: 0 var(--kiss-button-small-padding-horizontal, 2em);
+    line-height: var(--kiss-button-small-font-size, 4em);
+    font-size: var(--kiss-button-small-font-size, .5em);
+}
 .kiss-badge {
     display: inline-flex;
     box-sizing: border-box;
@@ -3814,6 +3819,8 @@ vue-view:not([init="true"]) { display: none; }
     --kiss-font-size-1: 2rem;
     --kiss-hr-color: rgba(255,255,255,.1);
     --kiss-link-color: var(--kiss-color-primary);
+
+    --kiss-block-element-margin: 1.5rem;
 
     --kiss-button-default-background: #2b2d42;
 

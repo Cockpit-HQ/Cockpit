@@ -204,7 +204,7 @@ export default {
                 groups.push(field.group);
             });
 
-            return groups;
+            return groups.sort();
         },
 
         visibleFields() {
@@ -237,8 +237,9 @@ export default {
                 <div>
                     <div class="kiss-flex kiss-flex-middle">
                         <label class="fields-renderer-field kiss-text-capitalize kiss-flex kiss-flex-middle kiss-flex-1">
-                            {{field.label || field.name}}
-                            <icon class="kiss-size-5 kiss-margin-small-left kiss-color-muted" v-if="field.i18n && locales.length">language</icon>
+                            <div class="kiss-margin-xsmall-right">{{field.label || field.name}}</div>
+                            <icon class="kiss-size-5 kiss-color-muted" v-if="field.i18n && locales.length" :title="t('Localized')">language</icon>
+                            <icon class="kiss-size-5 kiss-color-danger" v-if="field.required" :title="t('Required')">trip_origin</icon>
                         </label>
                         <a class="app-fieldcontainer-visible-hover kiss-size-xsmall kiss-margin-left" @click="clear(field, val)" v-if="!nested">{{ t('Clear') }}</a>
                     </div>

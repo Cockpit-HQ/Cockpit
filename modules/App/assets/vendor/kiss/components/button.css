@@ -81,3 +81,9 @@
     padding: 0 var(--kiss-button-large-padding-horizontal, 5em);
     line-height: var(--kiss-button-large-font-size, 5em);
 }
+
+.kiss-button-small {
+    padding: 0 var(--kiss-button-small-padding-horizontal, 2em);
+    line-height: var(--kiss-button-small-font-size, 4em);
+    font-size: var(--kiss-button-small-font-size, .5em);
+}

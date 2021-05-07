@@ -24,6 +24,8 @@ vue-view:not([init="true"]) { display: none; }
     --kiss-hr-color: rgba(255,255,255,.1);
     --kiss-link-color: var(--kiss-color-primary);
 
+    --kiss-block-element-margin: 1.5rem;
+
     --kiss-button-default-background: #2b2d42;
 
     --kiss-color-contrast: rgba(0, 0, 0, .2);

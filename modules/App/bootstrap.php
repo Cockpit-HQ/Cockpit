@@ -14,4 +14,8 @@ $this->on('app.admin.init', function() {
 }, 1000);
 
 include(__DIR__.'/functions.php');
-include(__DIR__.'/events.php');
+
+// events
+$this->on('app.user.disguise', function(array &$user) {
+    unset($user['password'], $user['apiKey'], $user['_reset_token']);
+});

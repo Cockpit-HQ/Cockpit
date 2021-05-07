@@ -6,14 +6,21 @@
     <title><?=$this['app.name']?></title>
 
     <link rel="icon" type="image/png"  href="<?=$this->base('/favicon.png')?>">
-    <?=$this->assets([
-        $this['debug'] ? 'app:assets/css/app.css' : 'app:assets/app.bundle.css',
-        'app:assets/vendor/JSON5.js',
-        'app:assets/vendor/noty/noty.min.js',
-        'app:assets/vendor/lodash.js',
-        $this['debug'] ? ['src' => 'app:assets/js/app.js', 'type' => 'module'] : 'app:assets/app.bundle.js',
-        ['src' => 'app:assets/js/admin.js', 'type' => 'module']
-    ], APP_VERSION)?>
+    <?php
+
+        $assets = [
+            $this['debug'] ? 'app:assets/css/app.css' : 'app:assets/app.bundle.css',
+            'app:assets/vendor/JSON5.js',
+            'app:assets/vendor/noty/noty.min.js',
+            'app:assets/vendor/lodash.js',
+            $this['debug'] ? ['src' => 'app:assets/js/app.js', 'type' => 'module'] : 'app:assets/app.bundle.js',
+            ['src' => 'app:assets/js/admin.js', 'type' => 'module']
+        ];
+
+        $this->trigger('app.layout.header', [&$assets, APP_VERSION]);
+
+        echo $this->assets($assets, APP_VERSION);
+    ?>
 
     <?php $this->block('app.layout.header') ?>
 

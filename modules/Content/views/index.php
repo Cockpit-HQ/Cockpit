@@ -155,7 +155,7 @@
                             groups.push(model.group);
                         });
 
-                        return groups;
+                        return groups.sort();
                     }
                 },
 
