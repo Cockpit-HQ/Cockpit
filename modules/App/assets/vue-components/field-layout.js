@@ -56,22 +56,30 @@ export default {
     template: /*html*/`
         <div field="layout">
 
-            <vue-draggable v-model="val" :group="group || uid" @change="change" handle=".lm-handle" v-if="val.length">
+            <vue-draggable
+                :list="val"
+                :group="group || uid"
+                @change="change"
+                handle=".lm-handle"
+                class="field-layout-dragarea"
+                style="min-height: 100px;"
+            >
                 <template #item="{ element }">
                     <kiss-card class="kiss-padding-small" theme="bordered" style="margin: 8px 0;">
                         <div class="kiss-flex kiss-flex-middle">
                             <a class="lm-handle kiss-margin-small-right kiss-color-muted"><icon>drag_handle</icon></a>
+                            <a class="kiss-margin-small-right kiss-color-danger" @click="remove(element)"><icon>delete</icon></a>
                             <div class="kiss-flex-1 kiss-size-small kiss-text-bold">
                                 {{ element.label }}
                             </div>
                         </div>
-                        <field-layout v-model="element.children" :group="group || uid" :level="++level" v-if="element.children"></field-layout>
+                        <field-layout class="kiss-margin-small" v-model="element.children" :group="group || uid" :level="++level" v-if="element.children"></field-layout>
                     </kiss-card>
                 </template>
             </vue-draggable>
 
-            <div class="kiss-margin kiss-align-center">
-                <a class="kiss-size-large" @click="addComponent"><icon>control_point</icon></a>
+            <div class="kiss-margin-small kiss-align-center">
+                <a @click="addComponent"><icon>control_point</icon></a>
             </div>
 
         </div>
@@ -87,8 +95,13 @@ export default {
             })
         },
 
+        remove(item) {
+            this.val.splice(this.val.indexOf(item), 1);
+            this.update();
+        },
+
         change(evt) {
-            window.console.log(evt);
+            this.update();
         },
 
         update() {
