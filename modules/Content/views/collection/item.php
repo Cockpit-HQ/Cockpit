@@ -66,7 +66,7 @@
                                 <span v-if="!item._id"><?=t('Cancel')?></span>
                                 <span v-if="item._id"><?=t('Close')?></span>
                             </a>
-                            <a class="kiss-button kiss-button-primary" href="<?=$this->route("/models/items/item/{$model['name']}")?>">
+                            <a class="kiss-button kiss-button-primary" @click="save()">
                                 <span v-if="!item._id"><?=t('Create item')?></span>
                                 <span v-if="item._id"><?=t('Update item')?></span>
                             </a>
@@ -117,6 +117,7 @@
             export default {
                 data() {
                     return {
+                        model: <?=json_encode($model)?>,
                         item: <?=json_encode($item)?>,
                         fields: <?=json_encode($fields)?>,
                         locales: <?=json_encode($locales)?>,
@@ -144,8 +145,26 @@
 
                 mounted() {
 
-                }
+                },
 
+                methods: {
+
+                    save() {
+
+                        let model = this.model.name;
+
+                        this.saving = true;
+
+                        this.$request(`/content/models/saveItem/${model}`, {item: this.item}).then(item => {
+                            this.item = Object.assign(this.item, item);
+                            this.saving = false;
+                            App.ui.notify('Data updated!');
+                        }).catch(res => {
+                            this.saving = false;
+                            App.ui.notify(res.error || 'Saving failed!', 'error');
+                        });
+                    }
+                }
             }
         </script>
 

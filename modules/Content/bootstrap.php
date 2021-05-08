@@ -199,6 +199,7 @@ $this->module('content')->extend([
         $time = time();
         $default = $this->getDefaultModelItem($modelName);
         $keys = array_keys($default);
+        $isUpdate = false;
 
         $collection = null;
 
@@ -211,11 +212,22 @@ $this->module('content')->extend([
                 $current = $default;
                 $current['_model'] = $modelName;
                 $current['_created'] = $time;
+            } else {
+                $isUpdate = true;
             }
 
             $item = array_merge($current, $item);
 
         } elseif ($model['type'] == 'collection') {
+
+            $collection = "content/collections/{$modelName}";
+            $item = array_merge($default, $item);
+
+            if (!isset($item['_id'])) {
+                $current['_created'] = $time;
+            } else {
+                $isUpdate = true;
+            }
 
         }
 
@@ -247,9 +259,55 @@ $this->module('content')->extend([
             }
 
             $item['_model'] = $modelName;
+
+        } elseif ($model['type'] == 'collection') {
+
+            $collection = "content/collections/{$modelName}";
+            $item = $this->app->dataStorage->findOne($collection, $filter);
         }
 
         return $item;
+    },
+
+    'items' => function(string $modelName, array $options = []): array {
+
+        $model = $this->model($modelName);
+
+        if (!$model) {
+            throw new Exception('Try to access unknown model "'.$modelName.'"');
+        }
+
+        if ($model['type'] != 'collection') {
+            return [];
+        }
+
+        $collection = "content/collections/{$modelName}";
+
+        $items = (array) $this->app->storage->find($collection, $options);
+
+        return $items;
+    },
+
+    'count' => function(string $modelName, array $filter = []): int {
+
+        $model = $this->model($modelName);
+
+        if (!$model) {
+            throw new Exception('Try to access unknown model "'.$modelName.'"');
+        }
+
+        if ($model['type'] == 'singleton') {
+            return 1;
+        }
+
+        if ($model['type'] != 'collection') {
+            return 1;
+        }
+
+        $collection = "content/collections/{$modelName}";
+
+        return $this->app->storage->count($collection, $filter);
+
     }
 
 ]);

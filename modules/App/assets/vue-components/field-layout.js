@@ -1,6 +1,20 @@
 
 let Components = {
 
+    button: {
+        icon: 'settings:assets/icons/button.svg',
+        label: 'Button',
+        group: 'Core',
+        fields: [
+            {name: 'class', type: 'text'},
+            {name: 'url', type: 'text'},
+            {name: 'caption', type: 'text'},
+            {name: 'target', type: 'select', opts: {options:['_self', '_blank'], default: '_self'}},
+        ],
+        preview: null,
+        children: false
+    },
+
     heading: {
         icon: 'settings:assets/icons/heading.svg',
         label: 'Heading',
@@ -15,7 +29,7 @@ let Components = {
     },
 
     html: {
-        icon: 'settings:assets/icons/code.svg',
+        icon: 'settings:assets/icons/html.svg',
         label: 'HTML',
         group: 'Core',
         fields: [
@@ -33,6 +47,20 @@ let Components = {
         fields: [
             {name: 'class', type: 'text'},
             {name: 'markdown', type: 'code', opts: {mode: 'markdown'}},
+        ],
+        preview: null,
+        children: false
+    },
+
+    link: {
+        icon: 'settings:assets/icons/link.svg',
+        label: 'Link',
+        group: 'Core',
+        fields: [
+            {name: 'class', type: 'text'},
+            {name: 'url', type: 'text'},
+            {name: 'caption', type: 'text'},
+            {name: 'target', type: 'select', opts: {options:['_self', '_blank'], default: '_self'}},
         ],
         preview: null,
         children: false
@@ -93,12 +121,14 @@ let pickComponent = {
     template: /*html*/`
         <div class="kiss-padding">
 
-            <kiss-row class="kiss-child-width-1-2@m">
+            <div class="kiss-size-4 kiss-text-bold kiss-margin-bottom">{{ t('Pick a component') }}</div>
+
+            <kiss-row class="kiss-row-small kiss-child-width-1-2@m">
                 <div v-for="meta, component in components">
                     <kiss-card class="kiss-padding-small kiss-align-center kiss-position-relative" theme="bordered" hover="shadow">
                         <div class="kiss-position-relative">
                             <canvas width="600" height="250"></canvas>
-                            <div class="kiss-cover kiss-flex kiss-flex-middle kiss-flex-center">
+                            <div class="kiss-cover kiss-flex kiss-flex-middle kiss-flex-center kiss-color-muted">
                                 <div><kiss-svg :src="$base(meta.icon || 'settings:assets/icons/component.svg')" width="30" height="30"></kiss-svg></div>
                             </div>
                         </div>
@@ -251,7 +281,7 @@ export default {
                     let meta = Components[component], data = {};
 
                     (meta.fields || []).forEach(field => {
-                        data[field.name] = null;
+                        data[field.name] = field.default || null;
                     });
 
                     this.val.push({

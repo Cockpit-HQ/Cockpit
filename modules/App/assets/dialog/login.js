@@ -17,6 +17,9 @@ export default {
 
     template: /*html*/`
         <div>
+
+            <div class="kiss-size-small kiss-text-upper kiss-text-bold kiss-margin-bottom">{{ t('Re-Login') }}</div>
+
             <form class="app-login-form animated" :class="{'kiss-disabled': loading}" @submit.prevent="login">
 
                 <div class="kiss-margin">

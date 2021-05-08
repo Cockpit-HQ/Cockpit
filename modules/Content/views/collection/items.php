@@ -20,6 +20,37 @@
 
     <vue-view>
 
+        <template>
+
+
+        </template>
+
+        <script type="module">
+
+            export default {
+                date() {
+                    return {
+                        items: [],
+                        page: 1,
+                        limit: 20,
+                        loading: false
+                    }
+                },
+
+                mounted() {
+                    this.load();
+                },
+
+                methods: {
+
+                    load() {
+
+                    }
+                }
+            }
+
+        </script>
+
 
     </vue-view>
 

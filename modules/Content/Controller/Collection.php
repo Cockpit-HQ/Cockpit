@@ -46,11 +46,16 @@ class Collection extends App {
             return $this->stop(404);
         }
 
+        $item = $this->module('content')->getDefaultModelItem($model['name']);
+
         if ($id) {
 
-        }
+            $item = $this->module('content')->item($model['name'], ['_id' => $id]);
 
-        $item = $this->module('content')->getDefaultModelItem($model['name']);
+            if (!$id) {
+                return false;
+            }
+        }
 
         $fields = $model['fields'];
 
@@ -63,6 +68,51 @@ class Collection extends App {
         }
 
         return $this->render('content:views/collection/item.php', compact('model', 'fields', 'locales', 'item'));
+    }
+
+    public function find($model = null) {
+
+        if (!$model) {
+            return false;
+        }
+
+        $model = $this->module('content')->model($model);
+
+        if (!$model || $model['type'] != 'collection') {
+            return $this->stop(404);
+        }
+
+        $options = $this->app->param('options');
+
+        if (isset($options['filter']) && is_string($options['filter'])) {
+
+            $filter = null;
+
+            if (\preg_match('/^\{(.*)\}$/', $options['filter'])) {
+
+                try {
+                    $filter = json5_decode($options['filter'], true);
+                } catch (\Exception $e) {}
+            }
+
+            if (!$filter) {
+                //$filter = $this->_filter($options['filter'], $collection, $options['lang'] ?? null);
+            }
+
+            $options['filter'] = $filter;
+        }
+
+        $items = $this->app->module('content')->items($model['name'], $options);
+
+        $count = $this->app->module('content')->count($model['name'], isset($options['filter']) ? $options['filter'] : []);
+        $pages = isset($options['limit']) ? ceil($count / $options['limit']) : 1;
+        $page  = 1;
+
+        if ($pages > 1 && isset($options['skip'])) {
+            $page = ceil($options['skip'] / $options['limit']) + 1;
+        }
+
+        return compact('items', 'count', 'pages', 'page');
     }
 
 }
