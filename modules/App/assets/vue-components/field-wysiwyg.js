@@ -12,7 +12,8 @@ export default {
 
     _meta: {
         label: 'Wysiwyg',
-        info: 'A rich text field with formatting options'
+        info: 'A rich text field with formatting options',
+        icon: 'settings:assets/icons/wysiwyg.svg'
     },
 
     data() {
@@ -88,6 +89,16 @@ export default {
                 },
                 skin_url: App.base('/modules/App/assets/css/vendor/tinymce')
             }, this.tinymce || {}));
+
+            let observer = new MutationObserver(mutations => {
+
+                if (!document.body.contains(this.$el) && this.editor) {
+                    tinymce.remove(this.editor)
+                    observer.disconnect();
+                }
+            });
+
+            observer.observe(document.body, {childList: true, subtree: true});
         })
     },
 

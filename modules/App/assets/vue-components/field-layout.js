@@ -10,6 +10,18 @@ let Components = {
         ],
         preview: null,
         children: true
+    },
+
+    richtext: {
+        icon: 'settings:assets/icons/wysiwyg.svg',
+        label: 'Richtext',
+        group: 'Core',
+        fields: [
+            {name: 'class', type: 'text'},
+            {name: 'html', type: 'wysiwyg'},
+        ],
+        preview: null,
+        children: false
     }
 };
 
@@ -30,7 +42,7 @@ let pickComponent = {
     },
 
     template: /*html*/`
-        <div class="kiss-padding-small">
+        <div class="kiss-padding">
 
             <kiss-row class="kiss-child-width-1-2@m">
                 <div v-for="meta, component in components">
@@ -86,7 +98,7 @@ let editComponent = {
             <div class="kiss-size-4 kiss-text-bold kiss-margin-bottom">{{ t('Edit component') }}</div>
 
             <input class="kiss-input" type="text" v-model="item.label">
-            <fields-renderer class="kiss-margin-large" v-model="item.data" :fields="meta.fields" :nested="true"></fields-renderer>
+            <fields-renderer class="kiss-margin-large" v-model="item.data" :fields="meta.fields"></fields-renderer>
 
             <div class="kiss-margin-top kiss-flex kiss-flex-middle kiss-button-group">
                 <button type="button" class="kiss-button kiss-flex-1" @click="$close()">{{ t('Cancel') }}</button>
