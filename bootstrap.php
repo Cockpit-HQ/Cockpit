@@ -66,6 +66,7 @@ class APP {
             'i18n' => 'en',
 
             'database' => ['server' => 'mongolite://'.(APP_ENV_DIR.'/storage/data'), 'options' => ['db' => 'app'], 'driverOptions' => [] ],
+            'memory'       => ['server' => 'redislite://'.(APP_ENV_DIR.'/storage/data/app.memory.sqlite'), 'options' => [] ],
 
             'paths' => [
                 '#root'    => APP_ENV_DIR,
@@ -118,6 +119,12 @@ class APP {
         // nosql storage
         $app->service('dataStorage', function() use($config) {
             $client = new MongoHybrid\Client($config['database']['server'], $config['database']['options'], $config['database']['driverOptions']);
+            return $client;
+        });
+
+        // key-value storage
+        $app->service('memory', function() use($config) {
+            $client = new MemoryStorage\Client($config['memory']['server'], $config['memory']['options']);
             return $client;
         });
 
