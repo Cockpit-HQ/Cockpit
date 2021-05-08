@@ -1808,9 +1808,11 @@
 
             let id = Math.random().toString(36).substring(2) + Date.now().toString(36);
 
+            options = options || {};
+
             document.body.insertAdjacentHTML('beforeend', `
-            <kiss-offcanvas id="offcanvas-${id}" flip="${(options && options.flip && 'true') || ''}">
-                <kiss-content>
+            <kiss-offcanvas id="offcanvas-${id}" flip="${(options.flip && 'true') || ''}">
+                <kiss-content class="${(options.size == 'large' && 'kiss-width-1-3@m kiss-width-1-4@xl') || ''}">
                     ${content}
                 </kiss-content>
             </kiss-offcanvas>

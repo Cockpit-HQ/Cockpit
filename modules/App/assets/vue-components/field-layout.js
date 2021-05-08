@@ -8,8 +8,47 @@ let Components = {
         preview: null,
         children: true
     }
-
 };
+
+
+let pickComponent = {
+
+    data() {
+        return {
+
+        }
+    },
+
+    props: {
+        components: {
+            type: Object,
+            default: Components
+        }
+    },
+
+    template: /*html*/`
+        <div class="kiss-padding-small">
+
+            <kiss-row class="kiss-child-width-1-2@m">
+                <div v-for="meta, component in components">
+                    <kiss-card class="kiss-padding-small kiss-align-center kiss-position-relative" theme="bordered">
+                        <div class="kiss-size-xsmall kiss-text-bold">{{ meta.label || component }}</div>
+                        <a class="kiss-cover" @click="select(component)"></a>
+                    </kiss-card>
+                </div>
+            </kiss-row>
+
+        </kiss-row>
+    `,
+
+    methods: {
+        select(component) {
+            this.$call('select', component);
+            this.$close();
+        }
+    }
+
+}
 
 
 let instanceCount = 0;
@@ -88,11 +127,21 @@ export default {
     methods: {
 
         addComponent() {
-            this.val.push({
-                component: 'section',
-                label: 'Section',
-                children: []
-            })
+
+            App.utils.vueOffcanvas(pickComponent, null, {
+
+                select: component => {
+
+                    this.val.push({
+                        component,
+                        label: Components[component].label || component,
+                        children: Components[component].children ? [] : null,
+                        data: {}
+                    })
+
+                }
+            }, {flip: true, size: 'large'})
+
         },
 
         remove(item) {
