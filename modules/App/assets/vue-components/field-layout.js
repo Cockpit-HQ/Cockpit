@@ -1,15 +1,41 @@
 
 let Components = {
 
-    section: {
-        icon: 'settings:assets/icons/component.svg',
-        label: 'Section',
+    heading: {
+        icon: 'settings:assets/icons/heading.svg',
+        label: 'Heading',
         group: 'Core',
         fields: [
-            {name: 'class', type: 'text'}
+            {name: 'class', type: 'text'},
+            {name: 'text', type: 'text'},
+            {name: 'level', type: 'select', opts: {options:[1,2,3,4,5,6]}},
         ],
         preview: null,
-        children: true
+        children: false
+    },
+
+    html: {
+        icon: 'settings:assets/icons/code.svg',
+        label: 'HTML',
+        group: 'Core',
+        fields: [
+            {name: 'class', type: 'text'},
+            {name: 'html', type: 'code', opts: {mode: 'html'}},
+        ],
+        preview: null,
+        children: false
+    },
+
+    markdown: {
+        icon: 'settings:assets/icons/component.svg',
+        label: 'Markdown',
+        group: 'Core',
+        fields: [
+            {name: 'class', type: 'text'},
+            {name: 'markdown', type: 'code', opts: {mode: 'markdown'}},
+        ],
+        preview: null,
+        children: false
     },
 
     richtext: {
@@ -22,7 +48,30 @@ let Components = {
         ],
         preview: null,
         children: false
-    }
+    },
+
+    section: {
+        icon: 'settings:assets/icons/component.svg',
+        label: 'Section',
+        group: 'Core',
+        fields: [
+            {name: 'class', type: 'text'}
+        ],
+        preview: null,
+        children: true
+    },
+
+    spacer: {
+        icon: 'settings:assets/icons/component.svg',
+        label: 'Spacer',
+        group: 'Core',
+        fields: [
+            {name: 'class', type: 'text'},
+            {name: 'size', type: 'text'},
+        ],
+        preview: null,
+        children: false
+    },
 };
 
 
@@ -175,7 +224,7 @@ export default {
                             <a class="lm-handle kiss-margin-small-right kiss-color-muted"><icon>drag_handle</icon></a>
                             <a class="kiss-margin-small-right kiss-color-danger" @click="remove(element)"><icon>delete</icon></a>
                             <a class="kiss-margin-small-right" @click="edit(element)"><icon>tune</icon></a>
-                            <div class="kiss-flex-1 kiss-size-small kiss-text-bold">
+                            <div class="kiss-flex-1 kiss-size-xsmall kiss-text-bold">
                                 {{ element.label }}
                             </div>
                         </div>
