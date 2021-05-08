@@ -3932,6 +3932,12 @@ app-actionbar kiss-container {
     font-weight: normal;
     font-size: 11px;
 }
+.field-layout-dragarea {
+    min-height: 50px;
+}
+.field-layout-dragarea:empty {
+    background-color: var(--kiss-color-contrast);
+}
 app-fieldcontainer app-fieldcontainer {
     all: unset;
     display: block;

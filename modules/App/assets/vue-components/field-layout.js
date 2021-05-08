@@ -79,7 +79,7 @@ export default {
             </vue-draggable>
 
             <div class="kiss-margin-small kiss-align-center">
-                <a @click="addComponent"><icon>control_point</icon></a>
+                <a @click="addComponent"><icon :class="{'kiss-size-small':level}">control_point</icon></a>
             </div>
 
         </div>

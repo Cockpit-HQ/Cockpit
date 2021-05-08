@@ -392,75 +392,53 @@ App.utils.import = function(uri) {
     return import(App.base(uri)+'?v='+App.version);
 };
 
-App.utils.vueOffcanvas = function(url, data, callbacks, options) {
+App.utils.vueOffcanvas = function(component, data, callbacks, options) {
 
     data = data || {};
     callbacks = callbacks || {};
 
-    let offcanvas = App.ui.offcanvas(/*html*/`
-        <vue-view class="vue-modal" >
+    let def = {
 
-            <vue-offcanvas-content v-bind="data"></vue-offcanvas-content>
+        $viewSetup(app) {
 
-            <script type="module">
-
-                export default {
-
-                    $viewSetup(app) {
-
-                        app.mixin({
-                            methods: {
-                                $close() {
-                                    this.$el.closest('kiss-offcanvas').close();
-                                },
-                                $call(name, ...args) {
-                                    this.$el.closest('kiss-offcanvas').$call(name, ...args);
-                                }
-                            }
-                        });
+            app.mixin({
+                methods: {
+                    $close() {
+                        this.$el.closest('kiss-offcanvas').close();
                     },
-
-                    data() {
-                        return  {
-                            data: ${JSON.stringify(data)}
+                    $call(name, ...args) {
+                        if (callbacks[name]) {
+                            callbacks[name](...args);
                         }
-                    },
-
-                    components: {
-                        'vue-offcanvas-content':  '${url}'
-                    },
-
-                    mounted() {
-                        this.$nextTick(() => {
-                            this.$el.parentNode.closest('kiss-offcanvas').$mounted(this)
-                        })
                     }
                 }
-            </script>
-        </vue-view>
+            });
+        },
+
+        data() {
+            return  {
+                data
+            }
+        },
+
+        components: {
+            'vue-offcanvas-content': component
+        }
+    };
+
+    let offcanvas = App.ui.offcanvas(/*html*/`
+        <div class="vue-offcanvas">
+            <vue-offcanvas-content v-bind="data"></vue-offcanvas-content>
+        </div>
     `, options || {});
 
-    offcanvas.$view = offcanvas.querySelector('vue-view');
+    offcanvas.$view = offcanvas.querySelector('.vue-offcanvas');
 
-    offcanvas.$mounted = function(instance) {
-        // ???
-    }
-
-    offcanvas.$call = function(name, ...args) {
-
-        if (callbacks[name]) {
-            callbacks[name](...args);
-        }
-    }
-
-    setTimeout(() => {
-        offcanvas.show();
-    })
+    VueView.compile(offcanvas.$view, def);
+    setTimeout(() => offcanvas.show());
 
     return offcanvas;
-
 };
-
 
 
 App.utils.vueModal = function(url, data, callbacks, options) {
@@ -468,62 +446,44 @@ App.utils.vueModal = function(url, data, callbacks, options) {
     data = data || {};
     callbacks = callbacks || {};
 
-    let dialog = App.ui.dialog(/*html*/`
-        <vue-view class="vue-modal" >
+    let def = {
 
-            <vue-dialog-content v-bind="data"></vue-dialog-content>
+        $viewSetup(app) {
 
-            <script type="module">
-
-                export default {
-
-                    $viewSetup(app) {
-
-                        app.mixin({
-                            methods: {
-                                $close() {
-                                    this.$el.closest('kiss-dialog').close();
-                                },
-                                $call(name, ...args) {
-                                    this.$el.closest('kiss-dialog').$call(name, ...args);
-                                }
-                            }
-                        });
+            app.mixin({
+                methods: {
+                    $close() {
+                        this.$el.closest('kiss-dialog').close();
                     },
-
-                    data() {
-                        return  {
-                            data: ${JSON.stringify(data)}
+                    $call(name, ...args) {
+                        if (callbacks[name]) {
+                            callbacks[name](...args);
                         }
-                    },
-
-                    components: {
-                        'vue-dialog-content':  '${url}'
-                    },
-
-                    mounted() {
-                        this.$nextTick(() => {
-                            this.$el.parentNode.closest('kiss-dialog').$mounted(this)
-                        })
                     }
                 }
-            </script>
-        </vue-view>
+            });
+        },
+
+        data() {
+            return  {
+                data
+            }
+        },
+
+        components: {
+            'vue-dialog-content':  url
+        }
+    };
+
+    let dialog = App.ui.dialog(/*html*/`
+        <div class="vue-modal">
+            <vue-dialog-content v-bind="data"></vue-dialog-content>
+        </div>
     `, options || {});
 
-    dialog.$view = dialog.querySelector('vue-view');
+    dialog.$view = dialog.querySelector('.vue-modal');
 
-    dialog.$mounted = function(instance) {
-        // ???
-    }
-
-    dialog.$call = function(name, ...args) {
-
-        if (callbacks[name]) {
-            callbacks[name](...args);
-        }
-    }
-
+    VueView.compile(dialog.$view, def);
     dialog.show();
 
     return dialog;

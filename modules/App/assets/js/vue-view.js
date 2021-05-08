@@ -16,20 +16,19 @@
             this.components[name] = def;
         },
 
-        compile(el) {
+        compile(el, def) {
             this.ready.then(() => {
-                this._compile(el);
+                this._compile(el, def);
             });
         },
 
-        _compile: async function(el) {
+        _compile: async function(el, definition) {
 
-            let script = el.querySelector('script');
-            let template = el.querySelector('template');
-            let def = {}, app;
+            let script = definition ? null : el.querySelector('script');
+            let template = definition ? null : el.querySelector('template');
+            let def = definition || {}, app;
 
             if (script) {
-
                 let module = await import(`data:text/javascript;charset=utf-8,${encodeURIComponent(script.innerHTML)}`);
                 def = module.default;
                 script.parentNode.removeChild(script);
