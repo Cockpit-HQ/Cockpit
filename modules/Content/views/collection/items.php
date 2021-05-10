@@ -17,10 +17,12 @@
         </div>
     </div>
 
-
     <vue-view>
 
         <template>
+
+
+            <app-loader v-if="loading"></app-loader>
 
 
         </template>
@@ -28,11 +30,15 @@
         <script type="module">
 
             export default {
-                date() {
+                data() {
                     return {
+                        model: <?=json_encode($model)?>,
+                        locales: <?=json_encode($locales)?>,
                         items: [],
                         page: 1,
+                        pages: 1,
                         limit: 20,
+                        count: 0,
                         loading: false
                     }
                 },
@@ -45,6 +51,21 @@
 
                     load() {
 
+                        let options = {
+                            limit: this.limit,
+                            page: this.page
+                        };
+
+                        this.loading = true;
+
+                        this.$request(`/content/collection/find/${this.model.name}`, {options}).then(resp => {
+                            this.items = resp.items;
+                            this.page = resp.page;
+                            this.pages = resp.pages;
+                            this.count = resp.count;
+
+                            this.loading = false;
+                        })
                     }
                 }
             }

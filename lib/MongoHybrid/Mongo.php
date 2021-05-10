@@ -135,6 +135,12 @@ class Mongo {
         return $resultSet;
     }
 
+    public function findTerm(string $collection, string $term, array $options = []) {
+        $options['filter'] = ['$where' => "function() { return JSON.stringify(this).indexOf('{$term}') > -1; }"];
+        return $this->find($collection, $options);
+    }
+
+
     public function insert(string $collection, array &$doc): array {
 
         if (isset($doc[0])) {

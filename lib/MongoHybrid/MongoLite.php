@@ -104,6 +104,15 @@ class MongoLite {
         return $resultSet;
     }
 
+    public function findTerm(string $collection, string $term, array $options = []) {
+
+        $options['filter'] = function ($doc) use ($term) {
+            return stripos(json_encode($doc), $term) !== false;
+        };
+
+        return $this->find($collection, $options);
+    }
+
     public function insert(string $collection, array &$doc) {
         return $this->getCollection($collection)->insert($doc);
     }

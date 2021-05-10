@@ -283,7 +283,7 @@ $this->module('content')->extend([
 
         $collection = "content/collections/{$modelName}";
 
-        $items = (array) $this->app->storage->find($collection, $options);
+        $items = (array) $this->app->dataStorage->find($collection, $options);
 
         return $items;
     },
@@ -306,7 +306,7 @@ $this->module('content')->extend([
 
         $collection = "content/collections/{$modelName}";
 
-        return $this->app->storage->count($collection, $filter);
+        return $this->app->dataStorage->count($collection, $filter);
 
     }
 
