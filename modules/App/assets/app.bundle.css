@@ -3810,6 +3810,77 @@ kiss-card[theme*="bordered"] {
 .kiss-breadcrumb > .active > *  {
     font-weight: bold;
 }
+.kiss-table th {
+    color: inherit;
+    font-size: .7em;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    padding: 8px 8px;
+}
+.kiss-table thead {
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: var(--app-border-radius);
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 22%);
+}
+.kiss-table td {
+    font-size: .9em;
+    border-bottom: 1px rgba(0, 0, 0, 0.15) solid;
+    padding: 16px 8px;
+}
+.kiss-table th,
+.kiss-table td {
+    text-align: left;
+    vertical-align: middle;
+}
+.kiss-checkbox {
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    appearance: none;
+    position: relative;
+    margin: 0;
+    width: 1.2em;
+    height: 1em;
+    border: none;
+    cursor: pointer;
+    color: var(--kiss-base-text-color);
+}
+.kiss-checkbox:focus { outline: none; }
+.kiss-checkbox:before {
+    font-family: 'Material Icons Outlined';
+    content: "";
+    position: absolute;
+    box-sizing: border-box;
+    left: 0;
+    z-index: 1;
+    width: 1.2em;
+    height: 1.2em;
+    border: 1px solid currentColor;
+    border-radius: 2px;
+    pointer-events: none;
+    transition: all 0.3s ease-in-out;
+}
+.kiss-checkbox:checked:before {
+    background: rgba(0, 0, 0, 0.15);
+}
+.kiss-checkbox:checked:after {
+    font-family: 'Material Icons Outlined';
+    content: "done";
+    position: absolute;
+    box-sizing: border-box;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    width: 1.2em;
+    height: 1.2em;
+    font-size: 1em;
+    text-align: center;
+    transform: translateY(-5%);
+    color: currentColor;
+}
+.kiss-checkbox[disabled] {
+    opacity: .6;
+}
 vue-view { display: block; }
 vue-view:not([init="true"]) { display: none; }
 :root {

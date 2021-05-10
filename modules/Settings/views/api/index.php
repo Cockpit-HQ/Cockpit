@@ -25,7 +25,7 @@
 
             <app-loader class="kiss-margin-large" v-if="loading"></app-loader>
 
-            <div class="animated fadeIn kiss-height-30vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted" v-if="keys && !keys.length">
+            <div class="animated fadeIn kiss-height-50vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted" v-if="keys && !keys.length">
                 <div>
                     <icon class="kiss-size-xlarge">vpn_key</icon>
                     <p class="kiss-size-large kiss-text-bold"><?=t('No api keys')?></p>
