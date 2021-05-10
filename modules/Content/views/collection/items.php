@@ -57,6 +57,17 @@
 
                 <kiss-container>
                     <div class="kiss-flex kiss-flex-middle">
+                        <div class="kiss-flex kiss-flex-middle" v-if="!loading && count">
+                            <div class="kiss-size-small">{{ `${count} ${count == 1 ? t('Item') : t('Items')}` }}</div>
+                            <div class="kiss-margin-left kiss-overlay-input">
+                                <span class="kiss-badge kiss-badge-outline kiss-color-muted">{{ page }} / {{pages}}</span>
+                                <select v-model="page" @change="load(page)"><option v-for="p in pages" :value="p">{{ p }}</option></select>
+                            </div>
+                            <div class="kiss-margin-small-left kiss-size-small">
+                                <a class="kiss-margin-small-right" v-if="(page - 1) >= 1" @click="load(page - 1)"><?=t('Previous')?></a>
+                                <a v-if="(page + 1) <= pages" @click="load(page + 1)"><?=t('Next')?></a>
+                            </div>
+                        </div>
                         <div class="kiss-flex-1"></div>
                         <div class="kiss-button-group">
                             <a class="kiss-button" href="<?=$this->route("/content")?>"><?=t('Close')?></a>
@@ -79,7 +90,7 @@
                         items: [],
                         page: 1,
                         pages: 1,
-                        limit: 20,
+                        limit: 25,
                         count: 0,
                         loading: false
                     }
@@ -91,11 +102,11 @@
 
                 methods: {
 
-                    load() {
+                    load(page = 1) {
 
                         let options = {
                             limit: this.limit,
-                            page: this.page
+                            skip: (page - 1) * this.limit,
                         };
 
                         this.loading = true;
