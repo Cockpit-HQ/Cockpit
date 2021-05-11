@@ -96,15 +96,21 @@ $this->module('content')->extend([
 
     'removeModel' => function(string $name): bool {
 
-        if (!$this->exists($name)) {
+        $model = $this->model($name);
+
+        if (!$model) {
             return false;
         }
 
         $this->app->helper('fs')->delete("#storage:content/{$name}.model.php");
-        $this->app->dataStorage->dropCollection("content/{$name}");
 
-        $this->app->trigger('content.remove.model', [$name]);
-        $this->app->trigger("content.remove.model.{$name}", [$name]);
+        if ($model['type'] == 'singleton') {
+            $this->app->dataStorage->remove('content/singletons', ['_model' => $name]);
+        } elseif ($model['type'] == 'collection') {
+            $this->app->dataStorage->dropCollection("content/collections/{$name}");
+        }
+
+        $this->app->trigger('content.remove.model', [$name, $model]);
 
         return true;
     },
@@ -286,6 +292,25 @@ $this->module('content')->extend([
         $items = (array) $this->app->dataStorage->find($collection, $options);
 
         return $items;
+    },
+
+    'remove' => function(string $modelName, array $filter = []) {
+
+        $model = $this->model($modelName);
+
+        if (!$model) {
+            throw new Exception('Try to access unknown model "'.$modelName.'"');
+        }
+
+        if ($model['type'] == 'singleton') {
+            return false;
+        }
+
+        $collection = "content/collections/{$modelName}";
+
+        $result = $this->app->dataStorage->remove($collection, $filter);
+
+        return $result;
     },
 
     'count' => function(string $modelName, array $filter = []): int {
