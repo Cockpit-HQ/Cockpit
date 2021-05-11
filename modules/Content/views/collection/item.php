@@ -60,6 +60,11 @@
 
                 <kiss-container>
                     <div class="kiss-flex kiss-flex-middle">
+                        <div class="kiss-button-group" v-if="item._id">
+                            <a class="kiss-button" href="<?=$this->route("/content/collection/item/{$model['name']}")?>">
+                                <?=t('Create new item')?>
+                            </a>
+                        </div>
                         <div class="kiss-flex-1"></div>
                         <div class="kiss-button-group">
                             <a class="kiss-button" href="<?=$this->route("/content/collection/items/{$model['name']}")?>">
@@ -85,6 +90,12 @@
                                 <a class="kiss-flex kiss-flex-middle" href="#models-item-json" kiss-offcanvas>
                                     <icon class="kiss-margin-small-right">code</icon>
                                     <?=t('Json Object')?>
+                                </a>
+                            </li>
+                            <li v-if="item._id">
+                                <a class="kiss-flex kiss-flex-middle" href="<?=$this->route("/content/collection/item/{$model['name']}")?>">
+                                    <icon class="kiss-margin-small-right">add_circle_outline</icon>
+                                    <?=t('Create new item')?>
                                 </a>
                             </li>
                             <li class="kiss-nav-divider"></li>
