@@ -35,22 +35,48 @@
             <table class="kiss-table kiss-margin-large animated fadeIn" v-if="!loading && items.length">
                 <thead>
                     <tr>
-                        <th width="20"><input class="kiss-checkbox" type="checkbox"></th>
+                        <th class="kiss-align-center" width="20"><input class="kiss-checkbox" type="checkbox"></th>
                         <th width="50">ID</th>
                         <th></th>
                         <th width="120"><?=t('Modified')?></th>
+                        <th width="20"></th>
                     </tr>
                     <tbody>
                         <tr v-for="item in items">
-                            <td><input class="kiss-checkbox" type="checkbox"></td>
+                            <td class="kiss-align-center"><input class="kiss-checkbox" type="checkbox"></td>
                             <td><a class="kiss-badge kiss-link-muted" :href="$route(`/content/collection/item/${model.name}/${item._id}`)" :title="item._id">...{{ item._id.substr(-5) }}</a></td>
                             <td></td>
                             <td><span class="kiss-flex kiss-badge kiss-badge-outline kiss-color-primary">{{ (new Date(item._modified * 1000).toLocaleString()) }}</span></td>
-
+                            <td>
+                                <a @click="toggleItemActions(item)"><icon>more_horiz</icon></a>
+                            </td>
                         </tr>
                     </tbody>
                 </thead>
             </table>
+
+            <kiss-popoutmenu :open="actionItem && 'true'" @popoutmenuclose="toggleItemActions(null)">
+                <kiss-content>
+                        <kiss-navlist v-if="actionItem">
+                            <ul>
+                                <li class="kiss-nav-header">{{ t('Item actions') }}</li>
+                                <li>
+                                    <a class="kiss-flex kiss-flex-middle" :href="$route(`/content/collection/item/${model.name}/${actionItem._id}`)">
+                                        <icon class="kiss-margin-small-right">create</icon>
+                                        <?=t('Edit')?>
+                                    </a>
+                                </li>
+                                <li class="kiss-nav-divider"></li>
+                                <li>
+                                    <a class="kiss-color-danger kiss-flex kiss-flex-middle" @click="remove(actionItem)">
+                                        <icon class="kiss-margin-small-right">delete</icon>
+                                        <?=t('Delete')?>
+                                    </a>
+                                </li>
+                            </ul>
+                        </kiss-navlist>
+                </kiss-content>
+            </kiss-popoutmenu>
 
 
             <app-actionbar>
@@ -87,6 +113,7 @@
                     return {
                         model: <?=json_encode($model)?>,
                         locales: <?=json_encode($locales)?>,
+                        actionItem: null,
                         items: [],
                         page: 1,
                         pages: 1,
@@ -119,6 +146,28 @@
 
                             this.loading = false;
                         })
+                    },
+
+                    toggleItemActions(item) {
+
+                        if (!item) {
+                            setTimeout(() => this.actionItem = null, 300);
+                            return;
+                        }
+
+                        this.actionItem = item;
+                    },
+
+                    remove(item) {
+
+                        App.ui.confirm('Are you sure?', () => {
+
+                            this.$request(`/content/collection/remove/${this.model.name}`, {ids: [item._id]}).then(res => {
+                                this.load(!this.items.length ? (this.page == 1 ? 1:(this.page - 1)) : this.page);
+                                App.ui.notify('Item removed!');
+                            });
+                        });
+
                     }
                 }
             }

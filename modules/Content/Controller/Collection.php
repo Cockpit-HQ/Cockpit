@@ -115,4 +115,18 @@ class Collection extends App {
         return compact('items', 'count', 'pages', 'page');
     }
 
+    public function remove($model = null) {
+
+        $model = $this->module('content')->model($model);
+        $ids = $this->param('ids');
+
+        if (!$model || $model['type'] != 'collection' || !is_array($ids)) {
+            return $this->stop(404);
+        }
+
+        $this->app->module('content')->remove($model['name'], ['_id' => ['$in' => $ids]]);
+
+        return ['success' => true];
+    }
+
 }
