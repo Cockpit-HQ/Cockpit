@@ -35,7 +35,7 @@
             <table class="kiss-table kiss-margin-large animated fadeIn" v-if="!loading && items.length">
                 <thead>
                     <tr>
-                        <th class="kiss-align-center" width="20"><input class="kiss-checkbox" type="checkbox"></th>
+                        <th class="kiss-align-center" width="20"><input class="kiss-checkbox" type="checkbox" @click="toggleAllSelect"></th>
                         <th width="50">ID</th>
                         <th></th>
                         <th width="120"><?=t('Modified')?></th>
@@ -43,7 +43,7 @@
                     </tr>
                     <tbody>
                         <tr v-for="item in items">
-                            <td class="kiss-align-center"><input class="kiss-checkbox" type="checkbox"></td>
+                            <td class="kiss-align-center"><input class="kiss-checkbox" type="checkbox" v-model="selected" :value="item._id"></td>
                             <td><a class="kiss-badge kiss-link-muted" :href="$route(`/content/collection/item/${model.name}/${item._id}`)" :title="item._id">...{{ item._id.substr(-5) }}</a></td>
                             <td></td>
                             <td><span class="kiss-flex kiss-badge kiss-badge-outline kiss-color-primary">{{ (new Date(item._modified * 1000).toLocaleString()) }}</span></td>
@@ -95,6 +95,9 @@
                             </div>
                         </div>
                         <div class="kiss-flex-1"></div>
+                        <div class="kiss-margin-right" v-if="selected.length">
+                            <button class="kiss-button kiss-button-danger" @click="removeSelected()">{{ t('Delete') }} -{{ selected.length }}-</button>
+                        </div>
                         <div class="kiss-button-group">
                             <a class="kiss-button" href="<?=$this->route("/content")?>"><?=t('Close')?></a>
                             <a class="kiss-button kiss-button-primary" href="<?=$this->route("/content/collection/item/{$model['name']}")?>"><?=t('Create item')?></a>
@@ -115,6 +118,7 @@
                         locales: <?=json_encode($locales)?>,
                         actionItem: null,
                         items: [],
+                        selected: [],
                         page: 1,
                         pages: 1,
                         limit: 25,
@@ -137,6 +141,7 @@
                         };
 
                         this.loading = true;
+                        this.selected = [];
 
                         this.$request(`/content/collection/find/${this.model.name}`, {options}).then(resp => {
                             this.items = resp.items;
@@ -163,11 +168,29 @@
                         App.ui.confirm('Are you sure?', () => {
 
                             this.$request(`/content/collection/remove/${this.model.name}`, {ids: [item._id]}).then(res => {
-                                this.load(!this.items.length ? (this.page == 1 ? 1:(this.page - 1)) : this.page);
+                                this.load(this.page == 1 ? 1 : (this.items.length - 1 ? this.page : this.page - 1));
                                 App.ui.notify('Item removed!');
                             });
                         });
+                    },
 
+                    removeSelected() {
+                        App.ui.confirm('Are you sure?', () => {
+
+                            this.$request(`/content/collection/remove/${this.model.name}`, {ids: this.selected}).then(res => {
+                                this.load(this.page == 1 ? 1 : (this.items.length - this.selected.length ? this.page : this.page - 1));
+                                App.ui.notify('Items removed!');
+                            });
+                        });
+                    },
+
+                    toggleAllSelect(e) {
+
+                        this.selected = [];
+
+                        if (e.target.checked) {
+                            this.items.forEach(item => this.selected.push(item._id));
+                        }
                     }
                 }
             }
