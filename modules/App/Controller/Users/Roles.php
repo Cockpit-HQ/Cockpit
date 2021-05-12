@@ -30,7 +30,7 @@ class Roles extends App {
             return false;
         }
 
-        $role['permissions'] = new ArrayObject( $role['permissions']);
+        $role['permissions'] = new ArrayObject($role['permissions']);
 
         return $this->render('app:views/users/roles/role.php', compact('role'));
     }

@@ -18,3 +18,14 @@ $this->helper('menus')->addLink('modules', [
 $this->on('app.layout.header', function(array &$assets) {
     $assets[] = ['src' => 'content:assets/js/content.js', 'type' => 'module'];
 });
+
+$this->on('app.permissions.collect', function($permissions) {
+
+    $permissions['Content'] = [
+        'component' => 'ContentModelSettings',
+        'src' => 'content:assets/vue-components/content-model-permissions.js',
+        'props' => [
+            'models' => $this->module('content')->models()
+        ]
+    ];
+});

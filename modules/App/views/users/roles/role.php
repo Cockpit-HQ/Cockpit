@@ -7,8 +7,16 @@
         ]
     ]);
 
+    $components = [];
+
     $this->trigger('app.permissions.collect', [$permissions]);
 
+    foreach ($permissions as $key => $meta) {
+
+        if (isset($meta['component'])) {
+            $components[$meta['component']] = $meta['src'];
+        }
+    }
 
 ?>
 <kiss-container class="kiss-margin" size="small">
@@ -45,18 +53,27 @@
 
                 <div class="kiss-margin kiss-margin-large-top kiss-size-4"><strong><?=t('Permissions')?></strong></div>
 
-                <div class="kiss-margin" v-for="(permissions, group) in permissions">
+                <div class="kiss-margin" v-for="(permissions, group) in simplePermissions">
 
                     <strong class="kiss-text-caption">{{ group }}</strong>
 
                     <div class="kiss-margin-small kiss-size-small kiss-flex kiss-middle" v-for="(label, permission) in permissions">
-                        <div class="kiss-flex-1 kiss-margin-small-right">
+                        <div><field-boolean v-model="role.permissions[permission]"></field-boolean></div>
+                        <div class="kiss-flex-1 kiss-margin-small-left">
                             <div :class="{'kiss-color-muted':!role.permissions[permission]}">
                                 {{label}}
                             </div>
-                            <div class="kiss-text-monospace kiss-color-muted">{{ permission }}</div>
                         </div>
-                        <div><field-boolean v-model="role.permissions[permission]"></field-boolean></div>
+                    </div>
+
+                </div>
+
+                <div class="kiss-margin" v-for="(meta, group) in componentPermissions">
+
+                    <strong class="kiss-text-caption">{{ group }}</strong>
+
+                    <div class="kiss-margin-small">
+                         <div v-is="meta.component" v-model="role.permissions" v-bind="meta.props || {}"></div>
                     </div>
 
                 </div>
@@ -87,6 +104,7 @@
         <script type="module">
 
             export default {
+
                 data() {
 
                     return {
@@ -94,6 +112,33 @@
                         role: <?=json_encode($role)?>,
                         permissions: <?=json_encode($permissions)?>
                     };
+                },
+
+                components: <?=json_encode(new ArrayObject($components))?>,
+
+                computed: {
+
+                    simplePermissions() {
+
+                        let permissions = {};
+
+                        Object.keys(this.permissions).forEach(group => {
+                            if (!this.permissions[group].component) permissions[group] = this.permissions[group];
+                        });
+
+                        return permissions;
+                    },
+
+                    componentPermissions() {
+
+                        let permissions = {};
+
+                        Object.keys(this.permissions).forEach(group => {
+                            if (this.permissions[group].component) permissions[group] = this.permissions[group];
+                        });
+
+                        return permissions;
+                    }
                 },
 
                 methods: {
