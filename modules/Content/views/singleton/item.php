@@ -34,7 +34,7 @@
 
                     <div class="kiss-margin" v-if="item._id">
 
-                        <div class="kiss-text-bold kiss-size-xsmall kiss-text-upper">{{ t('Document') }}</div>
+                        <div class="kiss-text-caption kiss-size-xsmall kiss-text-bold">{{ t('Document') }}</div>
 
                         <kiss-card class="kiss-margin-small kiss-bgcolor-contrast kiss-padding-small">
 
@@ -59,7 +59,7 @@
 
                     <div class="kiss-margin">
 
-                        <div class="kiss-text-bold kiss-size-xsmall kiss-text-upper">{{ t('State') }}</div>
+                        <div class="kiss-text-caption kiss-size-xsmall kiss-text-bold">{{ t('State') }}</div>
 
                         <div class="kiss-margin-small">
                             <button type="button" class="kiss-button kiss-flex kiss-flex-middle kiss-width-expand kiss-align-left" :class="{'kiss-bgcolor-danger': !item._state, 'kiss-bgcolor-success': item._state == 1}" kiss-popoutmenu="#model-item-menu-state">
@@ -73,7 +73,7 @@
 
                     <div class="kiss-margin" v-if="hasLocales">
 
-                        <div class="kiss-text-bold kiss-size-xsmall kiss-text-upper">{{ t('Translation') }}</div>
+                        <div class="kiss-text-caption kiss-size-xsmall kiss-text-bold">{{ t('Translation') }}</div>
 
                         <kiss-card class="kiss-padding-small kiss-margin-small kiss-text-bolder kiss-text-muted kiss-size-small kiss-color-muted kiss-flex kiss-flex-middle" theme="bordered" v-if="!locales.length">
                             <span class="kiss-flex-1 kiss-margin-small-right">{{ t('No locales.') }}</span>
