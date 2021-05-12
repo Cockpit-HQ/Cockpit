@@ -50,7 +50,7 @@ class Locales extends App {
 
         $locale = $this->param('locale');
 
-        if (!$local || !isset($locale['_id'], $locale['i18n'])) {
+        if (!$locale || !isset($locale['_id'], $locale['i18n'])) {
             return $this->stop(['error' => 'local is missing'], 412);
         }
 

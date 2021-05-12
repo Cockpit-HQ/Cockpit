@@ -31,7 +31,7 @@
                             <strong>{{locale.name || locale.i18n}}</strong>
                             <a class="kiss-cover" :href="$route('/settings/locales/locale/'+locale._id)"></a>
                         </div>
-                        <div class="kiss-margin-left kiss-size-small kiss-align-right kiss-text-caption" :class="locale.i18n == 'default' ? 'kiss-color-primary' : 'kiss-color-muted'"><strong>{{ locale.i18n }}</strong></div>
+                        <div class="kiss-margin-left kiss-size-small kiss-align-right" :class="locale.i18n == 'default' ? 'kiss-color-primary' : 'kiss-color-muted'"><strong>{{ locale.i18n }}</strong></div>
                         <a class="kiss-display-block kiss-margin-left kiss-color-danger" @click="remove(locale)"><icon>delete</icon></a>
                     </div>
 

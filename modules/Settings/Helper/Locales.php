@@ -32,7 +32,10 @@ class Locales extends \Lime\Helper {
     public function cache(): array {
 
         $cache = [
-            'default' => 'Default'
+            'default' => [
+                'i18n' => 'default',
+                'name' => 'Default'
+            ]
         ];
 
         $locales = $this->app->dataStorage->find('system/locales', [
