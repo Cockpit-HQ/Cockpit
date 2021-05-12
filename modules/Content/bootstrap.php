@@ -209,6 +209,10 @@ $this->module('content')->extend([
 
         $collection = null;
 
+        if (isset($item['_state']) && !is_numeric($item['_state'])) {
+            unset($item['_state']);
+        }
+
         if ($model['type'] == 'singleton') {
 
             $collection = 'content/singletons';
@@ -218,6 +222,7 @@ $this->module('content')->extend([
                 $current = $default;
                 $current['_model'] = $modelName;
                 $current['_created'] = $time;
+                $current['_state'] = isset($item['_state']) ?? 0;
             } else {
                 $isUpdate = true;
             }
@@ -230,7 +235,8 @@ $this->module('content')->extend([
             $item = array_merge($default, $item);
 
             if (!isset($item['_id'])) {
-                $current['_created'] = $time;
+                $item['_created'] = $time;
+                $item['_state'] = isset($item['_state']) ?? 0;
             } else {
                 $isUpdate = true;
             }

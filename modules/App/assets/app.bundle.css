@@ -3825,7 +3825,7 @@ kiss-card[theme*="bordered"] {
 }
 .kiss-table td {
     font-size: .9em;
-    border-bottom: 1px rgba(0, 0, 0, 0.15) solid;
+    border-bottom: 1px var(--kiss-hr-color) solid;
     padding: 16px 8px;
 }
 .kiss-table th,

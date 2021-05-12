@@ -37,6 +37,7 @@
                     <tr>
                         <th class="kiss-align-center" width="20"><input class="kiss-checkbox" type="checkbox" @click="toggleAllSelect"></th>
                         <th width="50">ID</th>
+                        <th width="20">State</th>
                         <th></th>
                         <th width="120"><?=t('Modified')?></th>
                         <th width="20"></th>
@@ -45,6 +46,7 @@
                         <tr v-for="item in items">
                             <td class="kiss-align-center"><input class="kiss-checkbox" type="checkbox" v-model="selected" :value="item._id"></td>
                             <td><a class="kiss-badge kiss-link-muted" :href="$route(`/content/collection/item/${model.name}/${item._id}`)" :title="item._id">...{{ item._id.substr(-5) }}</a></td>
+                            <td class="kiss-align-center"><icon :class="{'kiss-color-success': item._state === 1, 'kiss-color-danger': !item._state}">trip_origin</icon></td>
                             <td></td>
                             <td><span class="kiss-flex kiss-badge kiss-badge-outline kiss-color-primary">{{ (new Date(item._modified * 1000).toLocaleString()) }}</span></td>
                             <td>
