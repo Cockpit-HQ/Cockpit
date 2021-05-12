@@ -32,6 +32,30 @@
                 </div>
                 <div class="kiss-width-1-4@m kiss-width-1-5@xl">
 
+                    <div class="kiss-margin" v-if="item._id">
+
+                        <div class="kiss-text-bold kiss-size-xsmall kiss-text-upper">{{ t('Document') }}</div>
+
+                        <kiss-card class="kiss-margin-small kiss-bgcolor-contrast kiss-padding-small">
+
+                            <div class="kiss-margin-xsmall">
+                                <div class="kiss-size-xsmall">{{ t('Created at') }}</div>
+                                <div class="kiss-flex kiss-flex-middle">
+                                    <div class="kiss-text-monospace kiss-text-truncate kiss-size-small kiss-color-muted kiss-flex-1">{{ (new Date(item._created * 1000).toLocaleString()) }}</div>
+                                    <div><icon>account_circle</icon></div>
+                                </div>
+                            </div>
+
+                            <div class="kiss-margin-xsmall" v-if="item._created != item._modified">
+                                <div class="kiss-size-xsmall">{{ t('Modified at') }}</div>
+                                <div class="kiss-flex kiss-flex-middle">
+                                    <div class="kiss-text-monospace kiss-text-truncate kiss-size-small kiss-color-muted kiss-flex-1">{{ (new Date(item._modified * 1000).toLocaleString()) }}</div>
+                                    <div><icon>account_circle</icon></div>
+                                </div>
+                            </div>
+
+                        </kiss-card>
+                    </div>
 
                     <div class="kiss-margin">
 
