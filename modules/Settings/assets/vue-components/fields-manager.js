@@ -1,8 +1,6 @@
 import { FieldTypes } from "../js/settings.js"
 
-let fieldTypes = await FieldTypes.get();
 let instanceCount = 0;
-
 
 export default {
 
@@ -13,13 +11,19 @@ export default {
         return {
             uid: `fm-${++instanceCount}`,
             fields: this.modelValue || [],
-            fieldTypes,
+            fieldTypes: null,
             field: null,
 
             state: {
                 editField: false
             }
         }
+    },
+
+    mounted() {
+        FieldTypes.get().then(fieldTypes => {
+            this.fieldTypes = fieldTypes;
+        });
     },
 
     props: {
@@ -59,7 +63,7 @@ export default {
                 <div class="kiss-text-bold">{{ t('No fields') }}</div>
             </kiss-card>
 
-            <vue-draggable v-model="fields" v-if="fields.length" handle=".fm-handle">
+            <vue-draggable v-model="fields" v-if="fieldTypes && fields.length" handle=".fm-handle">
                 <template #item="{ element }">
                     <kiss-card class="kiss-padding-small kiss-flex kiss-flex-middle" theme="bordered" style="margin: 8px 0;">
                         <div class="kiss-margin-right">
