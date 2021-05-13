@@ -241,14 +241,14 @@ $this->module('content')->extend([
 
         }
 
-        if (!$isUpdate) {
-            $item['_created'] = $time;
-            $item['_state'] = isset($item['_state']) ?? 0;
-            $item['_cby'] = $context['user']['_id'] ?? null;
-        }
-
         $item['_modified'] = $time;
         $item['_mby'] = $context['user']['_id'] ?? null;
+
+        if (!$isUpdate) {
+            $item['_created'] = $time;
+            $item['_state'] = $item['_state'] ?? 0;
+            $item['_cby'] = $context['user']['_id'] ?? null;
+        }
 
         if (!$collection) {
             return null;

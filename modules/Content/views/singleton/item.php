@@ -140,7 +140,7 @@
                 <kiss-content>
                     <kiss-navlist class="kiss-margin">
                         <ul>
-                            <li class="kiss-nav-header"><?=t('Change status to')?></li>
+                            <li class="kiss-nav-header"><?=t('Change state to')?></li>
                             <li v-show="item._state != 1">
                                 <a class="kiss-flex kiss-flex-middle kiss-color-success kiss-text-bold" @click="item._state=1">
                                     <icon class="kiss-margin-small-right">bookmark</icon>
