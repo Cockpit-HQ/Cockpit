@@ -89,7 +89,7 @@ class Models extends App {
             return $this->stop(['error' => 'Item item is missing'], 412);
         }
 
-        $item = $this->module('content')->saveItem($model, $item);
+        $item = $this->module('content')->saveItem($model, $item, ['user' => $this->user]);
 
         return $item;
     }

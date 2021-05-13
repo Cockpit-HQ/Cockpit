@@ -27,7 +27,7 @@
             <div class="animated fadeIn kiss-height-50vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted" v-if="!loading && !items.length">
                 <div>
                     <kiss-svg class="kiss-margin-auto" src="<?=$this->base('content:assets/icons/collection.svg')?>" width="35" height="35"><canvas width="35" height="35"></canvas></kiss-svg>
-                    <p class="kiss-size-large kiss-text-bold"><?=t('No items')?></p>
+                    <p class="kiss-size-large kiss-text-bold kiss-margin-small-top"><?=t('No items')?></p>
                 </div>
             </div>
 

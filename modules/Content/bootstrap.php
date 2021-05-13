@@ -194,9 +194,12 @@ $this->module('content')->extend([
         return $item;
     },
 
-    'saveItem' => function(string $modelName, array $item): ?array {
+    'saveItem' => function(string $modelName, array $item, array $context = []): ?array {
 
         $model = $this->model($modelName);
+        $context = array_merge([
+            'user' => null
+        ], $context);
 
         if (!$model) {
             throw new Exception('Try to access unknown model "'.$modelName.'"');
@@ -221,8 +224,6 @@ $this->module('content')->extend([
             if (!$current) {
                 $current = $default;
                 $current['_model'] = $modelName;
-                $current['_created'] = $time;
-                $current['_state'] = isset($item['_state']) ?? 0;
             } else {
                 $isUpdate = true;
             }
@@ -234,16 +235,20 @@ $this->module('content')->extend([
             $collection = "content/collections/{$modelName}";
             $item = array_merge($default, $item);
 
-            if (!isset($item['_id'])) {
-                $item['_created'] = $time;
-                $item['_state'] = isset($item['_state']) ?? 0;
-            } else {
+            if (isset($item['_id'])) {
                 $isUpdate = true;
             }
 
         }
 
+        if (!$isUpdate) {
+            $item['_created'] = $time;
+            $item['_state'] = isset($item['_state']) ?? 0;
+            $item['_cby'] = $context['user']['_id'] ?? null;
+        }
+
         $item['_modified'] = $time;
+        $item['_mby'] = $context['user']['_id'] ?? null;
 
         if (!$collection) {
             return null;

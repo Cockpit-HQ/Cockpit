@@ -18,7 +18,7 @@ export default {
     template: /*html*/`
         <div>
 
-            <div class="kiss-size-small kiss-text-upper kiss-text-bold kiss-margin-bottom">{{ t('Re-Login') }}</div>
+            <div class="kiss-size-small kiss-text-caption kiss-text-bold kiss-margin-bottom">{{ t('Session expired') }}</div>
 
             <form class="app-login-form animated" :class="{'kiss-disabled': loading}" @submit.prevent="login">
 
