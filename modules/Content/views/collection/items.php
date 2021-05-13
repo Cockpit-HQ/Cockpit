@@ -21,10 +21,9 @@
 
         <template>
 
+            <app-loader v-if="!fieldTypes || loading"></app-loader>
 
-            <app-loader v-if="loading"></app-loader>
-
-            <div class="animated fadeIn kiss-height-50vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted" v-if="!loading && !items.length">
+            <div class="animated fadeIn kiss-height-50vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted" v-if="fieldTypes && !loading && !items.length">
                 <div>
                     <kiss-svg class="kiss-margin-auto" src="<?=$this->base('content:assets/icons/collection.svg')?>" width="35" height="35"><canvas width="35" height="35"></canvas></kiss-svg>
                     <p class="kiss-size-large kiss-text-bold kiss-margin-small-top"><?=t('No items')?></p>
@@ -38,7 +37,7 @@
                         <th class="kiss-align-center" width="20"><input class="kiss-checkbox" type="checkbox" @click="toggleAllSelect"></th>
                         <th width="50">ID</th>
                         <th width="20">State</th>
-                        <th></th>
+                        <th v-for="field in model.fields">{{ field.label || field.name}}</th>
                         <th width="120"><?=t('Modified')?></th>
                         <th width="20"></th>
                     </tr>
@@ -47,7 +46,11 @@
                             <td class="kiss-align-center"><input class="kiss-checkbox" type="checkbox" v-model="selected" :value="item._id"></td>
                             <td><a class="kiss-badge kiss-link-muted" :href="$route(`/content/collection/item/${model.name}/${item._id}`)" :title="item._id">...{{ item._id.substr(-5) }}</a></td>
                             <td class="kiss-align-center"><icon :class="{'kiss-color-success': item._state === 1, 'kiss-color-danger': !item._state}">trip_origin</icon></td>
-                            <td></td>
+                            <td v-for="field in model.fields">
+                                <div class="kiss-color-muted" v-if="item[field.name] == null">n/a</div>
+                                <div class="kiss-text-truncate" v-else-if="fieldTypes[field.type] && fieldTypes[field.type].render" v-html="fieldTypes[field.type].render(item[field.name], field, 'table')"></div>
+                                <div class="kiss-text-truncate" v-else>{{ item[field.name] }}</div>
+                            </td>
                             <td><span class="kiss-flex kiss-badge kiss-badge-outline kiss-color-primary">{{ (new Date(item._modified * 1000).toLocaleString()) }}</span></td>
                             <td>
                                 <a @click="toggleItemActions(item)"><icon>more_horiz</icon></a>
@@ -121,6 +124,7 @@
                         actionItem: null,
                         items: [],
                         selected: [],
+                        fieldTypes: null,
                         page: 1,
                         pages: 1,
                         limit: 25,
@@ -130,7 +134,14 @@
                 },
 
                 mounted() {
-                    this.load();
+
+                    App.utils.import('settings:assets/js/settings.js').then(exp => {
+
+                        exp.FieldTypes.get().then(types => {
+                            this.fieldTypes = types;
+                            this.load();
+                        });
+                    });
                 },
 
                 methods: {

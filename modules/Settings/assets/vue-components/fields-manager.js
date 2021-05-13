@@ -63,6 +63,8 @@ export default {
                 <div class="kiss-text-bold">{{ t('No fields') }}</div>
             </kiss-card>
 
+            <app-loader v-if="!fieldTypes"></app-loader>
+
             <vue-draggable v-model="fields" v-if="fieldTypes && fields.length" handle=".fm-handle">
                 <template #item="{ element }">
                     <kiss-card class="kiss-padding-small kiss-flex kiss-flex-middle" theme="bordered" style="margin: 8px 0;">

@@ -82,7 +82,7 @@
 
                     <div class="kiss-margin" v-if="hasLocales">
 
-                        <div class="kiss-text-caption kiss-size-xsmall kiss-text-bold">{{ t('Localeizations') }}</div>
+                        <div class="kiss-text-caption kiss-size-xsmall kiss-text-bold">{{ t('Translation') }}</div>
 
                         <kiss-card class="kiss-padding-small kiss-margin-small kiss-text-bolder kiss-text-muted kiss-size-small kiss-color-muted kiss-flex kiss-flex-middle" theme="bordered" v-if="!locales.length">
                             <span class="kiss-flex-1 kiss-margin-small-right">{{ t('No locales.') }}</span>
