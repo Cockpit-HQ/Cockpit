@@ -5,6 +5,10 @@ export default {
         label: 'Select',
         info: 'Select from a list',
         icon: 'settings:assets/icons/select.svg',
+        settings: [
+            {name: 'multiple', type: 'boolean', opts: {default: false}},
+            {name: 'options', type: 'text', multiple: true},
+        ],
         render(value, field) {
             return Array.isArray(value) ? value.join(', ') : value;
         }

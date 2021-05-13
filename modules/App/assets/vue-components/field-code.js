@@ -33,7 +33,11 @@ export default {
     _meta: {
         label: 'Code',
         info: 'Code input',
-        icon: 'settings:assets/icons/code.svg'
+        icon: 'settings:assets/icons/code.svg',
+        settings: [
+            {name: 'mode', type: 'select', opts: {options: ['css', 'html', 'json', 'javascript', 'markdown', 'php', 'yaml', 'xml']}},
+            {name: 'height', type: 'number'},
+        ]
     },
 
     data() {

@@ -4,7 +4,10 @@ export default {
         label: 'Boolean',
         info: 'An input that is either true or false',
         icon: 'settings:assets/icons/boolean.svg',
-        color: 'rgb(253, 229, 227)'
+        color: 'rgb(253, 229, 227)',
+        settings: [
+            {name: 'label', type: 'text'},
+        ]
     },
 
     data() {
@@ -19,7 +22,7 @@ export default {
             default: false
         },
         label: {
-            type: Boolean,
+            type: String,
             default: false
         }
     },

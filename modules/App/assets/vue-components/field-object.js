@@ -5,7 +5,10 @@ export default {
     _meta: {
         label: 'Object',
         info: 'Object input',
-        icon: 'settings:assets/icons/object.svg'
+        icon: 'settings:assets/icons/object.svg',
+        settings: [
+            {name: 'height', type: 'number'},
+        ]
     },
 
     data() {

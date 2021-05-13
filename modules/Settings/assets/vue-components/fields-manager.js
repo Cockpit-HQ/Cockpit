@@ -96,7 +96,10 @@ let FieldsManager = {
             <kiss-dialog open="true" size="large" v-if="field">
                 <kiss-content class="animated fadeInUp faster">
 
-                    <div class="kiss-size-4 kiss-text-bold">{{ t('Field settings') }}</div>
+                    <div class="kiss-size-4 kiss-text-bold kiss-flex kiss-flex-middle">
+                        <icon class="kiss-size-3 kiss-margin-small-right">tune</icon>
+                        {{ t('Field settings') }}
+                    </div>
 
                     <form class="kiss-margin" @submit.prevent="addOrEditField">
 

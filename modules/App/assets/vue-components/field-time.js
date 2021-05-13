@@ -6,7 +6,15 @@ export default {
     _meta: {
         label: 'Time',
         info: 'Pick a time',
-        icon: 'settings:assets/icons/time.svg'
+        icon: 'settings:assets/icons/time.svg',
+        settings: [
+            {name: 'readonly', type: 'boolean', opts: {default: false}},
+            {name: 'placeholder', type: 'text'},
+            {name: 'min', type: 'time'},
+            {name: 'max', type: 'time'},
+            {name: 'step', type: 'number'},
+            {name: 'list', type: 'time', multiple: true},
+        ]
     },
 
     data() {

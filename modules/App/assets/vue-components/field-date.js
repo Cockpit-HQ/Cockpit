@@ -6,7 +6,14 @@ export default {
     _meta: {
         label: 'Date',
         info: 'Pick a date',
-        icon: 'settings:assets/icons/date.svg'
+        icon: 'settings:assets/icons/date.svg',
+        settings: [
+            {name: 'readonly', type: 'boolean', opts: {default: false}},
+            {name: 'placeholder', type: 'text'},
+            {name: 'min', type: 'date'},
+            {name: 'max', type: 'date'},
+            {name: 'step', type: 'number'},
+        ]
     },
 
     data() {
