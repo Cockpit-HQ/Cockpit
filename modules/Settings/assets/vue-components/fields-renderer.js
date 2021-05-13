@@ -100,7 +100,7 @@ let FieldRenderer = {
 
         getFieldType() {
 
-            if (VueView[`field-${this.field.type}`]) return `field-${this.field.type}`
+            if (VueView.components[`field-${this.field.type}`]) return `field-${this.field.type}`
             if (VueView.components[this.field.type]) return this.field.type;
             return 'field-object';
         },
