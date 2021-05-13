@@ -41,11 +41,13 @@ export default {
             handler() { this.update() },
             deep: true
         },
-        modelValue(val) {
-
-            if (this.code.editor && !this.code.editor.hasFocus()) {
-                this.val = JSON5.stringify(this.modelValue, null, 2);
-            }
+        modelValue: {
+            handler(val) {
+                if (this.code.editor && !this.code.editor.hasFocus()) {
+                    this.val = JSON5.stringify(this.modelValue, null, 2);
+                }
+            },
+            deep: true
         }
     },
 

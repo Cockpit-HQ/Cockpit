@@ -46,7 +46,7 @@ let FieldRenderer = {
     template: /*html*/`
         <div v-if="fieldTypes">
 
-            <div v-is="'field-'+field.type" v-model="val" v-bind="field.opts" v-if="!field.multiple"></div>
+            <div v-is="getFieldType()" v-model="val" v-bind="field.opts" v-if="!field.multiple"></div>
 
             <div v-if="field.multiple">
                 <kiss-card class="kiss-padding-small kiss-size-small kiss-color-muted" theme="bordered" v-show="!val || !Array.isArray(val) || !val.length">{{ t('No items') }}</kiss-card>
@@ -78,7 +78,7 @@ let FieldRenderer = {
 
                     <div class="kiss-margin-top">
                         <div class="kiss-margin-bottom"><span class="kiss-badge kiss-text-upper">{{fieldItem.field.type}}</span></div>
-                        <div v-is="'field-'+field.type" v-model="fieldItem.value" v-bind="field.opts"></div>
+                        <div v-is="getFieldType()" v-model="fieldItem.value" v-bind="field.opts"></div>
                     </div>
 
                     <div class="kiss-button-group kiss-child-width-1-2 kiss-flex kiss-margin-top">
@@ -97,6 +97,13 @@ let FieldRenderer = {
     `,
 
     methods: {
+
+        getFieldType() {
+
+            if (VueView[`field-${this.field.type}`]) return `field-${this.field.type}`
+            if (VueView.components[this.field.type]) return this.field.type;
+            return 'field-object';
+        },
 
         addFieldItem(field) {
 
@@ -264,7 +271,7 @@ export default {
 
         clear(field, val) {
 
-            val[field.name] = ((field.opts && field.opts.default) || null);
+            val[field.name] = (field.opts && field.opts.default !== undefined && field.opts.default) || null;
 
             if (field.i18n  && this.locales.length) {
 

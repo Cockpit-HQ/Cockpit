@@ -24,6 +24,13 @@ export default {
         }
     },
 
+    watch: {
+        modelValue() {
+            this.val = this.modelValue;
+            this.update();
+        }
+    },
+
     template: /*html*/`
         <div class="kiss-flex kiss-flex-middle" field="boolean">
             <div class="kiss-flex kiss-flex-middle"><input class="app-switch" type="checkbox" v-model="val" @change="update"></div>

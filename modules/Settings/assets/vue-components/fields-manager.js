@@ -2,7 +2,7 @@ import { FieldTypes } from "../js/settings.js"
 
 let instanceCount = 0;
 
-export default {
+let FieldsManager = {
 
     name: 'fields-manager',
 
@@ -18,6 +18,10 @@ export default {
                 editField: false
             }
         }
+    },
+
+    components: {
+        'fields-renderer': Vue.defineAsyncComponent(() => App.utils.import('settings:assets/vue-components/fields-renderer.js')),
     },
 
     mounted() {
@@ -82,7 +86,7 @@ export default {
                 </template>
             </vue-draggable>
 
-            <div class="kiss-margin kiss-align-center">
+            <div class="kiss-margin kiss-align-center" v-if="fieldTypes">
                 <a class="kiss-size-large" @click="add"><icon>control_point</icon></a>
             </div>
 
@@ -140,14 +144,18 @@ export default {
                             </tab>
                             <tab :caption="t('Options')">
 
-                                <div class="kiss-margin" v-if="field.type == 'set'">
-                                    <div class="kiss-text-bold kiss-text-caption kiss-margin">{{ t('Fields') }}</div>
-                                    <fields-manager v-model="field.opts.fields"></fields-manager>
+                                <div class="kiss-margin-bottom kiss-flex kiss-flex-right" v-if="fieldTypes[field.type] && fieldTypes[field.type].settings">
+                                    <div class="kiss-button-group">
+                                        <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': state.optionsView != 'json'}" @click="state.optionsView = 'form'" type="button">Fields</button>
+                                        <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': state.optionsView == 'json'}" @click="state.optionsView = 'json'" type="button">JSON</button>
+                                    </div>
                                 </div>
 
+                                <div class="kiss-margin" v-if="state.optionsView != 'json'">
+                                    <fields-renderer v-model="field.opts" :fields="fieldTypes[field.type].settings" v-if="fieldTypes[field.type] && fieldTypes[field.type].settings"></fields-renderer>
+                                </div>
 
-                                <div class="kiss-margin">
-                                    <label>{{t('Options')}}</label>
+                                <div class="kiss-margin" v-if="!(fieldTypes[field.type] && fieldTypes[field.type].settings) || state.optionsView == 'json'">
                                     <field-object v-model="field.opts"></field-object>
                                 </div>
 
@@ -202,7 +210,12 @@ export default {
         },
 
         edit(field) {
+
             this.state.editField = true;
+
+            if (Array.isArray(field.opts)) field.opts = {};
+            if (Array.isArray(field.meta)) field.meta = {};
+
             this.field = field;
         },
 
@@ -233,3 +246,5 @@ export default {
         }
     }
 }
+
+export default FieldsManager;

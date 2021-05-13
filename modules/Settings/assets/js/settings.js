@@ -1,5 +1,4 @@
 
-
 export let FieldTypes = {
 
     _fields : null,

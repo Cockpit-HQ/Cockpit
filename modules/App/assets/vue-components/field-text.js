@@ -6,7 +6,16 @@ export default {
     _meta: {
         label: 'Text',
         info: 'Simple text',
-        icon: 'settings:assets/icons/text.svg'
+        icon: 'settings:assets/icons/text.svg',
+        settings: [
+            {name: 'multiline', type: 'boolean', opts: {default: false}},
+            {name: 'showCount', type: 'boolean', opts: {default: true}},
+            {name: 'readonly', type: 'boolean', opts: {default: false}},
+            {name: 'placeholder', type: 'text'},
+            {name: 'minlength', type: 'number'},
+            {name: 'maxlength', type: 'number'},
+            {name: 'list', type: 'text', multiple: true},
+        ]
     },
 
     data() {
@@ -27,7 +36,7 @@ export default {
         },
         showCount: {
             type: Boolean,
-            default: true
+            default: false
         },
         height: {
             type: String,
