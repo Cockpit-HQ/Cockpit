@@ -117,7 +117,7 @@
                 <kiss-content>
                     <kiss-navlist class="kiss-margin">
                         <ul>
-                            <li class="kiss-nav-header"><?=t('Actions')?></li>
+                            <li class="kiss-nav-header"><?=t('Model actions')?></li>
                             <li>
                                 <a class="kiss-flex kiss-flex-middle" href="#models-item-json" kiss-offcanvas>
                                     <icon class="kiss-margin-small-right">code</icon>

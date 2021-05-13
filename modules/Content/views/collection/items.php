@@ -47,9 +47,13 @@
                             <td><a class="kiss-badge kiss-link-muted" :href="$route(`/content/collection/item/${model.name}/${item._id}`)" :title="item._id">...{{ item._id.substr(-5) }}</a></td>
                             <td class="kiss-align-center"><icon :class="{'kiss-color-success': item._state === 1, 'kiss-color-danger': !item._state}">trip_origin</icon></td>
                             <td v-for="field in model.fields">
-                                <div class="kiss-color-muted" v-if="item[field.name] == null">n/a</div>
+                                <span class="kiss-badge kiss-badge-outline kiss-color-muted" v-if="item[field.name] == null">n/a</span>
                                 <div class="kiss-text-truncate" v-else-if="fieldTypes[field.type] && fieldTypes[field.type].render" v-html="fieldTypes[field.type].render(item[field.name], field, 'table')"></div>
-                                <div class="kiss-text-truncate" v-else>{{ item[field.name] }}</div>
+                                <div class="kiss-text-truncate" v-else>
+                                    <span class="kiss-badge kiss-badge-outline" v-if="Array.isArray(item[field.name])">{{ item[field.name].length }}</span>
+                                    <span class="kiss-badge kiss-badge-outline" v-else-if="typeof(item[field.name]) == 'object'">Object</span>
+                                    <span v-else>{{ item[field.name] }}</span>
+                                </div>
                             </td>
                             <td><span class="kiss-flex kiss-badge kiss-badge-outline kiss-color-primary">{{ (new Date(item._modified * 1000).toLocaleString()) }}</span></td>
                             <td>
@@ -219,7 +223,7 @@
     <kiss-content>
         <kiss-navlist class="kiss-margin">
             <ul>
-                <li class="kiss-nav-header"><?=t('Actions')?></li>
+                <li class="kiss-nav-header"><?=t('Model actions')?></li>
                 <li>
                     <a class="kiss-flex kiss-flex-middle" href="<?=$this->route("/content/models/edit/{$model['name']}")?>">
                         <icon class="kiss-margin-small-right">create</icon>
