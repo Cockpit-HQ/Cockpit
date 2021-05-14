@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '5d94e0929bfd8037b5e5d25f27c42082ee0a60db',
+    'reference' => '5aee97e2a8224fc4f3c75334d4dada69aa8c0c78',
     'name' => 'agentejo/cockpit',
   ),
   'versions' => 
@@ -18,7 +18,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '5d94e0929bfd8037b5e5d25f27c42082ee0a60db',
+      'reference' => '5aee97e2a8224fc4f3c75334d4dada69aa8c0c78',
     ),
     'bacon/bacon-qr-code' => 
     array (
@@ -94,12 +94,12 @@
     ),
     'league/flysystem' => 
     array (
-      'pretty_version' => '2.0.5',
-      'version' => '2.0.5.0',
+      'pretty_version' => '2.0.7',
+      'version' => '2.0.7.0',
       'aliases' => 
       array (
       ),
-      'reference' => '27ea64cc9d61ae7b6a5f04bebf062d89dd18e8f7',
+      'reference' => 'f1ecc5c7bf193da14fbc34198ffb16d979ad7d5a',
     ),
     'league/mime-type-detection' => 
     array (
@@ -189,12 +189,12 @@
     ),
     'webonyx/graphql-php' => 
     array (
-      'pretty_version' => 'v14.6.2',
-      'version' => '14.6.2.0',
+      'pretty_version' => 'v14.6.4',
+      'version' => '14.6.4.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'bcbb6926bbf2d0cf466c63d0b9edc90e44d5dd3f',
+      'reference' => '34aa6dd54cd2ebdf8f36cafe817323333f7eb6ba',
     ),
   ),
 );

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace League\Flysystem;
 
+use function sprintf;
+
 class MountManager implements FilesystemOperator
 {
     /**
@@ -60,9 +62,16 @@ class MountManager implements FilesystemOperator
     public function listContents(string $location, bool $deep = self::LIST_SHALLOW): DirectoryListing
     {
         /** @var FilesystemOperator $filesystem */
-        [$filesystem, $path] = $this->determineFilesystemAndPath($location);
+        [$filesystem, $path, $mountIdentifier] = $this->determineFilesystemAndPath($location);
 
-        return $filesystem->listContents($path, $deep);
+        return
+            $filesystem
+                ->listContents($path, $deep)
+                ->map(
+                    function (StorageAttributes $attributes) use ($mountIdentifier) {
+                        return $attributes->withPath(sprintf('%s://%s', $mountIdentifier, $attributes->path()));
+                    }
+                );
     }
 
     public function lastModified(string $location): int
@@ -264,7 +273,7 @@ class MountManager implements FilesystemOperator
             throw UnableToResolveFilesystemMount::becauseTheMountWasNotRegistered($mountIdentifier);
         }
 
-        return [$this->filesystems[$mountIdentifier], $mountPath];
+        return [$this->filesystems[$mountIdentifier], $mountPath, $mountIdentifier];
     }
 
     private function copyInSameFilesystem(

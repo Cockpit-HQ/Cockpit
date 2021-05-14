@@ -41,7 +41,7 @@ final class Versions
   'firebase/php-jwt' => 'v5.2.1@f42c9110abe98dd6cfe9053c49bc86acc70b2d23',
   'jean85/pretty-package-versions' => '1.6.0@1e0104b46f045868f11942aea058cd7186d6c303',
   'league/color-extractor' => '0.3.2@837086ec60f50c84c611c613963e4ad2e2aec806',
-  'league/flysystem' => '2.0.5@27ea64cc9d61ae7b6a5f04bebf062d89dd18e8f7',
+  'league/flysystem' => '2.0.7@f1ecc5c7bf193da14fbc34198ffb16d979ad7d5a',
   'league/mime-type-detection' => '1.7.0@3b9dff8aaf7323590c1d2e443db701eb1f9aa0d3',
   'maennchen/zipstream-php' => 'v0.5.2@95922b6324955974675fd4923f987faa598408af',
   'mongodb/mongodb' => '1.8.0@953dbc19443aa9314c44b7217a16873347e6840d',
@@ -50,8 +50,8 @@ final class Versions
   'symfony/polyfill-mbstring' => 'v1.22.1@5232de97ee3b75b0360528dae24e73db49566ab1',
   'symfony/polyfill-php80' => 'v1.22.1@dc3063ba22c2a1fd2f45ed856374d79114998f91',
   'symfony/polyfill-php81' => 'v1.22.1@00dedc6d362a1b863dda3f8243516da9fdfbe657',
-  'webonyx/graphql-php' => 'v14.6.2@bcbb6926bbf2d0cf466c63d0b9edc90e44d5dd3f',
-  'agentejo/cockpit' => 'dev-master@5d94e0929bfd8037b5e5d25f27c42082ee0a60db',
+  'webonyx/graphql-php' => 'v14.6.4@34aa6dd54cd2ebdf8f36cafe817323333f7eb6ba',
+  'agentejo/cockpit' => 'dev-master@5aee97e2a8224fc4f3c75334d4dada69aa8c0c78',
 );
 
     private function __construct()
