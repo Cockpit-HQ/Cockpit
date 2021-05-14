@@ -154,6 +154,11 @@ kiss-card[theme*="bordered"] {
     font-weight: bold;
 }
 
+.kiss-table {
+    width: 100%;
+    background: var(--kiss-color-contrast);
+}
+
 .kiss-table th {
     color: inherit;
     font-size: .7em;
