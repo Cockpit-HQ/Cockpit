@@ -41,27 +41,27 @@
                         <th width="120"><?=t('Modified')?></th>
                         <th width="20"></th>
                     </tr>
-                    <tbody>
-                        <tr v-for="item in items">
-                            <td class="kiss-align-center"><input class="kiss-checkbox" type="checkbox" v-model="selected" :value="item._id"></td>
-                            <td><a class="kiss-badge kiss-link-muted" :href="$route(`/content/collection/item/${model.name}/${item._id}`)" :title="item._id">...{{ item._id.substr(-5) }}</a></td>
-                            <td class="kiss-align-center"><icon :class="{'kiss-color-success': item._state === 1, 'kiss-color-danger': !item._state}">trip_origin</icon></td>
-                            <td v-for="field in model.fields">
-                                <span class="kiss-badge kiss-badge-outline kiss-color-muted" v-if="item[field.name] == null">n/a</span>
-                                <div class="kiss-text-truncate" v-else-if="fieldTypes[field.type] && fieldTypes[field.type].render" v-html="fieldTypes[field.type].render(item[field.name], field, 'table')"></div>
-                                <div class="kiss-text-truncate" v-else>
-                                    <span class="kiss-badge kiss-badge-outline" v-if="Array.isArray(item[field.name])">{{ item[field.name].length }}</span>
-                                    <span class="kiss-badge kiss-badge-outline" v-else-if="typeof(item[field.name]) == 'object'">Object</span>
-                                    <span v-else>{{ item[field.name] }}</span>
-                                </div>
-                            </td>
-                            <td><span class="kiss-flex kiss-badge kiss-badge-outline kiss-color-primary">{{ (new Date(item._modified * 1000).toLocaleString()) }}</span></td>
-                            <td>
-                                <a @click="toggleItemActions(item)"><icon>more_horiz</icon></a>
-                            </td>
-                        </tr>
-                    </tbody>
                 </thead>
+                <tbody>
+                    <tr v-for="item in items">
+                        <td class="kiss-align-center"><input class="kiss-checkbox" type="checkbox" v-model="selected" :value="item._id"></td>
+                        <td><a class="kiss-badge kiss-link-muted" :href="$route(`/content/collection/item/${model.name}/${item._id}`)" :title="item._id">...{{ item._id.substr(-5) }}</a></td>
+                        <td class="kiss-align-center"><icon :class="{'kiss-color-success': item._state === 1, 'kiss-color-danger': !item._state}">trip_origin</icon></td>
+                        <td v-for="field in model.fields">
+                            <span class="kiss-badge kiss-badge-outline kiss-color-muted" v-if="item[field.name] == null">n/a</span>
+                            <div class="kiss-text-truncate" v-else-if="fieldTypes[field.type] && fieldTypes[field.type].render" v-html="fieldTypes[field.type].render(item[field.name], field, 'table')"></div>
+                            <div class="kiss-text-truncate" v-else>
+                                <span class="kiss-badge kiss-badge-outline" v-if="Array.isArray(item[field.name])">{{ item[field.name].length }}</span>
+                                <span class="kiss-badge kiss-badge-outline" v-else-if="typeof(item[field.name]) == 'object'">Object</span>
+                                <span v-else>{{ item[field.name] }}</span>
+                            </div>
+                        </td>
+                        <td><span class="kiss-flex kiss-badge kiss-badge-outline kiss-color-primary">{{ (new Date(item._modified * 1000).toLocaleString()) }}</span></td>
+                        <td>
+                            <a @click="toggleItemActions(item)"><icon>more_horiz</icon></a>
+                        </td>
+                    </tr>
+                </tbody>
             </table>
 
             <kiss-popoutmenu :open="actionItem && 'true'" @popoutmenuclose="toggleItemActions(null)">

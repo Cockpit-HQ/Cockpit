@@ -30,6 +30,10 @@ export default {
             type: String,
             default: null
         },
+        filter: {
+            type: Object,
+            default: null
+        },
         display: {
             type: String,
             default: null
@@ -68,6 +72,10 @@ export default {
 
             <div v-if="link && model">
 
+                <div class="kiss-margin-small kiss-size-small" v-if="val && val._id">
+                    {{ val._id}}
+                </div>
+
                 <a class="kiss-button kiss-button-small" @click="pickItem()">
                     <icon class="kiss-margin-small-right">link</icon>
                     {{ 'Link '+(model.name || model.label)+' item' }}
@@ -81,8 +89,15 @@ export default {
 
         pickItem() {
 
-            App.utils.vueModal('content:assets/dialogs/select-content-item.js', {model: this.model}, {
+            App.utils.vueModal('content:assets/dialogs/select-content-item.js', {model: this.model, filter: this.filter}, {
+                pickItem: (item) => {
+                    this.val = {
+                        model: this.model.name,
+                        _id: item._id
+                    };
 
+                    this.update();
+                }
             }, {size: 'large'})
         },
 
