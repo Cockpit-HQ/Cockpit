@@ -35,6 +35,10 @@ kiss-popoutmenu kiss-content {
     0 100px 80px rgba(0, 0, 0, 0.12);
 }
 
+kiss-popoutmenu kiss-navlist > ul > li > a > icon {
+    transform: scale(1.2);
+}
+
 .kiss-input {
     padding: .4em .4em;
     color: var(--kiss-base-text-color);

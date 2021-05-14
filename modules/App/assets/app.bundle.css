@@ -3713,6 +3713,9 @@ kiss-popoutmenu kiss-content {
     0 41.8px 33.4px rgba(0, 0, 0, 0.086),
     0 100px 80px rgba(0, 0, 0, 0.12);
 }
+kiss-popoutmenu kiss-navlist > ul > li > a > icon {
+    transform: scale(1.2);
+}
 .kiss-input {
     padding: .4em .4em;
     color: var(--kiss-base-text-color);
@@ -3899,12 +3902,13 @@ vue-view:not([init="true"]) { display: none; }
 
     --kiss-button-default-background: #2b2d42;
 
-    --kiss-color-contrast: rgba(0, 0, 0, .2);
+    --kiss-color-contrast: #10131a;
     --kiss-color-primary: #0e8fff;
     --kiss-color-success: #4caf50;
     --kiss-color-warning: orange;
     --kiss-color-danger: #f91941;
     --kiss-color-muted: rgba(255,255,255,.5);
+    --kiss-color-overlay: rgba(0, 0, 0, .6);
 
     --kiss-container-max-width: 1800px;
     --kiss-container-small-max-width: 900px;
@@ -3916,19 +3920,19 @@ vue-view:not([init="true"]) { display: none; }
     --kiss-button-large-padding-horizontal: 5em;
     --kiss-button-large-font-size: 5em;
 
-    --kiss-dialog-background: rgba(0,0,0,.4);
-    --kiss-dialog-content-background: var(--kiss-base-background-color);
+    --kiss-dialog-background: var(--kiss-color-overlay);
+    --kiss-dialog-content-background: var(--kiss-color-contrast);
     --kiss-dialog-content-spacing: 20px;
     --kiss-dialog-large-width: 840px;
 
     --kiss-dropdown-background: rgba(0,0,0,.95);
 
     --kiss-offcanvas-content-background: var(--kiss-base-background-color);
-    --kiss-offcanvas-background: var(--kiss-dialog-background);
+    --kiss-offcanvas-background: var(--kiss-color-overlay);
     --kiss-offcanvas-content-color: var(--kiss-base-text-color);
 
-    --kiss-popoutmenu-background: var(--kiss-dialog-background);
-    --kiss-popoutmenu-content-background: var(--kiss-dropdown-background);
+    --kiss-popoutmenu-background: var(--kiss-color-overlay);
+    --kiss-popoutmenu-content-background: var(--kiss-color-contrast);
 
     --kiss-navlist-font-size: 14px;
     --kiss-navlist-padding-vertical: 8px;
