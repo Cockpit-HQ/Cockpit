@@ -55,7 +55,13 @@ let FieldRenderer = {
                     <template #item="{ element, index }">
                         <div class="kiss-margin-small kiss-flex kiss-flex-middle">
                             <kiss-card class="kiss-flex-1 kiss-padding-small kiss-size-small kiss-position-relative" theme="bordered">
-                                {{ getPreview(val[index], field) }}
+                                <span class="kiss-badge kiss-badge-outline kiss-color-muted" v-if="val[index] == null">n/a</span>
+                                <div class="kiss-text-truncate" v-else-if="fieldTypes[field.type] && fieldTypes[field.type].render" v-html="fieldTypes[field.type].render(val[index], field)"></div>
+                                <div class="kiss-text-truncate" v-else>
+                                    <span class="kiss-badge kiss-badge-outline" v-if="Array.isArray(val[index])">{{ val[index].length }}</span>
+                                    <span class="kiss-badge kiss-badge-outline" v-else-if="typeof(val[index]) == 'object'">Object</span>
+                                    <span v-else>{{ val[index] }}</span>
+                                </div>
                                 <a class="kiss-cover" @click="editFieldItem(field, index)"></a>
                             </kiss-card>
                             <a class="kiss-margin-small-left kiss-color-danger" @click="removeFieldItem(val, index)"><icon>delete</icon></a>
@@ -145,15 +151,6 @@ let FieldRenderer = {
 
         removeFieldItem(list, index) {
             list.splice(index, 1);
-        },
-
-        getPreview(value, field) {
-
-            if (this.fieldTypes[field.type] && this.fieldTypes[field.type].render) {
-               return this.fieldTypes[field.type].render(value, field);
-            }
-
-            return value;
         },
 
         update() {
