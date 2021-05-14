@@ -25,3 +25,7 @@ icon,
     -webkit-font-feature-settings: 'liga';
     -webkit-font-smoothing: antialiased;
 }
+
+icon[size="larger"] {
+    transform: scale(1.2);
+}

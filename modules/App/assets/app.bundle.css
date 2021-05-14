@@ -23,6 +23,9 @@ icon,
     -webkit-font-feature-settings: 'liga';
     -webkit-font-smoothing: antialiased;
 }
+icon[size="larger"] {
+    transform: scale(1.2);
+}
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.7.0
