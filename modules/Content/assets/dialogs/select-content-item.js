@@ -40,7 +40,8 @@ export default {
 
             <div class="kiss-size-4 kiss-text-bold kiss-margin kiss-flex kiss-flex-middle">
                 <icon class="kiss-margin-small-right kiss-size-3" size="larger">playlist_add_check</icon>
-                {{ t('Select model item') }}
+                <div class="kiss-flex-1">{{ t('Select model item') }}</div>
+                <div class="kiss-badge kiss-badge-outline kiss-color-muted">{{ model.label || model.name }}</div>
             </div>
 
             <app-loader v-if="!fieldTypes || loading"></app-loader>
@@ -104,6 +105,10 @@ export default {
                 limit: this.limit,
                 skip: (page - 1) * this.limit,
             };
+
+            if (this.filter) {
+                options.filter = this.filter;
+            }
 
             this.loading = true;
             this.selected = [];

@@ -67,12 +67,25 @@ let copyText = function (text, cb) {
     if (cb) cb();
 }
 
+let interpolate = function (str, params) {
+    const names = Object.keys(params);
+    const vals = Object.values(params);
+    return new Function(...names, `return \`${str}\`;`)(...vals);
+}
+
+let uuid = function() {
+    return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+    );
+}
 
 export default {
+    copyText,
     formatSize,
     formatDuration,
     formatNumber,
+    interpolate,
+    on,
     toKebabCase,
-    copyText,
-    on
+    uuid
 }

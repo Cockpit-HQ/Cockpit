@@ -3254,6 +3254,10 @@ small,
     margin-top: 0 !important;
     margin-bottom: 0 !important;
 }
+.kiss-margin-remove-horizontal {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
 .kiss-margin-remove-adjacent + * { margin-top: 0 !important; }
 .kiss-margin-auto {
     margin-left: auto !important;
