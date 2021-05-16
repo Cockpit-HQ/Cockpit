@@ -5,22 +5,54 @@
   color: inherit;
 }
 
+.uppy-StatusBar-actionBtn,
+.uppy-size--md .uppy-DashboardContent-bar button {
+  display: inline-flex;
+  align-items: center;
+  border: none;
+  overflow: visible;
+  font: inherit;
+  font-weight: bold;
+  color: inherit;
+  text-transform: none;
+  box-sizing: border-box;
+  padding: 0 var(--kiss-button-small-padding-horizontal, 2em);
+  line-height: var(--kiss-button-small-font-size, 2em);
+  font-size: .6em;
+  vertical-align: middle;
+  letter-spacing: .1em;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.uppy-StatusBar-actionBtn,
+.uppy-StatusBar.is-waiting .uppy-StatusBar-actionBtn--upload,
+.uppy-DashboardTab-btn:active,
+.uppy-DashboardTab-btn:focus {
+  background-color: var(--kiss-color-primary);
+}
+
 .uppy-DashboardTab-btn,
 .uppy-Dashboard-note,
 .uppy-StatusBar-content {
   color: var(--kiss-color-muted);
 }
 
-.uppy-DashboardTab-btn:active,
-.uppy-DashboardTab-btn:focus {
-  background-color: var(--kiss-color-primary);
+.uppy-DashboardContent-addMore:focus,
+.uppy-DashboardContent-back:focus {
+  background-color: transparent;
 }
+
 
 .uppy-StatusBar,
 .uppy-DashboardContent-bar,
 .uppy-DashboardContent-panel,
+.uppy-Dashboard-AddFilesPanel,
 .uppy-Dashboard-inner,
-.uppy-StatusBar.is-waiting .uppy-StatusBar-actions {
+.uppy-StatusBar.is-waiting .uppy-StatusBar-actions,
+.uppy-StatusBar:not([aria-hidden=true]).is-waiting {
+  background: var(--kiss-dialog-content-background);
   background-color: var(--kiss-dialog-content-background);
   border-color:  var(--kiss-dialog-content-background);
   color: inherit;

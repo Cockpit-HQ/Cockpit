@@ -11,11 +11,7 @@ function initUppy() {
     }).use(Uppy.Dashboard, {
         showProgressDetails: true,
         //note: 'Images and video only, 2–3 files, up to 1 MB',
-        height: 470,
-        metaFields: [
-            { id: 'name', name: 'Name', placeholder: 'file name' },
-            { id: 'caption', name: 'Caption', placeholder: 'describe what the image is about' }
-        ],
+        height: 450,
         browserBackButtonClose: false
     }).use(Uppy.XHRUpload, {
         endpoint: App.route('/assets/upload')
@@ -92,8 +88,11 @@ export default {
             <kiss-row class="kiss-child-width-1-5" v-if="!loading && assets.length" match="true" hover="shadow">
                 <div v-for="asset in assets">
                     <kiss-card theme="bordered">
-                        <div class="kiss-bgcolor-contrast" :class="{'kiss-bgcolor-transparentimage': asset.type == 'image'}">
+                        <div class="kiss-bgcolor-contrast kiss-position-relative" :class="{'kiss-bgcolor-transparentimage': asset.type == 'image'}">
                             <canvas width="400" height="300"></canvas>
+                            <div class="kiss-cover kiss-padding kiss-flex kiss-flex-middle kiss-flex-center">
+                                <div><asset-preview :asset="asset"></asset-preview></div>
+                            </div>
                         </div>
                         <div class="kiss-padding kiss-flex kiss-flex-middle">
                             <div class="kiss-text-truncate kiss-size-xsmall kiss-flex-1">{{ asset.title }}</div>

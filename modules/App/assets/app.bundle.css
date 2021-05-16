@@ -3729,6 +3729,9 @@ kiss-popoutmenu kiss-content {
     0 41.8px 33.4px rgba(0, 0, 0, 0.086),
     0 100px 80px rgba(0, 0, 0, 0.12);
 }
+kiss-popoutmenu kiss-content {
+    border-top: 2px var(--kiss-color-primary) solid;
+}
 kiss-popoutmenu kiss-navlist > ul > li > a > icon {
     transform: scale(1.2);
 }
