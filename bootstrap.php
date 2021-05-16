@@ -75,6 +75,7 @@ class APP {
                 '#addons'  => APP_ENV_DIR.'/addons',
                 '#storage' => APP_ENV_DIR.'/storage',
                 '#tmp'     => APP_ENV_DIR.'/storage/tmp',
+                '#uploads' => APP_ENV_DIR.'/storage/uploads',
             ]
         ], $config ?? []);
 
@@ -104,6 +105,13 @@ class APP {
                     'args' => [$app->path('#tmp:')],
                     'mount' => true,
                     'url' => $app->pathToUrl('#tmp:', true)
+                ],
+
+                'uploads' => [
+                    'adapter' => 'League\Flysystem\Local\LocalFilesystemAdapter',
+                    'args' => [$app->path('#uploads:')],
+                    'mount' => true,
+                    'url' => $app->pathToUrl('#uploads:', true)
                 ],
 
             ], $config['fileStorage'] ?? []);

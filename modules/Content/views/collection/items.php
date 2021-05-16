@@ -30,7 +30,6 @@
                 </div>
             </div>
 
-
             <table class="kiss-table kiss-margin-large animated fadeIn" v-if="!loading && items.length">
                 <thead>
                     <tr>
@@ -86,7 +85,6 @@
                         </kiss-navlist>
                 </kiss-content>
             </kiss-popoutmenu>
-
 
             <app-actionbar>
 
@@ -160,11 +158,11 @@
                         this.loading = true;
                         this.selected = [];
 
-                        this.$request(`/content/collection/find/${this.model.name}`, {options}).then(resp => {
-                            this.items = resp.items;
-                            this.page = resp.page;
-                            this.pages = resp.pages;
-                            this.count = resp.count;
+                        this.$request(`/content/collection/find/${this.model.name}`, {options}).then(rsp => {
+                            this.items = rsp.items;
+                            this.page = rsp.page;
+                            this.pages = rsp.pages;
+                            this.count = rsp.count;
 
                             this.loading = false;
                         })

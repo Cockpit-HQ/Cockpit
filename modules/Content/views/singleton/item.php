@@ -120,7 +120,7 @@
                             <li class="kiss-nav-header"><?=t('Model actions')?></li>
                             <li>
                                 <a class="kiss-flex kiss-flex-middle" href="#models-item-json" kiss-offcanvas>
-                                    <icon class="kiss-margin-small-right">code</icon>
+                                    <icon class="kiss-margin-small-right">manage_search</icon>
                                     <?=t('Json Object')?>
                                 </a>
                             </li>

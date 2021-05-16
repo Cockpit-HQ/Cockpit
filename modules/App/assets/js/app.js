@@ -237,7 +237,7 @@ App.ui = {
                 if (ele) {
                     ele.focus();
                 }
-            }, 300)
+            }, 300);
         };
 
         return dialog;
