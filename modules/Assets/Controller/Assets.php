@@ -59,4 +59,13 @@ class Assets extends App {
         return $this->module('assets')->uploadAssets('files', $meta);
     }
 
+    public function remove() {
+
+        if ($assets = $this->param('assets', false)) {
+            return $this->module('assets')->remove($assets);
+        }
+
+        return false;
+    }
+
 }

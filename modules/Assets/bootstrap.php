@@ -97,15 +97,10 @@ $this->module('assets')->extend([
                 'path' => $path,
                 'title' => $name,
                 'mime' => finfo_file($finfo, $file),
+                'type' => 'unknown',
                 'description' => '',
                 'tags' => [],
                 'size' => filesize($file),
-                'image' => preg_match('/\.(jpg|jpeg|png|gif|svg|webp)$/i', $file) ? true:false,
-                'video' => preg_match('/\.(mp4|mov|ogv|webv|wmv|flv|avi)$/i', $file) ? true:false,
-                'audio' => preg_match('/\.(mp3|weba|ogg|wav|flac)$/i', $file) ? true:false,
-                'archive' => preg_match('/\.(zip|rar|7zip|gz|tar)$/i', $file) ? true:false,
-                'document' => preg_match('/\.(txt|htm|html|pdf|md)$/i', $file) ? true:false,
-                'code' => preg_match('/\.(htm|html|php|css|less|js|json|md|markdown|yaml|xml|htaccess)$/i', $file) ? true:false,
                 'colors' => null,
                 'width' => null,
                 'height' => null,
@@ -122,7 +117,17 @@ $this->module('assets')->extend([
                 $asset['mime'] = 'image/svg+xml';
             }
 
-            if ($asset['image'] && !preg_match('/\.svg$/i', $file)) {
+            $asset['type'] = match(1) {
+                preg_match('/\.(jpg|jpeg|png|gif|svg|webp)$/i', $file) => 'image',
+                preg_match('/\.(mp4|mov|ogv|webv|wmv|flv|avi)$/i', $file) => 'video',
+                preg_match('/\.(mp3|weba|ogg|wav|flac)$/i', $file) => 'audio',
+                preg_match('/\.(zip|rar|7zip|gz|tar)$/i', $file) => 'archive',
+                preg_match('/\.(txt|htm|html|pdf|md)$/i', $file) => 'document',
+                preg_match('/\.(htm|html|php|css|less|js|json|md|markdown|yaml|xml|htaccess)$/i', $file) => 'code',
+                default => 'unknown'
+            };
+
+            if ($asset['type'] == 'image' && !preg_match('/\.svg$/i', $file)) {
 
                 $info = getimagesize($file);
                 $asset['width']  = $info[0];
@@ -181,6 +186,36 @@ $this->module('assets')->extend([
                 $this->app->dataStorage->insert('assets', $assets);
             }
         }
+
+        return $assets;
+    },
+
+    'remove' => function(mixed $assets) {
+
+        $assets = isset($assets[0]) ? $assets : [$assets];
+
+        foreach ($assets as &$asset) {
+
+            if (is_string($asset)) {
+                $asset = $this->app->dataStorage->findOne('assets', ['_id' => $asset]);
+            }
+
+            if (!isset($asset['_id'])) continue;
+
+            if (!isset($asset['path'])) {
+                $asset = $this->app->dataStorage->findOne('assets', ['_id' => $asset['_id']]);
+            }
+
+            if (!$asset) continue;
+
+            $this->app->dataStorage->remove('assets', ['_id' => $asset['_id']]);
+
+            if ($this->app->fileStorage->fileExists('uploads://'.trim($asset['path'], '/'))) {
+                $this->app->fileStorage->delete('uploads://'.trim($asset['path'], '/'));
+            }
+        }
+
+        $this->app->trigger('assets.remove', [$assets]);
 
         return $assets;
     },

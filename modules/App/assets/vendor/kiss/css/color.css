@@ -12,3 +12,7 @@
 .kiss-bgcolor-warning { background-color: var(--kiss-color-warning, orange) !important; }
 .kiss-bgcolor-muted { background-color: var(--kiss-color-muted, #6d6f79) !important; }
 .kiss-bgcolor-contrast { background-color: var(--kiss-color-contrast, #fff) !important; }
+.kiss-bgcolor-transparent {
+    background: rgba(0,0,0,0) !important;
+    background-color: rgba(0,0,0,0) !important;
+}

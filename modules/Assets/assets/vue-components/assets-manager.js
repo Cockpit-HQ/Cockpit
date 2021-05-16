@@ -6,7 +6,7 @@ function initUppy() {
             //maxFileSize: 1000000,
             //maxNumberOfFiles: 3,
             minNumberOfFiles: 1,
-            allowedFileTypes: ['image/*', 'video/*']
+            //allowedFileTypes: ['image/*', 'video/*']
         }
     }).use(Uppy.Dashboard, {
         showProgressDetails: true,
@@ -31,6 +31,7 @@ export default {
     data() {
         return {
             assets: [],
+            actionAsset: null,
             selected: [],
             folders: [],
             folder: null,
@@ -90,9 +91,12 @@ export default {
             <kiss-row class="kiss-child-width-1-5" v-if="!loading && assets.length" match="true" hover="shadow">
                 <div v-for="asset in assets">
                     <kiss-card theme="bordered">
-                        <div class="kiss-bgcolor-contrast"><canvas width="400" height="300"></canvas></div>
-                        <div class="kiss-padding-small kiss-size-xsmall">
-                            <div class="kiss-text-truncate">{{ asset.title }}</div>
+                        <div class="kiss-bgcolor-contrast" :class="{'kiss-bgcolor-transparentimage': asset.type == 'image'}">
+                            <canvas width="400" height="300"></canvas>
+                        </div>
+                        <div class="kiss-padding kiss-flex kiss-flex-middle">
+                            <div class="kiss-text-truncate kiss-size-xsmall kiss-flex-1">{{ asset.title }}</div>
+                            <a class="kiss-margin-small-left" @click="toggleAssetActions(asset)"><icon>more_horiz</icon></a>
                         </div>
                     </kiss-card>
                 </div>
@@ -118,6 +122,40 @@ export default {
                 </kiss-container>
             </app-actionbar>
 
+            <teleport to="body">
+                <kiss-popoutmenu :open="actionAsset && 'true'" id="asset-menu-actions" @popoutmenuclose="toggleAssetActions(null)">
+                    <kiss-content>
+                        <kiss-navlist class="kiss-margin">
+                            <ul>
+                                <li class="kiss-nav-header">{{ t('Asset actions') }}</li>
+                                <li v-if="actionAsset">
+                                    <div class="kiss-color-muted kiss-text-truncated kiss-margin-small-bottom">{{ actionAsset.title }}</div>
+                                </li>
+                                <li>
+                                    <a class="kiss-flex kiss-flex-middle">
+                                        <icon class="kiss-margin-small-right" size="larger">create</icon>
+                                        {{ t('Edit') }}
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="kiss-flex kiss-flex-middle">
+                                        <icon class="kiss-margin-small-right" size="larger">cloud_download</icon>
+                                        {{ t('Download') }}
+                                    </a>
+                                </li>
+                                <li class="kiss-nav-divider"></li>
+                                <li>
+                                    <a class="kiss-color-danger kiss-flex kiss-flex-middle" @click="remove(actionAsset)">
+                                        <icon class="kiss-margin-small-right" size="larger">delete</icon>
+                                        {{ t('Delete') }}
+                                    </a>
+                                </li>
+                            </ul>
+                        </kiss-navlist>
+                    </kiss-content>
+                </kiss-popoutmenu>
+            </teleport>
+
         </div>
     `,
 
@@ -142,7 +180,48 @@ export default {
                 this.view = 'assets';
                 this.loading = false;
             })
-        }
+        },
+
+        remove(asset) {
+
+            App.ui.confirm('Are you sure?', () => {
+
+                this.$request(`/assets/remove`, {assets: [asset._id]}).then(res => {
+                    this.load(this.page == 1 ? 1 : (this.assets.length - 1 ? this.page : this.page - 1));
+                    App.ui.notify('Asset removed!');
+                });
+            });
+        },
+
+        removeSelected() {
+
+            App.ui.confirm('Are you sure?', () => {
+
+                this.$request(`/assets/remove`, {assets: this.selected}).then(res => {
+                    this.load(this.page == 1 ? 1 : (this.assets.length - this.selected.length ? this.page : this.page - 1));
+                    App.ui.notify('Assets removed!');
+                });
+            });
+        },
+
+        toggleAllSelect(e) {
+
+            this.selected = [];
+
+            if (e.target.checked) {
+                this.assets.forEach(asset => this.selected.push(asset._id));
+            }
+        },
+
+        toggleAssetActions(asset) {
+
+            if (!asset) {
+                setTimeout(() => this.actionAsset = null, 300);
+                return;
+            }
+
+            this.actionAsset = asset;
+        },
     }
 
 }
