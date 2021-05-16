@@ -52,6 +52,9 @@ export default {
         App.assets.require([
             'assets:assets/vendor/uppy/uppy.js',
             'assets:assets/vendor/uppy/uppy.css',
+
+            'assets:assets/vendor/spotlight/spotlight.bundle.js',
+            'assets:assets/vendor/spotlight/css/spotlight.min.css',
         ]).then(() => {
 
             App.assets.require([
@@ -61,8 +64,8 @@ export default {
             this.uppy = initUppy();
 
             this.uppy.on('complete', result => {
-                console.log('successful files:', result.successful)
-                console.log('failed files:', result.failed)
+                // console.log('successful files:', result.successful)
+                // console.log('failed files:', result.failed)
                 this.load();
             })
 
@@ -85,7 +88,7 @@ export default {
                 </div>
             </div>
 
-            <kiss-row class="kiss-child-width-1-5" v-if="!loading && assets.length" match="true" hover="shadow">
+            <kiss-row class="kiss-child-width-1-2 kiss-child-width-1-5@m spotlight-group" v-if="!loading && assets.length" match="true" hover="shadow">
                 <div v-for="asset in assets">
                     <kiss-card theme="bordered">
                         <div class="kiss-bgcolor-contrast kiss-position-relative" :class="{'kiss-bgcolor-transparentimage': asset.type == 'image'}">
@@ -93,6 +96,7 @@ export default {
                             <div class="kiss-cover kiss-padding kiss-flex kiss-flex-middle kiss-flex-center">
                                 <div><asset-preview :asset="asset"></asset-preview></div>
                             </div>
+                            <a class="kiss-cover spotlight" :href="ASSETS_BASE_URL+asset.path" :data-media="asset.type" :data-title="asset.title" v-if="['image', 'video'].indexOf(asset.type) > -1"></a>
                         </div>
                         <div class="kiss-padding kiss-flex kiss-flex-middle">
                             <div class="kiss-text-truncate kiss-size-xsmall kiss-flex-1">{{ asset.title }}</div>
