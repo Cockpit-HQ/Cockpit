@@ -30,6 +30,7 @@ export default {
 
     data() {
         return {
+            ASSETS_BASE_URL: window.ASSETS_BASE_URL,
             assets: [],
             actionAsset: null,
             selected: [],
@@ -138,7 +139,7 @@ export default {
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="kiss-flex kiss-flex-middle">
+                                    <a class="kiss-flex kiss-flex-middle" :href="actionAsset && ASSETS_BASE_URL+actionAsset.path" target="_blank" rel="noopener" download>
                                         <icon class="kiss-margin-small-right" size="larger">cloud_download</icon>
                                         {{ t('Download') }}
                                     </a>
