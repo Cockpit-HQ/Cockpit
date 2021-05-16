@@ -143,7 +143,7 @@ export default {
                     this.item = item;
                     this.update();
                 }
-            }, {size: 'large'})
+            }, {size: 'xlarge'})
         },
 
         getDisplay() {

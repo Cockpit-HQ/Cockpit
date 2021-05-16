@@ -30,6 +30,7 @@ export default {
             assets: [],
             actionAsset: null,
             selected: [],
+            selectedAsset: null,
             folders: [],
             folder: null,
 
@@ -39,9 +40,19 @@ export default {
             limit: 15,
 
             loading: false,
-            modal: false,
             view: 'assets',
             uppy: null
+        }
+    },
+
+    props: {
+        modal: {
+            type: Boolean,
+            default: false
+        },
+
+        selectAsset: {
+            default: null
         }
     },
 
@@ -90,13 +101,14 @@ export default {
 
             <kiss-row class="kiss-child-width-1-2 kiss-child-width-1-5@m spotlight-group" v-if="!loading && assets.length" match="true" hover="shadow">
                 <div v-for="asset in assets">
-                    <kiss-card theme="bordered">
+                    <kiss-card class="kiss-position-relative" theme="bordered" :style="{borderColor: (selectedAsset && selectedAsset._id == asset._id && 'var(--kiss-color-primary)') || null}">
                         <div class="kiss-bgcolor-contrast kiss-position-relative" :class="{'kiss-bgcolor-transparentimage': asset.type == 'image'}">
                             <canvas width="400" height="300"></canvas>
                             <div class="kiss-cover kiss-padding kiss-flex kiss-flex-middle kiss-flex-center">
                                 <div><asset-preview :asset="asset"></asset-preview></div>
                             </div>
                             <a class="kiss-cover spotlight" :href="ASSETS_BASE_URL+asset.path" :data-media="asset.type" :data-title="asset.title" v-if="['image', 'video'].indexOf(asset.type) > -1"></a>
+                            <a class="kiss-cover" @click="selectedAsset=asset" v-if="modal"></a>
                         </div>
                         <div class="kiss-padding kiss-flex kiss-flex-middle">
                             <div class="kiss-text-truncate kiss-size-xsmall kiss-flex-1">{{ asset.title }}</div>
@@ -106,8 +118,28 @@ export default {
                 </div>
             </kiss-row>
 
-            <app-actionbar v-show="!modal">
-                <kiss-container id="assets-component-actionbar">
+            <div class="kiss-flex kiss-flex-middle kiss-margin-large-top" v-if="modal">
+                <div class="kiss-flex kiss-flex-middle" v-if="!loading && count">
+                    <div class="kiss-size-small">{{ count}} {{ count == 1 ? t('Item') : t('Items') }}</div>
+                    <div class="kiss-margin-small-left kiss-overlay-input">
+                        <span class="kiss-badge kiss-badge-outline kiss-color-muted">{{ page }} / {{pages}}</span>
+                        <select v-model="page" @change="load(page)" v-if="pages > 1"><option v-for="p in pages" :value="p">{{ p }}</option></select>
+                    </div>
+                    <div class="kiss-margin-small-left kiss-size-small">
+                        <a class="kiss-margin-small-right" v-if="(page - 1) >= 1" @click="load(page - 1)">{{ t('Previous') }}</a>
+                        <a v-if="(page + 1) <= pages" @click="load(page + 1)">{{ t('Next') }}</a>
+                    </div>
+                </div>
+                <div class="kiss-flex-1"></div>
+                <button class="kiss-button" :disabled="!uppy" @click="uppy.getPlugin('Dashboard').openModal()">{{ t('Upload asset') }}</button>
+                <div class="kiss-button-group kiss-margin-left">
+                    <button class="kiss-button" kiss-dialog-close>{{ t('Cancel') }}</button>
+                    <button class="kiss-button kiss-button-primary" v-if="selectedAsset" @click="selectAsset && selectAsset(selectedAsset)">{{ t('Select asset') }}</button>
+                </div>
+            </div>
+
+            <app-actionbar v-if="!modal">
+                <kiss-container>
                     <div class="kiss-flex kiss-flex-middle">
                         <div class="kiss-flex kiss-flex-middle" v-if="!loading && count">
                             <div class="kiss-size-small">{{ count}} {{ count == 1 ? t('Item') : t('Items') }}</div>
@@ -116,8 +148,8 @@ export default {
                                 <select v-model="page" @change="load(page)" v-if="pages > 1"><option v-for="p in pages" :value="p">{{ p }}</option></select>
                             </div>
                             <div class="kiss-margin-small-left kiss-size-small">
-                                <a class="kiss-margin-small-right" v-if="(page - 1) >= 1" @click="load(page - 1)"><?=t('Previous')?></a>
-                                <a v-if="(page + 1) <= pages" @click="load(page + 1)"><?=t('Next')?></a>
+                                <a class="kiss-margin-small-right" v-if="(page - 1) >= 1" @click="load(page - 1)">{{ t('Previous') }}</a>
+                                <a v-if="(page + 1) <= pages" @click="load(page + 1)">{{ t('Next') }}</a>
                             </div>
                         </div>
                         <div class="kiss-flex-1"></div>
@@ -174,6 +206,7 @@ export default {
 
             this.loading = true;
             this.selected = [];
+            this.selectedAsset = null;
 
             this.$request('/assets/assets', {options}).then(rsp => {
                 this.assets = rsp.assets;

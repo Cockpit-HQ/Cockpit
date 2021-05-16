@@ -38,6 +38,10 @@ kiss-dialog[size="large"] > kiss-content {
     width: var(--kiss-dialog-large-width, 600px);
 }
 
+kiss-dialog[size="xlarge"] > kiss-content {
+    width: var(--kiss-dialog-xlarge-width, 1200px);
+}
+
 kiss-dialog[open] {
     opacity: 1;
     pointer-events: auto;
