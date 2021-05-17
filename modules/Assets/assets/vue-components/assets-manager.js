@@ -15,7 +15,7 @@ function initUppy() {
         browserBackButtonClose: false
     }).use(Uppy.XHRUpload, {
         endpoint: App.route('/assets/upload')
-    }).use(Uppy.Webcam, { target: Uppy.Dashboard })
+    }).use(Uppy.Webcam, { target: Uppy.Dashboard, showVideoSourceDropdown: true })
     .use(Uppy.ScreenCapture, { target: Uppy.Dashboard })
     //.use(Uppy.Url, { target: Uppy.Dashboard, companionUrl: 'https://companion.uppy.io' })
     .use(Uppy.ImageEditor, { target: Uppy.Dashboard });

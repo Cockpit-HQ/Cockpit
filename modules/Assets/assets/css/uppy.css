@@ -28,9 +28,11 @@
 
 .uppy-StatusBar-actionBtn,
 .uppy-StatusBar.is-waiting .uppy-StatusBar-actionBtn--upload,
+.uppy-size--md .uppy-StatusBar-actionBtn--done,
 .uppy-DashboardTab-btn:active,
 .uppy-DashboardTab-btn:focus {
   background-color: var(--kiss-color-primary);
+  font-size: .9em;
 }
 
 .uppy-DashboardTab-btn,
