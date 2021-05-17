@@ -39,7 +39,7 @@ export default {
         <div>
 
             <div class="kiss-size-4 kiss-text-bold kiss-margin kiss-flex kiss-flex-middle">
-                <icon class="kiss-margin-small-right kiss-size-3" size="larger">playlist_add_check</icon>
+                <icon class="kiss-margin-small-right kiss-size-3" size="larger">link</icon>
                 <div class="kiss-flex-1">{{ t('Select model item') }}</div>
                 <div class="kiss-badge kiss-badge-outline kiss-color-muted">{{ model.label || model.name }}</div>
             </div>

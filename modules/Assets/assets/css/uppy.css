@@ -59,7 +59,7 @@
 }
 
 .uppy-Dashboard--modal .uppy-Dashboard-AddFiles {
-  border-color: var(--kiss-color-muted);
+  border-color: transparent;
 }
 
 .uppy-DashboardTab-btn:hover {

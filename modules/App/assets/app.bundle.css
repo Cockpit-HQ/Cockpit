@@ -3841,7 +3841,7 @@ kiss-card[theme*="bordered"] {
 }
 .kiss-table th {
     color: inherit;
-    font-size: .7em;
+    font-size: .6em;
     font-weight: bold;
     text-transform: uppercase;
     letter-spacing: .1em;
