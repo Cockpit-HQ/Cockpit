@@ -32,8 +32,8 @@ export default {
 
     template: /*html*/`
         <div>
-            <div v-if="asset.type=='image'">
-                <img class="animated fadeIn kiss-margin-auto" :src="ASSETS_BASE_URL+asset.path" v-if="!loading">
+            <div class="kiss-cover kiss-flex kiss-flex-middle kiss-flex-center" v-if="asset.type=='image'">
+                <img class="animated fadeIn kiss-margin-auto kiss-responsive-height" :src="ASSETS_BASE_URL+asset.path" v-if="!loading">
                 <app-loader size="small" v-if="loading"></app-loader>
             </div>
             <kiss-svg :src="$base('assets:assets/icons/video.svg')" width="80" height="80" v-else-if="asset.type=='video'"></kiss-svg>

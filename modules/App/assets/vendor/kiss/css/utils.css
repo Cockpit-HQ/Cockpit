@@ -34,3 +34,14 @@
     right: 0;
     bottom: 0;
 }
+
+.kiss-responsive-width {
+    max-height: none;
+    max-width: 100%;
+    height: auto;
+}
+
+.kiss-responsive-height {
+    max-height: 100%;
+    width: auto;
+}

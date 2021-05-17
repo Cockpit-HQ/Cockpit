@@ -42,7 +42,8 @@ export default {
             <div class="kiss-margin-small" v-if="val">
 
                 <div class="kiss-bgcolor-contrast kiss-position-relative kiss-padding" :class="{'kiss-bgcolor-transparentimage': val.type == 'image'}">
-                    <div class="kiss-width-2-3 kiss-margin-auto kiss-align-center"><asset-preview :asset="val"></asset-preview></div>
+                    <canvas width="400" height="150"></canvas>
+                    <div class="kiss-cover kiss-align-center kiss-flex kiss-flex-middle kiss-flex-center"><asset-preview :asset="val"></asset-preview></div>
                     <a class="kiss-cover" :href="ASSETS_BASE_URL+val.path" target="_blank" rel="noopener"></a>
                 </div>
                 <div class="kiss-margin-small kiss-flex kiss-flex-middle">
