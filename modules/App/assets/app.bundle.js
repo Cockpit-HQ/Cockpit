@@ -1897,7 +1897,7 @@
 
         alert: function (content, options) {
 
-            let dialog = this.dialog(`
+            let dialog = this.dialog(/*html*/`
             <div class="kiss-margin">
                 ${content}
             </div>
@@ -1907,13 +1907,11 @@
         `, options, 'alert');
 
             dialog.show();
-
-
         },
 
         confirm: function (text, onconfirm, oncancel, options) {
 
-            let dialog = this.dialog(`
+            let dialog = this.dialog(/*html*/`
             <div class="kiss-margin-bottom">
                 ${text}
             </div>
@@ -1924,20 +1922,49 @@
         `, options, 'confirm');
 
             utils.on(dialog, 'click', '.kiss-button-confirm', () => {
-                if(onconfirm) onconfirm();
+                if (onconfirm) onconfirm();
                 dialog.close();
             });
 
             utils.on(dialog, 'click', '.kiss-button-cancel', () => {
-                if(oncancel) onconfirm();
+                if (oncancel) oncancel();
                 dialog.close();
             });
 
             dialog.show();
         },
 
-        prompt: function (text, value, clb, options) {
+        prompt: function (text, value = '', clb, options) {
+            let dialog = this.dialog(/*html*/`
+            <form>
+                <div class="kiss-margin">${text}</div>
+                <div class="kiss-margin-bottom">
+                    <input class="kiss-width-1-1 kiss-input" type="text" required>
+                </div>
+                <div class="kiss-margin-top kiss-flex kiss-flex-middle kiss-button-group">
+                    <button type="button" class="kiss-button-cancel kiss-button kiss-flex-1">${App$1.i18n.get('Cancel')}</button>
+                    <button type="submit" class="kiss-button-confirm kiss-button kiss-button-primary kiss-flex-1">${App$1.i18n.get('Ok')}</button>
+                </div>
+            </form>
+        `, options, 'confirm');
 
+            let input = dialog.querySelector('.kiss-input');
+
+            input.value = value;
+
+            utils.on(dialog, 'submit', (e) => {
+                e.preventDefault();
+                if (clb) clb(input.value);
+                dialog.close();
+            });
+
+            utils.on(dialog, 'click', '.kiss-button-cancel', () => {
+                dialog.close();
+            });
+
+            dialog.show();
+
+            setTimeout(() => input.focus(), 300);
         }
     };
 

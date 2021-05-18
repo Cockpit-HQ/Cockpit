@@ -68,4 +68,28 @@ class Assets extends App {
         return false;
     }
 
+
+    public function createFolder() {
+
+        $name   = $this->param('name', null);
+        $parent = $this->param('parent', '');
+
+        if (!$name) return;
+
+        // does folder already exists?
+        if ($this->app->dataStorage->count('assets/folders', ['name' => $name, '_p' => $parent])) {
+            return $this->stop(['error' => 'Folder already exists'], 409);
+        }
+
+        $folder = [
+            'name' => $name,
+            '_p' => $parent,
+            '_by' => $this->helper('auth')->getUser('_id'),
+        ];
+
+        $this->app->dataStorage->save('assets/folders', $folder);
+
+        return $folder;
+    }
+
 }

@@ -130,9 +130,12 @@ export default {
                         <a v-if="(page + 1) <= pages" @click="load(page + 1)">{{ t('Next') }}</a>
                     </div>
                 </div>
-                <div class="kiss-flex-1"></div>
-                <button class="kiss-button" :disabled="!uppy" @click="uppy.getPlugin('Dashboard').openModal()">{{ t('Upload asset') }}</button>
-                <div class="kiss-button-group kiss-margin-left">
+                <div class="kiss-flex-1 kiss-margin-right"></div>
+                <div class="kiss-button-group kiss-margin-right">
+                    <button class="kiss-button" @click="createFolder()">{{ t('Create folder') }}</button>
+                    <button class="kiss-button" :disabled="!uppy" @click="uppy.getPlugin('Dashboard').openModal()">{{ t('Upload asset') }}</button>
+                </div>
+                <div class="kiss-button-group">
                     <button class="kiss-button" kiss-dialog-close>{{ t('Cancel') }}</button>
                     <button class="kiss-button kiss-button-primary" v-if="selectedAsset" @click="selectAsset && selectAsset(selectedAsset)">{{ t('Select asset') }}</button>
                 </div>
@@ -152,7 +155,8 @@ export default {
                                 <a v-if="(page + 1) <= pages" @click="load(page + 1)">{{ t('Next') }}</a>
                             </div>
                         </div>
-                        <div class="kiss-flex-1"></div>
+                        <div class="kiss-flex-1 kiss-margin-right"></div>
+                        <button class="kiss-button kiss-margin-right" @click="createFolder()">{{ t('Create folder') }}</button>
                         <button class="kiss-button kiss-button-primary" :disabled="!uppy" @click="uppy.getPlugin('Dashboard').openModal()">{{ t('Upload asset') }}</button>
                     </div>
                 </kiss-container>
@@ -210,6 +214,7 @@ export default {
 
             this.$request('/assets/assets', {options}).then(rsp => {
                 this.assets = rsp.assets;
+                this.folders = rsp.folders;
                 this.page = rsp.page;
                 this.pages = rsp.pages;
                 this.count = rsp.count;
@@ -259,6 +264,13 @@ export default {
 
             this.actionAsset = asset;
         },
+
+        createFolder() {
+
+            App.ui.prompt(this.t('Foldername'), '', name => {
+                alert('Todo!')
+            });
+        }
     }
 
 }
