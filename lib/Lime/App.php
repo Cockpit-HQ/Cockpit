@@ -107,8 +107,10 @@ class App implements \ArrayAccess {
 
         // default helpers
         $this->helpers = new ArrayObject(\array_merge([
+            'cache' => 'Lime\\Helper\\Cache',
+            'fs' => 'Lime\\Helper\\Filesystem',
             'session' => 'Lime\\Helper\\Session',
-            'cache' => 'Lime\\Helper\\Cache'
+            'utils' => 'Lime\\Helper\\Utils'
         ], $this->registry['helpers']));
 
         // register simple autoloader

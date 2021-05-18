@@ -169,6 +169,8 @@ class APP {
             include($custombootfile);
         }
 
+        $app->trigger('bootstrap');
+
         static::$instance = $app;
 
         return static::$instance;

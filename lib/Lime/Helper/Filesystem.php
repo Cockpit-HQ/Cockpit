@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Helper;
+namespace Lime\Helper;
 
 
 class Filesystem extends \Lime\Helper {
