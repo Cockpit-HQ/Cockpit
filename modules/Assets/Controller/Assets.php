@@ -76,16 +76,17 @@ class Assets extends App {
 
         if (!$name) return;
 
-        // does folder already exists?
-        if ($this->app->dataStorage->count('assets/folders', ['name' => $name, '_p' => $parent])) {
-            return $this->stop(['error' => 'Folder already exists'], 409);
-        }
-
-        $folder = [
-            'name' => $name,
+        $folder = $this->param('folder', [
             '_p' => $parent,
             '_by' => $this->helper('auth')->getUser('_id'),
-        ];
+        ]);
+
+        $folder['name'] = $name;
+
+        // does folder already exists?
+        if ($this->app->dataStorage->count('assets/folders', ['name' => $name, '_p' => $folder['_p']])) {
+            return $this->stop(['error' => 'Folder already exists'], 409);
+        }
 
         $this->app->dataStorage->save('assets/folders', $folder);
 

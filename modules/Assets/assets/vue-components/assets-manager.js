@@ -243,7 +243,7 @@ export default {
                                     <div class="kiss-color-muted kiss-text-truncate kiss-margin-small-bottom">{{ actionFolder.name }}</div>
                                 </li>
                                 <li>
-                                    <a class="kiss-flex kiss-flex-middle">
+                                    <a class="kiss-flex kiss-flex-middle" @click="renameFolder(actionFolder)">
                                         <icon class="kiss-margin-small-right" size="larger">create</icon>
                                         {{ t('Rename') }}
                                     </a>
@@ -349,6 +349,19 @@ export default {
                     App.ui.notify('Folder created!');
                 }).catch(rsp => {
                     App.ui.notify(rsp.error || 'Creating folder failed!', 'error');
+                });
+            });
+        },
+
+        renameFolder(folder) {
+
+            App.ui.prompt(this.t('Foldername'), folder.name, name => {
+
+                this.$request(`/assets/saveFolder`, {name, parent: this.folder, folder}).then(f => {
+                    Object.assign(folder, f);
+                    App.ui.notify('Folder renamed!');
+                }).catch(rsp => {
+                    App.ui.notify(rsp.error || 'Renaming folder failed!', 'error');
                 });
             });
         },
