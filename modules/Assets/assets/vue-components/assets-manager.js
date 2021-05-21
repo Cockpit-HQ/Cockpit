@@ -150,7 +150,7 @@ export default {
                 <div class="kiss-flex-1 kiss-margin-right"></div>
                 <div class="kiss-button-group kiss-margin-right">
                     <button class="kiss-button" @click="createFolder()">{{ t('Create folder') }}</button>
-                    <button class="kiss-button" :disabled="!uppy" @click="uppy.getPlugin('Dashboard').openModal()">{{ t('Upload asset') }}</button>
+                    <button class="kiss-button" :disabled="!uppy" @click="upload()">{{ t('Upload asset') }}</button>
                 </div>
                 <div class="kiss-button-group">
                     <button class="kiss-button" kiss-dialog-close>{{ t('Cancel') }}</button>
