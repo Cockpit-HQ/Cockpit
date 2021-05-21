@@ -84,8 +84,6 @@ export default {
 
     template: /*html*/`
 
-        <div class="DashboardContainer"></div>
-
         <div class="kiss-margin-large" v-if="view == 'assets'">
 
             <div>
@@ -104,7 +102,7 @@ export default {
                 </div>
             </div>
 
-            <kiss-row class="kiss-child-width-1-2 kiss-child-width-1-5@m kiss-margin-large" match="true" v-if="!loading && folders.length">
+            <kiss-row class="kiss-child-width-1-2 kiss-child-width-1-5@m kiss-margin-large-bottom" match="true" v-if="!loading && folders.length">
 
                 <div v-for="folder in folders">
                     <kiss-card class="kiss-flex kiss-flex-middle" theme="bordered">
@@ -247,7 +245,7 @@ export default {
                                 </li>
                                 <li>
                                     <a class="kiss-flex kiss-flex-middle" @click="renameFolder(actionFolder)">
-                                        <icon class="kiss-margin-small-right" size="larger">create</icon>
+                                        <icon class="kiss-margin-small-right" size="larger">drive_file_rename_outline</icon>
                                         {{ t('Rename') }}
                                     </a>
                                 </li>
