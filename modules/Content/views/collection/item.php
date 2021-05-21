@@ -246,9 +246,9 @@
                             this.item = Object.assign(this.item, item);
                             this.saving = false;
                             App.ui.notify('Data updated!');
-                        }).catch(res => {
+                        }).catch(rsp => {
                             this.saving = false;
-                            App.ui.notify(res.error || 'Saving failed!', 'error');
+                            App.ui.notify(rsp.error || 'Saving failed!', 'error');
                         });
                     },
 

@@ -3058,30 +3058,26 @@ kiss-svg > svg { transform: translate(0,0); }
 /* Phone landscape and bigger */
 @media (min-width: 640px) {
 
-    .uk-flex-first\@s { order: -1; }
-    .uk-flex-last\@s { order: 99; }
-
+    .kiss-flex-first\@s { order: -1; }
+    .kiss-flex-last\@s { order: 99; }
 }
 /* Tablet landscape and bigger */
 @media (min-width: 960px) {
 
-    .uk-flex-first\@m { order: -1; }
-    .uk-flex-last\@m { order: 99; }
-
+    .kiss-flex-first\@m { order: -1; }
+    .kiss-flex-last\@m { order: 99; }
 }
 /* Desktop and bigger */
 @media (min-width: 1200px) {
 
-    .uk-flex-first\@l { order: -1; }
-    .uk-flex-last\@l { order: 99; }
-
+    .kiss-flex-first\@l { order: -1; }
+    .kiss-flex-last\@l { order: 99; }
 }
 /* Large screen and bigger */
 @media (min-width: 1600px) {
 
-    .uk-flex-first\@xl { order: -1; }
-    .uk-flex-last\@xl { order: 99; }
-
+    .kiss-flex-first\@xl { order: -1; }
+    .kiss-flex-last\@xl { order: 99; }
 }
 .kiss-flex-none { flex: none; }
 .kiss-flex-auto { flex: auto; }
@@ -3594,6 +3590,43 @@ td.kiss-text-truncate { max-width: 0; }
     }
 
 }
+.kiss-disabled { pointer-events: none; }
+.kiss-link-muted,
+.kiss-link-muted:hover,
+.kiss-link-muted:active,
+.kiss-link-muted:visited
+{ color: inherit; }
+.kiss-overflow-auto { overflow: auto; }
+.kiss-overflow-x-auto { overflow-x: auto; }
+.kiss-overflow-y-auto { overflow-y: auto; }
+.kiss-overflow-hidden { overflow: hidden; }
+.kiss-display-block { display: block !important; }
+.kiss-display-inline { display: inline !important; }
+.kiss-display-inline-block { display: inline-block !important; }
+.kiss-border-circle { border-radius: 50%; }
+.kiss-svg,
+.kiss-svg:not(.kiss-preserve) [fill*='#']:not(.kiss-preserve) { fill: currentcolor; }
+.kiss-svg:not(.kiss-preserve) [stroke*='#']:not(.kiss-preserve) { stroke: currentcolor; }
+/*
+ * Fix Firefox blurry SVG rendering: https://bugzilla.mozilla.org/show_bug.cgi?id=1046835
+ */
+.kiss-svg { transform: translate(0,0); }
+.kiss-cover {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+.kiss-responsive-width {
+    max-height: none;
+    max-width: 100%;
+    height: auto;
+}
+.kiss-responsive-height {
+    max-height: 100%;
+    width: auto;
+}
 [hidden],
 .kiss-hidden { display: none !important; }
 .kiss-hidden-visually {
@@ -3668,43 +3701,6 @@ td.kiss-text-truncate { max-width: 0; }
 .kiss-hidden-notouch { display: none !important; }
 @media (pointer: coarse) {
     .kiss-hidden-notouch { display: block !important; }
-}
-.kiss-disabled { pointer-events: none; }
-.kiss-link-muted,
-.kiss-link-muted:hover,
-.kiss-link-muted:active,
-.kiss-link-muted:visited
-{ color: inherit; }
-.kiss-overflow-auto { overflow: auto; }
-.kiss-overflow-x-auto { overflow-x: auto; }
-.kiss-overflow-y-auto { overflow-y: auto; }
-.kiss-overflow-hidden { overflow: hidden; }
-.kiss-display-block { display: block !important; }
-.kiss-display-inline { display: inline !important; }
-.kiss-display-inline-block { display: inline-block !important; }
-.kiss-border-circle { border-radius: 50%; }
-.kiss-svg,
-.kiss-svg:not(.kiss-preserve) [fill*='#']:not(.kiss-preserve) { fill: currentcolor; }
-.kiss-svg:not(.kiss-preserve) [stroke*='#']:not(.kiss-preserve) { stroke: currentcolor; }
-/*
- * Fix Firefox blurry SVG rendering: https://bugzilla.mozilla.org/show_bug.cgi?id=1046835
- */
-.kiss-svg { transform: translate(0,0); }
-.kiss-cover {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-}
-.kiss-responsive-width {
-    max-height: none;
-    max-width: 100%;
-    height: auto;
-}
-.kiss-responsive-height {
-    max-height: 100%;
-    width: auto;
 }
 [kiss-container="medium"],
 kiss-container[size="medium"] {

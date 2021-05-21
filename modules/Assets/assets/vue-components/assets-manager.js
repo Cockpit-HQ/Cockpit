@@ -28,11 +28,13 @@ export default {
         return {
             ASSETS_BASE_URL: window.ASSETS_BASE_URL,
             assets: [],
-            actionAsset: null,
             selected: [],
             selectedAsset: null,
             folders: [],
             folder: null,
+
+            actionAsset: null,
+            actionFolder: null,
 
             page: 1,
             count: 0,
@@ -98,6 +100,20 @@ export default {
                     <p class="kiss-margin-small-top">{{ t('No assets') }}</p>
                 </div>
             </div>
+
+            <kiss-row class="kiss-child-width-1-2 kiss-child-width-1-5@m kiss-margin-large" match="true" v-if="!loading && folders.length">
+
+                <div v-for="folder in folders">
+                    <kiss-card class="kiss-flex kiss-flex-middle" theme="bordered">
+                        <div class="kiss-padding kiss-bgcolor-contrast"><icon size="larger">folder</icon></div>
+                        <div class="kiss-padding kiss-text-truncate kiss-flex-1 kiss-text-bold">
+                            {{ folder.name }}
+                        </div>
+                        <a class="kiss-padding" @click="toggleFolderActions(folder)"><icon>more_horiz</icon></a>
+                    </kiss-card>
+                </div>
+
+            </kiss-row>
 
             <kiss-row class="kiss-child-width-1-2 kiss-child-width-1-5@m spotlight-group" v-if="!loading && assets.length" match="true" hover="shadow">
                 <div v-for="asset in assets">
@@ -169,7 +185,7 @@ export default {
                             <ul>
                                 <li class="kiss-nav-header">{{ t('Asset actions') }}</li>
                                 <li v-if="actionAsset">
-                                    <div class="kiss-color-muted kiss-text-truncated kiss-margin-small-bottom">{{ actionAsset.title }}</div>
+                                    <div class="kiss-color-muted kiss-text-truncate kiss-margin-small-bottom">{{ actionAsset.title }}</div>
                                 </li>
                                 <li>
                                     <a class="kiss-flex kiss-flex-middle">
@@ -186,6 +202,55 @@ export default {
                                 <li class="kiss-nav-divider"></li>
                                 <li>
                                     <a class="kiss-color-danger kiss-flex kiss-flex-middle" @click="remove(actionAsset)">
+                                        <icon class="kiss-margin-small-right" size="larger">delete</icon>
+                                        {{ t('Delete') }}
+                                    </a>
+                                </li>
+                            </ul>
+                        </kiss-navlist>
+                    </kiss-content>
+                </kiss-popoutmenu>
+            </teleport>
+
+            <app-actionbar v-if="!modal">
+                <kiss-container>
+                    <div class="kiss-flex kiss-flex-middle">
+                        <div class="kiss-flex kiss-flex-middle" v-if="!loading && count">
+                            <div class="kiss-size-small">{{ count}} {{ count == 1 ? t('Item') : t('Items') }}</div>
+                            <div class="kiss-margin-small-left kiss-overlay-input">
+                                <span class="kiss-badge kiss-badge-outline kiss-color-muted">{{ page }} / {{pages}}</span>
+                                <select v-model="page" @change="load(page)" v-if="pages > 1"><option v-for="p in pages" :value="p">{{ p }}</option></select>
+                            </div>
+                            <div class="kiss-margin-small-left kiss-size-small">
+                                <a class="kiss-margin-small-right" v-if="(page - 1) >= 1" @click="load(page - 1)">{{ t('Previous') }}</a>
+                                <a v-if="(page + 1) <= pages" @click="load(page + 1)">{{ t('Next') }}</a>
+                            </div>
+                        </div>
+                        <div class="kiss-flex-1 kiss-margin-right"></div>
+                        <button class="kiss-button kiss-margin-right" @click="createFolder()">{{ t('Create folder') }}</button>
+                        <button class="kiss-button kiss-button-primary" :disabled="!uppy" @click="uppy.getPlugin('Dashboard').openModal()">{{ t('Upload asset') }}</button>
+                    </div>
+                </kiss-container>
+            </app-actionbar>
+
+            <teleport to="body">
+                <kiss-popoutmenu :open="actionFolder && 'true'" id="asset-folder-actions" @popoutmenuclose="toggleFolderActions(null)">
+                    <kiss-content>
+                        <kiss-navlist class="kiss-margin">
+                            <ul>
+                                <li class="kiss-nav-header">{{ t('Folder actions') }}</li>
+                                <li v-if="actionFolder">
+                                    <div class="kiss-color-muted kiss-text-truncate kiss-margin-small-bottom">{{ actionFolder.name }}</div>
+                                </li>
+                                <li>
+                                    <a class="kiss-flex kiss-flex-middle">
+                                        <icon class="kiss-margin-small-right" size="larger">create</icon>
+                                        {{ t('Rename') }}
+                                    </a>
+                                </li>
+                                <li class="kiss-nav-divider"></li>
+                                <li>
+                                    <a class="kiss-color-danger kiss-flex kiss-flex-middle" @click="removeFolder(actionFolder)">
                                         <icon class="kiss-margin-small-right" size="larger">delete</icon>
                                         {{ t('Delete') }}
                                     </a>
@@ -265,12 +330,41 @@ export default {
             this.actionAsset = asset;
         },
 
+        toggleFolderActions(folder) {
+
+            if (!folder) {
+                setTimeout(() => this.actionFolder = null, 300);
+                return;
+            }
+
+            this.actionFolder = folder;
+        },
+
         createFolder() {
 
             App.ui.prompt(this.t('Foldername'), '', name => {
-                alert('Todo!')
+
+                this.$request(`/assets/saveFolder`, {name, parent: this.folder}).then(folder => {
+                    this.folders.push(folder);
+                    App.ui.notify('Folder created!');
+                }).catch(rsp => {
+                    App.ui.notify(rsp.error || 'Creating folder failed!', 'error');
+                });
             });
-        }
+        },
+
+        removeFolder(folder) {
+
+            App.ui.confirm('Are you sure?', () => {
+
+                this.$request(`/assets/removeFolder`, {folder}).then(res => {
+                    this.folders.splice(this.folders.indexOf(folder), 1);
+                    App.ui.notify('Folder removed!');
+                }).catch(rsp => {
+                    App.ui.notify(rsp.error || 'Deleting folder failed!', 'error');
+                });
+            });
+        },
     }
 
 }

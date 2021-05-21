@@ -17,7 +17,7 @@ $this->module('assets')->extend([
     },
 
     'folders' => function(array $options = []) {
-        return $this->app->dataStorage->find('assets_folders', $options)->toArray();
+        return $this->app->dataStorage->find('assets/folders', $options)->toArray();
     },
 
     'uploadAssets' => function(string $param = 'files', array $meta = []) {

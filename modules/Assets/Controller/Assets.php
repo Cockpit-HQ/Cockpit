@@ -69,7 +69,7 @@ class Assets extends App {
     }
 
 
-    public function createFolder() {
+    public function saveFolder() {
 
         $name   = $this->param('name', null);
         $parent = $this->param('parent', '');
@@ -90,6 +90,26 @@ class Assets extends App {
         $this->app->dataStorage->save('assets/folders', $folder);
 
         return $folder;
+    }
+
+    public function removeFolder() {
+
+        $folder = $this->param('folder');
+
+        if (!$folder || !isset($folder['_id'])) {
+            return false;
+        }
+
+        $ids = [$folder['_id']];
+        $f   = ['_id' => $folder['_id']];
+
+        while ($f = $this->app->dataStorage->findOne('assets/folders', ['_p' => $f['_id']])) {
+            $ids[] = $f['_id'];
+        }
+
+        $this->app->dataStorage->remove('assets/folders', ['_id' => ['$in' => $ids]]);
+
+        return $ids;
     }
 
 }
