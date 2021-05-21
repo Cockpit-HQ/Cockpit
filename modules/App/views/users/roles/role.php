@@ -21,7 +21,7 @@
 ?>
 <kiss-container class="kiss-margin" size="small">
 
-    <ul class="kiss-breadcrumb">
+    <ul class="kiss-breadcrumbs">
         <li><a href="<?=$this->route('/users')?>"><?=t('Users')?></a></li>
         <li><a href="<?=$this->route('/users/roles')?>"><?=t('Roles')?></a></li>
     </ul>

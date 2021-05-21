@@ -1,7 +1,7 @@
 
 <kiss-container class="kiss-margin" size="small">
 
-    <ul class="kiss-breadcrumb">
+    <ul class="kiss-breadcrumbs">
         <li><a href="<?=$this->route('/settings')?>"><?=t('Settings')?></a></li>
     </ul>
 

@@ -2478,21 +2478,27 @@ template { display: none; }
     border-color: currentColor;
     color: currentColor;
 }
-.kiss-breadcrumb {
+.kiss-breadcrumbs {
     padding: 0;
     list-style: none;
 }
-.kiss-breadcrumb > * { display: contents; }
-.kiss-breadcrumb > * > * {
-    font-size: var(--kiss-breadcrumb-size, 85%);
-    color: var(--kiss-breadcrumb-color, inherit);
+.kiss-breadcrumbs > * {
+    display: contents;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
-.kiss-breadcrumb > :nth-child(n+2)::before {
-    content: var(--kiss-breadcrumb-divider, "−");
+.kiss-breadcrumbs > * > * {
+    font-size: var(--kiss-breadcrumbs-size, 85%);
+    color: var(--kiss-breadcrumbs-color, inherit);
+}
+.kiss-breadcrumbs > :nth-child(n+2)::before {
+    content: var(--kiss-breadcrumbs-divider, "−");
     display: inline-block;
-    margin: 0 var(--kiss-breadcrumb-divider-margin-horizontal, 5px) 0 calc(var(--kiss-breadcrumb-divider-margin-horizontal, 5px) - 4px);
-    font-size: var(--kiss-breadcrumb-divider-size, var(--kiss-breadcrumb-size, 85%));
-    color: var(--kiss-breadcrumb-divider-color, inherit);
+    margin: 0 var(--kiss-breadcrumbs-divider-margin-horizontal, 5px);
+    font-size: var(--kiss-breadcrumbs-divider-size, var(--kiss-breadcrumbs-size, 85%));
+    color: var(--kiss-breadcrumbs-divider-color, inherit);
 }
 kiss-card {
     display: block;
@@ -3824,20 +3830,20 @@ kiss-card[theme*="bordered"] {
     transform: scale(2);
     line-height: 1;
 }
-.kiss-breadcrumb {
+.kiss-breadcrumbs {
     text-transform: uppercase;
     letter-spacing: 2px;
     margin-bottom: 1rem;
 }
-.kiss-breadcrumb > *:not(.active) > *  {
+.kiss-breadcrumbs > *:not(.active) > *  {
     opacity: .6;
     transition: opacity .3s;
 }
-.kiss-breadcrumb > *:not(.active):hover > *  {
+.kiss-breadcrumbs > *:not(.active):hover > *  {
     opacity: 1;
     color: inherit;
 }
-.kiss-breadcrumb > .active > *  {
+.kiss-breadcrumbs > .active > *  {
     font-weight: bold;
 }
 .kiss-table {
@@ -3967,7 +3973,7 @@ vue-view:not([init="true"]) { display: none; }
     --kiss-card-shadowed-color: var(--kiss-color-muted);
     --kiss-card-bordered-color: rgb(106, 85, 85, .15);
 
-    --kiss-breadcrumb-size: 11px;
+    --kiss-breadcrumbs-size: 11px;
 
     --app-header-background: rgba(0, 0, 0, .2);
     --app-border-radius: 3px;

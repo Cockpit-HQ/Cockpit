@@ -147,23 +147,23 @@ kiss-card[theme*="bordered"] {
     line-height: 1;
 }
 
-.kiss-breadcrumb {
+.kiss-breadcrumbs {
     text-transform: uppercase;
     letter-spacing: 2px;
     margin-bottom: 1rem;
 }
 
-.kiss-breadcrumb > *:not(.active) > *  {
+.kiss-breadcrumbs > *:not(.active) > *  {
     opacity: .6;
     transition: opacity .3s;
 }
 
-.kiss-breadcrumb > *:not(.active):hover > *  {
+.kiss-breadcrumbs > *:not(.active):hover > *  {
     opacity: 1;
     color: inherit;
 }
 
-.kiss-breadcrumb > .active > *  {
+.kiss-breadcrumbs > .active > *  {
     font-weight: bold;
 }
 

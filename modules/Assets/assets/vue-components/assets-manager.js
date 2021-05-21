@@ -1,6 +1,7 @@
-function initUppy() {
+function getUppy(meta = {}) {
 
     return new Uppy.Core({
+        meta,
         autoProceed: false,
         restrictions: {
             //maxFileSize: 1000000,
@@ -32,6 +33,8 @@ export default {
             selectedAsset: null,
             folders: [],
             folder: null,
+
+            breadcrumbs: [],
 
             actionAsset: null,
             actionFolder: null,
@@ -74,15 +77,8 @@ export default {
                 'assets:assets/css/uppy.css',
             ]);
 
-            this.uppy = initUppy();
+            this.uppy = true;
 
-            this.uppy.on('complete', result => {
-                // console.log('successful files:', result.successful)
-                // console.log('failed files:', result.failed)
-                this.load();
-            })
-
-            //this.uppy.getPlugin('Dashboard').openModal()
         }, 1000)
     },
 
@@ -91,6 +87,13 @@ export default {
         <div class="DashboardContainer"></div>
 
         <div class="kiss-margin-large" v-if="view == 'assets'">
+
+            <div>
+                <ul class="kiss-breadcrumbs">
+                    <li><a @click="openFolder(null)"><icon size="larger">home</icon></a></li>
+                    <li v-for="f in breadcrumbs"><a @click="openFolder(f)">{{ f.name }}</a></li>
+                </ul>
+            </div>
 
             <app-loader class="kiss-margin-large" v-if="loading"></app-loader>
 
@@ -107,7 +110,7 @@ export default {
                     <kiss-card class="kiss-flex kiss-flex-middle" theme="bordered">
                         <div class="kiss-padding kiss-bgcolor-contrast"><icon size="larger">folder</icon></div>
                         <div class="kiss-padding kiss-text-truncate kiss-flex-1 kiss-text-bold">
-                            {{ folder.name }}
+                            <a class="kiss-link-muted" @click="openFolder(folder)">{{ folder.name }}</a>
                         </div>
                         <a class="kiss-padding" @click="toggleFolderActions(folder)"><icon>more_horiz</icon></a>
                     </kiss-card>
@@ -173,7 +176,7 @@ export default {
                         </div>
                         <div class="kiss-flex-1 kiss-margin-right"></div>
                         <button class="kiss-button kiss-margin-right" @click="createFolder()">{{ t('Create folder') }}</button>
-                        <button class="kiss-button kiss-button-primary" :disabled="!uppy" @click="uppy.getPlugin('Dashboard').openModal()">{{ t('Upload asset') }}</button>
+                        <button class="kiss-button kiss-button-primary" :disabled="!uppy" @click="upload()">{{ t('Upload asset') }}</button>
                     </div>
                 </kiss-container>
             </app-actionbar>
@@ -228,7 +231,7 @@ export default {
                         </div>
                         <div class="kiss-flex-1 kiss-margin-right"></div>
                         <button class="kiss-button kiss-margin-right" @click="createFolder()">{{ t('Create folder') }}</button>
-                        <button class="kiss-button kiss-button-primary" :disabled="!uppy" @click="uppy.getPlugin('Dashboard').openModal()">{{ t('Upload asset') }}</button>
+                        <button class="kiss-button kiss-button-primary" :disabled="!uppy" @click="upload()">{{ t('Upload asset') }}</button>
                     </div>
                 </kiss-container>
             </app-actionbar>
@@ -266,6 +269,21 @@ export default {
 
     methods: {
 
+        upload() {
+
+            this.uppy = getUppy({
+                folder: this.folder || ''
+            });
+
+            this.uppy.on('complete', result => {
+                // console.log('successful files:', result.successful)
+                // console.log('failed files:', result.failed)
+                this.load();
+            })
+
+            this.uppy.getPlugin('Dashboard').openModal()
+        },
+
         load(page = 1) {
 
             let options = {
@@ -277,7 +295,7 @@ export default {
             this.selected = [];
             this.selectedAsset = null;
 
-            this.$request('/assets/assets', {options}).then(rsp => {
+            this.$request('/assets/assets', {options, folder: this.folder}).then(rsp => {
                 this.assets = rsp.assets;
                 this.folders = rsp.folders;
                 this.page = rsp.page;
@@ -378,6 +396,28 @@ export default {
                 });
             });
         },
+
+        openFolder(folder) {
+
+            this.folder = folder ? folder._id : null;
+
+            if (this.folder) {
+
+                let skip = false;
+
+                this.breadcrumbs = this.breadcrumbs.filter(f => {
+                    if (f._id == folder._id) skip = true;
+                    return !skip;
+                });
+
+                this.breadcrumbs.push(folder);
+
+            } else {
+                this.breadcrumbs = [];
+            }
+
+            this.load(1);
+        }
     }
 
 }

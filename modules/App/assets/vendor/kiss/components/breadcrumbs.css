@@ -1,0 +1,25 @@
+.kiss-breadcrumbs {
+    padding: 0;
+    list-style: none;
+}
+
+.kiss-breadcrumbs > * {
+    display: contents;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.kiss-breadcrumbs > * > * {
+    font-size: var(--kiss-breadcrumbs-size, 85%);
+    color: var(--kiss-breadcrumbs-color, inherit);
+}
+
+.kiss-breadcrumbs > :nth-child(n+2)::before {
+    content: var(--kiss-breadcrumbs-divider, "−");
+    display: inline-block;
+    margin: 0 var(--kiss-breadcrumbs-divider-margin-horizontal, 5px);
+    font-size: var(--kiss-breadcrumbs-divider-size, var(--kiss-breadcrumbs-size, 85%));
+    color: var(--kiss-breadcrumbs-divider-color, inherit);
+}

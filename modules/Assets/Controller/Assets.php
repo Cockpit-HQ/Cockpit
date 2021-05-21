@@ -24,7 +24,12 @@ class Assets extends App {
         if ($limit  = $this->param('limit' , null)) $options['limit']  = $limit;
         if ($sort   = $this->param('sort'  , null)) $options['sort']   = $sort;
         if ($skip   = $this->param('skip'  , null)) $options['skip']   = $skip;
-        if ($folder = $this->param('folder'  , '')) $options['folder'] = $folder;
+        if ($folder = $this->param('folder', null)) $options['folder'] = $folder;
+
+        if ($folder) {
+            $options['filter'] = $options['filter'] ?? [];
+            $options['filter']['folder'] = $folder;
+        }
 
         $assets = $this->module('assets')->assets($options);
 
