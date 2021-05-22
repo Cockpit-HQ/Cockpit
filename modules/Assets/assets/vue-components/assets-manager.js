@@ -186,7 +186,7 @@ export default {
                                 <div class="kiss-color-muted kiss-text-truncate kiss-margin-small-bottom">{{ actionAsset.title }}</div>
                             </li>
                             <li>
-                                <a class="kiss-flex kiss-flex-middle">
+                                <a class="kiss-flex kiss-flex-middle" @click="edit(actionAsset)">
                                     <icon class="kiss-margin-small-right" size="larger">create</icon>
                                     {{ t('Edit') }}
                                 </a>

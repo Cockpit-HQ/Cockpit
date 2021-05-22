@@ -49,7 +49,7 @@ export default {
                     <div class="kiss-bgcolor-contrast kiss-position-relative kiss-padding kiss-margin-bottom" :class="{'kiss-bgcolor-transparentimage': item.type == 'image'}">
                         <canvas width="400" height="150"></canvas>
                         <div class="kiss-cover kiss-align-center kiss-flex kiss-flex-middle kiss-flex-center"><asset-preview :asset="item"></asset-preview></div>
-                        <div class="kiss-cover kiss-padding">
+                        <div class="kiss-cover kiss-padding-small">
                             <span class="kiss-badge">{{ item.mime }}</span>
                         </div>
                         <a class="kiss-cover" :href="ASSETS_BASE_URL+item.path" target="_blank" rel="noopener"></a>
@@ -68,17 +68,18 @@ export default {
                     <div class="kiss-margin-small" v-if="item.type == 'image' && Array.isArray(item.colors) && item.colors.length">
                         <label>{{ t('Colors') }}</label>
                         <div>
-                            <a class="kiss-badge kiss-badge-outline kiss-margin-xsmall-right" :style="{color}" v-for="color in item.colors">{{ color }}</a>
+                            <a class="kiss-badge kiss-badge-outline kiss-margin-xsmall-right" :style="{color}" @click="copyColor(color)" v-for="color in item.colors">{{ color }}</a>
                         </div>
                     </div>
 
                 </form>
 
             </div>
-            <div class="kiss-padding kiss-padding-remove-bottom kiss-bg-contrast" v-if="item">
+            <hr class="kiss-width-1-1 kiss-margin-remove">
+            <div class="kiss-padding kiss-padding-remove-bottom kiss-bg-contrast kiss-size-small" v-if="item">
                 {{ size}}
             </div>
-            <div class="kiss-padding">
+            <div class="kiss-padding kiss-bg-contrast">
                 <div class="kiss-button-group kiss-flex kiss-child-width-1-2">
                     <button class="kiss-button" kiss-offcanvas-close>{{ t('Close') }}</button>
                     <button class="kiss-button kiss-button-primary" :disabled="!item || loading" @click="update()">{{ t('Update asset') }}</button>
@@ -89,6 +90,10 @@ export default {
     `,
 
     methods: {
+
+        copyColor(color) {
+            App.utils.copyText(color, () =>  App.ui.notify('Color copied!'));
+        },
 
         update() {
 
