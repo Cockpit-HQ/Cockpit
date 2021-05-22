@@ -166,13 +166,23 @@ App.ui = {
 
     offcanvas: function (content, options) {
 
-        let id = Math.random().toString(36).substring(2) + Date.now().toString(36);
+        let id = Math.random().toString(36).substring(2) + Date.now().toString(36),
+            size = '';
 
         options = options || {};
 
+        switch (options.size) {
+            case 'large':
+                size = 'kiss-width-1-3@m kiss-width-1-4@xl';
+                break;
+            case 'xlarge':
+                size = 'kiss-width-2-3@m kiss-width-1-2@xl';
+                break;
+        }
+
         document.body.insertAdjacentHTML('beforeend', `
             <kiss-offcanvas id="offcanvas-${id}" flip="${(options.flip && 'true') || ''}">
-                <kiss-content class="${(options.size == 'large' && 'kiss-width-1-3@m kiss-width-1-4@xl') || ''}">
+                <kiss-content class="${size}">
                     ${content}
                 </kiss-content>
             </kiss-offcanvas>

@@ -3733,6 +3733,7 @@ kiss-popoutmenu kiss-content {
 }
 .kiss-height-30vh { min-height: 30vh; }
 .kiss-height-50vh { min-height: 50vh; }
+.kiss-height-100vh { min-height: 100vh; }
 kiss-offcanvas kiss-content,
 kiss-dialog kiss-content,
 kiss-popoutmenu kiss-content {
@@ -4022,6 +4023,7 @@ app-actionbar kiss-container {
 }
 .app-offcanvas-content {
     overflow-y: scroll;
+    flex: 1;
 }
 .app-list-items {
     list-style: none;

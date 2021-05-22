@@ -28,6 +28,7 @@ kiss-popoutmenu kiss-content {
 
 .kiss-height-30vh { min-height: 30vh; }
 .kiss-height-50vh { min-height: 50vh; }
+.kiss-height-100vh { min-height: 100vh; }
 
 kiss-offcanvas kiss-content,
 kiss-dialog kiss-content,

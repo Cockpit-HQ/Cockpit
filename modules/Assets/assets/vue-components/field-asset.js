@@ -52,10 +52,16 @@ export default {
 
             </div>
 
-            <a class="kiss-button kiss-button-small" @click="pickAsset()">
-                <icon class="kiss-margin-small-right">link</icon>
-                {{ t('Link asset') }}
-            </a>
+            <div class="kiss-button-group">
+                <a class="kiss-button kiss-button-small" @click="pickAsset()">
+                    <icon class="kiss-margin-small-right">link</icon>
+                    {{ t('Link asset') }}
+                </a>
+                <a class="kiss-button kiss-button-small" v-if="val" @click="edit()">
+                    <icon class="kiss-margin-small-right">create</icon>
+                    {{ t('Edit asset') }}
+                </a>
+            </div>
         </div>
     `,
 
@@ -70,6 +76,18 @@ export default {
                     this.update();
                 }
             }, {size: 'xlarge'})
+        },
+
+        edit() {
+
+            App.utils.vueOffcanvas('assets:assets/dialogs/asset.js', {asset: this.val}, {
+
+                update: updatedAsset => {
+                    this.val = updatedAsset;
+                    this.update();
+                }
+
+            }, {flip: true, size: 'large'})
         },
 
         update() {

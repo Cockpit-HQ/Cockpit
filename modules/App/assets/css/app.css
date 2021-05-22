@@ -123,6 +123,7 @@ app-actionbar kiss-container {
 
 .app-offcanvas-content {
     overflow-y: scroll;
+    flex: 1;
 }
 
 .app-list-items {

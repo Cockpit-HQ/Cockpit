@@ -45,7 +45,6 @@ export default {
             limit: 15,
 
             loading: false,
-            view: 'assets',
             uppy: null
         }
     },
@@ -84,185 +83,182 @@ export default {
 
     template: /*html*/`
 
-        <div class="kiss-margin-large" v-if="view == 'assets'">
-
-            <div>
-                <ul class="kiss-breadcrumbs">
-                    <li><a @click="openFolder(null)"><icon size="larger">home</icon></a></li>
-                    <li v-for="f in breadcrumbs"><a @click="openFolder(f)">{{ f.name }}</a></li>
-                </ul>
-            </div>
-
-            <app-loader class="kiss-margin-large" v-if="loading"></app-loader>
-
-            <div class="animated fadeIn kiss-margin-large kiss-color-muted kiss-align-center" :class="{'kiss-height-30vh kiss-flex kiss-flex-middle kiss-flex-center': !modal}" v-if="!loading && !assets.length">
-                <div>
-                    <kiss-svg :src="$base('assets:icon.svg')" width="35" height="35"><canvas width="35" height="35"></canvas></kiss-svg>
-                    <p class="kiss-margin-small-top">{{ t('No assets') }}</p>
-                </div>
-            </div>
-
-            <kiss-row class="kiss-child-width-1-2 kiss-child-width-1-5@m kiss-margin-large-bottom" match="true" v-if="!loading && folders.length">
-
-                <div v-for="folder in folders">
-                    <kiss-card class="kiss-flex kiss-flex-middle" theme="bordered">
-                        <div class="kiss-padding kiss-bgcolor-contrast"><icon size="larger">folder</icon></div>
-                        <div class="kiss-padding kiss-text-truncate kiss-flex-1 kiss-text-bold">
-                            <a class="kiss-link-muted" @click="openFolder(folder)">{{ folder.name }}</a>
-                        </div>
-                        <a class="kiss-padding" @click="toggleFolderActions(folder)"><icon>more_horiz</icon></a>
-                    </kiss-card>
-                </div>
-
-            </kiss-row>
-
-            <kiss-row class="kiss-child-width-1-2 kiss-child-width-1-5@m spotlight-group" v-if="!loading && assets.length" match="true" hover="shadow">
-                <div v-for="asset in assets">
-                    <kiss-card class="kiss-position-relative" theme="bordered" :style="{borderColor: (selectedAsset && selectedAsset._id == asset._id && 'var(--kiss-color-primary)') || null}">
-                        <div class="kiss-bgcolor-contrast kiss-position-relative" :class="{'kiss-bgcolor-transparentimage': asset.type == 'image'}">
-                            <canvas width="400" height="300"></canvas>
-                            <div class="kiss-cover kiss-padding kiss-flex kiss-flex-middle kiss-flex-center">
-                                <div><asset-preview :asset="asset"></asset-preview></div>
-                            </div>
-                            <a class="kiss-cover spotlight" :href="ASSETS_BASE_URL+asset.path" :data-media="asset.type" :data-title="asset.title" v-if="['image', 'video'].indexOf(asset.type) > -1"></a>
-                            <a class="kiss-cover" @click="selectedAsset=asset" v-if="modal"></a>
-                        </div>
-                        <div class="kiss-padding kiss-flex kiss-flex-middle">
-                            <div class="kiss-text-truncate kiss-size-xsmall kiss-flex-1">{{ asset.title }}</div>
-                            <a class="kiss-margin-small-left" @click="toggleAssetActions(asset)"><icon>more_horiz</icon></a>
-                        </div>
-                    </kiss-card>
-                </div>
-            </kiss-row>
-
-            <div class="kiss-flex kiss-flex-middle kiss-margin-large-top" v-if="modal">
-                <div class="kiss-flex kiss-flex-middle" v-if="!loading && count">
-                    <div class="kiss-size-small">{{ count}} {{ count == 1 ? t('Item') : t('Items') }}</div>
-                    <div class="kiss-margin-small-left kiss-overlay-input">
-                        <span class="kiss-badge kiss-badge-outline kiss-color-muted">{{ page }} / {{pages}}</span>
-                        <select v-model="page" @change="load(page)" v-if="pages > 1"><option v-for="p in pages" :value="p">{{ p }}</option></select>
-                    </div>
-                    <div class="kiss-margin-small-left kiss-size-small">
-                        <a class="kiss-margin-small-right" v-if="(page - 1) >= 1" @click="load(page - 1)">{{ t('Previous') }}</a>
-                        <a v-if="(page + 1) <= pages" @click="load(page + 1)">{{ t('Next') }}</a>
-                    </div>
-                </div>
-                <div class="kiss-flex-1 kiss-margin-right"></div>
-                <div class="kiss-button-group kiss-margin-right">
-                    <button class="kiss-button" @click="createFolder()">{{ t('Create folder') }}</button>
-                    <button class="kiss-button" :disabled="!uppy" @click="upload()">{{ t('Upload asset') }}</button>
-                </div>
-                <div class="kiss-button-group">
-                    <button class="kiss-button" kiss-dialog-close>{{ t('Cancel') }}</button>
-                    <button class="kiss-button kiss-button-primary" v-if="selectedAsset" @click="selectAsset && selectAsset(selectedAsset)">{{ t('Select asset') }}</button>
-                </div>
-            </div>
-
-            <app-actionbar v-if="!modal">
-                <kiss-container>
-                    <div class="kiss-flex kiss-flex-middle">
-                        <div class="kiss-flex kiss-flex-middle" v-if="!loading && count">
-                            <div class="kiss-size-small">{{ count}} {{ count == 1 ? t('Item') : t('Items') }}</div>
-                            <div class="kiss-margin-small-left kiss-overlay-input">
-                                <span class="kiss-badge kiss-badge-outline kiss-color-muted">{{ page }} / {{pages}}</span>
-                                <select v-model="page" @change="load(page)" v-if="pages > 1"><option v-for="p in pages" :value="p">{{ p }}</option></select>
-                            </div>
-                            <div class="kiss-margin-small-left kiss-size-small">
-                                <a class="kiss-margin-small-right" v-if="(page - 1) >= 1" @click="load(page - 1)">{{ t('Previous') }}</a>
-                                <a v-if="(page + 1) <= pages" @click="load(page + 1)">{{ t('Next') }}</a>
-                            </div>
-                        </div>
-                        <div class="kiss-flex-1 kiss-margin-right"></div>
-                        <button class="kiss-button kiss-margin-right" @click="createFolder()">{{ t('Create folder') }}</button>
-                        <button class="kiss-button kiss-button-primary" :disabled="!uppy" @click="upload()">{{ t('Upload asset') }}</button>
-                    </div>
-                </kiss-container>
-            </app-actionbar>
-
-            <teleport to="body">
-                <kiss-popoutmenu :open="actionAsset && 'true'" id="asset-menu-actions" @popoutmenuclose="toggleAssetActions(null)">
-                    <kiss-content>
-                        <kiss-navlist class="kiss-margin">
-                            <ul>
-                                <li class="kiss-nav-header">{{ t('Asset actions') }}</li>
-                                <li v-if="actionAsset">
-                                    <div class="kiss-color-muted kiss-text-truncate kiss-margin-small-bottom">{{ actionAsset.title }}</div>
-                                </li>
-                                <li>
-                                    <a class="kiss-flex kiss-flex-middle">
-                                        <icon class="kiss-margin-small-right" size="larger">create</icon>
-                                        {{ t('Edit') }}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="kiss-flex kiss-flex-middle" :href="actionAsset && ASSETS_BASE_URL+actionAsset.path" target="_blank" rel="noopener" download>
-                                        <icon class="kiss-margin-small-right" size="larger">cloud_download</icon>
-                                        {{ t('Download') }}
-                                    </a>
-                                </li>
-                                <li class="kiss-nav-divider"></li>
-                                <li>
-                                    <a class="kiss-color-danger kiss-flex kiss-flex-middle" @click="remove(actionAsset)">
-                                        <icon class="kiss-margin-small-right" size="larger">delete</icon>
-                                        {{ t('Delete') }}
-                                    </a>
-                                </li>
-                            </ul>
-                        </kiss-navlist>
-                    </kiss-content>
-                </kiss-popoutmenu>
-            </teleport>
-
-            <app-actionbar v-if="!modal">
-                <kiss-container>
-                    <div class="kiss-flex kiss-flex-middle">
-                        <div class="kiss-flex kiss-flex-middle" v-if="!loading && count">
-                            <div class="kiss-size-small">{{ count}} {{ count == 1 ? t('Item') : t('Items') }}</div>
-                            <div class="kiss-margin-small-left kiss-overlay-input">
-                                <span class="kiss-badge kiss-badge-outline kiss-color-muted">{{ page }} / {{pages}}</span>
-                                <select v-model="page" @change="load(page)" v-if="pages > 1"><option v-for="p in pages" :value="p">{{ p }}</option></select>
-                            </div>
-                            <div class="kiss-margin-small-left kiss-size-small">
-                                <a class="kiss-margin-small-right" v-if="(page - 1) >= 1" @click="load(page - 1)">{{ t('Previous') }}</a>
-                                <a v-if="(page + 1) <= pages" @click="load(page + 1)">{{ t('Next') }}</a>
-                            </div>
-                        </div>
-                        <div class="kiss-flex-1 kiss-margin-right"></div>
-                        <button class="kiss-button kiss-margin-right" @click="createFolder()">{{ t('Create folder') }}</button>
-                        <button class="kiss-button kiss-button-primary" :disabled="!uppy" @click="upload()">{{ t('Upload asset') }}</button>
-                    </div>
-                </kiss-container>
-            </app-actionbar>
-
-            <teleport to="body">
-                <kiss-popoutmenu :open="actionFolder && 'true'" id="asset-folder-actions" @popoutmenuclose="toggleFolderActions(null)">
-                    <kiss-content>
-                        <kiss-navlist class="kiss-margin">
-                            <ul>
-                                <li class="kiss-nav-header">{{ t('Folder actions') }}</li>
-                                <li v-if="actionFolder">
-                                    <div class="kiss-color-muted kiss-text-truncate kiss-margin-small-bottom">{{ actionFolder.name }}</div>
-                                </li>
-                                <li>
-                                    <a class="kiss-flex kiss-flex-middle" @click="renameFolder(actionFolder)">
-                                        <icon class="kiss-margin-small-right" size="larger">drive_file_rename_outline</icon>
-                                        {{ t('Rename') }}
-                                    </a>
-                                </li>
-                                <li class="kiss-nav-divider"></li>
-                                <li>
-                                    <a class="kiss-color-danger kiss-flex kiss-flex-middle" @click="removeFolder(actionFolder)">
-                                        <icon class="kiss-margin-small-right" size="larger">delete</icon>
-                                        {{ t('Delete') }}
-                                    </a>
-                                </li>
-                            </ul>
-                        </kiss-navlist>
-                    </kiss-content>
-                </kiss-popoutmenu>
-            </teleport>
-
+        <div>
+            <ul class="kiss-breadcrumbs">
+                <li><a @click="openFolder(null)"><icon size="larger">home</icon></a></li>
+                <li v-for="f in breadcrumbs"><a @click="openFolder(f)">{{ f.name }}</a></li>
+            </ul>
         </div>
+
+        <app-loader class="kiss-margin-large" v-if="loading"></app-loader>
+
+        <div class="animated fadeIn kiss-margin-large kiss-color-muted kiss-align-center" :class="{'kiss-height-30vh kiss-flex kiss-flex-middle kiss-flex-center': !modal}" v-if="!loading && !assets.length">
+            <div>
+                <kiss-svg :src="$base('assets:icon.svg')" width="35" height="35"><canvas width="35" height="35"></canvas></kiss-svg>
+                <p class="kiss-margin-small-top">{{ t('No assets') }}</p>
+            </div>
+        </div>
+
+        <kiss-row class="kiss-child-width-1-2 kiss-child-width-1-5@m kiss-margin-large-bottom" match="true" v-if="!loading && folders.length">
+
+            <div v-for="folder in folders">
+                <kiss-card class="kiss-flex kiss-flex-middle" theme="bordered">
+                    <div class="kiss-padding kiss-bgcolor-contrast"><icon size="larger">folder</icon></div>
+                    <div class="kiss-padding kiss-text-truncate kiss-flex-1 kiss-text-bold">
+                        <a class="kiss-link-muted" @click="openFolder(folder)">{{ folder.name }}</a>
+                    </div>
+                    <a class="kiss-padding" @click="toggleFolderActions(folder)"><icon>more_horiz</icon></a>
+                </kiss-card>
+            </div>
+
+        </kiss-row>
+
+        <kiss-row class="kiss-child-width-1-2 kiss-child-width-1-5@m spotlight-group" v-if="!loading && assets.length" match="true" hover="shadow">
+            <div v-for="asset in assets">
+                <kiss-card class="kiss-position-relative" theme="bordered" :style="{borderColor: (selectedAsset && selectedAsset._id == asset._id && 'var(--kiss-color-primary)') || null}">
+                    <div class="kiss-bgcolor-contrast kiss-position-relative" :class="{'kiss-bgcolor-transparentimage': asset.type == 'image'}">
+                        <canvas width="400" height="300"></canvas>
+                        <div class="kiss-cover kiss-padding kiss-flex kiss-flex-middle kiss-flex-center">
+                            <div><asset-preview :asset="asset"></asset-preview></div>
+                        </div>
+                        <a class="kiss-cover spotlight" :href="ASSETS_BASE_URL+asset.path" :data-media="asset.type" :data-title="asset.title" v-if="['image', 'video'].indexOf(asset.type) > -1"></a>
+                        <a class="kiss-cover" @click="selectedAsset=asset" v-if="modal"></a>
+                    </div>
+                    <div class="kiss-padding kiss-flex kiss-flex-middle">
+                        <div class="kiss-text-truncate kiss-size-xsmall kiss-flex-1"><a class="kiss-link-muted" @click="edit(asset)">{{ asset.title }}</a></div>
+                        <a class="kiss-margin-small-left" @click="toggleAssetActions(asset)"><icon>more_horiz</icon></a>
+                    </div>
+                </kiss-card>
+            </div>
+        </kiss-row>
+
+        <div class="kiss-flex kiss-flex-middle kiss-margin-large-top" v-if="modal">
+            <div class="kiss-flex kiss-flex-middle" v-if="!loading && count">
+                <div class="kiss-size-small">{{ count}} {{ count == 1 ? t('Item') : t('Items') }}</div>
+                <div class="kiss-margin-small-left kiss-overlay-input">
+                    <span class="kiss-badge kiss-badge-outline kiss-color-muted">{{ page }} / {{pages}}</span>
+                    <select v-model="page" @change="load(page)" v-if="pages > 1"><option v-for="p in pages" :value="p">{{ p }}</option></select>
+                </div>
+                <div class="kiss-margin-small-left kiss-size-small">
+                    <a class="kiss-margin-small-right" v-if="(page - 1) >= 1" @click="load(page - 1)">{{ t('Previous') }}</a>
+                    <a v-if="(page + 1) <= pages" @click="load(page + 1)">{{ t('Next') }}</a>
+                </div>
+            </div>
+            <div class="kiss-flex-1 kiss-margin-right"></div>
+            <div class="kiss-button-group kiss-margin-right">
+                <button class="kiss-button" @click="createFolder()">{{ t('Create folder') }}</button>
+                <button class="kiss-button" :disabled="!uppy" @click="upload()">{{ t('Upload asset') }}</button>
+            </div>
+            <div class="kiss-button-group">
+                <button class="kiss-button" kiss-dialog-close>{{ t('Cancel') }}</button>
+                <button class="kiss-button kiss-button-primary" v-if="selectedAsset" @click="selectAsset && selectAsset(selectedAsset)">{{ t('Select asset') }}</button>
+            </div>
+        </div>
+
+        <app-actionbar v-if="!modal">
+            <kiss-container>
+                <div class="kiss-flex kiss-flex-middle">
+                    <div class="kiss-flex kiss-flex-middle" v-if="!loading && count">
+                        <div class="kiss-size-small">{{ count}} {{ count == 1 ? t('Item') : t('Items') }}</div>
+                        <div class="kiss-margin-small-left kiss-overlay-input">
+                            <span class="kiss-badge kiss-badge-outline kiss-color-muted">{{ page }} / {{pages}}</span>
+                            <select v-model="page" @change="load(page)" v-if="pages > 1"><option v-for="p in pages" :value="p">{{ p }}</option></select>
+                        </div>
+                        <div class="kiss-margin-small-left kiss-size-small">
+                            <a class="kiss-margin-small-right" v-if="(page - 1) >= 1" @click="load(page - 1)">{{ t('Previous') }}</a>
+                            <a v-if="(page + 1) <= pages" @click="load(page + 1)">{{ t('Next') }}</a>
+                        </div>
+                    </div>
+                    <div class="kiss-flex-1 kiss-margin-right"></div>
+                    <button class="kiss-button kiss-margin-right" @click="createFolder()">{{ t('Create folder') }}</button>
+                    <button class="kiss-button kiss-button-primary" :disabled="!uppy" @click="upload()">{{ t('Upload asset') }}</button>
+                </div>
+            </kiss-container>
+        </app-actionbar>
+
+        <teleport to="body">
+            <kiss-popoutmenu :open="actionAsset && 'true'" id="asset-menu-actions" @popoutmenuclose="toggleAssetActions(null)">
+                <kiss-content>
+                    <kiss-navlist class="kiss-margin">
+                        <ul>
+                            <li class="kiss-nav-header">{{ t('Asset actions') }}</li>
+                            <li v-if="actionAsset">
+                                <div class="kiss-color-muted kiss-text-truncate kiss-margin-small-bottom">{{ actionAsset.title }}</div>
+                            </li>
+                            <li>
+                                <a class="kiss-flex kiss-flex-middle">
+                                    <icon class="kiss-margin-small-right" size="larger">create</icon>
+                                    {{ t('Edit') }}
+                                </a>
+                            </li>
+                            <li>
+                                <a class="kiss-flex kiss-flex-middle" :href="actionAsset && ASSETS_BASE_URL+actionAsset.path" target="_blank" rel="noopener" download>
+                                    <icon class="kiss-margin-small-right" size="larger">cloud_download</icon>
+                                    {{ t('Download') }}
+                                </a>
+                            </li>
+                            <li class="kiss-nav-divider"></li>
+                            <li>
+                                <a class="kiss-color-danger kiss-flex kiss-flex-middle" @click="remove(actionAsset)">
+                                    <icon class="kiss-margin-small-right" size="larger">delete</icon>
+                                    {{ t('Delete') }}
+                                </a>
+                            </li>
+                        </ul>
+                    </kiss-navlist>
+                </kiss-content>
+            </kiss-popoutmenu>
+        </teleport>
+
+        <app-actionbar v-if="!modal">
+            <kiss-container>
+                <div class="kiss-flex kiss-flex-middle">
+                    <div class="kiss-flex kiss-flex-middle" v-if="!loading && count">
+                        <div class="kiss-size-small">{{ count}} {{ count == 1 ? t('Item') : t('Items') }}</div>
+                        <div class="kiss-margin-small-left kiss-overlay-input">
+                            <span class="kiss-badge kiss-badge-outline kiss-color-muted">{{ page }} / {{pages}}</span>
+                            <select v-model="page" @change="load(page)" v-if="pages > 1"><option v-for="p in pages" :value="p">{{ p }}</option></select>
+                        </div>
+                        <div class="kiss-margin-small-left kiss-size-small">
+                            <a class="kiss-margin-small-right" v-if="(page - 1) >= 1" @click="load(page - 1)">{{ t('Previous') }}</a>
+                            <a v-if="(page + 1) <= pages" @click="load(page + 1)">{{ t('Next') }}</a>
+                        </div>
+                    </div>
+                    <div class="kiss-flex-1 kiss-margin-right"></div>
+                    <button class="kiss-button kiss-margin-right" @click="createFolder()">{{ t('Create folder') }}</button>
+                    <button class="kiss-button kiss-button-primary" :disabled="!uppy" @click="upload()">{{ t('Upload asset') }}</button>
+                </div>
+            </kiss-container>
+        </app-actionbar>
+
+        <teleport to="body">
+            <kiss-popoutmenu :open="actionFolder && 'true'" id="asset-folder-actions" @popoutmenuclose="toggleFolderActions(null)">
+                <kiss-content>
+                    <kiss-navlist class="kiss-margin">
+                        <ul>
+                            <li class="kiss-nav-header">{{ t('Folder actions') }}</li>
+                            <li v-if="actionFolder">
+                                <div class="kiss-color-muted kiss-text-truncate kiss-margin-small-bottom">{{ actionFolder.name }}</div>
+                            </li>
+                            <li>
+                                <a class="kiss-flex kiss-flex-middle" @click="renameFolder(actionFolder)">
+                                    <icon class="kiss-margin-small-right" size="larger">drive_file_rename_outline</icon>
+                                    {{ t('Rename') }}
+                                </a>
+                            </li>
+                            <li class="kiss-nav-divider"></li>
+                            <li>
+                                <a class="kiss-color-danger kiss-flex kiss-flex-middle" @click="removeFolder(actionFolder)">
+                                    <icon class="kiss-margin-small-right" size="larger">delete</icon>
+                                    {{ t('Delete') }}
+                                </a>
+                            </li>
+                        </ul>
+                    </kiss-navlist>
+                </kiss-content>
+            </kiss-popoutmenu>
+        </teleport>
+
     `,
 
     methods: {
@@ -303,6 +299,17 @@ export default {
                 this.view = 'assets';
                 this.loading = false;
             })
+        },
+
+        edit(asset) {
+
+            App.utils.vueOffcanvas('assets:assets/dialogs/asset.js', {asset}, {
+
+                update: updatedAsset => {
+                    Object.assign(asset, updatedAsset)
+                }
+
+            }, {flip: true, size: 'large'})
         },
 
         remove(asset) {
