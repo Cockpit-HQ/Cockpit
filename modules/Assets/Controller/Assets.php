@@ -55,13 +55,33 @@ class Assets extends App {
         return compact('assets', 'count', 'pages', 'page', 'folders');
     }
 
+    public function asset($id = null) {
+
+        if (!$id) {
+            return false;
+        }
+
+        $asset = $this->app->dataStorage->findOne('assets', ['_id' => $id]);
+
+        return $asset ?? false;
+    }
+
+    public function update() {
+
+        if ($asset = $this->param('asset', false)) {
+            return $this->module('assets')->update($asset)[0];
+        }
+
+        return false;
+    }
+
     public function upload() {
 
         \session_write_close();
 
         $meta = ['folder' => $this->param('folder', '')];
 
-        return $this->module('assets')->uploadAssets('files', $meta);
+        return $this->module('assets')->upload('files', $meta);
     }
 
     public function remove() {

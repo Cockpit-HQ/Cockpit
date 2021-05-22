@@ -16,11 +16,34 @@ $this->module('assets')->extend([
         return $assets;
     },
 
+    'update' => function($assets) {
+
+        $assets = isset($assets[0]) ? $assets : [$assets];
+        $by = $this->app->helper('auth')->getUser('_id', null);
+
+        foreach ($assets as &$asset) {
+
+            $_asset = $this->app->dataStorage->findOne('assets', ['_id' => $asset['_id']]);
+
+            if (!$_asset) continue;
+
+            $asset['modified'] = time();
+            $asset['_by'] = $by;
+
+            $this->app->trigger('assets.asset.save', [&$asset]);
+
+            $this->app->dataStorage->save('assets', $asset);
+
+        }
+
+        return $assets;
+    },
+
     'folders' => function(array $options = []) {
         return $this->app->dataStorage->find('assets/folders', $options)->toArray();
     },
 
-    'uploadAssets' => function(string $param = 'files', array $meta = []) {
+    'upload' => function(string $param = 'files', array $meta = []) {
 
         $files = [];
 
@@ -64,7 +87,7 @@ $this->module('assets')->extend([
 
         if (count($_files)) {
 
-            $assets = $this->saveAssets($_files, $meta);
+            $assets = $this->add($_files, $meta);
 
             foreach ($_files as $file) {
                 unlink($file);
@@ -74,12 +97,13 @@ $this->module('assets')->extend([
         return ['uploaded' => $uploaded, 'failed' => $failed, 'assets' => $assets];
     },
 
-    'saveAssets' => function(array $files, array $meta = [], bool $update = false) {
+    'add' => function(array $files, array $meta = [], bool $update = false) {
 
         $files     = isset($files[0]) ? $files : [$files];
         $finfo     = finfo_open(FILEINFO_MIME_TYPE);
         $assets    = [];
         $created   = time();
+        $by        = $this->app->helper('auth')->getUser('_id', null);
 
         foreach ($files as $idx => &$file) {
 
@@ -106,7 +130,7 @@ $this->module('assets')->extend([
                 'height' => null,
                 'created' => $created,
                 'modified' => $created,
-                '_by' => $this->app->helper('auth')->getUser('_id')
+                '_by' => $by
             ];
 
             if (!$asset['mime']) {
