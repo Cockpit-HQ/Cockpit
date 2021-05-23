@@ -70,6 +70,10 @@ class Assets extends App {
 
         \session_write_close();
 
+        if (!$this->isAllowed('assets.edit')) {
+            $this->stop(['error' => 'Editing not allowed'], 401);
+        }
+
         if ($asset = $this->param('asset', false)) {
             return $this->module('assets')->update($asset)[0];
         }
@@ -81,6 +85,10 @@ class Assets extends App {
 
         \session_write_close();
 
+        if (!$this->isAllowed('assets.upload')) {
+            $this->stop(['error' => 'Upload not allowed'], 401);
+        }
+
         $meta = ['folder' => $this->param('folder', '')];
 
         return $this->module('assets')->upload('files', $meta);
@@ -89,6 +97,10 @@ class Assets extends App {
     public function remove() {
 
         \session_write_close();
+
+        if (!$this->isAllowed('assets.delete')) {
+            $this->stop(['error' => 'Deleting assets not allowed'], 401);
+        }
 
         if ($assets = $this->param('assets', false)) {
             return $this->module('assets')->remove($assets);
@@ -122,6 +134,10 @@ class Assets extends App {
     }
 
     public function removeFolder() {
+
+        if (!$this->isAllowed('assets.folders.delete')) {
+            $this->stop(['error' => 'Deleting folders not allowed'], 401);
+        }
 
         $folder = $this->param('folder');
 

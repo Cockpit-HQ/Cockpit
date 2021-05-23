@@ -6,7 +6,7 @@
 
     <kiss-row class="kiss-margin kiss-child-width-1-4@m">
 
-        <?php foreach ($items as $item):?>
+        <?php foreach ($items as $item): if (isset($item['permission']) && !$this->helper('acl')->isAllowed($item['permission'])) continue; ?>
         <div>
             <kiss-card class="kiss-position-relative" theme="bordered" hover="shadow">
 

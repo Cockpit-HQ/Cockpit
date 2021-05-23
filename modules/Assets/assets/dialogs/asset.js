@@ -124,7 +124,9 @@ export default {
                 Object.assign(this.item, asset);
                 this.$call('update', asset);
                 App.ui.notify('Asset updated!');
-            })
+            }).catch(rsp => {
+                App.ui.notify(rsp.error || 'Updating asset failed!', 'error');
+            });
         }
     }
 }

@@ -319,7 +319,9 @@ export default {
                 this.$request(`/assets/remove`, {assets: [asset._id]}).then(res => {
                     this.load(this.page == 1 ? 1 : (this.assets.length - 1 ? this.page : this.page - 1));
                     App.ui.notify('Asset removed!');
-                });
+                }).catch(rsp => {
+                    App.ui.notify(rsp.error || 'Deleting asset failed!', 'error');
+                });;
             });
         },
 
