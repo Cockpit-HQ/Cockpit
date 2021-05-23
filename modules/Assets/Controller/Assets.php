@@ -68,6 +68,8 @@ class Assets extends App {
 
     public function update() {
 
+        \session_write_close();
+
         if ($asset = $this->param('asset', false)) {
             return $this->module('assets')->update($asset)[0];
         }
@@ -86,13 +88,14 @@ class Assets extends App {
 
     public function remove() {
 
+        \session_write_close();
+
         if ($assets = $this->param('assets', false)) {
             return $this->module('assets')->remove($assets);
         }
 
         return false;
     }
-
 
     public function saveFolder() {
 
