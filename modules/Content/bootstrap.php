@@ -344,50 +344,52 @@ $this->module('content')->extend([
 
         return $this->app->dataStorage->count($collection, $filter);
 
+    },
+
+    'updateRefs' => function(string $refId, mixed $value = null) {
+
+        $update = function(&$items) use($value, $refId, &$update) {
+
+            if (!is_array($items)) return $items;
+
+            foreach ($items as $k => &$v) {
+                if (!is_array($v)) continue;
+                if (is_array($items[$k])) $items[$k] = $update($items[$k]);
+                if (isset($v['_id']) && $v['_id'] == $refId) $items[$k] = $value;
+            }
+            return $items;
+        };
+
+        // update singletons
+        $items = $this->app->dataStorage->findTerm('content/singletons', $refId)->toArray();
+        $items = count($items) ? $update($items) : [];
+
+        foreach ($items as $item) $this->app->dataStorage->save('content/singletons', $item);
+
+        // update collections
+        $models = $this->models();
+
+        foreach ($models as $name => $meta) {
+
+            if ($meta['type'] !== 'collection') continue;
+
+            $collection = "content/collections/{$name}";
+            $items = $this->app->dataStorage->findTerm($collection, $refId)->toArray();
+
+            if (!count($items)) continue;
+            $items = $update($items);
+            foreach ($items as $item) $this->app->dataStorage->save($collection, $item);
+        }
     }
 
 ]);
 
+// update assets references on asset remove
+$this->on('assets.asset.remove', function(array $asset) {
+    $this->module('content')->updateRefs($asset['_id'], null);
+});
+
 // update assets references on asset update
 $this->on('assets.asset.update', function(array $asset) {
-
-    $id = $asset['_id'];
-    $models = $this->module('content')->models();
-
-    $update = function(&$items) use($asset, $id, &$update) {
-
-        if (!is_array($items)) return $items;
-
-        foreach ($items as $k => &$v) {
-            if (!is_array($v)) continue;
-            if (is_array($items[$k])) $items[$k] = $update($items[$k]);
-            if (isset($v['_id']) && $v['_id'] == $id) $items[$k] = $asset;
-        }
-        return $items;
-    };
-
-    // update singletons
-    $items = $this->dataStorage->findTerm('content/singletons', $id)->toArray();
-    $items = count($items) ? $update($items) : [];
-
-    foreach ($items as $item) {
-        $this->dataStorage->save('content/singletons', $item);
-    }
-
-    // update collections
-    foreach ($models as $name => $meta) {
-
-        if ($meta['type'] !== 'collection') continue;
-
-        $collection = "content/collections/{$name}";
-        $items = $this->dataStorage->findTerm($collection, $id)->toArray();
-
-        if (!count($items)) continue;
-
-        $items = $update($items);
-
-        foreach ($items as $item) {
-            $this->dataStorage->save($collection, $item);
-        }
-    }
+    $this->module('content')->updateRefs($asset['_id'], $asset);
 });

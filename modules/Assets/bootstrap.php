@@ -237,6 +237,8 @@ $this->module('assets')->extend([
             if ($this->app->fileStorage->fileExists('uploads://'.trim($asset['path'], '/'))) {
                 $this->app->fileStorage->delete('uploads://'.trim($asset['path'], '/'));
             }
+
+            $this->app->trigger('assets.asset.remove', [$asset]);
         }
 
         $this->app->trigger('assets.remove', [$assets]);
