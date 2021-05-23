@@ -4021,8 +4021,14 @@ app-actionbar kiss-container {
     padding-left: var(--kiss-container-padding, 30px);
     padding-right: var(--kiss-container-padding, 30px);
 }
+.app-offcanvas-container {
+    display: flex;
+    height: 100vh;
+    max-height: 100vh;
+    flex-direction: column;
+}
 .app-offcanvas-content {
-    overflow-y: scroll;
+    overflow-y: auto;
     flex: 1;
 }
 .app-list-items {

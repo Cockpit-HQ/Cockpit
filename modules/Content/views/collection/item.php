@@ -163,7 +163,7 @@
                         <ul>
                             <li class="kiss-nav-header"><?=t('Actions')?></li>
                             <li>
-                                <a class="kiss-flex kiss-flex-middle" href="#models-item-json" kiss-offcanvas>
+                                <a class="kiss-flex kiss-flex-middle" @click="showJSON()">
                                     <icon class="kiss-margin-small-right">manage_search</icon>
                                     <?=t('Json Object')?>
                                 </a>
@@ -185,17 +185,6 @@
                     </kiss-navlist>
                 </kiss-content>
             </kiss-popoutmenu>
-
-            <kiss-offcanvas id="models-item-json" flip="true">
-                <kiss-content class="kiss-width-1-3 kiss-flex kiss-flex-column fiss-flex">
-                    <div class="kiss-padding">
-                        <strong class="kiss-size-small kiss-text-upper">{{ t('JSON Viewer') }}</strong>
-                    </div>
-                    <div class="kiss-padding kiss-size-small kiss-bgcolor-contrast kiss-flex-1 kiss-overflow-y-auto">
-                        <json-viewer :object="item"></json-viewer>
-                    </div>
-                </kiss-content>
-            </kiss-offcanvas>
 
         </template>
 
@@ -254,6 +243,10 @@
 
                     copyID() {
                         App.utils.copyText(this.item._id, () =>  App.ui.notify('ID copied!'));
+                    },
+
+                    showJSON() {
+                        App.utils.vueOffcanvas('settings:assets/dialogs/json-viewer.js', {data: this.item}, {}, {flip: true, size: 'large'})
                     }
                 }
             }

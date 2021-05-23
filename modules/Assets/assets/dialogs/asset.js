@@ -35,7 +35,7 @@ export default {
 
     template: /*html*/`
 
-        <div class="kiss-height-100vh kiss-flex kiss-flex-column">
+        <div class="app-offcanvas-container">
             <div class="kiss-padding kiss-size-4 kiss-text-bold kiss-flex kiss-flex-middle">
                 <div class="kiss-margin-small-right"><icon size-larger>create</icon></div>
                 {{ t('Edit asset') }}
@@ -81,9 +81,8 @@ export default {
 
             </div>
             <hr class="kiss-width-1-1 kiss-margin-remove">
-            <div class="kiss-padding kiss-padding-remove-bottom kiss-bg-contrast kiss-size-small" v-if="item">
+            <div class="kiss-padding kiss-padding-remove-bottom kiss-bgcolor-contrast kiss-size-small" v-if="item">
                 <div>
-
                     <div class="kiss-flex kiss-flex-middle">
                             <div class="kiss-size-4 kiss-margin-small-right kiss-flex kiss-color-muted" :title="t('Created at')"><icon>more_time</icon></div>
                             <div class="kiss-text-truncate kiss-size-small kiss-text-monospace kiss-color-muted kiss-flex-1">{{ (new Date(item._created * 1000).toLocaleString()) }}</div>
@@ -98,23 +97,24 @@ export default {
                             <div><icon>account_circle</icon></div>
                         </div>
                     </div>
-
-                </div>
-                <div class="kiss-padding kiss-bg-contrast">
-                    <div class="kiss-button-group kiss-flex kiss-child-width-1-2">
-                        <button class="kiss-button" kiss-offcanvas-close>{{ t('Close') }}</button>
-                        <button class="kiss-button kiss-button-primary" :disabled="!item || loading" @click="update()">{{ t('Update asset') }}</button>
-                    </div>
+            </div>
+            <div class="kiss-padding kiss-bgcolor-contrast">
+                <div class="kiss-button-group kiss-flex kiss-child-width-1-2">
+                    <button class="kiss-button" kiss-offcanvas-close>{{ t('Close') }}</button>
+                    <button class="kiss-button kiss-button-primary" :disabled="!item || loading" @click="update()">{{ t('Update') }}</button>
                 </div>
             </div>
         </div>
-
     `,
 
     methods: {
 
         copyColor(color) {
             App.utils.copyText(color, () =>  App.ui.notify('Color copied!'));
+        },
+
+        replace() {
+
         },
 
         update() {

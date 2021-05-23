@@ -25,29 +25,47 @@ function sortObject(object){
 export default {
 
     data() {
-        return {
 
+        return {
+            json: null
         }
     },
 
     props: {
-        object: {
-            type: Object,
-            default: null
+        data: {
+            type: Object
         }
     },
 
     computed: {
         highlighted() {
-            return this.syntaxHighlight(this.object || {});
+            return this.syntaxHighlight(this.data || {});
         }
     },
 
-    template: `
-        <div><pre v-html="highlighted"></pre></div>
+    template: /*html*/`
+
+        <div class="app-offcanvas-container">
+            <div class="kiss-padding kiss-text-bold">
+                {{ t('JSON Viewer') }}
+            </div>
+            <div class="app-offcanvas-content kiss-padding kiss-bgcolor-contrast kiss-flex-1">
+                <pre class="kiss-size-small" v-html="highlighted"></pre>
+            </div>
+            <div class="kiss-padding kiss-bgcolor-contrast">
+                <div class="kiss-button-group kiss-flex kiss-child-width-1-2">
+                    <button class="kiss-button" kiss-offcanvas-close>{{ t('Close') }}</button>
+                    <button class="kiss-button kiss-button-primary" @click="copy()">{{ t('Copy') }}</button>
+                </div>
+            </div>
+        </div>
     `,
 
     methods: {
+
+        copy() {
+            App.utils.copyText(JSON.stringify(this.data, undefined, 2), () =>  App.ui.notify('JSON copied!'));
+        },
 
         syntaxHighlight(json) {
 
