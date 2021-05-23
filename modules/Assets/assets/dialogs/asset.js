@@ -36,7 +36,7 @@ export default {
     template: /*html*/`
 
         <div class="app-offcanvas-container">
-            <div class="kiss-padding kiss-size-4 kiss-text-bold kiss-flex kiss-flex-middle">
+            <div class="kiss-padding kiss-text-bold kiss-flex kiss-flex-middle">
                 <div class="kiss-margin-small-right"><icon size-larger>create</icon></div>
                 {{ t('Edit asset') }}
             </div>

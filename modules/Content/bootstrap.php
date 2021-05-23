@@ -386,10 +386,20 @@ $this->module('content')->extend([
 
 // update assets references on asset remove
 $this->on('assets.asset.remove', function(array $asset) {
-    $this->module('content')->updateRefs($asset['_id'], null);
+
+    if ($this->helper('async')->possible()) {
+        $this->helper('async')->exec('APP::instance()->module("content")->updateRefs($asset["_id"], null);', compact('asset'));
+    } else {
+        $this->module('content')->updateRefs($asset['_id'], null);
+    }
 });
 
 // update assets references on asset update
 $this->on('assets.asset.update', function(array $asset) {
-    $this->module('content')->updateRefs($asset['_id'], $asset);
+
+    if ($this->helper('async')->possible()) {
+        $this->helper('async')->exec('APP::instance()->module("content")->updateRefs($asset["_id"], $asset);', compact('asset'));
+    } else {
+        $this->module('content')->updateRefs($asset['_id'], $asset);
+    }
 });
