@@ -55,6 +55,7 @@ export default {
                         <a class="kiss-cover" :href="ASSETS_BASE_URL+item.path" target="_blank" rel="noopener"></a>
                     </div>
 
+
                     <div class="kiss-margin-small">
                         <label>{{ t('Title') }}</label>
                         <input class="kiss-input" type="text" v-model="item.title">
@@ -67,9 +68,13 @@ export default {
 
                     <div class="kiss-margin-small" v-if="item.type == 'image' && Array.isArray(item.colors) && item.colors.length">
                         <label>{{ t('Colors') }}</label>
-                        <div>
-                            <a class="kiss-badge kiss-badge-outline kiss-margin-xsmall-right" :style="{color}" @click="copyColor(color)" v-for="color in item.colors">{{ color }}</a>
+                        <div class="kiss-size-4">
+                            <a class="kiss-margin-xsmall-right" :style="{color}" :title="color" @click="copyColor(color)" v-for="color in item.colors"><icon>invert_colors</icon></a>
                         </div>
+                    </div>
+
+                    <div class="kiss-margin-small kiss-color-muted kiss-text-monospace kiss-size-small">
+                        {{ size }}
                     </div>
 
                 </form>
@@ -77,12 +82,29 @@ export default {
             </div>
             <hr class="kiss-width-1-1 kiss-margin-remove">
             <div class="kiss-padding kiss-padding-remove-bottom kiss-bg-contrast kiss-size-small" v-if="item">
-                {{ size}}
-            </div>
-            <div class="kiss-padding kiss-bg-contrast">
-                <div class="kiss-button-group kiss-flex kiss-child-width-1-2">
-                    <button class="kiss-button" kiss-offcanvas-close>{{ t('Close') }}</button>
-                    <button class="kiss-button kiss-button-primary" :disabled="!item || loading" @click="update()">{{ t('Update asset') }}</button>
+                <div>
+
+                    <div class="kiss-flex kiss-flex-middle">
+                            <div class="kiss-size-4 kiss-margin-small-right kiss-flex kiss-color-muted" :title="t('Created at')"><icon>more_time</icon></div>
+                            <div class="kiss-text-truncate kiss-size-small kiss-text-monospace kiss-color-muted kiss-flex-1">{{ (new Date(item._created * 1000).toLocaleString()) }}</div>
+                            <div><icon>account_circle</icon></div>
+                        </div>
+                    </div>
+
+                    <div v-if="item._created != item._modified">
+                        <div class="kiss-flex kiss-flex-middle">
+                            <div class="kiss-size-4 kiss-margin-small-right kiss-flex kiss-color-muted" :title="t('Modified at')"><icon>history</icon></div>
+                            <div class="kiss-text-truncate kiss-size-small kiss-text-monospace kiss-color-muted kiss-flex-1">{{ (new Date(item._modified * 1000).toLocaleString()) }}</div>
+                            <div><icon>account_circle</icon></div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="kiss-padding kiss-bg-contrast">
+                    <div class="kiss-button-group kiss-flex kiss-child-width-1-2">
+                        <button class="kiss-button" kiss-offcanvas-close>{{ t('Close') }}</button>
+                        <button class="kiss-button kiss-button-primary" :disabled="!item || loading" @click="update()">{{ t('Update asset') }}</button>
+                    </div>
                 </div>
             </div>
         </div>

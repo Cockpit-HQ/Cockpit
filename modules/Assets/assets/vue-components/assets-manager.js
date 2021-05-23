@@ -92,13 +92,6 @@ export default {
 
         <app-loader class="kiss-margin-large" v-if="loading"></app-loader>
 
-        <div class="animated fadeIn kiss-margin-large kiss-color-muted kiss-align-center" :class="{'kiss-height-30vh kiss-flex kiss-flex-middle kiss-flex-center': !modal}" v-if="!loading && !assets.length">
-            <div>
-                <kiss-svg :src="$base('assets:icon.svg')" width="35" height="35"><canvas width="35" height="35"></canvas></kiss-svg>
-                <p class="kiss-margin-small-top">{{ t('No assets') }}</p>
-            </div>
-        </div>
-
         <kiss-row class="kiss-child-width-1-2 kiss-child-width-1-5@m kiss-margin-large-bottom" match="true" v-if="!loading && folders.length">
 
             <div v-for="folder in folders">
@@ -112,6 +105,13 @@ export default {
             </div>
 
         </kiss-row>
+
+        <div class="animated fadeIn kiss-margin-large kiss-color-muted kiss-align-center" :class="{'kiss-height-30vh kiss-flex kiss-flex-middle kiss-flex-center': !modal}" v-if="!loading && !assets.length">
+            <div>
+                <kiss-svg :src="$base('assets:icon.svg')" width="35" height="35"><canvas width="35" height="35"></canvas></kiss-svg>
+                <p class="kiss-margin-small-top">{{ t('No assets') }}</p>
+            </div>
+        </div>
 
         <kiss-row class="kiss-child-width-1-2 kiss-child-width-1-5@m spotlight-group" v-if="!loading && assets.length" match="true" hover="shadow">
             <div v-for="asset in assets">

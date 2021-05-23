@@ -27,7 +27,7 @@ $this->module('assets')->extend([
 
             if (!$_asset) continue;
 
-            $asset['modified'] = time();
+            $asset['_modified'] = time();
             $asset['_mby'] = $by;
 
             $this->app->trigger('assets.asset.save', [&$asset]);
@@ -128,8 +128,8 @@ $this->module('assets')->extend([
                 'colors' => null,
                 'width' => null,
                 'height' => null,
-                'created' => $created,
-                'modified' => $created,
+                '_created' => $created,
+                '_modified' => $created,
                 '_cby' => $by
             ];
 
