@@ -16,18 +16,17 @@ export default {
         }
     },
 
-    mounted() {
-
-        if (this.asset.type == 'image') {
-            let img = new Image();
-
-            img.onload = () => {
-                this.loading = false;
-            }
-
-            img.src = ASSETS_BASE_URL + this.asset.path;
+    watch: {
+        asset: {
+            handler() {
+                setTimeout(() => this.update());
+            },
+            deep: true
         }
+    },
 
+    mounted() {
+        setTimeout(() => this.update());
     },
 
     template: /*html*/`
@@ -39,5 +38,22 @@ export default {
             <kiss-svg :src="$base('assets:assets/icons/video.svg')" width="80" height="80" v-else-if="asset.type=='video'"></kiss-svg>
             <kiss-svg :src="$base('assets:assets/icons/file.svg')" width="80" height="80" v-else></kiss-svg>
         </div>
-    `
+    `,
+
+    methods: {
+
+        update() {
+
+            if (this.asset.type == 'image') {
+                let img = new Image();
+
+                img.onload = () => {
+                    this.loading = false;
+                }
+
+                img.src = ASSETS_BASE_URL + this.asset.path;
+            }
+
+        }
+    }
 }

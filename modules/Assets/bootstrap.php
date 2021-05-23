@@ -30,7 +30,7 @@ $this->module('assets')->extend([
             $asset['_modified'] = time();
             $asset['_mby'] = $by;
 
-            $this->app->trigger('assets.asset.save', [&$asset]);
+            $this->app->trigger('assets.asset.update', [&$asset]);
 
             $this->app->dataStorage->save('assets', $asset);
 
@@ -200,13 +200,13 @@ $this->module('assets')->extend([
 
         if (count($assets)) {
 
-            $this->app->trigger('assets.save', [&$assets]);
-
             if ($update) {
                 foreach ($assets as $asset) {
+                    $this->app->trigger('assets.asset.update', [&$asset]);
                     $this->app->dataStorage->save('assets', $asset);
                 }
             } else {
+                $this->app->trigger('assets.add', [&$assets]);
                 $this->app->dataStorage->insert('assets', $assets);
             }
         }

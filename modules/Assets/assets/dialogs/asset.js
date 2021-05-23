@@ -44,7 +44,7 @@ export default {
 
                 <app-loader v-if="!item"></app-loader>
 
-                <form v-if="item">
+                <form v-if="item" @submit.prevent="update">
 
                     <div class="kiss-bgcolor-contrast kiss-position-relative kiss-padding kiss-margin-bottom" :class="{'kiss-bgcolor-transparentimage': item.type == 'image'}">
                         <canvas width="400" height="150"></canvas>

@@ -347,3 +347,47 @@ $this->module('content')->extend([
     }
 
 ]);
+
+// update assets references on asset update
+$this->on('assets.asset.update', function(array $asset) {
+
+    $id = $asset['_id'];
+    $models = $this->module('content')->models();
+
+    $update = function(&$items) use($asset, $id, &$update) {
+
+        if (!is_array($items)) return $items;
+
+        foreach ($items as $k => &$v) {
+            if (!is_array($v)) continue;
+            if (is_array($items[$k])) $items[$k] = $update($items[$k]);
+            if (isset($v['_id']) && $v['_id'] == $id) $items[$k] = $asset;
+        }
+        return $items;
+    };
+
+    // update singletons
+    $items = $this->dataStorage->findTerm('content/singletons', $id)->toArray();
+    $items = count($items) ? $update($items) : [];
+
+    foreach ($items as $item) {
+        $this->dataStorage->save('content/singletons', $item);
+    }
+
+    // update collections
+    foreach ($models as $name => $meta) {
+
+        if ($meta['type'] !== 'collection') continue;
+
+        $collection = "content/collections/{$name}";
+        $items = $this->dataStorage->findTerm($collection, $id)->toArray();
+
+        if (!count($items)) continue;
+
+        $items = $update($items);
+
+        foreach ($items as $item) {
+            $this->dataStorage->save($collection, $item);
+        }
+    }
+});
