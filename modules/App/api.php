@@ -21,8 +21,7 @@ $this->bind('/api/graphql', function() {
 
     $query = $this->param('query', '{}');
     $variables = $this->param('variables', null);
-    $contentType = $this->request->server['CONTENT_TYPE'] ?? $this->request->server['HTTP_CONTENT_TYPE'];
-
+    $contentType = $this->request->server['CONTENT_TYPE'] ?? ($this->request->server['HTTP_CONTENT_TYPE'] ?? '');
 
     if (stripos($contentType, 'multipart/form-data') !== false) {
 
@@ -64,5 +63,5 @@ $this->bind('/api/graphql', function() {
         }
     }
 
-    return $this->gql->query($query, $variables);
+    return $this->gql->process($query, $variables);
 });

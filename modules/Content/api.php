@@ -15,3 +15,9 @@
  *     @OA\Response(response="404", description="Model not found")
  * )
  */
+
+
+$this->on('graphql.config', function($gql) {
+    $app = $this;
+    $gql->queries['fields']['content'] = include(__DIR__.'/graphql/content.php');
+});
