@@ -16,10 +16,11 @@
             <kiss-card class="kiss-margin kiss-margin-large-bottom kiss-padding kiss-bgcolor-contrast">
                 <label><?=('API endpoint')?></label>
                 <div class="kiss-flex kiss-flex-middle">
-                    <div class="kiss-text-truncate kiss-text-monospace">
+                    <div class="kiss-text-truncate kiss-text-monospace kiss-flex-1">
                         <?=$this->getSiteUrl(true)?>/api
                     </div>
                     <div class="kiss-margin-left"><a href="#" @click="copyEndpoint"><icon>content_copy</icon></a></div>
+                    <div class="kiss-margin-small-left"><a class="kiss-button kiss-button-small" href="#" @click="showApiViewer()">{{ t('Show Api viewer') }}</a></div>
                 </div>
             </kiss-card>
 
@@ -118,6 +119,10 @@
                                 this.keys.splice(this.keys.indexOf(key), 1);
                             });
                         });
+                    },
+
+                    showApiViewer() {
+                        App.utils.vueOffcanvas('settings:assets/dialogs/api-viewer.js', {openApiUrl: this.$route('/settings/api/openapi')}, {}, {flip: true, size: 'xxlarge'})
                     }
                 }
             }

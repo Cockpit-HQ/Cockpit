@@ -131,6 +131,7 @@ class Response {
         'tar'   => 'application/x-tar',
         'xhtml' => 'application/xhtml+xml',
         'text'  => 'text/plain',
+        'yaml'  => 'application/x-yaml',
     ];
 
     public function flush(): void {

@@ -1830,6 +1830,9 @@
                 case 'xlarge':
                     size = 'kiss-width-2-3@m kiss-width-1-2@xl';
                     break;
+                case 'xxlarge':
+                    size = 'kiss-width-3-4';
+                    break;
             }
 
             document.body.insertAdjacentHTML('beforeend', `

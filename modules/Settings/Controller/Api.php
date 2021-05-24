@@ -117,6 +117,45 @@ class Api extends App {
         return $keys;
     }
 
+    public function openapi() {
+
+        $paths = [APP_DIR.'/modules'];
+
+        if (\file_exists(APP_DIR.'/addons')) {
+            $paths[] = APP_DIR.'/addons';
+        }
+
+        if (\file_exists(APP_DIR.'/config/api')) {
+            $paths[] = APP_DIR.'/config/api';
+        }
+
+        $yaml = \OpenApi\Generator::scan($paths)->toYaml();
+
+        // replace placeholders
+        $yaml = \str_replace([
+            APP_DIR,
+            '{{ app.name }}',
+            '{{ app.version }}',
+        ], [
+            $this->app->getSiteUrl(true),
+            $this->app->retrieve('app.name'),
+            $this->app->retrieve('app.version'),
+        ], $yaml);
+
+        $this->app->response->mime = 'text';
+
+        return $yaml;
+    }
+
+    public function restApiViewer() {
+
+        $this->layout = 'app:layouts/raw.php';
+
+        $openApiUrl = $this->param('specUrl', $this->app->routeUrl('/settings/api/openapi'));
+
+        return $this->render('settings:views/api/rest-api-viewer.php', compact('openApiUrl'));
+    }
+
     protected function cache() {
         $this->helper('api')->cache();
     }

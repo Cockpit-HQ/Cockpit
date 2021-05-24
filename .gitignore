@@ -16,6 +16,7 @@ package-lock.json
 /lib/**/docs/*
 /lib/**/demo/*
 /lib/**/example/*
+/lib/**/Examples/*
 /lib/**/phpunit*
 /lib/**/tests/*
 /lib/**/test/*

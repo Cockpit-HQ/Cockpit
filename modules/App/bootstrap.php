@@ -12,6 +12,10 @@ $this->on('app.admin.init', function() {
     include(__DIR__.'/admin.php');
 }, 1000);
 
+$this->on('app.api.request', function() {
+    include(__DIR__.'/api.php');
+}, 1000);
+
 include(__DIR__.'/functions.php');
 
 // events
