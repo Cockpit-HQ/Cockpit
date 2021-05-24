@@ -9,7 +9,6 @@ $models      = $app->module('content')->models();
 $collections = array_filter($models, function($m) { return $m['type'] == 'collection';});
 $singletons  = array_filter($models, function($m) { return $m['type'] == 'singleton';});
 
-
 // register collections
 foreach ($collections as $name => &$meta) {
 
@@ -70,6 +69,51 @@ foreach ($collections as $name => &$meta) {
             }
 
             return $app->module('content')->items($name, $options);
+        }
+    ];
+}
+
+// register singletons
+foreach ($singletons as $name => &$meta) {
+
+    $_name = $name.'Model';
+
+    $gql->queries['fields'][$_name] = [
+
+        'type' => new ObjectType([
+            'name'   => $_name,
+            'fields' => function() use($meta, $app, $_name) {
+
+                $fields = array_merge([
+                    '_id' => Type::string(),
+                    '_created' => Type::int(),
+                    '_modified' =>Type::int()
+                ], FieldTypes::buildFieldsDefinitions($meta));
+
+                return $fields;
+            }
+        ]),
+
+        'args' => [
+            'lang'  => Type::string(),
+            'populate'   => ['type' => Type::int(), 'defaultValue' => 0],
+        ],
+
+        'resolve' => function ($root, $args) use($app, $name) {
+
+            $model = $app->module('content')->model($name);
+
+            $options  = [];
+
+            if (isset($args['lang']) && $args['lang']) {
+                $options['lang'] = $args['lang'];
+            }
+
+            if (isset($args['populate']) && $args['populate']) {
+                $options['populate'] = $args['populate'];
+            }
+
+            return $app->module('content')->item($name, $options);
         }
     ];
 }
