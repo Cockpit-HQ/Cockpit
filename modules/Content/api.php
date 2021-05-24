@@ -19,5 +19,7 @@
 
 $this->on('graphql.config', function($gql) {
     $app = $this;
-    $gql->queries['fields']['content'] = include(__DIR__.'/graphql/content.php');
+
+    include(__DIR__.'/graphql/content.php');
+    include(__DIR__.'/graphql/models.php');
 });

@@ -4,7 +4,7 @@ use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\ObjectType;
 use App\GraphQL\Types\JsonType;
 
-return [
+$gql->queries['fields']['content'] = [
 
     'type' => Type::listOf(JsonType::instance()),
 
