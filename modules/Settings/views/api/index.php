@@ -13,14 +13,27 @@
                 <div class="kiss-size-1 kiss-flex-1"><strong><?=t('API & Security')?></strong></div>
             </div>
 
-            <kiss-card class="kiss-margin kiss-margin-large-bottom kiss-padding kiss-bgcolor-contrast">
-                <label><?=('API endpoint')?></label>
-                <div class="kiss-flex kiss-flex-middle">
-                    <div class="kiss-text-truncate kiss-text-monospace kiss-flex-1">
-                        <?=$this->getSiteUrl(true)?>/api
+            <kiss-card class="kiss-margin kiss-margin-large-bottom kiss-bgcolor-contrast">
+                <div class="kiss-padding">
+                    <label><?=('REST-API endpoint')?></label>
+                    <div class="kiss-flex kiss-flex-middle">
+                        <div class="kiss-text-truncate kiss-text-monospace kiss-flex-1">
+                            <?=$this->getSiteUrl(true)?>
+                        </div>
+                        <div class="kiss-margin-left"><a href="#" @click="copyEndpoint"><icon>content_copy</icon></a></div>
+                        <div class="kiss-margin-small-left"><a class="kiss-button kiss-button-small" href="#" @click="showApiViewer()">{{ t('Show Api viewer') }}</a></div>
                     </div>
-                    <div class="kiss-margin-left"><a href="#" @click="copyEndpoint"><icon>content_copy</icon></a></div>
-                    <div class="kiss-margin-small-left"><a class="kiss-button kiss-button-small" href="#" @click="showApiViewer()">{{ t('Show Api viewer') }}</a></div>
+                </div>
+                <hr class="kiss-margin-remove">
+                <div class="kiss-padding">
+                    <label><?=('GraphQL endpoint')?></label>
+                    <div class="kiss-flex kiss-flex-middle">
+                        <div class="kiss-text-truncate kiss-text-monospace kiss-flex-1">
+                            <?=$this->getSiteUrl(true)?>/api/graphql
+                        </div>
+                        <div class="kiss-margin-left"><a href="#" @click="copyEndpoint"><icon>content_copy</icon></a></div>
+                        <div class="kiss-margin-small-left"><a class="kiss-button kiss-button-small" href="#" @click="showGraphQLViewer()">{{ t('Show Api viewer') }}</a></div>
+                    </div>
                 </div>
             </kiss-card>
 
@@ -99,7 +112,7 @@
 
                         e.preventDefault();
 
-                        App.utils.copyText('<?=$this->getSiteUrl(true)?>/api', () => {
+                        App.utils.copyText('<?=$this->getSiteUrl(true)?>', () => {
                             App.ui.notify('Api endpoint copied!');
                         });
                     },
@@ -123,6 +136,10 @@
 
                     showApiViewer() {
                         App.utils.vueOffcanvas('settings:assets/dialogs/api-viewer.js', {openApiUrl: this.$route('/settings/api/openapi')}, {}, {flip: true, size: 'xxlarge'})
+                    },
+
+                    showGraphQLViewer() {
+                        App.utils.vueOffcanvas('settings:assets/dialogs/graphql-viewer.js', {}, {}, {flip: true, size: 'xxlarge'})
                     }
                 }
             }

@@ -156,6 +156,13 @@ class Api extends App {
         return $this->render('settings:views/api/rest-api-viewer.php', compact('openApiUrl'));
     }
 
+    public function graphqlViewer() {
+
+        $this->layout = 'app:layouts/raw.php';
+
+        return $this->render('settings:views/api/graphql-viewer.php');
+    }
+
     protected function cache() {
         $this->helper('api')->cache();
     }
