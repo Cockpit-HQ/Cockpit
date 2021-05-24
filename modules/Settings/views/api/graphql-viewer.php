@@ -12,48 +12,71 @@
       width: 100%;
     }
   </style>
-  <link href="//unpkg.com/graphiql@0.11.11/graphiql.css" rel="stylesheet" />
-  <script src="//unpkg.com/react@15.6.1/dist/react.min.js"></script>
-  <script src="//unpkg.com/react-dom@15.6.1/dist/react-dom.min.js"></script>
-  <script src="//unpkg.com/graphiql@0.11.11/graphiql.min.js"></script>
-
-  <script src="//cdn.jsdelivr.net/fetch/2.0.1/fetch.min.js"></script>
+  <link type="text/css" href="//unpkg.com/graphiql/graphiql.min.css" rel="stylesheet" />
+  <script src="//cdn.jsdelivr.net/es6-promise/4.0.5/es6-promise.auto.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/react/umd/react.production.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/react-dom/umd/react-dom.production.min.js"></script>
+  <script src="//unpkg.com/graphiql/graphiql.min.js"></script>
 
 </head>
 <body>
   <script>
-    // Collect the URL parameters
-    var parameters = {};
-    window.location.search.substr(1).split('&').forEach(function (entry) {
-      var eq = entry.indexOf('=');
-      if (eq >= 0) {
-        parameters[decodeURIComponent(entry.slice(0, eq))] =
-          decodeURIComponent(entry.slice(eq + 1));
-      }
-    });
-    // Produce a Location query string from a parameter object.
-    function locationQuery(params, location) {
-      return (location ? location: '') + '?' + Object.keys(params).map(function (key) {
-        return encodeURIComponent(key) + '=' +
-          encodeURIComponent(params[key]);
-      }).join('&');
-    }
-    // Derive a fetch URL from the current URL, sans the GraphQL parameters.
-    var graphqlParamNames = {
-      query: true,
-      variables: true,
-      operationName: true
-    };
+      // Parse the search string to get url parameters.
+      var search = window.location.search;
+      var parameters = {};
+      search.substr(1).split('&').forEach(function (entry) {
+        var eq = entry.indexOf('=');
+        if (eq >= 0) {
+          parameters[decodeURIComponent(entry.slice(0, eq))] =
+            decodeURIComponent(entry.slice(eq + 1));
+        }
+      });
 
-      // Defines a GraphQL fetcher using the fetch API.
-      function graphQLHttpFetcher(graphQLParams) {
+      // if variables was provided, try to format it.
+      if (parameters.variables) {
+        try {
+          parameters.variables =
+            JSON.stringify(JSON.parse(parameters.variables), null, 2);
+        } catch (e) {
+          // Do nothing, we want to display the invalid JSON as a string, rather
+          // than present an error.
+        }
+      }
+
+      // When the query and variables string is edited, update the URL bar so
+      // that it can be easily shared
+      function onEditQuery(newQuery) {
+        parameters.query = newQuery;
+        updateURL();
+      }
+      function onEditVariables(newVariables) {
+        parameters.variables = newVariables;
+        updateURL();
+      }
+      function onEditOperationName(newOperationName) {
+        parameters.operationName = newOperationName;
+        updateURL();
+      }
+      function updateURL() {
+        var newSearch = '?' + Object.keys(parameters).filter(function (key) {
+          return Boolean(parameters[key]);
+        }).map(function (key) {
+          return encodeURIComponent(key) + '=' +
+            encodeURIComponent(parameters[key]);
+        }).join('&');
+        history.replaceState(null, null, newSearch);
+      }
+
+       function graphQLFetcher(graphQLParams) {
+          // This example expects a GraphQL server at the path /graphql.
+          // Change this to point wherever you host your GraphQL server.
           return fetch(window.location.origin + '<?=$this->route('/api/graphql')?>', {
             method: 'post',
             headers: {
               'Accept': 'application/json',
               'Content-Type': 'application/json'
             },
-            body: JSON.stringify(graphQLParams)
+            body: JSON.stringify(graphQLParams),
           }).then(function (response) {
             return response.text();
           }).then(function (responseBody) {
@@ -63,50 +86,22 @@
               return responseBody;
             }
           });
-      }
+        }
 
-      var fetcher = graphQLHttpFetcher;
+      // Render <GraphiQL /> into the body.
+      ReactDOM.render(
+        React.createElement(GraphiQL, {
+          fetcher: graphQLFetcher,
+          query: parameters.query,
+          variables: parameters.variables,
+          operationName: parameters.operationName,
+          onEditQuery: onEditQuery,
+          onEditVariables: onEditVariables,
+          onEditOperationName: onEditOperationName
+        }),
+        document.body,
+      );
 
-    // When the query and variables string is edited, update the URL bar so
-    // that it can be easily shared.
-    function onEditQuery(newQuery) {
-      parameters.query = newQuery;
-
-    }
-    function onEditVariables(newVariables) {
-      parameters.variables = newVariables;
-
-    }
-    function onEditOperationName(newOperationName) {
-      parameters.operationName = newOperationName;
-
-    }
-    function updateURL() {
-      var cleanParams = Object.keys(parameters).filter(function(v) {
-        return parameters[v];
-      }).reduce(function(old, v) {
-        old[v] = parameters[v];
-        return old;
-      }, {});
-
-      history.replaceState(null, null, locationQuery(cleanParams) + window.location.hash);
-    }
-    // Render <GraphiQL /> into the body.
-    ReactDOM.render(
-      React.createElement(GraphiQL, {
-        fetcher: fetcher,
-        onEditQuery: onEditQuery,
-        onEditVariables: onEditVariables,
-        onEditOperationName: onEditOperationName,
-        query: "{}",
-        response: null,
-        variables: null,
-        operationName: null,
-        editorTheme: null,
-        websocketConnectionParams: null,
-      }),
-      document.body
-    );
   </script>
 
 <style>
@@ -132,6 +127,7 @@
   box-shadow: none !important;
   color: #5c626d !important;
   border: 1px solid #181a1f !important;
+  margin: 0 !important;
 }
 
 .graphiql-container .result-window .CodeMirror-gutters {
@@ -215,9 +211,9 @@ color: #CACDD3;
 
 .graphiql-container .execute-button {
   background: #10131a;
-  border: 1px solid rgb(91, 98, 107);
+  border: 1px solid #0e8fff;
   box-shadow: none !important;
-  fill: #c9ccd2;
+  fill: #0e8fff;
 }
 
 .graphiql-container .history-contents p {

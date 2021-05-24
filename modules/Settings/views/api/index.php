@@ -21,7 +21,7 @@
                             <?=$this->getSiteUrl(true)?>
                         </div>
                         <div class="kiss-margin-left"><a href="#" @click="copyEndpoint"><icon>content_copy</icon></a></div>
-                        <div class="kiss-margin-small-left"><a class="kiss-button kiss-button-small" href="#" @click="showApiViewer()">{{ t('Show Api viewer') }}</a></div>
+                        <div class="kiss-margin-small-left kiss-width-1-5"><a class="kiss-button kiss-button-small kiss-width-1-1" href="#" @click="showApiViewer()">{{ t('Show Api viewer') }}</a></div>
                     </div>
                 </div>
                 <hr class="kiss-margin-remove">
@@ -32,7 +32,7 @@
                             <?=$this->getSiteUrl(true)?>/api/graphql
                         </div>
                         <div class="kiss-margin-left"><a href="#" @click="copyEndpoint"><icon>content_copy</icon></a></div>
-                        <div class="kiss-margin-small-left"><a class="kiss-button kiss-button-small" href="#" @click="showGraphQLViewer()">{{ t('Show Api viewer') }}</a></div>
+                        <div class="kiss-margin-small-left kiss-width-1-5"><a class="kiss-button kiss-button-small kiss-width-1-1" href="#" @click="showGraphQLViewer()">{{ t('GraphQL Playground') }}</a></div>
                     </div>
                 </div>
             </kiss-card>
