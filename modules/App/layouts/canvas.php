@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?=$this['app.name']?></title>
+    <title><?=$this->helper('theme')->title()?></title>
 
-    <link rel="icon" type="image/png"  href="<?=$this->base('/favicon.png')?>">
+    <link rel="icon" href="<?=$this->helper('theme')->favicon()?>">
 
     <?=$this->assets([
         $this['debug'] ? 'app:assets/css/app.css' : 'app:assets/app.bundle.css',

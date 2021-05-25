@@ -2051,7 +2051,6 @@ app-fieldcontainer:not([disabled="true"]):hover  .app-fieldcontainer-visible-hov
         opacity: 1;
     }
 }
-app-favicon { display: none; }
 app-loader {
     display: block;
     position: relative;

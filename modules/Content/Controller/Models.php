@@ -20,6 +20,8 @@ class Models extends App {
 
         $isUpdate = false;
 
+        $this->helper('theme')->favicon('content:icon.svg');
+
         return $this->render('content:views/models/model.php', compact('model', 'isUpdate'));
     }
 
@@ -36,6 +38,8 @@ class Models extends App {
         }
 
         $isUpdate = true;
+
+        $this->helper('theme')->favicon('content:icon.svg');
 
         return $this->render('content:views/models/model.php', compact('model', 'isUpdate'));
     }

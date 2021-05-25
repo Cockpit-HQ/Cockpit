@@ -9,6 +9,9 @@ class Assets extends App {
 
 
     public function index() {
+
+        $this->helper('theme')->favicon('assets:icon.svg');
+
         return $this->render('assets:views/index.php');
     }
 

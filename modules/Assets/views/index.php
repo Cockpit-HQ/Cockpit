@@ -1,5 +1,3 @@
-<app-favicon src="<?=$this->base('assets:icon.svg')?>"></app-favicon>
-
 <kiss-container class="kiss-margin">
 
     <ul class="kiss-breadcrumbs">
