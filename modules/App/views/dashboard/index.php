@@ -1,4 +1,4 @@
-<kiss-container class="kiss-margin-large-top">
+<kiss-container class="kiss-margin-large">
 
     <div class="kiss-flex kiss-flex-middle">
         <div class="kiss-margin-right">
