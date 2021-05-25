@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Access denied!</title>
 
+    <link rel="icon" href="<?=$this->helper('theme')->favicon()?>">
+
     <?=$this->assets([
         'app:assets/css/app.css',
         'app:assets/vendor/noty/noty.min.js',

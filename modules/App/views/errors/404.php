@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File not found</title>
 
-    <link rel="icon" type="image/png"  href="<?=$this->base('/favicon.png')?>">
+    <link rel="icon" href="<?=$this->helper('theme')->favicon()?>">
 
     <?=$this->assets([
         'app:assets/css/app.css',

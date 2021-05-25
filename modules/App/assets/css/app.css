@@ -105,6 +105,12 @@ label {
     color: var(--kiss-color-muted);
 }
 
+.app-logo {
+    max-height: 100%;
+    width: auto;
+    max-width: none;
+}
+
 app-fieldcontainer label {
     color: inherit;
 }

@@ -13,7 +13,7 @@
 <kiss-container class="login-wrapper">
 
         <div class="kiss-flex kiss-flex-center kiss-margin-large">
-            <img class="app-logo" src="<?=$this->base('/logo.svg')?>" width="40" alt="Logo">
+            <img class="app-logo" src="<?=$this->helper('theme')->logo()?>" style="height: 40px;" alt="Logo">
         </div>
 
         <vue-view class="kiss-margin-large-top">

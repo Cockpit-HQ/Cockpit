@@ -4,10 +4,6 @@ namespace App\Helper;
 
 class Theme extends \Lime\Helper {
 
-    protected function initialize() {
-
-    }
-
     public function title(?string $newTitle = null): ?string {
 
         static $customTitle;
@@ -55,5 +51,25 @@ class Theme extends \Lime\Helper {
         }
 
         return $this->baseUrl('/favicon.png');
+    }
+
+    public function logo(?string $url = null): ?string {
+
+        static $logo;
+
+        if ($url) {
+            $logo = $this->pathToUrl($url);;
+            return null;
+        }
+
+        if ($logo) {
+            return $logo;
+        }
+
+        if ($this->app->path('#config:logo.svg')) {
+            return $this->app->pathToUrl('#config:logo.svg');
+        }
+
+        return $this->baseUrl('/logo.svg');
     }
 }
