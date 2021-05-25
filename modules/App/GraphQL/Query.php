@@ -17,6 +17,9 @@ class Query extends \Lime\AppAware {
     public $directives;
 
     public function init() {
+
+        if ($this->initialized) return;
+
         $this->queries = new \ArrayObject(['name' => 'Query', 'fields' => []]);
         $this->mutations = new \ArrayObject(['name' => 'Mutation', 'fields' => []]);
         $this->types = new \ArrayObject([]);

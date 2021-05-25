@@ -13,7 +13,6 @@
  * )
  */
 
-
 $app = $this;
 
 // GraphQl service
@@ -69,4 +68,17 @@ $this->bind('/api/gql', function() {
     }
 
     return $this->gql->process($query, $variables);
+});
+
+// Rest Api service
+$this->service('restApi', function() use($app) {
+    $restApi = new App\RestApi\Query($app);
+    return $restApi;
+});
+
+$this->bind('/api/*', function($params) {
+
+    $path = '/'.$params[':splat'][0];
+
+    return $this->restApi->process($path, $this->request->method);
 });

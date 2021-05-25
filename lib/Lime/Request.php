@@ -18,6 +18,7 @@ class Request {
     public string $base_url = '';
     public string $base_route = '';
     public string $route = '/';
+    public string $method = 'GET';
 
     public static function fromGlobalRequest(array $config = []): self {
 
@@ -27,6 +28,7 @@ class Request {
             'base_route' => '',
             'route' => $_SERVER['PATH_INFO'] ?? '/',
             'request' => $_REQUEST,
+            'method' => $_SERVER['REQUEST_METHOD'] ?? 'GET',
             'post' => $_POST,
             'cookies' => $_COOKIE,
             'query' => $_GET,
