@@ -31,7 +31,16 @@ class FieldTypes {
             $def = self::getType($field);
 
             if ($def) {
-                $fields[$field['name']] = $def;
+
+                if (isset($def['type'], $field['required']) && $field['required']) {
+                    $def['type'] = Type::nonNull($def['type']);
+                }
+
+                if ($field['multiple']) {
+                    $fields[$field['name']] = Type::listOf($def['type']);
+                } else {
+                    $fields[$field['name']] = $def;
+                }
             }
         }
 
@@ -71,10 +80,6 @@ class FieldTypes {
 
             default:
                 $def['type'] = JsonType::instance();
-        }
-
-        if (isset($def['type'], $field['required']) && $field['required']) {
-            $def['type'] = Type::nonNull($def['type']);
         }
 
         return count($def) ? $def : null;
