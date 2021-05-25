@@ -28,9 +28,7 @@ class Query extends \Lime\AppAware {
 
         foreach ($this->endpoints as $pattern => $endpoint) {
 
-            if (!isset($endpoint[$method])) continue;
-
-            if ($this->isPathMatching($path, $pattern, $params)) {
+            if (isset($endpoint[$method]) && $this->isPathMatching($path, $pattern, $params)) {
                 $handler = $endpoint;
                 break;
             }
