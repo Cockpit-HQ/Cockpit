@@ -1,3 +1,5 @@
+<app-favicon src="<?=$this->base('content:assets/icons/singleton.svg')?>" color="<?=($this->escape($model['color'] ?? '#000'))?>"></app-favicon>
+
 <kiss-container class="kiss-margin">
 
     <ul class="kiss-breadcrumbs">

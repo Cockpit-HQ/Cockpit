@@ -1,3 +1,5 @@
+<app-favicon src="<?=$this->base('content:icon.svg')?>"></app-favicon>
+
 <kiss-container class="kiss-margin-large" size="medium">
 
 
