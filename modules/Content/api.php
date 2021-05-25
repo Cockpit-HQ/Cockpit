@@ -3,7 +3,7 @@
 
 /**
  * @OA\Get(
- *     path="/api/content/item/{model}",
+ *     path="/content/item/{model}",
  *     @OA\Parameter(
  *         description="Model name",
  *         in="path",
@@ -18,7 +18,7 @@
 
 /**
  * @OA\Get(
- *     path="/api/content/items/{model}",
+ *     path="/content/items/{model}",
  *     @OA\Parameter(
  *         description="Model name",
  *         in="path",

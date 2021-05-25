@@ -18,10 +18,10 @@
                     <label><?=('REST-API endpoint')?></label>
                     <div class="kiss-flex kiss-flex-middle">
                         <div class="kiss-text-truncate kiss-text-monospace kiss-flex-1">
-                            <?=$this->getSiteUrl(true)?>
+                            <?=$this->getSiteUrl(true)?>/api
                         </div>
-                        <div class="kiss-margin-left"><a href="#" @click="copyEndpoint"><icon>content_copy</icon></a></div>
-                        <div class="kiss-margin-small-left kiss-width-1-5"><a class="kiss-button kiss-button-small kiss-width-1-1" href="#" @click="showApiViewer()">{{ t('Show Api viewer') }}</a></div>
+                        <div class="kiss-margin-left"><a href="#" @click.prevent="copyEndpoint('<?=$this->getSiteUrl(true)?>/api')"><icon>content_copy</icon></a></div>
+                        <div class="kiss-margin-small-left kiss-width-1-5"><a class="kiss-button kiss-button-small kiss-width-1-1" href="#" @click="showApiViewer()">{{ t('Explore Rest-Api') }}</a></div>
                     </div>
                 </div>
                 <hr class="kiss-margin-remove">
@@ -29,10 +29,10 @@
                     <label><?=('GraphQL endpoint')?></label>
                     <div class="kiss-flex kiss-flex-middle">
                         <div class="kiss-text-truncate kiss-text-monospace kiss-flex-1">
-                            <?=$this->getSiteUrl(true)?>/api/graphql
+                            <?=$this->getSiteUrl(true)?>/api/gql
                         </div>
-                        <div class="kiss-margin-left"><a href="#" @click="copyEndpoint"><icon>content_copy</icon></a></div>
-                        <div class="kiss-margin-small-left kiss-width-1-5"><a class="kiss-button kiss-button-small kiss-width-1-1" href="#" @click="showGraphQLViewer()">{{ t('GraphQL Playground') }}</a></div>
+                        <div class="kiss-margin-left"><a href="#" @click.prevent="copyEndpoint('<?=$this->getSiteUrl(true)?>/api/gql')"><icon>content_copy</icon></a></div>
+                        <div class="kiss-margin-small-left kiss-width-1-5"><a class="kiss-button kiss-button-small kiss-width-1-1" href="#" @click="showGraphQLViewer()">{{ t('Explore GraphQL') }}</a></div>
                     </div>
                 </div>
             </kiss-card>
@@ -108,11 +108,9 @@
                         });
                     },
 
-                    copyEndpoint(e) {
+                    copyEndpoint(endpoint) {
 
-                        e.preventDefault();
-
-                        App.utils.copyText('<?=$this->getSiteUrl(true)?>', () => {
+                        App.utils.copyText(endpoint, () => {
                             App.ui.notify('Api endpoint copied!');
                         });
                     },

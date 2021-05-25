@@ -22,7 +22,7 @@ $this->service('gql', function() use($app) {
     return $gql;
 });
 
-$this->bind('/api/graphql', function() {
+$this->bind('/api/gql', function() {
 
     $query = $this->param('query', '{}');
     $variables = $this->param('variables', null);

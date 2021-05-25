@@ -70,7 +70,7 @@
        function graphQLFetcher(graphQLParams) {
           // This example expects a GraphQL server at the path /graphql.
           // Change this to point wherever you host your GraphQL server.
-          return fetch(window.location.origin + '<?=$this->route('/api/graphql')?>', {
+          return fetch(window.location.origin + '<?=$this->route('/api/gql')?>', {
             method: 'post',
             headers: {
               'Accept': 'application/json',
