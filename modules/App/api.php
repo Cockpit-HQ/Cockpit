@@ -2,10 +2,15 @@
 
 /**
  * @OA\Server(url=APP_DIR)
- */
-
-/**
+ *
  * @OA\Info(title="{{ app.name }}", version="{{ app.version }}")
+ *
+ * @OA\SecurityScheme(
+ *     type="apiKey",
+ *     in="header",
+ *     securityScheme="api_key",
+ *     name="api_key"
+ * )
  */
 
 

@@ -4,13 +4,28 @@
 /**
  * @OA\Get(
  *     path="/api/content/item/{model}",
- *     @OA\Response(response="200", description="Get model item")
+ *     @OA\Parameter(
+ *         description="Model name",
+ *         in="path",
+ *         name="model",
+ *         required=true,
+ *         @OA\Schema(type="string")
+ *     ),
+ *     @OA\Response(response="200", description="Get model item"),
+ *     @OA\Response(response="404", description="Model not found")
  * )
  */
 
 /**
  * @OA\Get(
  *     path="/api/content/items/{model}",
+ *     @OA\Parameter(
+ *         description="Model name",
+ *         in="path",
+ *         name="model",
+ *         required=true,
+ *         @OA\Schema(type="string")
+ *     ),
  *     @OA\Response(response="200", description="Get list of model items"),
  *     @OA\Response(response="404", description="Model not found")
  * )
