@@ -12,11 +12,18 @@
       width: 100%;
     }
   </style>
-  <link type="text/css" href="//unpkg.com/graphiql/graphiql.min.css" rel="stylesheet" />
-  <script src="//cdn.jsdelivr.net/es6-promise/4.0.5/es6-promise.auto.min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/react/umd/react.production.min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/react-dom/umd/react-dom.production.min.js"></script>
-  <script src="//unpkg.com/graphiql/graphiql.min.js"></script>
+
+  <style>
+    <?php include($this->path('settings:assets/vendor/graphiql/graphiql.min.css')) ?>
+  </style>
+  <script>
+    <?php
+      include($this->path('settings:assets/vendor/graphiql/es6-promise.auto.min.js'));
+      include($this->path('settings:assets/vendor/graphiql/react.production.min.js'));
+      include($this->path('settings:assets/vendor/graphiql/react-dom.production.min.js'));
+      include($this->path('settings:assets/vendor/graphiql/graphiql.min.js'));
+    ?>
+  </script>
 
 </head>
 <body>
