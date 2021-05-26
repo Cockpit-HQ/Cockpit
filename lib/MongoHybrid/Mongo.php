@@ -224,7 +224,7 @@ class Mongo {
         return $this->getCollection($collection)->updateMany($filter, $opts);
     }
 
-    public function count(string $collection, array $filter = [], array $options = []) {
+    public function count(string $collection, ?array $filter = null, array $options = []) {
 
         if (!$filter) $filter = [];
 

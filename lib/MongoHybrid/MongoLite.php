@@ -160,7 +160,7 @@ class MongoLite {
         return true;
     }
 
-    public function count(string $collection, array $filter=[]): int {
+    public function count(string $collection, ?array $filter = null): int {
         return $this->getCollection($collection)->count($filter);
     }
 }
