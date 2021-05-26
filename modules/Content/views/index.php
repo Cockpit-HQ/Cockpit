@@ -25,6 +25,10 @@
                     </ul>
                 </app-tabs>
 
+                <div class="kiss-margin">
+                    <input type="text" class="kiss-input" :placeholder="t('Filter models...')" v-model="filter">
+                </div>
+
                 <div class="kiss-margin-large-top" v-if="singletons.length">
 
                     <kiss-row class="kiss-child-width-1-5@m" match="true">
@@ -92,7 +96,6 @@
 
             </div>
 
-
             <app-actionbar>
 
                 <kiss-container size="medium">
@@ -133,7 +136,6 @@
                 </kiss-content>
             </kiss-popoutmenu>
 
-
         </template>
 
         <script type="module">
@@ -144,18 +146,33 @@
                         models: [],
                         loading: false,
                         actionModel: null,
-                        group: null
+                        group: null,
+                        filter: ''
                     }
                 },
 
                 computed: {
 
                     collections() {
-                        return this.models.filter(model => model.type == 'collection' && (!this.group || this.group == model.group));
+                        return this.models.filter(model => {
+
+                            if (this.filter && !`${model.name} ${model.label}`.toLocaleLowerCase().includes(this.filter.toLocaleLowerCase())) {
+                                return false;
+                            }
+
+                            return model.type == 'collection' && (!this.group || this.group == model.group)
+                        });
                     },
 
                     singletons() {
-                        return this.models.filter(model => model.type == 'singleton' && (!this.group || this.group == model.group));
+                        return this.models.filter(model => {
+
+                            if (this.filter && !`${model.name} ${model.label}`.toLocaleLowerCase().includes(this.filter.toLocaleLowerCase())) {
+                                return false;
+                            }
+
+                            return model.type == 'singleton' && (!this.group || this.group == model.group)
+                        });
                     },
 
                     groups() {
