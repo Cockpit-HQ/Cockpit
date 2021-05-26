@@ -20,9 +20,9 @@
                 </div>
             </div>
 
-            <div class="kiss-margin-large kiss-size-5 kiss-align-center kiss-text-bolder" v-if="!fields.length">
+            <kiss-card class="kiss-margin-large kiss-size-5 kiss-align-center kiss-color-muted kiss-text-bolder kiss-padding-large" theme="bordered" v-if="!fields.length">
                 <?=t('No fields defined')?>
-            </div>
+            </kiss-card>
 
             <kiss-row class="kiss-row-large kiss-margin-large" :class="{'kiss-disabled': saving}" v-if="fields.length">
                 <div class="kiss-flex-1">

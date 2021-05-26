@@ -9,10 +9,16 @@ class Models extends App {
 
     public function create() {
 
+        $type = $this->param('type', 'collection');
+
+        if (!\in_array($type, ['collection', 'singleton'])) {
+            $type = 'collection';
+        }
+
         $model = [
             'name' => '',
             'label' => '',
-            'type' => 'collection',
+            'type' => $type,
             'group' => '',
             'color' => null,
             'fields' => []

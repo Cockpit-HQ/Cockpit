@@ -20,9 +20,9 @@
                 <a class="kiss-size-large kiss-margin-small-left" kiss-popoutmenu="#model-item-menu-actions"><icon>more_horiz</icon></a>
             </div>
 
-            <div class="kiss-margin-large kiss-size-5 kiss-align-center kiss-text-bolder" v-if="!fields.length">
+            <kiss-card class="kiss-margin-large kiss-size-5 kiss-align-center kiss-color-muted kiss-text-bolder kiss-padding-large" theme="bordered" v-if="!fields.length">
                 <?=t('No fields defined')?>
-            </div>
+            </kiss-card>
 
             <kiss-row class="kiss-row-large kiss-margin-large" v-if="fields.length">
                 <div class="kiss-flex-1">

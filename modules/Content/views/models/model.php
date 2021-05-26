@@ -16,11 +16,31 @@
 
                 <div class="kiss-margin-large" v-if="!isUpdate">
                     <label><?=t('Type')?></label>
-                    <select class="kiss-input kiss-select" v-model="model.type">
-                        <option value="collection">{{ t('Collection') }}</option>
-                        <option value="singleton">{{ t('Singleton') }}</option>
-                    </select>
 
+                    <kiss-row class="kiss-child-width-1-4">
+                        <div>
+                            <kiss-card class="kiss-padding-large kiss-position-relative kiss-align-center" :class="model.type == 'singleton' ? 'kiss-color-primary kiss-bgcolor-contrast': 'kiss-color-muted'">
+                                <div>
+                                    <kiss-svg src="<?=$this->base('content:assets/icons/singleton.svg')?>" width="50" height="50"><canvas width="50" height="50"></canvas></kiss-svg>
+                                    <div class="kiss-size-xsmall kiss-margin-top">
+                                        {{ t('Singleton') }}
+                                    </div>
+                                </div>
+                                <a class="kiss-cover" @click="model.type = 'singleton'"></a>
+                            </kiss-card>
+                        </div>
+                        <div>
+                            <kiss-card class="kiss-padding-large kiss-position-relative kiss-padding kiss-align-center" :class="model.type == 'collection' ? 'kiss-color-primary kiss-bgcolor-contrast': 'kiss-color-muted'">
+                                <div>
+                                    <kiss-svg src="<?=$this->base('content:assets/icons/collection.svg')?>" width="50" height="50"><canvas width="50" height="50"></canvas></kiss-svg>
+                                    <div class="kiss-size-xsmall kiss-margin-top">
+                                        {{ t('Collection') }}
+                                    </div>
+                                </div>
+                                <a class="kiss-cover" @click="model.type = 'collection'"></a>
+                            </kiss-card>
+                        </div>
+                    </kiss-row>
                 </div>
 
                 <div class="kiss-margin" v-if="isUpdate">

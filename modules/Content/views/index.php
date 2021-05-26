@@ -48,12 +48,19 @@
                                 </div>
                             </kiss-card>
                         </div>
+                        <div>
+                            <kiss-card class="animated fadeIn kiss-padding kiss-flex kiss-flex-middle kiss-flex-center" theme="bordered" hover="shadow">
+                                <a class="kiss-size-large" href="<?=$this->route('/content/models/create')?>?type=singleton" title="<?=t('Add singleton model')?>"><icon>add_circle_outline</icon></a>
+                            </kiss-card>
+                        </div>
                     </kiss-row>
 
                 </div>
 
 
                 <div class="kiss-margin-large" v-if="collections.length">
+
+                    <div class="kiss-margin kiss-text-caption kiss-text-bold kiss-size-small"><?=t('Content collections')?></div>
 
                     <div class="kiss-margin-small" v-for="model in collections">
                         <kiss-card class="animated fadeIn" theme="bordered" hover="shadow">
@@ -72,6 +79,12 @@
                                     <a @click="toggleModelActions(model)"><icon>more_horiz</icon></a>
                                 </div>
                             </div>
+                        </kiss-card>
+                    </div>
+
+                    <div>
+                        <kiss-card class="animated fadeIn kiss-padding-small kiss-align-center">
+                            <a class="kiss-size-large" href="<?=$this->route('/content/models/create')?>?type=collection" title="<?=t('Add collection model')?>"><icon>add_circle_outline</icon></a>
                         </kiss-card>
                     </div>
 
