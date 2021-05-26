@@ -20,7 +20,7 @@ class Assets extends App {
         \session_write_close();
 
         $options = array_merge([
-            'sort' => ['created' => -1]
+            'sort' => ['_created' => -1]
         ], $this->param('options', []));
 
         if ($filter = $this->param('filter', null)) $options['filter'] = $filter;
