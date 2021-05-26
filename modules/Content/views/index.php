@@ -118,6 +118,12 @@
                                         <?=t('Edit')?>
                                     </a>
                                 </li>
+                                <li>
+                                    <a class="kiss-flex kiss-flex-middle" @click="clone(actionModel)">
+                                        <icon class="kiss-margin-small-right">control_point_duplicate</icon>
+                                        <?=t('Clone')?>
+                                    </a>
+                                </li>
                                 <li v-if="actionModel.type=='collection'">
                                     <a class="kiss-flex kiss-flex-middle" :href="$route(`/content/collection/item/${actionModel.name}`)">
                                         <icon class="kiss-margin-small-right">add_circle_outline</icon>
@@ -221,6 +227,19 @@
                             this.$request(`/content/models/remove/${model.name}`, {}).then(res => {
                                 this.models.splice(this.models.indexOf(model), 1);
                                 App.ui.notify('Model removed!');
+                            });
+                        });
+                    },
+
+                    clone(model) {
+
+                        App.ui.prompt(this.t('New model name'), '', name => {
+
+                            this.$request(`/content/models/clone/${model.name}`, {name}).then(newmodel => {
+                                this.models.push(newmodel);
+                                App.ui.notify('Model duplicated!');
+                            }).catch(rsp => {
+                                App.ui.notify(rsp.error || 'Duplicating model failed!', 'error');
                             });
                         });
                     }

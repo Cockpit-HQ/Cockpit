@@ -92,7 +92,7 @@ class Models extends App {
         $item = $this->param('item');
 
         if (!$model || !$this->module('content')->exists($model)) {
-            return $this->stop(['error' => 'Model unkmown'], 404);
+            return $this->stop(['error' => 'Model unknown'], 404);
         }
 
         if (!$item) {
@@ -102,5 +102,34 @@ class Models extends App {
         $item = $this->module('content')->saveItem($model, $item, ['user' => $this->user]);
 
         return $item;
+    }
+
+    public function clone($model = null) {
+
+        $name = str_replace(' ', '', trim($this->param('name', '')));
+
+        if (!$name) {
+            return $this->stop(['error' => 'Model name is missing'], 412);
+        }
+
+        if ($this->module('content')->exists($name)) {
+            return $this->stop(['error' => "Model named <{$name}> already exists"], 412);
+        }
+
+        if (!$model || !$this->module('content')->exists($model)) {
+            return $this->stop(['error' => 'Model unknown'], 404);
+        }
+
+        $model = $this->module('content')->model($model);
+        $time = time();
+
+        $model['name'] = $name;
+        $model['label'] = $model['label'] ? $model['label'].' Copy' : '';
+        $model['_created'] = $time;
+        $model['_modified'] = $time;
+
+        $this->module('content')->saveModel($name, $model);
+
+        return $model;
     }
 }
