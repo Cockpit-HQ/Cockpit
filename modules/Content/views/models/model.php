@@ -60,7 +60,7 @@
 
                 <div class="kiss-margin">
                     <label><?=t('Group')?></label>
-                    <input class="kiss-input" type="text" v-model="model.group">
+                    <input class="kiss-input" type="text" list="model-groups" v-model="model.group">
                 </div>
 
                 <div class="kiss-margin">
@@ -108,6 +108,10 @@
 
             </form>
 
+            <datalist id="model-groups" v-if="groups.length">
+                <option v-for="group in groups">{{ group }}</option>
+            </datalist>
+
         </template>
 
         <script type="module">
@@ -116,6 +120,7 @@
                 data() {
                     return {
                         model: <?=json_encode($model)?>,
+                        groups: <?=json_encode($groups)?>,
                         isUpdate: <?=json_encode($isUpdate)?>,
                         saving: false
                     }

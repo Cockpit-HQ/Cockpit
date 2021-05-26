@@ -25,10 +25,11 @@ class Models extends App {
         ];
 
         $isUpdate = false;
+        $groups = $this->getGroups();
 
         $this->helper('theme')->favicon('content:icon.svg');
 
-        return $this->render('content:views/models/model.php', compact('model', 'isUpdate'));
+        return $this->render('content:views/models/model.php', compact('model', 'isUpdate', 'groups'));
     }
 
     public function edit($name = null) {
@@ -44,10 +45,11 @@ class Models extends App {
         }
 
         $isUpdate = true;
+        $groups = $this->getGroups();
 
         $this->helper('theme')->favicon('content:icon.svg');
 
-        return $this->render('content:views/models/model.php', compact('model', 'isUpdate'));
+        return $this->render('content:views/models/model.php', compact('model', 'isUpdate', 'groups'));
     }
 
     public function remove($name = null) {
@@ -131,5 +133,21 @@ class Models extends App {
         $this->module('content')->saveModel($name, $model);
 
         return $model;
+    }
+
+    protected function getGroups() {
+
+        $groups = [];
+
+        foreach ($this->module('content')->models() as $name => $meta) {
+
+            if ($meta['group'] && !\in_array($meta['group'], $groups)) {
+                $groups[] = $meta['group'];
+            }
+        }
+
+        sort($groups);
+
+        return $groups;
     }
 }
