@@ -64,7 +64,7 @@
 
                 <div class="kiss-margin-large" v-if="collections.length">
 
-                    <div class="kiss-margin kiss-text-caption kiss-text-bold kiss-size-small"><?=t('Content collections')?></div>
+                    <div class="kiss-margin kiss-text-caption kiss-text-bold kiss-color-muted kiss-size-small"><?=t('Content collections')?></div>
 
                     <div class="kiss-margin-small" v-for="model in collections">
                         <kiss-card class="animated fadeIn" theme="bordered" hover="shadow">
