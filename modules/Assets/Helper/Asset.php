@@ -33,6 +33,21 @@ class Asset extends \Lime\Helper {
             return ['error' => 'Missing src parameter'];
         }
 
+        if (!$rebuild && $mime) {
+
+            $hash = md5(json_encode($options))."_{$quality}_{$mode}.{$mime}";
+            $thumbpath = $cachefolder."/{$hash}";
+
+            if ($this->app->fileStorage->fileExists($thumbpath)) {
+
+                if ($base64 || $binary) {
+                    return "data:image/{$mime};base64,".base64_encode($this->app->fileStorage->read($thumbpath));
+                }
+
+                return $this->app->fileStorage->getURL($thumbpath);
+            }
+        }
+
         $src   = str_replace('../', '', rawurldecode($src));
         $asset = null;
 
@@ -117,8 +132,8 @@ class Asset extends \Lime\Helper {
 
         $method = $mode;
 
-        $hash = md5($path.json_encode($options))."_{$quality}_{$mode}.{$ext}";
-        $thumbpath = $cachefolder."/{$path}/{$hash}";
+        $hash = md5(json_encode($options))."_{$quality}_{$mode}.{$ext}";
+        $thumbpath = $cachefolder."/{$hash}";
 
         if ($rebuild || !$this->app->fileStorage->fileExists($thumbpath)) {
 
