@@ -160,4 +160,37 @@ class Assets extends App {
         return $ids;
     }
 
+    public function thumbnail($id = null) {
+
+        \session_write_close();
+
+        $mime = $this->param('mime', 'auto');
+
+        if ($mime == 'auto') {
+
+            $mime = null;
+
+            if (strpos($this->app->request->headers['Accept'] ?? '', 'image/webp') !== false) {
+                $gdinfo = \gd_info();
+                $mime = isset($gdinfo['WebP Support']) && $gdinfo['WebP Support'] ? 'webp' : null;
+            }
+        }
+
+        $options = [
+            'src' => $id,
+            'fp' => $this->param('fp', null),
+            'mode' => $this->param('m', 'thumbnail'),
+            'mime' => $mime,
+            'filters' => (array) $this->param('f', []),
+            'width' => intval($this->param('w', null)),
+            'height' => intval($this->param('h', null)),
+            'quality' => intval($this->param('q', 80)),
+            'rebuild' => intval($this->param('r', false)),
+        ];
+
+        $thumbUrl = $this->helper('asset')->thumbnail($options);
+
+        $this->app->reroute($thumbUrl);
+    }
+
 }

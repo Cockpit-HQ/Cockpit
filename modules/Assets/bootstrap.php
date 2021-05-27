@@ -3,6 +3,9 @@
 include_once(__DIR__.'/lib/vendor/autoload.php');
 include_once(__DIR__.'/lib/SVGSanitizer.php');
 
+// Register Helpers
+$this->helpers['asset'] = 'Assets\\Helper\\Asset';
+
 // load admin related code
 $this->on('app.admin.init', function() {
     include(__DIR__.'/admin.php');
@@ -250,4 +253,8 @@ $this->module('assets')->extend([
 
         return $assets;
     },
+
+    'thumbnail' => function(array $options = []) {
+        return $this->app->helper('asset')->thumbnail($options);
+    }
 ]);

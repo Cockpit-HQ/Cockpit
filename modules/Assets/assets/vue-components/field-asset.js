@@ -7,7 +7,7 @@ export default {
         render(value, field, context) {
 
             if (value.type == 'image') {
-                return `<img class="kiss-responsive-height" src="${ASSETS_BASE_URL+value.path}" style="height:20px">`
+                return '<img class="kiss-responsive-height" src="'+App.route(`/assets/thumbnail/${value._id}?m=bestFit&mime=auto&h=20`)+'" style="height:20px">'
             }
 
             return value.type;
