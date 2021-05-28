@@ -9,7 +9,7 @@ customElements.define('app-avatar', class extends HTMLElement {
     }
 
     connectedCallback() {
-        this.draw();
+        setTimeout(() => this.draw(), 0);
     }
 
     attributeChangedCallback(name, oldValue, newValue) {

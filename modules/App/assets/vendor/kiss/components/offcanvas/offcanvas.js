@@ -15,11 +15,12 @@ customElements.define('kiss-offcanvas', class extends HTMLElement {
 
     connectedCallback() {
 
-        let $self = this;
+        let $self = this, pointerStart = null;
 
-        on(this, 'click', e => {
+        on(this, 'pointerdown', e => pointerStart = e.target);
+        on(this, 'pointerup', e => {
 
-            if (e.target == this) {
+            if (e.target == this && pointerStart == this) {
 
                 e.preventDefault();
 
@@ -27,8 +28,8 @@ customElements.define('kiss-offcanvas', class extends HTMLElement {
                     this.close();
                 }
             }
-
         });
+
 
         on(this, 'click', '[kiss-offcanvas-close]', function(e){
 

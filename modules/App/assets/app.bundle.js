@@ -157,11 +157,12 @@
 
         connectedCallback() {
 
-            let $self = this;
+            let $self = this, pointerStart = null;
 
-            on$1(this, 'click', e => {
+            on$1(this, 'pointerdown', e => pointerStart = e.target);
+            on$1(this, 'pointerup', e => {
 
-                if (e.target == this) {
+                if (e.target == this && pointerStart == this) {
 
                     e.preventDefault();
 
@@ -169,8 +170,8 @@
                         this.close();
                     }
                 }
-
             });
+
 
             on$1(this, 'click', '[kiss-offcanvas-close]', function(e){
 
@@ -1355,7 +1356,7 @@
         }
 
         connectedCallback() {
-            this.draw();
+            setTimeout(() => this.draw(), 0);
         }
 
         attributeChangedCallback(name, oldValue, newValue) {

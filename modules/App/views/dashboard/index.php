@@ -2,7 +2,9 @@
 
     <div class="kiss-flex kiss-flex-middle">
         <div class="kiss-margin-right">
-            <app-avatar size="80" name="<?=$this['user/name']?>"><canvas width="80" height="80"></canvas></app-avatar>
+            <app-avatar size="80" name="<?=$this['user/name']?>">
+                <canvas width="80" height="80"></canvas>
+            </app-avatar>
         </div>
         <div>
             <div class="kiss-text-bold"><?=$this['user/name']?></div>
@@ -12,4 +14,3 @@
     </div>
 
 </kiss-container>
-<hr>
