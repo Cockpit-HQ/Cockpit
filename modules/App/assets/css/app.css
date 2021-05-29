@@ -68,7 +68,7 @@ app-header {
     display: block;
     padding: 10px 0;
     background: var(--app-header-background);
-    box-shadow: 0 0 40px rgba(87, 87, 87, 0.05);
+    box-shadow: 0 0 40px var(--app-header-box-shadow, rgba(87, 87, 87, 0.05));
 }
 
 app-actionbar kiss-container {
