@@ -20,12 +20,13 @@
     },
     "autoload": {
         "psr-4": { "Symfony\\Polyfill\\Php81\\": "" },
-        "files": [ "bootstrap.php" ]
+        "files": [ "bootstrap.php" ],
+        "classmap": [ "Resources/stubs" ]
     },
     "minimum-stability": "dev",
     "extra": {
         "branch-alias": {
-            "dev-main": "1.22-dev"
+            "dev-main": "1.23-dev"
         },
         "thanks": {
             "name": "symfony/polyfill",

@@ -508,6 +508,7 @@ return array(
     'Psr\\Cache\\CacheItemInterface' => $vendorDir . '/psr/cache/src/CacheItemInterface.php',
     'Psr\\Cache\\CacheItemPoolInterface' => $vendorDir . '/psr/cache/src/CacheItemPoolInterface.php',
     'Psr\\Cache\\InvalidArgumentException' => $vendorDir . '/psr/cache/src/InvalidArgumentException.php',
+    'ReturnTypeWillChange' => $vendorDir . '/symfony/polyfill-php81/Resources/stubs/ReturnTypeWillChange.php',
     'RobThree\\Auth\\Providers\\Qr\\BaconQrCodeProvider' => $vendorDir . '/robthree/twofactorauth/lib/Providers/Qr/BaconQrCodeProvider.php',
     'RobThree\\Auth\\Providers\\Qr\\BaseHTTPQRCodeProvider' => $vendorDir . '/robthree/twofactorauth/lib/Providers/Qr/BaseHTTPQRCodeProvider.php',
     'RobThree\\Auth\\Providers\\Qr\\EndroidQrCodeProvider' => $vendorDir . '/robthree/twofactorauth/lib/Providers/Qr/EndroidQrCodeProvider.php',

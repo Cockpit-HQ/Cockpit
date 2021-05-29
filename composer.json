@@ -42,6 +42,7 @@
         "vendor-dir": "lib/vendor",
         "optimize-autoloader": true,
         "prefer-dist": true,
-        "lock": false
+        "lock": false,
+        "ignore-platform-reqs": true
     }
 }

@@ -4,17 +4,17 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit7e7faa5a6ed6071ba9e925e2dc80d51f
+class ComposerStaticInit9fa557d9fd1932552c84187009145ce8
 {
     public static $files = array (
         '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
         '7aed44d824e149ce152c0fb82af9379a' => __DIR__ . '/..' . '/colinodell/json5/src/global.php',
-        '3a37ebac017bc098e9a86b35401e7a68' => __DIR__ . '/..' . '/mongodb/mongodb/src/functions.php',
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         '23c18046f52bef3eea034657bafda50f' => __DIR__ . '/..' . '/symfony/polyfill-php81/bootstrap.php',
         '0ccdf99b8f62f02c52cba55802e0c2e7' => __DIR__ . '/..' . '/zircote/swagger-php/src/functions.php',
+        '3a37ebac017bc098e9a86b35401e7a68' => __DIR__ . '/..' . '/mongodb/mongodb/src/functions.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -694,6 +694,7 @@ class ComposerStaticInit7e7faa5a6ed6071ba9e925e2dc80d51f
         'Psr\\Cache\\CacheItemInterface' => __DIR__ . '/..' . '/psr/cache/src/CacheItemInterface.php',
         'Psr\\Cache\\CacheItemPoolInterface' => __DIR__ . '/..' . '/psr/cache/src/CacheItemPoolInterface.php',
         'Psr\\Cache\\InvalidArgumentException' => __DIR__ . '/..' . '/psr/cache/src/InvalidArgumentException.php',
+        'ReturnTypeWillChange' => __DIR__ . '/..' . '/symfony/polyfill-php81/Resources/stubs/ReturnTypeWillChange.php',
         'RobThree\\Auth\\Providers\\Qr\\BaconQrCodeProvider' => __DIR__ . '/..' . '/robthree/twofactorauth/lib/Providers/Qr/BaconQrCodeProvider.php',
         'RobThree\\Auth\\Providers\\Qr\\BaseHTTPQRCodeProvider' => __DIR__ . '/..' . '/robthree/twofactorauth/lib/Providers/Qr/BaseHTTPQRCodeProvider.php',
         'RobThree\\Auth\\Providers\\Qr\\EndroidQrCodeProvider' => __DIR__ . '/..' . '/robthree/twofactorauth/lib/Providers/Qr/EndroidQrCodeProvider.php',
@@ -769,11 +770,11 @@ class ComposerStaticInit7e7faa5a6ed6071ba9e925e2dc80d51f
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit7e7faa5a6ed6071ba9e925e2dc80d51f::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit7e7faa5a6ed6071ba9e925e2dc80d51f::$prefixDirsPsr4;
-            $loader->fallbackDirsPsr4 = ComposerStaticInit7e7faa5a6ed6071ba9e925e2dc80d51f::$fallbackDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit7e7faa5a6ed6071ba9e925e2dc80d51f::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit7e7faa5a6ed6071ba9e925e2dc80d51f::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit9fa557d9fd1932552c84187009145ce8::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit9fa557d9fd1932552c84187009145ce8::$prefixDirsPsr4;
+            $loader->fallbackDirsPsr4 = ComposerStaticInit9fa557d9fd1932552c84187009145ce8::$fallbackDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit9fa557d9fd1932552c84187009145ce8::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit9fa557d9fd1932552c84187009145ce8::$classMap;
 
         }, null, ClassLoader::class);
     }
