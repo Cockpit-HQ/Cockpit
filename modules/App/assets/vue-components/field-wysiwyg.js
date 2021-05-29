@@ -7,6 +7,7 @@ let ready = new Promise(function(resolve) {
     });
 });
 
+let instanceCount = 0;
 
 export default {
 
@@ -18,7 +19,7 @@ export default {
 
     data() {
         return {
-
+            id: ++instanceCount
         }
     },
 
@@ -44,7 +45,7 @@ export default {
 
     template: /*html*/`
         <div field="wysiwyg">
-            <div class="wysiwyg-container"></div>
+            <div :id="'mce-field-'+id" class="wysiwyg-container"></div>
         </div>
     `,
 

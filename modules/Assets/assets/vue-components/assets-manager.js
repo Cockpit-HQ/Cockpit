@@ -90,47 +90,51 @@ export default {
             </ul>
         </div>
 
-        <app-loader class="kiss-margin-large" v-if="loading"></app-loader>
+        <div class="kiss-margin" :class="{'kiss-dialog-overflow': modal}" :expand="modal">
 
-        <kiss-row class="kiss-child-width-1-2 kiss-child-width-1-5@m kiss-margin-large-bottom" match="true" v-if="!loading && folders.length">
+            <app-loader v-if="loading"></app-loader>
 
-            <div v-for="folder in folders">
-                <kiss-card class="kiss-flex kiss-flex-middle" theme="bordered">
-                    <div class="kiss-padding kiss-bgcolor-contrast"><icon size="larger">folder</icon></div>
-                    <div class="kiss-padding kiss-text-truncate kiss-flex-1 kiss-text-bold">
-                        <a class="kiss-link-muted" @click="openFolder(folder)">{{ folder.name }}</a>
-                    </div>
-                    <a class="kiss-padding" @click="toggleFolderActions(folder)"><icon>more_horiz</icon></a>
-                </kiss-card>
-            </div>
+            <kiss-row class="kiss-child-width-1-2 kiss-child-width-1-5@m kiss-margin-large-bottom" match="true" v-if="!loading && folders.length">
 
-        </kiss-row>
-
-        <div class="animated fadeIn kiss-margin-large kiss-color-muted kiss-align-center" :class="{'kiss-height-30vh kiss-flex kiss-flex-middle kiss-flex-center': !modal}" v-if="!loading && !assets.length">
-            <div>
-                <kiss-svg :src="$base('assets:icon.svg')" width="35" height="35"><canvas width="35" height="35"></canvas></kiss-svg>
-                <p class="kiss-margin-small-top">{{ t('No assets') }}</p>
-            </div>
-        </div>
-
-        <kiss-row class="kiss-child-width-1-2 kiss-child-width-1-5@m spotlight-group" v-if="!loading && assets.length" match="true" hover="shadow">
-            <div v-for="asset in assets">
-                <kiss-card class="kiss-position-relative" theme="bordered" :style="{borderColor: (selectedAsset && selectedAsset._id == asset._id && 'var(--kiss-color-primary)') || null}">
-                    <div class="kiss-bgcolor-contrast kiss-position-relative" :class="{'kiss-bgcolor-transparentimage': asset.type == 'image'}">
-                        <canvas width="400" height="300"></canvas>
-                        <div class="kiss-cover kiss-padding kiss-flex kiss-flex-middle kiss-flex-center">
-                            <div><asset-preview :asset="asset"></asset-preview></div>
+                <div v-for="folder in folders">
+                    <kiss-card class="kiss-flex kiss-flex-middle" theme="bordered">
+                        <div class="kiss-padding kiss-bgcolor-contrast"><icon size="larger">folder</icon></div>
+                        <div class="kiss-padding kiss-text-truncate kiss-flex-1 kiss-text-bold">
+                            <a class="kiss-link-muted" @click="openFolder(folder)">{{ folder.name }}</a>
                         </div>
-                        <a class="kiss-cover spotlight" :href="ASSETS_BASE_URL+asset.path" :data-media="asset.type" :data-title="asset.title" v-if="['image', 'video'].indexOf(asset.type) > -1"></a>
-                        <a class="kiss-cover" @click="selectedAsset=asset" v-if="modal"></a>
-                    </div>
-                    <div class="kiss-padding kiss-flex kiss-flex-middle">
-                        <div class="kiss-text-truncate kiss-size-xsmall kiss-flex-1"><a class="kiss-link-muted" @click="edit(asset)">{{ asset.title }}</a></div>
-                        <a class="kiss-margin-small-left" @click="toggleAssetActions(asset)"><icon>more_horiz</icon></a>
-                    </div>
-                </kiss-card>
+                        <a class="kiss-padding" @click="toggleFolderActions(folder)"><icon>more_horiz</icon></a>
+                    </kiss-card>
+                </div>
+
+            </kiss-row>
+
+            <div class="animated fadeIn kiss-margin-large kiss-color-muted kiss-align-center" :class="{'kiss-height-30vh kiss-flex kiss-flex-middle kiss-flex-center': !modal}" v-if="!loading && !assets.length">
+                <div>
+                    <kiss-svg :src="$base('assets:icon.svg')" width="35" height="35"><canvas width="35" height="35"></canvas></kiss-svg>
+                    <p class="kiss-margin-small-top">{{ t('No assets') }}</p>
+                </div>
             </div>
-        </kiss-row>
+
+            <kiss-row class="kiss-child-width-1-2 kiss-child-width-1-5@m spotlight-group" v-if="!loading && assets.length" match="true" hover="shadow">
+                <div v-for="asset in assets">
+                    <kiss-card class="kiss-position-relative" theme="bordered" :style="{borderColor: (selectedAsset && selectedAsset._id == asset._id && 'var(--kiss-color-primary)') || null}">
+                        <div class="kiss-bgcolor-contrast kiss-position-relative" :class="{'kiss-bgcolor-transparentimage': asset.type == 'image'}">
+                            <canvas width="400" height="300"></canvas>
+                            <div class="kiss-cover kiss-padding kiss-flex kiss-flex-middle kiss-flex-center">
+                                <div><asset-preview :asset="asset"></asset-preview></div>
+                            </div>
+                            <a class="kiss-cover spotlight" :href="ASSETS_BASE_URL+asset.path" :data-media="asset.type" :data-title="asset.title" v-if="['image', 'video'].indexOf(asset.type) > -1"></a>
+                            <a class="kiss-cover" @click="selectedAsset=asset" v-if="modal"></a>
+                        </div>
+                        <div class="kiss-padding kiss-flex kiss-flex-middle">
+                            <div class="kiss-text-truncate kiss-size-xsmall kiss-flex-1"><a class="kiss-link-muted" @click="edit(asset)">{{ asset.title }}</a></div>
+                            <a class="kiss-margin-small-left" @click="toggleAssetActions(asset)"><icon>more_horiz</icon></a>
+                        </div>
+                    </kiss-card>
+                </div>
+            </kiss-row>
+
+        </div>
 
         <div class="kiss-flex kiss-flex-middle kiss-margin-large-top" v-if="modal">
             <div class="kiss-flex kiss-flex-middle" v-if="!loading && count">
