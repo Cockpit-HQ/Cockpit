@@ -1665,7 +1665,6 @@
     let html = document.documentElement;
     let App$1 = {
 
-        base_route: (html.getAttribute("data-route") || '').replace(/\/$/, ''),
         base_url: (html.getAttribute("data-base") || '').replace(/\/$/, ''),
         version: (html.getAttribute("data-version") || '0.0.1'),
 
@@ -1684,7 +1683,7 @@
         },
 
         route: function (url) {
-            return this.base_route + url;
+            return this.base_url + url;
         },
 
         reroute: function (url) {

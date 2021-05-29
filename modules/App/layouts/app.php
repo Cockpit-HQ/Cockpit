@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-base="<?=$this->base('/')?>" data-route="<?=$this->route('/')?>" data-version="<?=APP_VERSION?>">
+<html lang="en" data-base="<?=$this->base('/')?>" data-version="<?=APP_VERSION?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
