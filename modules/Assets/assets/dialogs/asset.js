@@ -83,19 +83,23 @@ export default {
             <hr class="kiss-width-1-1 kiss-margin-remove">
             <div class="kiss-padding kiss-padding-remove-bottom kiss-bgcolor-contrast kiss-size-small" v-if="item">
                 <div>
+
                     <div class="kiss-flex kiss-flex-middle">
-                            <div class="kiss-size-4 kiss-margin-small-right kiss-flex kiss-color-muted" :title="t('Created at')"><icon>more_time</icon></div>
-                            <div class="kiss-text-truncate kiss-size-small kiss-text-monospace kiss-color-muted kiss-flex-1">{{ (new Date(item._created * 1000).toLocaleString()) }}</div>
-                            <div><icon>account_circle</icon></div>
-                        </div>
+                        <div class="kiss-size-4 kiss-margin-small-right kiss-flex" title="ID"><icon>adjust</icon></div>
+                        <div class="kiss-text-truncate kiss-text-bold kiss-text-monospace kiss-size-small kiss-flex-1">{{ item._id }}</div>
+                        <a :title="t('Copy')" @click="copyID()"><icon>copy</icon></a>
                     </div>
 
-                    <div v-if="item._created != item._modified">
-                        <div class="kiss-flex kiss-flex-middle">
-                            <div class="kiss-size-4 kiss-margin-small-right kiss-flex kiss-color-muted" :title="t('Modified at')"><icon>history</icon></div>
-                            <div class="kiss-text-truncate kiss-size-small kiss-text-monospace kiss-color-muted kiss-flex-1">{{ (new Date(item._modified * 1000).toLocaleString()) }}</div>
-                            <div><icon>account_circle</icon></div>
-                        </div>
+                    <div class="kiss-flex kiss-flex-middle">
+                        <div class="kiss-size-4 kiss-margin-small-right kiss-flex kiss-color-muted" :title="t('Created at')"><icon>more_time</icon></div>
+                        <div class="kiss-text-truncate kiss-size-small kiss-text-monospace kiss-color-muted kiss-flex-1">{{ (new Date(item._created * 1000).toLocaleString()) }}</div>
+                        <div><icon>account_circle</icon></div>
+                    </div>
+
+                    <div class="kiss-flex kiss-flex-middle" v-if="item._created != item._modified">
+                        <div class="kiss-size-4 kiss-margin-small-right kiss-flex kiss-color-muted" :title="t('Modified at')"><icon>history</icon></div>
+                        <div class="kiss-text-truncate kiss-size-small kiss-text-monospace kiss-color-muted kiss-flex-1">{{ (new Date(item._modified * 1000).toLocaleString()) }}</div>
+                        <div><icon>account_circle</icon></div>
                     </div>
             </div>
             <div class="kiss-padding kiss-bgcolor-contrast">
@@ -108,6 +112,10 @@ export default {
     `,
 
     methods: {
+
+        copyID() {
+            App.utils.copyText(this.item._id, () =>  App.ui.notify('ID copied!'));
+        },
 
         copyColor(color) {
             App.utils.copyText(color, () =>  App.ui.notify('Color copied!'));
