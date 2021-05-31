@@ -100,7 +100,8 @@ let pickComponent = {
 
     data() {
         return {
-            group: null
+            group: null,
+            filter: ''
         }
     },
 
@@ -118,6 +119,11 @@ let pickComponent = {
             let components = {}, component = null;
 
             Object.keys(this.components || {}).forEach(name => {
+
+                if (this.filter && !`${name} ${this.components[name].label || ''}`.toLocaleLowerCase().includes(this.filter.toLocaleLowerCase())) {
+                    return;
+                }
+
                 if (this.group && this.components[name].group != this.group ) return;
                 components[name] = this.components[name]
             });
@@ -147,7 +153,7 @@ let pickComponent = {
                 {{ t('Pick a component') }}
             </div>
 
-            <app-tabs static="true" v-if="groups.length > 1">
+            <app-tabs static="true" v-if="groups.length">
                 <ul class="app-tabs-nav kiss-margin-remove">
                     <li :active="group === null">
                         <a class="app-tabs-nav-link" @click="group = null">{{t('All')}}</a>
@@ -158,9 +164,13 @@ let pickComponent = {
                 </ul>
             </app-tabs>
 
+            <div class="kiss-padding">
+                <input type="text" class="kiss-input" :placeholder="t('Filter components...')" v-model="filter">
+            </div>
+
             <div class="app-offcanvas-content kiss-padding">
 
-                <kiss-row class="kiss-row-small kiss-child-width-1-2 kiss-child-width-1-3@m kiss-child-width-1-4@xl">
+                <kiss-row class="kiss-row-small kiss-child-width-1-2 kiss-child-width-1-3@m kiss-child-width-1-5@xl">
                     <div v-for="meta, component in filtered">
                         <kiss-card class="kiss-padding-small kiss-align-center kiss-position-relative" theme="bordered" hover="shadow">
                             <div class="kiss-position-relative">
@@ -211,8 +221,8 @@ let editComponent = {
 
     template: /*html*/`
         <div>
-
-            <div class="kiss-size-4 kiss-text-bold kiss-margin-bottom">{{ t('Edit component') }}</div>
+            <span class="kiss-badge kiss-badge-outline kiss-color-muted kiss-text-upper">{{ item.component }}</span>
+            <div class="kiss-size-4 kiss-text-bold kiss-margin-xsmall-top kiss-margin-bottom">{{ t('Edit component') }}</div>
 
             <input class="kiss-input" type="text" v-model="item.label">
             <fields-renderer class="kiss-margin-large" v-model="item.data" :fields="meta.fields"></fields-renderer>
@@ -286,6 +296,7 @@ export default {
                 class="field-layout-dragarea"
                 :swapThreshold="0.65"
                 :animation="150",
+                :fallbackOnBody="true",
                 style="min-height: 100px;"
             >
                 <template #item="{ element }">

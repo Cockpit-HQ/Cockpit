@@ -3715,6 +3715,7 @@ td.kiss-text-truncate { max-width: 0; }
     --kiss-font-size-1: 2rem;
     --kiss-hr-color: rgba(255,255,255,.1);
     --kiss-link-color: var(--kiss-color-primary);
+    --kiss-link-hover-color: #1994ff;
 
     --kiss-block-element-margin: 1.5rem;
 
