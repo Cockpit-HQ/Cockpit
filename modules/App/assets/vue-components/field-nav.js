@@ -127,9 +127,9 @@ export default {
                                 <div class="kiss-flex-1 kiss-size-xsmall kiss-text-bold" :class="{'kiss-color-muted': !element.title}">
                                     {{ element.title || t('Title...') }}
                                 </div>
-                                <a class="kiss-margin-small-left kiss-color-danger" @click="remove(element)"><icon>delete</icon></a>
                                 <a class="kiss-margin-small-left" @click="edit(element)"><icon>tune</icon></a>
                                 <a class="kiss-margin-small-left" @click="addItem(element.children)"><icon>create_new_folder</icon></a>
+                                <a class="kiss-margin-small-left kiss-color-danger" @click="remove(element)"><icon>delete</icon></a>
                             </div>
                         </kiss-card>
 

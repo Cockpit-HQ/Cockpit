@@ -247,7 +247,7 @@ export default {
                         </label>
                         <a class="app-fieldcontainer-visible-hover kiss-size-xsmall kiss-margin-left" @click="clear(field, val)" v-if="!nested">{{ t('Clear') }}</a>
                     </div>
-                <div class="kiss-color-muted kiss-size-small" v-if="field.info">{{ field.info }}</div>
+                <div class="kiss-color-muted kiss-size-xsmall" v-if="field.info">{{ field.info }}</div>
 
                 <div class="kiss-margin-small-top" v-if="!field.i18n || !locales.length">
                     <field-renderer :field="field" v-model="val[field.name]"></field-renderer>

@@ -6,7 +6,6 @@ let Components = {
         label: 'Button',
         group: 'Core',
         fields: [
-            {name: 'class', type: 'text'},
             {name: 'url', type: 'text'},
             {name: 'caption', type: 'text'},
             {name: 'target', type: 'select', opts: {options:['_self', '_blank'], default: '_self'}},
@@ -20,7 +19,6 @@ let Components = {
         label: 'Heading',
         group: 'Core',
         fields: [
-            {name: 'class', type: 'text'},
             {name: 'text', type: 'text'},
             {name: 'level', type: 'select', opts: {options:[1,2,3,4,5,6]}},
         ],
@@ -33,7 +31,6 @@ let Components = {
         label: 'HTML',
         group: 'Core',
         fields: [
-            {name: 'class', type: 'text'},
             {name: 'html', type: 'code', opts: {mode: 'html'}},
         ],
         preview: null,
@@ -45,7 +42,6 @@ let Components = {
         label: 'Markdown',
         group: 'Core',
         fields: [
-            {name: 'class', type: 'text'},
             {name: 'markdown', type: 'code', opts: {mode: 'markdown'}},
         ],
         preview: null,
@@ -57,7 +53,6 @@ let Components = {
         label: 'Link',
         group: 'Core',
         fields: [
-            {name: 'class', type: 'text'},
             {name: 'url', type: 'text'},
             {name: 'caption', type: 'text'},
             {name: 'target', type: 'select', opts: {options:['_self', '_blank'], default: '_self'}},
@@ -71,7 +66,6 @@ let Components = {
         label: 'Richtext',
         group: 'Core',
         fields: [
-            {name: 'class', type: 'text'},
             {name: 'html', type: 'wysiwyg'},
         ],
         preview: null,
@@ -94,7 +88,6 @@ let Components = {
         label: 'Spacer',
         group: 'Core',
         fields: [
-            {name: 'class', type: 'text'},
             {name: 'size', type: 'text'},
         ],
         preview: null,
@@ -107,7 +100,7 @@ let pickComponent = {
 
     data() {
         return {
-
+            group: null
         }
     },
 
@@ -118,27 +111,73 @@ let pickComponent = {
         }
     },
 
+    computed: {
+
+        filtered() {
+
+            let components = {}, component = null;
+
+            Object.keys(this.components || {}).forEach(name => {
+                if (this.group && this.components[name].group != this.group ) return;
+                components[name] = this.components[name]
+            });
+
+            return components;
+        },
+
+        groups() {
+            let groups = [];
+
+            Object.keys(this.components || {}).forEach(name => {
+                if (!this.components[name].group || groups.indexOf(this.components[name].group) > -1) return;
+                groups.push(this.components[name].group);
+            });
+
+            return groups.sort();
+        }
+    },
+
     template: /*html*/`
-        <div class="kiss-padding">
+        <div class="app-offcanvas-container">
 
-            <div class="kiss-size-4 kiss-text-bold kiss-margin-bottom">{{ t('Pick a component') }}</div>
-
-            <kiss-row class="kiss-row-small kiss-child-width-1-2@m">
-                <div v-for="meta, component in components">
-                    <kiss-card class="kiss-padding-small kiss-align-center kiss-position-relative" theme="bordered" hover="shadow">
-                        <div class="kiss-position-relative">
-                            <canvas width="600" height="250"></canvas>
-                            <div class="kiss-cover kiss-flex kiss-flex-middle kiss-flex-center kiss-color-muted">
-                                <div><kiss-svg :src="$base(meta.icon || 'settings:assets/icons/component.svg')" width="30" height="30"></kiss-svg></div>
-                            </div>
-                        </div>
-                        <div class="kiss-size-xsmall kiss-text-bold">{{ meta.label || component }}</div>
-                        <a class="kiss-cover" @click="select(component)"></a>
-                    </kiss-card>
+            <div class="kiss-padding kiss-size-4 kiss-text-bold kiss-margin-bottom kiss-flex kiss-flex-middle">
+                <div class="kiss-margin-small-right">
+                    <kiss-svg :src="$base('settings:assets/icons/component.svg')" width="40" height="40"></kiss-svg>
                 </div>
-            </kiss-row>
+                {{ t('Pick a component') }}
+            </div>
 
-        </kiss-row>
+            <app-tabs static="true" v-if="groups.length > 1">
+                <ul class="app-tabs-nav kiss-margin-remove">
+                    <li :active="group === null">
+                        <a class="app-tabs-nav-link" @click="group = null">{{t('All')}}</a>
+                    </li>
+                    <li :active="group == name" v-for="name in groups">
+                        <a class="app-tabs-nav-link" @click="group = name">{{ name }}</a>
+                    </li>
+                </ul>
+            </app-tabs>
+
+            <div class="app-offcanvas-content kiss-padding">
+
+                <kiss-row class="kiss-row-small kiss-child-width-1-2 kiss-child-width-1-3@m kiss-child-width-1-4@xl">
+                    <div v-for="meta, component in filtered">
+                        <kiss-card class="kiss-padding-small kiss-align-center kiss-position-relative" theme="bordered" hover="shadow">
+                            <div class="kiss-position-relative">
+                                <canvas width="600" height="250"></canvas>
+                                <div class="kiss-cover kiss-flex kiss-flex-middle kiss-flex-center kiss-color-muted">
+                                    <div><kiss-svg :src="$base(meta.icon || 'settings:assets/icons/component.svg')" width="30" height="30"></kiss-svg></div>
+                                </div>
+                            </div>
+                            <div class="kiss-size-xsmall kiss-text-bold">{{ meta.label || component }}</div>
+                            <a class="kiss-cover" @click="select(component)"></a>
+                        </kiss-card>
+                    </div>
+                </kiss-row>
+
+            </div>
+
+        </div>
     `,
 
     methods: {
@@ -147,7 +186,6 @@ let pickComponent = {
             this.$close();
         }
     }
-
 }
 
 let editComponent = {
@@ -246,17 +284,18 @@ export default {
                 @change="change"
                 handle=".lm-handle"
                 class="field-layout-dragarea"
+                :swapThreshold="0.65"
+                :animation="150",
                 style="min-height: 100px;"
             >
                 <template #item="{ element }">
                     <kiss-card class="kiss-padding-small" theme="bordered" style="margin: 8px 0;">
                         <div class="kiss-flex kiss-flex-middle">
                             <a class="lm-handle kiss-margin-small-right kiss-color-muted"><icon>drag_handle</icon></a>
-                            <a class="kiss-margin-small-right kiss-color-danger" @click="remove(element)"><icon>delete</icon></a>
-                            <a class="kiss-margin-small-right" @click="edit(element)"><icon>tune</icon></a>
                             <div class="kiss-flex-1 kiss-size-xsmall kiss-text-bold">
-                                {{ element.label }}
+                                <a class="kiss-link-muted" @click="edit(element)">{{ element.label }}</a>
                             </div>
+                            <a class="kiss-margin-small-left kiss-color-danger" @click="remove(element)"><icon>delete</icon></a>
                         </div>
                         <field-layout class="kiss-margin-small" v-model="element.children" :group="group || uid" :level="++level" v-if="element.children"></field-layout>
                     </kiss-card>
@@ -291,7 +330,7 @@ export default {
                         data
                     });
                 }
-            }, {flip: true, size: 'large'})
+            }, {flip: true, size: 'xlarge'})
 
         },
 
