@@ -76,7 +76,7 @@ let pickComponent = {
 
             <div class="app-offcanvas-content kiss-padding">
 
-                <kiss-row class="kiss-row-small kiss-child-width-1-2 kiss-child-width-1-3@m kiss-child-width-1-5@xl">
+                <kiss-row class="kiss-row-small kiss-child-width-1-2 kiss-child-width-1-4@m kiss-child-width-1-5@xl">
                     <div v-for="meta, component in filtered">
                         <kiss-card class="kiss-padding-small kiss-align-center kiss-position-relative" theme="bordered" hover="shadow">
                             <div class="kiss-position-relative">
