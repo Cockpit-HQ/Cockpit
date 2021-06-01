@@ -81,7 +81,7 @@
                         <ul>
                             <li class="<?=($this->request->route == '/') ? 'active':''?>">
                                 <a href="<?=$this->route('/')?>">
-                                    <kiss-svg class="kiss-margin-small-right" src="<?=$this->base('app:icon.svg')?>" width="20" height="20"></kiss-svg>
+                                    <kiss-svg class="kiss-margin-small-right" src="<?=$this->base('app:icon.svg')?>" width="25" height="25"></kiss-svg>
                                     <?=t('Dashboard')?>
                                 </a>
                             </li>
@@ -89,7 +89,7 @@
                             <?php foreach ($this->helper('menus')->menu('modules') as $link): ?>
                                 <li class="<?=(strpos($this->request->route, $link['route']) === 0) ? 'active':''?>">
                                     <a href="<?=$this->route($link['route'])?>">
-                                        <kiss-svg class="kiss-margin-small-right" src="<?=$this->base($link['icon'])?>" width="20" height="20"></kiss-svg>
+                                        <kiss-svg class="kiss-margin-small-right" src="<?=$this->base($link['icon'])?>" width="25" height="25"></kiss-svg>
                                         <?=t($link['label'])?>
                                     </a>
                                 </li>
