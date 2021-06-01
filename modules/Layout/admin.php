@@ -8,11 +8,12 @@ $this->bindClass('Layout\\Controller\\Settings', '/layout-components');
 
 $this->bind('/layout/components', function() {
 
-    $this->response->mime = 'js';
+    session_write_close();
 
     $components = new ArrayObject($this->helper('layoutComponents')->components());
 
     $this->trigger('layout.components.collect', [$components]);
+    $this->response->mime = 'js';
 
     return 'export default '.json_encode($components);
 });
