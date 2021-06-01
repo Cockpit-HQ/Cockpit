@@ -30,7 +30,7 @@ class Locales extends App {
             return false;
         }
 
-        $locale['meta'] = new ArrayObject( $locale['meta']);
+        $locale['meta'] = new ArrayObject($locale['meta']);
 
         return $this->render('settings:views/locales/locale.php', compact('locale'));
     }
@@ -51,7 +51,7 @@ class Locales extends App {
         $locale = $this->param('locale');
 
         if (!$locale || !isset($locale['_id'], $locale['i18n'])) {
-            return $this->stop(['error' => 'local is missing'], 412);
+            return $this->stop(['error' => 'locale is missing'], 412);
         }
 
         $this->app->dataStorage->remove('system/locales', ['_id' => $locale['_id']]);
@@ -68,7 +68,7 @@ class Locales extends App {
         $locale = $this->param('locale');
 
         if (!$locale) {
-            return $this->stop(['error' => 'local data is missing'], 412);
+            return $this->stop(['error' => 'locale data is missing'], 412);
         }
 
         $locale['_modified'] = time();

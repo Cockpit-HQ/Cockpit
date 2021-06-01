@@ -1,8 +1,6 @@
 <?php
 
 namespace Settings\Helper;
-
-
 class Locales extends \Lime\Helper {
 
     protected array $locales = [];

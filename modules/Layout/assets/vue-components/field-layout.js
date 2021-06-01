@@ -1,99 +1,6 @@
 
-let Components = {
 
-    button: {
-        icon: 'settings:assets/icons/button.svg',
-        label: 'Button',
-        group: 'Core',
-        fields: [
-            {name: 'url', type: 'text'},
-            {name: 'caption', type: 'text'},
-            {name: 'target', type: 'select', opts: {options:['_self', '_blank'], default: '_self'}},
-        ],
-        preview: null,
-        children: false
-    },
-
-    heading: {
-        icon: 'settings:assets/icons/heading.svg',
-        label: 'Heading',
-        group: 'Core',
-        fields: [
-            {name: 'text', type: 'text'},
-            {name: 'level', type: 'select', opts: {options:[1,2,3,4,5,6]}},
-        ],
-        preview: null,
-        children: false
-    },
-
-    html: {
-        icon: 'settings:assets/icons/html.svg',
-        label: 'HTML',
-        group: 'Core',
-        fields: [
-            {name: 'html', type: 'code', opts: {mode: 'html'}},
-        ],
-        preview: null,
-        children: false
-    },
-
-    markdown: {
-        icon: 'settings:assets/icons/component.svg',
-        label: 'Markdown',
-        group: 'Core',
-        fields: [
-            {name: 'markdown', type: 'code', opts: {mode: 'markdown'}},
-        ],
-        preview: null,
-        children: false
-    },
-
-    link: {
-        icon: 'settings:assets/icons/link.svg',
-        label: 'Link',
-        group: 'Core',
-        fields: [
-            {name: 'url', type: 'text'},
-            {name: 'caption', type: 'text'},
-            {name: 'target', type: 'select', opts: {options:['_self', '_blank'], default: '_self'}},
-        ],
-        preview: null,
-        children: false
-    },
-
-    richtext: {
-        icon: 'settings:assets/icons/wysiwyg.svg',
-        label: 'Richtext',
-        group: 'Core',
-        fields: [
-            {name: 'html', type: 'wysiwyg'},
-        ],
-        preview: null,
-        children: false
-    },
-
-    section: {
-        icon: 'settings:assets/icons/component.svg',
-        label: 'Section',
-        group: 'Core',
-        fields: [
-            {name: 'class', type: 'text'}
-        ],
-        preview: null,
-        children: true
-    },
-
-    spacer: {
-        icon: 'settings:assets/icons/component.svg',
-        label: 'Spacer',
-        group: 'Core',
-        fields: [
-            {name: 'size', type: 'text'},
-        ],
-        preview: null,
-        children: false
-    },
-};
+let Components = null;
 
 
 let pickComponent = {
@@ -107,8 +14,7 @@ let pickComponent = {
 
     props: {
         components: {
-            type: Object,
-            default: Components
+            type: Object
         }
     },
 
@@ -148,7 +54,7 @@ let pickComponent = {
 
             <div class="kiss-padding kiss-size-4 kiss-text-bold kiss-margin-bottom kiss-flex kiss-flex-middle">
                 <div class="kiss-margin-small-right">
-                    <kiss-svg :src="$base('settings:assets/icons/component.svg')" width="40" height="40"></kiss-svg>
+                    <kiss-svg :src="$base('layout:assets/icons/component.svg')" width="40" height="40"></kiss-svg>
                 </div>
                 {{ t('Pick a component') }}
             </div>
@@ -176,7 +82,7 @@ let pickComponent = {
                             <div class="kiss-position-relative">
                                 <canvas width="600" height="250"></canvas>
                                 <div class="kiss-cover kiss-flex kiss-flex-middle kiss-flex-center kiss-color-muted">
-                                    <div><kiss-svg :src="$base(meta.icon || 'settings:assets/icons/component.svg')" width="30" height="30"></kiss-svg></div>
+                                    <div><kiss-svg :src="$base(meta.icon || 'layout:assets/icons/component.svg')" width="30" height="30"></kiss-svg></div>
                                 </div>
                             </div>
                             <div class="kiss-size-xsmall kiss-text-bold">{{ meta.label || component }}</div>
@@ -208,7 +114,6 @@ let editComponent = {
     },
 
     props: {
-
         component: {
             type: Object,
             default: null
@@ -231,7 +136,7 @@ let editComponent = {
                 <button type="button" class="kiss-button kiss-flex-1" @click="$close()">{{ t('Cancel') }}</button>
                 <button type="button" class="kiss-button kiss-button-primary kiss-flex-1" @click="save">{{ t('Save') }}</button>
             </div>
-        </kiss-row>
+        </div>
     `,
 
     methods: {
@@ -253,14 +158,22 @@ export default {
     _meta: {
         label: 'Layout',
         info: 'Build custom component based layouts',
-        icon: 'settings:assets/icons/layout.svg'
+        icon: 'layout:assets/icons/layout.svg'
     },
 
     data() {
         return {
             uid: `field-layout-${++instanceCount}`,
-            val: this.modelValue || []
+            val: this.modelValue || [],
+            ready: false
         }
+    },
+
+    mounted() {
+        App.utils.import('/layout/components').then(m => {
+            Components = m.default;
+            this.ready = true;
+        });
     },
 
     props: {
@@ -279,14 +192,21 @@ export default {
     },
 
     watch: {
-        modelValue() {
-            this.val = this.modelValue || [];
-            this.update();
+        val: {
+            handler() { this.update() },
+            deep: true
+        },
+        modelValue: {
+            handler(val) {
+                this.val = this.modelValue || [];
+                this.update();
+            },
+            deep: true
         }
     },
 
     template: /*html*/`
-        <div field="layout">
+        <div field="layout" v-if="ready">
 
             <vue-draggable
                 :list="val"
@@ -324,7 +244,7 @@ export default {
 
         addComponent() {
 
-            App.utils.vueOffcanvas(pickComponent, null, {
+            App.utils.vueOffcanvas(pickComponent, {components: Components}, {
 
                 select: component => {
 
