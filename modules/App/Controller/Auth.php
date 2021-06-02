@@ -59,6 +59,9 @@ class Auth extends Base {
 
         $user = $this->helper('auth')->authenticate($auth);
 
+        if ($user && $user['role'] == 'public') {
+            return $this->stop(412);
+        }
 
         if ($user) {
 

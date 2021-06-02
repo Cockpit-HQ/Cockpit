@@ -23,11 +23,24 @@ class Projects extends App {
         ]);
     }
 
+    public function project($name) {
+
+        \session_write_close();
+
+        $project = $this->app->dataStorage->findOne('lokalize/projects', ['name' => $name]);
+
+
+        $this->helper('theme')->favicon('lokalize:icon.svg');
+
+        return $this->render('lokalize:views/projects/project.php', compact('project'));
+
+    }
+
     public function create() {
 
         $project = [
             'name' => '',
-            'locales' => [],
+            'locales' => $this->helper('locales')->locales(),
             'keys'=> [],
             'values' => new \ArrayObject([]),
             'color' => '',
@@ -43,13 +56,13 @@ class Projects extends App {
         return $this->render('lokalize:views/projects/edit.php', compact('project', 'groups'));
     }
 
-    public function edit($project = null) {
+    public function edit($name = null) {
 
-        if (!$project) {
+        if (!$name) {
             return false;
         }
 
-        $project = $this->app->dataStorage->findOne('lokalize/projects', ['name' => $project], ['keys' => 0, 'values' => 0]);
+        $project = $this->app->dataStorage->findOne('lokalize/projects', ['name' => $name], ['keys' => 0, 'values' => 0]);
 
         if (!$project) {
             return false;

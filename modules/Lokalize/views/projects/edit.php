@@ -91,8 +91,8 @@
 
                 </form>
 
-                <datalist id="model-groups" v-if="groups.length">
-                <option v-for="group in groups">{{ group }}</option>
+                <datalist id="project-groups" v-if="groups.length">
+                    <option v-for="group in groups">{{ group }}</option>
                 </datalist>
 
 
