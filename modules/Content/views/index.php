@@ -1,5 +1,9 @@
 <kiss-container class="kiss-margin-large" size="medium">
 
+    <ul class="kiss-breadcrumbs">
+        <li><a href="<?=$this->route('/content')?>"><?=t('Content')?></a></li>
+    </ul>
+
     <vue-view>
         <template>
 
@@ -35,9 +39,9 @@
                         <div v-for="model in singletons">
                             <kiss-card class="animated fadeIn" theme="bordered" hover="shadow">
                                 <div class="kiss-position-relative kiss-padding-small kiss-bgcolor-contrast">
-                                    <canvas width="600" height="350"></canvas>
+                                    <canvas width="600" height="200"></canvas>
                                     <div class="kiss-cover kiss-flex kiss-flex-middle kiss-flex-center">
-                                        <div :style="{color: model.color || 'inherit' }"><kiss-svg src="<?=$this->base('content:assets/icons/singleton.svg')?>" width="50" height="50"></kiss-svg></div>
+                                        <div :style="{color: model.color || 'inherit' }"><kiss-svg src="<?=$this->base('content:assets/icons/singleton.svg')?>" width="30" height="30"></kiss-svg></div>
                                     </div>
                                     <a class="kiss-cover" :href="$route(`/content/singleton/item/${model.name}`)"></a>
                                 </div>

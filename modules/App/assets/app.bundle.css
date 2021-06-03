@@ -3624,6 +3624,11 @@ td.kiss-text-truncate { max-width: 0; }
     right: 0;
     bottom: 0;
 }
+.kiss-cover[invisible="true"] {
+    visibility: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+}
 .kiss-responsive-width {
     max-height: none;
     max-width: 100%;

@@ -27,7 +27,7 @@
 </head>
 <body>
 
-    <app-header>
+    <app-header role="banner">
         <kiss-container class="kiss-flex kiss-flex-middle">
             <div>
                 <a class="kiss-display-inline-block" href="<?=$this->route('/')?>"><img class="app-logo" src="<?=$this->helper('theme')->logo()?>"  style="height: 30px;" alt="Logo"></a>

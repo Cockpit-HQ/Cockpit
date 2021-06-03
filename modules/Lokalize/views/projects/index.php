@@ -40,7 +40,7 @@
                         <kiss-svg :src="$base('lokalize:icon.svg')" width="30" height="30" :style="{color: project.color || 'inherit' }"></kiss-svg>
                     </div>
                     <div class="kiss-flex-1 kiss-margin-small-left">
-                        <a class="kiss-text-bold kiss-link-muted">{{ project.label || project.name}}</a>
+                        <a class="kiss-text-bold kiss-link-muted" :href="$route(`/lokalize/projects/project/${project.name}`)">{{ project.label || project.name}}</a>
                     </div>
                     <div class="kiss-size-small kiss-color-muted kiss-margin-small-left" v-if="project.info">{{ project.info }}</div>
                     <div class=" kiss-margin-small-left">

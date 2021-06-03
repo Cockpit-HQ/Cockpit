@@ -19,21 +19,41 @@ class Projects extends App {
         \session_write_close();
 
         return $this->module('lokalize')->projects([
-            'fields' => ['keys' => 0, 'values' => 0]
+            'fields' => ['values' => 0]
         ]);
     }
 
     public function project($name) {
 
-        \session_write_close();
+        if (!$name) {
+            return false;
+        }
 
         $project = $this->app->dataStorage->findOne('lokalize/projects', ['name' => $name]);
 
+        if (!$project) {
+            return false;
+        }
 
-        $this->helper('theme')->favicon('lokalize:icon.svg');
+        $project['values'] = new ArrayObject($project['values'] ?? []);
+
+        // fill values if needed
+        foreach ($project['locales'] as $locale) {
+
+            if (!isset($project['values'][$locale['i18n']])) {
+                $project['values'][$locale['i18n']] = new ArrayObject([]);
+            }
+
+            foreach ($project['keys'] as $key) {
+                if (!isset($project['values'][$locale['i18n']][$key['name']])) {
+                    $project['values'][$locale['i18n']][$key['name']] = ['value' => null];
+                }
+            }
+        }
+
+        $this->helper('theme')->favicon('lokalize:icon.svg', $project['color'] ?? '#000');
 
         return $this->render('lokalize:views/projects/project.php', compact('project'));
-
     }
 
     public function create() {
@@ -59,7 +79,7 @@ class Projects extends App {
     public function edit($name = null) {
 
         if (!$name) {
-            return false;
+            return $this->stop(['error' => 'project name is missing'], 412);
         }
 
         $project = $this->app->dataStorage->findOne('lokalize/projects', ['name' => $name], ['keys' => 0, 'values' => 0]);
@@ -126,6 +146,37 @@ class Projects extends App {
         return $project;
     }
 
+    public function update($name = null) {
+
+        if (!$name) {
+            return $this->stop(['error' => 'project name is missing'], 412);
+        }
+
+        $project = $this->app->dataStorage->findOne('lokalize/projects', ['name' => $name]);
+
+        if (!$project) {
+            return false;
+        }
+
+        $keys = $this->param('keys');
+        $values = $this->param('values');
+
+        if (!isset($keys, $values)) {
+            return $this->stop(['error' => 'keys or values is missing'], 412);
+        }
+
+        $update = [
+            '_id' => $project['_id'],
+            'keys' => $keys,
+            'values' => $values,
+        ];
+
+        $this->app->dataStorage->save('lokalize/projects', $update);
+
+        $update['values'] = new ArrayObject($update['values'] ?? []);
+
+        return $update;
+    }
 
     protected function getGroups() {
 
