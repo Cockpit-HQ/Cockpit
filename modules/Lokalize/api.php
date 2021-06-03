@@ -60,7 +60,7 @@ $this->on('restApi.config', function($restApi) {
                 }
             }
 
-            if ($app->param('nested')) {
+            if ($app->param('nested:int')) {
 
                 $resolveNested = function($obj) {
 
@@ -91,4 +91,10 @@ $this->on('restApi.config', function($restApi) {
             return $locale ? ($values[$locale] ?? false): $values;
         }
     ]);
+});
+
+
+$this->on('graphql.config', function($gql) {
+    $app = $this;
+    include(__DIR__.'/graphql/lokalize.php');
 });
