@@ -5,7 +5,8 @@ export default {
         return {
             ASSETS_BASE_URL: window.ASSETS_BASE_URL,
             item: null,
-            loading: true
+            loading: true,
+            focalPointing: false
         }
     },
 
@@ -30,6 +31,15 @@ export default {
     computed: {
         size() {
             return App.utils.formatSize(this.item.size);
+        },
+
+        focalPoint() {
+
+            if (!this.item.fp) {
+                return {left: '50%', top: '50%'};
+            }
+
+            return {left: (this.item.fp.x * 100)+'%', top: (this.item.fp.y * 100)+'%'}
         }
     },
 
@@ -48,11 +58,24 @@ export default {
 
                     <div class="kiss-bgcolor-contrast kiss-position-relative kiss-padding kiss-margin-bottom" :class="{'kiss-bgcolor-transparentimage': item.type == 'image'}">
                         <canvas width="400" height="150"></canvas>
-                        <div class="kiss-cover kiss-align-center kiss-flex kiss-flex-middle kiss-flex-center"><asset-preview :asset="item"></asset-preview></div>
-                        <div class="kiss-cover kiss-padding-small">
+                        <div class="kiss-cover kiss-align-center kiss-flex kiss-flex-middle kiss-flex-center">
+                            <asset-preview :asset="item"></asset-preview>
+                        </div>
+                        <div class="kiss-cover kiss-padding-small" v-if="!focalPointing">
                             <span class="kiss-badge">{{ item.mime }}</span>
                         </div>
-                        <a class="kiss-cover" :href="ASSETS_BASE_URL+item.path" target="_blank" rel="noopener"></a>
+                        <a class="kiss-cover" :href="ASSETS_BASE_URL+item.path" target="_blank" rel="noopener" v-if="!focalPointing"></a>
+                        <div class="kiss-cover kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center" v-if="focalPointing">
+                            <div class="kiss-display-inline-block kiss-position-relative" style="height:100%;" @click="setFocalPoint">
+                                <canvas class="kiss-responsive-height" :width="asset.width" :height="asset.height"></canvas>
+                                <div class="kiss-position-absolute" :style="focalPoint">
+                                    <div style="width:8px;height:8px;background:red;border-radius:50%;transform: translate(-50%, -50%);"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="kiss-position-absolute kiss-position-bottom-right kiss-padding-small" v-if="item.type == 'image'">
+                            <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-bgcolor-warning': focalPointing}" :title="t('Set focal point')" @click="focalPointing = !focalPointing"><icon>gps_fixed</icon></button>
+                        </div>
                     </div>
 
 
@@ -123,6 +146,14 @@ export default {
 
         replace() {
 
+        },
+
+        setFocalPoint(e) {
+
+            this.item.fp = {
+                x: (e.offsetX / e.target.offsetWidth),
+                y: (e.offsetY / e.target.offsetHeight)
+            };
         },
 
         update() {
