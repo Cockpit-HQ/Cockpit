@@ -19,7 +19,7 @@
             <kiss-row class="kiss-row-large" v-if="project.keys.length">
                 <div class="kiss-flex-1">
 
-                    <kiss-card class="kiss-padding-small kiss-margin" theme="bordered" hover="shadow" v-for="key in project.keys">
+                    <kiss-card class="kiss-padding kiss-margin-small kiss-bgcolor-contrast" v-for="key in project.keys">
                         <kiss-row>
                             <div class="kiss-width-1-4@m">
                                 <div class="kiss-flex kiss-flex-middle kiss-text-bold">
@@ -32,7 +32,7 @@
                             <div class="kiss-flex-1">
 
                                 <div class="kiss-margin-xsmall kiss-flex" v-for="loc in locales">
-                                    <div class="kiss-width-1-4 kiss-width-1-5@xl kiss-size-xsmall kiss-flex kiss-flex-middle kiss-padding-small kiss-bgcolor-contrast kiss-text-upper">
+                                    <div class="kiss-width-1-4 kiss-width-1-5@xl kiss-size-xsmall kiss-flex kiss-flex-middle kiss-padding-small kiss-text-upper">
                                         <icon class="kiss-margin-xsmall-right">language</icon> {{ loc.name || loc.i18n}}
                                     </div>
                                     <div class="kiss-flex-1 kiss-padding-small">
