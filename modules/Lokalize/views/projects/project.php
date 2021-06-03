@@ -18,34 +18,71 @@
 
             <kiss-row class="kiss-row-large" v-if="project.keys.length">
                 <div class="kiss-flex-1">
-
-                    <kiss-card class="kiss-padding kiss-margin-small kiss-bgcolor-contrast" v-for="key in project.keys">
-                        <kiss-row>
-                            <div class="kiss-width-1-4@m">
-                                <div class="kiss-flex kiss-flex-middle kiss-text-bold">
-                                    <icon class="larger kiss-margin-xsmall-right">label</icon>
-                                    {{ key.name }}
-                                    <a class="kiss-margin-xsmall-left" @click="toggleKeyActions(key)"><icon>more_horiz</icon></a>
-                                </div>
-                                <div class="kiss-size-xsmall kiss-color-muted kiss-margin-small-top">{{ key.info }}</div>
-                            </div>
-                            <div class="kiss-flex-1">
-
-                                <div class="kiss-margin-xsmall kiss-flex" v-for="loc in locales">
-                                    <div class="kiss-width-1-4 kiss-width-1-5@xl kiss-size-xsmall kiss-flex kiss-flex-middle kiss-padding-small kiss-text-upper">
-                                        <icon class="kiss-margin-xsmall-right">language</icon> {{ loc.name || loc.i18n}}
+                    <ul class="app-list-items animated fadeIn">
+                        <li v-for="key in project.keys">
+                            <kiss-row>
+                                <div class="kiss-width-1-4@m">
+                                    <div class="kiss-flex kiss-flex-middle kiss-text-bold">
+                                        <icon class="larger kiss-margin-xsmall-right">label</icon>
+                                        {{ key.name }}
+                                        <a class="kiss-margin-xsmall-left" @click="toggleKeyActions(key)"><icon>more_horiz</icon></a>
                                     </div>
-                                    <div class="kiss-flex-1 kiss-padding-small">
-                                        <input class="kiss-input" type="text" v-model="project.values[loc.i18n][key.name].value">
-                                    </div>
+                                    <div class="kiss-size-xsmall kiss-color-muted kiss-margin-small-top">{{ key.info }}</div>
                                 </div>
+                                <div class="kiss-flex-1">
 
-                            </div>
-                        </kiss-row>
-                    </kiss-card>
+                                    <div class="kiss-flex" v-for="loc in locales">
+                                        <div class="kiss-width-1-4 kiss-width-1-5@xl kiss-size-xsmall kiss-padding-small kiss-text-upper kiss-text-truncate kiss-color-muted">
+                                            <icon class="kiss-margin-xsmall-right">language</icon> {{ loc.name || loc.i18n}}
+                                        </div>
+                                        <div class="kiss-flex-1 kiss-padding-small">
+                                            <div class="kiss-position-relative" v-if="editItem.path != `${key.name}.${loc.name}`">
+                                                <div v-if="!project.values[loc.i18n][key.name].value"><span class="kiss-badge kiss-badge-outline kiss-color-danger">{{ t('Empty') }}</span></div>
+                                                <div class="kiss-size-small">{{ project.values[loc.i18n][key.name].value }}</div>
+                                                <a class="kiss-cover" @click="setEditItem(key, loc)"></a>
+                                            </div>
+                                            <div v-if="editItem.path == `${key.name}.${loc.name}`">
+                                                <textarea class="kiss-input kiss-textarea" v-model="editItem.value"></textarea>
+                                                <div class="kiss-button-group kiss-margin-small-top">
+                                                    <button type="button" class="kiss-button kiss-button-small" @click="editItem = {}">{{ t('Cancel') }}</button>
+                                                    <button type="button" class="kiss-button kiss-button-primary kiss-button-small" @click="updateItem()">{{ t('Save') }}</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </kiss-row>
+                        </li>
+                    </ul>
 
                 </div>
                 <div class="kiss-width-1-4@m kiss-width-1-5@xl">
+
+                    <div class="kiss-margin">
+
+                        <div class="kiss-text-caption kiss-size-xsmall kiss-text-bold">{{ t('Project') }}</div>
+
+                        <kiss-card class="kiss-margin-small kiss-bgcolor-contrast kiss-padding-small">
+
+                            <div class="kiss-margin-xsmall">
+                                <div class="kiss-flex kiss-flex-middle">
+                                    <div class="kiss-size-4 kiss-margin-small-right kiss-flex kiss-color-muted" :title="t('Created at')"><icon>more_time</icon></div>
+                                    <div class="kiss-text-truncate kiss-size-small kiss-text-monospace kiss-color-muted kiss-flex-1">{{ (new Date(project._created * 1000).toLocaleString()) }}</div>
+                                    <div><icon>account_circle</icon></div>
+                                </div>
+                            </div>
+
+                            <div class="kiss-margin-xsmall" v-if="project._created != project._modified">
+                                <div class="kiss-flex kiss-flex-middle">
+                                    <div class="kiss-size-4 kiss-margin-small-right kiss-flex kiss-color-muted" :title="t('Modified at')"><icon>history</icon></div>
+                                    <div class="kiss-text-truncate kiss-size-small kiss-text-monospace kiss-color-muted kiss-flex-1">{{ (new Date(project._modified * 1000).toLocaleString()) }}</div>
+                                    <div><icon>account_circle</icon></div>
+                                </div>
+                            </div>
+
+                        </kiss-card>
+                    </div>
 
                     <div class="kiss-margin">
 
@@ -130,7 +167,8 @@
                     return {
                         project: <?=json_encode($project)?>,
                         saving: false,
-                        actionKey: null
+                        actionKey: null,
+                        editItem: {}
                     }
                 },
 
@@ -187,6 +225,22 @@
                         this.project.locales.forEach(locale => {
                             delete this.project.values[locale.i18n][key.name];
                         });
+                    },
+
+                    setEditItem(key, locale) {
+
+                        this.editItem = {
+                            key,
+                            locale,
+                            path: `${key.name}.${locale.name}`,
+                            value: this.project.values[locale.i18n][key.name].value
+                        }
+                    },
+
+                    updateItem() {
+
+                        this.project.values[this.editItem.locale.i18n][this.editItem.key.name].value = this.editItem.value;
+                        this.editItem = {};
                     },
 
                     save() {

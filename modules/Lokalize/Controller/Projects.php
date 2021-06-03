@@ -169,6 +169,8 @@ class Projects extends App {
             '_id' => $project['_id'],
             'keys' => $keys,
             'values' => $values,
+            '_modified' => time(),
+            '_mby' => $this->user['_id']
         ];
 
         $this->app->dataStorage->save('lokalize/projects', $update);
