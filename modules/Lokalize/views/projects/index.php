@@ -39,10 +39,11 @@
                     <div>
                         <kiss-svg :src="$base('lokalize:icon.svg')" width="30" height="30" :style="{color: project.color || 'inherit' }"></kiss-svg>
                     </div>
-                    <div class="kiss-flex-1 kiss-margin-small-left">
+                    <div class="kiss-margin-small-left">
                         <a class="kiss-text-bold kiss-link-muted" :href="$route(`/lokalize/projects/project/${project.name}`)">{{ project.label || project.name}}</a>
                     </div>
-                    <div class="kiss-size-small kiss-color-muted kiss-margin-small-left" v-if="project.info">{{ project.info }}</div>
+                    <div class="kiss-flex-1 kiss-size-small kiss-color-muted kiss-margin-small-left">{{ project.info }}</div>
+                    <div class="kiss-align-right kiss-size-small kiss-margin-left">{{ project.status._overall }}%</div>
                     <div class=" kiss-margin-small-left">
                         <a @click="toggleProjectActions(project)"><icon>more_horiz</icon></a>
                     </div>

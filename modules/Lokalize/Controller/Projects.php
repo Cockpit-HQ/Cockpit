@@ -165,10 +165,30 @@ class Projects extends App {
             return $this->stop(['error' => 'keys or values is missing'], 412);
         }
 
+        $status = ['_overall' => 0];
+
+        foreach ($project['locales'] as $locale) {
+
+            $status[$locale['i18n']] = 0;
+
+            foreach ($keys as $key) {
+                if (isset($values[$locale['i18n']][$key['name']]['value']) && $values[$locale['i18n']][$key['name']]['value']) {
+                    $status[$locale['i18n']] += 1;
+                }
+
+            }
+
+            $status[$locale['i18n']] = round((count($keys) ? $status[$locale['i18n']]/count($keys) : 0) * 100);
+            $status['_overall'] += $status[$locale['i18n']];
+        }
+
+        $status['_overall'] = round($status['_overall']/count($project['locales']));
+
         $update = [
             '_id' => $project['_id'],
             'keys' => $keys,
             'values' => $values,
+            'status' => $status,
             '_modified' => time(),
             '_mby' => $this->user['_id']
         ];

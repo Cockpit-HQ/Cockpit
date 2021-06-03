@@ -104,6 +104,18 @@
 
                     </div>
 
+                    <div class="kiss-margin" v-if="project.status._overall">
+
+                        <div class="kiss-text-caption kiss-size-xsmall kiss-text-bold">{{ t('Completed') }}</div>
+
+                        <div class="kiss-size-3 kiss-margin-xsmall-top kiss-margin-small-bottom" :class="{'kiss-color-success': project.status._overall == 100 }">{{ project.status._overall }}%</div>
+
+                        <div class="kiss-flex kiss-child-width-1-2 kiss-size-xsmall kiss-color-muted kiss-margin-xsmall"  v-for="(loc, idx) in project.locales">
+                            <div><icon>language</icon> {{ loc.name || loc.i18n }}</div>
+                            <div class="kiss-align-right">{{ project.status[loc.i18n] }}%</div>
+                        </div>
+                    </div>
+
                 </div>
             </kiss-row>
 
