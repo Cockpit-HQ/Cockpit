@@ -35,25 +35,35 @@
                                 </div>
                                 <div class="kiss-flex-1">
 
-                                    <div class="kiss-flex kiss-margin-small" :class="{'kiss-flex-middle': editItem.path != `${key.name}.${loc.name}`}" v-for="loc in locales">
-                                        <div class="kiss-width-1-4 kiss-width-1-5@xl kiss-size-xsmall kiss-text-upper kiss-text-truncate kiss-margin-xsmall-top" :class="editItem.path == `${key.name}.${loc.name}` ? 'kiss-color-primary kiss-text-bold':'kiss-color-muted'">
-                                            <icon class="kiss-margin-xsmall-right">language</icon> {{ loc.name || loc.i18n}}
-                                        </div>
-                                        <div class="kiss-flex-1">
-                                            <div class="kiss-position-relative" v-if="editItem.path != `${key.name}.${loc.name}`">
-                                                <div v-if="!project.values[loc.i18n][key.name].value"><span class="kiss-badge kiss-badge-outline kiss-color-danger">{{ t('Empty') }}</span></div>
-                                                <div class="kiss-size-small">{{ project.values[loc.i18n][key.name].value }}</div>
-                                                <a class="kiss-cover" @click="setEditItem(key, loc)"></a>
-                                            </div>
-                                            <div v-if="editItem.path == `${key.name}.${loc.name}`">
-                                                <textarea class="kiss-input kiss-textarea key-value-text" v-model="editItem.value"></textarea>
-                                                <div class="kiss-button-group kiss-margin-small-top">
-                                                    <button type="button" class="kiss-button kiss-button-small" @click="editItem = {}">{{ t('Cancel') }}</button>
-                                                    <button type="button" class="kiss-button kiss-button-primary kiss-button-small" @click="updateItem()">{{ t('Save') }}</button>
+                                    <ul class="app-list-items">
+                                        <li v-for="loc in locales">
+
+                                            <div class="kiss-flex kiss-margin-small" :class="{'kiss-flex-middle': editItem.path != `${key.name}.${loc.name}`}">
+                                                <div class="kiss-width-1-4 kiss-width-1-5@xl kiss-size-xsmall kiss-text-upper kiss-text-truncate kiss-margin-xsmall-top" :class="editItem.path == `${key.name}.${loc.name}` ? 'kiss-color-primary kiss-text-bold':'kiss-color-muted'">
+                                                    <icon class="kiss-margin-xsmall-right">language</icon> {{ loc.name || loc.i18n}}
+                                                </div>
+                                                <div class="kiss-flex-1">
+                                                    <div class="kiss-position-relative" v-if="editItem.path != `${key.name}.${loc.name}`">
+                                                        <div v-if="!project.values[loc.i18n][key.name].value"><span class="kiss-badge kiss-badge-outline kiss-color-danger">{{ t('Empty') }}</span></div>
+                                                        <div class="kiss-size-small">{{ project.values[loc.i18n][key.name].value }}</div>
+                                                        <a class="kiss-cover" @click="setEditItem(key, loc)"></a>
+                                                    </div>
+                                                    <div v-if="editItem.path == `${key.name}.${loc.name}`">
+                                                        <textarea class="kiss-input kiss-textarea key-value-text" v-model="editItem.value"></textarea>
+                                                        <div class="kiss-button-group kiss-margin-small-top">
+                                                            <button type="button" class="kiss-button kiss-button-small" @click="editItem = {}">{{ t('Cancel') }}</button>
+                                                            <button type="button" class="kiss-button kiss-button-primary kiss-button-small" @click="updateItem()">{{ t('Save') }}</button>
+                                                        </div>
+                                                        <div class="kiss-padding-small kiss-bgcolor-contrast kiss-margin-small-top kiss-size-small animated fadeIn" v-if="editItem.translation">
+                                                            <div class="kiss-text-bold kiss-size-xsmall">{{ t('Suggestion') }}</div>
+                                                            <div class="kiss-margin-small">{{ editItem.translation }}</div>
+                                                            <a class="kiss-size-xsmall" @click="editItem.value = editItem.translation">{{ t('Choose suggestion') }}</a>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
+                                        </li>
+                                    </ul>
 
                                 </div>
                             </kiss-row>
@@ -265,6 +275,27 @@
                             value: this.project.values[locale.i18n][key.name].value,
                             translation: null
                         };
+
+                        let translationText = false;
+
+                        this.project.locales.forEach(l => {
+                            if (translationText || l === locale) return;
+                            if (this.project.values[l.i18n][key.name].value) {
+                                translationText = this.project.values[l.i18n][key.name].value;
+                            }
+                        })
+
+                        // request for translation
+                        this.$request('/lokalize/utils/translate', {text: translationText, to:locale.i18n}).then(rsp => {
+
+                            if (rsp.error) {
+                                console.log(rsp.error);
+                            }
+
+                            if (rsp.translation) {
+                                this.editItem.translation = rsp.translation
+                            }
+                        })
 
                         setTimeout(() => document.querySelector('.key-value-text').focus(), 150);
 
