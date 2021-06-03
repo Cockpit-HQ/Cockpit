@@ -18,12 +18,16 @@
 
             <kiss-row class="kiss-row-large" v-if="project.keys.length">
                 <div class="kiss-flex-1">
+
+                    <div class="kiss-margin-large">
+                        <input type="text" class="kiss-input" :placeholder="t('Filter keys...')" v-model="filter">
+                    </div>
+
                     <ul class="app-list-items animated fadeIn">
-                        <li v-for="key in project.keys">
-                            <kiss-row>
+                        <li v-for="key in filteredKeys">
+                            <kiss-row class="kiss-margin-small-top kiss-margin-small-bottom">
                                 <div class="kiss-width-1-4@m">
                                     <div class="kiss-flex kiss-flex-middle kiss-text-bold">
-                                        <icon class="larger kiss-margin-xsmall-right">label</icon>
                                         {{ key.name }}
                                         <a class="kiss-margin-xsmall-left" @click="toggleKeyActions(key)"><icon>more_horiz</icon></a>
                                     </div>
@@ -31,18 +35,18 @@
                                 </div>
                                 <div class="kiss-flex-1">
 
-                                    <div class="kiss-flex" v-for="loc in locales">
-                                        <div class="kiss-width-1-4 kiss-width-1-5@xl kiss-size-xsmall kiss-padding-small kiss-text-upper kiss-text-truncate kiss-color-muted">
+                                    <div class="kiss-flex kiss-margin-small" :class="{'kiss-flex-middle': editItem.path != `${key.name}.${loc.name}`}" v-for="loc in locales">
+                                        <div class="kiss-width-1-4 kiss-width-1-5@xl kiss-size-xsmall kiss-text-upper kiss-text-truncate kiss-margin-xsmall-top" :class="editItem.path == `${key.name}.${loc.name}` ? 'kiss-color-primary kiss-text-bold':'kiss-color-muted'">
                                             <icon class="kiss-margin-xsmall-right">language</icon> {{ loc.name || loc.i18n}}
                                         </div>
-                                        <div class="kiss-flex-1 kiss-padding-small">
+                                        <div class="kiss-flex-1">
                                             <div class="kiss-position-relative" v-if="editItem.path != `${key.name}.${loc.name}`">
                                                 <div v-if="!project.values[loc.i18n][key.name].value"><span class="kiss-badge kiss-badge-outline kiss-color-danger">{{ t('Empty') }}</span></div>
                                                 <div class="kiss-size-small">{{ project.values[loc.i18n][key.name].value }}</div>
                                                 <a class="kiss-cover" @click="setEditItem(key, loc)"></a>
                                             </div>
                                             <div v-if="editItem.path == `${key.name}.${loc.name}`">
-                                                <textarea class="kiss-input kiss-textarea" v-model="editItem.value"></textarea>
+                                                <textarea class="kiss-input kiss-textarea key-value-text" v-model="editItem.value"></textarea>
                                                 <div class="kiss-button-group kiss-margin-small-top">
                                                     <button type="button" class="kiss-button kiss-button-small" @click="editItem = {}">{{ t('Cancel') }}</button>
                                                     <button type="button" class="kiss-button kiss-button-primary kiss-button-small" @click="updateItem()">{{ t('Save') }}</button>
@@ -179,6 +183,7 @@
                     return {
                         project: <?=json_encode($project)?>,
                         saving: false,
+                        filter: '',
                         actionKey: null,
                         editItem: {}
                     }
@@ -187,6 +192,18 @@
                 computed: {
                     locales() {
                         return this.project.locales.filter(l => l.visible !== false);
+                    },
+                    filteredKeys() {
+
+                        if (!this.filter) {
+                            return this.project.keys.sort((a, b) => (a.name > b.name) ? 1 : -1);
+                        }
+
+                        let filter = this.filter.toLowerCase();
+
+                        return this.project.keys.filter(key => {
+                            return key.name.toLowerCase().indexOf(filter) !== -1;
+                        }).sort((a, b) => (a.name > b.name) ? 1 : -1);
                     }
                 },
 
@@ -245,8 +262,12 @@
                             key,
                             locale,
                             path: `${key.name}.${locale.name}`,
-                            value: this.project.values[locale.i18n][key.name].value
-                        }
+                            value: this.project.values[locale.i18n][key.name].value,
+                            translation: null
+                        };
+
+                        setTimeout(() => document.querySelector('.key-value-text').focus(), 150);
+
                     },
 
                     updateItem() {
