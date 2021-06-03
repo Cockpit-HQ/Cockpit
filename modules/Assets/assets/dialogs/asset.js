@@ -68,7 +68,7 @@ export default {
                         <div class="kiss-cover kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center" v-if="focalPointing">
                             <div class="kiss-display-inline-block kiss-position-relative" style="height:100%;" @click="setFocalPoint">
                                 <canvas class="kiss-responsive-height" :width="asset.width" :height="asset.height"></canvas>
-                                <div class="kiss-position-absolute" :style="focalPoint">
+                                <div class="kiss-position-absolute" style="pointer-events:none;" :style="focalPoint">
                                     <div style="width:8px;height:8px;background:red;border-radius:50%;transform: translate(-50%, -50%);"></div>
                                 </div>
                             </div>
@@ -97,8 +97,9 @@ export default {
                     </div>
 
                     <div class="kiss-margin-small kiss-color-muted kiss-text-monospace kiss-size-small">
-                        {{ size }}
+                        {{ size }} <span v-if="item.type=='image' && item.mime!='image/svg+xml'">&mdash; {{ item.width }}x{{ item.height }}</span>
                     </div>
+
 
                 </form>
 
