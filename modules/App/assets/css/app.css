@@ -18,11 +18,14 @@ vue-view { display: block; }
 vue-view:not([init="true"]) { display: none; }
 
 :root {
+
     --app-header-background: rgba(0, 0, 0, .2);
     --app-border-radius: 3px;
     --app-shadow-color: rgba(0,0,0,0.12);
 
-    --app-loader-color1: #0e8fff;
+    --app-actionbar-bgcolor: rgba(16,19,26,.9);
+
+    --app-loader-color1: var(--kiss-color-primary);
     --app-loader-color2: #fff;
 
     --app-fieldcontainer-border-color-active: var(--kiss-color-primary);

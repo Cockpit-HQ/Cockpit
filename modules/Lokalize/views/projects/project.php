@@ -149,6 +149,13 @@
                             </div>
                         </div>
 
+                        <div class="kiss-flex kiss-flex-middle kiss-margin-large-right" v-if="filter">
+                            <div>
+                                <div class="kiss-size-xsmall kiss-text-caption"><?=t('Filtered keys')?></div>
+                                <div class="kiss-size-bold">{{ filteredKeys.length }}</div>
+                            </div>
+                        </div>
+
                         <div class="kiss-flex-1 kiss-margin-right">
                             <a class="kiss-button" @click="addKey()"><?=t('Add key')?></a>
                         </div>
