@@ -89,12 +89,12 @@ class Mongo {
         return $doc;
     }
 
-    public function findOne(string $collection, array $filter = [], array $projection = []): ?array {
+    public function findOne(string $collection, ?array $filter = null, ?array $projection = null): ?array {
 
         if (!$filter) $filter = [];
 
         $filter = $this->_fixMongoIds($filter, true);
-        $doc    = $this->getCollection($collection)->findOne($filter, ['projection' => $projection]);
+        $doc    = $this->getCollection($collection)->findOne($filter, ['projection' => $projection ?? []]);
 
         if (isset($doc['_id'])) $doc['_id'] = (string) $doc['_id'];
 

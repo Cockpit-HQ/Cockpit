@@ -1,8 +1,15 @@
 <?php
 
 /**
+ *
+ * @OA\Tag(
+ *   name="lokalize",
+ *   description="Lokalize module",
+ * )
+ *
  * @OA\Get(
  *     path="/lokalize/project/{name}",
+ *     tags={"lokalize"},
  *     @OA\Parameter(
  *         description="Project name",
  *         in="path",
@@ -18,7 +25,7 @@
  *         @OA\Schema(type="String")
  *     ),
  *     @OA\Parameter(
- *         description="Resolve dotted keys",
+ *         description="Namespace dotted keys",
  *         in="query",
  *         name="nested",
  *         required=false,
@@ -67,7 +74,7 @@ $this->on('restApi.config', function($restApi) {
                     foreach (array_keys((array)$obj) as $key) {
                         if (\strpos($key, '.') !== false) {
                             $val = $obj[$key];
-                            $parts = explode('.', $key);
+                            $parts = explode('.', $key, 2);
 
                             if (!isset($obj[$parts[0]]) || !\is_array($obj[$parts[0]])) {
                                 $obj[$parts[0]] = [];

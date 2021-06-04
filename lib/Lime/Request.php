@@ -80,7 +80,7 @@ class Request {
 
         $value = fetch_from_array($src, $index, $default);
 
-        if ($cast) {
+        if ($cast && $value !== null) {
 
             if (\in_array($cast, ['bool', 'boolean']) && \is_string($value) && \in_array($cast, ['true', 'false'])) {
                 $value = $value == 'true' ? true : false;

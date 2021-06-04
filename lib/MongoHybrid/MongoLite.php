@@ -76,7 +76,8 @@ class MongoLite {
         return true;
     }
 
-    public function findOne(string $collection, array $filter = [], ?array $projection = null): ?array {
+    public function findOne(string $collection, ?array $filter = null, ?array $projection = null): ?array {
+        if (!$filter) $filter = [];
         return $this->getCollection($collection)->findOne($filter, $projection);
     }
 

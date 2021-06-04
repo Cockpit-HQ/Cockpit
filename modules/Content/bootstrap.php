@@ -264,7 +264,7 @@ $this->module('content')->extend([
         return $item;
     },
 
-    'item' => function(string $modelName, array $filter = []) {
+    'item' => function(string $modelName, array $filter = [], ?array $fields = null) {
 
         $model = $this->model($modelName);
 
@@ -274,7 +274,7 @@ $this->module('content')->extend([
 
         if ($model['type'] == 'singleton') {
 
-            $item = $this->app->dataStorage->findOne('content/singletons', ['_model' => $modelName]);
+            $item = $this->app->dataStorage->findOne('content/singletons', ['_model' => $modelName], $fields);
 
             if (!$item) {
                 $item = $this->getDefaultModelItem($modelName);
@@ -285,7 +285,7 @@ $this->module('content')->extend([
         } elseif ($model['type'] == 'collection') {
 
             $collection = "content/collections/{$modelName}";
-            $item = $this->app->dataStorage->findOne($collection, $filter);
+            $item = $this->app->dataStorage->findOne($collection, $filter, $fields);
         }
 
         return $item;
