@@ -227,7 +227,7 @@
 
                         pages: 1,
                         page: 1,
-                        limit: 200
+                        limit: 100
                     }
                 },
 
