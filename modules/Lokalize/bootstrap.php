@@ -18,7 +18,7 @@ $this->module('lokalize')->extend([
     'projects' => function(array $options = []) {
 
         $options = array_merge([
-            'sort' => ['name' => -1]
+            'sort' => ['name' => 1]
         ], $options);
 
         $projects = $this->app->dataStorage->find('lokalize/projects', $options)->toArray();
