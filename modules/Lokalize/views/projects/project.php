@@ -265,11 +265,12 @@
                 },
 
                 watch: {
+
+                    filter() {
+                        this.resetKeysScoller();
+                    },
                     page() {
-                        (this.$el.parentNode.querySelector('app-scrollcontainer') || {
-                            scrollTo() {}
-                        }).scrollTo(0, 0);
-                        window.scrollTo(0, 0);
+                        this.resetKeysScoller();
                     }
                 },
 
@@ -405,6 +406,13 @@
                         }
 
                         this.actionKey = key;
+                    },
+
+                    resetKeysScoller() {
+                        (this.$el.parentNode.querySelector('app-scrollcontainer') || {
+                            scrollTo() {}
+                        }).scrollTo(0, 0);
+                        window.scrollTo(0, 0);
                     }
                 }
             }
