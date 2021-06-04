@@ -35,7 +35,7 @@
                     <input type="text" class="kiss-input" :placeholder="t('Filter projects...')" v-model="filter">
                 </div>
 
-                <kiss-card class="kiss-margin-small kiss-padding kiss-flex kiss-flex-middle" theme="bordered" hover="shadow" v-for="project in filtered">
+                <kiss-card class="kiss-margin-small kiss-padding kiss-flex kiss-flex-middle animated fadeIn" theme="bordered" hover="shadow" v-for="project in filtered">
                     <div>
                         <kiss-svg :src="$base('lokalize:icon.svg')" width="30" height="30" :style="{color: project.color || 'inherit' }"></kiss-svg>
                     </div>
