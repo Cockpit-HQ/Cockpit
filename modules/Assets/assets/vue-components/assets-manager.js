@@ -218,7 +218,7 @@ export default {
             <kiss-container>
                 <div class="kiss-flex kiss-flex-middle">
                     <div class="kiss-flex kiss-flex-middle" v-if="!loading && count">
-                        <div class="kiss-size-small">{{ count}} {{ count == 1 ? t('Item') : t('Items') }}</div>
+                        <div class="kiss-size-small">{{ count }} {{ count == 1 ? t('Item') : t('Items') }}</div>
                         <div class="kiss-margin-small-left kiss-overlay-input">
                             <span class="kiss-badge kiss-badge-outline kiss-color-muted">{{ page }} / {{pages}}</span>
                             <select v-model="page" @change="load(page)" v-if="pages > 1"><option v-for="p in pages" :value="p">{{ p }}</option></select>

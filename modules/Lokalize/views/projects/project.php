@@ -23,52 +23,56 @@
                         <input type="text" class="kiss-input" :placeholder="t('Filter keys...')" v-model="filter">
                     </div>
 
-                    <ul class="app-list-items animated fadeIn">
-                        <li v-for="key in filteredKeys">
-                            <kiss-row class="kiss-margin-small-top kiss-margin-small-bottom">
-                                <div class="kiss-width-1-4@m">
-                                    <div class="kiss-flex kiss-flex-middle kiss-text-bold">
-                                        {{ key.name }}
-                                        <a class="kiss-margin-xsmall-left" @click="toggleKeyActions(key)"><icon>more_horiz</icon></a>
-                                    </div>
-                                    <div class="kiss-size-xsmall kiss-color-muted kiss-margin-small-top">{{ key.info }}</div>
-                                </div>
-                                <div class="kiss-flex-1">
-
-                                    <ul class="app-list-items">
-                                        <li v-for="loc in locales">
-
-                                            <div class="kiss-flex kiss-margin-small" :class="{'kiss-flex-middle': editItem.path != `${key.name}.${loc.name}`}">
-                                                <div class="kiss-width-1-4 kiss-width-1-5@xl kiss-size-xsmall kiss-text-upper kiss-text-truncate kiss-margin-xsmall-top" :class="editItem.path == `${key.name}.${loc.name}` ? 'kiss-color-primary kiss-text-bold':'kiss-color-muted'">
-                                                    <icon class="kiss-margin-xsmall-right">language</icon> {{ loc.name || loc.i18n}}
-                                                </div>
-                                                <div class="kiss-flex-1">
-                                                    <div class="kiss-position-relative" v-if="editItem.path != `${key.name}.${loc.name}`">
-                                                        <div v-if="!project.values[loc.i18n][key.name].value"><span class="kiss-badge kiss-badge-outline kiss-color-danger">{{ t('Empty') }}</span></div>
-                                                        <div class="kiss-size-small">{{ project.values[loc.i18n][key.name].value }}</div>
-                                                        <a class="kiss-cover" @click="setEditItem(key, loc)"></a>
-                                                    </div>
-                                                    <div v-if="editItem.path == `${key.name}.${loc.name}`">
-                                                        <textarea class="kiss-input kiss-textarea key-value-text" v-model="editItem.value"></textarea>
-                                                        <div class="kiss-button-group kiss-margin-small-top">
-                                                            <button type="button" class="kiss-button kiss-button-small" @click="editItem = {}">{{ t('Cancel') }}</button>
-                                                            <button type="button" class="kiss-button kiss-button-primary kiss-button-small" @click="updateItem()">{{ t('Save') }}</button>
-                                                        </div>
-                                                        <div class="kiss-padding-small kiss-bgcolor-contrast kiss-margin-small-top kiss-size-small animated fadeIn" v-if="editItem.translation">
-                                                            <div class="kiss-text-bold kiss-size-xsmall">{{ t('Suggestion') }}</div>
-                                                            <div class="kiss-margin-small">{{ editItem.translation }}</div>
-                                                            <a class="kiss-size-xsmall" @click="editItem.value = editItem.translation">{{ t('Choose suggestion') }}</a>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                    <app-scrollcontainer boundary="#lokalize-actionbar">
+                        <ul class="app-list-items animated fadeIn kiss-overflow-y-auto">
+                            <li v-for="key in visibleKeys">
+                                <kiss-row class="kiss-margin-small-top kiss-margin-small-bottom">
+                                    <div class="kiss-width-1-4@m">
+                                        <div class="kiss-flex kiss-flex-middle kiss-text-bold">
+                                            <div class="kiss-flex-1 kiss-size-small kiss-text-truncate kiss-margin-small-right">
+                                                {{ key.name }}
                                             </div>
-                                        </li>
-                                    </ul>
+                                            <a class="kiss-margin-xsmall-left" @click="toggleKeyActions(key)"><icon>more_horiz</icon></a>
+                                        </div>
+                                        <div class="kiss-size-xsmall kiss-color-muted kiss-margin-small-top">{{ key.info }}</div>
+                                    </div>
+                                    <div class="kiss-flex-1">
 
-                                </div>
-                            </kiss-row>
-                        </li>
-                    </ul>
+                                        <ul class="app-list-items">
+                                            <li v-for="loc in locales">
+
+                                                <div class="kiss-flex kiss-margin-small" :class="{'kiss-flex-middle': editItem.path != `${key.name}.${loc.name}`}">
+                                                    <div class="kiss-width-1-4 kiss-width-1-5@xl kiss-size-xsmall kiss-text-upper kiss-text-truncate kiss-margin-xsmall-top" :class="editItem.path == `${key.name}.${loc.name}` ? 'kiss-color-primary kiss-text-bold':'kiss-color-muted'">
+                                                        <icon class="kiss-margin-xsmall-right">language</icon> {{ loc.name || loc.i18n}}
+                                                    </div>
+                                                    <div class="kiss-flex-1">
+                                                        <div class="kiss-position-relative" v-if="editItem.path != `${key.name}.${loc.name}`">
+                                                            <div v-if="!project.values[loc.i18n][key.name].value"><span class="kiss-badge kiss-badge-outline kiss-color-danger">{{ t('Empty') }}</span></div>
+                                                            <div class="kiss-size-small">{{ project.values[loc.i18n][key.name].value }}</div>
+                                                            <a class="kiss-cover" @click="setEditItem(key, loc)"></a>
+                                                        </div>
+                                                        <div v-if="editItem.path == `${key.name}.${loc.name}`">
+                                                            <textarea class="kiss-input kiss-textarea key-value-text" v-model="editItem.value"></textarea>
+                                                            <div class="kiss-button-group kiss-margin-small-top">
+                                                                <button type="button" class="kiss-button kiss-button-small" @click="editItem = {}">{{ t('Cancel') }}</button>
+                                                                <button type="button" class="kiss-button kiss-button-primary kiss-button-small" @click="updateItem()">{{ t('Save') }}</button>
+                                                            </div>
+                                                            <div class="kiss-padding-small kiss-bgcolor-contrast kiss-margin-small-top kiss-size-small animated fadeIn" v-if="editItem.translation">
+                                                                <div class="kiss-text-bold kiss-size-xsmall">{{ t('Suggestion') }}</div>
+                                                                <div class="kiss-margin-small">{{ editItem.translation }}</div>
+                                                                <a class="kiss-size-xsmall" @click="editItem.value = editItem.translation">{{ t('Choose suggestion') }}</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
+
+                                    </div>
+                                </kiss-row>
+                            </li>
+                        </ul>
+                    </app-scrollcontainer>
 
                 </div>
                 <div class="kiss-width-1-4@m kiss-width-1-5@xl">
@@ -133,7 +137,7 @@
                 </div>
             </kiss-row>
 
-            <app-actionbar>
+            <app-actionbar id="lokalize-actionbar">
 
                 <kiss-container>
                     <div class="kiss-flex kiss-flex-middle">
@@ -147,6 +151,17 @@
 
                         <div class="kiss-flex-1 kiss-margin-right">
                             <a class="kiss-button" @click="addKey()"><?=t('Add key')?></a>
+                        </div>
+
+                        <div class="kiss-flex kiss-flex-middle kiss-margin-right" v-if="pages > 1">
+                            <div class="kiss-margin-small-left kiss-overlay-input">
+                                <span class="kiss-badge kiss-badge-outline kiss-color-muted">{{ page }} / {{pages}}</span>
+                                <select v-model="page"><option v-for="p in pages" :value="p">{{ p }}</option></select>
+                            </div>
+                            <div class="kiss-margin-small-left kiss-size-small">
+                                <a class="kiss-margin-small-right" v-if="(page - 1) >= 1" @click="page -= 1">{{ t('Previous') }}</a>
+                                <a v-if="(page + 1) <= pages" @click="page += 1">{{ t('Next') }}</a>
+                            </div>
                         </div>
 
                         <div>
@@ -172,6 +187,12 @@
                                         <?=t('Edit')?>
                                     </a>
                                 </li>
+                                <li>
+                                    <a class="kiss-flex kiss-flex-middle" @click="duplicateKey(actionKey)">
+                                        <icon class="kiss-margin-small-right">control_point_duplicate</icon>
+                                        <?=t('Duplicate')?>
+                                    </a>
+                                </li>
                                 <li class="kiss-nav-divider"></li>
                                 <li>
                                     <a class="kiss-color-danger kiss-flex kiss-flex-middle" @click="removeKey(actionKey)">
@@ -195,25 +216,50 @@
                         saving: false,
                         filter: '',
                         actionKey: null,
-                        editItem: {}
+                        editItem: {},
+
+                        pages: 1,
+                        page: 1,
+                        limit: 200
                     }
                 },
 
                 computed: {
+
                     locales() {
                         return this.project.locales.filter(l => l.visible !== false);
                     },
+
+                    visibleKeys() {
+
+                        return this.filteredKeys.slice((this.page - 1) * this.limit, this.page * this.limit);
+                    },
+
                     filteredKeys() {
 
+                        let filtered = [];
+
                         if (!this.filter) {
-                            return this.project.keys.sort((a, b) => (a.name > b.name) ? 1 : -1);
+                            filtered = this.project.keys.sort((a, b) => (a.name > b.name) ? 1 : -1);
+                        } else {
+
+                            let filter = this.filter.toLowerCase();
+
+                            filtered = this.project.keys.filter(key => {
+                                return key.name.toLowerCase().indexOf(filter) !== -1;
+                            }).sort((a, b) => (a.name > b.name) ? 1 : -1);
                         }
 
-                        let filter = this.filter.toLowerCase();
+                        this.page = 1;
+                        this.pages = Math.ceil(filtered.length / this.limit);
 
-                        return this.project.keys.filter(key => {
-                            return key.name.toLowerCase().indexOf(filter) !== -1;
-                        }).sort((a, b) => (a.name > b.name) ? 1 : -1);
+                        return filtered;
+                    }
+                },
+
+                watch: {
+                    page() {
+                        window.scrollTo(0, 0);
                     }
                 },
 
@@ -266,6 +312,23 @@
                         });
                     },
 
+                    duplicateKey(key) {
+
+                        let dKey = JSON.parse(JSON.stringify(key));
+
+                        dKey.name = `${dKey.name}.copy`;
+
+                        App.utils.vueModal('lokalize:assets/dialog/key.js', {lkey: dKey}, {
+                            save: (key) => {
+                                this.project.keys.push(key);
+
+                                this.project.locales.forEach(locale => {
+                                    this.project.values[locale.i18n][key.name] = {value: null};
+                                });
+                            }
+                        }, {size:'large'})
+                    },
+
                     setEditItem(key, locale) {
 
                         this.editItem = {
@@ -283,19 +346,21 @@
                             if (this.project.values[l.i18n][key.name].value) {
                                 translationText = this.project.values[l.i18n][key.name].value;
                             }
-                        })
+                        });
 
-                        // request for translation
-                        this.$request('/lokalize/utils/translate', {text: translationText, to:locale.i18n}).then(rsp => {
+                        if (translationText) {
+                            // request for translation
+                            this.$request('/lokalize/utils/translate', {text: translationText, to:locale.i18n}).then(rsp => {
 
-                            if (rsp.error) {
-                                console.log(rsp.error);
-                            }
+                                if (rsp.error) {
+                                    console.log(rsp.error);
+                                }
 
-                            if (rsp.translation) {
-                                this.editItem.translation = rsp.translation
-                            }
-                        })
+                                if (rsp.translation) {
+                                    this.editItem.translation = rsp.translation
+                                }
+                            });
+                        }
 
                         setTimeout(() => document.querySelector('.key-value-text').focus(), 150);
 

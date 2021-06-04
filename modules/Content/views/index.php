@@ -35,8 +35,6 @@
 
                 <div class="kiss-margin-large-top" v-if="singletons.length">
 
-                    <div class="kiss-margin kiss-text-caption kiss-text-bold kiss-color-muted kiss-size-small"><?=t('Singletons')?></div>
-
                     <kiss-row class="kiss-row-small kiss-child-width-1-3@m" match="true">
                         <div v-for="model in singletons">
                             <kiss-card class="animated fadeIn kiss-flex" theme="bordered" hover="shadow">
@@ -52,7 +50,7 @@
                                         <a class="kiss-flex-1 kiss-margin-right kiss-size-small kiss-text-bold kiss-link-muted" :href="$route(`/content/singleton/item/${model.name}`)">{{ model.label || model.name }}</a>
                                         <a @click="toggleModelActions(model)"><icon>more_horiz</icon></a>
                                     </div>
-                                    <div class="kiss-margin-small-top kiss-color-muted kiss-size-xsmall" v-if="model.info">{{model.info}}</div>
+                                    <div class="kiss-margin-xsmall-top kiss-color-muted kiss-size-xsmall" v-if="model.info">{{model.info}}</div>
                                 </div>
                             </kiss-card>
                         </div>

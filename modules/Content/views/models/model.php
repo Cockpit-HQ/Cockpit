@@ -19,7 +19,7 @@
 
                     <kiss-row class="kiss-child-width-1-4">
                         <div>
-                            <kiss-card class="kiss-padding-large kiss-position-relative kiss-align-center" :class="model.type == 'singleton' ? 'kiss-color-primary kiss-bgcolor-contrast': 'kiss-color-muted'">
+                            <kiss-card class="kiss-padding kiss-position-relative kiss-align-center" :class="model.type == 'singleton' ? 'kiss-color-primary kiss-bgcolor-contrast': 'kiss-color-muted'">
                                 <div>
                                     <kiss-svg src="<?=$this->base('content:assets/icons/singleton.svg')?>" width="30" height="30"><canvas width="30" height="30"></canvas></kiss-svg>
                                     <div class="kiss-size-xsmall kiss-margin-small-top">
@@ -30,7 +30,7 @@
                             </kiss-card>
                         </div>
                         <div>
-                            <kiss-card class="kiss-padding-large kiss-position-relative kiss-padding kiss-align-center" :class="model.type == 'collection' ? 'kiss-color-primary kiss-bgcolor-contrast': 'kiss-color-muted'">
+                            <kiss-card class="kiss-padding kiss-position-relative kiss-padding kiss-align-center" :class="model.type == 'collection' ? 'kiss-color-primary kiss-bgcolor-contrast': 'kiss-color-muted'">
                                 <div>
                                     <kiss-svg src="<?=$this->base('content:assets/icons/collection.svg')?>" width="30" height="30"><canvas width="30" height="30"></canvas></kiss-svg>
                                     <div class="kiss-size-xsmall kiss-margin-small-top">

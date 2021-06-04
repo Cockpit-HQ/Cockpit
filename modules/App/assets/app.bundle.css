@@ -2215,6 +2215,10 @@ app-loader-cover app-loader {
 app-loader-cover[label] .app-loader-cover-label {
     display: block;
 }
+app-scrollcontainer {
+    display: block;
+    overflow: auto;
+}
 app-tabs {
     display: block;
 }
