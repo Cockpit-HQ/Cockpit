@@ -259,6 +259,13 @@
 
                 watch: {
                     page() {
+
+                        let scrollContainer = document.querySelector('app-scrollcontainer[boundary="#lokalize-actionbar"]');
+
+                        if (scrollContainer) {
+                            scrollContainer.scrollTo(0, 0);
+                        }
+
                         window.scrollTo(0, 0);
                     }
                 },
