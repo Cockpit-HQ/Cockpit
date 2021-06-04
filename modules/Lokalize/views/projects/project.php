@@ -266,13 +266,9 @@
 
                 watch: {
                     page() {
-
-                        let scrollContainer = document.querySelector('app-scrollcontainer[boundary="#lokalize-actionbar"]');
-
-                        if (scrollContainer) {
-                            scrollContainer.scrollTo(0, 0);
-                        }
-
+                        (this.$el.parentNode.querySelector('app-scrollcontainer') || {
+                            scrollTo() {}
+                        }).scrollTo(0, 0);
                         window.scrollTo(0, 0);
                     }
                 },
