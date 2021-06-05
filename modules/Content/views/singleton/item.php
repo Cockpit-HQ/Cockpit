@@ -9,7 +9,7 @@
         <template>
 
             <div class="kiss-flex kiss-flex-middle">
-                <div class="kiss-margin-right">
+                <div class="kiss-margin-small-right">
                     <kiss-svg class="kiss-margin-auto" src="<?=$this->base('content:assets/icons/singleton.svg')?>" width="35" height="35" style="color:<?=($this->escape($model['color'] ?? 'inherit'))?>"><canvas width="35" height="35"></canvas></kiss-svg>
                 </div>
                 <div class="kiss-margin-small-right">

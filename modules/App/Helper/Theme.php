@@ -70,6 +70,13 @@ class Theme extends \Lime\Helper {
             return $this->app->pathToUrl('#config:logo.svg');
         }
 
-        return $this->baseUrl('/logo.svg');
+        return $this->baseUrl('app:assets/logo.svg');
+    }
+
+    public function theme() {
+
+        $theme = $this->app->retrieve('theme', 'default');
+
+        return $theme;
     }
 }

@@ -174,8 +174,10 @@ export default {
                         </div>
                     </div>
                     <div class="kiss-flex-1 kiss-margin-right"></div>
-                    <button class="kiss-button kiss-margin-right" @click="createFolder()">{{ t('Create folder') }}</button>
-                    <button class="kiss-button kiss-button-primary" :disabled="!uppy" @click="upload()">{{ t('Upload asset') }}</button>
+                    <div class="kiss-button-group">
+                        <button class="kiss-button" @click="createFolder()">{{ t('Create folder') }}</button>
+                        <button class="kiss-button kiss-button-primary" :disabled="!uppy" @click="upload()">{{ t('Upload asset') }}</button>
+                    </div>
                 </div>
             </kiss-container>
         </app-actionbar>
@@ -229,8 +231,10 @@ export default {
                         </div>
                     </div>
                     <div class="kiss-flex-1 kiss-margin-right"></div>
-                    <button class="kiss-button kiss-margin-right" @click="createFolder()">{{ t('Create folder') }}</button>
-                    <button class="kiss-button kiss-button-primary" :disabled="!uppy" @click="upload()">{{ t('Upload asset') }}</button>
+                    <div class="kiss-button-group">
+                        <button class="kiss-button" @click="createFolder()">{{ t('Create folder') }}</button>
+                        <button class="kiss-button kiss-button-primary" :disabled="!uppy" @click="upload()">{{ t('Upload asset') }}</button>
+                    </div>
                 </div>
             </kiss-container>
         </app-actionbar>

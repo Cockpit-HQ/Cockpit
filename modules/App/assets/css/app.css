@@ -32,6 +32,74 @@ vue-view:not([init="true"]) { display: none; }
     --app-fieldcontainer-border-color-inactive: rgba(255, 255, 255, .1);
 }
 
+html[data-theme='light'] {
+    --kiss-base-background-color: #fcfbf8;
+    --kiss-base-text-color: #121212;
+    --kiss-hr-color: rgba(0,0,0,.1);
+    --kiss-link-hover-color: #1994ff;
+    --kiss-button-default-background: rgb(238, 236, 236);
+    --kiss-button-default-color: #000;
+    --kiss-color-contrast: #f7f7f7;
+    --kiss-color-primary: #0e8fff;
+    --kiss-color-success: #4caf50;
+    --kiss-color-warning: orange;
+    --kiss-color-danger: #f91941;
+    --kiss-color-muted: rgba(0,0,0,.6);
+    --kiss-color-overlay: rgba(255,255,255, .8);
+
+    --kiss-input-border-color: rgba(0,0,0,.1);
+    --kiss-input-background: rgba(255,255,255,.5);
+    --kiss-input-placeholder-color: rgba(0,0,0,.3);
+
+    --kiss-dropdown-background: rgba(0,0,0,.95);
+
+    --kiss-card-theme-contrast-color: #fff;
+    --kiss-card-shadowed-color: rgba(0, 0, 0, 0.15);
+    --kiss-card-bordered-color: rgb(106, 85, 85, .15);
+
+    --kiss-input-background-active: #fff;
+
+    --app-header-background: rgba(255,255,255, .2);
+    --app-shadow-color: rgba(0,0,0,0.12);
+
+    --app-actionbar-bgcolor: rgba(255,255,255,.9);
+    --app-loader-color2: #fff;
+    --app-fieldcontainer-border-color-inactive: rgba(0,0,0, .1);
+}
+
+html[data-theme='light'] .kiss-bgcolor-transparentimage {
+    background-image: linear-gradient(45deg, rgba(0,0,0, .15) 25%, transparent 25%), linear-gradient(-45deg, rgba(0,0,0, .15) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, rgba(0,0,0, .15) 75%), linear-gradient(-45deg, transparent 75%, rgba(0,0,0, .15) 75%);
+    background-size: 20px 20px;
+    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+}
+
+html[data-theme='light'] app-header {
+    box-shadow: 0 0 20px rgb(0 0 0 / 10%);
+}
+
+html[data-theme='light'] [active="true"] .app-tabs-nav-link:after {
+    border-color: var(--kiss-color-primary);
+    border-width: 2px;
+}
+html[data-theme='light'] .kiss-bgcolor-success,
+html[data-theme='light'] .kiss-bgcolor-danger {
+    color: #fff;
+}
+
+html[data-theme='light'] kiss-card[hover="shadow"]:hover {
+    box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.014),
+    0 6.7px 5.3px rgba(0, 0, 0, 0.028),
+    0 12.5px 10px rgba(0, 0, 0, 0.04),
+    0 22.3px 17.9px rgba(0, 0, 0, 0.052),
+    0 41.8px 33.4px rgba(0, 0, 0, 0.066),
+    0 100px 80px rgba(0, 0, 0, 0.06);
+}
+
+html[data-theme='light'] .app-logo[src$="App/assets/logo.svg"] {
+    filter: invert(1);
+}
+
+
 body {
     font-weight: 300;
     min-height: 100vh;
@@ -60,6 +128,7 @@ label {
 
 .app-logo {
     max-height: 100%;
+    height: 30px;
     width: auto;
     max-width: none;
 }

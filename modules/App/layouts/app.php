@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-base="<?=$this->base('/')?>" data-version="<?=APP_VERSION?>">
+<html lang="en" data-base="<?=$this->base('/')?>" data-version="<?=APP_VERSION?>" data-theme="<?=$this->helper('theme')->theme()?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -30,9 +30,9 @@
     <app-header role="banner">
         <kiss-container class="kiss-flex kiss-flex-middle">
             <div>
-                <a class="kiss-display-inline-block" href="<?=$this->route('/')?>"><img class="app-logo" src="<?=$this->helper('theme')->logo()?>"  style="height: 30px;" alt="Logo"></a>
+                <a class="kiss-display-inline-block" href="<?=$this->route('/')?>"><img class="app-logo" src="<?=$this->helper('theme')->logo()?>" alt="Logo"></a>
             </div>
-            <div class="kiss-margin-left">
+            <div class="kiss-margin-small-left">
                 <a href="#app-offcanvas" class="kiss-link-muted kiss-flex kiss-flex-middle" kiss-offcanvas>
                     <span class="kiss-text-bold"><?=$this['app.name']?></span>
                     <icon class="kiss-margin-small-left">more_horiz</icon>
