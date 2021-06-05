@@ -3289,6 +3289,8 @@ small,
  */
 .kiss-padding { padding: var(--kiss-padding, 1rem); }
 .kiss-padding-small { padding: var(--kiss-padding-small, .6rem); }
+.kiss-padding-xsmall { padding: var(--kiss-padding-xsmall, .3rem); }
+.kiss-padding-larger { padding: var(--kiss-padding-larger, 2rem); }
 .kiss-padding-large { padding: var(--kiss-padding-large, 3rem); }
 .kiss-padding-remove { padding: 0 !important; }
 .kiss-padding-remove-top { padding-top: 0 !important; }

@@ -1,6 +1,7 @@
 
 
 let Components = null;
+let previewComponentCache = {};
 
 let pickComponent = {
 
@@ -195,8 +196,45 @@ export default {
     components: {
         componentPreview: {
             data() {
+
+                let name = this.component.component;
+
+                if (!previewComponentCache[name]) {
+
+                    previewComponentCache[name] = {
+                        props:['data'],
+                        template:Components[name].opts.preview,
+                        methods: {
+                            truncate(str, num) {
+                                return (str.length <= num) ? str : `${str.slice(0, num)}...`;
+                            },
+                            stripTags (input, allowed) {
+
+                                // making sure the allowed arg is a string containing only tags in lowercase (<a><b><c>)
+                                allowed = (((allowed || '') + '').toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join('')
+                                const tags = /<\/?([a-z0-9]*)\b[^>]*>?/gi
+                                const commentsAndPhpTags = /<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi
+                                let after = input
+                                // removes tha '<' char at the end of the string to replicate PHP's behaviour
+                                after = (after.substring(after.length - 1) === '<') ? after.substring(0, after.length - 1) : after
+                                // recursively remove tags to ensure that the returned string doesn't contain forbidden tags after previous passes (e.g. '<<bait/>switch/>')
+                                while (true) {
+                                    const before = after
+                                    after = before.replace(commentsAndPhpTags, '').replace(tags, function ($0, $1) {
+                                    return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : ''
+                                    })
+                                    // return once no more tags are removed
+                                    if (before === after) {
+                                    return after
+                                    }
+                                }
+                            }
+                        }
+                    };
+                }
+
                 return {
-                    preview: Components[this.component.component].preview
+                    previewComponent: previewComponentCache[name]
                 }
             },
             props: {
@@ -210,8 +248,11 @@ export default {
                 }
             },
             template: /*html*/`
-                <div v-is="{props:['data'], template:preview}" :data="data"></component>
-            `
+                <div v-is="previewComponent" :data="data"></component>
+            `,
+            methods: {
+
+            }
         }
     },
 
@@ -319,7 +360,7 @@ export default {
         },
 
         hasPreview(component) {
-            if (Components[component.component] && Components[component.component].preview) {
+            if (Components[component.component] && Components[component.component].opts && Components[component.component].opts.preview) {
                 return true;
             }
 

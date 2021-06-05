@@ -44,7 +44,9 @@ class Components extends \Lime\Helper {
                 ],
                 'preview' => null,
                 'children' => false,
-                'preview' => '<div class="kiss-color-muted kiss-flex kiss-flex-middle" v-if="data.text"><strong class="kiss-margin-xsmall-right" v-if="data.level">H{{data.level}}</strong> {{ data.text }}</div>'
+                'opts' => [
+                    'preview' => '<div class="kiss-color-muted kiss-flex kiss-flex-middle" v-if="data.text"><strong class="kiss-margin-xsmall-right" v-if="data.level">H{{data.level}}</strong> {{ data.text }}</div>'
+                ]
             ],
 
             'html' => [
@@ -66,7 +68,10 @@ class Components extends \Lime\Helper {
                     ['name' => 'markdown', 'type' => 'code', 'opts' => ['mode' => 'markdown']],
                 ],
                 'preview' => null,
-                'children' => false
+                'children' => false,
+                'opts' => [
+                    'preview' => '<div class="kiss-color-muted" v-if="data.markdown">{{ truncate(data.markdown, 50) }}</div>'
+                ]
             ],
 
             'link' => [
@@ -90,7 +95,10 @@ class Components extends \Lime\Helper {
                     ['name' => 'html', 'type' => 'wysiwyg'],
                 ],
                 'preview' => null,
-                'children' => false
+                'children' => false,
+                'opts' => [
+                    'preview' => '<div class="kiss-color-muted kiss-overflow-y-auto" style="max-height:250px" v-if="data.html" v-html="stripTags(data.html, \'<br><p><strong><i><div><em><hr><code><h1><h2><h3><h4><h5><h6>\')"></div>'
+                ]
             ],
 
             'section' => [
@@ -112,7 +120,10 @@ class Components extends \Lime\Helper {
                     ['name' => 'size', 'type' => 'text'],
                 ],
                 'preview' => null,
-                'children' => false
+                'children' => false,
+                'opts' => [
+                    'preview' => '<div class="kiss-color-muted kiss-flex kiss-flex-middle" v-if="data.size"><icon class="kiss-margin-xsmall-right">unfold_more</icon>{{ data.size }}</div>'
+                ]
             ]
         ];
 
