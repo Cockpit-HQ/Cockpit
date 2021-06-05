@@ -47,3 +47,7 @@
   text-decoration: underline;
   color: white !important;
 }
+
+.CodeMirror-focused {
+  border-color: var(--kiss-color-primary);
+}

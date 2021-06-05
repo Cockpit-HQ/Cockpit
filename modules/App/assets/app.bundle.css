@@ -4024,7 +4024,7 @@ html[data-theme='light'] {
     --kiss-base-text-color: #121212;
     --kiss-hr-color: rgba(0,0,0,.1);
     --kiss-link-hover-color: #1994ff;
-    --kiss-button-default-background: rgb(238, 236, 236);
+    --kiss-button-default-background: #d8d6e0;
     --kiss-button-default-color: #000;
     --kiss-color-contrast: #f8f7ff;
     --kiss-color-primary: #0e8fff;
