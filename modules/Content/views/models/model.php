@@ -17,36 +17,47 @@
                 <div class="kiss-margin-large" v-if="!isUpdate">
                     <label><?=t('Type')?></label>
 
-                    <kiss-row class="kiss-row-small kiss-child-width-1-4">
+                    <kiss-row class="kiss-row-small kiss-child-width-1-3">
                         <div>
-                            <kiss-card class="kiss-flex kiss-flex-middle kiss-padding kiss-position-relative" theme="bordered" :class="model.type == 'singleton' ? 'kiss-text-bold kiss-color-primary': 'kiss-color-muted'" :style="{borderColor:model.type == 'singleton' ? 'var(--kiss-color-primary)': null}">
+                            <kiss-card class="kiss-flex kiss-padding kiss-position-relative" theme="bordered" :class="model.type == 'singleton' ? '': 'kiss-color-muted'" :style="{borderColor:model.type == 'singleton' ? 'var(--kiss-color-primary)': null}">
                                 <div class="kiss-margin-small-right"><kiss-svg src="<?=$this->base('content:assets/icons/singleton.svg')?>" width="30" height="30"><canvas width="30" height="30"></canvas></kiss-svg></div>
                                 <div class="kiss-size-small">
-                                    {{ t('Singleton') }}
+                                    <strong>{{ t('Singleton') }}</strong>
+                                    <div class="kiss-size-xsmall kiss-color-muted kiss-margin-xsmall-top">
+                                        <?=t('Model has one single item')?>
+                                    </div>
                                 </div>
                                 <a class="kiss-cover" @click="model.type = 'singleton'"></a>
                             </kiss-card>
                         </div>
                         <div>
-                            <kiss-card class="kiss-flex kiss-flex-middle kiss-padding kiss-position-relative kiss-padding" theme="bordered" :class="model.type == 'collection' ? 'kiss-text-bold kiss-color-primary': 'kiss-color-muted'" :style="{borderColor:model.type == 'collection' ? 'var(--kiss-color-primary)': null}">
+                            <kiss-card class="kiss-flex kiss-padding kiss-position-relative kiss-padding" theme="bordered" :class="model.type == 'collection' ? '': 'kiss-color-muted'" :style="{borderColor:model.type == 'collection' ? 'var(--kiss-color-primary)': null}">
                                 <div class="kiss-margin-small-right"><kiss-svg src="<?=$this->base('content:assets/icons/collection.svg')?>" width="30" height="30"><canvas width="30" height="30"></canvas></kiss-svg></div>
                                 <div class="kiss-size-small">
-                                    {{ t('Collection') }}
+                                    <strong>{{ t('Collection') }}</strong>
+                                    <div class="kiss-size-xsmall kiss-color-muted kiss-margin-xsmall-top">
+                                        <?=t('Model can have multiple items')?>
+                                    </div>
                                 </div>
                                 <a class="kiss-cover" @click="model.type = 'collection'"></a>
                             </kiss-card>
                         </div>
                     </kiss-row>
-
-                    <div class="kiss-margin-small kiss-color-muted kiss-flex kiss-flex-middle">
-                        <icon class="larger kiss-margin-xsmall-right">info</icon>
-                        <span class="kiss-size-xsmall" v-if="model.type=='collection'"><?=t('Model can have multiple items')?></span>
-                        <span class="kiss-size-xsmall" v-if="model.type=='singleton'"><?=t('Model has one single item')?></span>
-                    </div>
                 </div>
 
-                <div class="kiss-margin" v-if="isUpdate">
-                    <span class="kiss-badge kiss-text-upper">{{ model.type }}</span>
+                <div class="kiss-margin-large" v-if="isUpdate">
+                    <kiss-card class="kiss-flex kiss-padding" theme="bordered">
+                        <div class="kiss-margin-small-right" v-if="model.type=='singleton'"><kiss-svg src="<?=$this->base('content:assets/icons/singleton.svg')?>" width="30" height="30"><canvas width="30" height="30"></canvas></kiss-svg></div>
+                        <div class="kiss-margin-small-right" v-if="model.type=='collection'"><kiss-svg src="<?=$this->base('content:assets/icons/collection.svg')?>" width="30" height="30"><canvas width="30" height="30"></canvas></kiss-svg></div>
+                        <div class="kiss-size-small">
+                            <strong v-if="model.type=='singleton'">{{ t('Singleton') }}</strong>
+                            <strong v-if="model.type=='collection'">{{ t('Collection') }}</strong>
+                            <div class="kiss-size-xsmall kiss-color-muted kiss-margin-xsmall-top">
+                                <span v-if="model.type=='collection'"><?=t('Model can have multiple items')?></span>
+                                <span v-if="model.type=='singleton'"><?=t('Model has one single item')?></span>
+                            </div>
+                        </div>
+                    </kiss-card>
                 </div>
 
                 <kiss-row class="kiss-margin kiss-child-width-1-2@m">
