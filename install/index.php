@@ -78,6 +78,7 @@ if (!count($failed)) {
         'password' => $app->hash('admin'),
         'i18n' => 'en',
         'role' => 'admin',
+        'theme' => 'auto',
         '_modified' => $created,
         '_created' => $created
     ];
