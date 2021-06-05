@@ -165,6 +165,8 @@ kiss-offcanvas kiss-navlist .kiss-nav-header {
 kiss-offcanvas kiss-navlist .kiss-nav-divider {
     margin-left: calc(-1 * var(--kiss-padding, 1rem));
     margin-right: calc(-1 * var(--kiss-padding, 1rem));
+    margin-top: 1.2rem;
+    margin-bottom: 1.2rem;
 }
 
 kiss-dropdownbox kiss-navlist ul > li a icon,
