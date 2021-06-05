@@ -6,6 +6,8 @@ $this->helpers['settings'] = 'Settings\\Helper\\Settings';
 // Register routes
 $this->bindClass('Settings\\Controller\\Api', '/settings/api');
 $this->bindClass('Settings\\Controller\\Locales', '/settings/locales');
+$this->bindClass('Settings\\Controller\\Users\\Roles', '/settings/users/roles');
+$this->bindClass('Settings\\Controller\\Users', '/settings/users');
 $this->bindClass('Settings\\Controller\\Settings', '/settings');
 
 $this->helper('menus')->addLink('modules', [

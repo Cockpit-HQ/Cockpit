@@ -22,8 +22,9 @@
 <kiss-container class="kiss-margin" size="small">
 
     <ul class="kiss-breadcrumbs">
-        <li><a href="<?=$this->route('/users')?>"><?=t('Users')?></a></li>
-        <li><a href="<?=$this->route('/users/roles')?>"><?=t('Roles')?></a></li>
+        <li><a href="<?=$this->route('/settings')?>"><?=t('Settings')?></a></li>
+        <li><a href="<?=$this->route('/settings/users')?>"><?=t('Users')?></a></li>
+        <li><a href="<?=$this->route('/settings/users/roles')?>"><?=t('Roles')?></a></li>
     </ul>
 
     <vue-view>
@@ -83,7 +84,7 @@
                     <kiss-container size="small">
                         <div class="kiss-flex kiss-flex-middle kiss-flex-right">
                             <div class="kiss-button-group">
-                                <a class="kiss-button" href="<?=$this->route('/users/roles')?>">
+                                <a class="kiss-button" href="<?=$this->route('/settings/users/roles')?>">
                                     <span v-if="!role._id"><?=t('Cancel')?></span>
                                     <span v-if="role._id"><?=t('Close')?></span>
                                 </a>
@@ -149,7 +150,7 @@
 
                         this.saving = true;
 
-                        this.$request('/users/roles/save', {role: this.role}).then(role => {
+                        this.$request('/settings/users/roles/save', {role: this.role}).then(role => {
 
                             this.role = role;
                             this.saving = false;

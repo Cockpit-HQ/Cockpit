@@ -18,13 +18,13 @@ class Settings extends \Lime\Helper {
                 ],
                 [
                     'icon' => null,
-                    'route' => '/users',
+                    'route' => '/settings/users',
                     'label' => 'Users',
                     'permission' => 'app.users.manage'
                 ],
                 [
                     'icon' => null,
-                    'route' => '/users/roles',
+                    'route' => '/settings/users/roles',
                     'label' => 'Roles & Permissions',
                     'permission' => 'app.roles.manage'
                 ],

@@ -1,6 +1,11 @@
 
 <kiss-container class="kiss-margin-large" size="small">
 
+<ul class="kiss-breadcrumbs">
+    <li><a href="<?=$this->route('/settings')?>"><?=t('Settings')?></a></li>
+    <li><a href="<?=$this->route('/settings/users')?>"><?=t('Users')?></a></li>
+</ul>
+
 <vue-view>
     <template>
 
@@ -24,14 +29,14 @@
                 <div class="kiss-margin kiss-flex">
                     <div class="kiss-margin-right kiss-position-relative">
                         <app-avatar size="50" :name="role.name"></app-avatar>
-                        <a class="kiss-cover" :href="$route('/users/roles/role/'+role._id)"></a>
+                        <a class="kiss-cover" :href="$route('/settings/users/roles/role/'+role._id)"></a>
                     </div>
                     <div class="kiss-flex-1 kiss-position-relative">
                         <div class="kiss-size-5"><strong>{{role.name || role.appid}}</strong></div>
                         <div class="kiss-color-muted kiss-size-small">
                             {{role.info}}
                         </div>
-                        <a class="kiss-cover" :href="$route('/users/roles/role/'+role._id)"></a>
+                        <a class="kiss-cover" :href="$route('/settings/users/roles/role/'+role._id)"></a>
                     </div>
                     <div class="kiss-margin-left">
                         <a class="kiss-color-danger" @click="remove(role)"><icon>delete</icon></a>
@@ -48,9 +53,9 @@
                 <div class="kiss-flex kiss-flex-middle kiss-flex-right">
                     <div class="kiss-button-group">
                         <?php if (_allowed('app.users.manage')): ?>
-                        <a class="kiss-button" href="<?=$this->route('/users')?>"><?=t('Manage users')?></a>
+                        <a class="kiss-button" href="<?=$this->route('/settings/users')?>"><?=t('Manage users')?></a>
                         <?php endif ?>
-                        <a class="kiss-button kiss-button-primary" href="<?=$this->route('/users/roles/create')?>"><?=t('Add role')?></a>
+                        <a class="kiss-button kiss-button-primary" href="<?=$this->route('/settings/users/roles/create')?>"><?=t('Add role')?></a>
                     </div>
                 </div>
             </kiss-container>
@@ -82,7 +87,7 @@
 
                     this.loading = true;
 
-                    this.$request('/users/roles/load', {options:{}}).then(roles => {
+                    this.$request('/settings/users/roles/load', {options:{}}).then(roles => {
 
                         this.roles = roles;
                         this.loading = false;
@@ -93,7 +98,7 @@
 
                     App.ui.confirm('Are you sure?', () => {
 
-                        this.$request('/users/roles/remove', {role}).then(res => {
+                        this.$request('/settings/users/roles/remove', {role}).then(res => {
                             this.roles.splice(this.roles.indexOf(role), 1);
                         });
                     });

@@ -11,6 +11,13 @@ if (!isset($user['twofa'])) {
 ?>
 <kiss-container class="kiss-margin-large" size="small">
 
+    <ul class="kiss-breadcrumbs">
+        <li><a href="<?=$this->route('/settings')?>"><?=t('Settings')?></a></li>
+        <?php if (!$isAccountView): ?>
+        <li><a href="<?=$this->route('/settings/users')?>"><?=t('Users')?></a></li>
+        <?php endif ?>
+    </ul>
+
     <vue-view>
         <template>
 
@@ -89,7 +96,7 @@ if (!isset($user['twofa'])) {
                         <field-boolean class="kiss-size-3" v-model="user.twofa.enabled"></field-boolean>
                     </div>
                     <kiss-row class="kiss-margin animated fadeIn" v-if="user.twofa.enabled">
-                        <div><img src="<?=$this->route("/users/getSecretQRCode/{$user['twofa']['secret']}/150")?>" width="150" height="150" loading="lazy" style="background:#fff;border:10px #fff solid;"></div>
+                        <div><img src="<?=$this->route("/settings/users/getSecretQRCode/{$user['twofa']['secret']}/150")?>" width="150" height="150" loading="lazy" style="background:#fff;border:10px #fff solid;"></div>
                         <div class="kiss-flex-1">
 
                             <p class="kiss-text-caption">
@@ -140,7 +147,7 @@ if (!isset($user['twofa'])) {
                         <div class="kiss-flex kiss-flex-middle kiss-flex-right">
                             <div class="kiss-button-group">
                                 <?php if (!$isAccountView && _allowed('app.users.manage')): ?>
-                                <a class="kiss-button" href="<?=$this->route('/users')?>">
+                                <a class="kiss-button" href="<?=$this->route('/settings/users')?>">
                                     <span v-if="!user._id"><?=t('Cancel')?></span>
                                     <span v-if="user._id"><?=t('Close')?></span>
                                 </a>
@@ -199,7 +206,7 @@ if (!isset($user['twofa'])) {
 
                         this.saving = true;
 
-                        this.$request('/users/save', {user: this.user}).then(user => {
+                        this.$request('/settings/users/save', {user: this.user}).then(user => {
                             this.user = user;
                             this.saving = false;
 

@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Controller;
+namespace Settings\Controller;
 
+use App\Controller\App;
 
 class Users extends App {
 
@@ -16,7 +17,7 @@ class Users extends App {
 
     public function index() {
 
-        return $this->render('app:views/users/index.php');
+        return $this->render('settings:views/users/index.php');
     }
 
     public function user($id = null) {
@@ -35,7 +36,7 @@ class Users extends App {
 
         unset($user["password"]);
 
-        return $this->render('app:views/users/user.php', compact('user', 'isAccountView'));
+        return $this->render('settings:views/users/user.php', compact('user', 'isAccountView'));
     }
 
     public function create() {
@@ -50,7 +51,7 @@ class Users extends App {
 
         $isAccountView = false;
 
-        return $this->render('app:views/users/user.php', compact('user', 'isAccountView'));
+        return $this->render('settings:views/users/user.php', compact('user', 'isAccountView'));
     }
 
     public function save() {
