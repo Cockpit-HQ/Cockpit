@@ -448,6 +448,10 @@
 
     customElements.define('kiss-svg', class extends HTMLElement {
 
+        static get observedAttributes() {
+            return ['src'];
+        }
+
         connectedCallback() {
             this.update();
         }
@@ -1561,7 +1565,6 @@
     });
 
     customElements.define('app-scrollcontainer', class extends HTMLElement {
-
 
         static get observedAttributes() {
             return ['boundary'];

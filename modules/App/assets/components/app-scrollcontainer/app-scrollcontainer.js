@@ -1,6 +1,5 @@
 customElements.define('app-scrollcontainer', class extends HTMLElement {
 
-
     static get observedAttributes() {
         return ['boundary'];
     }

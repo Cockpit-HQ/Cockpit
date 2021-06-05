@@ -2514,10 +2514,10 @@ kiss-card[theme*="shadowed"] {
 kiss-card[theme*="bordered"] {
     border: 1px solid var(--kiss-card-bordered-color, rgba(0,0,0,0.22));
 }
-kiss-card[hover="shadow"] {
-    transition: box-shadow 200ms;
+kiss-card[hover] {
+    transition: all 250ms;
 }
-kiss-card[hover="shadow"]:hover {
+kiss-card[hover*="shadow"]:hover {
     box-shadow: 0 25px 80px rgba(0,0,0,0.12), 0 3px 12px rgba(0,0,0,0.05);
     z-index: 1;
 }
@@ -3883,7 +3883,8 @@ kiss-card[hover="shadow"]:hover {
     0 41.8px 33.4px rgba(0, 0, 0, 0.086),
     0 100px 80px rgba(0, 0, 0, 0.12);
 }
-kiss-card[theme*="contrast"] {
+kiss-card[theme*="contrast"],
+kiss-card[hover*="contrast"]:hover {
     background: var(--kiss-card-theme-contrast-color, #141923);
 }
 .kiss-button-group {

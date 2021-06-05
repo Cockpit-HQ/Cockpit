@@ -1,6 +1,10 @@
 
 customElements.define('kiss-svg', class extends HTMLElement {
 
+    static get observedAttributes() {
+        return ['src'];
+    }
+
     connectedCallback() {
         this.update();
     }
