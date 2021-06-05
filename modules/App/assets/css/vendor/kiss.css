@@ -206,7 +206,7 @@ kiss-card[hover*="contrast"]:hover {
 
 .kiss-button-group .kiss-button:not(:last-child) {
     border-right-width: 1px;
-    border-right-color: rgba(0,0,0,.2);
+    border-right-color: rgba(0,0,0,.08);
     border-right-style: solid;
 }
 
