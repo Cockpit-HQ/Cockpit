@@ -25,7 +25,7 @@
     <?php $this->block('app.layout.header') ?>
 
 </head>
-<body>
+<body class="animated fadeIn">
 
     <app-header role="banner">
         <kiss-container class="kiss-flex kiss-flex-middle">
