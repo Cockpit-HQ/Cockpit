@@ -8,7 +8,7 @@ class Components extends \Lime\Helper {
 
     protected function initialize() {
 
-        $this->components = $this->app->helper('cache')->read('layout.components', function() {
+        $this->components = $this->app['debug'] ? $this->cache() : $this->app->helper('cache')->read('layout.components', function() {
             return $this->cache();
         });
     }
@@ -43,7 +43,8 @@ class Components extends \Lime\Helper {
                     ['name' => 'level', 'type' => 'select', 'opts' => ['options' => [1,2,3,4,5,6]]],
                 ],
                 'preview' => null,
-                'children' => false
+                'children' => false,
+                'preview' => '<div class="kiss-color-muted kiss-flex kiss-flex-middle" v-if="data.text"><strong class="kiss-margin-xsmall-right" v-if="data.level">H{{data.level}}</strong> {{ data.text }}</div>'
             ],
 
             'html' => [

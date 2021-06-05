@@ -8,7 +8,7 @@ class Api extends \Lime\Helper {
 
     protected function initialize() {
 
-        $this->keys = $this->app->helper('cache')->read('app.api.keys', function() {
+        $this->keys = $this->app['debug'] ? $this->cache() : $this->app->helper('cache')->read('app.api.keys', function() {
             return $this->cache();
         });
     }

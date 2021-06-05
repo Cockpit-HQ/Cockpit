@@ -2,7 +2,6 @@
 
 let Components = null;
 
-
 let pickComponent = {
 
     data() {
@@ -165,7 +164,8 @@ export default {
         return {
             uid: `field-layout-${++instanceCount}`,
             val: this.modelValue || [],
-            ready: false
+            ready: false,
+            showPreview: this.preview
         }
     },
 
@@ -188,6 +188,29 @@ export default {
         level: {
             type: Number,
             default: 0
+        }
+    },
+
+    components: {
+        componentPreview: {
+            data() {
+                return {
+                    preview: Components[this.component.component].preview
+                }
+            },
+            props: {
+                component: {
+                    type: Object
+                }
+            },
+            computed: {
+                data() {
+                    return this.component.data;
+                }
+            },
+            template: /*html*/`
+                <div v-is="{props:['data'], template:preview}" :data="data"></component>
+            `
         }
     },
 
@@ -220,21 +243,28 @@ export default {
                 style="min-height: 100px;"
             >
                 <template #item="{ element }">
-                    <kiss-card class="kiss-padding-small" theme="bordered contrast" style="margin: 8px 0;">
+                    <kiss-card class="kiss-padding-small kiss-visible-toggle" theme="bordered contrast" style="margin: 8px 0;">
                         <div class="kiss-flex kiss-flex-middle">
                             <a class="lm-handle kiss-margin-small-right kiss-color-muted"><icon>drag_handle</icon></a>
-                            <div class="kiss-flex-1 kiss-size-xsmall kiss-text-bold">
+                            <div class="kiss-flex-1 kiss-size-xsmall kiss-text-bold kiss-text-truncate">
                                 <a class="kiss-link-muted" @click="edit(element)">{{ element.label }}</a>
                             </div>
+                            <div class="kiss-margin-small-left kiss-color-muted kiss-size-xsmall kiss-invisible-hover">{{ element.component }}</div>
                             <a class="kiss-margin-small-left kiss-color-danger" @click="remove(element)"><icon>delete</icon></a>
                         </div>
                         <field-layout class="kiss-margin-small" v-model="element.children" :group="group || uid" :level="++level" v-if="element.children"></field-layout>
+                        <div class="kiss-margin-xsmall-top kiss-size-small" v-is="'component-preview'" :component="element" :preview="showPreview" v-if="showPreview && !element.children && hasPreview(element)"></div>
                     </kiss-card>
                 </template>
             </vue-draggable>
 
-            <div class="kiss-margin-small kiss-align-center">
+            <div class="kiss-margin-small kiss-align-center" v-if="level>0">
                 <a @click="addComponent"><icon :class="{'kiss-size-small':level}">control_point</icon></a>
+            </div>
+
+            <div class="kiss-button-group kiss-margin-small" v-if="!level">
+                <a class="kiss-button kiss-button-small" @click="addComponent">{{ t('Add component') }}</a>
+                <a class="kiss-button kiss-button-small" @click="showPreview = !showPreview">{{ t('Toggle preview') }}</a>
             </div>
 
         </div>
@@ -285,6 +315,14 @@ export default {
 
         update() {
             this.$emit('update:modelValue', this.val)
+        },
+
+        hasPreview(component) {
+            if (Components[component.component] && Components[component.component].preview) {
+                return true;
+            }
+
+            return false;
         }
     }
 }
