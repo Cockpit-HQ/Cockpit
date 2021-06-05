@@ -106,12 +106,14 @@ kiss-popoutmenu kiss-navlist > ul > li > a > icon {
 }
 
 .kiss-input {
-    padding: .4em .4em;
+    padding: .6em .6em;
     color: var(--kiss-base-text-color);
     background: var(--kiss-input-background);
     border: 1px var(--kiss-input-border-color) solid;
     border-radius: var(--app-border-radius);
     transition: all 250ms;
+    font-size: .9em;
+    line-height: 2;
 }
 
 .kiss-input[type="text"],

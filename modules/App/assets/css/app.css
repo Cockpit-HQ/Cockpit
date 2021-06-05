@@ -33,13 +33,13 @@ vue-view:not([init="true"]) { display: none; }
 }
 
 html[data-theme='light'] {
-    --kiss-base-background-color: #fcfbf8;
+    --kiss-base-background-color: #f1f1f1;
     --kiss-base-text-color: #121212;
     --kiss-hr-color: rgba(0,0,0,.1);
     --kiss-link-hover-color: #1994ff;
     --kiss-button-default-background: #d8d6e0;
     --kiss-button-default-color: #000;
-    --kiss-color-contrast: #f8f7ff;
+    --kiss-color-contrast: #f5f5f5;
     --kiss-color-primary: #0e8fff;
     --kiss-color-success: #4caf50;
     --kiss-color-warning: orange;

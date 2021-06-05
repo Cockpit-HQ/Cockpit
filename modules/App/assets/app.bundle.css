@@ -3814,12 +3814,14 @@ kiss-popoutmenu kiss-navlist > ul > li > a > icon {
     transform: scale(1.2);
 }
 .kiss-input {
-    padding: .4em .4em;
+    padding: .6em .6em;
     color: var(--kiss-base-text-color);
     background: var(--kiss-input-background);
     border: 1px var(--kiss-input-border-color) solid;
     border-radius: var(--app-border-radius);
     transition: all 250ms;
+    font-size: .9em;
+    line-height: 2;
 }
 .kiss-input[type="text"],
 .kiss-input[type="password"] {
@@ -4025,13 +4027,13 @@ vue-view:not([init="true"]) { display: none; }
     --app-fieldcontainer-border-color-inactive: rgba(255, 255, 255, .1);
 }
 html[data-theme='light'] {
-    --kiss-base-background-color: #fcfbf8;
+    --kiss-base-background-color: #f1f1f1;
     --kiss-base-text-color: #121212;
     --kiss-hr-color: rgba(0,0,0,.1);
     --kiss-link-hover-color: #1994ff;
     --kiss-button-default-background: #d8d6e0;
     --kiss-button-default-color: #000;
-    --kiss-color-contrast: #f8f7ff;
+    --kiss-color-contrast: #f5f5f5;
     --kiss-color-primary: #0e8fff;
     --kiss-color-success: #4caf50;
     --kiss-color-warning: orange;
