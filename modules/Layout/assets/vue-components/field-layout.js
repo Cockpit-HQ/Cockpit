@@ -201,9 +201,10 @@ export default {
 
                 if (!previewComponentCache[name]) {
 
-                    previewComponentCache[name] = {
+                    let component;
+
+                    let def = {
                         props:['data'],
-                        template:Components[name].opts.preview,
                         methods: {
                             truncate(str, num) {
                                 return (str.length <= num) ? str : `${str.slice(0, num)}...`;
@@ -211,26 +212,34 @@ export default {
                             stripTags (input, allowed) {
 
                                 // making sure the allowed arg is a string containing only tags in lowercase (<a><b><c>)
-                                allowed = (((allowed || '') + '').toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join('')
-                                const tags = /<\/?([a-z0-9]*)\b[^>]*>?/gi
-                                const commentsAndPhpTags = /<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi
-                                let after = input
-                                // removes tha '<' char at the end of the string to replicate PHP's behaviour
-                                after = (after.substring(after.length - 1) === '<') ? after.substring(0, after.length - 1) : after
-                                // recursively remove tags to ensure that the returned string doesn't contain forbidden tags after previous passes (e.g. '<<bait/>switch/>')
+                                allowed = (((allowed || '') + '').toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join('');
+                                const tags = /<\/?([a-z0-9]*)\b[^>]*>?/gi;
+                                const commentsAndPhpTags = /<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi;
+                                let after = input;
+
+                                after = (after.substring(after.length - 1) === '<') ? after.substring(0, after.length - 1) : after;
+
                                 while (true) {
                                     const before = after
-                                    after = before.replace(commentsAndPhpTags, '').replace(tags, function ($0, $1) {
-                                    return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : ''
-                                    })
-                                    // return once no more tags are removed
+                                    after = before.replace(commentsAndPhpTags, '').replace(tags, ($0, $1) => {
+                                        return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : ''
+                                    });
                                     if (before === after) {
-                                    return after
+                                        return after
                                     }
                                 }
                             }
                         }
                     };
+
+                    if (typeof(Components[name].opts.preview) == 'string') {
+                        def.template = Components[name].opts.preview;
+                        component = def;
+                    } else if (typeof(Components[name].opts.preview) == 'object' && Components[name].opts.preview.component) {
+                        component = Vue.defineAsyncComponent(() => App.utils.import(Components[name].opts.preview.component))
+                    }
+
+                    previewComponentCache[name] = component;
                 }
 
                 return {
