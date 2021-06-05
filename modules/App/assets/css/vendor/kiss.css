@@ -162,6 +162,11 @@ kiss-offcanvas kiss-navlist .kiss-nav-header {
     margin-top: .6rem;
 }
 
+kiss-offcanvas kiss-navlist .kiss-nav-divider {
+    margin-left: calc(-1 * var(--kiss-padding, 1rem));
+    margin-right: calc(-1 * var(--kiss-padding, 1rem));
+}
+
 kiss-dropdownbox kiss-navlist ul > li a icon,
 kiss-offcanvas kiss-navlist ul > li a icon,
 kiss-offcanvas kiss-navlist ul > li a kiss-svg {

@@ -87,7 +87,13 @@
                             </li>
                             <?php foreach ($this->helper('menus')->menu('modules', true) as $group => $links): ?>
 
-                                <li class="kiss-nav-header"><?=($group && count($links) > 1 ? t($group) : '')?></li>
+                                <li class="kiss-nav-divider"></li>
+
+                                <?php if ($group && count($links) > 1): ?>
+                                <li class="kiss-nav-header"><?=t($group)?></li>
+                                <?php else: ?>
+
+                                <?php endif ?>
 
                                 <?php foreach ($links as $link): ?>
                                     <li class="<?=(strpos($this->request->route, $link['route']) === 0) ? 'active':''?>">
