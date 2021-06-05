@@ -8,5 +8,6 @@ $this->helper('menus')->addLink('modules', [
     'label'  => 'Lokalize',
     'icon'   => 'lokalize:icon.svg',
     'route'  => '/lokalize/projects',
-    'active' => false
+    'active' => false,
+    'group'  => 'Content'
 ]);

@@ -3849,12 +3849,16 @@ kiss-offcanvas kiss-navlist ul > li.active > a {
     font-weight: bold;
     opacity: 1;
 }
-kiss-offcanvas kiss-navlist ul > li > *,
-kiss-offcanvas kiss-navlist .kiss-nav-header {
+kiss-offcanvas kiss-navlist ul > li > * {
     display: flex;
     align-items: center;
     padding: 8px 0;
     letter-spacing: 2px;
+}
+kiss-offcanvas kiss-navlist .kiss-nav-header {
+    padding: 8px 0;
+    color: var(--kiss-color-muted);
+    margin-top: .6rem;
 }
 kiss-dropdownbox kiss-navlist ul > li a icon,
 kiss-offcanvas kiss-navlist ul > li a icon,

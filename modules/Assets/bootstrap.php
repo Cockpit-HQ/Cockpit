@@ -16,7 +16,7 @@ $this->on('app.api.request', function() {
     include(__DIR__.'/api.php');
 });
 
-// content api
+// assets api
 $this->module('assets')->extend([
 
     'assets' => function(array $options = []) {

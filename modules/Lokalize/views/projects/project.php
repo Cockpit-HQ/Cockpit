@@ -142,7 +142,7 @@
                 <kiss-container>
                     <div class="kiss-flex kiss-flex-middle">
 
-                        <div class="kiss-flex kiss-flex-middle kiss-margin-large-right">
+                        <div class="kiss-flex kiss-flex-middle kiss-margin-large-right" :class="{'kiss-color-muted': filter}">
                             <div>
                                 <div class="kiss-size-xsmall kiss-text-caption"><?=t('Keys')?></div>
                                 <div class="kiss-size-bold">{{ project.keys.length }}</div>

@@ -8,6 +8,13 @@ $this->bindClass('Settings\\Controller\\Api', '/settings/api');
 $this->bindClass('Settings\\Controller\\Locales', '/settings/locales');
 $this->bindClass('Settings\\Controller\\Settings', '/settings');
 
+$this->helper('menus')->addLink('modules', [
+    'label'  => 'Api',
+    'icon'   => 'settings:assets/icons/api.svg',
+    'route'  => '/settings/api',
+    'active' => false
+]);
+
 
 $this->on('app.permissions.collect', function (ArrayObject $permissions) {
 

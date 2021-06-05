@@ -39,7 +39,7 @@ class Base extends \Lime\AppAware {
      * @param array $params
      * @return mixed
      */
-    protected function render(string $view, array $params = array()) {
+    protected function render(string $view, array $params = []) {
 
         $view .= $this->layout ? " with ".$this->layout:"";
 

@@ -85,14 +85,19 @@
                                     <?=t('Dashboard')?>
                                 </a>
                             </li>
-                            <li class="kiss-nav-spacer"></li>
-                            <?php foreach ($this->helper('menus')->menu('modules') as $link): ?>
-                                <li class="<?=(strpos($this->request->route, $link['route']) === 0) ? 'active':''?>">
-                                    <a href="<?=$this->route($link['route'])?>">
-                                        <kiss-svg class="kiss-margin-small-right" src="<?=$this->base($link['icon'])?>" width="25" height="25"></kiss-svg>
-                                        <?=t($link['label'])?>
-                                    </a>
-                                </li>
+                            <?php foreach ($this->helper('menus')->menu('modules', true) as $group => $links): ?>
+
+                                <li class="kiss-nav-header"><?=($group && count($links) > 1 ? t($group) : '')?></li>
+
+                                <?php foreach ($links as $link): ?>
+                                    <li class="<?=(strpos($this->request->route, $link['route']) === 0) ? 'active':''?>">
+                                        <a href="<?=$this->route($link['route'])?>">
+                                            <kiss-svg class="kiss-margin-small-right" src="<?=$this->base($link['icon'])?>" width="25" height="25"></kiss-svg>
+                                            <?=t($link['label'])?>
+                                        </a>
+                                    </li>
+                                <?php endforeach ?>
+
                             <?php endforeach ?>
                         </ul>
                     </navlist>

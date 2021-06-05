@@ -1,6 +1,5 @@
 <?php
 
-
 // load admin related code
 $this->on('app.admin.init', function() {
     include(__DIR__.'/admin.php');
@@ -12,7 +11,7 @@ $this->on('app.api.request', function() {
 });
 
 
-// content api
+// lokalize api
 $this->module('lokalize')->extend([
 
     'projects' => function(array $options = []) {

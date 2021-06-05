@@ -19,18 +19,24 @@ class Menus extends \Lime\Helper {
             'icon'   => 'cube',
             'route'  => '/',
             'active' => true,
+            'group'  => '',
             'prio'   => 0
         ], $link);
+
+        if ($link['group'] && !$link['prio']) {
+            $link['prio'] = 1;
+        }
 
         $this->menus[$menu][] = $link;
     }
 
-    public function menu(string $name): array {
+    public function menu(string $name, bool $grouped = false): array {
 
         if (!isset($this->menus[$name]) || !count($this->menus[$name])) {
             return [];
         }
 
+        $groups = [];
         $links = $this->menus[$name];
         $queue = new SplPriorityQueue();
         $list  = [];
@@ -40,11 +46,20 @@ class Menus extends \Lime\Helper {
         }
 
         while ($queue->valid()){
-            $list[] = $links[$queue->current()];
+
+            $link = $links[$queue->current()];
+            $list[] = $link;
+
+            if (!isset($groups[$link['group']])) {
+                $groups[$link['group']] = [];
+            }
+
+            $groups[$link['group']][] = $link;
+
             $queue->next();
         }
 
-        return $list;
+        return $grouped ? $groups : $list;
     }
 
 }

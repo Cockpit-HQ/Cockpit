@@ -10,7 +10,9 @@ $this->helper('menus')->addLink('modules', [
     'label'  => 'Content',
     'icon'   => 'content:icon.svg',
     'route'  => '/content',
-    'active' => false
+    'active' => false,
+    'group'  => 'Content',
+    'prio'   => 2
 ]);
 
 
