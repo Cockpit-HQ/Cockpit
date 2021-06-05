@@ -30,7 +30,7 @@
     <app-header role="banner">
         <kiss-container class="kiss-flex kiss-flex-middle">
             <div>
-                <a class="kiss-display-inline-block" href="<?=$this->route('/')?>"><img class="app-logo" src="<?=$this->helper('theme')->logo()?>" alt="Logo"></a>
+                <a class="kiss-display-block" href="<?=$this->route('/')?>"><img class="app-logo" src="<?=$this->helper('theme')->logo()?>" alt="Logo"></a>
             </div>
             <div class="kiss-margin-small-left">
                 <a href="#app-offcanvas" class="kiss-link-muted kiss-flex kiss-flex-middle" kiss-offcanvas>
