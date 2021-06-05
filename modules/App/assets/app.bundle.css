@@ -3750,7 +3750,7 @@ td.kiss-text-truncate { max-width: 0; }
 
     --kiss-dialog-background: var(--kiss-color-overlay);
     --kiss-dialog-content-background: var(--kiss-color-contrast);
-    --kiss-dialog-content-spacing: 20px;
+    --kiss-dialog-content-spacing: 25px;
     --kiss-dialog-large-width: 840px;
     --kiss-dialog-xlarge-width: var(--kiss-container-max-width);
 

@@ -125,11 +125,12 @@ let editComponent = {
 
     template: /*html*/`
         <div>
-            <span class="kiss-badge kiss-badge-outline kiss-color-muted kiss-text-upper">{{ item.component }}</span>
+            <span class="kiss-size-xsmall kiss-color-muted kiss-text-upper">{{ item.component }}</span>
             <div class="kiss-size-4 kiss-text-bold kiss-margin-xsmall-top kiss-margin-bottom">{{ t('Edit component') }}</div>
 
             <input class="kiss-input" type="text" v-model="item.label">
-            <fields-renderer class="kiss-margin-large" v-model="item.data" :fields="meta.fields"></fields-renderer>
+
+            <fields-renderer class="kiss-margin" v-model="item.data" :fields="meta.fields"></fields-renderer>
 
             <div class="kiss-margin-top kiss-flex kiss-flex-middle kiss-button-group">
                 <button type="button" class="kiss-button kiss-flex-1" @click="$close()">{{ t('Cancel') }}</button>
@@ -249,7 +250,7 @@ export default {
                             <div class="kiss-flex-1 kiss-size-xsmall kiss-text-bold kiss-text-truncate">
                                 <a class="kiss-link-muted" @click="edit(element)">{{ element.label }}</a>
                             </div>
-                            <div class="kiss-margin-small-left kiss-color-muted kiss-size-xsmall kiss-invisible-hover">{{ element.component }}</div>
+                            <span class="kiss-margin-small-left kiss-badge kiss-badge-outline kiss-color-muted kiss-text-upper kiss-invisible-hover">{{ element.component }}</span>
                             <a class="kiss-margin-small-left kiss-color-danger" @click="remove(element)"><icon>delete</icon></a>
                         </div>
                         <field-layout class="kiss-margin-small" v-model="element.children" :group="group || uid" :level="++level" v-if="element.children"></field-layout>
