@@ -78,7 +78,7 @@ let pickComponent = {
 
                 <kiss-row class="kiss-row-small kiss-child-width-1-2 kiss-child-width-1-4@m kiss-child-width-1-5@xl">
                     <div v-for="meta, component in filtered">
-                        <kiss-card class="kiss-padding-small kiss-align-center kiss-position-relative" theme="bordered" hover="shadow">
+                        <kiss-card class="kiss-padding-small kiss-align-center kiss-position-relative" theme="bordered contrast" hover="shadow">
                             <div class="kiss-position-relative">
                                 <canvas width="600" height="250"></canvas>
                                 <div class="kiss-cover kiss-flex kiss-flex-middle kiss-flex-center kiss-color-muted">
@@ -220,7 +220,7 @@ export default {
                 style="min-height: 100px;"
             >
                 <template #item="{ element }">
-                    <kiss-card class="kiss-padding-small" theme="bordered" style="margin: 8px 0;">
+                    <kiss-card class="kiss-padding-small" theme="bordered contrast" style="margin: 8px 0;">
                         <div class="kiss-flex kiss-flex-middle">
                             <a class="lm-handle kiss-margin-small-right kiss-color-muted"><icon>drag_handle</icon></a>
                             <div class="kiss-flex-1 kiss-size-xsmall kiss-text-bold">

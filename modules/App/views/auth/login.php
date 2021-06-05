@@ -38,7 +38,7 @@
 
                 </form>
 
-                <kiss-card class="kiss-padding animated fadeInUp" theme="bordered" v-if="!loading && view=='success'">
+                <kiss-card class="kiss-padding animated fadeInUp" theme="bordered contrast" v-if="!loading && view=='success'">
 
                     <kiss-row>
                         <div><app-avatar size="50" :name="user.name"></app-avatar></div>

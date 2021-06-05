@@ -63,7 +63,7 @@ let FieldsManager = {
     template: /*html*/`
         <div>
 
-            <kiss-card class="animated fadeIn kiss-padding kiss-align-center kiss-text-caption" theme="bordered" v-if="!fields.length">
+            <kiss-card class="animated fadeIn kiss-padding kiss-align-center kiss-text-caption" theme="bordered contrast" v-if="!fields.length">
                 <div class="kiss-text-bold">{{ t('No fields') }}</div>
             </kiss-card>
 
@@ -71,7 +71,7 @@ let FieldsManager = {
 
             <vue-draggable v-model="fields" v-if="fieldTypes && fields.length" handle=".fm-handle">
                 <template #item="{ element }">
-                    <kiss-card class="kiss-padding-small kiss-flex kiss-flex-middle" theme="bordered" style="margin: 8px 0;">
+                    <kiss-card class="kiss-padding-small kiss-flex kiss-flex-middle" theme="bordered contrast" style="margin: 8px 0;">
                         <div class="kiss-margin-right">
                             <div class="kiss-padding-small app-border-radius" :style="{background: _.get(fieldTypes, element.type+'.color', 'rgb(255, 248, 214)')}">
                                 <img :src="$base(_.get(fieldTypes, element.type+'.icon', 'settings:assets/icons/edit.svg'))" width="20" height="20" style="opacity:.6" :title="element.type">

@@ -20,7 +20,7 @@ export default {
 
     template: /*html */`
         <div>
-            <kiss-card class="kiss-margin-small" theme="bordered" hover="shadow" v-for="(model, name) in models">
+            <kiss-card class="kiss-margin-small" theme="bordered contrast" hover="shadow" v-for="(model, name) in models">
 
                 <div class="kiss-margin-small kiss-bgcolor-contrast kiss-color-muted kiss-padding-small">
                     <span class="kiss-badge kiss-badge-outline" :style="{color: model.color || 'inherit' }">{{model.label || name}}</span>

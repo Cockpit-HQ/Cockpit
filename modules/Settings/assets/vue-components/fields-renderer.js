@@ -49,12 +49,12 @@ let FieldRenderer = {
             <div v-is="getFieldType()" v-model="val" v-bind="field.opts" v-if="!field.multiple"></div>
 
             <div v-if="field.multiple">
-                <kiss-card class="kiss-padding-small kiss-size-small kiss-color-muted" theme="bordered" v-show="!val || !Array.isArray(val) || !val.length">{{ t('No items') }}</kiss-card>
+                <kiss-card class="kiss-padding-small kiss-size-small kiss-color-muted" theme="bordered contrast" v-show="!val || !Array.isArray(val) || !val.length">{{ t('No items') }}</kiss-card>
 
                 <vue-draggable v-model="val" handle=".fm-handle" v-if="Array.isArray(val)">
                     <template #item="{ element, index }">
                         <div class="kiss-margin-small kiss-flex kiss-flex-middle">
-                            <kiss-card class="kiss-flex-1 kiss-padding-small kiss-size-small kiss-position-relative" theme="bordered">
+                            <kiss-card class="kiss-flex-1 kiss-padding-small kiss-size-small kiss-position-relative" theme="bordered contrast">
                                 <span class="kiss-badge kiss-badge-outline kiss-color-muted" v-if="val[index] == null">n/a</span>
                                 <div class="kiss-text-truncate" v-else-if="fieldTypes[field.type] && fieldTypes[field.type].render" v-html="fieldTypes[field.type].render(val[index], field)"></div>
                                 <div class="kiss-text-truncate" v-else>

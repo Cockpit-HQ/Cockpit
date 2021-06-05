@@ -71,7 +71,7 @@ if (!isset($user['twofa'])) {
                 </div>
                 <?php endif ?>
 
-                <kiss-card class="kiss-margin kiss-margin-large-top kiss-padding" theme="bordered">
+                <kiss-card class="kiss-margin kiss-margin-large-top kiss-padding" :theme="user.apiKey ? 'bordered contrast':'bordered'">
                     <label><?=t('API Key')?></label>
                     <div class="kiss-flex kiss-flex-middle">
                         <div class="kiss-flex-1 kiss-margin-small-right kiss-text-truncate kiss-disabled">
@@ -83,7 +83,7 @@ if (!isset($user['twofa'])) {
                     </div>
                 </kiss-card>
 
-                <kiss-card class="kiss-margin kiss-padding" theme="bordered">
+                <kiss-card class="kiss-margin kiss-padding" :theme="user.twofa.enabled ? 'bordered contrast':'bordered'">
                     <label><?=t('Two-factor authentication (2FA)')?></label>
                     <div class="kiss-margin-small-top">
                         <field-boolean class="kiss-size-3" v-model="user.twofa.enabled"></field-boolean>

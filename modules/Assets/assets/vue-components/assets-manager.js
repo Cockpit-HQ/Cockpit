@@ -97,7 +97,7 @@ export default {
             <kiss-row class="kiss-row-small kiss-child-width-1-2 kiss-child-width-1-5@m kiss-margin-bottom" match="true" v-if="!loading && folders.length">
 
                 <div v-for="folder in folders">
-                    <kiss-card class="kiss-flex kiss-flex-middle" theme="bordered">
+                    <kiss-card class="kiss-flex kiss-flex-middle" theme="shadowed contrast">
                         <div class="kiss-padding kiss-bgcolor-contrast"><icon size="larger">folder</icon></div>
                         <div class="kiss-padding kiss-text-truncate kiss-flex-1 kiss-text-bold">
                             <a class="kiss-link-muted" @click="openFolder(folder)">{{ folder.name }}</a>
@@ -117,7 +117,7 @@ export default {
 
             <kiss-row class="kiss-row-small kiss-child-width-1-2 kiss-child-width-1-5@m spotlight-group" v-if="!loading && assets.length" match="true" hover="shadow">
                 <div v-for="asset in assets">
-                    <kiss-card class="kiss-position-relative" theme="bordered" :style="{borderColor: (selectedAsset && selectedAsset._id == asset._id && 'var(--kiss-color-primary)') || null}">
+                    <kiss-card class="kiss-position-relative" theme="bordered contrast" :style="{borderColor: (selectedAsset && selectedAsset._id == asset._id && 'var(--kiss-color-primary)') || null}">
                         <div class="kiss-bgcolor-contrast kiss-position-relative" :class="{'kiss-bgcolor-transparentimage': asset.type == 'image'}">
                             <canvas width="400" height="300"></canvas>
                             <div class="kiss-cover kiss-padding kiss-flex kiss-flex-middle kiss-flex-center">

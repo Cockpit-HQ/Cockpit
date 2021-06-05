@@ -20,7 +20,7 @@
                     <input class="kiss-input" type="text" v-model="key.name" required>
                 </div>
 
-                <kiss-card class="kiss-margin kiss-margin-large-top kiss-padding" theme="bordered">
+                <kiss-card class="kiss-margin kiss-margin-large-top kiss-padding" theme="bordered contrast">
                     <label><?=t('API Key')?></label>
                     <div class="kiss-flex kiss-flex-middle">
                         <div class="kiss-flex-1 kiss-margin-small-right kiss-text-truncate kiss-disabled">

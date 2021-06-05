@@ -121,7 +121,7 @@ export default {
             >
                 <template #item="{ element }">
                     <div class="kiss-margin-small">
-                        <kiss-card class="kiss-padding-small" theme="bordered" style="margin: 8px 0;">
+                        <kiss-card class="kiss-padding-small" theme="bordered contrast" style="margin: 8px 0;">
                             <div class="kiss-flex kiss-flex-middle">
                                 <a class="lm-handle kiss-margin-small-right kiss-color-muted"><icon>drag_handle</icon></a>
                                 <div class="kiss-flex-1 kiss-size-xsmall kiss-text-bold" :class="{'kiss-color-muted': !element.title}">

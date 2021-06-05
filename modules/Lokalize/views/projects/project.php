@@ -113,7 +113,7 @@
 
                         <div class="kiss-margin-small" v-if="project.locales.length">
 
-                            <kiss-card class="kiss-position-relative kiss-padding-small kiss-margin-small kiss-text-bolder kiss-flex kiss-flex-middle" :class="{'kiss-color-muted': loc.visible === false}" theme="bordered" v-for="(loc, idx) in project.locales">
+                            <kiss-card class="kiss-position-relative kiss-padding-small kiss-margin-small kiss-text-bolder kiss-flex kiss-flex-middle" :class="{'kiss-color-muted': loc.visible === false}" :theme="loc.visible === false ? 'bordered':'bordered contrast'" v-for="(loc, idx) in project.locales">
                                 <icon class="kiss-margin-small-right" :class="{'kiss-color-primary': loc.visible !== false}">{{ loc.visible !== false ? 'visibility' : 'visibility_off' }}</icon>
                                 <span class="kiss-size-small kiss-flex-1">{{ loc.name || loc.i18n }}</span>
                                 <a class="kiss-cover" @click="loc.visible = (loc.visible === false ? true : false)"></a>

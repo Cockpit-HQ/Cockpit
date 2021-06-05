@@ -105,8 +105,8 @@ export default {
 
             </div>
             <hr class="kiss-width-1-1 kiss-margin-remove">
-            <div class="kiss-padding kiss-padding-remove-bottom kiss-bgcolor-contrast kiss-size-small" v-if="item">
-                <div>
+            <div class="kiss-padding kiss-padding-remove-bottom kiss-bgcolor-contrast" v-if="item">
+                <div class="kiss-size-small">
 
                     <div class="kiss-flex kiss-flex-middle">
                         <div class="kiss-size-4 kiss-margin-small-right kiss-flex" title="ID"><icon>adjust</icon></div>
@@ -126,7 +126,7 @@ export default {
                         <div><icon>account_circle</icon></div>
                     </div>
             </div>
-            <div class="kiss-padding kiss-bgcolor-contrast">
+            <div class="kiss-margin-small-top kiss-margin-small-bottom kiss-bgcolor-contrast">
                 <div class="kiss-button-group kiss-flex kiss-child-width-1-2">
                     <button class="kiss-button" kiss-offcanvas-close>{{ t('Close') }}</button>
                     <button class="kiss-button kiss-button-primary" :disabled="!item || loading" @click="update()">{{ t('Update') }}</button>
