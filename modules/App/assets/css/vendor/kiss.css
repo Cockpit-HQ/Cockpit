@@ -133,7 +133,7 @@ kiss-popoutmenu kiss-navlist > ul > li > a > icon {
 kiss-offcanvas kiss-navlist ul > li > a,
 kiss-dropdownbox kiss-navlist ul > li > a {
     color: inherit;
-    opacity: .45;
+    opacity: .65;
     transition: all 250ms;
 }
 

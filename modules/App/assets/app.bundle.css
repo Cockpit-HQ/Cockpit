@@ -3836,7 +3836,7 @@ kiss-popoutmenu kiss-navlist > ul > li > a > icon {
 kiss-offcanvas kiss-navlist ul > li > a,
 kiss-dropdownbox kiss-navlist ul > li > a {
     color: inherit;
-    opacity: .45;
+    opacity: .65;
     transition: all 250ms;
 }
 kiss-offcanvas kiss-navlist ul > li > a:hover,
@@ -4026,7 +4026,7 @@ html[data-theme='light'] {
     --kiss-link-hover-color: #1994ff;
     --kiss-button-default-background: rgb(238, 236, 236);
     --kiss-button-default-color: #000;
-    --kiss-color-contrast: #f7f7f7;
+    --kiss-color-contrast: #f8f7ff;
     --kiss-color-primary: #0e8fff;
     --kiss-color-success: #4caf50;
     --kiss-color-warning: orange;
@@ -4079,6 +4079,15 @@ html[data-theme='light'] kiss-card[hover="shadow"]:hover {
 }
 html[data-theme='light'] .app-logo[src$="App/assets/logo.svg"] {
     filter: invert(1);
+}
+html[data-theme='light'] #app-offcanvas {
+    --kiss-color-contrast: #fff;
+}
+@media (prefers-color-scheme: light) {
+    html { --app-auto-theme: light; }
+}
+@media (prefers-color-scheme: dark) {
+    html { --app-auto-theme: dark; }
 }
 body {
     font-weight: 300;

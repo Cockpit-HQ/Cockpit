@@ -105,6 +105,35 @@ if (!isset($user['twofa'])) {
 
                 </kiss-card>
 
+                <div class="kiss-margin-large">
+                    <label><?=t('Color theme')?></label>
+
+                    <kiss-row class="kiss-child-width-1-4@m">
+                        <div>
+                            <kiss-card class="kiss-padding kiss-position-relative" theme="bordered" :style="{borderColor: user.theme == 'auto' ? 'var(--kiss-color-primary)':null}">
+                                <strong><?=t('Auto')?></strong>
+                                <div class="kiss-color-muted kiss-size-xsmall kiss-margin-xsmall-top"><?=t('Use system preference')?></div>
+                                <a class="kiss-cover" @click="user.theme = 'auto'"></a>
+                            </kiss-card>
+                        </div>
+                        <div>
+                            <kiss-card class="kiss-padding kiss-position-relative" theme="bordered" :style="{borderColor: user.theme == 'dark' ? 'var(--kiss-color-primary)':null}">
+                                <strong><?=t('Dark')?></strong>
+                                <div class="kiss-color-muted kiss-size-xsmall kiss-margin-xsmall-top"><?=t('Dark mode')?></div>
+                                <a class="kiss-cover" @click="user.theme = 'dark'"></a>
+                            </kiss-card>
+                        </div>
+                        <div>
+                            <kiss-card class="kiss-padding kiss-position-relative" theme="bordered" :style="{borderColor: user.theme == 'light' ? 'var(--kiss-color-primary)':null}">
+                                <strong><?=t('Light')?></strong>
+                                <div class="kiss-color-muted kiss-size-xsmall kiss-margin-xsmall-top"><?=t('Light mode')?></div>
+                                <a class="kiss-cover" @click="user.theme = 'light'"></a>
+                            </kiss-card>
+                        </div>
+                    </kiss-row>
+
+                </div>
+
                 <app-actionbar>
 
                     <kiss-container size="small">
@@ -139,6 +168,14 @@ if (!isset($user['twofa'])) {
                         user: <?=json_encode($user)?>,
                         roles: <?=json_encode($this->helper('acl')->roles())?>
                     };
+                },
+
+                watch: {
+                    'user.theme': {
+                        handler(val) {
+                            document.documentElement.setAttribute('data-theme', val);
+                        }
+                    }
                 },
 
                 methods: {

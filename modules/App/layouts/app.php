@@ -24,6 +24,13 @@
 
     <?php $this->block('app.layout.header') ?>
 
+    <?php if ($this->helper('theme')->theme() == 'auto'): ?>
+    <script>
+        // set client preferred color scheme
+        document.documentElement.setAttribute('data-theme', getComputedStyle(document.documentElement).getPropertyValue("--app-auto-theme").trim());
+    </script>
+    <?php endif ?>
+
 </head>
 <body class="animated fadeIn">
 

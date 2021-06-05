@@ -75,7 +75,8 @@ class Theme extends \Lime\Helper {
 
     public function theme() {
 
-        $theme = $this->app->retrieve('theme', 'default');
+        $theme = $this->app->retrieve('theme', 'auto');
+        $theme = $this->app->helper('auth')->getUser('theme', $theme);
 
         return $theme;
     }
