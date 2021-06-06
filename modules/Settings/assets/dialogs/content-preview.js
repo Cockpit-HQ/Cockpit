@@ -8,7 +8,14 @@ export default {
             data: JSON.parse(JSON.stringify(this.item)),
             locale: this.locales.length ? this.locales[0] : null,
             previewLoaded: false,
-            iframe: null
+            iframe: null,
+            device: 'computer',
+            modes: {
+                phone: {width: '360px', height: '640px'},
+                tablet: {width: '768px', height: '1024px'},
+                laptop: {width: '1200px', height: '768px'},
+                computer: {width: '100%', height: '100%'},
+            }
         }
     },
 
@@ -65,9 +72,10 @@ export default {
                     </a>
                 </div>
 
-                <div class="kiss-size-4 kiss-margin-small-left kiss-color-muted"><a class="kiss-link-muted"><icon class="larger">smartphone</icon></a></div>
-                <div class="kiss-size-4 kiss-margin-small-left kiss-color-muted"><a class="kiss-link-muted"><icon class="larger">tablet</icon></a></div>
-                <div class="kiss-size-4 kiss-margin-small-left kiss-color-muted"><a class="kiss-link-muted"><icon class="larger">computer</icon></a></div>
+                <div class="kiss-size-4 kiss-margin-small-left"><a :class="(device=='phone') ? 'kiss-link-muted':'kiss-color-muted'" @click="device='phone'"><icon class="larger">smartphone</icon></a></div>
+                <div class="kiss-size-4 kiss-margin-small-left"><a :class="(device=='tablet') ? 'kiss-link-muted':'kiss-color-muted'" @click="device='tablet'"><icon class="larger">tablet_mac</icon></a></div>
+                <div class="kiss-size-4 kiss-margin-small-left"><a :class="(device=='laptop') ? 'kiss-link-muted':'kiss-color-muted'" @click="device='laptop'"><icon class="larger">laptop</icon></a></div>
+                <div class="kiss-size-4 kiss-margin-small-left"><a :class="(device=='computer') ? 'kiss-link-muted':'kiss-color-muted'" @click="device='computer'"><icon class="larger">desktop_windows</icon></a></div>
                 <a class="kiss-button kiss-button-small kiss-margin-large-left kiss-margin-small-right" kiss-offcanvas-close>{{ t('Close preview') }}</a>
             </div>
             <div class="app-offcanvas-content kiss-position-relative kiss-flex kiss-flex-1">
@@ -86,7 +94,7 @@ export default {
                     <div v-if="!previewLoaded">
                         <app-loader></app-loader>
                     </div>
-                    <iframe id="content-preview-iframe" :src="url" style="position:absolute;top:0;left:0;width:100%;height:100%;background-color:#fff;" @load="iframeReady()" :style="{visibility: (previewLoaded ? 'visible':'hidden')}"></iframe>
+                    <iframe id="content-preview-iframe" :src="url" style="position:absolute;top:50%;left:50%;may-width:100%;max-height:100%;transform:translate3d(-50%, -50%, 0);width:100%;height:100%;background-color:#fff;transition:all 300ms;opacity:0;" @load="iframeReady()" :style="Object.assign({opacity: (previewLoaded ? 1:0)}, modes[device])"></iframe>
                 </div>
 
             </div>
