@@ -139,9 +139,9 @@ let FieldsManager = {
                                 </datalist>
 
                                 <div class="kiss-margin">
-                                <field-boolean class="kiss-margin-small" v-model="field.required" :label="t('Required')"></field-boolean>
-                                <field-boolean class="kiss-margin-small" v-model="field.i18n" :label="t('Localize field')"></field-boolean>
-                                <field-boolean class="kiss-margin-small" v-model="field.multiple" :label="t('Allow multiple values')"></field-boolean>
+                                    <field-boolean class="kiss-margin-small" v-model="field.required" :label="t('Required')"></field-boolean>
+                                    <field-boolean class="kiss-margin-small" v-model="field.i18n" :label="t('Localize field')"></field-boolean>
+                                    <field-boolean class="kiss-margin-small" v-model="field.multiple" :label="t('Allow multiple values')"></field-boolean>
                                 </div>
 
                             </tab>
@@ -154,7 +154,7 @@ let FieldsManager = {
                                     </div>
                                 </div>
 
-                                <div class="kiss-margin" v-if="state.optionsView != 'json'">
+                                <div class="kiss-margin kiss-dialog-overflow" style="max-height:30vh;" v-if="state.optionsView != 'json'">
                                     <fields-renderer v-model="field.opts" :fields="fieldTypes[field.type].settings" v-if="fieldTypes[field.type] && fieldTypes[field.type].settings"></fields-renderer>
                                 </div>
 

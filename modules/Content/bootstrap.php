@@ -43,6 +43,7 @@ $this->module('content')->extend([
             'info'      => '',
             'type'      => 'collection',
             'fields'    => [],
+            'preview'   => [],
             'group'     => null,
             'sortable'  => false,
             '_created'  => $time,

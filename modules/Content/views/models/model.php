@@ -88,10 +88,36 @@
 
                 <div class="kiss-margin kiss-margin-large-top">
 
-                    <div class="kiss-text-bold kiss-text-caption kiss-margin"><?=t('Fields')?></div>
+                    <app-tabs class="kiss-margin-large">
+                        <tab :caption="t('Fields')">
+                            <fields-manager class="kiss-margin" v-model="model.fields"></fields-manager>
+                        </tab>
+                        <tab :caption="t('Content preview')">
 
-                    <fields-manager class="kiss-margin" v-model="model.fields"></fields-manager>
+                            <kiss-card class="animated fadeIn kiss-padding kiss-align-center kiss-text-caption" theme="bordered contrast" v-if="!model.preview.length">
+                                <div class="kiss-text-bold"><?=t('No preview urls defined')?></div>
+                            </kiss-card>
 
+                            <vue-draggable v-model="model.preview" v-if="model.preview.length" handle=".fm-handle">
+                                <template #item="{ element }">
+                                    <kiss-card class="kiss-flex kiss-flex-middle kiss-margin-small">
+                                        <div class="kiss-margin-small-right">
+                                            <icon class="kiss-size-3" :class="{'kiss-color-muted': !(element.name && element.uri)}">visibility</icon>
+                                        </div>
+                                        <div class="kiss-width-1-4"><input type="text" class="kiss-input kiss-input-small" v-model="element.name" placeholder="<?=t('Name')?>"></div>
+                                        <div class="kiss-margin-small-left kiss-flex-1"><input type="url" class="kiss-input kiss-input-small" v-model="element.uri" placeholder="https://..."></div>
+                                        <a class="kiss-margin-small-left kiss-color-danger" @click="model.preview.splice(model.preview.indexOf(element), 1)"><icon>delete</icon></a>
+                                        <a class="fm-handle kiss-margin-small-left kiss-color-muted"><icon>drag_handle</icon></a>
+                                    </kiss-card>
+                                </template>
+                            </vue-draggable>
+
+                            <div class="kiss-margin kiss-align-center">
+                                <a class="kiss-size-large" @click="model.preview.push({name:'', uri:''})"><icon>control_point</icon></a>
+                            </div>
+
+                        </tab>
+                    </app-tabs>
                 </div>
 
                 <app-actionbar>
@@ -144,9 +170,11 @@
                 },
 
                 methods: {
+
                     save() {
 
                         this.saving = true;
+                        this.model.preview = this.model.preview.filter(preview => (preview.name && preview.uri));
 
                         this.$request('/content/models/save', {model: this.model}).then(model => {
 

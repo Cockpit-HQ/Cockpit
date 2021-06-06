@@ -3836,6 +3836,9 @@ kiss-popoutmenu kiss-navlist > ul > li > a > icon {
 .kiss-input::placeholder {
     color: var(--kiss-input-placeholder-color, rgba(255,255,255,.2));
 }
+.kiss-input-small {
+    padding: .3em .3em;
+}
 .kiss-disabled { opacity: .6; }
 kiss-offcanvas kiss-navlist ul > li > a,
 kiss-dropdownbox kiss-navlist ul > li > a {

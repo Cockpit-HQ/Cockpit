@@ -21,7 +21,8 @@ class Models extends App {
             'type' => $type,
             'group' => '',
             'color' => null,
-            'fields' => []
+            'fields' => [],
+            'preview' => []
         ];
 
         $isUpdate = false;
@@ -43,6 +44,11 @@ class Models extends App {
         if (!$model) {
             return $this->stop(404);
         }
+
+        // legacy model update
+        $model = array_merge([
+            'preview' => []
+        ], $model);
 
         $isUpdate = true;
         $groups = $this->getGroups();
