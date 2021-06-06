@@ -9,7 +9,7 @@
     min-width: 20px;
     background: var(--kiss-badge-bgcolor, var(--kiss-color-primrary, hsl(210, 100%, 50%)));
     border: .1em var(--kiss-badge-bgcolor, var(--kiss-color-primrary, hsl(210, 100%, 50%))) solid;
-    color: var(--kiss-badge-color, #fff);
+    color: var(--kiss-badge-color, #fff) !important;
     font-weight: bold;
 }
 
@@ -17,5 +17,5 @@
     background: none;
     background-color: transparent;
     border-color: currentColor;
-    color: currentColor;
+    color: currentColor !important;
 }

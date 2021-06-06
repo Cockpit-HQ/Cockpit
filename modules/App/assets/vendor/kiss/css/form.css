@@ -65,10 +65,6 @@
     display: inline-block;
 }
 
-.kiss-input:not(input),
-.kiss-select:not(select) { line-height: var(--kiss-form-line-height);}
-
-
 .kiss-select[multiple],
 .kiss-select[size],
 .kiss-textarea {
