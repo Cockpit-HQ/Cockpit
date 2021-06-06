@@ -23,7 +23,7 @@
                         <input type="text" class="kiss-input" :placeholder="t('Filter keys...')" v-model="filter">
                     </div>
 
-                    <app-scrollcontainer boundary="#lokalize-actionbar">
+                    <app-scrollcontainer mode="boundary" boundary="#lokalize-actionbar">
                         <ul class="app-list-items animated fadeIn kiss-overflow-y-auto">
                             <li v-for="key in visibleKeys">
                                 <kiss-row class="kiss-margin-small-top kiss-margin-small-bottom">
@@ -76,68 +76,69 @@
 
                 </div>
                 <div class="kiss-width-1-4@m kiss-width-1-5@xl">
+                    <app-scrollcontainer mode="boundary" boundary="#lokalize-actionbar">
 
-                    <div class="kiss-margin">
+                        <div class="kiss-margin">
 
-                        <div class="kiss-text-caption kiss-size-xsmall kiss-text-bold">{{ t('Project') }}</div>
+                            <div class="kiss-text-caption kiss-size-xsmall kiss-text-bold">{{ t('Project') }}</div>
 
-                        <kiss-card class="kiss-margin-small kiss-bgcolor-contrast kiss-padding-small">
+                            <kiss-card class="kiss-margin-small kiss-bgcolor-contrast kiss-padding-small">
 
-                            <div class="kiss-margin-xsmall">
-                                <div class="kiss-flex kiss-flex-middle">
-                                    <div class="kiss-size-4 kiss-margin-small-right kiss-flex kiss-color-muted" :title="t('Created at')"><icon>more_time</icon></div>
-                                    <div class="kiss-text-truncate kiss-size-small kiss-text-monospace kiss-color-muted kiss-flex-1">{{ (new Date(project._created * 1000).toLocaleString()) }}</div>
-                                    <div><icon>account_circle</icon></div>
+                                <div class="kiss-margin-xsmall">
+                                    <div class="kiss-flex kiss-flex-middle">
+                                        <div class="kiss-size-4 kiss-margin-small-right kiss-flex kiss-color-muted" :title="t('Created at')"><icon>more_time</icon></div>
+                                        <div class="kiss-text-truncate kiss-size-small kiss-text-monospace kiss-color-muted kiss-flex-1">{{ (new Date(project._created * 1000).toLocaleString()) }}</div>
+                                        <div><icon>account_circle</icon></div>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="kiss-margin-xsmall" v-if="project._created != project._modified">
-                                <div class="kiss-flex kiss-flex-middle">
-                                    <div class="kiss-size-4 kiss-margin-small-right kiss-flex kiss-color-muted" :title="t('Modified at')"><icon>history</icon></div>
-                                    <div class="kiss-text-truncate kiss-size-small kiss-text-monospace kiss-color-muted kiss-flex-1">{{ (new Date(project._modified * 1000).toLocaleString()) }}</div>
-                                    <div><icon>account_circle</icon></div>
+                                <div class="kiss-margin-xsmall" v-if="project._created != project._modified">
+                                    <div class="kiss-flex kiss-flex-middle">
+                                        <div class="kiss-size-4 kiss-margin-small-right kiss-flex kiss-color-muted" :title="t('Modified at')"><icon>history</icon></div>
+                                        <div class="kiss-text-truncate kiss-size-small kiss-text-monospace kiss-color-muted kiss-flex-1">{{ (new Date(project._modified * 1000).toLocaleString()) }}</div>
+                                        <div><icon>account_circle</icon></div>
+                                    </div>
                                 </div>
-                            </div>
 
-                        </kiss-card>
-                    </div>
-
-                    <div class="kiss-margin">
-
-                        <div class="kiss-text-caption kiss-size-xsmall kiss-text-bold">{{ t('Locales') }}</div>
-
-                        <kiss-card class="kiss-padding-small kiss-margin-small kiss-text-bolder kiss-text-muted kiss-size-small kiss-color-muted kiss-flex kiss-flex-middle" theme="bordered" v-if="!project.locales.length">
-                            <span class="kiss-flex-1 kiss-margin-small-right">{{ t('No locales.') }}</span>
-                            <a class="kiss-size-xsmall" href="<?=$this->route('/settings/locales')?>">{{ t('Manage') }}</a>
-                        </kiss-card>
-
-                        <div class="kiss-margin-small" v-if="project.locales.length">
-
-                            <kiss-card class="kiss-position-relative kiss-padding-small kiss-margin-small kiss-text-bolder kiss-flex kiss-flex-middle" :class="{'kiss-color-muted': loc.visible === false}" :theme="loc.visible === false ? 'bordered':'bordered contrast'" v-for="(loc, idx) in project.locales">
-                                <icon class="kiss-margin-small-right" :class="{'kiss-color-primary': loc.visible !== false}">{{ loc.visible !== false ? 'visibility' : 'visibility_off' }}</icon>
-                                <span class="kiss-size-small kiss-flex-1">{{ loc.name || loc.i18n }}</span>
-                                <a class="kiss-cover" @click="loc.visible = (loc.visible === false ? true : false)"></a>
                             </kiss-card>
                         </div>
 
-                    </div>
+                        <div class="kiss-margin">
 
-                    <div class="kiss-margin" v-if="project.status._overall">
+                            <div class="kiss-text-caption kiss-size-xsmall kiss-text-bold">{{ t('Locales') }}</div>
 
-                        <div class="kiss-text-caption kiss-size-xsmall kiss-text-bold">{{ t('Completed') }}</div>
+                            <kiss-card class="kiss-padding-small kiss-margin-small kiss-text-bolder kiss-text-muted kiss-size-small kiss-color-muted kiss-flex kiss-flex-middle" theme="bordered" v-if="!project.locales.length">
+                                <span class="kiss-flex-1 kiss-margin-small-right">{{ t('No locales.') }}</span>
+                                <a class="kiss-size-xsmall" href="<?=$this->route('/settings/locales')?>">{{ t('Manage') }}</a>
+                            </kiss-card>
 
-                        <div class="kiss-size-3 kiss-margin-xsmall-top kiss-margin-small-bottom" :class="{'kiss-color-success': project.status._overall == 100 }">{{ project.status._overall }}%</div>
+                            <div class="kiss-margin-small" v-if="project.locales.length">
 
-                        <div class="kiss-flex kiss-child-width-1-2 kiss-size-xsmall kiss-color-muted kiss-margin-xsmall"  v-for="(loc, idx) in project.locales">
-                            <div><icon>language</icon> {{ loc.name || loc.i18n }}</div>
-                            <div class="kiss-align-right">{{ project.status[loc.i18n] }}%</div>
+                                <kiss-card class="kiss-position-relative kiss-padding-small kiss-margin-small kiss-text-bolder kiss-flex kiss-flex-middle" :class="{'kiss-color-muted': loc.visible === false}" :theme="loc.visible === false ? 'bordered':'bordered contrast'" v-for="(loc, idx) in project.locales">
+                                    <icon class="kiss-margin-small-right" :class="{'kiss-color-primary': loc.visible !== false}">{{ loc.visible !== false ? 'visibility' : 'visibility_off' }}</icon>
+                                    <span class="kiss-size-small kiss-flex-1">{{ loc.name || loc.i18n }}</span>
+                                    <a class="kiss-cover" @click="loc.visible = (loc.visible === false ? true : false)"></a>
+                                </kiss-card>
+                            </div>
+
                         </div>
-                    </div>
 
+                        <div class="kiss-margin" v-if="project.status._overall">
+
+                            <div class="kiss-text-caption kiss-size-xsmall kiss-text-bold">{{ t('Completed') }}</div>
+
+                            <div class="kiss-size-3 kiss-margin-xsmall-top kiss-margin-small-bottom" :class="{'kiss-color-success': project.status._overall == 100 }">{{ project.status._overall }}%</div>
+
+                            <div class="kiss-flex kiss-child-width-1-2 kiss-size-xsmall kiss-color-muted kiss-margin-xsmall"  v-for="(loc, idx) in project.locales">
+                                <div><icon>language</icon> {{ loc.name || loc.i18n }}</div>
+                                <div class="kiss-align-right">{{ project.status[loc.i18n] }}%</div>
+                            </div>
+                        </div>
+                    <app-scrollcontainer mode="boundary" boundary="#lokalize-actionbar">
                 </div>
             </kiss-row>
 
-            <app-actionbar id="lokalize-actionbar">
+            <app-actionbar id="lokalize-actionbar" space="false">
 
                 <kiss-container>
                     <div class="kiss-flex kiss-flex-middle">

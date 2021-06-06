@@ -28,7 +28,7 @@ kiss-dialog > kiss-content {
     background: var(--kiss-dialog-content-background, #fff);
     color: var(--kiss-dialog-content-color, inherit);
 
-    width: var(--kiss-dialog-width, 300px);
+    width: var(--kiss-dialog-width, 350px);
     max-width: calc(100% - 0.01px) !important;
 
     box-sizing: border-box;

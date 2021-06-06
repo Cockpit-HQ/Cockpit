@@ -2631,7 +2631,7 @@ kiss-dialog > kiss-content {
     background: var(--kiss-dialog-content-background, #fff);
     color: var(--kiss-dialog-content-color, inherit);
 
-    width: var(--kiss-dialog-width, 300px);
+    width: var(--kiss-dialog-width, 350px);
     max-width: calc(100% - 0.01px) !important;
 
     box-sizing: border-box;
@@ -3752,7 +3752,7 @@ td.kiss-text-truncate { max-width: 0; }
 
     --kiss-dialog-background: var(--kiss-color-overlay);
     --kiss-dialog-content-background: var(--kiss-color-contrast);
-    --kiss-dialog-content-spacing: 25px;
+    --kiss-dialog-content-spacing: 20px;
     --kiss-dialog-large-width: 840px;
     --kiss-dialog-xlarge-width: var(--kiss-container-max-width);
 

@@ -25,6 +25,9 @@ customElements.define('app-actionbar', class extends HTMLElement {
     }
 
     update() {
-        document.body.style.paddingBottom = `calc(2rem + ${this.offsetHeight}px)`;
+
+        if (this.getAttribute('space') !== 'false') {
+            document.body.style.paddingBottom = `calc(2rem + ${this.offsetHeight}px)`;
+        }
     }
 });

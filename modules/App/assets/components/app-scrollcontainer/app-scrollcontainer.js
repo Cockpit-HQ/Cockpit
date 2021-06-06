@@ -32,20 +32,34 @@ customElements.define('app-scrollcontainer', class extends HTMLElement {
         this.style.maxHeight = '';
 
         let rect = this.getBoundingClientRect();
-        let boundary = this.getAttribute('boundary');
-        let maxHeight = window.innerHeight - rect.top;
+        let mode = this.getAttribute('mode');
 
-        if (boundary) {
-            boundary = document.querySelector(boundary);
-
-            if (boundary) {
-                maxHeight = boundary.getBoundingClientRect().top - rect.top;
-            }
-        }
-
-        if (maxHeight > window.innerHeight) {
+        if (rect.top > window.innerHeight) {
             return;
         }
+
+        let maxHeight = window.innerHeight - rect.top;
+
+        switch (mode) {
+            case 'boundary':
+
+                let boundary = this.getAttribute('boundary');
+
+                if (boundary) {
+                    boundary = document.querySelector(boundary);
+
+                    if (boundary) {
+                        maxHeight = boundary.getBoundingClientRect().top - rect.top;
+                    }
+                }
+
+                if (maxHeight > window.innerHeight) {
+                    return;
+                }
+
+                break;
+        }
+
 
         this.style.maxHeight = `${maxHeight}px`;
     }
