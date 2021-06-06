@@ -6,7 +6,8 @@ export default {
 
         return {
             data: JSON.parse(JSON.stringify(this.item)),
-            previewLoaded: false
+            previewLoaded: false,
+            iframe: null
         }
     },
 
@@ -38,6 +39,13 @@ export default {
         fieldsRenderer
     },
 
+    watch: {
+        data: {
+            handler() { this.updateIframe() },
+            deep: true
+        }
+    },
+
     template: /*html*/`
 
         <div class="app-offcanvas-container">
@@ -52,7 +60,7 @@ export default {
                     </div>
                     <div class="kiss-padding">
                         <div class="kiss-button-group kiss-child-width-1-2 kiss-width-1-1">
-                            <button type="button" class="kiss-button" kiss-offcanvas-close>{{ t('Close') }}</button>
+                            <button type="button" class="kiss-button" kiss-offcanvas-close>{{ t('Cancel') }}</button>
                             <button type="button" class="kiss-button kiss-button-primary">{{ t('Update & Close') }}</button>
                         </div>
                     </div>
@@ -61,10 +69,32 @@ export default {
                     <div v-if="!previewLoaded">
                         <app-loader></app-loader>
                     </div>
-                    <iframe :src="url" style="position:absolute;top:0;left:0;width:100%;height:100%;background-color:#fff;" @load="previewLoaded=true" :style="{visibility: (previewLoaded ? 'visible':'hidden')}"></iframe>
+                    <iframe :src="url" style="position:absolute;top:0;left:0;width:100%;height:100%;background-color:#fff;" @load="iframeReady()" :style="{visibility: (previewLoaded ? 'visible':'hidden')}"></iframe>
                 </div>
 
             </div>
         </div>
     `,
+
+    methods: {
+
+        iframeReady() {
+            this.previewLoaded = true;
+            this.iframe = this.$el.querySelector('iframe').contentWindow;
+            this.updateIframe();
+        },
+
+        updateIframe() {
+
+            if (!this.iframe) return;
+
+            let data = {
+                event: 'cockpit:content.preview',
+                data: this.data,
+                locale: this.locale || 'default'
+            };
+
+            this.iframe.postMessage(JSON.parse(JSON.stringify(data)), '*');
+        }
+    }
 }
