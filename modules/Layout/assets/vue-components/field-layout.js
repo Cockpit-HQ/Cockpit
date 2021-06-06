@@ -190,6 +190,10 @@ export default {
         level: {
             type: Number,
             default: 0
+        },
+        preview: {
+            type: Boolean,
+            default: false
         }
     },
 
@@ -276,6 +280,9 @@ export default {
                 this.update();
             },
             deep: true
+        },
+        preview(val) {
+            this.showPreview = val;
         }
     },
 
@@ -303,8 +310,8 @@ export default {
                             <span class="kiss-margin-small-left kiss-badge kiss-badge-outline kiss-color-muted kiss-text-upper kiss-invisible-hover">{{ element.component }}</span>
                             <a class="kiss-margin-small-left kiss-color-danger" @click="remove(element)"><icon>delete</icon></a>
                         </div>
-                        <field-layout class="kiss-margin-small" v-model="element.children" :group="group || uid" :level="++level" v-if="element.children"></field-layout>
-                        <div class="kiss-margin-xsmall-top kiss-size-small" v-is="'component-preview'" :component="element" :preview="showPreview" v-if="showPreview && !element.children && hasPreview(element)"></div>
+                        <field-layout class="kiss-margin-small" v-model="element.children" :group="group || uid" :level="++level" :preview="showPreview" v-if="element.children"></field-layout>
+                        <div class="kiss-margin-xsmall-top kiss-size-small" v-is="'component-preview'" :component="element" v-if="showPreview && !element.children && hasPreview(element)"></div>
                     </kiss-card>
                 </template>
             </vue-draggable>
