@@ -101,6 +101,14 @@
 
                     </div>
 
+                    <div class="kiss-margin kiss-visible@m" v-if="model.preview && model.preview.length">
+
+                        <div class="kiss-text-caption kiss-size-xsmall kiss-text-bold kiss-margin-small-bottom">{{ t('Content preview') }}</div>
+
+                        <a class="kiss-button kiss-width-1-1" kiss-popoutmenu="#model-item-preview-links" v-if="model.preview.length > 1">{{ t('Open preview') }}</a>
+                        <a class="kiss-button kiss-width-1-1" @click="showPreviewUri(model.preview[0].uri)" v-if="model.preview.length == 1">{{ t('Open preview') }}</a>
+                    </div>
+
                 </div>
             </kiss-row>
 
@@ -186,6 +194,22 @@
                 </kiss-content>
             </kiss-popoutmenu>
 
+            <kiss-popoutmenu id="model-item-preview-links" v-if="model.preview && model.preview.length">
+                <kiss-content>
+                    <kiss-navlist class="kiss-margin">
+                        <ul>
+                            <li class="kiss-nav-header"><?=t('Open preview')?></li>
+                            <li v-for="preview in model.preview">
+                                <a class="kiss-flex kiss-flex-middle" @click="showPreviewUri(preview.uri)">
+                                    <icon class="kiss-margin-small-right">travel_explore</icon>
+                                    {{ preview.name }}
+                                </a>
+                            </li>
+                        </ul>
+                    </kiss-navlist>
+                </kiss-content>
+            </kiss-popoutmenu>
+
         </template>
 
         <script type="module">
@@ -247,6 +271,18 @@
 
                     showJSON() {
                         App.utils.vueOffcanvas('settings:assets/dialogs/json-viewer.js', {data: this.item}, {}, {flip: true, size: 'large'})
+                    },
+
+                    showPreviewUri(uri) {
+
+                        App.utils.vueOffcanvas('settings:assets/dialogs/content-preview.js', {
+                            uri,
+                            fields: this.model.fields,
+                            item: this.item,
+                            locales: this.locales
+                        }, {
+
+                        }, {size: 'screen'})
                     }
                 }
             }

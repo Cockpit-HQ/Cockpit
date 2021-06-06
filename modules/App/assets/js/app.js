@@ -180,6 +180,9 @@ App.ui = {
             case 'xxlarge':
                 size = 'kiss-width-3-4';
                 break;
+            case 'screen':
+                size = 'kiss-width-1-1';
+                break;
         }
 
         document.body.insertAdjacentHTML('beforeend', `
