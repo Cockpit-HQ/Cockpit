@@ -1,5 +1,5 @@
 
-<vue-view class="kiss-margin">
+<vue-view class="kiss-margin-small">
 
     <template>
 
@@ -22,7 +22,7 @@
             </div>
         </kiss-container>
 
-        <hr class="kiss-margin-large">
+        <hr class="kiss-margin-top kiss-margin-large-bottom">
 
         <kiss-container class="kiss-margin">
 

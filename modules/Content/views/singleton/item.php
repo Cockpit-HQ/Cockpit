@@ -1,4 +1,4 @@
-<kiss-container class="kiss-margin">
+<kiss-container class="kiss-margin-small">
 
     <ul class="kiss-breadcrumbs">
         <li><a href="<?=$this->route('/content')?>"><?=t('Content')?></a></li>
@@ -6,10 +6,10 @@
 
     <div class="kiss-flex kiss-flex-middle">
         <div class="kiss-margin-small-right">
-            <kiss-svg class="kiss-margin-auto" src="<?=$this->base('content:assets/icons/singleton.svg')?>" width="35" height="35" style="color:<?=($this->escape($model['color'] ?? 'inherit'))?>"><canvas width="35" height="35"></canvas></kiss-svg>
+            <kiss-svg class="kiss-margin-auto" src="<?=$this->base('content:assets/icons/singleton.svg')?>" width="25" height="25" style="color:<?=($this->escape($model['color'] ?? 'inherit'))?>"><canvas width="35" height="35"></canvas></kiss-svg>
         </div>
         <div class="kiss-margin-small-right">
-            <div class="kiss-size-large kiss-text-bold"><?=$this->escape($model['label'] ? $model['label'] : $model['name'])?></div>
+            <div class="kiss-size-5 kiss-text-bold"><?=$this->escape($model['label'] ? $model['label'] : $model['name'])?></div>
         </div>
         <div>
             <a class="kiss-size-large" kiss-popoutmenu="#model-item-menu-actions"><icon>more_horiz</icon></a>
@@ -18,7 +18,7 @@
 
 </kiss-container>
 
-<hr class="kiss-margin-large">
+<hr class="kiss-margin-top kiss-margin-large-bottom">
 
 <kiss-container>
 
