@@ -279,7 +279,7 @@
                             uri,
                             fields: this.model.fields,
                             item: this.item,
-                            locales: this.locales,
+                            locales: this.hasLocales ? this.locales : [],
                             context: {
                                 model: this.model.name
                             }
