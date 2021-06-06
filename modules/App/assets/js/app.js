@@ -438,6 +438,8 @@ App.utils.import = function(uri) {
 
 App.utils.vueOffcanvas = function(component, data, callbacks, options) {
 
+    let offcanvas;
+
     data = data || {};
     callbacks = callbacks || {};
 
@@ -448,7 +450,12 @@ App.utils.vueOffcanvas = function(component, data, callbacks, options) {
             app.mixin({
                 methods: {
                     $close() {
-                        this.$el.closest('kiss-offcanvas').close();
+
+                        if (this.$el.closest) {
+                            this.$el.closest('kiss-offcanvas').close();
+                        } else {
+                            this.$el.parentNode.closest('kiss-offcanvas').close();
+                        }
                     },
                     $call(name, ...args) {
                         if (callbacks[name]) {
@@ -470,7 +477,7 @@ App.utils.vueOffcanvas = function(component, data, callbacks, options) {
         }
     };
 
-    let offcanvas = App.ui.offcanvas(/*html*/`
+    offcanvas = App.ui.offcanvas(/*html*/`
         <div class="vue-offcanvas">
             <vue-offcanvas-content v-bind="data"></vue-offcanvas-content>
         </div>
@@ -497,7 +504,12 @@ App.utils.vueModal = function(url, data, callbacks, options) {
             app.mixin({
                 methods: {
                     $close() {
-                        this.$el.closest('kiss-dialog').close();
+
+                        if (this.$el.closest) {
+                            this.$el.closest('kiss-dialog').close();
+                        } else {
+                            this.$el.parentNode.closest('kiss-dialog').close();
+                        }
                     },
                     $call(name, ...args) {
                         if (callbacks[name]) {

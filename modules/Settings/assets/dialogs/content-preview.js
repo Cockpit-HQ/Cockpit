@@ -78,7 +78,7 @@ export default {
                     <div class="kiss-padding kiss-bgcolor-contrast">
                         <div class="kiss-button-group kiss-child-width-1-2 kiss-width-1-1">
                             <button type="button" class="kiss-button" kiss-offcanvas-close>{{ t('Cancel') }}</button>
-                            <button type="button" class="kiss-button kiss-button-primary">{{ t('Update & Close') }}</button>
+                            <button type="button" class="kiss-button kiss-button-primary" @click="updateClose()">{{ t('Update & Close') }}</button>
                         </div>
                     </div>
                 </div>
@@ -131,6 +131,11 @@ export default {
             };
 
             this.iframe.postMessage(JSON.parse(JSON.stringify(data)), '*');
+        },
+
+        updateClose() {
+            this.$call('update', this.data);
+            this.$close()
         }
     }
 }

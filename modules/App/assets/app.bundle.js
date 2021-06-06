@@ -1907,6 +1907,9 @@
                 case 'xxlarge':
                     size = 'kiss-width-3-4';
                     break;
+                case 'screen':
+                    size = 'kiss-width-1-1';
+                    break;
             }
 
             document.body.insertAdjacentHTML('beforeend', `
@@ -2162,6 +2165,8 @@
 
     App$1.utils.vueOffcanvas = function(component, data, callbacks, options) {
 
+        let offcanvas;
+
         data = data || {};
         callbacks = callbacks || {};
 
@@ -2172,7 +2177,12 @@
                 app.mixin({
                     methods: {
                         $close() {
-                            this.$el.closest('kiss-offcanvas').close();
+
+                            if (this.$el.closest) {
+                                this.$el.closest('kiss-offcanvas').close();
+                            } else {
+                                this.$el.parentNode.closest('kiss-offcanvas').close();
+                            }
                         },
                         $call(name, ...args) {
                             if (callbacks[name]) {
@@ -2194,7 +2204,7 @@
             }
         };
 
-        let offcanvas = App$1.ui.offcanvas(/*html*/`
+        offcanvas = App$1.ui.offcanvas(/*html*/`
         <div class="vue-offcanvas">
             <vue-offcanvas-content v-bind="data"></vue-offcanvas-content>
         </div>
@@ -2221,7 +2231,12 @@
                 app.mixin({
                     methods: {
                         $close() {
-                            this.$el.closest('kiss-dialog').close();
+
+                            if (this.$el.closest) {
+                                this.$el.closest('kiss-dialog').close();
+                            } else {
+                                this.$el.parentNode.closest('kiss-dialog').close();
+                            }
                         },
                         $call(name, ...args) {
                             if (callbacks[name]) {

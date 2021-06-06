@@ -284,7 +284,9 @@
                                 model: this.model.name
                             }
                         }, {
-
+                            update: (item) => {
+                                this.item = Object.assign(this.item, item);
+                            }
                         }, {size: 'screen'})
                     }
                 }
