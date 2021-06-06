@@ -6,6 +6,7 @@ export default {
 
         return {
             data: JSON.parse(JSON.stringify(this.item)),
+            locale: this.locales.length ? this.locales[0] : null,
             previewLoaded: false,
             iframe: null
         }
@@ -26,6 +27,9 @@ export default {
         item: {
             type: Object,
             default: null
+        },
+        context: {
+            default: null
         }
     },
 
@@ -43,44 +47,75 @@ export default {
         data: {
             handler() { this.updateIframe() },
             deep: true
+        },
+        locale() {
+            this.updateIframe();
         }
     },
 
     template: /*html*/`
 
         <div class="app-offcanvas-container">
-            <div class="kiss-padding kiss-flex kiss-flex-middle">
-                <div class="kiss-flex-1 kiss-text-bold">{{ t('Content preview') }}</div>
-                <a class="kiss-button kiss-button-small" kiss-offcanvas-close>{{ t('Close preview') }}</a>
+            <div class="kiss-padding-small kiss-flex kiss-flex-middle kiss-bgcolor-contrast">
+                <div class="kiss-flex-1 kiss-text-bold kiss-margin-small-left">{{ t('Content preview') }}</div>
+
+                <div class="kiss-margin-small-left kiss-margin-right" v-if="locales.length">
+                    <a class="kiss-text-bold kiss-flex kiss-flex-middle" kiss-popoutmenu="#content-preview-locales">
+                        <icon class="kiss-margin-xsmall-right">language</icon> {{ locale.name }}
+                    </a>
+                </div>
+
+                <div class="kiss-size-4 kiss-margin-small-left kiss-color-muted"><a class="kiss-link-muted"><icon class="larger">smartphone</icon></a></div>
+                <div class="kiss-size-4 kiss-margin-small-left kiss-color-muted"><a class="kiss-link-muted"><icon class="larger">tablet</icon></a></div>
+                <div class="kiss-size-4 kiss-margin-small-left kiss-color-muted"><a class="kiss-link-muted"><icon class="larger">computer</icon></a></div>
+                <a class="kiss-button kiss-button-small kiss-margin-large-left kiss-margin-small-right" kiss-offcanvas-close>{{ t('Close preview') }}</a>
             </div>
-            <div class="app-offcanvas-content kiss-position-relative kiss-bgcolor-contrast kiss-flex kiss-flex-1">
-                <div class="kiss-flex kiss-flex-column" style="min-width:600px;">
+            <div class="app-offcanvas-content kiss-position-relative kiss-flex kiss-flex-1">
+                <div class="kiss-flex kiss-flex-column" style="width:600px;">
                     <div class="kiss-flex-1 kiss-padding kiss-overflow-y-auto">
-                        <fields-renderer v-model="data" :fields="fields" :locales="locales"></fields-renderer>
+                        <fields-renderer v-model="data" :fields="fields" :locales="locale ? [locale] : []"></fields-renderer>
                     </div>
-                    <div class="kiss-padding">
+                    <div class="kiss-padding kiss-bgcolor-contrast">
                         <div class="kiss-button-group kiss-child-width-1-2 kiss-width-1-1">
                             <button type="button" class="kiss-button" kiss-offcanvas-close>{{ t('Cancel') }}</button>
                             <button type="button" class="kiss-button kiss-button-primary">{{ t('Update & Close') }}</button>
                         </div>
                     </div>
                 </div>
-                <div class="kiss-flex kiss-flex-1 kiss-flex-middle kiss-flex-center kiss-position-relative">
+                <div class="kiss-flex kiss-flex-1 kiss-flex-middle kiss-flex-center kiss-position-relative kiss-bgcolor-contrast">
                     <div v-if="!previewLoaded">
                         <app-loader></app-loader>
                     </div>
-                    <iframe :src="url" style="position:absolute;top:0;left:0;width:100%;height:100%;background-color:#fff;" @load="iframeReady()" :style="{visibility: (previewLoaded ? 'visible':'hidden')}"></iframe>
+                    <iframe id="content-preview-iframe" :src="url" style="position:absolute;top:0;left:0;width:100%;height:100%;background-color:#fff;" @load="iframeReady()" :style="{visibility: (previewLoaded ? 'visible':'hidden')}"></iframe>
                 </div>
 
             </div>
         </div>
+
+        <teleport to="body" v-if="locales.length">
+            <kiss-popoutmenu id="content-preview-locales">
+                <kiss-content>
+                    <kiss-navlist class="kiss-margin">
+                        <ul>
+                            <li class="kiss-nav-header">{{ t('Switch locale') }}</li>
+                            <li v-for="l in locales">
+                                <a class="kiss-flex kiss-flex-middle" :class="{'kiss-color-primary': l===locale}" @click="locale = l">
+                                    <icon class="kiss-margin-small-right">language</icon>
+                                    {{ l.name }}
+                                </a>
+                            </li>
+                        </ul>
+                    </kiss-navlist>
+                </kiss-content>
+            </kiss-popoutmenu>
+        </teleport>
     `,
 
     methods: {
 
         iframeReady() {
             this.previewLoaded = true;
-            this.iframe = this.$el.querySelector('iframe').contentWindow;
+            this.iframe = document.querySelector('#content-preview-iframe').contentWindow;
             this.updateIframe();
         },
 
@@ -91,6 +126,7 @@ export default {
             let data = {
                 event: 'cockpit:content.preview',
                 data: this.data,
+                context: this.context,
                 locale: this.locale || 'default'
             };
 

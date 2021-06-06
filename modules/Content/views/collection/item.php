@@ -279,7 +279,10 @@
                             uri,
                             fields: this.model.fields,
                             item: this.item,
-                            locales: this.locales
+                            locales: this.locales,
+                            context: {
+                                model: this.model.name
+                            }
                         }, {
 
                         }, {size: 'screen'})
