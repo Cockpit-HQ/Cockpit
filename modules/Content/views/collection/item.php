@@ -1,24 +1,30 @@
-<kiss-container class="kiss-margin">
 
-    <ul class="kiss-breadcrumbs">
-        <li><a href="<?=$this->route('/content')?>"><?=t('Content')?></a></li>
-    </ul>
+<vue-view class="kiss-margin">
 
-    <vue-view>
+    <template>
 
-        <template>
+        <kiss-container>
 
-            <div class="kiss-flex kiss-flex-middle kiss-margin-large-bottom">
+            <ul class="kiss-breadcrumbs">
+                <li><a href="<?=$this->route('/content')?>"><?=t('Content')?></a></li>
+            </ul>
+
+            <div class="kiss-flex kiss-flex-middle">
                 <div class="kiss-flex kiss-position-relative">
                     <span class="kiss-badge" style="<?=($model['color'] ? "background:{$model['color']};border-color:{$model['color']}":"")?>"><?=$this->escape($model['label'] ? $model['label'] : $model['name'])?></span>
                     <a class="kiss-cover" href="<?=$this->route("/content/collection/items/{$model['name']}")?>"></a>
                 </div>
-                <div class="kiss-margin-small-left kiss-size-5 kiss-text-bolder">
+                <div class="kiss-margin-small-left kiss-size-5 kiss-text-bold">
                     <span v-if="!item._id"><?=t('New Item')?></span>
                     <span v-if="item._id"><?=t('Edit Item')?></span>
                 </div>
                 <a class="kiss-size-large kiss-margin-small-left" kiss-popoutmenu="#model-item-menu-actions"><icon>more_horiz</icon></a>
             </div>
+        </kiss-container>
+
+        <hr class="kiss-margin-large">
+
+        <kiss-container class="kiss-margin">
 
             <kiss-card class="kiss-margin-large kiss-size-5 kiss-align-center kiss-color-muted kiss-text-bolder kiss-padding-large" theme="bordered" v-if="!fields.length">
                 <?=t('No fields defined')?>
@@ -26,7 +32,7 @@
 
             <kiss-row class="kiss-row-large kiss-margin-large" v-if="fields.length">
                 <div class="kiss-flex-1">
-                    <div class="kiss-width-2-3@xl">
+                    <div class="kiss-width-2-3@xl kiss-margin-auto">
                         <fields-renderer v-model="item" :fields="fields" :locales="visibleLocales"></fields-renderer>
                     </div>
                 </div>
@@ -111,188 +117,187 @@
 
                 </div>
             </kiss-row>
+        </kiss-container>
 
-            <app-actionbar>
+        <app-actionbar>
 
-                <kiss-container>
-                    <div class="kiss-flex kiss-flex-middle">
-                        <div class="kiss-button-group" v-if="item._id">
-                            <a class="kiss-button" href="<?=$this->route("/content/collection/item/{$model['name']}")?>">
+            <kiss-container>
+                <div class="kiss-flex kiss-flex-middle">
+                    <div class="kiss-button-group" v-if="item._id">
+                        <a class="kiss-button" href="<?=$this->route("/content/collection/item/{$model['name']}")?>">
+                            <?=t('Create new item')?>
+                        </a>
+                    </div>
+                    <div class="kiss-flex-1"></div>
+                    <div class="kiss-button-group">
+                        <a class="kiss-button" href="<?=$this->route("/content/collection/items/{$model['name']}")?>">
+                            <span v-if="!item._id"><?=t('Cancel')?></span>
+                            <span v-if="item._id"><?=t('Close')?></span>
+                        </a>
+                        <a class="kiss-button kiss-button-primary" @click="save()">
+                            <span v-if="!item._id"><?=t('Create item')?></span>
+                            <span v-if="item._id"><?=t('Update item')?></span>
+                        </a>
+                    </div>
+                </div>
+            </kiss-container>
+
+        </app-actionbar>
+
+        <kiss-popoutmenu id="model-item-menu-state">
+            <kiss-content>
+                <kiss-navlist class="kiss-margin">
+                    <ul>
+                        <li class="kiss-nav-header"><?=t('Change state to')?></li>
+                        <li v-show="item._state != 1">
+                            <a class="kiss-flex kiss-flex-middle kiss-color-success kiss-text-bold" @click="item._state=1">
+                                <icon class="kiss-margin-small-right">bookmark</icon>
+                                <?=t('Published')?>
+                            </a>
+                        </li>
+                        <li v-show="item._state">
+                            <a class="kiss-flex kiss-flex-middle kiss-color-danger kiss-text-bold" @click="item._state=0">
+                                <icon class="kiss-margin-small-right">bookmark</icon>
+                                <?=t('Unpublished')?>
+                            </a>
+                        </li>
+                        <li v-show="item._state != -1">
+                            <a class="kiss-flex kiss-flex-middle kiss-color-muted kiss-text-bold" @click="item._state=-1">
+                                <icon class="kiss-margin-small-right">bookmark</icon>
+                                <?=t('Archive')?>
+                            </a>
+                        </li>
+                    </ul>
+                </kiss-navlist>
+            </kiss-content>
+        </kiss-popoutmenu>
+
+        <kiss-popoutmenu id="model-item-menu-actions">
+            <kiss-content>
+                <kiss-navlist class="kiss-margin">
+                    <ul>
+                        <li class="kiss-nav-header"><?=t('Actions')?></li>
+                        <li>
+                            <a class="kiss-flex kiss-flex-middle" @click="showJSON()">
+                                <icon class="kiss-margin-small-right">manage_search</icon>
+                                <?=t('Json Object')?>
+                            </a>
+                        </li>
+                        <li v-if="item._id">
+                            <a class="kiss-flex kiss-flex-middle" href="<?=$this->route("/content/collection/item/{$model['name']}")?>">
+                                <icon class="kiss-margin-small-right">add_circle_outline</icon>
                                 <?=t('Create new item')?>
                             </a>
-                        </div>
-                        <div class="kiss-flex-1"></div>
-                        <div class="kiss-button-group">
-                            <a class="kiss-button" href="<?=$this->route("/content/collection/items/{$model['name']}")?>">
-                                <span v-if="!item._id"><?=t('Cancel')?></span>
-                                <span v-if="item._id"><?=t('Close')?></span>
+                        </li>
+                        <li class="kiss-nav-divider"></li>
+                        <li>
+                            <a class="kiss-flex kiss-flex-middle" href="<?=$this->route("/content/models/edit/{$model['name']}")?>">
+                                <icon class="kiss-margin-small-right">create</icon>
+                                <?=t('Edit model')?>
                             </a>
-                            <a class="kiss-button kiss-button-primary" @click="save()">
-                                <span v-if="!item._id"><?=t('Create item')?></span>
-                                <span v-if="item._id"><?=t('Update item')?></span>
+                        </li>
+                    </ul>
+                </kiss-navlist>
+            </kiss-content>
+        </kiss-popoutmenu>
+
+        <kiss-popoutmenu id="model-item-preview-links" v-if="model.preview && model.preview.length">
+            <kiss-content>
+                <kiss-navlist class="kiss-margin">
+                    <ul>
+                        <li class="kiss-nav-header"><?=t('Open preview')?></li>
+                        <li v-for="preview in model.preview">
+                            <a class="kiss-flex kiss-flex-middle" @click="showPreviewUri(preview.uri)">
+                                <icon class="kiss-margin-small-right">travel_explore</icon>
+                                {{ preview.name }}
                             </a>
-                        </div>
-                    </div>
-                </kiss-container>
+                        </li>
+                    </ul>
+                </kiss-navlist>
+            </kiss-content>
+        </kiss-popoutmenu>
 
-            </app-actionbar>
+    </template>
 
-            <kiss-popoutmenu id="model-item-menu-state">
-                <kiss-content>
-                    <kiss-navlist class="kiss-margin">
-                        <ul>
-                            <li class="kiss-nav-header"><?=t('Change state to')?></li>
-                            <li v-show="item._state != 1">
-                                <a class="kiss-flex kiss-flex-middle kiss-color-success kiss-text-bold" @click="item._state=1">
-                                    <icon class="kiss-margin-small-right">bookmark</icon>
-                                    <?=t('Published')?>
-                                </a>
-                            </li>
-                            <li v-show="item._state">
-                                <a class="kiss-flex kiss-flex-middle kiss-color-danger kiss-text-bold" @click="item._state=0">
-                                    <icon class="kiss-margin-small-right">bookmark</icon>
-                                    <?=t('Unpublished')?>
-                                </a>
-                            </li>
-                            <li v-show="item._state != -1">
-                                <a class="kiss-flex kiss-flex-middle kiss-color-muted kiss-text-bold" @click="item._state=-1">
-                                    <icon class="kiss-margin-small-right">bookmark</icon>
-                                    <?=t('Archive')?>
-                                </a>
-                            </li>
-                        </ul>
-                    </kiss-navlist>
-                </kiss-content>
-            </kiss-popoutmenu>
+    <script type="module">
 
-            <kiss-popoutmenu id="model-item-menu-actions">
-                <kiss-content>
-                    <kiss-navlist class="kiss-margin">
-                        <ul>
-                            <li class="kiss-nav-header"><?=t('Actions')?></li>
-                            <li>
-                                <a class="kiss-flex kiss-flex-middle" @click="showJSON()">
-                                    <icon class="kiss-margin-small-right">manage_search</icon>
-                                    <?=t('Json Object')?>
-                                </a>
-                            </li>
-                            <li v-if="item._id">
-                                <a class="kiss-flex kiss-flex-middle" href="<?=$this->route("/content/collection/item/{$model['name']}")?>">
-                                    <icon class="kiss-margin-small-right">add_circle_outline</icon>
-                                    <?=t('Create new item')?>
-                                </a>
-                            </li>
-                            <li class="kiss-nav-divider"></li>
-                            <li>
-                                <a class="kiss-flex kiss-flex-middle" href="<?=$this->route("/content/models/edit/{$model['name']}")?>">
-                                    <icon class="kiss-margin-small-right">create</icon>
-                                    <?=t('Edit model')?>
-                                </a>
-                            </li>
-                        </ul>
-                    </kiss-navlist>
-                </kiss-content>
-            </kiss-popoutmenu>
+        export default {
+            data() {
+                return {
+                    model: <?=json_encode($model)?>,
+                    item: <?=json_encode($item)?>,
+                    fields: <?=json_encode($fields)?>,
+                    locales: <?=json_encode($locales)?>,
+                    saving: false
+                }
+            },
 
-            <kiss-popoutmenu id="model-item-preview-links" v-if="model.preview && model.preview.length">
-                <kiss-content>
-                    <kiss-navlist class="kiss-margin">
-                        <ul>
-                            <li class="kiss-nav-header"><?=t('Open preview')?></li>
-                            <li v-for="preview in model.preview">
-                                <a class="kiss-flex kiss-flex-middle" @click="showPreviewUri(preview.uri)">
-                                    <icon class="kiss-margin-small-right">travel_explore</icon>
-                                    {{ preview.name }}
-                                </a>
-                            </li>
-                        </ul>
-                    </kiss-navlist>
-                </kiss-content>
-            </kiss-popoutmenu>
+            components: {
+                'fields-renderer': 'settings:assets/vue-components/fields-renderer.js',
+                'json-viewer': 'settings:assets/vue-components/json-viewer.js',
+            },
 
-        </template>
+            computed: {
+                hasLocales() {
 
-        <script type="module">
-
-            export default {
-                data() {
-                    return {
-                        model: <?=json_encode($model)?>,
-                        item: <?=json_encode($item)?>,
-                        fields: <?=json_encode($fields)?>,
-                        locales: <?=json_encode($locales)?>,
-                        saving: false
+                    for (let i=0;i<this.fields.length;i++) {
+                        if (this.fields[i].i18n) return true;
                     }
+                    return false;
+                },
+                visibleLocales() {
+                    return this.locales.filter(l => l.visible);
+                }
+            },
+
+            mounted() {
+
+            },
+
+            methods: {
+
+                save() {
+
+                    let model = this.model.name;
+
+                    this.saving = true;
+
+                    this.$request(`/content/models/saveItem/${model}`, {item: this.item}).then(item => {
+                        this.item = Object.assign(this.item, item);
+                        this.saving = false;
+                        App.ui.notify('Data updated!');
+                    }).catch(rsp => {
+                        this.saving = false;
+                        App.ui.notify(rsp.error || 'Saving failed!', 'error');
+                    });
                 },
 
-                components: {
-                    'fields-renderer': 'settings:assets/vue-components/fields-renderer.js',
-                    'json-viewer': 'settings:assets/vue-components/json-viewer.js',
+                copyID() {
+                    App.utils.copyText(this.item._id, () =>  App.ui.notify('ID copied!'));
                 },
 
-                computed: {
-                    hasLocales() {
+                showJSON() {
+                    App.utils.vueOffcanvas('settings:assets/dialogs/json-viewer.js', {data: this.item}, {}, {flip: true, size: 'large'})
+                },
 
-                        for (let i=0;i<this.fields.length;i++) {
-                            if (this.fields[i].i18n) return true;
+                showPreviewUri(uri) {
+
+                    App.utils.vueOffcanvas('settings:assets/dialogs/content-preview.js', {
+                        uri,
+                        fields: this.model.fields,
+                        item: this.item,
+                        locales: this.hasLocales ? this.locales : [],
+                        context: {
+                            model: this.model.name
                         }
-                        return false;
-                    },
-                    visibleLocales() {
-                        return this.locales.filter(l => l.visible);
-                    }
-                },
-
-                mounted() {
-
-                },
-
-                methods: {
-
-                    save() {
-
-                        let model = this.model.name;
-
-                        this.saving = true;
-
-                        this.$request(`/content/models/saveItem/${model}`, {item: this.item}).then(item => {
+                    }, {
+                        update: (item) => {
                             this.item = Object.assign(this.item, item);
-                            this.saving = false;
-                            App.ui.notify('Data updated!');
-                        }).catch(rsp => {
-                            this.saving = false;
-                            App.ui.notify(rsp.error || 'Saving failed!', 'error');
-                        });
-                    },
-
-                    copyID() {
-                        App.utils.copyText(this.item._id, () =>  App.ui.notify('ID copied!'));
-                    },
-
-                    showJSON() {
-                        App.utils.vueOffcanvas('settings:assets/dialogs/json-viewer.js', {data: this.item}, {}, {flip: true, size: 'large'})
-                    },
-
-                    showPreviewUri(uri) {
-
-                        App.utils.vueOffcanvas('settings:assets/dialogs/content-preview.js', {
-                            uri,
-                            fields: this.model.fields,
-                            item: this.item,
-                            locales: this.hasLocales ? this.locales : [],
-                            context: {
-                                model: this.model.name
-                            }
-                        }, {
-                            update: (item) => {
-                                this.item = Object.assign(this.item, item);
-                            }
-                        }, {size: 'screen'})
-                    }
+                        }
+                    }, {size: 'screen'})
                 }
             }
-        </script>
+        }
+    </script>
 
-    </vue-view>
-
-</kiss-container>
+</vue-view>

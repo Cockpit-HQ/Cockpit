@@ -4,21 +4,27 @@
         <li><a href="<?=$this->route('/content')?>"><?=t('Content')?></a></li>
     </ul>
 
+    <div class="kiss-flex kiss-flex-middle">
+        <div class="kiss-margin-small-right">
+            <kiss-svg class="kiss-margin-auto" src="<?=$this->base('content:assets/icons/singleton.svg')?>" width="35" height="35" style="color:<?=($this->escape($model['color'] ?? 'inherit'))?>"><canvas width="35" height="35"></canvas></kiss-svg>
+        </div>
+        <div class="kiss-margin-small-right">
+            <div class="kiss-size-large kiss-text-bold"><?=$this->escape($model['label'] ? $model['label'] : $model['name'])?></div>
+        </div>
+        <div>
+            <a class="kiss-size-large" kiss-popoutmenu="#model-item-menu-actions"><icon>more_horiz</icon></a>
+        </div>
+    </div>
+
+</kiss-container>
+
+<hr class="kiss-margin-large">
+
+<kiss-container>
+
     <vue-view>
 
         <template>
-
-            <div class="kiss-flex kiss-flex-middle">
-                <div class="kiss-margin-small-right">
-                    <kiss-svg class="kiss-margin-auto" src="<?=$this->base('content:assets/icons/singleton.svg')?>" width="35" height="35" style="color:<?=($this->escape($model['color'] ?? 'inherit'))?>"><canvas width="35" height="35"></canvas></kiss-svg>
-                </div>
-                <div class="kiss-margin-small-right">
-                    <div class="kiss-size-large kiss-text-bold"><?=$this->escape($model['label'] ? $model['label'] : $model['name'])?></div>
-                </div>
-                <div>
-                    <a class="kiss-size-large" kiss-popoutmenu="#model-item-menu-actions"><icon>more_horiz</icon></a>
-                </div>
-            </div>
 
             <kiss-card class="kiss-margin-large kiss-size-5 kiss-align-center kiss-color-muted kiss-text-bolder kiss-padding-large" theme="bordered" v-if="!fields.length">
                 <?=t('No fields defined')?>
@@ -26,7 +32,7 @@
 
             <kiss-row class="kiss-row-large kiss-margin-large" :class="{'kiss-disabled': saving}" v-if="fields.length">
                 <div class="kiss-flex-1">
-                    <div class="kiss-width-2-3@xl">
+                    <div class="kiss-width-2-3@xl kiss-margin-auto">
                         <fields-renderer v-model="item" :fields="fields" :locales="visibleLocales"></fields-renderer>
                     </div>
                 </div>
