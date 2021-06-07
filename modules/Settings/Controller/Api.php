@@ -119,6 +119,8 @@ class Api extends App {
 
     public function openapi() {
 
+        \session_write_close();
+
         $paths = [APP_DIR.'/modules'];
 
         if (\file_exists(APP_DIR.'/addons')) {
@@ -149,6 +151,8 @@ class Api extends App {
 
     public function restApiViewer() {
 
+        \session_write_close();
+
         $this->layout = 'app:layouts/raw.php';
 
         $openApiUrl = $this->param('specUrl', $this->app->routeUrl('/settings/api/openapi'));
@@ -157,6 +161,8 @@ class Api extends App {
     }
 
     public function graphqlViewer() {
+
+        \session_write_close();
 
         $this->layout = 'app:layouts/raw.php';
 
