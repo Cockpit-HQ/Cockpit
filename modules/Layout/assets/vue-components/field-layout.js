@@ -293,6 +293,8 @@ export default {
                 :list="val"
                 :group="group || uid"
                 @change="change"
+                @start="dragStart"
+                @end="dragEnd"
                 handle=".lm-handle"
                 class="field-layout-dragarea"
                 :swapThreshold="0.65"
@@ -310,7 +312,7 @@ export default {
                             <span class="kiss-margin-small-left kiss-badge kiss-badge-outline kiss-color-muted kiss-text-upper kiss-invisible-hover">{{ element.component }}</span>
                             <a class="kiss-margin-small-left kiss-color-danger" @click="remove(element)"><icon>delete</icon></a>
                         </div>
-                        <field-layout class="kiss-margin-small" v-model="element.children" :group="group || uid" :level="++level" :preview="showPreview" v-if="element.children"></field-layout>
+                        <field-layout class="kiss-margin-small" v-model="element.children" :group="group || uid" :level="++level" :preview="showPreview" v-if="element.children" @hide-preview="dragStart" @show-preview="showPreview = true"></field-layout>
                         <div class="kiss-margin-xsmall-top kiss-size-small" v-is="'component-preview'" :component="element" v-if="showPreview && !element.children && hasPreview(element)"></div>
                     </kiss-card>
                 </template>
@@ -381,6 +383,27 @@ export default {
             }
 
             return false;
+        },
+
+        dragStart() {
+
+            this.showPreviewAfterDragging = false;
+
+            if (!this.showPreview) {
+                return;
+            }
+
+            this.showPreviewAfterDragging = true;
+            this.$emit('hide-preview')
+            this.showPreview = false;
+        },
+
+        dragEnd() {
+
+            if (this.showPreviewAfterDragging) {
+                this.$emit('show-preview');
+                this.showPreview = true;
+            }
         }
     }
 }
