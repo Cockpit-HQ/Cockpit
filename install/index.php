@@ -172,7 +172,7 @@ if (!count($failed)) {
 
         <div>
 
-            <img src="../logo.svg" width="40" height="40" alt="logo">
+            <img src="../modules/App/assets/logo.svg" width="40" height="40" alt="logo">
 
             <?php if (count($failed)): ?>
 
