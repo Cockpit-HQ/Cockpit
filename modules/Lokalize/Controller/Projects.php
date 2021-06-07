@@ -63,6 +63,7 @@ class Projects extends App {
             'locales' => $this->helper('locales')->locales(),
             'keys'=> [],
             'values' => new \ArrayObject([]),
+            'group' => '',
             'color' => '',
             'label' => '',
             'info' => '',
@@ -206,7 +207,7 @@ class Projects extends App {
 
         foreach ($this->module('lokalize')->projects() as $project) {
 
-            if ($project['group'] && !\in_array($project['group'], $groups)) {
+            if (isset($project['group']) && $project['group'] && !\in_array($project['group'], $groups)) {
                 $groups[] = $project['group'];
             }
         }
