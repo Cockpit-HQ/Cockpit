@@ -110,8 +110,8 @@ export default {
 
             <div class="animated fadeIn kiss-margin-large kiss-color-muted kiss-align-center" :class="{'kiss-height-30vh kiss-flex kiss-flex-middle kiss-flex-center': !modal}" v-if="!loading && !assets.length">
                 <div>
-                    <kiss-svg :src="$base('assets:icon.svg')" width="35" height="35"><canvas width="35" height="35"></canvas></kiss-svg>
-                    <p class="kiss-margin-small-top">{{ t('No assets') }}</p>
+                    <kiss-svg :src="$base('assets:icon.svg')" width="40" height="40"><canvas width="40" height="40"></canvas></kiss-svg>
+                    <p class="kiss-margin-small-top kiss-size-large kiss-text-bold">{{ t('No assets') }}</p>
                 </div>
             </div>
 

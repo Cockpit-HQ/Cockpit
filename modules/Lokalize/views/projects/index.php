@@ -13,7 +13,7 @@
 
             <div class="animated fadeIn kiss-height-50vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted" v-if="projects && !projects.length">
                 <div>
-                    <kiss-svg :src="$base('lokalize:icon.svg')" width="60" height="60"></kiss-svg>
+                    <kiss-svg :src="$base('lokalize:icon.svg')" width="40" height="40"></kiss-svg>
                     <p class="kiss-size-large kiss-text-bold kiss-margin-small-top"><?=t('No projects')?></p>
                 </div>
             </div>
