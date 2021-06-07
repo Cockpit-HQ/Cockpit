@@ -17,7 +17,7 @@
 }
 
 .kiss-breadcrumbs > :nth-child(n+2)::before {
-    content: var(--kiss-breadcrumbs-divider, "−");
+    content: var(--kiss-breadcrumbs-divider, "-");
     display: inline-block;
     margin: 0 var(--kiss-breadcrumbs-divider-margin-horizontal, 5px);
     font-size: var(--kiss-breadcrumbs-divider-size, var(--kiss-breadcrumbs-size, 85%));
