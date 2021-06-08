@@ -4063,7 +4063,7 @@ html[data-theme='light'] {
     --app-shadow-color: rgba(0,0,0,0.12);
 
     --app-actionbar-bgcolor: rgba(255,255,255,.9);
-    --app-loader-color2: #fff;
+    --app-loader-color2: #333;
     --app-fieldcontainer-border-color-inactive: rgba(0,0,0, .1);
     --app-scrollbar-color: var(--kiss-color-muted);
 }
