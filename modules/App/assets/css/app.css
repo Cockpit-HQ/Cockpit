@@ -40,7 +40,7 @@ html[data-theme='light'] {
     --kiss-hr-color: rgba(0,0,0,.1);
     --kiss-link-hover-color: #1994ff;
     --kiss-button-default-background: #e0dee6;
-    --kiss-button-default-color: #fff;
+    --kiss-button-default-color: #000;
     --kiss-color-alternate: #fff;
     --kiss-color-contrast: #f5f5f5;
     --kiss-color-primary: #0e8fff;

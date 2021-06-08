@@ -65,11 +65,11 @@
 
                 </app-actionbar>
 
-                </form>
+            </form>
 
-                <datalist id="menu-groups" v-if="groups.length">
-                    <option v-for="group in groups">{{ group }}</option>
-                </datalist>
+            <datalist id="menu-groups" v-if="groups.length">
+                <option v-for="group in groups">{{ group }}</option>
+            </datalist>
 
 
         </template>

@@ -12,7 +12,7 @@ $this->helper('menus')->addLink('modules', [
     'route'  => '/content',
     'active' => false,
     'group'  => 'Content',
-    'prio'   => 2
+    'prio'   => 3
 ]);
 
 

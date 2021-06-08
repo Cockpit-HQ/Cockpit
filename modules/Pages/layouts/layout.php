@@ -1,4 +1,4 @@
-<div class="kiss-bgcolor-primary kiss-color-alternate">
+<div class="kiss-bgcolor-contrast">
     <kiss-container>
 
         <kiss-row class="kiss-row-large kiss-margin-top kiss-margin-bottom">

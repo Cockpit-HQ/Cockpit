@@ -12,5 +12,5 @@ $this->helper('menus')->addLink('modules', [
     'route'  => '/pages',
     'active' => false,
     'group'  => 'Content',
-    'prio'   => 1
+    'prio'   => 2
 ]);
