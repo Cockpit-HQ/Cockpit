@@ -4029,6 +4029,7 @@ vue-view:not([init="true"]) { display: none; }
 
     --app-fieldcontainer-border-color-active: var(--kiss-color-primary);
     --app-fieldcontainer-border-color-inactive: rgba(255, 255, 255, .1);
+    --app-scrollbar-color: #000;
 }
 html[data-theme='light'] {
     --kiss-base-background-color: #f1f1f1;
@@ -4064,6 +4065,7 @@ html[data-theme='light'] {
     --app-actionbar-bgcolor: rgba(255,255,255,.9);
     --app-loader-color2: #fff;
     --app-fieldcontainer-border-color-inactive: rgba(0,0,0, .1);
+    --app-scrollbar-color: var(--kiss-color-muted);
 }
 html[data-theme='light'] .kiss-bgcolor-transparentimage {
     background-image: linear-gradient(45deg, rgba(0,0,0, .15) 25%, transparent 25%), linear-gradient(-45deg, rgba(0,0,0, .15) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, rgba(0,0,0, .15) 75%), linear-gradient(-45deg, transparent 75%, rgba(0,0,0, .15) 75%);
@@ -4098,8 +4100,24 @@ html[data-theme='light'] off-canvas {
 @media (prefers-color-scheme: dark) {
     html { --app-auto-theme: dark; }
 }
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--app-scrollbar-color) var(--kiss-base-background-color);
+}
+/* Works on Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+    width: 8px;
+}
+*::-webkit-scrollbar-track {
+    background: var(--kiss-base-background-color);
+}
+*::-webkit-scrollbar-thumb {
+    background-color: var(--app-scrollbar-color);
+    border-radius: 20px;
+    border: 3px solid var(--kiss-base-background-color);
+}
 body {
-    font-weight: 300;
+    font-weight: 400;
     min-height: 100vh;
 }
 app-avatar canvas,
