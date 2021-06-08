@@ -11,9 +11,9 @@
         render-style="read"
         load-fonts="false"
 
-        bg-color="#10131a"
-        text-color="#fafafa"
-        primary-color="#0e8fff"
+        bg-color="<?=($bgColor ? $bgColor : '#10131a')?>"
+        text-color="<?=($textColor ? $textColor : '#fafafa')?>"
+        primary-color="<?=($primaryColor ? $primaryColor : '#0e8fff')?>"
     ></rapi-doc>
 
     <script type="module" src="<?=$this->base('settings:assets/vendor/rapidoc.js')?>"></script>

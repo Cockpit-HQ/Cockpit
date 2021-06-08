@@ -153,20 +153,28 @@ class Api extends App {
 
         \session_write_close();
 
+        $bgColor = $this->param('bgColor');
+        $primaryColor = $this->param('primaryColor');
+        $textColor = $this->param('textColor');
+
         $this->layout = 'app:layouts/raw.php';
 
         $openApiUrl = $this->param('specUrl', $this->app->routeUrl('/settings/api/openapi'));
 
-        return $this->render('settings:views/api/rest-api-viewer.php', compact('openApiUrl'));
+        return $this->render('settings:views/api/rest-api-viewer.php', compact('openApiUrl', 'bgColor', 'primaryColor', 'textColor'));
     }
 
     public function graphqlViewer() {
 
         \session_write_close();
 
+        $bgColor = $this->param('bgColor');
+        $primaryColor = $this->param('primaryColor');
+        $textColor = $this->param('textColor');
+
         $this->layout = 'app:layouts/raw.php';
 
-        return $this->render('settings:views/api/graphql-viewer.php');
+        return $this->render('settings:views/api/graphql-viewer.php', compact('bgColor', 'primaryColor', 'textColor'));
     }
 
     protected function cache() {
