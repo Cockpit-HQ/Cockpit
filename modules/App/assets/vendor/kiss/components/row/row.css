@@ -9,8 +9,6 @@ kiss-row {
 kiss-row > * { margin: 0; }
 kiss-row > * > :last-child { margin-bottom: 0; }
 
-
-
 /* Horizontal */
 kiss-row { margin-left: calc(-1 * var(--kiss-row-gutter-horizontal, 20px)); }
 kiss-row > * { padding-left: var(--kiss-row-gutter-horizontal, 20px); }

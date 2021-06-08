@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" height="30" width="30" fill="#000000" viewBox="0 0 32 32" x="0px" y="0px">
+    <title>menu_1</title>
+    <g>
+        <path d="M16,9h8a1,1,0,0,0,0-2H16a1,1,0,0,0,0,2Z"></path>
+        <path d="M24,15H8a1,1,0,0,0,0,2H24a1,1,0,0,0,0-2Z"></path>
+        <path d="M16,23H8a1,1,0,0,0,0,2h8a1,1,0,0,0,0-2Z"></path>
+    </g>
+</svg>

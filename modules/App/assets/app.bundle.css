@@ -2895,6 +2895,7 @@ kiss-svg > svg { transform: translate(0,0); }
 .kiss-color-warning { color: var(--kiss-color-warning, orange) !important; }
 .kiss-color-muted { color: var(--kiss-color-muted, #6d6f79) !important; }
 .kiss-color-contrast { color: var(--kiss-color-contrast, #fff) !important; }
+.kiss-color-alternate { color: var(--kiss-color-alternate, var(--kiss-color-contrast)) !important; }
 .kiss-bgcolor-primary { background-color: var(--kiss-color-primary, blue) !important; }
 .kiss-bgcolor-success { background-color: var(--kiss-color-succcess, green) !important; }
 .kiss-bgcolor-danger { background-color: var(--kiss-color-danger, red) !important; }
@@ -3730,6 +3731,7 @@ td.kiss-text-truncate { max-width: 0; }
 
     --kiss-button-default-background: #2b2d42;
 
+    --kiss-color-alternate: var(--kiss-base-text-color);
     --kiss-color-contrast: #10131a;
     --kiss-color-primary: #0e8fff;
     --kiss-color-success: #4caf50;
@@ -4040,7 +4042,8 @@ html[data-theme='light'] {
     --kiss-hr-color: rgba(0,0,0,.1);
     --kiss-link-hover-color: #1994ff;
     --kiss-button-default-background: #e0dee6;
-    --kiss-button-default-color: #000;
+    --kiss-button-default-color: #fff;
+    --kiss-color-alternate: #fff;
     --kiss-color-contrast: #f5f5f5;
     --kiss-color-primary: #0e8fff;
     --kiss-color-success: #4caf50;
@@ -4152,9 +4155,11 @@ app-fieldcontainer label {
 }
 app-header {
     display: block;
+    position: relative;
     padding: 15px 0;
     background: var(--app-header-background);
     box-shadow: 0 0 20px var(--app-header-box-shadow);
+    z-index: 2;
 }
 app-actionbar kiss-container {
     padding-left: var(--kiss-container-padding, 30px);

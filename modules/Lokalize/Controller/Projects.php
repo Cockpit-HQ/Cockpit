@@ -135,7 +135,7 @@ class Projects extends App {
         $_project = $this->app->dataStorage->findOne('lokalize/projects', ['name' => $project['name']], ['_id' => 1]);
 
         if ($_project && (!isset($project['_id']) || $project['_id'] != $_project['_id'])) {
-            $this->app->stop(['error' => 'Project is already used!'], 412);
+            $this->app->stop(['error' => 'Project name is already used!'], 412);
         }
 
         $project = $this->module('lokalize')->saveProject($project);

@@ -4,6 +4,7 @@
 .kiss-color-warning { color: var(--kiss-color-warning, orange) !important; }
 .kiss-color-muted { color: var(--kiss-color-muted, #6d6f79) !important; }
 .kiss-color-contrast { color: var(--kiss-color-contrast, #fff) !important; }
+.kiss-color-alternate { color: var(--kiss-color-alternate, var(--kiss-color-contrast)) !important; }
 
 
 .kiss-bgcolor-primary { background-color: var(--kiss-color-primary, blue) !important; }

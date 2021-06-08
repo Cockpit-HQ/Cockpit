@@ -12,6 +12,7 @@
 
     --kiss-button-default-background: #2b2d42;
 
+    --kiss-color-alternate: var(--kiss-base-text-color);
     --kiss-color-contrast: #10131a;
     --kiss-color-primary: #0e8fff;
     --kiss-color-success: #4caf50;
