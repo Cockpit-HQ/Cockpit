@@ -3858,7 +3858,10 @@ kiss-offcanvas kiss-navlist ul > li > * {
     display: flex;
     align-items: center;
     padding: 8px 0;
-    letter-spacing: 2px;
+    letter-spacing: 1.5px;
+}
+kiss-offcanvas kiss-navlist[space="small"] ul > li > * {
+    padding: 6px 0;
 }
 kiss-offcanvas kiss-navlist .kiss-nav-header {
     padding: 8px 0;

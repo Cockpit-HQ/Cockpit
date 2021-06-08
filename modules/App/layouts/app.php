@@ -9,6 +9,7 @@
 
     <?=$this->helper('theme')->assets([['src' => 'app:assets/js/admin.js', 'type' => 'module']])?>
 
+    <?php $this->trigger('app.layout.header') ?>
     <?php $this->block('app.layout.header') ?>
 
     <?php if ($this->helper('theme')->theme() == 'auto'): ?>
@@ -61,9 +62,9 @@
 
     <kiss-offcanvas id="app-offcanvas">
         <kiss-content class="kiss-flex kiss-flex-column">
-            <div class="kiss-padding kiss-flex kiss-bgcolor-contrast">
-                <div><app-avatar size="40" name="<?=$this['user/name']?>"></app-avatar></div>
-                <div class="kiss-margin-left kiss-flex-1 kiss-size-small">
+            <div class="kiss-padding kiss-flex kiss-bgcolor-contrast kiss-flex kiss-flex-middle">
+                <div><app-avatar size="30" name="<?=$this['user/name']?>"></app-avatar></div>
+                <div class="kiss-margin-small-left kiss-flex-1 kiss-size-xsmall">
                     <div class="kiss-text-bold kiss-text-truncate"><?=$this->escape($this['user/name'])?></div>
                     <div class="kiss-color-muted kiss-text-truncate"><?=$this->escape($this['user/email'])?></div>
                 </div>
@@ -106,9 +107,14 @@
                 <?php $this->trigger('app.layout.offcanvas.content') ?>
             </div>
             <div class="kiss-padding">
-                <kiss-navlist>
+                <kiss-navlist space="small">
                     <ul>
                         <li class="kiss-nav-header kiss-flex kiss-flex-middle"><?=t('System')?></li>
+                        <li>
+                            <a class="kiss-flex kiss-flex-middle" href="<?=$this->route('/settings/users/user')?>">
+                                <icon class="kiss-margin-small-right">account_circle</icon> <?=t('Account')?>
+                            </a>
+                        </li>
                         <li>
                             <a class="kiss-flex kiss-flex-middle" href="<?=$this->route('/settings')?>">
                                 <icon class="kiss-margin-small-right">tune</icon> <?=t('Settings')?>
