@@ -39,61 +39,69 @@
 
                         </app-fieldcontainer>
 
-                        <app-fieldcontainer class="kiss-margin-large">
+                        <app-tabs class="kiss-margin-large">
 
-                            <label class="kiss-size-5 kiss-flex kiss-flex-middle">
-                                <icon class="kiss-size-4 kiss-margin-small-right">photo_library</icon>
-                                <?=t('Images')?>
-                            </label>
+                            <tab :caption="t('Images')">
+                                <app-fieldcontainer class="kiss-margin-large">
 
-                            <kiss-row class="kiss-child-width-1-3@m kiss-margin-small-top">
-                                <div>
-                                    <div class="kiss-size-xsmall kiss-color-muted kiss-margin-small-bottom"><?=t('Logo')?></div>
-                                    <field-asset v-model="settings.images.logo"></field-asset>
-                                </div>
-                                <div>
-                                    <div class="kiss-size-xsmall kiss-color-muted kiss-margin-small-bottom"><?=t('Small logo')?></div>
-                                    <field-asset v-model="settings.images.small"></field-asset>
-                                </div>
-                                <div>
-                                    <div class="kiss-size-xsmall kiss-color-muted kiss-margin-small-bottom"><?=t('Favicon')?></div>
-                                    <field-asset v-model="settings.images.favicon"></field-asset>
-                                </div>
-                            </kiss-row>
+                                    <label class="kiss-size-5 kiss-flex kiss-flex-middle">
+                                        <icon class="kiss-size-4 kiss-margin-small-right">photo_library</icon>
+                                        <?=t('Images')?>
+                                    </label>
 
-                        </app-fieldcontainer>
+                                    <kiss-row class="kiss-child-width-1-3@m kiss-margin-small-top">
+                                        <div>
+                                            <div class="kiss-size-xsmall kiss-color-muted kiss-margin-small-bottom"><?=t('Logo')?></div>
+                                            <field-asset v-model="settings.images.logo"></field-asset>
+                                        </div>
+                                        <div>
+                                            <div class="kiss-size-xsmall kiss-color-muted kiss-margin-small-bottom"><?=t('Small logo')?></div>
+                                            <field-asset v-model="settings.images.small"></field-asset>
+                                        </div>
+                                        <div>
+                                            <div class="kiss-size-xsmall kiss-color-muted kiss-margin-small-bottom"><?=t('Favicon')?></div>
+                                            <field-asset v-model="settings.images.favicon"></field-asset>
+                                        </div>
+                                    </kiss-row>
 
-                        <app-fieldcontainer class="kiss-margin-large">
+                                </app-fieldcontainer>
+                            </tab>
 
-                            <label class="kiss-size-5 kiss-flex kiss-flex-middle">
-                                <icon class="kiss-size-4 kiss-margin-small-right">code</icon>
-                                <?=t('Scripts')?>
-                            </label>
+                            <tab :caption="t('Scripts')">
+                                <app-fieldcontainer class="kiss-margin-large">
 
-                            <div class="kiss-margin-small">
-                                <div class="kiss-size-xsmall kiss-color-muted kiss-margin-small-bottom"><?=t('Header')?></div>
-                                <field-code v-model="settings.scripts.header" mode="html"></field-code>
-                            </div>
-                            <div class="kiss-margin-small">
-                                <div class="kiss-size-xsmall kiss-color-muted kiss-margin-small-bottom"><?=t('Footer')?></div>
-                                <field-code v-model="settings.scripts.footer" mode="html"></field-code>
-                            </div>
+                                    <label class="kiss-size-5 kiss-flex kiss-flex-middle">
+                                        <icon class="kiss-size-4 kiss-margin-small-right">code</icon>
+                                        <?=t('Scripts')?>
+                                    </label>
 
-                        </app-fieldcontainer>
+                                    <div class="kiss-margin-small">
+                                        <div class="kiss-size-xsmall kiss-color-muted kiss-margin-small-bottom"><?=t('Header')?></div>
+                                        <field-code v-model="settings.scripts.header" mode="html"></field-code>
+                                    </div>
+                                    <div class="kiss-margin-small">
+                                        <div class="kiss-size-xsmall kiss-color-muted kiss-margin-small-bottom"><?=t('Footer')?></div>
+                                        <field-code v-model="settings.scripts.footer" mode="html"></field-code>
+                                    </div>
 
-                        <app-fieldcontainer class="kiss-margin-large">
+                                </app-fieldcontainer>
+                            </tab>
 
-                            <label class="kiss-size-5 kiss-flex kiss-flex-middle">
-                                <icon class="kiss-size-4 kiss-margin-small-right">scatter_plot</icon>
-                                <?=t('Meta')?>
-                            </label>
+                            <tab :caption="t('Meta')">
+                                <app-fieldcontainer class="kiss-margin-large">
 
-                            <div class="kiss-margin-small">
-                                <field-object v-model="settings.meta"></field-object>
-                            </div>
+                                    <label class="kiss-size-5 kiss-flex kiss-flex-middle">
+                                        <icon class="kiss-size-4 kiss-margin-small-right">scatter_plot</icon>
+                                        <?=t('Meta')?>
+                                    </label>
 
-                        </app-fieldcontainer>
+                                    <div class="kiss-margin-small">
+                                        <field-object v-model="settings.meta"></field-object>
+                                    </div>
 
+                                </app-fieldcontainer>
+                            </tab>
+                        </app-tabs>
                     </div>
                 </div>
                 <div class="kiss-width-1-4@m">
