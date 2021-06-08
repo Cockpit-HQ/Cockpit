@@ -59,6 +59,10 @@ $this->module('pages')->extend([
             ];
         }
 
+        $opts = $this->app->dataStorage->getKey('pages/options', 'settings', []);
+
+        $settings = array_replace_recursive($settings, $opts);
+
         if (isset($settings['meta']) && is_array($settings['meta'])) {
             $settings['meta'] = new ArrayObject($settings['meta']);
         }

@@ -4,7 +4,7 @@
 
         <template>
 
-            <kiss-row class="kiss-row-large kiss-margin-large">
+            <kiss-row class="kiss-row-large kiss-margin-large" :class="{'kiss-disabled': saving}">
                 <div class="kiss-flex-1">
                     <div class="kiss-width-3-4@m kiss-margin-auto">
 
@@ -84,7 +84,7 @@
                         <app-fieldcontainer class="kiss-margin-large">
 
                             <label class="kiss-size-5 kiss-flex kiss-flex-middle">
-                                <icon class="kiss-size-4 kiss-margin-small-right">code</icon>
+                                <icon class="kiss-size-4 kiss-margin-small-right">scatter_plot</icon>
                                 <?=t('Meta')?>
                             </label>
 
@@ -127,7 +127,7 @@
                 <kiss-container>
                     <div class="kiss-flex kiss-flex-middle kiss-flex-right">
 
-                        <button class="kiss-button kiss-button-primary">
+                        <button class="kiss-button kiss-button-primary" @click="save">
                             <?=t('Save settings')?>
                         </button>
                     </div>
@@ -145,6 +145,7 @@
                     return {
                         settings: <?=json_encode($settings)?>,
                         locales: <?=json_encode($locales)?>,
+                        saving: false
                     }
                 },
 
@@ -155,8 +156,20 @@
                 },
 
                 methods: {
+
                     save() {
 
+                        this.saving = true;
+
+                        this.$request('/pages/settings/save', {settings: this.settings}).then(settings => {
+
+                            this.saving = false;
+                            App.ui.notify('Settings updated!');
+
+                        }).catch(res => {
+                            this.saving = false;
+                            App.ui.notify(res.error || 'Saving failed!', 'error');
+                        });
                     }
                 }
             }
