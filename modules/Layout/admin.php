@@ -19,7 +19,7 @@ $this->bind('/layout/components', function() {
 });
 
 // events
-$this->on('app.layout.header', function(array &$assets) {
+$this->on('app.layout.assets', function(array &$assets) {
     $assets[] = ['src' => 'layout:assets/js/layout.js', 'type' => 'module'];
 });
 

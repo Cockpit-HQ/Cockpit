@@ -75,9 +75,30 @@ class Theme extends \Lime\Helper {
 
     public function theme() {
 
-        $theme = $this->app->retrieve('theme', 'auto');
+        $theme = $this->app->retrieve('theme/default', 'auto');
         $theme = $this->app->helper('auth')->getUser('theme', $theme);
 
         return $theme;
+    }
+
+    public function assets(array $assets = []) {
+
+        $debug = $this->app->retrieve('debug');
+
+        $assets = array_merge([
+            $debug ? 'app:assets/css/app.css' : 'app:assets/app.bundle.css',
+            'app:assets/vendor/JSON5.js',
+            'app:assets/vendor/noty/noty.min.js',
+            'app:assets/vendor/lodash.js',
+            $debug ? ['src' => 'app:assets/js/app.js', 'type' => 'module'] : 'app:assets/app.bundle.js',
+        ], $assets);
+
+        $this->app->trigger('app.layout.assets', [&$assets, APP_VERSION]);
+
+        if ($this->app->path('#config:theme.css')) {
+            $assets[] = '#config:theme.css';
+        }
+
+        return $this->app->assets($assets, APP_VERSION);
     }
 }

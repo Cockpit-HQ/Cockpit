@@ -13,7 +13,7 @@ $this->helper('menus')->addLink('modules', [
 
 
 // events
-$this->on('app.layout.header', function(array &$assets) {
+$this->on('app.layout.assets', function(array &$assets) {
     $assets[] = ['src' => 'assets:assets/js/assets.js', 'type' => 'module'];
     ?><script> window.ASSETS_BASE_URL = '<?=rtrim($this->fileStorage->getURL('uploads://'), '/') ?>'; </script><?php
 });

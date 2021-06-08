@@ -6,21 +6,8 @@
     <title><?=$this->helper('theme')->title()?></title>
 
     <link rel="icon" href="<?=$this->helper('theme')->favicon()?>">
-    <?php
 
-        $assets = [
-            $this['debug'] ? 'app:assets/css/app.css' : 'app:assets/app.bundle.css',
-            'app:assets/vendor/JSON5.js',
-            'app:assets/vendor/noty/noty.min.js',
-            'app:assets/vendor/lodash.js',
-            $this['debug'] ? ['src' => 'app:assets/js/app.js', 'type' => 'module'] : 'app:assets/app.bundle.js',
-            ['src' => 'app:assets/js/admin.js', 'type' => 'module']
-        ];
-
-        $this->trigger('app.layout.header', [&$assets, APP_VERSION]);
-
-        echo $this->assets($assets, APP_VERSION);
-    ?>
+    <?=$this->helper('theme')->assets([['src' => 'app:assets/js/admin.js', 'type' => 'module']])?>
 
     <?php $this->block('app.layout.header') ?>
 

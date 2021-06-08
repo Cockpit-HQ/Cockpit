@@ -17,7 +17,7 @@ $this->helper('menus')->addLink('modules', [
 
 
 // events
-$this->on('app.layout.header', function(array &$assets) {
+$this->on('app.layout.assets', function(array &$assets) {
     $assets[] = ['src' => 'content:assets/js/content.js', 'type' => 'module'];
 });
 

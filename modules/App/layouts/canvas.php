@@ -7,13 +7,7 @@
 
     <link rel="icon" href="<?=$this->helper('theme')->favicon()?>">
 
-    <?=$this->assets([
-        $this['debug'] ? 'app:assets/css/app.css' : 'app:assets/app.bundle.css',
-        'app:assets/vendor/JSON5.js',
-        'app:assets/vendor/noty/noty.min.js',
-        'app:assets/vendor/lodash.js',
-        $this['debug'] ? ['src' => 'app:assets/js/app.js', 'type' => 'module'] : 'app:assets/app.bundle.js',
-    ], APP_VERSION)?>
+    <?=$this->helper('theme')->assets()?>
 
     <?php $this->block('app.layout.header') ?>
 
