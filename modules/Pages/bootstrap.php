@@ -1,5 +1,8 @@
 <?php
 
+// Register Helpers
+$this->helpers['pages'] = 'Pages\\Helper\\Pages';
+
 // load admin related code
 $this->on('app.admin.init', function() {
     include(__DIR__.'/admin.php');
@@ -65,5 +68,6 @@ $this->module('pages')->extend([
 
         return $settings;
 
-    }
+    },
+
 ]);

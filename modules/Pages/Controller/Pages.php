@@ -90,10 +90,12 @@ class Pages extends Controller {
             return $this->stop(['error' => 'Page paramater is missing'], 412);
         }
 
+        $isUpdate = isset($page['_id']);
+
         $page['_modified'] = time();
         $page['_mby'] = $this->user['_id'];
 
-        if (!isset($page['_id'])) {
+        if (!$isUpdate) {
             $page['_created'] = $page['_modified'];
             $page['_cby'] = $this->user['_id'];
         } else {
@@ -127,10 +129,28 @@ class Pages extends Controller {
                 }
             }
 
+            if (trim($page[$slug])) {
+                $page["_r{$suffix}"] = $locale['i18n'] == 'default' ? "/$page[$slug]" : "/{$locale['i18n']}/$page[$slug]";
+            }
         }
+
+        $this->app->dataStorage->save('pages', $page);
 
         return $page;
 
+    }
+
+    public function remove() {
+
+        $page = $this->param('page');
+
+        if (!$page) {
+            return $this->stop(['error' => 'Page paramater is missing'], 412);
+        }
+
+        $this->helper('pages')->remove($page['_id']);
+
+        return ['success' => true];
     }
 
 }

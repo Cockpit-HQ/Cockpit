@@ -211,8 +211,24 @@
 
                     save() {
 
+                        if (!this.page.title.trim()) {
+                            App.ui.notify('Default page title is missing!', 'error');
+                            return;
+                        }
+
+                        let isUpdate = this.page._id;
+
                         this.$request('/pages/save', {page: this.page}).then(page => {
+
                             Object.assign(this.page, page);
+
+                            if (isUpdate) {
+                                App.ui.notify('Page updated!');
+                            } else {
+                                App.ui.notify('Page created!');
+                                this.isUpdate = true;
+                            }
+
                         }).catch(res => {
                             this.saving = false;
                             App.ui.notify(res.error || 'Saving failed!', 'error');
