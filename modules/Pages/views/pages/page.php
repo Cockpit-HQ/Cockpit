@@ -50,6 +50,19 @@
 
                         </app-fieldcontainer>
 
+                        <div class="kiss-margin-large">
+
+                            <div class="kiss-flex kiss-flex-middle">
+                                <div class="kiss-size-xsmall kiss-text-bold kiss-text-upper kiss-color-muted kiss-margin-small-right"><?=t('Page content')?></div>
+                                <hr class="kiss-flex-1 kiss-margin-remove">
+                            </div>
+
+                            <app-fieldcontainer class="kiss-margin" v-for="locale in visibleLocales">
+                                <span class="kiss-badge kiss-badge-outline kiss-color-primary kiss-margin-small-bottom" v-if="locales.length > 1">{{ locale.i18n }}</span>
+                                <fields-renderer v-model="page['data'+(locale.i18n!='default' ? '_'+locale.i18n:'')]" :fields="fields"></fields-renderer>
+                            </app-fieldcontainer>
+                        </div>
+
                     </div>
 
                 </div>
@@ -194,7 +207,14 @@
                     return {
                         page: <?=json_encode($page)?>,
                         locales: <?=json_encode($locales)?>,
+                        fields: [
+                            {name: 'layout', type: 'layout'}
+                        ]
                     }
+                },
+
+                components: {
+                    'fields-renderer': 'settings:assets/vue-components/fields-renderer.js',
                 },
 
                 computed: {
