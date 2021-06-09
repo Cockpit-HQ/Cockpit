@@ -7,7 +7,7 @@ class Pages extends \Lime\Helper {
     public function remove($id) {
 
         $pages = $this->app->dataStorage->find('pages', [
-            'filter' => ['_pid' => $id]
+            'filter' => ['_pid' => $id, '_state' => ['$gt' => -1]]
         ])->toArray();
 
         foreach ($pages as $page) {

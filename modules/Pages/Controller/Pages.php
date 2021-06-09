@@ -75,6 +75,19 @@ class Pages extends Controller {
 
             $page = array_replace_recursive($default, $page);
 
+            foreach ($locales as $locale) {
+
+                $suffix = "_{$locale['i18n']}";
+
+                if ($locale['i18n'] == 'default') {
+                    $suffix = '';
+                }
+
+                if (isset($page["data{$suffix}"])) {
+                    $page["data{$suffix}"] = new ArrayObject($page["data{$suffix}"]);
+                }
+            }
+
         } else {
             $page = $default;
         }
