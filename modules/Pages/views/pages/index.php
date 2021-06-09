@@ -4,7 +4,6 @@
 
         <template>
 
-
             <app-loader v-if="loading === null"></app-loader>
 
             <div class="animated fadeIn kiss-height-50vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted" v-if="pages && !pages.length">

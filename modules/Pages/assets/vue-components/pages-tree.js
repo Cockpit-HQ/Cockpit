@@ -13,28 +13,48 @@ export default {
         pages: {
             type: Array,
             default: []
+        },
+        level: {
+            type: Number,
+            default: 0
         }
     },
 
     template: /*html*/`
         <vue-draggable
-            v-model="pages"
+            :list="pages"
             handle=".fm-handle"
+            class="pages-tree-dragarea"
+            :group="'pages'"
+            :swapThreshold="0.65"
+            :animation="150",
+            :fallbackOnBody="true"
+            @change="change"
         >
             <template #item="{ element }">
-                <kiss-card class="kiss-padding-small kiss-flex kiss-flex-middle kiss-margin-small" theme="bordered contrast">
-                    <a class="fm-handle kiss-margin-small-right kiss-color-muted"><icon>drag_handle</icon></a>
-                    <div class="kiss-margin-small-right">
-                        <icon :class="{'kiss-color-danger': !element._state, 'kiss-color-success': element._state === 1}">circle</icon>
+                <div class="kiss-margin-small">
+                    <kiss-card class="kiss-padding-small kiss-flex kiss-flex-middle kiss-margin-small" theme="bordered contrast">
+                        <a class="fm-handle kiss-margin-small-right kiss-color-muted"><icon>drag_handle</icon></a>
+                        <div class="kiss-margin-small-right">
+                            <icon :class="{'kiss-color-danger': !element._state, 'kiss-color-success': element._state === 1}">circle</icon>
+                        </div>
+                        <div class="kiss-flex-1"><a class="kiss-link-muted" :href="$route('/pages/page/'+element._id)">{{ element.title }}</a></div>
+                        <a class="kiss-margin-small-left kiss-color-danger" @click="remove(element)"><icon>delete</icon></a>
+                    </kiss-card>
+                    <div :style="{paddingLeft: (((level+1)*15)+'px')}">
+                        <pages-tree class="pages-tree" :pages="element.children" :level="level+1"></pages-tree>
                     </div>
-                    <div class="kiss-flex-1"><a class="kiss-link-muted" :href="$route('/pages/page/'+element._id)">{{ element.title }}</a></div>
-                    <a class="kiss-margin-small-left kiss-color-danger" @click="remove(element)"><icon>delete</icon></a>
-                </kiss-card>
+                </div>
             </template>
         </vue-draggable>
     `,
 
     methods: {
+
+        change(t) {
+            console.log(t)
+        },
+
         remove(page) {
             App.ui.confirm('Are you sure?', () => {
 

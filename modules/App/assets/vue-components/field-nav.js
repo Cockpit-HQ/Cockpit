@@ -113,7 +113,7 @@ export default {
                 :group="group || uid"
                 :swapThreshold="0.65"
                 :animation="150",
-		        :fallbackOnBody="true",
+		        :fallbackOnBody="true"
                 @change="change"
                 handle=".lm-handle"
                 class="field-nav-dragarea"

@@ -28,6 +28,10 @@ class Pages extends Controller {
             'sort' => ['_o' => 1]
         ])->toArray();
 
+        foreach ($pages as &$page) {
+            $page['children'] = [];
+        }
+
         return $pages;
     }
 
