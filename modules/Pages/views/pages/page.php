@@ -10,7 +10,25 @@
 
                     <div class="kiss-width-3-4@m kiss-margin-auto">
 
-                        <app-fieldcontainer class="kiss-margin">
+                        <app-tabs static="true">
+                            <ul class="app-tabs-nav">
+                                <li :active="group === null">
+                                    <a class="app-tabs-nav-link" @click="group = null">{{t('All')}}</a>
+                                </li>
+                                <li :active="group == 'general'">
+                                    <a class="app-tabs-nav-link" @click="group = 'general'">{{ t('General') }}</a>
+                                </li>
+                                <li :active="group == 'content'">
+                                    <a class="app-tabs-nav-link" @click="group = 'content'">{{ t('Content') }}</a>
+                                </li>
+                                <li :active="group == 'meta'">
+                                    <a class="app-tabs-nav-link" @click="group = 'meta'">{{ t('Meta') }}</a>
+                                </li>
+                            </ul>
+                        </app-tabs>
+
+
+                        <app-fieldcontainer class="kiss-margin" v-if="!group || group == 'general'">
 
                             <label><?=t('Title')?></label>
 
@@ -24,7 +42,7 @@
 
                         </app-fieldcontainer>
 
-                        <app-fieldcontainer class="kiss-margin-large">
+                        <app-fieldcontainer class="kiss-margin-large" v-if="!group || group == 'general'">
 
                             <label><?=t('SEO')?></label>
 
@@ -50,9 +68,9 @@
 
                         </app-fieldcontainer>
 
-                        <div class="kiss-margin-large">
+                        <div class="kiss-margin-large" v-if="!group || group == 'content'">
 
-                            <div class="kiss-flex kiss-flex-middle">
+                            <div class="kiss-flex kiss-flex-middle" v-if="!group">
                                 <div class="kiss-size-xsmall kiss-text-bold kiss-text-upper kiss-color-muted kiss-margin-small-right"><?=t('Page content')?></div>
                                 <hr class="kiss-flex-1 kiss-margin-remove">
                             </div>
@@ -62,6 +80,16 @@
                                 <fields-renderer v-model="page['data'+(locale.i18n!='default' ? '_'+locale.i18n:'')]" :fields="fields"></fields-renderer>
                             </app-fieldcontainer>
                         </div>
+
+                        <app-fieldcontainer class="kiss-margin-large" v-if="!group || group == 'meta'">
+
+                            <label><?=t('Meta')?></label>
+
+                            <div class="kiss-margin-small" v-for="locale in visibleLocales">
+                                <field-object v-model="page._meta"></field-object>
+                            </div>
+
+                        </app-fieldcontainer>
 
                     </div>
 
@@ -207,6 +235,7 @@
                     return {
                         page: <?=json_encode($page)?>,
                         locales: <?=json_encode($locales)?>,
+                        group: null,
                         fields: [
                             {name: 'layout', type: 'layout'}
                         ]

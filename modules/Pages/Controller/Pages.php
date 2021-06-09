@@ -92,6 +92,10 @@ class Pages extends Controller {
             $page = $default;
         }
 
+        if (\is_array($page['_meta'])) {
+            $page['_meta'] = new ArrayObject($page['_meta']);
+        }
+
         return $this->render('pages:views/pages/page.php', compact('page', 'locales'));
     }
 
