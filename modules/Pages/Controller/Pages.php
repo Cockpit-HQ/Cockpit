@@ -23,6 +23,10 @@ class Pages extends Controller {
 
         $pId = $this->param('_pid', null);
 
+        if (!$pId) {
+            $pId = null;
+        }
+
         $pages = $this->app->dataStorage->find('pages', [
             'filter' => ['_pid' => $pId],
             'sort' => ['_o' => 1]
