@@ -141,7 +141,7 @@ class Mongo {
     }
 
 
-    public function insert(string $collection, array &$doc): array {
+    public function insert(string $collection, array &$doc): mixed {
 
         if (isset($doc[0])) {
 
