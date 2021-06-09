@@ -15,9 +15,6 @@
                                 <li :active="group === null">
                                     <a class="app-tabs-nav-link" @click="group = null">{{t('All')}}</a>
                                 </li>
-                                <li :active="group == 'general'">
-                                    <a class="app-tabs-nav-link" @click="group = 'general'">{{ t('General') }}</a>
-                                </li>
                                 <li :active="group == 'content'">
                                     <a class="app-tabs-nav-link" @click="group = 'content'">{{ t('Content') }}</a>
                                 </li>
@@ -28,7 +25,7 @@
                         </app-tabs>
 
 
-                        <app-fieldcontainer class="kiss-margin" v-if="!group || group == 'general'">
+                        <app-fieldcontainer class="kiss-margin" v-if="!group">
 
                             <label><?=t('Title')?></label>
 
@@ -42,30 +39,35 @@
 
                         </app-fieldcontainer>
 
-                        <app-fieldcontainer class="kiss-margin-large" v-if="!group || group == 'general'">
+                        <app-fieldcontainer class="kiss-margin-large" v-if="!group">
 
-                            <label><?=t('SEO')?></label>
+                            <label class="kiss-flex kiss-flex-middle">
+                                <div><?=t('SEO')?></div>
+                                <a class="kiss-margin-small-left kiss-link-muted kiss-size-4">
+                                    <icon class="kiss-display-block" @click="showSEO = !showSEO">{{ showSEO ? 'remove_circle': 'add_circle' }}</icon>
+                                </a>
+                            </label>
+                            <div class="kiss-margin-small animated fadeIn" v-if="showSEO">
+                                <div class="kiss-margin-small" v-for="locale in visibleLocales">
 
-                            <div class="kiss-margin-small" v-for="locale in visibleLocales">
+                                    <span class="kiss-badge kiss-badge-outline kiss-color-primary" v-if="locales.length > 1">{{ locale.i18n }}</span>
 
-                                <span class="kiss-badge kiss-badge-outline kiss-color-primary" v-if="locales.length > 1">{{ locale.i18n }}</span>
+                                    <div class="kiss-margin-small">
+                                        <div class="kiss-size-xsmall kiss-color-muted kiss-margin-small-bottom"><?=t('Title')?></div>
+                                        <field-text v-model="page['seo'+(locale.i18n!='default' ? '_'+locale.i18n:'')].title" :show-count="true"></field-text>
+                                    </div>
 
-                                <div class="kiss-margin-small">
-                                    <div class="kiss-size-xsmall kiss-color-muted kiss-margin-small-bottom"><?=t('Title')?></div>
-                                    <field-text v-model="page['seo'+(locale.i18n!='default' ? '_'+locale.i18n:'')].title" :show-count="true"></field-text>
-                                </div>
+                                    <div class="kiss-margin-small">
+                                        <div class="kiss-size-xsmall kiss-color-muted kiss-margin-small-bottom"><?=t('Keywords')?></div>
+                                        <field-text v-model="page['seo'+(locale.i18n!='default' ? '_'+locale.i18n:'')].keywords" :show-count="true"></field-text>
+                                    </div>
 
-                                <div class="kiss-margin-small">
-                                    <div class="kiss-size-xsmall kiss-color-muted kiss-margin-small-bottom"><?=t('Keywords')?></div>
-                                    <field-text v-model="page['seo'+(locale.i18n!='default' ? '_'+locale.i18n:'')].keywords" :show-count="true"></field-text>
-                                </div>
-
-                                <div class="kiss-margin-small">
-                                    <div class="kiss-size-xsmall kiss-color-muted kiss-margin-small-bottom"><?=t('Description')?></div>
-                                    <field-text v-model="page['seo'+(locale.i18n!='default' ? '_'+locale.i18n:'')].description" :multiline="true" :show-count="true"></field-text>
+                                    <div class="kiss-margin-small">
+                                        <div class="kiss-size-xsmall kiss-color-muted kiss-margin-small-bottom"><?=t('Description')?></div>
+                                        <field-text v-model="page['seo'+(locale.i18n!='default' ? '_'+locale.i18n:'')].description" :multiline="true" :show-count="true"></field-text>
+                                    </div>
                                 </div>
                             </div>
-
                         </app-fieldcontainer>
 
                         <div class="kiss-margin-large" v-if="!group || group == 'content'">
@@ -81,7 +83,7 @@
                             </app-fieldcontainer>
                         </div>
 
-                        <app-fieldcontainer class="kiss-margin-large" v-if="!group || group == 'meta'">
+                        <app-fieldcontainer class="kiss-margin-large" v-if="group == 'meta'">
 
                             <label><?=t('Meta')?></label>
 
@@ -236,6 +238,7 @@
                         page: <?=json_encode($page)?>,
                         locales: <?=json_encode($locales)?>,
                         group: null,
+                        showSEO: false,
                         fields: [
                             {name: 'layout', type: 'layout'}
                         ]
