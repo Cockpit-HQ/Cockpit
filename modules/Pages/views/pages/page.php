@@ -72,7 +72,7 @@
 
                         <div class="kiss-margin-large" v-if="!group || group == 'content'">
 
-                            <div class="kiss-flex kiss-flex-middle" v-if="!group">
+                            <div class="kiss-flex kiss-flex-middle">
                                 <div class="kiss-size-xsmall kiss-text-bold kiss-text-upper kiss-color-muted kiss-margin-small-right"><?=t('Page content')?></div>
                                 <hr class="kiss-flex-1 kiss-margin-remove">
                             </div>

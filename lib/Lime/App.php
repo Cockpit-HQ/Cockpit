@@ -92,7 +92,10 @@ class App implements \ArrayAccess {
                 $url .= $this->registry['base_host'];
             }
 
-            $this->registry['site_url'] = \trim($url, '/');
+            $this->registry['site_url'] = \rtrim($url, '/');
+
+        } elseif (\is_string($this->registry['site_url'])) {
+            $this->registry['site_url'] = \rtrim($this->registry['site_url'], '/');
         }
 
         if (!isset($this['docs_root'])) {

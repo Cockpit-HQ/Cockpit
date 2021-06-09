@@ -123,7 +123,14 @@ class Request {
         $url = $this->site_url;
 
         if ($withpath) {
-            $url .= \implode('/', \array_slice(\explode('/', $this->server['SCRIPT_NAME']), 0, -1));
+
+            $path = dirname($this->server['SCRIPT_NAME']);
+
+            if ($path == '/' || \substr($url, -1 * \strlen($path)) === $path) {
+                $path = '';
+            }
+
+            $url .= $path;
         }
 
         return \rtrim($url, '/');
