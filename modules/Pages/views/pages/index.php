@@ -14,24 +14,9 @@
                 </div>
             </div>
 
-
             <div v-if="Array.isArray(pages) && pages.length">
-
-                <vue-draggable v-model="pages" handle=".fm-handle">
-                    <template #item="{ element }">
-                        <kiss-card class="kiss-padding-small kiss-flex kiss-flex-middle kiss-margin-small" theme="bordered contrast">
-                            <a class="fm-handle kiss-margin-small-right kiss-color-muted"><icon>drag_handle</icon></a>
-                            <div class="kiss-margin-small-right">
-                                <icon :class="{'kiss-color-danger': !element._state, 'kiss-color-success': element._state === 1}">circle</icon>
-                            </div>
-                            <div class="kiss-flex-1"><a class="kiss-link-muted" :href="$route(`/pages/page/${element._id}`)">{{ element.title }}</a></div>
-                            <a class="kiss-margin-small-left kiss-color-danger" @click="remove(element)"><icon>delete</icon></a>
-                        </kiss-card>
-                    </template>
-                </vue-draggable>
-
+                <pages-tree :pages="pages"></pages-tree>
             </div>
-
 
         </template>
 
@@ -50,6 +35,10 @@
                     this.load();
                 },
 
+                components: {
+                    'pages-tree': 'pages:assets/vue-components/pages-tree.js',
+                },
+
                 methods: {
 
                     load(pid = null) {
@@ -63,18 +52,6 @@
                         }).catch(res => {
                             this.loading = false;
                             App.ui.notify(res.error || 'Loading failed!', 'error');
-                        });
-                    },
-
-                    remove(page) {
-
-                        App.ui.confirm('Are you sure?', () => {
-
-                            this.$request('/pages/remove', {page}).then(res => {
-                                this.pages.splice(this.pages.indexOf(page), 1);
-                            }).catch(res => {
-                                App.ui.notify(res.error || 'Page removing failed!', 'error');
-                            });
                         });
                     },
                 }

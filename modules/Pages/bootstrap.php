@@ -20,7 +20,8 @@ $this->module('pages')->extend([
     'menus' => function(array $options = []) {
 
         $options = array_merge([
-            'sort' => ['name' => 1]
+            'sort' => ['name' => 1],
+            'fields' => ['data' => 0, '_meta' => 0]
         ], $options);
 
         $menus = $this->app->dataStorage->find('pages/menus', $options)->toArray();
