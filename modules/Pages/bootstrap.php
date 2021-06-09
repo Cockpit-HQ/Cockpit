@@ -52,11 +52,7 @@ $this->module('pages')->extend([
 
             if ($locale['i18n'] == 'default') continue;
 
-            $settings['seo_'.$locale['i18n']] = [
-                'title' => null,
-                'keywords' => null,
-                'decription' => null,
-            ];
+            $settings['seo_'.$locale['i18n']] = $settings['seo'];
         }
 
         $opts = $this->app->dataStorage->getKey('pages/options', 'settings', []);

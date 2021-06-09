@@ -36,7 +36,6 @@
                                 </div>
                             </div>
 
-
                         </app-fieldcontainer>
 
                         <app-tabs class="kiss-margin-large">
@@ -106,16 +105,16 @@
                 </div>
                 <div class="kiss-width-1-4@m">
 
-                    <div class="kiss-margin" v-if="locales.length > 1">
+                    <div class="kiss-margin">
 
                         <div class="kiss-text-caption kiss-size-xsmall kiss-text-bold">{{ t('Translation') }}</div>
 
-                        <kiss-card class="kiss-padding-small kiss-margin-small kiss-text-bolder kiss-text-muted kiss-size-small kiss-color-muted kiss-flex kiss-flex-middle" theme="bordered" v-if="!locales.length">
+                        <kiss-card class="kiss-padding-small kiss-margin-small kiss-text-muted kiss-size-small kiss-color-muted kiss-flex kiss-flex-middle" theme="bordered" v-if="locales.length == 1">
                             <span class="kiss-flex-1 kiss-margin-small-right">{{ t('No locales.') }}</span>
-                            <a class="kiss-size-xsmall" href="<?=$this->route('/settings/locales')?>">{{ t('Manage') }}</a>
+                            <a class="kiss-size-xsmall kiss-text-bolder" href="<?=$this->route('/settings/locales')?>">{{ t('Manage') }}</a>
                         </kiss-card>
 
-                        <div class="kiss-margin-small" v-if="locales.length">
+                        <div class="kiss-margin-small" v-if="locales.length > 1">
 
                             <kiss-card class="kiss-position-relative kiss-padding-small kiss-margin-small kiss-text-bolder kiss-flex kiss-flex-middle" :class="{'kiss-color-muted': !loc.visible}" :theme="!loc.visible ? 'bordered':'bordered contrast'" v-for="loc in locales">
                                 <icon class="kiss-margin-small-right" :class="{'kiss-color-primary': loc.visible}">{{ loc.visible ? 'visibility' : 'visibility_off' }}</icon>

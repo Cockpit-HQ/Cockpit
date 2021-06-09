@@ -8,7 +8,7 @@
 
             <div class="animated fadeIn kiss-height-50vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted" v-if="menus && !menus.length">
                 <div>
-                    <kiss-svg :src="$base('pages:assets/icons/nav.svg')" width="40" height="40"></kiss-svg>
+                    <kiss-svg :src="$base('pages:assets/icons/nav.svg')" width="40" height="40"><canvas width="40" height="40"></canvas></kiss-svg>
                     <p class="kiss-size-large kiss-text-bold kiss-margin-small-top"><?=t('No menus')?></p>
                 </div>
             </div>
@@ -140,6 +140,9 @@
 
                             this.menus = menus;
                             this.loading = false;
+                        }).catch(res => {
+                            this.loading = false;
+                            App.ui.notify(res.error || 'Loading failed!', 'error');
                         });
                     },
 
