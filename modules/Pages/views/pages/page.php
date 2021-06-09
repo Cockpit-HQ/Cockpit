@@ -212,7 +212,7 @@
                     save() {
 
                         this.$request('/pages/save', {page: this.page}).then(page => {
-
+                            Object.assign(this.page, page);
                         }).catch(res => {
                             this.saving = false;
                             App.ui.notify(res.error || 'Saving failed!', 'error');

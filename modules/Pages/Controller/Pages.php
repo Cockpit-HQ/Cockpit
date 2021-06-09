@@ -44,8 +44,9 @@ class Pages extends Controller {
                 'decription' => null,
             ],
             'data' => new ArrayObject([]),
-            'meta' => new ArrayObject([]),
+            '_meta' => new ArrayObject([]),
             '_state' => 0,
+            '_r' => null,
             '_pid' => null,
             '_o' => 0
         ];
@@ -61,6 +62,7 @@ class Pages extends Controller {
             $default['slug_'.$locale['i18n']] = null;
             $default['seo_'.$locale['i18n']] = $default['seo'];
             $default['data_'.$locale['i18n']] = new ArrayObject([]);
+            $default['_r_'.$locale['i18n']] = null;
         }
 
         if ($id) {
@@ -77,8 +79,58 @@ class Pages extends Controller {
             $page = $default;
         }
 
-
         return $this->render('pages:views/pages/page.php', compact('page', 'locales'));
+    }
+
+    public function save() {
+
+        $page = $this->param('page');
+
+        if (!$page) {
+            return $this->stop(['error' => 'Page paramater is missing'], 412);
+        }
+
+        $page['_modified'] = time();
+        $page['_mby'] = $this->user['_id'];
+
+        if (!isset($page['_id'])) {
+            $page['_created'] = $page['_modified'];
+            $page['_cby'] = $this->user['_id'];
+        } else {
+            unset($page['_pid'], $page['_o']);
+        }
+
+        $page["_meta"] = new ArrayObject($page["_meta"]);
+
+        $locales = $this->helper('locales')->locales();
+
+        foreach ($locales as $locale) {
+
+            $suffix = "_{$locale['i18n']}";
+
+            if ($locale['i18n'] == 'default') {
+                $suffix = '';
+            }
+
+            $page["data{$suffix}"] = new ArrayObject($page["data{$suffix}"]);
+
+            $title = "title{$suffix}";
+            $slug = "slug{$suffix}";
+            $seo = "seo{$suffix}";
+
+            if (!trim($page[$slug])) {
+
+                $slugTitle = $page[$seo]['title'] ? $page[$seo]['title'] : $page[$title];
+
+                if (trim($slugTitle)) {
+                    $page[$slug] = $this->helper('utils')->sluggify(trim($slugTitle));
+                }
+            }
+
+        }
+
+        return $page;
+
     }
 
 }
