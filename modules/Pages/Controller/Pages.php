@@ -21,6 +21,8 @@ class Pages extends Controller {
 
     public function load() {
 
+        \session_write_close();
+
         $pId = $this->param('_pid', null);
 
         if (!$pId) {
@@ -34,6 +36,7 @@ class Pages extends Controller {
 
         foreach ($pages as &$page) {
             $page['children'] = [];
+            $page['_children'] = $this->app->dataStorage->count('pages', ['_pid' => $page['_id']]);
         }
 
         return $pages;

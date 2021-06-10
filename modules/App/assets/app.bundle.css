@@ -3654,9 +3654,6 @@ td.kiss-text-truncate { max-width: 0; }
     border: 0 !important;
     clip: rect(1px, 1px, 1px, 1px) !important
 }
-.kiss-invisible {
-    visibility: hidden !important;
-}
 .kiss-visible {
     visibility: visible !important;
 }
@@ -3695,7 +3692,10 @@ td.kiss-text-truncate { max-width: 0; }
 @media (max-width: 1599px) {
     .kiss-visible\@xl { display: none !important; }
 }
-.kiss-invisible { visibility: hidden !important; }
+.kiss-invisible {
+    visibility: hidden !important;
+    pointer-events: none;
+}
 .kiss-visible-toggle:not(:hover):not(:focus) .kiss-hidden-hover:not(:focus-within) {
     position: absolute !important;
     width: 0 !important;

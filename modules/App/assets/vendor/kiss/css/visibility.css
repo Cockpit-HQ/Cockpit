@@ -12,10 +12,6 @@
     clip: rect(1px, 1px, 1px, 1px) !important
 }
 
-.kiss-invisible {
-    visibility: hidden !important;
-}
-
 .kiss-visible {
     visibility: visible !important;
 }
@@ -64,7 +60,10 @@
     .kiss-visible\@xl { display: none !important; }
 }
 
-.kiss-invisible { visibility: hidden !important; }
+.kiss-invisible {
+    visibility: hidden !important;
+    pointer-events: none;
+}
 
 .kiss-visible-toggle:not(:hover):not(:focus) .kiss-hidden-hover:not(:focus-within) {
     position: absolute !important;
