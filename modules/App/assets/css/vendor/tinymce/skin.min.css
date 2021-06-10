@@ -36,7 +36,7 @@
 
 .tox .tox-mbtn:hover:not(:disabled):not(.tox-mbtn--active),
 .tox .tox-tbtn:hover {
-    background: var(--kiss-color-primary);
+    background: var(--kiss-color-contrast);
     color: inherit;
 }
 

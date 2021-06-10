@@ -6,66 +6,67 @@
  *   name="assets",
  *   description="Assets module",
  * )
- *
- * @OA\Get(
- *     path="/assets/thumbnail/{id}",
- *     tags={"assets"},
- *     @OA\Parameter(
- *         description="Asset ID",
- *         in="path",
- *         name="id",
- *         required=true,
- *         @OA\Schema(type="string")
- *     ),
- *     @OA\Parameter(
- *         description="Resize mode: ['thumbnail', 'bestFit', 'resize','fitToWidth','fitToHeight']",
- *         in="query",
- *         name="m",
- *         required=false,
- *         @OA\Schema(type="string")
- *     ),
- *     @OA\Parameter(
- *         description="Width",
- *         in="query",
- *         name="w",
- *         required=false,
- *         @OA\Schema(type="int")
- *     ),
- *     @OA\Parameter(
- *         description="Height",
- *         in="query",
- *         name="h",
- *         required=false,
- *         @OA\Schema(type="int")
- *     ),
- *     @OA\Parameter(
- *         description="Quality",
- *         in="query",
- *         name="q",
- *         required=false,
- *         @OA\Schema(type="int")
- *     ),
- *     @OA\Parameter(
- *         description="Mime type: ['auto','gif','jpeg','png','webp','bmp']",
- *         in="query",
- *         name="mime",
- *         required=false,
- *         @OA\Schema(type="int")
- *     ),
- *     @OA\Parameter(
- *         description="Auto redirect to generated thumbnail",
- *         in="query",
- *         name="re",
- *         required=false,
- *         @OA\Schema(type="int")
- *     ),
- *     @OA\Response(response="200", description="Url to generated image or binary if parameter `o=1`"),
- *     @OA\Response(response="404", description="Asset not found")
- * )
  */
 
-
 $this->on('restApi.config', function($restApi) {
+
+    /**
+     * @OA\Get(
+     *     path="/assets/thumbnail/{id}",
+     *     tags={"assets"},
+     *     @OA\Parameter(
+     *         description="Asset ID",
+     *         in="path",
+     *         name="id",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         description="Resize mode: ['thumbnail', 'bestFit', 'resize','fitToWidth','fitToHeight']",
+     *         in="query",
+     *         name="m",
+     *         required=false,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         description="Width",
+     *         in="query",
+     *         name="w",
+     *         required=false,
+     *         @OA\Schema(type="int")
+     *     ),
+     *     @OA\Parameter(
+     *         description="Height",
+     *         in="query",
+     *         name="h",
+     *         required=false,
+     *         @OA\Schema(type="int")
+     *     ),
+     *     @OA\Parameter(
+     *         description="Quality",
+     *         in="query",
+     *         name="q",
+     *         required=false,
+     *         @OA\Schema(type="int")
+     *     ),
+     *     @OA\Parameter(
+     *         description="Mime type: ['auto','gif','jpeg','png','webp','bmp']",
+     *         in="query",
+     *         name="mime",
+     *         required=false,
+     *         @OA\Schema(type="int")
+     *     ),
+     *     @OA\Parameter(
+     *         description="Auto redirect to generated thumbnail",
+     *         in="query",
+     *         name="re",
+     *         required=false,
+     *         @OA\Schema(type="int")
+     *     ),
+     *     @OA\Response(response="200", description="Url to generated image or binary if parameter `o=1`"),
+     *     @OA\Response(response="404", description="Asset not found")
+     * )
+     */
 
     $restApi->addEndPoint('/assets/thumbnail/{id}', [
         'GET' => function($params, $app) {

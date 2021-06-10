@@ -6,103 +6,46 @@
  *   name="content",
  *   description="Content module",
  * )
- *
- *
- * @OA\Get(
- *     path="/content/item/{model}",
- *     tags={"content"},
- *     @OA\Parameter(
- *         description="Model name",
- *         in="path",
- *         name="model",
- *         required=true,
- *         @OA\Schema(type="string")
- *     ),
- *     @OA\Parameter(
- *         description="Url encoded filter json",
- *         in="query",
- *         name="filter",
- *         required=false,
- *         @OA\Schema(type="json")
- *     ),
- *     @OA\Parameter(
- *         description="Url encoded fields projection as json",
- *         in="query",
- *         name="fields",
- *         required=false,
- *         @OA\Schema(type="json")
- *     ),
- *     @OA\Parameter(
- *         description="Populate item with linked content items.",
- *         in="query",
- *         name="populate",
- *         required=false,
- *         @OA\Schema(type="int")
- *     ),
- *     @OA\Response(response="200", description="Get model item"),
- *     @OA\Response(response="404", description="Model not found")
- * )
- */
-
-/**
- * @OA\Get(
- *     path="/content/items/{model}",
- *     tags={"content"},
- *     @OA\Parameter(
- *         description="Model name",
- *         in="path",
- *         name="model",
- *         required=true,
- *         @OA\Schema(type="string")
- *     ),
- *     @OA\Parameter(
- *         description="Url encoded filter json",
- *         in="query",
- *         name="filter",
- *         required=false,
- *         @OA\Schema(type="json")
- *     ),
- *     @OA\Parameter(
- *         description="Url encoded sort json",
- *         in="query",
- *         name="sort",
- *         required=false,
- *         @OA\Schema(type="json")
- *     ),
- *     @OA\Parameter(
- *         description="Url encoded fields projection as json",
- *         in="query",
- *         name="fields",
- *         required=false,
- *         @OA\Schema(type="json")
- *     ),
- *     @OA\Parameter(
- *         description="Max amount of items to return",
- *         in="query",
- *         name="limit",
- *         required=false,
- *         @OA\Schema(type="int")
- *     ),
- *     @OA\Parameter(
- *         description="Amount of items to skip",
- *         in="query",
- *         name="skip",
- *         required=false,
- *         @OA\Schema(type="int")
- *     ),
- *     @OA\Parameter(
- *         description="Populate items with linked content items.",
- *         in="query",
- *         name="populate",
- *         required=false,
- *         @OA\Schema(type="int")
- *     ),
- *     @OA\Response(response="200", description="Get list of model items"),
- *     @OA\Response(response="404", description="Model not found")
- * )
  */
 
 $this->on('restApi.config', function($restApi) {
+
+    /**
+     * @OA\Get(
+     *     path="/content/item/{model}",
+     *     tags={"content"},
+     *     @OA\Parameter(
+     *         description="Model name",
+     *         in="path",
+     *         name="model",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         description="Url encoded filter json",
+     *         in="query",
+     *         name="filter",
+     *         required=false,
+     *         @OA\Schema(type="json")
+     *     ),
+     *     @OA\Parameter(
+     *         description="Url encoded fields projection as json",
+     *         in="query",
+     *         name="fields",
+     *         required=false,
+     *         @OA\Schema(type="json")
+     *     ),
+     *     @OA\Parameter(
+     *         description="Populate item with linked content items.",
+     *         in="query",
+     *         name="populate",
+     *         required=false,
+     *         @OA\Schema(type="int")
+     *     ),
+     *     @OA\Response(response="200", description="Get model item"),
+     *     @OA\Response(response="404", description="Model not found")
+     * )
+     */
 
     $restApi->addEndPoint('/content/item/{model}', [
 
@@ -140,6 +83,65 @@ $this->on('restApi.config', function($restApi) {
             return $app->module('content')->item($model, $filter, $fields);
         }
     ]);
+
+
+    /**
+     * @OA\Get(
+     *     path="/content/items/{model}",
+     *     tags={"content"},
+     *     @OA\Parameter(
+     *         description="Model name",
+     *         in="path",
+     *         name="model",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         description="Url encoded filter json",
+     *         in="query",
+     *         name="filter",
+     *         required=false,
+     *         @OA\Schema(type="json")
+     *     ),
+     *     @OA\Parameter(
+     *         description="Url encoded sort json",
+     *         in="query",
+     *         name="sort",
+     *         required=false,
+     *         @OA\Schema(type="json")
+     *     ),
+     *     @OA\Parameter(
+     *         description="Url encoded fields projection as json",
+     *         in="query",
+     *         name="fields",
+     *         required=false,
+     *         @OA\Schema(type="json")
+     *     ),
+     *     @OA\Parameter(
+     *         description="Max amount of items to return",
+     *         in="query",
+     *         name="limit",
+     *         required=false,
+     *         @OA\Schema(type="int")
+     *     ),
+     *     @OA\Parameter(
+     *         description="Amount of items to skip",
+     *         in="query",
+     *         name="skip",
+     *         required=false,
+     *         @OA\Schema(type="int")
+     *     ),
+     *     @OA\Parameter(
+     *         description="Populate items with linked content items.",
+     *         in="query",
+     *         name="populate",
+     *         required=false,
+     *         @OA\Schema(type="int")
+     *     ),
+     *     @OA\Response(response="200", description="Get list of model items"),
+     *     @OA\Response(response="404", description="Model not found")
+     * )
+     */
 
     $restApi->addEndPoint('/content/items/{model}', [
 

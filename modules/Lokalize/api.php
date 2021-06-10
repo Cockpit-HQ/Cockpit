@@ -6,38 +6,39 @@
  *   name="lokalize",
  *   description="Lokalize module",
  * )
- *
- * @OA\Get(
- *     path="/lokalize/project/{name}",
- *     tags={"lokalize"},
- *     @OA\Parameter(
- *         description="Project name",
- *         in="path",
- *         name="name",
- *         required=true,
- *         @OA\Schema(type="string")
- *     ),
- *    @OA\Parameter(
- *         description="Return only specified locale",
- *         in="query",
- *         name="locale",
- *         required=false,
- *         @OA\Schema(type="String")
- *     ),
- *     @OA\Parameter(
- *         description="Namespace dotted keys",
- *         in="query",
- *         name="nested",
- *         required=false,
- *         @OA\Schema(type="Integer")
- *     ),
- *     @OA\Response(response="200", description="Language strings as JSON"),
- *     @OA\Response(response="404", description="Project not found")
- * )
  */
 
-
 $this->on('restApi.config', function($restApi) {
+
+    /**
+     * @OA\Get(
+     *     path="/lokalize/project/{name}",
+     *     tags={"lokalize"},
+     *     @OA\Parameter(
+     *         description="Project name",
+     *         in="path",
+     *         name="name",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *    @OA\Parameter(
+     *         description="Return only specified locale",
+     *         in="query",
+     *         name="locale",
+     *         required=false,
+     *         @OA\Schema(type="String")
+     *     ),
+     *     @OA\Parameter(
+     *         description="Namespace dotted keys",
+     *         in="query",
+     *         name="nested",
+     *         required=false,
+     *         @OA\Schema(type="Integer")
+     *     ),
+     *     @OA\Response(response="200", description="Language strings as JSON"),
+     *     @OA\Response(response="404", description="Project not found")
+     * )
+     */
 
     $restApi->addEndPoint('/lokalize/project/{name}', [
         'GET' => function($params, $app) {
