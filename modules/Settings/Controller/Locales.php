@@ -9,7 +9,7 @@ class Locales extends App {
 
     protected function before() {
 
-        if (!$this->isAllowed('app.locales.manage')) {
+        if (!$this->isAllowed('app/locales/manage')) {
             $this->stop(401);
         }
     }

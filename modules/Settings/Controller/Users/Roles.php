@@ -9,7 +9,7 @@ class Roles extends App {
 
     protected function before() {
 
-        if (!$this->isAllowed('app.roles.manage')) {
+        if (!$this->isAllowed('app/roles/manage')) {
             $this->stop(401);
         }
     }

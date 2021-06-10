@@ -10,7 +10,7 @@ class Users extends App {
 
         $isAccountView = $this->context['action'] == 'user' && !count($this->context['params']);
 
-        if (!$isAccountView && !$this->isAllowed('app.users.manage')) {
+        if (!$isAccountView && !$this->isAllowed('app/users/manage')) {
             $this->stop(401);
         }
     }

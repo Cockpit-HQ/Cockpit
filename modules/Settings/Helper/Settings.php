@@ -20,25 +20,25 @@ class Settings extends \Lime\Helper {
                     'icon' => null,
                     'route' => '/settings/users',
                     'label' => 'Users',
-                    'permission' => 'app.users.manage'
+                    'permission' => 'app/users/manage'
                 ],
                 [
                     'icon' => null,
                     'route' => '/settings/users/roles',
                     'label' => 'Roles & Permissions',
-                    'permission' => 'app.roles.manage'
+                    'permission' => 'app/roles/manage'
                 ],
                 [
                     'icon' => null,
                     'route' => '/settings/api',
                     'label' => 'Api & Security',
-                    'permission' => 'app.api.manage'
+                    'permission' => 'app/api/manage'
                 ],
                 [
                     'icon' => null,
                     'route' => '/settings/locales',
                     'label' => 'Locales',
-                    'permission' => 'app.locales.manage'
+                    'permission' => 'app/locales/manage'
                 ],
             ]
         ]);

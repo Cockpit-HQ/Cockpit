@@ -21,11 +21,11 @@ $this->on('app.layout.assets', function(array &$assets) {
 $this->on('app.permissions.collect', function($permissions) {
 
     $permissions['Assets'] = [
-        'assets.upload' => 'Upload assets',
-        'assets.edit' => 'Edit assets',
-        'assets.delete' => 'Delete assets',
-        'assets.folders.create' => 'Create folders',
-        'assets.folders.edit' => 'Edit folders',
-        'assets.folders.delete' => 'Delete folders',
+        'assets/upload' => 'Upload assets',
+        'assets/edit' => 'Edit assets',
+        'assets/delete' => 'Delete assets',
+        'assets/folders/create' => 'Create folders',
+        'assets/folders/edit' => 'Edit folders',
+        'assets/folders/delete' => 'Delete folders',
     ];
 });

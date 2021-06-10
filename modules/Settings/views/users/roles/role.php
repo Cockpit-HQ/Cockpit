@@ -2,8 +2,8 @@
 
     $permissions = new ArrayObject([
         'Users' => [
-            'app.users.manage' => 'Manage users',
-            'app.roles.manage' => 'Manage roles',
+            'app/users/manage' => 'Manage users',
+            'app/roles/manage' => 'Manage roles',
         ]
     ]);
 

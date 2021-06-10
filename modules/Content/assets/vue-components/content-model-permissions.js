@@ -31,27 +31,27 @@ export default {
                         <div>
                             <strong class="kiss-size-xsmall">{{ t('Model') }}</strong>
                             <kiss-row class="kiss-flex kiss-margin-xsmall kiss-size-small">
-                                <div><input class="kiss-checkbox kiss-margin-xsmall-right" type="checkbox" v-model="modelValue['content.'+name+'.managemodel']" :value="true"> <span :class="{'kiss-color-muted':!modelValue['content.'+name+'.managemodel']}">{{ t('Edit model') }}</span></div>
+                                <div><input class="kiss-checkbox kiss-margin-xsmall-right" type="checkbox" v-model="modelValue['content/'+name+'/managemodel']" :value="true"> <span :class="{'kiss-color-muted':!modelValue['content/'+name+'/managemodel']}">{{ t('Edit model') }}</span></div>
                             </kiss-row>
                         </div>
 
                         <div v-if="model.type == 'collection'">
                             <strong class="kiss-size-xsmall">{{ t('Items') }}</strong>
                             <kiss-row class="kiss-flex kiss-margin-xsmall kiss-size-small">
-                                <div><input class="kiss-checkbox kiss-margin-xsmall-right" type="checkbox" v-model="modelValue['content.'+name+'.read']"> <span :class="{'kiss-color-muted':!modelValue['content.'+name+'.read']}">{{ t('Read')}}</span></div>
-                                <div v-if="modelValue['content.'+name+'.read']"><input class="kiss-checkbox kiss-margin-xsmall-right" type="checkbox" v-model="modelValue['content.'+name+'.create']"> <span :class="{'kiss-color-muted':!modelValue['content.'+name+'.create']}">{{ t('Create') }}</span></div>
-                                <div v-if="modelValue['content.'+name+'.read']"><input class="kiss-checkbox kiss-margin-xsmall-right" type="checkbox" v-model="modelValue['content.'+name+'.update']"> <span :class="{'kiss-color-muted':!modelValue['content.'+name+'.update']}">{{ t('Update') }}</span></div>
-                                <div v-if="modelValue['content.'+name+'.read']"><input class="kiss-checkbox kiss-margin-xsmall-right" type="checkbox" v-model="modelValue['content.'+name+'.delete']"> <span :class="{'kiss-color-muted':!modelValue['content.'+name+'.delete']}">{{ t('Delete') }}</span></div>
-                                <div v-if="modelValue['content.'+name+'.read']"><input class="kiss-checkbox kiss-margin-xsmall-right" type="checkbox" v-model="modelValue['content.'+name+'.publish']"> <span :class="{'kiss-color-muted':!modelValue['content.'+name+'.publish']}">{{ t('Publish') }}</span></div>
+                                <div><input class="kiss-checkbox kiss-margin-xsmall-right" type="checkbox" v-model="modelValue['content/'+name+'/read']"> <span :class="{'kiss-color-muted':!modelValue['content/'+name+'/read']}">{{ t('Read')}}</span></div>
+                                <div v-if="modelValue['content/'+name+'/read']"><input class="kiss-checkbox kiss-margin-xsmall-right" type="checkbox" v-model="modelValue['content/'+name+'/create']"> <span :class="{'kiss-color-muted':!modelValue['content/'+name+'/create']}">{{ t('Create') }}</span></div>
+                                <div v-if="modelValue['content/'+name+'/read']"><input class="kiss-checkbox kiss-margin-xsmall-right" type="checkbox" v-model="modelValue['content/'+name+'/update']"> <span :class="{'kiss-color-muted':!modelValue['content/'+name+'/update']}">{{ t('Update') }}</span></div>
+                                <div v-if="modelValue['content/'+name+'/read']"><input class="kiss-checkbox kiss-margin-xsmall-right" type="checkbox" v-model="modelValue['content/'+name+'/delete']"> <span :class="{'kiss-color-muted':!modelValue['content/'+name+'/delete']}">{{ t('Delete') }}</span></div>
+                                <div v-if="modelValue['content/'+name+'/read']"><input class="kiss-checkbox kiss-margin-xsmall-right" type="checkbox" v-model="modelValue['content/'+name+'/publish']"> <span :class="{'kiss-color-muted':!modelValue['content/'+name+'/publish']}">{{ t('Publish') }}</span></div>
                             </kiss-row>
                         </div>
 
                         <div v-if="model.type == 'singleton'">
                             <strong class="kiss-size-xsmall">{{ t('Data') }}</strong>
                             <kiss-row class="kiss-flex kiss-margin-xsmall kiss-size-small">
-                                <div><input class="kiss-checkbox kiss-margin-xsmall-right" type="checkbox" v-model="modelValue['content.'+name+'.read']"> <span :class="{'kiss-color-muted':!modelValue['content.'+name+'.read']}">{{ t('Read')}}</span></div>
-                                <div v-if="modelValue['content.'+name+'.read']"><input class="kiss-checkbox kiss-margin-xsmall-right" type="checkbox" v-model="modelValue['content.'+name+'.update']"> <span :class="{'kiss-color-muted':!modelValue['content.'+name+'.update']}">{{ t('Update') }}</span></div>
-                                <div v-if="modelValue['content.'+name+'.read']"><input class="kiss-checkbox kiss-margin-xsmall-right" type="checkbox" v-model="modelValue['content.'+name+'.publish']"> <span :class="{'kiss-color-muted':!modelValue['content.'+name+'.publish']}">{{ t('Publish') }}</span></div>
+                                <div><input class="kiss-checkbox kiss-margin-xsmall-right" type="checkbox" v-model="modelValue['content/'+name+'/read']"> <span :class="{'kiss-color-muted':!modelValue['content/'+name+'/read']}">{{ t('Read')}}</span></div>
+                                <div v-if="modelValue['content/'+name+'/read']"><input class="kiss-checkbox kiss-margin-xsmall-right" type="checkbox" v-model="modelValue['content/'+name+'/update']"> <span :class="{'kiss-color-muted':!modelValue['content/'+name+'/update']}">{{ t('Update') }}</span></div>
+                                <div v-if="modelValue['content/'+name+'/read']"><input class="kiss-checkbox kiss-margin-xsmall-right" type="checkbox" v-model="modelValue['content/'+name+'/publish']"> <span :class="{'kiss-color-muted':!modelValue['content/'+name+'/publish']}">{{ t('Publish') }}</span></div>
                             </kiss-row>
                         </div>
                     </kiss-row>
