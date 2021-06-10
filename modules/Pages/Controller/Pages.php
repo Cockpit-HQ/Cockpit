@@ -171,8 +171,9 @@ class Pages extends Controller {
         }
 
         $this->app->dataStorage->save('pages', $page);
-
         $this->app->helper('pages')->updateRoutes($page['_id']);
+
+        $page = $this->app->dataStorage->findOne('pages', ['_id' => $page['_id']]);
 
         return $page;
 

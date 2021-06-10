@@ -73,9 +73,6 @@ export default {
                                 {{ element.title }}
                                 </a>
                             </div>
-                            <div class="kiss-color-muted kiss-size-xsmall">
-                                {{ element._r }}
-                            </div>
                             <a class="kiss-margin-small-left" :href="$route('/pages/page?parent='+element._id)"><icon>create_new_folder</icon></a>
                             <a class="kiss-margin-small-left kiss-color-danger" @click="remove(element)"><icon>delete</icon></a>
                         </kiss-card>
@@ -113,7 +110,6 @@ export default {
                     toUpdate.push(item);
                 });
 
-                this.updateRoutes(element, this.p);
             }
 
             if (actions.moved || actions.removed) {
@@ -131,20 +127,6 @@ export default {
             if (toUpdate.length) {
                 this.$request('/pages/utils/updateOrder', {pages:toUpdate})
             }
-        },
-
-        updateRoutes(element, parent) {
-
-            let route = [element.slug], p = parent;
-
-            while(p) {
-                route.unshift(p.slug);
-                p = p.p;
-            }
-
-            element._r = `/${route.join('/')}`;
-
-            element.children.forEach(ele => this.updateRoutes(ele, element))
         },
 
         remove(page) {

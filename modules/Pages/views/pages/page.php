@@ -35,6 +35,9 @@
 
                                 <div class="kiss-size-xsmall kiss-color-muted kiss-margin-small"><?=t('Slug')?></div>
                                 <input type="text" class="kiss-input kiss-input-small" v-model="page['slug'+(locale.i18n!='default' ? '_'+locale.i18n:'')]">
+                                <div class="kiss-margin-xsmall kiss-size-xsmall kiss-color-muted" v-if="page['_r'+(locale.i18n!='default' ? '_'+locale.i18n:'')]">
+                                    {{ page['_r'+(locale.i18n!='default' ? '_'+locale.i18n:'')] }}
+                                </div>
                             </div>
 
                         </app-fieldcontainer>
