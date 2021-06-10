@@ -100,6 +100,11 @@ class Pages extends Controller {
             }
 
         } else {
+
+            if ($this->param('parent') && $this->app->dataStorage->findOne('pages', ['_id' => $this->param('parent')], ['_id' => 1])) {
+                $default['_pid'] = $this->param('parent');
+            }
+
             $page = $default;
         }
 
@@ -124,8 +129,15 @@ class Pages extends Controller {
         $page['_mby'] = $this->user['_id'];
 
         if (!$isUpdate) {
+
             $page['_created'] = $page['_modified'];
             $page['_cby'] = $this->user['_id'];
+            $page['_o'] = 0;
+
+            if ($page['_pid']) {
+                $page['_o'] = $this->app->dataStorage->count('pages', ['_pid' => $page['_pid']]);
+            }
+
         } else {
             unset($page['_pid'], $page['_o']);
         }
@@ -156,13 +168,11 @@ class Pages extends Controller {
                     $page[$slug] = $this->helper('utils')->sluggify(trim($slugTitle));
                 }
             }
-
-            if (trim($page[$slug])) {
-                $page["_r{$suffix}"] = $locale['i18n'] == 'default' ? "/$page[$slug]" : "/{$locale['i18n']}/$page[$slug]";
-            }
         }
 
         $this->app->dataStorage->save('pages', $page);
+
+        $this->app->helper('pages')->updateRoutes($page['_id']);
 
         return $page;
 

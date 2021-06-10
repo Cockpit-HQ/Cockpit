@@ -9,11 +9,15 @@ class Utils extends App {
 
     public function updateOrder() {
 
+        \session_write_close();
+
         $pages = $this->param('pages', null);
 
         if (!is_array($pages)) {
             return false;
         }
+
+        $updatePageRoute = null;
 
         foreach ($pages as $page) {
 
@@ -26,9 +30,14 @@ class Utils extends App {
 
             if (\array_key_exists('_pid', $page)) {
                 $item['_pid'] = $page['_pid'];
+                $updatePageRoute = $item['_id'];
             }
 
             $this->app->dataStorage->save('pages', $item);
+        }
+
+        if ($updatePageRoute) {
+            $this->helper('pages')->updateRoutes($updatePageRoute);
         }
 
         return ['success' => true];
