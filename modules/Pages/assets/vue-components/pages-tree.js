@@ -62,7 +62,7 @@ export default {
                     <div class="kiss-margin-small">
                         <kiss-card class="kiss-padding-xsmall kiss-flex kiss-flex-middle kiss-margin-small" theme="bordered contrast">
                             <a class="fm-handle kiss-margin-small-right kiss-color-muted"><icon>drag_handle</icon></a>
-                            <a class="kiss-margin-small-right" :class="{'kiss-invisible': !element._children}" :placeholder="t('Toggle children')" @click="element._showChildren = !element._showChildren">
+                            <a class="kiss-margin-small-right kiss-color-muted" :class="{'kiss-hidden': !element._children}" :placeholder="t('Toggle children')" @click="element._showChildren = !element._showChildren">
                                 <icon>{{ element._showChildren ? 'indeterminate_check_box' : 'add_box' }}</icon>
                             </a>
                             <div class="kiss-margin-small-right">
