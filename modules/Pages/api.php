@@ -49,7 +49,7 @@ $this->on('restApi.config', function($restApi) {
     $restApi->addEndPoint('/pages/menus', [
         'GET' => function($params, $app) {
 
-            $locale = $app->param('locale', 'default');
+            $locale = $app->param('locale:string', 'default');
 
             return $app->helper('locales')->applyLocales($app->module('pages')->menus(), $locale);
         }
@@ -82,7 +82,7 @@ $this->on('restApi.config', function($restApi) {
 
         'GET' => function($params, $app) {
 
-            $locale = $app->param('locale', 'default');
+            $locale = $app->param('locale:string', 'default');
 
             $menus = $app->module('pages')->menus([
                 'filter'=> ['name' => $params['name']],
@@ -111,7 +111,7 @@ $this->on('restApi.config', function($restApi) {
     $restApi->addEndPoint('/pages/pages', [
         'GET' => function($params, $app) {
 
-            $locale = $app->param('locale', 'default');
+            $locale = $app->param('locale:string', 'default');
 
             $pages = $app->dataStorage->find('pages', [
                 'filter' => ['_state' => 1],
@@ -147,7 +147,7 @@ $this->on('restApi.config', function($restApi) {
     $restApi->addEndPoint('/pages/page', [
         'GET' => function($params, $app) {
 
-            $locale = $app->param('locale', 'default');
+            $locale = $app->param('locale:string', 'default');
             $route = $app->param('route');
 
             if (!$route) {
@@ -155,31 +155,14 @@ $this->on('restApi.config', function($restApi) {
                 return ["error" => "Parameter <route> is missing"];
             }
 
-            $filter = [
-                '_state' => 1
-            ];
-
-            $routeKey = '_r';
-
-            if ($locale && $locale != 'default') {
-
-                $locales = $app->helper('locales')->locales(true);
-
-                if (isset($locales[$locale])) {
-                    $routeKey = "_r_{$locale}";
-                }
-            }
-
-            $filter[$routeKey] = $route;
-
-            $page = $app->dataStorage->findOne('pages', $filter);
+            $page = $app->module('pages')->pageByRoute($route, $locale);
 
             if (!$page) {
                 $app->response->status = 404;
                 return ["error" => "Page not found!"];
             }
 
-            return $app->helper('locales')->applyLocales($page, $locale);
+            return $page;
         }
     ]);
 

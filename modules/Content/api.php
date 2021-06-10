@@ -65,7 +65,10 @@ $this->on('restApi.config', function($restApi) {
                 return ["error" => "Model <{$model}> not found"];
             }
 
-            $locale = $app->param('locale:string', null);
+            $process = [
+                'locale' => $app->param('locale:string', 'default')
+            ];
+
             $filter = $app->param('filter:string', null);
             $fields = $app->param('fields:string', null);
             $populate = $app->param('populate:int', null);
@@ -88,12 +91,7 @@ $this->on('restApi.config', function($restApi) {
                 }
             }
 
-            $item = $app->module('content')->item($model, $filter, $fields);
-
-            if ($item) {
-                $locale = $app->param('locale', 'default');
-                $item = $app->helper('locales')->applyLocales($item, $locale);
-            }
+            $item = $app->module('content')->item($model, $filter, $fields, $process);
 
             return $item ?? false;
         }
@@ -172,10 +170,12 @@ $this->on('restApi.config', function($restApi) {
             $model = $params['model'];
 
             if (!$app->module('content')->model($model)) {
+                $app->response->status = 404;
                 return ["error" => "Model <{$model}> not found"];
             }
 
             $options = [];
+            $process = [];
 
             $locale = $app->param('locale:string', null);
             $limit = $app->param('limit:int', null);
@@ -203,12 +203,9 @@ $this->on('restApi.config', function($restApi) {
                 }
             }
 
-            $items = $app->module('content')->items($model, $options);
+            $process['locale'] = $app->param('locale', 'default');
 
-            if (count($items)) {
-                $locale = $app->param('locale', 'default');
-                $items = $app->helper('locales')->applyLocales($items, $locale);
-            }
+            $items = $app->module('content')->items($model, $options, $process);
 
             return $items;
         }

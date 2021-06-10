@@ -71,4 +71,75 @@ $this->module('pages')->extend([
 
     },
 
+    'pageByRoute' => function(string $route, $locale = 'default') {
+
+        $filter = [
+            '_state' => 1
+        ];
+
+        $routeKey = '_r';
+
+        if ($locale && $locale != 'default') {
+
+            $locales = $this->app->helper('locales')->locales(true);
+
+            if (isset($locales[$locale])) {
+                $routeKey = "_r_{$locale}";
+            }
+        }
+
+        $filter[$routeKey] = $route;
+
+        $page = $this->app->dataStorage->findOne('pages', $filter);
+
+        return $page ? $this->app->helper('locales')->applyLocales($page, $locale) : null;
+    },
+
+    'updateRefs' => function(string $refId, mixed $value = null) {
+
+        $update = function(&$items) use($value, $refId, &$update) {
+
+            if (!is_array($items)) return $items;
+
+            foreach ($items as $k => &$v) {
+                if (!is_array($v)) continue;
+                if (is_array($items[$k])) $items[$k] = $update($items[$k]);
+                if (isset($v['_id']) && $v['_id'] == $refId) $items[$k] = $value;
+            }
+            return $items;
+        };
+
+        // update options
+        $items = $this->app->dataStorage->findTerm('pages/options', $refId)->toArray();
+        $items = count($items) ? $update($items) : [];
+
+        foreach ($items as $item) $this->app->dataStorage->save('pages/options', $item);
+
+        // update pages
+        $items = $this->app->dataStorage->findTerm('pages/pages', $refId)->toArray();
+        $items = count($items) ? $update($items) : [];
+
+        foreach ($items as $item) $this->app->dataStorage->save('pages/pages', $item);
+    }
+
 ]);
+
+// update assets references on asset remove
+$this->on('assets.asset.remove', function(array $asset) {
+
+    if ($this->helper('async')->possible()) {
+        $this->helper('async')->exec('APP::instance()->module("pages")->updateRefs($asset["_id"], null);', compact('asset'));
+    } else {
+        $this->module('pages')->updateRefs($asset['_id'], null);
+    }
+});
+
+// update assets references on asset update
+$this->on('assets.asset.update', function(array $asset) {
+
+    if ($this->helper('async')->possible()) {
+        $this->helper('async')->exec('APP::instance()->module("pages")->updateRefs($asset["_id"], $asset);', compact('asset'));
+    } else {
+        $this->module('pages')->updateRefs($asset['_id'], $asset);
+    }
+});

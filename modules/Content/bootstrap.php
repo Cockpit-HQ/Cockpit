@@ -265,7 +265,7 @@ $this->module('content')->extend([
         return $item;
     },
 
-    'item' => function(string $modelName, array $filter = [], ?array $fields = null) {
+    'item' => function(string $modelName, array $filter = [], ?array $fields = null, $process = []) {
 
         $model = $this->model($modelName);
 
@@ -289,10 +289,14 @@ $this->module('content')->extend([
             $item = $this->app->dataStorage->findOne($collection, $filter, $fields);
         }
 
+        if (isset($process['locale'])) {
+            $item = $this->app->helper('locales')->applyLocales($item, $process['locale']);
+        }
+
         return $item;
     },
 
-    'items' => function(string $modelName, array $options = []): array {
+    'items' => function(string $modelName, array $options = [], $process = []): array {
 
         $model = $this->model($modelName);
 
@@ -307,6 +311,10 @@ $this->module('content')->extend([
         $collection = "content/collections/{$modelName}";
 
         $items = (array) $this->app->dataStorage->find($collection, $options);
+
+        if (isset($process['locale'])) {
+            $items = $this->app->helper('locales')->applyLocales($items, $process['locale']);
+        }
 
         return $items;
     },

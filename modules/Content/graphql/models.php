@@ -45,11 +45,15 @@ foreach ($collections as $name => &$meta) {
 
             $model = $app->module('content')->model($name);
 
+            $process  = [];
             $options  = [];
-            $filter   = [];
             $populate = $args['populate'];
 
             $options['populate'] = $populate;
+
+            if (isset($args['locale']) && $args['locale']) {
+                $process['locale'] = $args['locale'];
+            }
 
             if (isset($args['limit'])) $options['limit'] = $args['limit'];
             if (isset($args['skip'])) $options['skip'] = $args['skip'];
@@ -64,7 +68,7 @@ foreach ($collections as $name => &$meta) {
                 $options['filter'] = $args['filter'];
             }
 
-            return $app->module('content')->items($name, $options);
+            return $app->module('content')->items($name, $options, $process);
         }
     ];
 }
@@ -91,25 +95,26 @@ foreach ($singletons as $name => &$meta) {
         ]),
 
         'args' => [
-            'lang'  => Type::string(),
-            'populate'   => ['type' => Type::int(), 'defaultValue' => 0],
+            'locale'  => Type::string(),
+            'populate' => ['type' => Type::int(), 'defaultValue' => 0],
         ],
 
         'resolve' => function ($root, $args) use($app, $name) {
 
             $model = $app->module('content')->model($name);
 
+            $process  = [];
             $options  = [];
 
-            if (isset($args['lang']) && $args['lang']) {
-                $options['lang'] = $args['lang'];
+            if (isset($args['locale']) && $args['locale']) {
+                $process['locale'] = $args['locale'];
             }
 
             if (isset($args['populate']) && $args['populate']) {
                 $options['populate'] = $args['populate'];
             }
 
-            return $app->module('content')->item($name, $options);
+            return $app->module('content')->item($name, $options, null, $process);
         }
     ];
 }
