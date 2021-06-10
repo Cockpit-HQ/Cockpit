@@ -172,4 +172,8 @@ $this->on('restApi.config', function($restApi) {
 $this->on('graphql.config', function($gql) {
     $app = $this;
     include(__DIR__.'/graphql/pagesSettings.php');
+    include(__DIR__.'/graphql/menu.php');
+    include(__DIR__.'/graphql/menus.php');
+    include(__DIR__.'/graphql/page.php');
+    include(__DIR__.'/graphql/pages.php');
 });
