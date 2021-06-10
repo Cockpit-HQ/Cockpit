@@ -14,7 +14,7 @@ $gql->queries['fields']['content'] = [
         'limit' => Type::int(),
         'skip'  => Type::int(),
         'sort'  => JsonType::instance(),
-        'lang'  => Type::string(),
+        'locale'  => Type::string(),
         'populate'   => ['type' => Type::int(), 'defaultValue' => 0],
         'projection' => ['type' => Type::string(), 'defaultValue' => ''],
         'filter'   => ['type' => JsonType::instance(), 'defaultValue' => '']
@@ -37,10 +37,6 @@ $gql->queries['fields']['content'] = [
         $options  = [];
         $filter   = [];
         $populate = $args['populate'];
-
-        if (isset($args['lang']) && $args['lang']) {
-            $filter['lang'] = $args['lang'];
-        }
 
         if (isset($args['_id']) && $args['_id']) {
 

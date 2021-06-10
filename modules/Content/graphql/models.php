@@ -35,7 +35,7 @@ foreach ($collections as $name => &$meta) {
             'limit' => Type::int(),
             'skip'  => Type::int(),
             'sort'  => JsonType::instance(),
-            'lang'  => Type::string(),
+            'locale'  => Type::string(),
             'populate'   => ['type' => Type::int(), 'defaultValue' => 0],
             'projection' => ['type' => Type::string(), 'defaultValue' => ''],
             'filter'   => ['type' => JsonType::instance(), 'defaultValue' => '']
@@ -48,10 +48,6 @@ foreach ($collections as $name => &$meta) {
             $options  = [];
             $filter   = [];
             $populate = $args['populate'];
-
-            if (isset($args['lang']) && $args['lang']) {
-                $filter['lang'] = $args['lang'];
-            }
 
             $options['populate'] = $populate;
 

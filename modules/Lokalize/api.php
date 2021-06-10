@@ -48,7 +48,8 @@ $this->on('restApi.config', function($restApi) {
             $project = $app->dataStorage->findOne('lokalize/projects', ['name' => $name]);
 
             if (!$project) {
-                return false;
+                $app->response->status = 404;
+                return ["error" => "Project <{$name}> not found"];
             }
 
             $values = new \ArrayObject(isset($project['values']) ? $project['values'] : []);

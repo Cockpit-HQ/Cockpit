@@ -12,7 +12,11 @@ class Locales extends \Lime\Helper {
         });
     }
 
-    public function locales(): array {
+    public function locales(bool $assoc = false): array {
+
+        if ($assoc) {
+            return $this->locales;
+        }
 
         $locales = [];
 
@@ -25,6 +29,68 @@ class Locales extends \Lime\Helper {
         }
 
         return $locales;
+    }
+
+    public function applyLocales($obj, $locale = 'default') {
+
+        static $locales;
+
+        if (!is_array($obj)) {
+            return $obj;
+        }
+
+        if (null === $locales) {
+            $locales = array_keys($this->locales(true));
+        }
+
+        $apply = function($obj) use($locales, $locale) {
+
+            if (!is_array($obj)) return $obj;
+
+            $keys = array_filter(array_keys($obj), function($key) use($locales) {
+
+                foreach ($locales as $l) {
+                    if (preg_match("/_{$l}$/", $key)) return false;
+                }
+
+                return true;
+            });
+
+            foreach ($keys as $key) {
+
+                foreach ($locales as $l) {
+
+                    if (isset($obj["{$key}_{$l}"]) && $obj["{$key}_{$l}"] !== '') {
+
+                        if ($l == $locale) {
+
+                            $obj[$key] = $obj["{$key}_{$l}"];
+
+                            if (isset($obj["{$key}_{$l}_slug"])) {
+                                $obj["{$key}_slug"] = $obj["{$key}_{$l}_slug"];
+                            }
+                        }
+
+                    }
+
+                    unset($obj["{$key}_{$l}"]);
+                }
+
+                if (isset($obj[$key]) && is_array($obj[$key])) {
+                    $obj[$key] = $this->applyLocales($obj[$key], $locale);
+                }
+            }
+
+            return $obj;
+        };
+
+        if (isset($obj[0])) {
+            $obj = array_map($apply, $obj);
+        } else {
+            $obj = $apply($obj);
+        }
+
+        return $obj;
     }
 
     public function cache(): array {

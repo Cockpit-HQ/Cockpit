@@ -21,6 +21,13 @@ $this->on('restApi.config', function($restApi) {
      *         required=true,
      *         @OA\Schema(type="string")
      *     ),
+     *    @OA\Parameter(
+     *         description="Return content for specified locale",
+     *         in="query",
+     *         name="locale",
+     *         required=false,
+     *         @OA\Schema(type="String")
+     *     ),
      *     @OA\Parameter(
      *         description="Url encoded filter json",
      *         in="query",
@@ -54,6 +61,7 @@ $this->on('restApi.config', function($restApi) {
             $model = $params['model'];
 
             if (!$app->module('content')->model($model)) {
+                $app->response->status = 404;
                 return ["error" => "Model <{$model}> not found"];
             }
 
@@ -80,7 +88,14 @@ $this->on('restApi.config', function($restApi) {
                 }
             }
 
-            return $app->module('content')->item($model, $filter, $fields);
+            $item = $app->module('content')->item($model, $filter, $fields);
+
+            if ($item) {
+                $locale = $app->param('locale', 'default');
+                $item = $app->helper('locales')->applyLocales($item, $locale);
+            }
+
+            return $item ?? false;
         }
     ]);
 
@@ -95,6 +110,13 @@ $this->on('restApi.config', function($restApi) {
      *         name="model",
      *         required=true,
      *         @OA\Schema(type="string")
+     *     ),
+     *    @OA\Parameter(
+     *         description="Return content for specified locale",
+     *         in="query",
+     *         name="locale",
+     *         required=false,
+     *         @OA\Schema(type="String")
      *     ),
      *     @OA\Parameter(
      *         description="Url encoded filter json",
@@ -181,7 +203,14 @@ $this->on('restApi.config', function($restApi) {
                 }
             }
 
-            return $app->module('content')->items($model, $options);
+            $items = $app->module('content')->items($model, $options);
+
+            if (count($items)) {
+                $locale = $app->param('locale', 'default');
+                $items = $app->helper('locales')->applyLocales($items, $locale);
+            }
+
+            return $items;
         }
     ]);
 });
