@@ -54,6 +54,7 @@ export default {
                 :animation="150",
                 :fallbackOnBody="true"
                 @change="change"
+                itemKey="_id"
 
                 v-if="!loading"
             >
@@ -74,7 +75,7 @@ export default {
                             </div>
                             <a class="kiss-margin-small-left kiss-color-danger" @click="remove(element)"><icon>delete</icon></a>
                         </kiss-card>
-                        <div class="animated fadeIn" v-if="element._showChildren || !element._children" :style="{paddingLeft: (((level+1)*15)+'px')}">
+                        <div v-if="element._showChildren || !element._children" :style="{paddingLeft: (((level+1)*15)+'px')}">
                             <pages-tree class="pages-tree" :pages="element.children" :level="level+1" :p="element"></pages-tree>
                         </div>
                     </div>
