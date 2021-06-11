@@ -77,7 +77,7 @@ export default {
 
         pickAsset() {
 
-            App.utils.vueModal('assets:assets/dialogs/asset-picker.js', {}, {
+            VueView.ui.modal('assets:assets/dialogs/asset-picker.js', {}, {
                 selectAsset: (asset) => {
 
                     this.val = asset;
@@ -88,7 +88,7 @@ export default {
 
         edit() {
 
-            App.utils.vueOffcanvas('assets:assets/dialogs/asset.js', {asset: this.val}, {
+            VueView.ui.offcanvas('assets:assets/dialogs/asset.js', {asset: this.val}, {
 
                 update: updatedAsset => {
                     this.val = updatedAsset;

@@ -243,12 +243,12 @@
                     },
 
                     showJSON() {
-                        App.utils.vueOffcanvas('settings:assets/dialogs/json-viewer.js', {data: this.item}, {}, {flip: true, size: 'large'})
+                        VueView.ui.offcanvas('settings:assets/dialogs/json-viewer.js', {data: this.item}, {}, {flip: true, size: 'large'})
                     },
 
                     showPreviewUri(uri) {
 
-                        App.utils.vueOffcanvas('settings:assets/dialogs/content-preview.js', {
+                        VueView.ui.offcanvas('settings:assets/dialogs/content-preview.js', {
                             uri,
                             fields: this.model.fields,
                             item: this.item,

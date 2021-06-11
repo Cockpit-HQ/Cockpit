@@ -13,7 +13,7 @@ let checkSessionTimeout = function() {
 
             if (res && !res.status && !isActive) {
 
-                App.utils.vueModal('app:assets/dialog/login.js', {csrf})
+                VueView.ui.modal('app:assets/dialog/login.js', {csrf})
             }
         });
     };

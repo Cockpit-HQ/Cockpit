@@ -133,7 +133,7 @@ export default {
 
         pickItem() {
 
-            App.utils.vueModal('content:assets/dialogs/select-content-item.js', {model: this.model, filter: this.filter}, {
+            VueView.ui.modal('content:assets/dialogs/select-content-item.js', {model: this.model, filter: this.filter}, {
                 pickItem: (item) => {
 
                     this.val = {

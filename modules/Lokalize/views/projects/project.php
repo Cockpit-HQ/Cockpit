@@ -285,7 +285,7 @@
                             tags: [],
                         };
 
-                        App.utils.vueModal('lokalize:assets/dialog/key.js', {lkey: key}, {
+                        VueView.ui.modal('lokalize:assets/dialog/key.js', {lkey: key}, {
                             save: (key) => {
                                 this.project.keys.push(key);
 
@@ -298,7 +298,7 @@
 
                     editKey(key) {
 
-                        App.utils.vueModal('lokalize:assets/dialog/key.js', {lkey: key}, {
+                        VueView.ui.modal('lokalize:assets/dialog/key.js', {lkey: key}, {
                             save: (eKey) => {
 
                                 // did keyname change?
@@ -330,7 +330,7 @@
 
                         dKey.name = `${dKey.name}.copy`;
 
-                        App.utils.vueModal('lokalize:assets/dialog/key.js', {lkey: dKey}, {
+                        VueView.ui.modal('lokalize:assets/dialog/key.js', {lkey: dKey}, {
                             save: (key) => {
                                 this.project.keys.push(key);
 

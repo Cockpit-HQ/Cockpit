@@ -133,11 +133,11 @@
                     },
 
                     showApiViewer() {
-                        App.utils.vueOffcanvas('settings:assets/dialogs/api-viewer.js', {openApiUrl: this.$route('/settings/api/openapi')}, {}, {flip: true, size: 'xxlarge'})
+                        VueView.ui.offcanvas('settings:assets/dialogs/api-viewer.js', {openApiUrl: this.$route('/settings/api/openapi')}, {}, {flip: true, size: 'xxlarge'})
                     },
 
                     showGraphQLViewer() {
-                        App.utils.vueOffcanvas('settings:assets/dialogs/graphql-viewer.js', {}, {}, {flip: true, size: 'xxlarge'})
+                        VueView.ui.offcanvas('settings:assets/dialogs/graphql-viewer.js', {}, {}, {flip: true, size: 'xxlarge'})
                     }
                 }
             }

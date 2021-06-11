@@ -334,7 +334,7 @@ export default {
 
         addComponent() {
 
-            App.utils.vueOffcanvas(pickComponent, {components: Components}, {
+            VueView.ui.offcanvas(pickComponent, {components: Components}, {
 
                 select: component => {
 
@@ -359,7 +359,7 @@ export default {
 
             let meta = Components[item.component];
 
-            App.utils.vueModal(editComponent, {component: item}, {
+            VueView.ui.modal(editComponent, {component: item}, {
 
             }, {size: 'large'})
         },

@@ -170,7 +170,7 @@ export default {
 
         edit(item) {
 
-            App.utils.vueModal(editItem, {item, fields: this.fields}, {
+            VueView.ui.modal(editItem, {item, fields: this.fields}, {
 
             }, {size: 'large'})
         },

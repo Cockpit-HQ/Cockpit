@@ -1,7 +1,8 @@
+import ui from "./vue-view/ui.js";
+
 /**
  * Dynamic vue template (Vue 3.x)
  */
-
 (function() {
 
     let VueView = {
@@ -107,6 +108,8 @@
     }
 
     customElements.define('vue-view', VueElement);
+
+    VueView.ui = ui;
 
     window.VueView = VueView;
 

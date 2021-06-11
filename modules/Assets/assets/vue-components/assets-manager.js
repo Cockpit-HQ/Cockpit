@@ -311,7 +311,7 @@ export default {
 
         edit(asset) {
 
-            App.utils.vueOffcanvas('assets:assets/dialogs/asset.js', {asset}, {
+            VueView.ui.offcanvas('assets:assets/dialogs/asset.js', {asset}, {
 
                 update: updatedAsset => {
                     Object.assign(asset, updatedAsset)
