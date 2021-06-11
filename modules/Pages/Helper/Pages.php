@@ -25,16 +25,19 @@ class Pages extends \Lime\Helper {
         return true;
     }
 
-    public function updateRoutes($pageId) {
+    public function updateRoutes($pageId, $parent = null) {
 
-        $page = $this->app->dataStorage->findOne('pages', ['_id' => $pageId]);
+        $page = is_array($pageId) && isset($pageId['_id'])
+                ? $pageId
+                : $this->app->dataStorage->findOne('pages', ['_id' => $pageId]);
 
         if (!$page) {
             return;
         }
 
         if ($page['_pid']) {
-            $parent = $this->app->dataStorage->findOne('pages', ['_id' => $page['_pid']]);
+
+            $parent = $parent ?? $this->app->dataStorage->findOne('pages', ['_id' => $page['_pid']]);
 
             if ($parent) {
                 $r = $parent['_r'].'/'.$page['slug'];
@@ -62,6 +65,8 @@ class Pages extends \Lime\Helper {
 
         $this->app->dataStorage->save('pages', $data);
 
+        $page = \array_merge($page, $data);
+
         $children = $this->app->dataStorage->find('pages', [
             'filter' => ['_pid' => $page['_id']]
         ])->toArray();
@@ -74,11 +79,14 @@ class Pages extends \Lime\Helper {
 
             if (!$child['slug']) continue;
 
-            $data = ['_id' => $page['_id'], '_r' => $r.'/'.$child['slug']];
+            $data = ['_id' => $child['_id'], '_r' => $r.'/'.$child['slug']];
 
             $this->app->dataStorage->save('pages', $data);
 
-            $this->updateRoutes($child['_id']);
+            $child = \array_merge($child, $data);
+
+            $this->updateRoutes($child, $page);
+            //$this->updateRoutes($child['_id']);
         }
     }
 }
