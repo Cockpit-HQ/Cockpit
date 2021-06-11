@@ -21,7 +21,7 @@
                             <?=$this->getSiteUrl(true)?>/api
                         </div>
                         <div class="kiss-margin-left"><a href="#" @click.prevent="copyEndpoint('<?=$this->getSiteUrl(true)?>/api', 'REST-Api endpoint copied!')"><icon>content_copy</icon></a></div>
-                        <div class="kiss-margin-small-left kiss-width-1-5"><a class="kiss-button kiss-button-small kiss-width-1-1" href="#" @click="showApiViewer()">{{ t('Explore Rest-Api') }}</a></div>
+                        <div class="kiss-margin-small-left kiss-width-1-5"><a class="kiss-button kiss-button-small kiss-width-1-1" href="#" @click="showApiViewer()">{{ t('Playground') }}</a></div>
                     </div>
                 </div>
                 <hr class="kiss-margin-remove">
@@ -32,7 +32,7 @@
                             <?=$this->getSiteUrl(true)?>/api/gql
                         </div>
                         <div class="kiss-margin-left"><a href="#" @click.prevent="copyEndpoint('<?=$this->getSiteUrl(true)?>/api/gql', 'GraphQL endpoint copied!')"><icon>content_copy</icon></a></div>
-                        <div class="kiss-margin-small-left kiss-width-1-5"><a class="kiss-button kiss-button-small kiss-width-1-1" href="#" @click="showGraphQLViewer()">{{ t('Explore GraphQL') }}</a></div>
+                        <div class="kiss-margin-small-left kiss-width-1-5"><a class="kiss-button kiss-button-small kiss-width-1-1" href="#" @click="showGraphQLViewer()">{{ t('Playground') }}</a></div>
                     </div>
                 </div>
             </kiss-card>
