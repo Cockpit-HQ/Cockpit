@@ -91,6 +91,10 @@ $this->on('restApi.config', function($restApi) {
                 }
             }
 
+            if ($populate) {
+                $process['populate'] = $populate;
+            }
+
             $item = $app->module('content')->item($model, $filter, $fields, $process);
 
             return $item ?? false;
@@ -158,7 +162,7 @@ $this->on('restApi.config', function($restApi) {
      *         required=false,
      *         @OA\Schema(type="int")
      *     ),
-     *     @OA\Response(response="200", description="Get list of model items"),
+     *     @OA\Response(response="200", description="Get list of published model items"),
      *     @OA\Response(response="404", description="Model not found")
      * )
      */
@@ -175,9 +179,8 @@ $this->on('restApi.config', function($restApi) {
             }
 
             $options = [];
-            $process = [];
+            $process = ['locale' => $app->param('locale', 'default')];
 
-            $locale = $app->param('locale:string', null);
             $limit = $app->param('limit:int', null);
             $skip = $app->param('skip:int', null);
             $populate = $app->param('populate:int', null);
@@ -203,7 +206,15 @@ $this->on('restApi.config', function($restApi) {
                 }
             }
 
-            $process['locale'] = $app->param('locale', 'default');
+            if ($populate) {
+                $process['populate'] = $populate;
+            }
+
+            if (!isset($options['filter']) || !is_array($options['filter'])) {
+                $options['filter'] = [];
+            }
+
+            $options['filter']['_state'] = 1;
 
             $items = $app->module('content')->items($model, $options, $process);
 

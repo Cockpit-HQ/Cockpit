@@ -35,7 +35,7 @@ foreach ($collections as $name => &$meta) {
             'limit' => Type::int(),
             'skip'  => Type::int(),
             'sort'  => JsonType::instance(),
-            'locale'  => Type::string(),
+            'locale'  => ['type' => Type::string(), 'defaultValue' => 'default'],
             'populate'   => ['type' => Type::int(), 'defaultValue' => 0],
             'projection' => ['type' => Type::string(), 'defaultValue' => ''],
             'filter'   => ['type' => JsonType::instance(), 'defaultValue' => '']
@@ -45,14 +45,12 @@ foreach ($collections as $name => &$meta) {
 
             $model = $app->module('content')->model($name);
 
-            $process  = [];
+            $process  = ['locale' => $args['locale']];
             $options  = [];
             $populate = $args['populate'];
 
-            $options['populate'] = $populate;
-
-            if (isset($args['locale']) && $args['locale']) {
-                $process['locale'] = $args['locale'];
+            if ($args['populate']) {
+                $process['populate'] = $populate;
             }
 
             if (isset($args['limit'])) $options['limit'] = $args['limit'];
@@ -67,6 +65,12 @@ foreach ($collections as $name => &$meta) {
             } else if (isset($args['filter']) && $args['filter']) {
                 $options['filter'] = $args['filter'];
             }
+
+            if (!isset($options['filter']) || !is_array($options['filter'])) {
+                $options['filter'] = [];
+            }
+
+            $options['filter']['_state'] = 1;
 
             return $app->module('content')->items($name, $options, $process);
         }
@@ -95,7 +99,7 @@ foreach ($singletons as $name => &$meta) {
         ]),
 
         'args' => [
-            'locale'  => Type::string(),
+            'locale'  => ['type' => Type::string(), 'defaultValue' => 'default'],
             'populate' => ['type' => Type::int(), 'defaultValue' => 0],
         ],
 
@@ -103,18 +107,20 @@ foreach ($singletons as $name => &$meta) {
 
             $model = $app->module('content')->model($name);
 
-            $process  = [];
+            $process  = ['locale' => $args['locale']];
             $options  = [];
-
-            if (isset($args['locale']) && $args['locale']) {
-                $process['locale'] = $args['locale'];
-            }
 
             if (isset($args['populate']) && $args['populate']) {
                 $options['populate'] = $args['populate'];
             }
 
-            return $app->module('content')->item($name, $options, null, $process);
+            $item = $app->module('content')->item($name, $options, null, $process);
+
+            if (!isset($item['_state']) || $item['_state'] != 1) {
+                return null;
+            }
+
+            return $item;
         }
     ];
 }

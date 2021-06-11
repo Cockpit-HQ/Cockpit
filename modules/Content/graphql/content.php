@@ -14,7 +14,7 @@ $gql->queries['fields']['content'] = [
         'limit' => Type::int(),
         'skip'  => Type::int(),
         'sort'  => JsonType::instance(),
-        'locale'  => Type::string(),
+        'locale'  => ['type' => Type::string(), 'defaultValue' => 'default'],
         'populate'   => ['type' => Type::int(), 'defaultValue' => 0],
         'projection' => ['type' => Type::string(), 'defaultValue' => ''],
         'filter'   => ['type' => JsonType::instance(), 'defaultValue' => '']
@@ -34,9 +34,9 @@ $gql->queries['fields']['content'] = [
             return [$app->module('content')->item($model)];
         }
 
+        $process  = ['locale' => $args['locale']];
         $options  = [];
         $filter   = [];
-        $populate = $args['populate'];
 
         if (isset($args['_id']) && $args['_id']) {
 
@@ -46,7 +46,9 @@ $gql->queries['fields']['content'] = [
 
         } else {
 
-            $options['populate'] = $populate;
+            if ($args['populate']) {
+                $process['populate'] = $args['populate'];
+            }
 
             if (isset($args['limit'])) $options['limit'] = $args['limit'];
             if (isset($args['skip'])) $options['skip'] = $args['skip'];
@@ -59,7 +61,13 @@ $gql->queries['fields']['content'] = [
                 $options['filter'] = $args['filter'];
             }
 
-            return $app->module('content')->items($model, $options);
+            if (!isset($options['filter']) || !is_array($options['filter'])) {
+                $options['filter'] = [];
+            }
+
+            $options['filter']['_state'] = 1;
+
+            return $app->module('content')->items($model, $options, $process);
         }
     }
 ];
