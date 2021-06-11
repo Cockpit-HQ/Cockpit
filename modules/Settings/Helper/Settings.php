@@ -12,7 +12,7 @@ class Settings extends \Lime\Helper {
             'System' => [
                 [
                     'icon' => null,
-                    'route' => '/users/user',
+                    'route' => '/settings/users/user',
                     'label' => 'Account',
                     'permission' => null
                 ],
@@ -39,6 +39,12 @@ class Settings extends \Lime\Helper {
                     'route' => '/settings/locales',
                     'label' => 'Locales',
                     'permission' => 'app/locales/manage'
+                ],
+                [
+                    'icon' => null,
+                    'route' => '/settings/info',
+                    'label' => 'System info',
+                    'permission' => 'app/system/info'
                 ],
             ]
         ]);

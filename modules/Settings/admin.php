@@ -21,11 +21,10 @@ $this->helper('menus')->addLink('modules', [
 $this->on('app.permissions.collect', function (ArrayObject $permissions) {
 
     $permissions['Locales'] = [
-        'app.locales.manage' => 'Manage locales',
+        'app/locales/manage' => 'Manage locales',
     ];
 
     $permissions['Api & Security'] = [
-        'app.api.manage' => 'Manage Api access',
+        'app/api/manage' => 'Manage Api access',
     ];
-
 });

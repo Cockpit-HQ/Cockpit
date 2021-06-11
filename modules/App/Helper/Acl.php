@@ -42,6 +42,17 @@ class Acl extends \Lime\Helper {
         return isset($this->roles[$role][$permission]) && $this->roles[$role][$permission];
     }
 
+    public function isSuperAdmin($role = null) {
+
+        $role = $role ?? $this->app->helper('auth')->getUser('role');
+
+        if ($role == 'admin') {
+            return true;
+        }
+
+        return false;
+    }
+
     public function cache(): array {
 
         $cache = [];
