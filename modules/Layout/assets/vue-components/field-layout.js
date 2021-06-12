@@ -441,7 +441,7 @@ export default {
 
             <div class="kiss-button-group kiss-margin-small" v-if="!level">
                 <a class="kiss-button kiss-button-small" @click="addComponent">{{ t('Add component') }}</a>
-                <a class="kiss-button kiss-button-small" @click="showPreview = !showPreview">{{ t('Toggle preview') }}</a>
+                <a class="kiss-button kiss-button-small" @click="showPreview = !showPreview">{{ showPreview ? t('Hide preview') : t('Show preview') }}</a>
             </div>
 
         </div>
