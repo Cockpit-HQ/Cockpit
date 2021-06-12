@@ -90,6 +90,16 @@ import ui from "./vue-view/ui.js";
                 }
             });
 
+            if (def.$routes) {
+
+                const router = VueRouter.createRouter({
+                    history: VueRouter.createWebHashHistory(),
+                    routes: def.$routes()
+                });
+
+                app.use(router);
+            }
+
             if (def.$viewSetup) {
                 def.$viewSetup(app);
             }

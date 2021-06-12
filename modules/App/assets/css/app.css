@@ -19,12 +19,12 @@ vue-view:not([init="true"]) { display: none; }
 
 :root {
 
-    --app-header-background: rgba(0, 0, 0, .15);
-    --app-header-box-shadow: rgba(0,0,0,0);
+    --app-header-background: rgba(16, 19, 27, .9);
+    --app-header-box-shadow: 0 0 0 1px rgb(19 23 32 / 5%), 0 2px 5px 0 rgb(19 23 32 / 8%), 0 1px 3px 0 rgb(19 23 32 / 15%);
     --app-border-radius: 3px;
     --app-shadow-color: rgba(0,0,0,0.12);
 
-    --app-actionbar-bgcolor: rgba(16,19,26,.9);
+    --app-actionbar-bgcolor: #131720e6;
 
     --app-loader-color1: var(--kiss-color-primary);
     --app-loader-color2: #fff;
@@ -36,13 +36,14 @@ vue-view:not([init="true"]) { display: none; }
 
 html[data-theme='light'] {
     --kiss-base-background-color: #f1f1f1;
+    --kiss-base-background-color: #eff7f7;
     --kiss-base-text-color: #121212;
     --kiss-hr-color: rgba(0,0,0,.1);
     --kiss-link-hover-color: #1994ff;
     --kiss-button-default-background: #e0dee6;
     --kiss-button-default-color: #000;
     --kiss-color-alternate: #fff;
-    --kiss-color-contrast: #f5f5f5;
+    --kiss-color-contrast: #f0f2f5;
     --kiss-color-primary: #0e8fff;
     --kiss-color-success: #4caf50;
     --kiss-color-warning: orange;
@@ -62,11 +63,11 @@ html[data-theme='light'] {
 
     --kiss-input-background-active: #fff;
 
-    --app-header-background: rgba(255,255,255,.2);
-    --app-header-box-shadow: rgb(0 0 0 / 10%);
+    --app-header-background: rgba(255,255,255,.9);
+    --app-header-box-shadow: 0 0 0 1px rgb(49 49 93 / 5%), 0 2px 5px 0 rgb(49 49 93 / 8%), 0 1px 3px 0 rgb(49 49 93 / 15%);
     --app-shadow-color: rgba(0,0,0,0.12);
 
-    --app-actionbar-bgcolor: rgba(255,255,255,.9);
+    --app-actionbar-bgcolor: #eff7f7e8;
     --app-loader-color2: #333;
     --app-fieldcontainer-border-color-inactive: rgba(0,0,0, .1);
     --app-scrollbar-color: var(--kiss-color-muted);
@@ -99,7 +100,8 @@ html[data-theme='light'] kiss-card[hover="shadow"]:hover {
 html[data-theme='light'] .app-logo[src$="App/assets/logo.svg"] {
     filter: invert(1);
 }
-html[data-theme='light'] off-canvas {
+
+html[data-theme='light'] kiss-offcanvas kiss-content {
     --kiss-color-contrast: #fff;
 }
 
@@ -175,7 +177,7 @@ app-header {
     position: relative;
     padding: 15px 0;
     background: var(--app-header-background);
-    box-shadow: 0 0 20px var(--app-header-box-shadow);
+    box-shadow: var(--app-header-box-shadow);
     z-index: 2;
 }
 
@@ -234,4 +236,15 @@ app-actionbar kiss-container {
 app-fieldcontainer app-fieldcontainer {
     all: unset;
     display: block;
+}
+
+
+@media (min-width: 768px) {
+
+    app-header {
+        position: sticky;
+        position: -webkit-sticky;
+        top: 0;
+    }
+
 }
