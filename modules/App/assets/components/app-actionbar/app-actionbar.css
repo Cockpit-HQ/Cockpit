@@ -4,7 +4,7 @@ app-actionbar {
     left: 0;
     right: 0;
     bottom: 0;
-    padding: 10px 0;
+    padding: 15px 0;
     background: var(--app-actionbar-bgcolor, rgba(0,0,0,.4));
     z-index: 4;
 }
