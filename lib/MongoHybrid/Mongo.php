@@ -135,11 +135,23 @@ class Mongo {
         return $resultSet;
     }
 
-    public function findTerm(string $collection, string $term, array $options = []) {
-        $options['filter'] = ['$where' => "function() { return JSON.stringify(this).indexOf('{$term}') > -1; }"];
-        return $this->find($collection, $options);
-    }
+    public function getFindTermFilter($term) {
 
+        $terms = str_getcsv(trim($term), ' ');
+
+        $filter = ['$where' => "function() { return JSON.stringify(this).indexOf('{$term}') > -1; }"];
+
+        if (count($terms) > 1) {
+
+            $filter = ['$or' => []];
+
+            foreach ($terms as $term) {
+                $filter['$or'][] = ['$where' => "function() { return JSON.stringify(this).indexOf('{$term}') > -1; }"];
+            }
+        }
+
+        return $filter;
+    }
 
     public function insert(string $collection, array &$doc): mixed {
 

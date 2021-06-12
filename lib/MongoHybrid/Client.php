@@ -45,6 +45,13 @@ class Client {
         return $this->driver->insert($collection, $doc);
     }
 
+    public function findTerm(string $collection, string $term, array $options = []) {
+
+        $options['filter'] = $this->driver->getFindTermFilter($term);
+
+        return $this->driver->find($collection, $options);
+    }
+
 
     /*
         simple key-value storage implementation

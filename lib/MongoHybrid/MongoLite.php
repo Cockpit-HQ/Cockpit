@@ -105,13 +105,27 @@ class MongoLite {
         return $resultSet;
     }
 
-    public function findTerm(string $collection, string $term, array $options = []) {
+    public function getFindTermFilter($term) {
 
-        $options['filter'] = function ($doc) use ($term) {
+        $terms = str_getcsv(trim($term), ' ');
+
+        $filter = function ($doc) use ($term) {
             return stripos(json_encode($doc), $term) !== false;
         };
 
-        return $this->find($collection, $options);
+        if (count($terms) > 1) {
+
+            $filter = function($doc) use($terms) {
+
+                $json = json_encode($doc);
+
+                foreach ($terms as $term) {
+                    return stripos($json, $term) !== false;
+                }
+            };
+        }
+
+        return $filter;
     }
 
     public function insert(string $collection, array &$doc) {
@@ -161,7 +175,7 @@ class MongoLite {
         return true;
     }
 
-    public function count(string $collection, ?array $filter = null): int {
+    public function count(string $collection, mixed $filter = null): int {
         return $this->getCollection($collection)->count($filter);
     }
 }

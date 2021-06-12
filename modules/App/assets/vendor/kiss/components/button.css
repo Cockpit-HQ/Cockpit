@@ -18,6 +18,7 @@
     text-transform: uppercase;
 
     background-color: var(--kiss-button-default-background, rgba(0,0,0,.5));
+    border: 1px var(--kiss-button-default-background, rgba(0,0,0,.5)) solid;
     color: var(--kiss-button-default-color, #fff);
 }
 
@@ -45,35 +46,41 @@
 
 .kiss-button-primary {
     background-color: var(--kiss-button-primary-background, hsl(210, 100%, 50%));
+    border-color: var(--kiss-button-primary-background, hsl(210, 100%, 50%));
     color: var(--kiss-button-primary-color, #fff);
 }
 
 .kiss-button-primary:hover,
 .kiss-button-primary:focus {
     background-color: var(--kiss-button-primary-background-hover, var(--kiss-button-primary-background, hsl(210, 100%, 50%)));
+    border-color: var(--kiss-button-primary-background-hover, var(--kiss-button-primary-background, hsl(210, 100%, 50%)));
     color: var(--kiss-button-primary-color-hover, var(--kiss-button-primary-color, #fff));
 }
 
 .kiss-button-primary:active,
 .kiss-button-primary.kiss-active {
     background-color: var(--kiss-button-primary-background-active, var(--kiss-button-primary-background, hsl(210, 100%, 50%)));
+    border-color: var(--kiss-button-primary-background-active, var(--kiss-button-primary-background, hsl(210, 100%, 50%)));
     color: var(--kiss-button-primary-color-active, var(--kiss-button-primary-color, #fff));
 }
 
 .kiss-button-danger {
     background-color: var(--kiss-button-danger-background, red);
+    border-color: var(--kiss-button-danger-background, red);
     color: var(--kiss-button-danger-color, #fff);
 }
 
 .kiss-button-danger:hover,
 .kiss-button-danger:focus {
     background-color: var(--kiss-button-danger-background-hover, var(--kiss-button-danger-background, red));
+    border-color: var(--kiss-button-danger-background-hover, var(--kiss-button-danger-background, red));
     color: var(--kiss-button-danger-color-hover, var(--kiss-button-danger-color, #fff));
 }
 
 .kiss-button-danger:active,
 .kiss-button-danger.kiss-active {
     background-color: var(--kiss-button-danger-background-active, var(--kiss-button-danger-background, red));
+    border-color: var(--kiss-button-danger-background-active, var(--kiss-button-danger-background, red));
     color: var(--kiss-button-danger-color-active, var(--kiss-button-danger-color, #fff));
 }
 

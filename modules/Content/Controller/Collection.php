@@ -102,7 +102,7 @@ class Collection extends App {
             }
 
             if (!$filter) {
-                //$filter = $this->_filter($options['filter'], $collection, $options['lang'] ?? null);
+                $filter = $this->app->dataStorage->getFindTermFilter($options['filter']);
             }
 
             $options['filter'] = $filter;

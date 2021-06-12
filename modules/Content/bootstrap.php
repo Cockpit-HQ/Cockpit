@@ -319,7 +319,7 @@ $this->module('content')->extend([
         return $items;
     },
 
-    'remove' => function(string $modelName, array $filter = []) {
+    'remove' => function(string $modelName, mixed $filter = []) {
 
         $model = $this->model($modelName);
 
@@ -338,7 +338,7 @@ $this->module('content')->extend([
         return $result;
     },
 
-    'count' => function(string $modelName, array $filter = []): int {
+    'count' => function(string $modelName, mixed $filter = []): int {
 
         $model = $this->model($modelName);
 

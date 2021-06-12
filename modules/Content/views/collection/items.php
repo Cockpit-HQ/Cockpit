@@ -20,7 +20,16 @@
 
         <template>
 
-            <app-loader v-if="!fieldTypes || loading"></app-loader>
+            <form class="kiss-flex kiss-flex-middle" v-if="!fieldTypes || ((!loading && items.length) || filter)" @submit.prevent="filter = txtFilter">
+                <input type="text" class="kiss-input kiss-flex-1 kiss-margin-xsmall-right" :placeholder="t('Filter items...')" v-model="txtFilter">
+
+                <div class="kiss-button-group kiss-margin-small-left">
+                    <button type="button" class="kiss-button" @click="filter = ''" v-if="filter"><?=t('Reset')?></button>
+                    <button class="kiss-button kiss-flex"><?=t('Search')?></button>
+                </div>
+            </form>
+
+            <app-loader class="ki9ss-margin" v-if="!fieldTypes || loading"></app-loader>
 
             <div class="animated fadeIn kiss-height-50vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted" v-if="fieldTypes && !loading && !items.length">
                 <div>
@@ -29,7 +38,7 @@
                 </div>
             </div>
 
-            <table class="kiss-table kiss-margin-large animated fadeIn" v-if="!loading && items.length">
+            <table class="kiss-table kiss-margin animated fadeIn" v-if="!loading && items.length">
                 <thead>
                     <tr>
                         <th class="kiss-align-center" width="20"><input class="kiss-checkbox" type="checkbox" @click="toggleAllSelect"></th>
@@ -126,6 +135,8 @@
                         items: [],
                         selected: [],
                         fieldTypes: null,
+                        filter: '',
+                        txtFilter: '',
                         page: 1,
                         pages: 1,
                         limit: 25,
@@ -145,6 +156,13 @@
                     });
                 },
 
+                watch: {
+                    filter(val) {
+                        this.txtFilter = val;
+                        this.load();
+                    }
+                },
+
                 methods: {
 
                     load(page = 1) {
@@ -156,6 +174,10 @@
 
                         this.loading = true;
                         this.selected = [];
+
+                        if (this.filter) {
+                            options.filter = this.filter;
+                        }
 
                         this.$request(`/content/collection/find/${this.model.name}`, {options}).then(rsp => {
                             this.items = rsp.items;
