@@ -3697,12 +3697,7 @@ td.kiss-text-truncate { max-width: 0; }
     pointer-events: none;
 }
 .kiss-visible-toggle:not(:hover):not(:focus) .kiss-hidden-hover:not(:focus-within) {
-    position: absolute !important;
-    width: 0 !important;
-    height: 0 !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    overflow: hidden !important;
+    display: none;
 }
 .kiss-visible-toggle:not(:hover):not(:focus) .kiss-invisible-hover:not(:focus-within) {
     opacity: 0 !important;
@@ -4197,7 +4192,8 @@ app-actionbar kiss-container {
     font-size: 11px;
 }
 .field-layout-dragarea {
-    min-height: 50px;
+    min-height: 47px;
+    border-radius: var(--app-border-radius);
 }
 .field-layout-dragarea:empty {
     background-color: var(--kiss-color-contrast);

@@ -150,6 +150,107 @@ let editComponent = {
 }
 
 
+let gridComponent = {
+
+    name: 'grid-layout',
+
+    data() {
+
+        let val = this.modelValue || {};
+
+        if (!val.columns) {
+            val.columns = [];
+        }
+
+        return {
+            val,
+            active: false
+        }
+    },
+
+    props: {
+        modelValue: {
+            type: Object,
+            default: {}
+        },
+        group: {
+            type: String,
+            default: null
+        },
+        level: {
+            type: Number,
+            default: 0
+        },
+        preview: {
+            type: Boolean,
+            default: false
+        }
+    },
+
+    watch: {
+        val: {
+            handler() { this.update() },
+            deep: true
+        },
+        modelValue: {
+            handler(val) {
+                this.val = this.modelValue || [];
+                this.update();
+            },
+            deep: true
+        },
+        preview(val) {
+            this.showPreview = val;
+        }
+    },
+
+    template: /*html*/`
+        <kiss-card class="kiss-visible-toggle" @mouseenter="active=true" @mouseleave="active=false">
+
+            <kiss-row class="kiss-row-small" match="true">
+                <div class="kiss-flex-1" v-for="(column, idx) in val.columns">
+                    <kiss-card>
+                        <div class="kiss-flex kiss-flex-middle kiss-visible-toggle animated fadeIn" v-if="active">
+                            <div class="kiss-badge kiss-display-block kiss-flex-1">{{ t('Column') }}</div>
+                            <a class="kiss-badge kiss-badge-outline kiss-color-danger kiss-margin-xsmall-left kiss-hidden-hover" @click="val.columns.splice(val.columns.indexOf(column), 1)">-</a>
+                            <a class="kiss-badge kiss-badge-outline kiss-color-primary kiss-margin-xsmall-left kiss-hidden-hover" @click="addColumn(idx)">+</a>
+                        </div>
+                        <field-layout class="kiss-margin-small" v-model="column.components" :group="group" :level="++level" :preview="showPreview"></field-layout>
+                    </kiss-card>
+                </div>
+            </kiss-row>
+
+            <div class="kiss-padding kiss-align-center kiss-color-muted" v-if="!val.columns.length">
+                <button type="button" class="kiss-button kiss-button-small kiss-margin-small" @click="addColumn(0)">{{ t('Add column') }}</button>
+            </div>
+        </kiss-card>
+    `,
+
+    methods: {
+
+        addColumn(idx = 0) {
+
+            let column = {
+                data: {},
+                components: []
+            };
+
+            if (!this.val.columns.length) {
+                this.val.columns.push(column);
+            } else {
+                this.val.columns.splice(idx + 1, 0, column);
+            }
+
+        },
+
+        update() {
+            this.$emit('update:modelValue', this.val)
+        },
+    }
+}
+
+
+
 let instanceCount = 0;
 
 export default {
@@ -173,7 +274,21 @@ export default {
 
     mounted() {
         App.utils.import('/layout/components').then(m => {
+
             Components = m.default;
+
+            Components.grid = {
+                icon: 'layout:assets/icons/component.svg',
+                label: 'Grid',
+                group: 'Core',
+                fields: [
+                    {name: 'class', type: 'text'},
+                    {name: 'colWidth', type: 'select', opts: {options: ['auto', 1,2,3,4]}},
+                ],
+                preview: null,
+                children: false
+            }
+
             this.ready = true;
         });
     },
@@ -198,6 +313,7 @@ export default {
     },
 
     components: {
+        gridComponent,
         componentPreview: {
             data() {
 
@@ -303,7 +419,7 @@ export default {
                 style="min-height: 100px;"
             >
                 <template #item="{ element }">
-                    <kiss-card class="kiss-padding-small kiss-visible-toggle" theme="bordered contrast" style="margin: 8px 0;">
+                    <kiss-card class="kiss-padding-small kiss-margin-small kiss-visible-toggle" theme="bordered contrast">
                         <div class="kiss-flex kiss-flex-middle">
                             <a class="lm-handle kiss-margin-small-right kiss-color-muted"><icon>drag_handle</icon></a>
                             <div class="kiss-flex-1 kiss-size-xsmall kiss-text-bold kiss-text-truncate">
@@ -313,6 +429,7 @@ export default {
                             <a class="kiss-margin-small-left kiss-color-danger" @click="remove(element)"><icon>delete</icon></a>
                         </div>
                         <field-layout class="kiss-margin-small" v-model="element.children" :group="group || uid" :level="++level" :preview="showPreview" v-if="element.children" @hide-preview="dragStart" @show-preview="showPreview = true"></field-layout>
+                        <grid-component class="kiss-margin-small" v-model="element" :group="group || uid" :level="++level" :preview="showPreview" v-if="element.component == 'grid'"></grid-component>
                         <div class="kiss-margin-xsmall-top kiss-size-small" v-is="'component-preview'" :component="element" v-if="showPreview && !element.children && hasPreview(element)"></div>
                     </kiss-card>
                 </template>

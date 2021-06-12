@@ -66,12 +66,7 @@
 }
 
 .kiss-visible-toggle:not(:hover):not(:focus) .kiss-hidden-hover:not(:focus-within) {
-    position: absolute !important;
-    width: 0 !important;
-    height: 0 !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    overflow: hidden !important;
+    display: none;
 }
 
 .kiss-visible-toggle:not(:hover):not(:focus) .kiss-invisible-hover:not(:focus-within) {
