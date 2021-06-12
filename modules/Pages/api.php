@@ -57,7 +57,7 @@ $this->on('restApi.config', function($restApi) {
 
     /**
      * @OA\Get(
-     *     path="/pages/menus/{name}",
+     *     path="/pages/menu/{name}",
      *     tags={"pages"},
      *     @OA\Parameter(
      *         description="Menu name",
@@ -78,7 +78,7 @@ $this->on('restApi.config', function($restApi) {
      * )
     */
 
-    $restApi->addEndPoint('/pages/menus/{name}', [
+    $restApi->addEndPoint('/pages/menu/{name}', [
 
         'GET' => function($params, $app) {
 
