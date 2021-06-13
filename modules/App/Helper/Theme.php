@@ -58,7 +58,7 @@ class Theme extends \Lime\Helper {
         static $logo;
 
         if ($url) {
-            $logo = $this->pathToUrl($url);;
+            $logo = $this->pathToUrl($url);
             return null;
         }
 
@@ -100,5 +100,17 @@ class Theme extends \Lime\Helper {
         }
 
         return $this->app->assets($assets, APP_VERSION);
+    }
+
+    public function pageClass(?string $class = null) {
+
+        static $cls;
+
+        if ($class) {
+            $cls = $class;
+            return null;
+        }
+
+        return $cls;
     }
 }

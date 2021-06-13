@@ -26,6 +26,8 @@ class Auth extends Base {
 
         $redirectTo = htmlspecialchars($this->baseUrl($redirectTo), ENT_QUOTES, 'UTF-8');
 
+        $this->helper('theme')->pageClass('login-page');
+
         return $this->render('app:views/auth/login.php', \compact('redirectTo'));
     }
 
