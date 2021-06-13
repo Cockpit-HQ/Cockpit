@@ -50,17 +50,17 @@ if (!isset($user['twofa'])) {
 
                 <div class="kiss-margin">
                     <label><?=t('Name')?></label>
-                    <input class="kiss-input" type="text" v-model="user.name" required>
+                    <input class="kiss-input" type="text" v-model="user.name" autocomplete="off" autofocus required>
                 </div>
 
                 <div class="kiss-margin">
                     <label><?=t('User')?></label>
-                    <input class="kiss-input" type="text" v-model="user.user" required>
+                    <input class="kiss-input" type="text" v-model="user.user" autocomplete="off" required>
                 </div>
 
                 <div class="kiss-margin">
                     <label><?=t('Email')?></label>
-                    <input class="kiss-input" type="email" v-model="user.email" required>
+                    <input class="kiss-input" type="email" v-model="user.email" autocomplete="off" required>
                 </div>
 
                 <div class="kiss-margin">
