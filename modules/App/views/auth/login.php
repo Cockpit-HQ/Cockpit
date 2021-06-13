@@ -42,8 +42,8 @@
 
                     <kiss-row>
                         <div><app-avatar size="50" :name="user.name"></app-avatar></div>
-                        <div>
-                            <div>{{ user.name }}</div>
+                        <div class="kiss-size-small">
+                            <div class="kiss-text-bold">{{ user.name }}</div>
                             <div class="kiss-color-muted">{{ user.email }}</div>
                         </div>
                     </kiss-row>

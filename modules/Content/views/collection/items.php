@@ -20,7 +20,7 @@
 
         <template>
 
-            <form class="kiss-flex kiss-flex-middle" v-if="!fieldTypes || ((!loading && items.length) || filter)" @submit.prevent="filter = txtFilter">
+            <form class="kiss-flex kiss-flex-middle" v-if="fieldTypes && ((!loading && items.length) || filter)" @submit.prevent="filter = txtFilter">
                 <input type="text" class="kiss-input kiss-flex-1 kiss-margin-xsmall-right" :placeholder="t('Filter items...')" v-model="txtFilter">
 
                 <div class="kiss-button-group kiss-margin-small-left">
