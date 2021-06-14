@@ -38,6 +38,15 @@ class Query extends \Lime\AppAware {
             return \call_user_func($handler[$method], $params, $this->app);
         }
 
+        if ($file = $this->app->path('#config:api/'.trim($path, '/').'.php')) {
+
+            $handler = (function() use($file) {
+                return include($file);
+            })->bindTo($this->app, $this->app);
+
+            return $handler();
+        }
+
         return false;
     }
 
