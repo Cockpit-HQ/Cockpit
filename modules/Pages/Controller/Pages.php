@@ -167,6 +167,9 @@ class Pages extends Controller {
                 if (trim($slugTitle)) {
                     $page[$slug] = $this->helper('utils')->sluggify(trim($slugTitle));
                 }
+            } else {
+                // clean slug, just to be aware of crazy user inputs
+                $page[$slug] = \strtolower(preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', $page[$slug])));
             }
         }
 
