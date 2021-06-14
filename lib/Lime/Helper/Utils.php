@@ -303,11 +303,12 @@ class Utils extends \Lime\Helper {
             \curl_setopt($conn, CURLOPT_VERBOSE, 0);
             $content = (\curl_exec($conn));
             \curl_close($conn);
-        }
-        if (!$content && \function_exists('file_get_contents')){
+
+        } elseif (\function_exists('file_get_contents')){
+
             $content = @\file_get_contents($url);
-        }
-        if (!$content && \function_exists('fopen') && function_exists('stream_get_contents')){
+
+        } elseif (\function_exists('fopen') && function_exists('stream_get_contents')){
             $handle  = @\fopen ($url, "r");
             $content = @\stream_get_contents($handle);
         }
