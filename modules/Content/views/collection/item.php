@@ -228,7 +228,8 @@
                     item: <?=json_encode($item)?>,
                     fields: <?=json_encode($fields)?>,
                     locales: <?=json_encode($locales)?>,
-                    saving: false
+                    saving: false,
+                    isModified: false
                 }
             },
 
@@ -250,8 +251,24 @@
                 }
             },
 
-            mounted() {
+            created() {
 
+                window.onbeforeunload = e => {
+
+                    if (this.isModified) {
+                        e.preventDefault();
+                        e.returnValue = this.t('You have unsaved data! Are you sure you want to leave?');
+                    }
+                };
+            },
+
+            watch: {
+                item: {
+                    handler() {
+                        this.isModified = true;
+                    },
+                    deep: true
+                }
             },
 
             methods: {
@@ -263,9 +280,13 @@
                     this.saving = true;
 
                     this.$request(`/content/models/saveItem/${model}`, {item: this.item}).then(item => {
+
                         this.item = Object.assign(this.item, item);
                         this.saving = false;
                         App.ui.notify('Data updated!');
+
+                        this.$nextTick(() => this.isModified = false);
+
                     }).catch(rsp => {
                         this.saving = false;
                         App.ui.notify(rsp.error || 'Saving failed!', 'error');

@@ -228,7 +228,9 @@
 
                         pages: 1,
                         page: 1,
-                        limit: 100
+                        limit: 100,
+
+                        isModified: false
                     }
                 },
 
@@ -265,6 +267,17 @@
                     }
                 },
 
+                created() {
+
+                    window.onbeforeunload = e => {
+
+                        if (this.isModified) {
+                            e.preventDefault();
+                            e.returnValue = this.t('You have unsaved data! Are you sure you want to leave?');
+                        }
+                    };
+                },
+
                 watch: {
 
                     filter() {
@@ -272,6 +285,13 @@
                     },
                     page() {
                         this.resetKeysScoller();
+                    },
+
+                    project: {
+                        handler() {
+                            this.isModified = true;
+                        },
+                        deep: true
                     }
                 },
 
@@ -392,6 +412,9 @@
                             this.saving = false;
 
                             App.ui.notify('Project updated!');
+
+                            this.$nextTick(() => this.isModified = false);
+
                         }).catch(res => {
                             this.saving = false;
                             App.ui.notify(res.error || 'Saving failed!', 'error');

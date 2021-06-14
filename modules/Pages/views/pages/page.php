@@ -244,8 +244,20 @@
                         showSEO: false,
                         fields: [
                             {name: 'layout', type: 'layout'}
-                        ]
+                        ],
+                        isModified: false
                     }
+                },
+
+                created() {
+
+                    window.onbeforeunload = e => {
+
+                        if (this.isModified) {
+                            e.preventDefault();
+                            e.returnValue = this.t('You have unsaved data! Are you sure you want to leave?');
+                        }
+                    };
                 },
 
                 components: {
@@ -255,6 +267,15 @@
                 computed: {
                     visibleLocales() {
                         return this.locales.filter(l => l.visible);
+                    }
+                },
+
+                watch: {
+                    page: {
+                        handler() {
+                            this.isModified = true;
+                        },
+                        deep: true
                     }
                 },
 
@@ -283,6 +304,8 @@
                                 App.ui.notify('Page created!');
                                 this.isUpdate = true;
                             }
+
+                            this.$nextTick(() => this.isModified = false);
 
                         }).catch(res => {
                             this.saving = false;
