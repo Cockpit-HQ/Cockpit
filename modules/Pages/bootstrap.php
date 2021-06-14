@@ -90,6 +90,10 @@ $this->module('pages')->extend([
 
         $filter[$routeKey] = $route;
 
+        if ($route == '/') {
+            $filter = ['_pid' => null, '_o' => 0];
+        }
+
         $page = $this->app->dataStorage->findOne('pages', $filter);
 
         return $page ? $this->app->helper('locales')->applyLocales($page, $locale) : null;

@@ -157,7 +157,7 @@ $this->on('restApi.config', function($restApi) {
 
             $page = $app->module('pages')->pageByRoute($route, $locale);
 
-            if (!$page) {
+            if (!$page || $page['_state'] != 1) {
                 $app->response->status = 404;
                 return ["error" => "Page not found!"];
             }

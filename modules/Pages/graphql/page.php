@@ -19,6 +19,10 @@ $gql->queries['fields']['page'] = [
 
         $page = $app->module('pages')->pageByRoute($args['route'], $locale);
 
+        if ($page && $page['_state'] != 1) {
+            $page = null;
+        }
+
         return $page;
     }
 ];
