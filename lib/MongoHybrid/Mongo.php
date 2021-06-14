@@ -93,7 +93,7 @@ class Mongo {
 
         if (!$filter) $filter = [];
 
-        $filter = $this->_fixMongoIds($filter, true);
+        $filter = $this->_fixForMongo($filter, true);
         $doc    = $this->getCollection($collection)->findOne($filter, ['projection' => $projection ?? []]);
 
         if (isset($doc['_id'])) $doc['_id'] = (string) $doc['_id'];
@@ -109,7 +109,7 @@ class Mongo {
         $sort   = isset($options['sort'])   && $options['sort']   ? $options['sort']   : null;
         $skip   = isset($options['skip'])   && $options['skip']   ? $options['skip']   : null;
 
-        $filter = $this->_fixMongoIds($filter, true);
+        $filter = $this->_fixForMongo($filter, true);
 
         $cursor = $this->getCollection($collection)->find($filter, [
             'projection' => $fields,
@@ -164,7 +164,7 @@ class Mongo {
             return $doc;
         }
 
-        $doc = $this->_fixMongoIds($doc);
+        $doc = $this->_fixForMongo($doc);
         $ref = $doc;
 
         $return = $this->getCollection($collection)->insertOne($ref);
@@ -180,7 +180,7 @@ class Mongo {
 
     public function save(string $collection, array &$data, bool $create = false): mixed {
 
-        $data = $this->_fixMongoIds($data);
+        $data = $this->_fixForMongo($data);
         $ref  = $data;
 
         if (isset($data['_id'])) {
@@ -205,8 +205,8 @@ class Mongo {
 
     public function update(string $collection, mixed $criteria, array $data) {
 
-        $criteria = $this->_fixMongoIds($criteria);
-        $data     = $this->_fixMongoIds($data);
+        $criteria = $this->_fixForMongo($criteria);
+        $data     = $this->_fixForMongo($data);
 
         return $this->getCollection($collection)->updateMany($criteria, ['$set' => $data]);
     }
@@ -215,7 +215,7 @@ class Mongo {
 
         if (!$filter) $filter = [];
 
-        $filter = $this->_fixMongoIds($filter);
+        $filter = $this->_fixForMongo($filter);
 
         return $this->getCollection($collection)->deleteMany($filter);
     }
@@ -240,12 +240,12 @@ class Mongo {
 
         if (!$filter) $filter = [];
 
-        $filter = $this->_fixMongoIds($filter, true);
+        $filter = $this->_fixForMongo($filter, true);
 
         return $this->getCollection($collection)->countDocuments($filter, $options);
     }
 
-    protected function _fixMongoIds(mixed &$data, bool $infinite = false, int $_level = 0): mixed {
+    protected function _fixForMongo(mixed &$data, bool $infinite = false, int $_level = 0): mixed {
 
         if (!is_array($data)) {
             return $data;
@@ -253,7 +253,7 @@ class Mongo {
 
         if ($_level == 0 && isset($data[0])) {
             foreach ($data as $i => $doc) {
-                $data[$i] = $this->_fixMongoIds($doc, $infinite);
+                $data[$i] = $this->_fixForMongo($doc, $infinite);
             }
             return $data;
         }
@@ -261,7 +261,7 @@ class Mongo {
         foreach ($data as $k => &$v) {
 
             if (is_array($data[$k]) && $infinite) {
-                $data[$k] = $this->_fixMongoIds($data[$k], $infinite, $_level + 1);
+                $data[$k] = $this->_fixForMongo($data[$k], $infinite, $_level + 1);
             }
 
             if ($k === '_id') {
@@ -296,6 +296,11 @@ class Mongo {
                     }
 
                 }
+            }
+
+            // eg ArrayObject
+            if (\is_object($v) && \is_iterable($v)) {
+                $v = \json_decode(\json_encode($v), true);
             }
         }
 

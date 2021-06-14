@@ -181,19 +181,17 @@ class Pages extends Controller {
         foreach ($locales as $locale) {
 
             $data = "data_{$locale['i18n']}";
-            $meta = "_meta_{$locale['i18n']}";
 
             if ($locale['i18n'] == 'default') {
                 $data = 'data';
-                $meta = '_meta';
             }
 
             if (!isset($page[$data])) $page[$data] = [];
-            if (!isset($page[$meta])) $page[$meta] = [];
 
             $page[$data] = new ArrayObject($page[$data]);
-            $page[$meta] = new ArrayObject($page[$meta]);
         }
+
+        $page["_meta"] = new ArrayObject($page["_meta"]);
 
         return $page;
 
