@@ -4103,6 +4103,9 @@ html[data-theme='light'] .app-logo[src$="App/assets/logo.svg"] {
 html[data-theme='light'] kiss-offcanvas kiss-content {
     --kiss-color-contrast: #fff;
 }
+html[data-theme='light'].login-page {
+    background-image: url(img/bg-light.svg);
+}
 @media (prefers-color-scheme: light) {
     html { --app-auto-theme: light; }
 }
@@ -4146,6 +4149,42 @@ label {
     text-decoration: none;
     margin-bottom: 5px;
     color: var(--kiss-color-muted);
+}
+.login-page {
+    background-image: url(img/bg-dark.svg);
+    background-position: 50%;
+    background-attachment: scroll;
+    background-size: auto;
+    background-repeat: repeat;
+    overflow: hidden;
+}
+.login-wrapper {
+    position: relative;
+    width:400px;
+    max-width: 90%;
+    margin-top: 20vh;
+    padding: 30px;
+    border-radius: 10px;
+}
+.login-wrapper::before {
+    content: "";
+    position:absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    background: var(--kiss-base-background-color);
+    z-index: -1;
+    opacity: .8;
+
+    box-shadow:
+        0 2.8px 2.2px rgba(0, 0, 0, 0.034),
+        0 6.7px 5.3px rgba(0, 0, 0, 0.048),
+        0 12.5px 10px rgba(0, 0, 0, 0.06),
+        0 22.3px 17.9px rgba(0, 0, 0, 0.072),
+        0 41.8px 33.4px rgba(0, 0, 0, 0.086),
+        0 100px 80px rgba(0, 0, 0, 0.12);
 }
 .app-logo {
     max-height: 100%;

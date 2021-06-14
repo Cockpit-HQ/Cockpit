@@ -1231,7 +1231,7 @@
       );
   };
 
-  var utils$1 = {
+  var utils = {
       copyText,
       formatSize,
       formatDuration,
@@ -1387,12 +1387,12 @@
             </div>
         `, options, 'confirm');
 
-          utils.on(dialog, 'click', '.kiss-button-confirm', () => {
+          App.utils.on(dialog, 'click', '.kiss-button-confirm', () => {
               if (onconfirm) onconfirm();
               dialog.close();
           });
 
-          utils.on(dialog, 'click', '.kiss-button-cancel', () => {
+          App.utils.on(dialog, 'click', '.kiss-button-cancel', () => {
               if (oncancel) oncancel();
               dialog.close();
           });
@@ -1418,13 +1418,13 @@
 
           input.value = value;
 
-          utils.on(dialog, 'submit', (e) => {
+          App.utils.on(dialog, 'submit', (e) => {
               e.preventDefault();
               if (clb) clb(input.value);
               dialog.close();
           });
 
-          utils.on(dialog, 'click', '.kiss-button-cancel', () => {
+          App.utils.on(dialog, 'click', '.kiss-button-cancel', () => {
               dialog.close();
           });
 
@@ -2287,7 +2287,7 @@
   App$1.i18n = window.i18n || null;
   App$1.assets = assets;
   App$1.ui = ui$1;
-  App$1.utils = utils$1;
+  App$1.utils = utils;
 
   // custom utils
   App$1.utils.import = function(uri) {
