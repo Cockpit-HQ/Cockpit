@@ -143,12 +143,12 @@ export default {
             </div>
         `, options, 'confirm');
 
-        utils.on(dialog, 'click', '.kiss-button-confirm', () => {
+        App.utils.on(dialog, 'click', '.kiss-button-confirm', () => {
             if (onconfirm) onconfirm();
             dialog.close();
         });
 
-        utils.on(dialog, 'click', '.kiss-button-cancel', () => {
+        App.utils.on(dialog, 'click', '.kiss-button-cancel', () => {
             if (oncancel) oncancel();
             dialog.close();
         });
@@ -174,13 +174,13 @@ export default {
 
         input.value = value;
 
-        utils.on(dialog, 'submit', (e) => {
+        App.utils.on(dialog, 'submit', (e) => {
             e.preventDefault();
             if (clb) clb(input.value);
             dialog.close();
         });
 
-        utils.on(dialog, 'click', '.kiss-button-cancel', () => {
+        App.utils.on(dialog, 'click', '.kiss-button-cancel', () => {
             dialog.close();
         });
 
