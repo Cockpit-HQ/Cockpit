@@ -35,7 +35,8 @@
         "symfony/polyfill-mbstring": "^1.22",
         "symfony/polyfill-php81": "^1.22",
         "webonyx/graphql-php": "^14.6",
-        "zircote/swagger-php": "^3.2"
+        "zircote/swagger-php": "^3.2",
+        "guzzlehttp/guzzle": "^7.0"
     },
 
     "config": {
