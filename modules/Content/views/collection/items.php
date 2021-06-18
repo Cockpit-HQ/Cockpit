@@ -29,7 +29,7 @@
                 </div>
             </form>
 
-            <app-loader class="ki9ss-margin" v-if="!fieldTypes || loading"></app-loader>
+            <app-loader class="kiss-margin" v-if="!fieldTypes || loading"></app-loader>
 
             <div class="animated fadeIn kiss-height-50vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted" v-if="fieldTypes && !loading && !items.length">
                 <div>

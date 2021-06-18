@@ -23,7 +23,7 @@ class Async extends \Lime\Helper {
         $this->phpPath = $this->app->retrieve('aysnc.php', 'php');
     }
 
-    public function exec($script, $params = null, $maxTime = 60) {
+    public function exec($script, $params = [], $maxTime = 60) {
 
         $processId = \uniqid('worker').'-'.(\time() + $maxTime);
         $fs = $this->app->helper('fs');

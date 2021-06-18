@@ -134,7 +134,7 @@
                                 <div class="kiss-align-right">{{ project.status[loc.i18n] }}%</div>
                             </div>
                         </div>
-                    <app-scrollcontainer mode="boundary" boundary="#lokalize-actionbar">
+                    </app-scrollcontainer>
                 </div>
             </kiss-row>
 

@@ -242,7 +242,7 @@ class Mongo {
 
         $filter = $this->_fixForMongo($filter, true);
 
-        return $this->getCollection($collection)->countDocuments($filter, $options);
+        return $this->getCollection($collection)->estimatedDocumentCount($filter, $options);
     }
 
     protected function _fixForMongo(mixed &$data, bool $infinite = false, int $_level = 0): mixed {

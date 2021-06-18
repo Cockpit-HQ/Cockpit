@@ -2150,7 +2150,7 @@ app-loader[mode="dots"] div {
     width: 16%;
     height: 16%;
     border-radius: 50%;
-    background: var(--app-loader-color1, #0e8fff);
+    background: var(--app-loader-color-dots, currentColor);
     animation-timing-function: cubic-bezier(0, 1, 1, 0);
 }
 app-loader[mode="dots"] div:nth-child(1) {
