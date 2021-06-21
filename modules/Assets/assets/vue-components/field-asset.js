@@ -7,7 +7,10 @@ export default {
         render(value, field, context) {
 
             if (value.type == 'image') {
-                return '<img class="kiss-responsive-height" src="'+App.route(`/assets/thumbnail/${value._id}?m=bestFit&mime=auto&h=20`)+'" style="height:20px">'
+
+                let height = context == 'table-cell' ? 20 : 50;
+
+                return '<img class="kiss-responsive-height" src="'+App.route(`/assets/thumbnail/${value._id}?m=bestFit&mime=auto&h=${height}`)+'" style="height:'+height+'px">'
             }
 
             return value.type;

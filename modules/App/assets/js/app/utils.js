@@ -84,6 +84,27 @@ let truncate = function(text, length, clamp = '...') {
     return content.length > length ? content.slice(0, length) + clamp : content;
 };
 
+let stripTags = function(input, allowed) {
+
+    // making sure the allowed arg is a string containing only tags in lowercase (<a><b><c>)
+    allowed = (((allowed || '') + '').toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join('');
+    const tags = /<\/?([a-z0-9]*)\b[^>]*>?/gi;
+    const commentsAndPhpTags = /<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi;
+    let after = input;
+
+    after = (after.substring(after.length - 1) === '<') ? after.substring(0, after.length - 1) : after;
+
+    while (true) {
+        const before = after
+        after = before.replace(commentsAndPhpTags, '').replace(tags, ($0, $1) => {
+            return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : ''
+        });
+        if (before === after) {
+            return after
+        }
+    }
+};
+
 export default {
     copyText,
     formatSize,
@@ -93,5 +114,6 @@ export default {
     on,
     toKebabCase,
     uuid,
-    truncate
+    truncate,
+    stripTags
 }

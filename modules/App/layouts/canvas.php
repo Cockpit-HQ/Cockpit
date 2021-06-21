@@ -7,7 +7,7 @@
 
     <link rel="icon" href="<?=$this->helper('theme')->favicon()?>">
 
-    <?=$this->helper('theme')->assets()?>
+    <?=$this->helper('theme')->assets([], 'canvas')?>
 
     <?php $this->block('app.layout.header') ?>
 

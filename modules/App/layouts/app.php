@@ -7,7 +7,7 @@
 
     <link rel="icon" href="<?=$this->helper('theme')->favicon()?>">
 
-    <?=$this->helper('theme')->assets([['src' => 'app:assets/js/admin.js', 'type' => 'module']])?>
+    <?=$this->helper('theme')->assets([['src' => 'app:assets/js/admin.js', 'type' => 'module']], 'app')?>
 
     <?php $this->trigger('app.layout.header') ?>
     <?php $this->block('app.layout.header') ?>

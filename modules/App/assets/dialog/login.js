@@ -16,7 +16,7 @@ export default {
     },
 
     template: /*html*/`
-        <div>
+        <div id="app-session-login">
 
             <div class="kiss-size-small kiss-text-caption kiss-text-bold kiss-margin-bottom">{{ t('Session expired') }}</div>
 

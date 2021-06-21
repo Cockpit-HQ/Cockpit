@@ -3,7 +3,7 @@ let checkSessionTimeout = function() {
     let csrf;
     let check = function() {
 
-        let isActive = document.querySelector('.app-login-form');
+        let isActive = document.getElementById('app-session-login');
 
         App.request('/check-session').then(res => {
 

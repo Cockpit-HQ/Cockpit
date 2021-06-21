@@ -81,7 +81,7 @@ class Theme extends \Lime\Helper {
         return $theme;
     }
 
-    public function assets(array $assets = []) {
+    public function assets(array $assets = [], ?string $context = null) {
 
         $debug = $this->app->retrieve('debug');
 
@@ -93,7 +93,7 @@ class Theme extends \Lime\Helper {
             $debug ? ['src' => 'app:assets/js/app.js', 'type' => 'module'] : 'app:assets/app.bundle.js',
         ], $assets);
 
-        $this->app->trigger('app.layout.assets', [&$assets, APP_VERSION]);
+        $this->app->trigger('app.layout.assets', [&$assets, APP_VERSION, $context]);
 
         if ($this->app->path('#config:theme.css')) {
             $assets[] = '#config:theme.css';

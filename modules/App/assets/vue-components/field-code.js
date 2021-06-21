@@ -37,7 +37,10 @@ export default {
         settings: [
             {name: 'mode', type: 'select', opts: {options: ['css', 'html', 'json', 'javascript', 'markdown', 'php', 'yaml', 'xml']}},
             {name: 'height', type: 'number'},
-        ]
+        ],
+        render(value, field, context) {
+            return App.utils.truncate(App.utils.stripTags(value), context == 'table-cell' ? 20 : 50);
+        }
     },
 
     data() {
