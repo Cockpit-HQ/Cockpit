@@ -39,11 +39,11 @@ class Asset extends \Lime\Helper {
 
             if ($this->app->fileStorage->fileExists($thumbpath)) {
 
-                if ($base64 || $binary) {
+                if ($base64) {
                     return "data:image/{$mime};base64,".base64_encode($this->app->fileStorage->read($thumbpath));
                 }
 
-                return $this->app->fileStorage->getURL($thumbpath);
+                return $asPath ? $thumbpath : $this->app->fileStorage->getURL($thumbpath);
             }
         }
 

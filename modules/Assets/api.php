@@ -85,7 +85,7 @@ $this->on('restApi.config', function($restApi) {
 
                 $mime = null;
 
-                if (strpos($app->app->request->headers['Accept'] ?? '', 'image/webp') !== false) {
+                if (strpos($app->request->headers['Accept'] ?? '', 'image/webp') !== false) {
                     $gdinfo = \gd_info();
                     $mime = isset($gdinfo['WebP Support']) && $gdinfo['WebP Support'] ? 'webp' : null;
                 }
@@ -101,6 +101,7 @@ $this->on('restApi.config', function($restApi) {
                 'height' => intval($app->param('h', null)),
                 'quality' => intval($app->param('q:int', 80)),
                 'rebuild' => intval($app->param('r:int', false)),
+                'base64' => intval($app->param('b64:int', false)),
                 'redirect' => intval($app->param('re:int', false)),
                 'output' => intval($app->param('o:int', false)),
             ];
@@ -109,6 +110,10 @@ $this->on('restApi.config', function($restApi) {
 
             if (!$imgPath) {
                 return false;
+            }
+
+            if ($options['base64']) {
+                return $imgPath;
             }
 
             if ($options['output']) {
