@@ -1231,6 +1231,11 @@
       );
   };
 
+  let truncate = function(text, length, clamp = '...') {
+      let content = text || '';
+      return content.length > length ? content.slice(0, length) + clamp : content;
+  };
+
   var utils = {
       copyText,
       formatSize,
@@ -1239,7 +1244,8 @@
       interpolate,
       on,
       toKebabCase,
-      uuid
+      uuid,
+      truncate
   };
 
   var ui$1 = {

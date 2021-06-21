@@ -57,10 +57,10 @@ let FieldRenderer = {
                             <kiss-card class="kiss-flex-1 kiss-padding-small kiss-size-small kiss-position-relative" theme="bordered contrast">
                                 <span class="kiss-badge kiss-badge-outline kiss-color-muted" v-if="val[index] == null">n/a</span>
                                 <div class="kiss-text-truncate" v-else-if="fieldTypes[field.type] && fieldTypes[field.type].render" v-html="fieldTypes[field.type].render(val[index], field)"></div>
-                                <div class="kiss-text-truncate" v-else>
+                                <div v-else>
                                     <span class="kiss-badge kiss-badge-outline" v-if="Array.isArray(val[index])">{{ val[index].length }}</span>
                                     <span class="kiss-badge kiss-badge-outline" v-else-if="typeof(val[index]) == 'object'">Object</span>
-                                    <span v-else>{{ val[index] }}</span>
+                                    <div class="kiss-text-truncate" v-else>{{ val[index] }}</div>
                                 </div>
                                 <a class="kiss-cover" @click="editFieldItem(field, index)"></a>
                             </kiss-card>

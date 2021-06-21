@@ -79,6 +79,11 @@ let uuid = function() {
     );
 }
 
+let truncate = function(text, length, clamp = '...') {
+    let content = text || '';
+    return content.length > length ? content.slice(0, length) + clamp : content;
+};
+
 export default {
     copyText,
     formatSize,
@@ -87,5 +92,6 @@ export default {
     interpolate,
     on,
     toKebabCase,
-    uuid
+    uuid,
+    truncate
 }
