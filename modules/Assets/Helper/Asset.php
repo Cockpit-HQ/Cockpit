@@ -91,7 +91,7 @@ class Asset extends \Lime\Helper {
                 return 'data:image/svg+xml;base64,'.base64_encode(file_get_contents($src));
             }
 
-            return $srcUrl;
+            return $asPath ? "uploads://{$path}" : $srcUrl;
         }
 
         // check if image
