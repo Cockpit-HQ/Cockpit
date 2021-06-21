@@ -171,7 +171,11 @@ class Response {
                 \header(\is_numeric($h) ? $v : "{$h}: {$v}");
             }
 
-            echo $body;
+            if (\is_resource($body)) {
+                \fpassthru($body);
+            } else {
+                echo $body;
+            }
         }
     }
 }

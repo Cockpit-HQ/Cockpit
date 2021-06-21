@@ -188,7 +188,7 @@ class Assets extends App {
             'rebuild' => intval($this->param('r', false)),
         ];
 
-        $thumbUrl = $this->helper('asset')->thumbnail($options);
+        $thumbUrl = $this->helper('asset')->image($options);
 
         $this->app->reroute($thumbUrl);
     }

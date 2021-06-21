@@ -6,7 +6,7 @@ use claviska\SimpleImage;
 
 class Asset extends \Lime\Helper {
 
-    public function thumbnail(array $options = []) {
+    public function image(array $options = [], bool $asPath = false) {
 
         $options = array_merge([
             'cachefolder' => 'tmp://thumbs',
@@ -20,7 +20,6 @@ class Asset extends \Lime\Helper {
             'quality' => 100,
             'rebuild' => false,
             'base64' => false,
-            'binary' => false,
         ], $options);
 
         extract($options);
@@ -88,7 +87,7 @@ class Asset extends \Lime\Helper {
         // handle svg files
         if ($ext == 'svg') {
 
-            if ($base64 || $binary) {
+            if ($base64) {
                 return 'data:image/svg+xml;base64,'.base64_encode(file_get_contents($src));
             }
 
@@ -168,11 +167,11 @@ class Asset extends \Lime\Helper {
             unset($img);
         }
 
-        if ($base64 || $binary) {
+        if ($base64) {
             return "data:image/{$ext};base64,".base64_encode($this->app->fileStorage->read($thumbpath));
         }
 
-        return $this->app->fileStorage->getURL($thumbpath);
+        return $asPath ? $thumbpath : $this->app->fileStorage->getURL($thumbpath);
 
     }
 }
