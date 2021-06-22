@@ -22,29 +22,88 @@
 </head>
 <body class="animated fadeIn">
 
-    <app-header role="banner">
-        <kiss-container class="kiss-flex kiss-flex-middle">
-            <div>
-                <a class="kiss-display-block" href="<?=$this->route('/')?>"><img class="app-logo" src="<?=$this->helper('theme')->logo()?>" alt="Logo"></a>
-            </div>
-            <div class="kiss-margin-small-left">
-                <a href="#app-offcanvas" class="kiss-link-muted kiss-flex kiss-flex-middle" kiss-offcanvas>
-                    <span class="kiss-text-bold"><?=$this['app.name']?></span>
-                    <icon class="kiss-margin-small-left">more_horiz</icon>
-                </a>
-            </div>
-            <div class="kiss-flex-1 kiss-margin-left">
+    <div class="app-container">
+        <aside class="app-container-aside">
+
+            <div class="app-container-aside-float">
+
+                <div class="kiss-flex-1 kiss-overflow-y-auto">
+                    <kiss-navlist>
+                        <ul>
+                            <li class="<?=($this->request->route == '/') ? 'active':''?>">
+                                <a href="<?=$this->route('/')?>" title="<?=t('Dashboard')?>">
+                                    <kiss-svg src="<?=$this->base('app:icon.svg')?>" width="25" height="25"></kiss-svg>
+                                </a>
+                            </li>
+                            <?php foreach ($this->helper('menus')->menu('modules', true) as $group => $links): ?>
+
+                                <li class="kiss-nav-divider"></li>
+
+                                <?php foreach ($links as $link): ?>
+                                    <li class="<?=(strpos($this->request->route, $link['route']) === 0) ? 'active':''?>">
+                                        <a href="<?=$this->route($link['route'])?>" title="<?=t($link['label'])?>">
+                                            <kiss-svg src="<?=$this->base($link['icon'])?>" width="25" height="25"></kiss-svg>
+                                        </a>
+                                    </li>
+                                <?php endforeach ?>
+
+                            <?php endforeach ?>
+                        </ul>
+                    </kiss-navlist>
+                </div>
+
+                <kiss-navlist space="small">
+                    <ul>
+                        <li>
+                            <a class="kiss-flex kiss-flex-center" href="<?=$this->route('/settings/users/user')?>" title="<?=t('Account')?>">
+                                <icon>account_circle</icon>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="kiss-flex kiss-flex-center" href="<?=$this->route('/settings')?>" title="<?=t('Settings')?>">
+                                <icon>tune</icon>
+                            </a>
+                        </li>
+                        <?php if (_allowed('app.users.manage')): ?>
+                        <li>
+                            <a class="kiss-flex kiss-flex-center" href="<?=$this->route('/settings/users')?>" title="<?=t('Users')?>">
+                                <icon>supervisor_account</icon>
+                            </a></li>
+                        <?php endif ?>
+                    </ul>
+                </kiss-navlist>
 
             </div>
-            <div class="kiss-margin-left">
-                <a kiss-popoutmenu="#app-account-menu">
-                    <app-avatar size="30" name="<?=$this['user/name']?>"></app-avatar>
-                </a>
-            </div>
-        </kiss-container>
-    </app-header>
 
-    <?=$content_for_layout?>
+
+        </aside>
+        <main class="kiss-flex-1">
+
+            <app-header role="banner">
+                <kiss-container class="kiss-flex kiss-flex-middle">
+                    <div>
+                        <a class="kiss-display-block" href="<?=$this->route('/')?>"><img class="app-logo" src="<?=$this->helper('theme')->logo()?>" alt="Logo"></a>
+                    </div>
+                    <div class="kiss-margin-small-left">
+                        <a href="#app-offcanvas" class="kiss-link-muted kiss-flex kiss-flex-middle" kiss-offcanvas>
+                            <span class="kiss-text-bold"><?=$this['app.name']?></span>
+                            <icon class="kiss-margin-small-left kiss-hidden@m">more_horiz</icon>
+                        </a>
+                    </div>
+                    <div class="kiss-flex-1 kiss-margin-left">
+
+                    </div>
+                    <div class="kiss-margin-left">
+                        <a kiss-popoutmenu="#app-account-menu">
+                            <app-avatar size="30" name="<?=$this['user/name']?>"></app-avatar>
+                        </a>
+                    </div>
+                </kiss-container>
+            </app-header>
+
+            <?=$content_for_layout?>
+        </main>
+    </div>
 
     <kiss-popoutmenu id="app-account-menu">
         <kiss-content>
@@ -101,7 +160,7 @@
 
                             <?php endforeach ?>
                         </ul>
-                    </navlist>
+                    </kiss-navlist>
                 </div>
 
                 <?php $this->trigger('app.layout.offcanvas.content') ?>
@@ -127,7 +186,7 @@
                             </a></li>
                         <?php endif ?>
                     </ul>
-                </navlist>
+                </kiss-navlist>
             </div>
             <?php $this->trigger('app.layout.offcanvas.footer') ?>
         </kiss-content>

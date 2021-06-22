@@ -117,8 +117,8 @@ export default {
 
             <kiss-row class="kiss-row-small kiss-child-width-1-2 kiss-child-width-1-5@m kiss-child-width-1-6@xl spotlight-group" v-if="!loading && assets.length" match="true" hover="shadow">
                 <div v-for="asset in assets">
-                    <kiss-card class="kiss-position-relative" theme="bordered contrast" :style="{borderColor: (selectedAsset && selectedAsset._id == asset._id && 'var(--kiss-color-primary)') || null}">
-                        <div class="kiss-bgcolor-contrast kiss-position-relative" :class="{'kiss-bgcolor-transparentimage': asset.type == 'image'}">
+                    <kiss-card class="kiss-position-relative kiss-bgcolor-contrast" theme="bordered" :style="{borderColor: (selectedAsset && selectedAsset._id == asset._id && 'var(--kiss-color-primary)') || null}">
+                        <div class="kiss-position-relative" :class="{'kiss-bgcolor-transparentimage': asset.type == 'image'}">
                             <canvas width="400" height="300"></canvas>
                             <div class="kiss-cover kiss-padding kiss-flex kiss-flex-middle kiss-flex-center">
                                 <div><asset-preview :asset="asset"></asset-preview></div>

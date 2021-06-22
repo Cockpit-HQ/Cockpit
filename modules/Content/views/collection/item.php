@@ -22,9 +22,7 @@
             </div>
         </kiss-container>
 
-        <hr class="kiss-margin-top kiss-margin-large-bottom">
-
-        <kiss-container class="kiss-margin">
+        <kiss-container class="kiss-margin-large">
 
             <kiss-card class="kiss-margin-large kiss-size-5 kiss-align-center kiss-color-muted kiss-text-bolder kiss-padding-large" theme="bordered" v-if="!fields.length">
                 <?=t('No fields defined')?>

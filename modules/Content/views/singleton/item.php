@@ -18,9 +18,8 @@
 
 </kiss-container>
 
-<hr class="kiss-margin-top kiss-margin-large-bottom">
 
-<kiss-container>
+<kiss-container class="kiss-margin-large-top">
 
     <vue-view>
 

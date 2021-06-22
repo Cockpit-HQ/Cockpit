@@ -143,6 +143,80 @@ body {
     min-height: 100vh;
 }
 
+.app-container {
+    display: flex;
+}
+
+.app-container-aside {
+    display: none;
+    height: 100vh;
+    margin-right: 20px;
+    width: 50px;
+    z-index: 5;
+}
+
+.app-container-aside-float {
+    position: fixed;
+    display: flex;
+    top: 0;
+    left: 0;
+    width: 50px;
+    padding-top: 100px;
+    padding-bottom: 20px;
+    flex-direction: column;
+    height: 100vh;
+
+    animation-duration: 1s;
+    animation-fill-mode: both;
+    animation-name: fadeInLeft;
+}
+
+.app-container-aside kiss-navlist a {
+    text-align: center;
+}
+
+.app-container-aside kiss-navlist kiss-svg {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.app-container-aside kiss-navlist ul > li > a {
+    color: inherit;
+    opacity: .65;
+    transition: all 250ms;
+}
+
+.app-container-aside kiss-navlist ul > li > a:hover{
+    color: inherit;
+    opacity: 1;
+}
+
+.app-container-aside kiss-navlist ul > li.active > a {
+    color: var(--kiss-color-primary);
+    font-weight: bold;
+    opacity: 1;
+}
+
+.app-container-aside kiss-navlist ul > li > * {
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+    letter-spacing: 1.5px;
+}
+
+.app-container-aside kiss-navlist[space="small"] ul > li > * {
+    padding: 6px 0;
+    font-size: 18px;
+}
+
+.app-container-aside kiss-navlist .kiss-nav-divider {
+    margin-top: 1.2rem;
+    margin-bottom: 1.2rem;
+    opacity: .8;
+}
+
+
+
 app-avatar canvas,
 .app-border-radius {
     border-radius: var(--app-border-radius);
@@ -221,7 +295,7 @@ app-header {
     padding: 15px 0;
     background: var(--app-header-background);
     box-shadow: var(--app-header-box-shadow);
-    z-index: 2;
+    z-index: 6;
 }
 
 app-actionbar kiss-container {
@@ -288,6 +362,16 @@ app-fieldcontainer app-fieldcontainer {
         position: sticky;
         position: -webkit-sticky;
         top: 0;
+        padding-left: 70px;
+        margin-left: -70px;
+    }
+
+    app-actionbar {
+        padding-left: 70px;
+    }
+
+    .app-container-aside {
+        display: block;
     }
 
 }
