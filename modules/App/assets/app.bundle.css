@@ -4024,7 +4024,7 @@ vue-view { display: block; }
 vue-view:not([init="true"]) { display: none; }
 :root {
 
-    --app-header-background: var(--kiss-base-background-color);
+    --app-header-background: #131720f0;
     --app-border-radius: 3px;
     --app-shadow-color: rgba(0,0,0,0.12);
 
@@ -4051,7 +4051,7 @@ html[data-theme='light'] {
     --kiss-color-success: #4caf50;
     --kiss-color-warning: orange;
     --kiss-color-danger: #f91941;
-    --kiss-color-muted: rgba(0,0,0,.45);
+    --kiss-color-muted: rgba(0,0,0,.55);
     --kiss-color-overlay: rgba(255,255,255, .8);
 
     --kiss-input-border-color: rgba(0,0,0,.1);
@@ -4067,6 +4067,7 @@ html[data-theme='light'] {
     --kiss-input-background-active: #fff;
 
     --app-shadow-color: rgba(0,0,0,0.12);
+    --app-header-background: #eff7f7f0;
     --app-actionbar-bgcolor: #eff7f7e8;
     --app-loader-color2: #333;
     --app-fieldcontainer-border-color-inactive: rgba(0,0,0, .1);
@@ -4251,7 +4252,7 @@ app-header {
     display: block;
     position: relative;
     padding: 15px 0;
-    background: linear-gradient(180deg, var(--app-header-background) 0%, var(--app-header-background) 50%,rgba(0,0,0,0) 100%);
+    background: var(--app-header-background);
     z-index: 6;
 }
 app-actionbar kiss-container {
