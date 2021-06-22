@@ -19,8 +19,7 @@ vue-view:not([init="true"]) { display: none; }
 
 :root {
 
-    --app-header-background: rgba(16, 19, 27, .9);
-    --app-header-box-shadow: 0 0 0 1px rgb(19 23 32 / 5%), 0 2px 5px 0 rgb(19 23 32 / 8%), 0 1px 3px 0 rgb(19 23 32 / 15%);
+    --app-header-background: var(--kiss-base-background-color);
     --app-border-radius: 3px;
     --app-shadow-color: rgba(0,0,0,0.12);
 
@@ -43,7 +42,7 @@ html[data-theme='light'] {
     --kiss-button-default-background: #e0dee6;
     --kiss-button-default-color: #000;
     --kiss-color-alternate: #fff;
-    --kiss-color-contrast: #f0f2f5;
+    --kiss-color-contrast: #e8ebef;
     --kiss-color-primary: #0e8fff;
     --kiss-color-success: #4caf50;
     --kiss-color-warning: orange;
@@ -63,10 +62,7 @@ html[data-theme='light'] {
 
     --kiss-input-background-active: #fff;
 
-    --app-header-background: rgba(255,255,255,.9);
-    --app-header-box-shadow: 0 0 0 1px rgb(49 49 93 / 5%), 0 2px 5px 0 rgb(49 49 93 / 8%), 0 1px 3px 0 rgb(49 49 93 / 15%);
     --app-shadow-color: rgba(0,0,0,0.12);
-
     --app-actionbar-bgcolor: #eff7f7e8;
     --app-loader-color2: #333;
     --app-fieldcontainer-border-color-inactive: rgba(0,0,0, .1);
@@ -161,7 +157,7 @@ body {
     top: 0;
     left: 0;
     width: 50px;
-    padding-top: 100px;
+    padding-top: 5px;
     padding-bottom: 20px;
     flex-direction: column;
     height: 100vh;
@@ -214,8 +210,6 @@ body {
     margin-bottom: 1.2rem;
     opacity: .8;
 }
-
-
 
 app-avatar canvas,
 .app-border-radius {
@@ -278,13 +272,6 @@ label {
         0 100px 80px rgba(0, 0, 0, 0.12);
 }
 
-.app-logo {
-    max-height: 100%;
-    height: 30px;
-    width: auto;
-    max-width: none;
-}
-
 app-fieldcontainer label {
     color: inherit;
 }
@@ -293,8 +280,7 @@ app-header {
     display: block;
     position: relative;
     padding: 15px 0;
-    background: var(--app-header-background);
-    box-shadow: var(--app-header-box-shadow);
+    background: linear-gradient(180deg, var(--app-header-background) 0%, var(--app-header-background) 50%,rgba(0,0,0,0) 100%);
     z-index: 6;
 }
 
@@ -362,8 +348,6 @@ app-fieldcontainer app-fieldcontainer {
         position: sticky;
         position: -webkit-sticky;
         top: 0;
-        padding-left: 70px;
-        margin-left: -70px;
     }
 
     app-actionbar {
