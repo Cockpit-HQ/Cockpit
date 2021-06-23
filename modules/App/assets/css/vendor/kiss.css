@@ -64,7 +64,8 @@ kiss-card,
 .kiss-button,
 .kiss-badge,
 kiss-dialog kiss-content,
-kiss-popoutmenu kiss-content {
+kiss-popoutmenu kiss-content,
+kiss-tooltip {
     border-radius: var(--app-border-radius);
 }
 

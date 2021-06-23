@@ -1,0 +1,19 @@
+kiss-tooltip {
+    display: block;
+    position:fixed;
+    z-index: 100000;
+    pointer-events: none;
+    opacity: 0;
+
+    font-size: var(--kiss-tooltip-fontsize, 12px);
+    background: var(--kiss-tooltip-bgcolor, #000);
+    color: var(--kiss-tooltip-color, #fff);
+    padding: var(--kiss-tooltip-padding, 5px 10px);
+    max-width: var(--kiss-tooltip-maxwidth, 200px);
+    font-weight: bold;
+    transition: opacity 300ms;
+}
+
+kiss-tooltip[show="true"] {
+    opacity: 1;
+}

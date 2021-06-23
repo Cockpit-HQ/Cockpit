@@ -2896,6 +2896,24 @@ kiss-svg:not([preserve]) [stroke*='#']:not(.kiss-preserve) { stroke: currentcolo
  * Fix Firefox blurry SVG rendering: https://bugzilla.mozilla.org/show_bug.cgi?id=1046835
  */
 kiss-svg > svg { transform: translate(0,0); }
+kiss-tooltip {
+    display: block;
+    position:fixed;
+    z-index: 100000;
+    pointer-events: none;
+    opacity: 0;
+
+    font-size: var(--kiss-tooltip-fontsize, 12px);
+    background: var(--kiss-tooltip-bgcolor, #000);
+    color: var(--kiss-tooltip-color, #fff);
+    padding: var(--kiss-tooltip-padding, 5px 10px);
+    max-width: var(--kiss-tooltip-maxwidth, 200px);
+    font-weight: bold;
+    transition: opacity 300ms;
+}
+kiss-tooltip[show="true"] {
+    opacity: 1;
+}
 .kiss-color-primary { color: var(--kiss-color-primary, blue) !important; }
 .kiss-color-success { color: var(--kiss-color-succcess, green) !important; }
 .kiss-color-danger { color: var(--kiss-color-danger, red) !important; }
@@ -3783,7 +3801,8 @@ kiss-card,
 .kiss-button,
 .kiss-badge,
 kiss-dialog kiss-content,
-kiss-popoutmenu kiss-content {
+kiss-popoutmenu kiss-content,
+kiss-tooltip {
     border-radius: var(--app-border-radius);
 }
 .kiss-has-transition {

@@ -14,6 +14,7 @@
 @import "components/row/row.css";
 @import "components/parallax/parallax.css";
 @import "components/svg/svg.css";
+@import "components/tooltip/tooltip.css";
 
 @import "css/color.css";
 @import "css/form.css";

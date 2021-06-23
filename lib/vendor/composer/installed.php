@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '4941933e00b1fc971642041e7b258f29a0a5dbc3',
+    'reference' => 'ee4859e15126432c93393a37596e9e1b6a0f50c2',
     'name' => 'agentejo/cockpit',
   ),
   'versions' => 
@@ -18,16 +18,16 @@
       'aliases' => 
       array (
       ),
-      'reference' => '4941933e00b1fc971642041e7b258f29a0a5dbc3',
+      'reference' => 'ee4859e15126432c93393a37596e9e1b6a0f50c2',
     ),
     'bacon/bacon-qr-code' => 
     array (
-      'pretty_version' => '2.0.3',
-      'version' => '2.0.3.0',
+      'pretty_version' => '2.0.4',
+      'version' => '2.0.4.0',
       'aliases' => 
       array (
       ),
-      'reference' => '3e9d791b67d0a2912922b7b7c7312f4b37af41e4',
+      'reference' => 'f73543ac4e1def05f1a70bcd1525c8a157a1ad09',
     ),
     'claviska/simpleimage' => 
     array (
@@ -85,12 +85,12 @@
     ),
     'firebase/php-jwt' => 
     array (
-      'pretty_version' => 'v5.3.0',
-      'version' => '5.3.0.0',
+      'pretty_version' => 'v5.4.0',
+      'version' => '5.4.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '3c2d70f2e64e2922345e89f2ceae47d2463faae1',
+      'reference' => 'd2113d9b2e0e349796e72d2a63cf9319100382d2',
     ),
     'guzzlehttp/guzzle' => 
     array (
@@ -311,12 +311,12 @@
     ),
     'symfony/yaml' => 
     array (
-      'pretty_version' => 'v5.3.0',
-      'version' => '5.3.0.0',
+      'pretty_version' => 'v5.3.2',
+      'version' => '5.3.2.0',
       'aliases' => 
       array (
       ),
-      'reference' => '3bbcf262fceb3d8f48175302e6ba0ac96e3a5a11',
+      'reference' => '71719ab2409401711d619765aa255f9d352a59b2',
     ),
     'webonyx/graphql-php' => 
     array (

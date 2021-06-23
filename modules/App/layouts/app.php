@@ -35,7 +35,7 @@
                     <kiss-navlist>
                         <ul>
                             <li class="<?=($this->request->route == '/') ? 'active':''?>">
-                                <a href="<?=$this->route('/')?>" title="<?=t('Dashboard')?>">
+                                <a href="<?=$this->route('/')?>" aria-label="<?=t('Dashboard')?>" kiss-tooltip="right">
                                     <kiss-svg src="<?=$this->base('app:icon.svg')?>" width="25" height="25"></kiss-svg>
                                 </a>
                             </li>
@@ -45,7 +45,7 @@
 
                                 <?php foreach ($links as $link): ?>
                                     <li class="<?=(strpos($this->request->route, $link['route']) === 0) ? 'active':''?>">
-                                        <a href="<?=$this->route($link['route'])?>" title="<?=t($link['label'])?>">
+                                        <a href="<?=$this->route($link['route'])?>" aria-label="<?=t($link['label'])?>" kiss-tooltip="right">
                                             <kiss-svg src="<?=$this->base($link['icon'])?>" width="25" height="25"></kiss-svg>
                                         </a>
                                     </li>
@@ -59,18 +59,18 @@
                 <kiss-navlist space="small">
                     <ul>
                         <li>
-                            <a class="kiss-flex kiss-flex-center" href="<?=$this->route('/settings/users/user')?>" title="<?=t('Account')?>">
+                            <a class="kiss-flex kiss-flex-center" href="<?=$this->route('/settings/users/user')?>" aria-label="<?=t('Account')?>" kiss-tooltip="right">
                                 <icon>account_circle</icon>
                             </a>
                         </li>
                         <li>
-                            <a class="kiss-flex kiss-flex-center" href="<?=$this->route('/settings')?>" title="<?=t('Settings')?>">
+                            <a class="kiss-flex kiss-flex-center" href="<?=$this->route('/settings')?>" aria-label="<?=t('Settings')?>" kiss-tooltip="right">
                                 <icon>tune</icon>
                             </a>
                         </li>
                         <?php if (_allowed('app.users.manage')): ?>
                         <li>
-                            <a class="kiss-flex kiss-flex-center" href="<?=$this->route('/settings/users')?>" title="<?=t('Users')?>">
+                            <a class="kiss-flex kiss-flex-center" href="<?=$this->route('/settings/users')?>" aria-label="<?=t('Users')?>" kiss-tooltip="right">
                                 <icon>supervisor_account</icon>
                             </a></li>
                         <?php endif ?>

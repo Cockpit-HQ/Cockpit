@@ -66,7 +66,7 @@ export function on(element, name, delegate, fn) {
 
                 target = target.parentNode;
             }
-        });
+        }, true);
     }
 
     return element;
