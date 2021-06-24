@@ -34,7 +34,6 @@ vue-view:not([init="true"]) { display: none; }
 }
 
 html[data-theme='light'] {
-    --kiss-base-background-color: #f1f1f1;
     --kiss-base-background-color: #eff7f7;
     --kiss-base-text-color: #121212;
     --kiss-hr-color: rgba(0,0,0,.1);
@@ -189,9 +188,20 @@ body {
 }
 
 .app-container-aside kiss-navlist ul > li.active > a {
+    position: relative;
     color: var(--kiss-color-primary);
     font-weight: bold;
     opacity: 1;
+}
+
+.app-container-aside kiss-navlist ul > li.active > a:before {
+    content: "";
+    position: absolute;
+    width: 1px;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    background: var(--kiss-color-primary);
 }
 
 .app-container-aside kiss-navlist ul > li > * {

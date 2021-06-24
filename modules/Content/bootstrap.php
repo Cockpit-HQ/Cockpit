@@ -293,6 +293,10 @@ $this->module('content')->extend([
             $item = $this->app->helper('locales')->applyLocales($item, $process['locale']);
         }
 
+        if (isset($process['populate']) && $process['populate']) {
+            $item = $this->populate($item, $process['populate'], 0, $process);
+        }
+
         return $item;
     },
 
@@ -314,6 +318,10 @@ $this->module('content')->extend([
 
         if (isset($process['locale'])) {
             $items = $this->app->helper('locales')->applyLocales($items, $process['locale']);
+        }
+
+        if (isset($process['populate']) && $process['populate']) {
+            $items = $this->populate($items, $process['populate'], 0, $process);
         }
 
         return $items;
@@ -358,6 +366,59 @@ $this->module('content')->extend([
 
         return $this->app->dataStorage->count($collection, $filter);
 
+    },
+
+    'populate' => function(array $array, $maxlevel = -1, $level = 0, $process = []) {
+
+        if (!is_array($array)) {
+            return $array;
+        }
+
+        if (is_numeric($maxlevel) && $maxlevel > -1 && $level > ($maxlevel+1)) {
+            return $array;
+        }
+
+        foreach ($array as $k => &$v) {
+
+            if (!is_array($v)) {
+                continue;
+            }
+
+            if (is_array($array[$k])) {
+                $array[$k] = $this->populate($array[$k], $maxlevel, ($level + 1), $process);
+            }
+
+            if ($level > 0 && isset($v['_id'], $v['_model'])) {
+                $model = $v['_model'];
+                $array[$k] = $this->_resolveContentRef($v['_model'], (string)$v['_id'], $process);
+                $array[$k]['_model'] = $model;
+            }
+        }
+
+        return $array;
+    },
+
+    '_resolveContentRef' => function ($model, $_id, $process = []) {
+
+        static $cache;
+
+        if (null === $cache) {
+            $cache = [];
+        }
+
+        if (!isset($cache[$model])) {
+            $cache[$model] = [];
+        }
+
+        if (!isset($cache[$model][$_id])) {
+            $cache[$model][$_id] = $this->item($model, ['_id' => $_id], null, $process);
+
+            if (is_null($cache[$model][$_id])) {
+                $cache[$model][$_id] = false;
+            }
+        }
+
+        return $cache[$model][$_id] ? $cache[$model][$_id] : null;
     },
 
     'updateRefs' => function(string $refId, mixed $value = null) {

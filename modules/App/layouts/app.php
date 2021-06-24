@@ -83,7 +83,7 @@
         </aside>
         <main class="kiss-flex-1">
 
-            <app-header role="banner">
+            <app-header>
                 <kiss-container class="kiss-flex kiss-flex-middle">
                     <div>
                         <a href="#app-offcanvas" class="kiss-link-muted kiss-flex kiss-flex-middle" kiss-offcanvas>

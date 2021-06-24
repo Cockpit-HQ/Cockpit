@@ -137,7 +137,7 @@ export default {
                 pickItem: (item) => {
 
                     this.val = {
-                        model: this.model.name,
+                        _model: this.model.name,
                         _id: item._id
                     };
                     this.item = item;
