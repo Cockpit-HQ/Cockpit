@@ -60,6 +60,7 @@ html[data-theme='light'] {
     --kiss-card-bordered-color: rgb(106, 85, 85, .15);
 
     --kiss-input-background-active: #fff;
+    --kiss-table-heading-background-color: #fff;
 
     --app-shadow-color: rgba(0,0,0,0.12);
     --app-header-background: #eff7f7f0;

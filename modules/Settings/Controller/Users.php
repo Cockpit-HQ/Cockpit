@@ -28,6 +28,8 @@ class Users extends App {
             $id = $this->user['_id'];
         }
 
+        $this->checkAndLockResource($id);
+
         $user = $this->app->dataStorage->findOne('system/users', ['_id' => $id]);
 
         if (!$user) {

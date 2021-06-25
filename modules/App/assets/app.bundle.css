@@ -3187,18 +3187,22 @@ kiss-tooltip[show="true"] {
 h1,
 .kiss-size-1 {
   font-size: var(--kiss-font-size-1, 2.5rem);
+  line-height: 1.2;
 }
 h2,
 .kiss-size-2 {
   font-size: var(--kiss-font-size-2, 2rem);
+  line-height: 1.2;
 }
 h3,
 .kiss-size-3 {
   font-size: var(--kiss-font-size-3, 1.75rem);
+  line-height: 1.2;
 }
 h4,
 .kiss-size-4 {
   font-size: var(--kiss-font-size-4, 1.5rem);
+  line-height: 1.2;
 }
 h5,
 .kiss-size-5 {
@@ -3967,11 +3971,14 @@ kiss-card[hover*="contrast"]:hover {
     font-weight: bold;
     text-transform: uppercase;
     letter-spacing: .1em;
-    padding: 8px 8px;
+    padding: 12px 8px;
 }
 .kiss-table thead {
     background: rgba(0, 0, 0, 0.15);
     border-radius: var(--app-border-radius);
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 22%);
+}
+.kiss-table thead tr {
     box-shadow: 0 1px 2px 0 rgb(0 0 0 / 22%);
 }
 .kiss-table td {
@@ -4083,6 +4090,7 @@ html[data-theme='light'] {
     --kiss-card-bordered-color: rgb(106, 85, 85, .15);
 
     --kiss-input-background-active: #fff;
+    --kiss-table-heading-background-color: #fff;
 
     --app-shadow-color: rgba(0,0,0,0.12);
     --app-header-background: #eff7f7f0;

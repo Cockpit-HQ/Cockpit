@@ -30,6 +30,8 @@ class Locales extends App {
             return false;
         }
 
+        $this->checkAndLockResource($id);
+
         $locale['meta'] = new ArrayObject($locale['meta']);
 
         return $this->render('settings:views/locales/locale.php', compact('locale'));

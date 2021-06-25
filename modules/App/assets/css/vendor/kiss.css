@@ -266,12 +266,16 @@ kiss-card[hover*="contrast"]:hover {
     font-weight: bold;
     text-transform: uppercase;
     letter-spacing: .1em;
-    padding: 8px 8px;
+    padding: 12px 8px;
 }
 
 .kiss-table thead {
     background: rgba(0, 0, 0, 0.15);
     border-radius: var(--app-border-radius);
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 22%);
+}
+
+.kiss-table thead tr {
     box-shadow: 0 1px 2px 0 rgb(0 0 0 / 22%);
 }
 

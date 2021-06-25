@@ -1,7 +1,8 @@
 <?php
 
 // Register helpers
-$this->helpers['twfa'] = 'App\\Helper\\TWFA';
+$this->helpers['admin'] = 'App\\Helper\\Admin';
+$this->helpers['twfa']  = 'App\\Helper\\TWFA';
 $this->helpers['menus'] = 'App\\Helper\\Menus';
 $this->helpers['theme'] = 'App\\Helper\\Theme';
 

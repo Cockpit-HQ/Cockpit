@@ -57,6 +57,8 @@ class Collection extends App {
             if (!$id) {
                 return false;
             }
+
+            $this->checkAndLockResource($id);
         }
 
         $fields = $model['fields'];

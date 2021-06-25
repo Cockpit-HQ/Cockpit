@@ -35,6 +35,8 @@ class Projects extends App {
             return false;
         }
 
+        $this->checkAndLockResource($project['_id']);
+
         $project['values'] = new ArrayObject($project['values'] ?? []);
 
         // fill values if needed

@@ -40,6 +40,8 @@ class Settings extends App {
             if (!$component) {
                 return false;
             }
+
+            $this->checkAndLockResource($id);
         }
 
         $component['meta'] = new ArrayObject($component['meta']);

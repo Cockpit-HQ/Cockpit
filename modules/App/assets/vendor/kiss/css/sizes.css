@@ -1,21 +1,25 @@
 h1,
 .kiss-size-1 {
   font-size: var(--kiss-font-size-1, 2.5rem);
+  line-height: 1.2;
 }
 
 h2,
 .kiss-size-2 {
   font-size: var(--kiss-font-size-2, 2rem);
+  line-height: 1.2;
 }
 
 h3,
 .kiss-size-3 {
   font-size: var(--kiss-font-size-3, 1.75rem);
+  line-height: 1.2;
 }
 
 h4,
 .kiss-size-4 {
   font-size: var(--kiss-font-size-4, 1.5rem);
+  line-height: 1.2;
 }
 
 h5,

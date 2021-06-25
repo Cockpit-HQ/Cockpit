@@ -22,6 +22,8 @@ class Singleton extends App {
 
         $item = $this->module('content')->item($model['name']);
 
+        $this->checkAndLockResource("content:singleton:{$model['name']}");
+
         $fields = $model['fields'];
 
         $locales = $this->helper('locales')->locales();

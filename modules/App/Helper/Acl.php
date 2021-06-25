@@ -35,7 +35,7 @@ class Acl extends \Lime\Helper {
 
         $role = $role ?? $this->app->helper('auth')->getUser('role');
 
-        if ($role == 'admin') {
+        if ($this->isSuperAdmin($role)) {
             return true;
         }
 

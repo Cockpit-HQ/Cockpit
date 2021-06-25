@@ -84,6 +84,8 @@ class Pages extends Controller {
                 return false;
             }
 
+            $this->checkAndLockResource($id);
+
             $page = array_replace_recursive($default, $page);
 
             foreach ($locales as $locale) {

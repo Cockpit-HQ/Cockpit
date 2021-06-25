@@ -30,6 +30,8 @@ class Roles extends App {
             return false;
         }
 
+        $this->checkAndLockResource($id);
+
         $role['permissions'] = new ArrayObject($role['permissions']);
 
         return $this->render('settings:views/users/roles/role.php', compact('role'));

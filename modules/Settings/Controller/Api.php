@@ -30,6 +30,8 @@ class Api extends App {
             return false;
         }
 
+        $this->checkAndLockResource($id);
+
         $key['meta'] = new ArrayObject( $key['meta']);
 
         return $this->render('settings:views/api/key.php', compact('key'));
