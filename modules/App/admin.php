@@ -45,12 +45,22 @@ $this->bind('/app-event-stream', function() {
     // filter events
     $events = array_filter($events, function($event) use($user, $sessionId) {
 
-        if (isset($event['options']['to']) && $event['options']['to'] != $user['_id']) {
-            return false;
+        if (isset($event['options']['to'])) {
+
+            if (is_array($event['options']['to']) && !in_array($user['_id'], $event['options']['to'])) {
+                return false;
+            } elseif ($event['options']['to'] != $user['_id']) {
+                return false;
+            }
         }
 
-        if (isset($event['options']['sessionId']) && $event['options']['sessionId'] != $sessionId) {
-            return false;
+        if (isset($event['options']['sessionId'])) {
+
+            if (is_array($event['options']['sessionId']) && !in_array($sessionId, $event['options']['sessionId'])) {
+                return false;
+            } elseif ($event['options']['sessionId'] != $sessionId) {
+                return false;
+            }
         }
 
         return true;
