@@ -52,12 +52,35 @@ class Admin extends \Lime\Helper {
             return false;
         }
 
+        $now = time();
+
         $meta = [
             'rid'  => $resourceId,
             'user' => ['_id' => $user['_id'], 'name' => $user['name'], 'user' => $user['user'], 'email' => $user['email']],
             'sid'  => md5(session_id()),
-            'time' => time()
+            'time' => $now,
+            '_created' => $now,
+            '_updated' => $now,
         ];
+
+        $this->app->dataStorage->setKey('app/options', $key, $meta);
+
+        return true;
+    }
+
+    public function updateLockedResourceId($resourceId) {
+
+        $meta = null;
+
+        if (!$this->isResourceEditableByCurrentUser($resourceId)) {
+            return false;
+        }
+
+        $now = time();
+        $key  = "locked:{$resourceId}";
+
+        $meta['time'] = $now;
+        $meta['_updated'] = $now;
 
         $this->app->dataStorage->setKey('app/options', $key, $meta);
 
@@ -66,8 +89,23 @@ class Admin extends \Lime\Helper {
 
     public function unlockResourceId($resourceId) {
 
+        $meta = $this->isResourceLocked($resourceId);
+
         $key = "locked:{$resourceId}";
         $this->app->dataStorage->removeKey('app/options', $key);
+
+        if ($meta) {
+
+            $user = $this->app->helper('auth')->getUser();
+
+            // $this->app->helper('eventStream')->add('notify', [
+            //     'message' => \_t("Resource \"%s\" unlocked by %s", [$resourceId, $user['name']]),
+            //     'user' => $user ? ['_id' => $user['_id'], 'name' => $user['name'], 'user' => $user['user'], 'email' => $user['email']] : null,
+            // ], [
+            //     'sessionId' => $meta['sid']
+            // ]);
+        }
+
         return true;
     }
 

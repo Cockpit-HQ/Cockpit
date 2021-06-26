@@ -1,6 +1,6 @@
 <kiss-container class="kiss-margin-large" size="small">
 
-    <kiss-card class="kiss-padding-large animated flipInX kiss-width-3-4@m kiss-margin-auto" theme="bordered contrast">
+    <kiss-card class="kiss-padding-large animated pulse kiss-width-3-4@m kiss-margin-auto" theme="bordered contrast">
 
         <div class="kiss-flex-1">
 

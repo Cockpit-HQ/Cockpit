@@ -1351,7 +1351,9 @@
 
       notify: function (message, status, timeout) {
 
-          timeout = (timeout === false ? false : timeout) || 2500;
+          if (timeout !== false && !timeout) {
+              timeout = 2500;
+          }
 
           new Noty({
               type: status || 'info',

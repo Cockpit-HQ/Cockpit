@@ -1,3 +1,4 @@
+
 let checkSessionTimeout = function() {
 
     let csrf;
@@ -31,6 +32,56 @@ let checkSessionTimeout = function() {
 
 }
 
+window.AppEventStream =  {
+
+    _registry: {
+        notify: [
+            function(evt) {
+                App.ui.notify(evt.data.message, evt.data.status || 'info', evt.data.timeout || false);
+            }
+        ],
+
+        alert: [
+            function(evt) {
+                App.ui.alert(evt.data.message);
+            }
+        ]
+    },
+
+    start() {
+
+        let check = () => {
+
+            App.request('/app-event-stream').then(events => {
+
+                events.forEach(evt => {
+                    this.trigger(evt);
+                });
+
+            }).catch(rsp => {
+                // todo
+            });
+        }
+
+        setInterval(check, 5000);
+    },
+
+    on(eventType, fn) {
+
+        if (!this._registry[eventType]) this._registry[eventType] = [];
+
+        this._registry[eventType].push(fn);
+    },
+
+    trigger(evt) {
+
+        if (evt.type && this._registry[evt.type]) {
+            this._registry[evt.type].forEach(fn => fn(evt));
+        }
+    }
+}
+
 document.addEventListener('DOMContentLoaded', e => {
     checkSessionTimeout();
+    AppEventStream.start();
 }, false);

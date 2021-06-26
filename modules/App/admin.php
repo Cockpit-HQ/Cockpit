@@ -2,9 +2,10 @@
 
 // Register helpers
 $this->helpers['admin'] = 'App\\Helper\\Admin';
-$this->helpers['twfa']  = 'App\\Helper\\TWFA';
+$this->helpers['eventStream'] = 'App\\Helper\\EventStream';
 $this->helpers['menus'] = 'App\\Helper\\Menus';
 $this->helpers['theme'] = 'App\\Helper\\Theme';
+$this->helpers['twfa']  = 'App\\Helper\\TWFA';
 
 // Register routes
 $this->bindClass('App\\Controller\\Auth', '/auth');
@@ -15,13 +16,58 @@ $this->bind('/', function() {
     return $this->invoke('App\\Controller\\Dashboard', 'index');
 });
 
+// global event stream for long polling
+$this->bind('/app-event-stream', function() {
+
+    $now = time();
+    $lastCheck = $this->helper('session')->read('app.eventstream.lastcheck', $now);
+
+    session_write_close();
+
+    $user = $this->helper('auth')->getUser();
+
+    if (!$user) {
+        $this->stop(404);
+    }
+
+    $sessionId = md5(session_id());
+
+    // auto-cleanup unrelevant events
+    $this->helper('eventStream')->cleanup();
+
+    if (strtotime('-5 minutes') > $lastCheck) {
+        return [];
+    }
+
+    // get all events since last check
+    $events = $this->helper('eventStream')->getEvents($lastCheck);
+
+    // filter events
+    $events = array_filter($events, function($event) use($user, $sessionId) {
+
+        if (isset($event['options']['to']) && $event['options']['to'] != $user['_id']) {
+            return false;
+        }
+
+        if (isset($event['options']['sessionId']) && $event['options']['sessionId'] != $sessionId) {
+            return false;
+        }
+
+        return true;
+    });
+
+    $this->helper('session')->write('app.eventstream.lastcheck', $now);
+
+    return $events;
+});
+
 
 // check + validate session time
 $this->on('app.admin.request', function(Lime\Request $request) {
 
     $user = $this->helper('auth')->getUser();
 
-    if ($request->route == '/check-session') {
+    if (in_array($request->route, ['/check-session', '/app-event-stream'])) {
 
         $status = $user ? true : false;
         $start  = $this->helper('session')->read('app.session.start', 0);
@@ -34,7 +80,7 @@ $this->on('app.admin.request', function(Lime\Request $request) {
 
         $this->bind('/check-session', function() use($status) {
             return compact('status');
-        });
+        }, $request->route == '/check-session');
 
         return;
     }

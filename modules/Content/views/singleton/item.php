@@ -229,6 +229,7 @@
                             e.returnValue = this.t('You have unsaved data! Are you sure you want to leave?');
                         }
                     };
+
                 },
 
                 watch: {
