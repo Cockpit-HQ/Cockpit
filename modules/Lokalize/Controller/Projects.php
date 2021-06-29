@@ -7,6 +7,13 @@ use ArrayObject;
 
 class Projects extends App {
 
+    protected function before() {
+
+        if (!$this->isAllowed('lokalize/projects/manage')) {
+            $this->stop(401);
+        }
+    }
+
     public function index() {
 
         $this->helper('theme')->favicon('lokalize:icon.svg');

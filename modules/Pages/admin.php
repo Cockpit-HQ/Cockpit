@@ -14,3 +14,11 @@ $this->helper('menus')->addLink('modules', [
     'group'  => 'Content',
     'prio'   => 2
 ]);
+
+
+$this->on('app.permissions.collect', function($permissions) {
+
+    $permissions['Pages'] = [
+        'pages/manage' => 'Manage pages',
+    ];
+});

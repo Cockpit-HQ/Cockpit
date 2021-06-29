@@ -11,3 +11,10 @@ $this->helper('menus')->addLink('modules', [
     'active' => false,
     'group'  => 'Content'
 ]);
+
+$this->on('app.permissions.collect', function($permissions) {
+
+    $permissions['Lokalize'] = [
+        'lokalize/projects/manage' => 'Manage projects',
+    ];
+});

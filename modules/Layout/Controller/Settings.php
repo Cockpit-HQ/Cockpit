@@ -9,7 +9,7 @@ class Settings extends App {
 
     protected function before() {
 
-        if (!$this->isAllowed('layout.components.manage')) {
+        if (!$this->isAllowed('layouts/components/manage')) {
             $this->stop(401);
         }
     }

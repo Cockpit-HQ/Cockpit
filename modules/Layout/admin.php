@@ -32,3 +32,10 @@ $this->on('app.settings.collect', function($settings) {
         'permission' => 'layout.components.manage'
     ];
 });
+
+$this->on('app.permissions.collect', function($permissions) {
+
+    $permissions['Layout'] = [
+        'layouts/components/manage' => 'Manage components',
+    ];
+});
