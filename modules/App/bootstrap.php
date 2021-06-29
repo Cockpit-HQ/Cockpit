@@ -7,13 +7,21 @@ $this->helpers['async'] = 'App\\Helper\\Async';
 $this->helpers['auth']  = 'App\\Helper\\Auth';
 $this->helpers['csrf']  = 'App\\Helper\\Csrf';
 $this->helpers['i18n']  = 'App\\Helper\\i18n';
+$this->helpers['rspc']  = 'App\\Helper\\ResponseCache';
 
 $this->on('app.admin.init', function() {
     include(__DIR__.'/admin.php');
 }, 1000);
 
-$this->on('app.api.request', function() {
+$this->on('app.api.request', function($request) {
+
+    // simple response cache ?rspc=1
+    if ($this->helper('rspc')->handle($request)) {
+        return;
+    }
+
     include(__DIR__.'/api.php');
+
 }, 1000);
 
 include(__DIR__.'/functions.php');

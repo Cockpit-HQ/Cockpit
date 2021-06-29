@@ -39,6 +39,10 @@ export default {
         </div>
     `,
 
+    mounted() {
+        AppEventStream.stop();
+    },
+
     methods: {
 
         login() {
@@ -67,6 +71,8 @@ export default {
 
                     return;
                 }
+
+                AppEventStream.start();
 
                 this.$close();
 

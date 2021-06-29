@@ -32,7 +32,7 @@ let checkSessionTimeout = function() {
 }
 
 window.AppEventStream =  {
-
+    _idle: null,
     _registry: {
         notify: [
             function(evt) {
@@ -62,7 +62,14 @@ window.AppEventStream =  {
             });
         }
 
-        setInterval(check, 5000);
+        this._idle = setInterval(check, 5000);
+    },
+
+    stop() {
+
+        if (this._idle) {
+            clearInterval(this._idle);
+        }
     },
 
     on(eventType, fn) {

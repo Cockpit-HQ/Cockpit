@@ -79,7 +79,7 @@ class APP {
             ]
         ], $config ?? []);
 
-        define('APP_VERSION', $config['debug'] ? time():$config['app.version']);
+        define('APP_VERSION', $config['debug'] ? time() : $config['app.version']);
 
         $app = new Lime\App($config);
 
