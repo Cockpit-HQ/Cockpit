@@ -65,6 +65,16 @@ export default {
 
             tinymce.init(Object.assign({
                 target: this.$el.querySelector('.wysiwyg-container'),
+                menubar: false,
+                plugins: [
+                    'advlist autolink lists link image imagetools preview anchor',
+                    'searchreplace visualblocks code fullscreen',
+                    'insertdatetime media table paste code wordcount'
+                ],
+                toolbar: `undo redo | formatselect |
+                bold italic | alignleft aligncenter
+                alignright alignjustify | bullist numlist outdent indent |
+                removeformat | image link table`,
                 height: 400,
                 content_style: `
                     html,body {

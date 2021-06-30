@@ -1,12 +1,57 @@
 @import url("../../../vendor/tinymce/skins/ui/oxide/skin.min.css");
 
 
+.tox .tox-pop__dialog,
+.tox .tox-dialog,
 .tox-tinymce {
     background: var(--kiss-base-background-color);
     color: var(--kiss-base-text-color);
     border-radius: var(--app-border-radius);
     border: 1px var(--kiss-hr-color) solid;
 }
+
+.tox .tox-dialog__header,
+.tox .tox-dialog__footer {
+    background: var(--kiss-base-background-color);
+    color: var(--kiss-base-text-color);
+    border-radius: var(--app-border-radius);
+    border-color: var(--kiss-hr-color);
+}
+
+.tox .tox-pop.tox-pop--bottom::before {
+    border-color: var(--kiss-hr-color) transparent transparent transparent;
+}
+
+.tox .tox-label,
+.tox .tox-toolbar-label {
+    color: var(--kiss-color-muted);
+}
+
+.tox .tox-listboxfield .tox-listbox--select,
+.tox .tox-textarea,
+.tox .tox-textfield,
+.tox .tox-toolbar-textfield {
+    color: var(--kiss-base-text-color);
+    background: var(--kiss-input-background);
+    border: 1px var(--kiss-input-border-color) solid;
+}
+
+.tox .tox-listboxfield .tox-listbox--select:focus,
+.tox .tox-textarea:focus,
+.tox .tox-textfield:focus {
+    background: var(--kiss-input-background-active, rgba(255,255,255,.15));
+    border-color: var(--kiss-input-border-color-active, var(--kiss-color-primary));
+}
+
+.tox .tox-split-button:hover {
+    box-shadow: none;
+}
+
+.tox .tox-dialog-wrap__backdrop {
+    background-color: var(--kiss-base-background-color);
+    opacity: .3;
+}
+
 
 .tox .tox-menubar,
 .tox .tox-toolbar-overlord,
