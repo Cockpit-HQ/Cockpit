@@ -11,6 +11,7 @@ $gql->queries['fields']['page'] = [
     'args' => [
         'route'  => Type::nonNull(Type::string()),
         'locale'  => Type::string(),
+        'populate'   => ['type' => Type::int(), 'defaultValue' => 0],
     ],
 
     'resolve' => function ($root, $args) use($app) {
@@ -21,6 +22,10 @@ $gql->queries['fields']['page'] = [
 
         if ($page && $page['_state'] != 1) {
             $page = null;
+        }
+
+        if ($page && $args['populate'] && $app->module('content')) {
+            $page = $app->module('content')->populate($page, $args['populate']);
         }
 
         return $page;

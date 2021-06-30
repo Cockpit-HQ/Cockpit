@@ -140,6 +140,13 @@ $this->on('restApi.config', function($restApi) {
      *         required=false,
      *         @OA\Schema(type="String")
      *     ),
+     *     @OA\Parameter(
+     *         description="Populate items with linked content items.",
+     *         in="query",
+     *         name="populate",
+     *         required=false,
+     *         @OA\Schema(type="int")
+     *     ),
      *     @OA\Response(response="200", description="Page object"),
      *     @OA\Response(response="404", description="Page not found")
      * )
@@ -160,6 +167,12 @@ $this->on('restApi.config', function($restApi) {
             if (!$page || $page['_state'] != 1) {
                 $app->response->status = 404;
                 return ["error" => "Page not found!"];
+            }
+
+            $populate = $app->param('populate:int', null);
+
+            if ($populate && $app->module('content')) {
+                $page = $app->module('content')->populate($page, $populate);
             }
 
             return $page;

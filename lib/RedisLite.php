@@ -469,7 +469,7 @@ class RedisLite {
         $set  = $this->get($key, []);
         $args = func_get_args();
 
-        for ($i=1; $i < count($fields); $i++){
+        for ($i=1; $i < count($args); $i++){
             $field = $args[$i];
             $value = isset($args[($i+1)]) ? $args[($i+1)] : null;
 
