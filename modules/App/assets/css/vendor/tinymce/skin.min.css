@@ -3,6 +3,7 @@
 
 .tox .tox-pop__dialog,
 .tox .tox-dialog,
+.tox.tox-tinymce-aux .tox-toolbar__overflow,
 .tox-tinymce {
     background: var(--kiss-base-background-color);
     color: var(--kiss-base-text-color);

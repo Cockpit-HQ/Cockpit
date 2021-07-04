@@ -112,7 +112,7 @@ let App = {
 
         if (!this._events[name]) return;
 
-        var event = { "name": name, "params": params };
+        var event = { name, params };
 
         for (var i = 0; i < this._events[name].length; i++) {
             this._events[name][i].apply(App, [event]);

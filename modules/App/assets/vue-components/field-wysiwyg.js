@@ -63,7 +63,7 @@ export default {
 
         ready.then(() => {
 
-            tinymce.init(Object.assign({
+            let opts = Object.assign({
                 target: this.$el.querySelector('.wysiwyg-container'),
                 menubar: false,
                 plugins: [
@@ -71,49 +71,62 @@ export default {
                     'searchreplace visualblocks code fullscreen',
                     'insertdatetime media table paste code wordcount'
                 ],
-                toolbar: `undo redo | formatselect |
-                bold italic | alignleft aligncenter
-                alignright alignjustify | bullist numlist outdent indent |
-                removeformat | image link table`,
+                toolbar: [
+                    'undo redo | formatselect',
+                    'bold italic | alignleft aligncenter',
+                    'alignright alignjustify | bullist numlist outdent indent',
+                    'removeformat | image link table'
+                ].join(' | '),
+
                 height: 400,
+
                 content_style: `
                     html,body {
                         background-color: ${getComputedStyle(document.documentElement).getPropertyValue('background-color')};
                         color: ${getComputedStyle(document.documentElement).getPropertyValue('color')};
                     }
                 `,
-                setup: (editor) => {
 
-                    this.editor = editor;
+                skin_url: App.base('/modules/App/assets/css/vendor/tinymce')
 
-                    editor.on('init', e => {
+            }, this.tinymce || {})
 
-                        editor.setContent(this.modelValue || '');
+            opts.setup = (editor) => {
 
-                        editor.on('input ExecCommand', e => {
-                            this.$emit('update:modelValue', editor.getContent())
-                        });
+                this.editor = editor;
 
-                        editor.on('focus blur', e => {
-                            editor.isFocused = !editor.isFocused;
-                            this.$el.dispatchEvent(new Event(editor.isFocused ? 'focusin':'focusout', { bubbles: true, cancelable: true }));
-                        });
+                editor.on('init', e => {
+
+                    editor.setContent(this.modelValue || '');
+
+                    editor.on('input ExecCommand', e => {
+                        this.$emit('update:modelValue', editor.getContent())
                     });
 
-                },
-                skin_url: App.base('/modules/App/assets/css/vendor/tinymce')
-            }, this.tinymce || {}));
+                    editor.on('focus blur', e => {
+                        editor.isFocused = !editor.isFocused;
+                        this.$el.dispatchEvent(new Event(editor.isFocused ? 'focusin':'focusout', { bubbles: true, cancelable: true }));
+                    });
+                });
 
-            let observer = new MutationObserver(mutations => {
+                App.trigger('field-wysiwyg-setup', [editor]);
 
-                if (!document.body.contains(this.$el) && this.editor) {
-                    tinymce.remove(this.editor)
-                    observer.disconnect();
-                }
-            });
+                let observer = new MutationObserver(mutations => {
 
-            observer.observe(document.body, {childList: true, subtree: true});
-        })
+                    if (!document.body.contains(this.$el) && this.editor) {
+                        tinymce.remove(this.editor)
+                        observer.disconnect();
+                    }
+                });
+
+                observer.observe(document.body, {childList: true, subtree: true});
+            };
+
+            App.trigger('field-wysiwyg-init', [opts]);
+
+            tinymce.init(opts);
+
+        });
     },
 
     methods: {
