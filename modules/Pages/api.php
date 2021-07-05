@@ -172,7 +172,7 @@ $this->on('restApi.config', function($restApi) {
             $populate = $app->param('populate:int', null);
 
             if ($populate && $app->module('content')) {
-                $page = $app->module('content')->populate($page, $populate);
+                $page = $app->module('content')->populate($page, $populate, 0, ['locale' => $locale]);
             }
 
             return $page;
