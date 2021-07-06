@@ -3643,6 +3643,7 @@ td.kiss-text-truncate { max-width: 0; }
 .kiss-display-block { display: block !important; }
 .kiss-display-inline { display: inline !important; }
 .kiss-display-inline-block { display: inline-block !important; }
+.kiss-cursor-pointer { cursor: pointer;}
 .kiss-border-circle { border-radius: 50%; }
 .kiss-svg,
 .kiss-svg:not(.kiss-preserve) [fill*='#']:not(.kiss-preserve) { fill: currentcolor; }

@@ -10,14 +10,13 @@ $gql->queries['fields']['content'] = [
 
     'args' => [
         'model'  => Type::nonNull(Type::string()),
-        '_id'   => Type::string(),
         'limit' => Type::int(),
         'skip'  => Type::int(),
         'sort'  => JsonType::instance(),
         'locale'  => ['type' => Type::string(), 'defaultValue' => 'default'],
         'populate'   => ['type' => Type::int(), 'defaultValue' => 0],
         'projection' => ['type' => Type::string(), 'defaultValue' => ''],
-        'filter'   => ['type' => JsonType::instance(), 'defaultValue' => '']
+        'filter'   => ['type' => JsonType::instance(), 'defaultValue' => []]
     ],
 
     'resolve' => function ($root, $args) use($app) {
@@ -36,38 +35,29 @@ $gql->queries['fields']['content'] = [
 
         $process  = ['locale' => $args['locale']];
         $options  = [];
-        $filter   = [];
 
-        if (isset($args['_id']) && $args['_id']) {
-
-            return [$app->module('content')->item($model, [
-                '_id' => $args['_id']
-            ], null, $populate, $filter)];
-
-        } else {
-
-            if ($args['populate']) {
-                $process['populate'] = $args['populate'];
-            }
-
-            if (isset($args['limit'])) $options['limit'] = $args['limit'];
-            if (isset($args['skip'])) $options['skip'] = $args['skip'];
-
-            if (isset($args['sort'])) {
-                $options['sort'] = $args['sort'];
-            }
-
-            if ($args['filter']) {
-                $options['filter'] = $args['filter'];
-            }
-
-            if (!isset($options['filter']) || !is_array($options['filter'])) {
-                $options['filter'] = [];
-            }
-
-            $options['filter']['_state'] = 1;
-
-            return $app->module('content')->items($model, $options, $process);
+        if ($args['populate']) {
+            $process['populate'] = $args['populate'];
         }
+
+        if (isset($args['limit'])) $options['limit'] = $args['limit'];
+        if (isset($args['skip'])) $options['skip'] = $args['skip'];
+
+        if (isset($args['sort'])) {
+            $options['sort'] = $args['sort'];
+        }
+
+        if ($args['filter']) {
+            $options['filter'] = $args['filter'];
+        }
+
+        if (!isset($options['filter']) || !is_array($options['filter'])) {
+            $options['filter'] = [];
+        }
+
+        $options['filter']['_state'] = 1;
+
+        return $app->module('content')->items($model, $options, $process);
+
     }
 ];

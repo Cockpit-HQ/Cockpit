@@ -193,7 +193,6 @@ $this->on('restApi.config', function($restApi) {
             if (!is_null($fields)) $options['fields'] = $fields;
             if (!is_null($limit)) $options['limit'] = $limit;
             if (!is_null($skip)) $options['skip'] = $skip;
-            if (!is_null($populate)) $options['populate'] = $populate;
 
             foreach (['filter', 'fields', 'sort'] as $prop) {
                 if (isset($options[$prop])) {
