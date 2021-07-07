@@ -17,11 +17,7 @@ let FieldRenderer = {
         },
         field: {
             default: null
-        },
-        languages: {
-            type: Array,
-            default: []
-        },
+        }
     },
 
     watch: {
@@ -216,6 +212,9 @@ export default {
             return this.fields.filter(field => {
                 return !this.group || this.group == field.group;
             });
+        },
+        visibleLocales() {
+            return this.locales.filter(l => l.visible);
         }
     },
 
@@ -254,8 +253,22 @@ export default {
                 </div>
 
                 <div class="kiss-margin-small-top" v-if="field.i18n && locales.length">
-                    <div class="kiss-margin" v-for="locale in locales">
-                        <span class="kiss-badge kiss-badge-outline kiss-color-primary kiss-margin-small">{{ locale.i18n }}</span>
+                    <div class="kiss-margin" v-for="locale in visibleLocales">
+                        <div class="kiss-margin-small kiss-flex kiss-flex-middle kiss-visible-toggle">
+                            <span class="kiss-badge kiss-badge-outline kiss-color-primary">{{ locale.i18n }}</span>
+                            <kiss-dropdown class="kiss-margin-xsmall-left">
+                                <a class="kiss-invisible-hover kiss-color-muted" :ariaLabel="t('Copy value from another locale')" kiss-tooltip="right"><icon>copy</icon></a>
+
+                                <kiss-dropdownbox pos="left">
+                                    <kiss-navlist>
+                                        <ul>
+                                            <li class="kiss-nav-header">{{ t('Locale') }}</li>
+                                            <li :class="{'kiss-hidden': l.i18n == locale.i18n}" v-for="l in locales"><a @click="copyLocaleValue(locale.i18n, l.i18n, field.name)">{{ l.name }}</a></li>
+                                        </ul>
+                                    </kiss-navlist>
+                                </kiss-dropdownbox>
+                            </kiss-dropdown>
+                        </div>
                         <field-renderer :field="field" v-model="val[field.name+(locale.i18n == 'default' ? '': '_'+locale.i18n)]"></field-renderer>
                     </div>
                 </div>
@@ -274,8 +287,15 @@ export default {
 
                 this.locales.forEach(l => {
                     val[`${field.name}_${l.i18n}`] = ((field.opts && field.opts[`default_${l.i18n}`]) || null)
-                })
+                });
             }
+        },
+
+        copyLocaleValue(to, from, field) {
+            to = field+(to == 'default' ? '': '_'+to);
+            from = field+(from == 'default' ? '': '_'+from);
+
+            this.val[to] = JSON.parse(JSON.stringify(this.val[from]));
         },
 
         update() {

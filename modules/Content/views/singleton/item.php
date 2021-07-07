@@ -32,7 +32,7 @@
             <kiss-row class="kiss-row-large kiss-margin-large" :class="{'kiss-disabled': saving}" v-if="fields.length">
                 <div class="kiss-flex-1">
                     <div class="kiss-width-2-3@xl kiss-margin-auto">
-                        <fields-renderer v-model="item" :fields="fields" :locales="visibleLocales"></fields-renderer>
+                        <fields-renderer v-model="item" :fields="fields" :locales="locales"></fields-renderer>
                     </div>
                 </div>
                 <div class="kiss-width-1-4@m kiss-width-1-5@xl">
@@ -214,9 +214,6 @@
                             if (this.fields[i].i18n) return true;
                         }
                         return false;
-                    },
-                    visibleLocales() {
-                        return this.locales.filter(l => l.visible);
                     }
                 },
 

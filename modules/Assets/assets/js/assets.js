@@ -4,7 +4,7 @@ VueView.component('field-asset', 'assets:assets/vue-components/field-asset.js');
 
 App.on('field-wysiwyg-init', evt => {
     let opts = evt.params[0];
-    opts.toolbar = `insertAssetButton | ${opts.toolbar}`;
+    opts.toolbar += ` | insertAssetButton`;
 });
 
 App.on('field-wysiwyg-setup', evt => {
