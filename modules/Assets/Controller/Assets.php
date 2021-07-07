@@ -23,11 +23,42 @@ class Assets extends App {
             'sort' => ['_created' => -1]
         ], $this->param('options', []));
 
-        if ($filter = $this->param('filter', null)) $options['filter'] = $filter;
         if ($limit  = $this->param('limit' , null)) $options['limit']  = $limit;
         if ($sort   = $this->param('sort'  , null)) $options['sort']   = $sort;
         if ($skip   = $this->param('skip'  , null)) $options['skip']   = $skip;
         if ($folder = $this->param('folder', null)) $options['folder'] = $folder;
+
+        if (isset($options['filter']) && is_string($options['filter'])) {
+
+            $filter = null;
+
+            if (\preg_match('/^\{(.*)\}$/', $options['filter'])) {
+
+                try {
+                    $filter = json5_decode($options['filter'], true);
+                } catch (\Exception $e) {}
+            }
+
+            if (!$filter) {
+
+                $terms = str_getcsv(trim($options['filter']), ' ');
+
+                $filter = ['$or' => []];
+
+                foreach ($terms as $term) {
+                    $filter['$or'][] = [
+                        '$or' => [
+                            ['title' => ['$regex' => $term, '$options' => 'i']],
+                            ['description' => ['$regex' => $term, '$options' => 'i']],
+                        ]
+                    ];
+                }
+            }
+
+            $options['filter'] = $filter;
+        }
+
+
 
         if ($folder) {
             $options['filter'] = $options['filter'] ?? [];

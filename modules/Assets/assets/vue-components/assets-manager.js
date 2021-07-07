@@ -34,6 +34,9 @@ export default {
             folders: [],
             folder: null,
 
+            filter: '',
+            txtFilter: '',
+
             breadcrumbs: [],
 
             actionAsset: null,
@@ -81,6 +84,13 @@ export default {
         }, 1000)
     },
 
+    watch: {
+        filter(val) {
+            this.txtFilter = val;
+            this.load();
+        }
+    },
+
     template: /*html*/`
 
         <div>
@@ -107,6 +117,15 @@ export default {
                 </div>
 
             </kiss-row>
+
+            <form class="kiss-margin kiss-flex kiss-flex-middle" v-if="(!loading && assets.length) || filter" @submit.prevent="filter = txtFilter">
+                <input type="text" class="kiss-input kiss-flex-1 kiss-margin-xsmall-right" :placeholder="t('Filter assets...')" v-model="txtFilter">
+
+                <div class="kiss-button-group kiss-margin-small-left">
+                    <button type="button" class="kiss-button" @click="filter = ''" v-if="filter">{{ t('Reset') }}</button>
+                    <button class="kiss-button kiss-flex">{{ t('Search') }}</button>
+                </div>
+            </form>
 
             <div class="animated fadeIn kiss-margin-large kiss-color-muted kiss-align-center" :class="{'kiss-height-30vh kiss-flex kiss-flex-middle kiss-flex-center': !modal}" v-if="!loading && !assets.length">
                 <div>
@@ -292,6 +311,10 @@ export default {
                 limit: this.limit,
                 skip: (page - 1) * this.limit,
             };
+
+            if (this.filter) {
+                options.filter = this.filter;
+            }
 
             this.loading = true;
             this.selected = [];
