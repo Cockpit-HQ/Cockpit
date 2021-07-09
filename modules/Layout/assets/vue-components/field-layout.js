@@ -142,6 +142,15 @@ let editComponent = {
 
     methods: {
         save() {
+
+            let validate = {root: this.$el};
+
+            App.trigger('fields-renderer-validate', validate);
+
+            if (validate.errors) {
+                return;
+            }
+
             Object.assign(this.component, this.item);
             this.$close();
         }

@@ -36,7 +36,7 @@ let FieldRenderer = {
     mounted() {
         FieldTypes.get().then(types => {
             this.fieldTypes = types;
-        })
+        });
     },
 
     template: /*html*/`
@@ -131,6 +131,25 @@ let FieldRenderer = {
 
         saveFieldItem() {
 
+            if (this.fieldItem.field.required) {
+
+                let field = this.fieldItem.field,
+                    pass = true,
+                    val = this.fieldItem.value;
+
+                if (val && Array.isArray(val) && !val.length) {
+                    pass = false;
+                }
+
+                if (!val && !(val===false || val===0)) {
+                    pass = false;
+                }
+
+                if (!pass) {
+                    return App.ui.notify(`<span class="kiss-size-xsmall">${this.t('Field required:')}</span><br><strong class="kiss-text-capitalize">${field.label || field.name}</strong>`, 'error');
+                }
+            }
+
             if (this.fieldItem.value === null) {
                 this.fieldItem = null;
                 return;
@@ -181,6 +200,44 @@ export default {
         nested: {
             default: false
         },
+    },
+
+    mounted() {
+
+        App.on('fields-renderer-validate', evt => {
+
+            if (!evt.params.root.contains(this.$el)) {
+                return;
+            }
+
+            let errors = [], pass = true, val;
+
+            this.fields.forEach(field => {
+
+                val = this.val[field.name];
+                pass = true;
+
+                if (field.required) {
+
+                    if (val && Array.isArray(val) && !val.length) {
+                        pass = false;
+                    }
+
+                    if (!val && !(val===false || val===0)) {
+                        pass = false;
+                    }
+                }
+
+                if (!pass) {
+                    errors.push({field, required: true});
+                    App.ui.notify(`<span class="kiss-size-xsmall">${this.t('Field required:')}</span><br><strong class="kiss-text-capitalize">${field.label || field.name}</strong>`, 'error');
+                }
+            });
+
+            if (errors.length) {
+                evt.params.errors = errors;
+            }
+        });
     },
 
     watch: {

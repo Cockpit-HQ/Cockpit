@@ -43,7 +43,7 @@ let App = {
 
         return new Promise(function (fulfill, reject) {
 
-            var xhr = new XMLHttpRequest();
+            let xhr = new XMLHttpRequest();
 
             xhr.open('post', url, true);
             xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
@@ -65,7 +65,7 @@ let App = {
 
             xhr.onloadend = function () {
 
-                var resdata = xhr.responseText;
+                let resdata = xhr.responseText;
 
                 if (type == 'json') {
                     try {
@@ -99,7 +99,7 @@ let App = {
             this._events[name] = [];
         } else {
 
-            for (var i = 0; i < this._events[name].length; i++) {
+            for (let i = 0; i < this._events[name].length; i++) {
                 if (this._events[name][i] === fn) {
                     this._events[name].splice(i, 1);
                     break;
@@ -112,18 +112,18 @@ let App = {
 
         if (!this._events[name]) return;
 
-        var event = { name, params };
+        let event = { name, params };
 
-        for (var i = 0; i < this._events[name].length; i++) {
+        for (let i = 0; i < this._events[name].length; i++) {
             this._events[name][i].apply(App, [event]);
         }
     },
 
     deferred: function () {
 
-        var resolve, fail;
+        let resolve, fail;
 
-        var d = new Promise(function (fullfill, reject) {
+        let d = new Promise(function (fullfill, reject) {
             resolve = fullfill;
             fail = reject;
         });

@@ -242,6 +242,14 @@
 
                     save() {
 
+                        let validate = {root: this.$el.parentNode};
+
+                        App.trigger('fields-renderer-validate', validate);
+
+                        if (validate.errors) {
+                            return;
+                        }
+
                         let model = this.model.name;
 
                         this.saving = true;
