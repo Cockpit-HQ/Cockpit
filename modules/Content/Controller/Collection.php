@@ -104,8 +104,26 @@ class Collection extends App {
             }
 
             if (!$filter) {
-                //$filter = $this->app->dataStorage->getFindTermFilter($options['filter']);
+
                 $filter = null;
+                $fields = $model['fields'];
+
+                if (count($fields)) {
+
+                    $terms  = str_getcsv(trim($options['filter']), ' ');
+                    $filter = ['$or' => []];
+
+                    foreach ($fields as $field) {
+
+                        if (!\in_array($field['type'], ['code', 'color', 'text', 'wysiwyg'])) continue;
+
+                        foreach ($terms as $term) {
+                            $f = [];
+                            $f[$field['name']] = ['$regex' => $term, '$options' => 'i'];
+                            $filter['$or'][] = $f;
+                        }
+                    }
+                }
             }
 
             $options['filter'] = $filter;
