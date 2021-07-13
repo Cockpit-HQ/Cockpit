@@ -37,7 +37,7 @@ export default {
     template: /*html*/`
         <div class="kiss-flex kiss-flex-middle" field="boolean">
             <div class="kiss-flex kiss-flex-middle"><input class="app-switch" type="checkbox" v-model="val" @change="update"></div>
-            <span class="kiss-margin-left" :class="{'kiss-color-muted':!val}" v-if="label">{{ label }}</span>
+            <span class="kiss-text-caption kiss-margin-small-left" :class="{'kiss-color-muted':!val}" v-if="label">{{ label }}</span>
         </div>
     `,
 

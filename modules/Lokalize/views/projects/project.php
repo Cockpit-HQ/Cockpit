@@ -46,21 +46,48 @@
                                                         <icon class="kiss-margin-xsmall-right">language</icon> {{ loc.name || loc.i18n}}
                                                     </div>
                                                     <div class="kiss-flex-1">
-                                                        <div class="kiss-position-relative" v-if="editItem.path != `${key.name}.${loc.name}`">
-                                                            <div v-if="!project.values[loc.i18n][key.name].value"><span class="kiss-badge kiss-badge-outline kiss-color-danger">{{ t('Empty') }}</span></div>
-                                                            <div class="kiss-size-small">{{ project.values[loc.i18n][key.name].value }}</div>
-                                                            <a class="kiss-cover" @click="setEditItem(key, loc)"></a>
-                                                        </div>
-                                                        <div v-if="editItem.path == `${key.name}.${loc.name}`">
-                                                            <textarea class="kiss-input kiss-textarea key-value-text" v-model="editItem.value"></textarea>
-                                                            <div class="kiss-button-group kiss-margin-small-top">
-                                                                <button type="button" class="kiss-button kiss-button-small" @click="editItem = {}">{{ t('Cancel') }}</button>
-                                                                <button type="button" class="kiss-button kiss-button-primary kiss-button-small" @click="updateItem()">{{ t('Save') }}</button>
+                                                        <div class="kiss-flex">
+                                                            <div class="kiss-margin-small-right" v-if="key.plural" style="min-width:50px"><span class="kiss-badge kiss-width-1-1 kiss-disabled"><?=t('One')?></span></div>
+                                                            <div class="kiss-flex-1">
+                                                                <div class="kiss-position-relative" v-if="editItem.path != `${key.name}.${loc.name}`">
+                                                                    <div v-if="!project.values[loc.i18n][key.name].value"><span class="kiss-badge kiss-badge-outline kiss-color-danger">{{ t('Empty') }}</span></div>
+                                                                    <div class="kiss-size-small">{{ project.values[loc.i18n][key.name].value }}</div>
+                                                                    <a class="kiss-cover" @click="setEditItem(key, loc)"></a>
+                                                                </div>
+                                                                <div v-if="editItem.path == `${key.name}.${loc.name}`">
+                                                                    <textarea class="kiss-input kiss-textarea key-value-text" v-model="editItem.value"></textarea>
+                                                                    <div class="kiss-button-group kiss-margin-small-top">
+                                                                        <button type="button" class="kiss-button kiss-button-small" @click="editItem = {}">{{ t('Cancel') }}</button>
+                                                                        <button type="button" class="kiss-button kiss-button-primary kiss-button-small" @click="updateItem()">{{ t('Save') }}</button>
+                                                                    </div>
+                                                                    <div class="kiss-padding-small kiss-bgcolor-contrast kiss-margin-small-top kiss-size-small animated fadeIn" v-if="editItem.translation">
+                                                                        <div class="kiss-text-bold kiss-size-xsmall">{{ t('Suggestion') }}</div>
+                                                                        <div class="kiss-margin-small">{{ editItem.translation }}</div>
+                                                                        <a class="kiss-size-xsmall" @click="editItem.value = editItem.translation">{{ t('Choose suggestion') }}</a>
+                                                                    </div>
+                                                                </div>
                                                             </div>
-                                                            <div class="kiss-padding-small kiss-bgcolor-contrast kiss-margin-small-top kiss-size-small animated fadeIn" v-if="editItem.translation">
-                                                                <div class="kiss-text-bold kiss-size-xsmall">{{ t('Suggestion') }}</div>
-                                                                <div class="kiss-margin-small">{{ editItem.translation }}</div>
-                                                                <a class="kiss-size-xsmall" @click="editItem.value = editItem.translation">{{ t('Choose suggestion') }}</a>
+                                                        </div>
+                                                        <div class="kiss-flex kiss-margin-small-top" v-if="key.plural">
+                                                            <div class="kiss-margin-small-right" style="min-width:50px"><span class="kiss-badge kiss-width-1-1 kiss-disabled"><?=t('Other')?></span></div>
+                                                            <div class="kiss-flex-1">
+                                                                <div class="kiss-position-relative" v-if="editItem.path != `${key.name}.${loc.name}.plural`">
+                                                                    <div v-if="!project.values[loc.i18n][key.name].plural"><span class="kiss-badge kiss-badge-outline kiss-color-danger">{{ t('Empty') }}</span></div>
+                                                                    <div class="kiss-size-small">{{ project.values[loc.i18n][key.name].plural }}</div>
+                                                                    <a class="kiss-cover" @click="setEditItem(key, loc, true)"></a>
+                                                                </div>
+                                                                <div v-if="editItem.path == `${key.name}.${loc.name}.plural`">
+                                                                    <textarea class="kiss-input kiss-textarea key-value-text" v-model="editItem.value"></textarea>
+                                                                    <div class="kiss-button-group kiss-margin-small-top">
+                                                                        <button type="button" class="kiss-button kiss-button-small" @click="editItem = {}">{{ t('Cancel') }}</button>
+                                                                        <button type="button" class="kiss-button kiss-button-primary kiss-button-small" @click="updateItem()">{{ t('Save') }}</button>
+                                                                    </div>
+                                                                    <div class="kiss-padding-small kiss-bgcolor-contrast kiss-margin-small-top kiss-size-small animated fadeIn" v-if="editItem.translation">
+                                                                        <div class="kiss-text-bold kiss-size-xsmall">{{ t('Suggestion') }}</div>
+                                                                        <div class="kiss-margin-small">{{ editItem.translation }}</div>
+                                                                        <a class="kiss-size-xsmall" @click="editItem.value = editItem.translation">{{ t('Choose suggestion') }}</a>
+                                                                    </div>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -311,6 +338,10 @@
 
                                 this.project.locales.forEach(locale => {
                                     this.project.values[locale.i18n][key.name] = {value: null};
+
+                                    if (key.plural) {
+                                        this.project.values[locale.i18n][key.name].plural = null;
+                                    }
                                 });
                             }
                         }, {size:'large'})
@@ -361,13 +392,17 @@
                         }, {size:'large'})
                     },
 
-                    setEditItem(key, locale) {
+                    setEditItem(key, locale, plural = false) {
+
+                        let vkey = plural ? 'plural' : 'value';
+                        let path = plural ? `${key.name}.${locale.name}.plural` : `${key.name}.${locale.name}`;
 
                         this.editItem = {
                             key,
                             locale,
-                            path: `${key.name}.${locale.name}`,
-                            value: this.project.values[locale.i18n][key.name].value,
+                            plural,
+                            path,
+                            value: this.project.values[locale.i18n][key.name][vkey],
                             translation: null
                         };
 
@@ -375,8 +410,8 @@
 
                         this.project.locales.forEach(l => {
                             if (translationText || l === locale) return;
-                            if (this.project.values[l.i18n][key.name].value) {
-                                translationText = this.project.values[l.i18n][key.name].value;
+                            if (this.project.values[l.i18n][key.name][vkey]) {
+                                translationText = this.project.values[l.i18n][key.name][vkey];
                             }
                         });
 
@@ -400,7 +435,12 @@
 
                     updateItem() {
 
-                        this.project.values[this.editItem.locale.i18n][this.editItem.key.name].value = this.editItem.value;
+                        if (this.editItem.plural) {
+                            this.project.values[this.editItem.locale.i18n][this.editItem.key.name].plural = this.editItem.value;
+                        } else {
+                            this.project.values[this.editItem.locale.i18n][this.editItem.key.name].value = this.editItem.value;
+                        }
+
                         this.editItem = {};
                     },
 

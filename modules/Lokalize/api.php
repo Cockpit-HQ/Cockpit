@@ -61,6 +61,15 @@ $this->on('restApi.config', function($restApi) {
                 }
 
                 foreach ($project['keys'] as $key) {
+
+                    if (isset($key['plural']) && $key['plural']) {
+                        if (!isset($values[$locale['i18n']][$key['name']]['plural'])) {
+                            $values[$locale['i18n']][$key['name'].'_plural'] = null;
+                        } else {
+                            $values[$locale['i18n']][$key['name'].'_plural'] = $values[$locale['i18n']][$key['name']]['plural'];
+                        }
+                    }
+
                     if (!isset($values[$locale['i18n']][$key['name']])) {
                         $values[$locale['i18n']][$key['name']] = null;
                     } else {

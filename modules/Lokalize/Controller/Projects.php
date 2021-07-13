@@ -180,15 +180,27 @@ class Projects extends App {
         foreach ($project['locales'] as $locale) {
 
             $status[$locale['i18n']] = 0;
+            $translations = 0;
 
             foreach ($keys as $key) {
+
                 if (isset($values[$locale['i18n']][$key['name']]['value']) && $values[$locale['i18n']][$key['name']]['value']) {
                     $status[$locale['i18n']] += 1;
                 }
 
+                if (isset($key['plural']) && $key['plural']) {
+
+                    if (isset($values[$locale['i18n']][$key['name']]['plural']) && $values[$locale['i18n']][$key['name']]['plural']) {
+                        $status[$locale['i18n']] += 1;
+                    }
+
+                    $translations += 1;
+                }
+
+                $translations += 1;
             }
 
-            $status[$locale['i18n']] = round((count($keys) ? $status[$locale['i18n']]/count($keys) : 0) * 100);
+            $status[$locale['i18n']] = round(($translations ? $status[$locale['i18n']]/$translations : 0) * 100);
             $status['_overall'] += $status[$locale['i18n']];
         }
 

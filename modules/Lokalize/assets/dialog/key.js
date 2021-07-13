@@ -30,6 +30,10 @@ export default {
                 </div>
 
                 <div class="kiss-margin">
+                <field-boolean class="kiss-margin-small" v-model="val.plural" :label="t('Has plural')"></field-boolean>
+                </div>
+
+                <div class="kiss-margin">
                     <div class="kiss-button-group kiss-flex kiss-child-width-1-2">
                         <button type="button" class="kiss-button" kiss-dialog-close>{{ t('Cancel') }}</button>
                         <button class="kiss-button kiss-button-primary">{{ t('Save key') }}</button>
