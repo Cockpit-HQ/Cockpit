@@ -38,7 +38,9 @@ class Users extends App {
 
         unset($user["password"]);
 
-        return $this->render('settings:views/users/user.php', compact('user', 'isAccountView'));
+        $languages = $this->geti18n();
+
+        return $this->render('settings:views/users/user.php', compact('user', 'isAccountView', 'languages'));
     }
 
     public function create() {
@@ -52,8 +54,9 @@ class Users extends App {
         ];
 
         $isAccountView = false;
+        $languages = $this->geti18n();
 
-        return $this->render('settings:views/users/user.php', compact('user', 'isAccountView'));
+        return $this->render('settings:views/users/user.php', compact('user', 'isAccountView', 'languages'));
     }
 
     public function save() {
@@ -211,5 +214,21 @@ class Users extends App {
         $this->app->response->mime = 'svg';
 
         return $this->helper('twfa')->getQRCodeImage($secret, intval($size));
+    }
+
+    protected function geti18n() {
+
+        $languages = [['i18n' => 'en', 'language' => 'English']];
+
+        foreach ($this->app->helper('fs')->ls('*.php', '#config:app/i18n') as $file) {
+
+            $lang     = include($file->getRealPath());
+            $i18n     = $file->getBasename('.php');
+            $language = $lang['@meta']['language'] ?? $i18n;
+
+            $languages[] = ['i18n' => $i18n, 'language'=> $language];
+        }
+
+        return $languages;
     }
 }

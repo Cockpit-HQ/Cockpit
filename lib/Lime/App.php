@@ -702,7 +702,7 @@ class App implements \ArrayAccess {
             extract($src, \EXTR_OVERWRITE);
         }
 
-        $ispath = \strpos($src, ':') !== false && !\preg_match('#^(|http\:|https\:)//#', $src);
+        $ispath = \strpos($src, ':') !== false && !\preg_match('#^(/|http\:|https\:)//#', $src);
         $output = '<script src="'.($ispath ? $this->pathToUrl($src):$src).($version ? "?ver={$version}":"").'" type="'.$type.'" '.$load.'></script>';
 
         return $output;

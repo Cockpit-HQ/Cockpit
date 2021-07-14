@@ -78,6 +78,15 @@ if (!isset($user['twofa'])) {
                 </div>
                 <?php endif ?>
 
+                <div class="kiss-margin" v-if="languages.length > 1">
+                    <label><?=t('Backend language')?></label>
+                    <select class="kiss-input" type="password" v-model="user.i18n">
+                        <?php foreach($languages as $lang): ?>
+                        <option value="<?=$lang['i18n']?>"><?=$lang['language']?></option>
+                        <?php endforeach ?>
+                    </select>
+                </div>
+
                 <kiss-card class="kiss-margin kiss-margin-large-top kiss-padding" :theme="user.apiKey ? 'bordered contrast':'bordered'">
                     <label><?=t('API Key')?></label>
                     <div class="kiss-flex kiss-flex-middle">
@@ -173,7 +182,8 @@ if (!isset($user['twofa'])) {
                     return {
                         saving: false,
                         user: <?=json_encode($user)?>,
-                        roles: <?=json_encode($this->helper('acl')->roles())?>
+                        roles: <?=json_encode($this->helper('acl')->roles())?>,
+                        languages: <?=json_encode($languages)?>,
                     };
                 },
 

@@ -95,6 +95,26 @@ $this->on('app.admin.request', function(Lime\Request $request) {
         return;
     }
 
+    // load i18n translation
+    $this->helper('i18n')->locale = $this->retrieve('i18n', 'en');
+
+    $locale = $user && isset($user['i18n']) && $user['i18n'] ? $user['i18n'] : $this->helper('i18n')->locale;
+
+    if ($translationspath = $this->path("#config:app/i18n/{$locale}.php")) {
+
+        $this->helper('i18n')->locale = $locale;
+        $this->helper('i18n')->load($translationspath, $locale);
+    }
+
+    $this->bind('/app.i18n.data.js', function() use($locale) {
+        session_write_close();
+        $this->response->mime = 'js';
+        $data = $this->helper('i18n')->data($locale);
+        return 'if (window.i18n) {
+            window.i18n.register('.(count($data) ? json_encode($data):'{}').');
+        }';
+    });
+
     if (!$user) {
         return;
     }
