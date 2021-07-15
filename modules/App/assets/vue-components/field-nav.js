@@ -1,8 +1,15 @@
 let editItem = {
 
     data() {
+
+        let data = _.cloneDeep(this.item);
+
+        if (!data.meta || Array.isArray(data.meta)) {
+            data.meta = {};
+        }
+
         return {
-            data: _.cloneDeep(this.item)
+            data
         }
     },
 
@@ -26,19 +33,29 @@ let editItem = {
 
             <div class="kiss-size-4 kiss-text-bold kiss-margin-bottom">{{ t('Edit nav item') }}</div>
 
-            <div class="kiss-margin">
-                <label class="kiss-size-small kiss-text-caption">{{ t('Title') }}</label>
-                <input class="kiss-input" type="text" v-model="data.title">
-            </div>
-            <div class="kiss-margin">
-                <label class="kiss-size-small kiss-text-caption">{{ t('Url') }}</label>
-                <input class="kiss-input" type="text" v-model="data.url">
-            </div>
-            <div class="kiss-margin">
-                <label class="kiss-size-small kiss-text-caption">{{ t('Target') }}</label>
-                <input class="kiss-input" type="text" v-model="data.target">
-            </div>
-            <fields-renderer class="kiss-margin-large" v-model="data.data" :fields="fields"></fields-renderer>
+            <app-tabs class="kiss-margin-large">
+
+                <tab :caption="t('General')">
+
+                    <div class="kiss-margin">
+                        <label class="kiss-size-small kiss-text-caption">{{ t('Title') }}</label>
+                        <input class="kiss-input" type="text" v-model="data.title">
+                    </div>
+                    <div class="kiss-margin">
+                        <label class="kiss-size-small kiss-text-caption">{{ t('Url') }}</label>
+                        <input class="kiss-input" type="text" v-model="data.url">
+                    </div>
+                    <div class="kiss-margin">
+                        <label class="kiss-size-small kiss-text-caption">{{ t('Target') }}</label>
+                        <input class="kiss-input" type="text" v-model="data.target">
+                    </div>
+
+                    <fields-renderer class="kiss-margin-large" v-model="data.data" :fields="fields"></fields-renderer>
+                </tab>
+                <tab :caption="t('Meta')">
+                    <field-object v-model="data.meta"></field-object>
+                </tab>
+            </app-tabs>
 
             <div class="kiss-margin-top kiss-flex kiss-flex-middle kiss-button-group">
                 <button type="button" class="kiss-button kiss-flex-1" @click="$close()">{{ t('Cancel') }}</button>
