@@ -72,7 +72,6 @@ class Pages extends Controller {
             $default['title_'.$locale['i18n']] = null;
             $default['slug_'.$locale['i18n']] = null;
             $default['seo_'.$locale['i18n']] = $default['seo'];
-            $default['data_'.$locale['i18n']] = new ArrayObject([]);
             $default['_r_'.$locale['i18n']] = null;
         }
 
@@ -88,18 +87,7 @@ class Pages extends Controller {
 
             $page = array_replace_recursive($default, $page);
 
-            foreach ($locales as $locale) {
-
-                $suffix = "_{$locale['i18n']}";
-
-                if ($locale['i18n'] == 'default') {
-                    $suffix = '';
-                }
-
-                if (isset($page["data{$suffix}"])) {
-                    $page["data{$suffix}"] = new ArrayObject($page["data{$suffix}"]);
-                }
-            }
+            $page['data'] = new ArrayObject($page['data']);
 
         } else {
 
@@ -114,7 +102,9 @@ class Pages extends Controller {
             $page['_meta'] = new ArrayObject($page['_meta']);
         }
 
-        return $this->render('pages:views/pages/page.php', compact('page', 'locales'));
+        $settings = $this->module('pages')->settings();
+
+        return $this->render('pages:views/pages/page.php', compact('page', 'locales', 'settings'));
     }
 
     public function save() {
@@ -144,7 +134,7 @@ class Pages extends Controller {
             unset($page['_pid'], $page['_o']);
         }
 
-        $page["_meta"] = new ArrayObject($page["_meta"]);
+        $page['_meta'] = new ArrayObject($page['_meta']);
 
         $locales = $this->helper('locales')->locales();
 
@@ -180,23 +170,10 @@ class Pages extends Controller {
 
         $page = $this->app->dataStorage->findOne('pages', ['_id' => $page['_id']]);
 
-        foreach ($locales as $locale) {
-
-            $data = "data_{$locale['i18n']}";
-
-            if ($locale['i18n'] == 'default') {
-                $data = 'data';
-            }
-
-            if (!isset($page[$data])) $page[$data] = [];
-
-            $page[$data] = new ArrayObject($page[$data]);
-        }
-
-        $page["_meta"] = new ArrayObject($page["_meta"]);
+        $page['data'] = new ArrayObject($page['data']);
+        $page['_meta'] = new ArrayObject($page['_meta']);
 
         return $page;
-
     }
 
     public function remove() {

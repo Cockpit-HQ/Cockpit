@@ -2779,7 +2779,7 @@ kiss-popoutmenu {
     opacity: 0;
     pointer-events: none;
     overflow-y: auto;
-    z-index: 1000;
+    z-index: 10000;
     transition: opacity .3s;
 }
 kiss-popoutmenu > kiss-content {

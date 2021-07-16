@@ -80,10 +80,8 @@
                                 <hr class="kiss-flex-1 kiss-margin-remove">
                             </div>
 
-                            <app-fieldcontainer class="kiss-margin" v-for="locale in visibleLocales">
-                                <span class="kiss-badge kiss-badge-outline kiss-color-primary kiss-margin-small-bottom" v-if="locales.length > 1">{{ locale.i18n }}</span>
-                                <fields-renderer v-model="page['data'+(locale.i18n!='default' ? '_'+locale.i18n:'')]" :fields="fields"></fields-renderer>
-                            </app-fieldcontainer>
+                            <fields-renderer class="kiss-margin" v-model="page.data" :fields="fields" :locales="locales"></fields-renderer>
+
                         </div>
 
                         <app-fieldcontainer class="kiss-margin-large" v-if="group == 'meta'">
@@ -170,6 +168,13 @@
 
                     </div>
 
+                    <div class="kiss-margin kiss-visible@m" v-if="settings.preview && settings.preview.length">
+
+                        <div class="kiss-text-caption kiss-size-xsmall kiss-text-bold kiss-margin-small-bottom">{{ t('Page preview') }}</div>
+
+                        <a class="kiss-button kiss-width-1-1" kiss-popoutmenu="#page-preview-links" v-if="settings.preview.length > 1">{{ t('Open preview') }}</a>
+                        <a class="kiss-button kiss-width-1-1" @click="showPreviewUri(settings.preview[0].uri)" v-if="settings.preview.length == 1">{{ t('Open preview') }}</a>
+                    </div>
 
                 </div>
 
@@ -196,6 +201,22 @@
                                 <a class="kiss-flex kiss-flex-middle kiss-color-muted kiss-text-bold" @click="page._state=-1">
                                     <icon class="kiss-margin-small-right">bookmark</icon>
                                     <?=t('Archive')?>
+                                </a>
+                            </li>
+                        </ul>
+                    </kiss-navlist>
+                </kiss-content>
+            </kiss-popoutmenu>
+
+            <kiss-popoutmenu id="page-preview-links" v-if="settings.preview && settings.preview.length">
+                <kiss-content>
+                    <kiss-navlist class="kiss-margin">
+                        <ul>
+                            <li class="kiss-nav-header"><?=t('Open preview')?></li>
+                            <li v-for="preview in settings.preview">
+                                <a class="kiss-flex kiss-flex-middle" @click="showPreviewUri(preview.uri)">
+                                    <icon class="kiss-margin-small-right">travel_explore</icon>
+                                    {{ preview.name }}
                                 </a>
                             </li>
                         </ul>
@@ -240,10 +261,11 @@
                     return {
                         page: <?=json_encode($page)?>,
                         locales: <?=json_encode($locales)?>,
+                        settings: <?=json_encode($settings)?>,
                         group: null,
                         showSEO: false,
                         fields: [
-                            {name: 'layout', type: 'layout'}
+                            {name: 'layout', type: 'layout', i18n: true}
                         ],
                         isModified: false
                     }
@@ -311,6 +333,23 @@
                             this.saving = false;
                             App.ui.notify(res.error || 'Saving failed!', 'error');
                         });
+                    },
+
+                    showPreviewUri(uri) {
+
+                        VueView.ui.offcanvas('settings:assets/dialogs/content-preview.js', {
+                            uri,
+                            fields: this.fields,
+                            item: this.page.data,
+                            locales: this.locales.length ? this.locales : [],
+                            context: {
+                                page: this.page
+                            }
+                        }, {
+                            update: (item) => {
+                                this.page.data = Object.assign(this.page.data, item);
+                            }
+                        }, {size: 'screen'})
                     }
                 }
             }

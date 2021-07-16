@@ -81,7 +81,7 @@ export default {
             <div class="app-offcanvas-content kiss-position-relative kiss-flex kiss-flex-1">
                 <div class="kiss-flex kiss-flex-column" style="width:600px;">
                     <div class="kiss-flex-1 kiss-padding kiss-overflow-y-auto">
-                        <fields-renderer v-model="data" :fields="fields" :locales="locale ? [locale] : []"></fields-renderer>
+                        <fields-renderer v-model="data" :fields="fields" :locales="locale ? [Object.assign({}, locale, {visible:true})] : []"></fields-renderer>
                     </div>
                     <div class="kiss-padding kiss-bgcolor-contrast">
                         <div class="kiss-button-group kiss-child-width-1-2 kiss-width-1-1">
