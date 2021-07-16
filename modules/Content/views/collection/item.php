@@ -239,6 +239,8 @@
             computed: {
                 hasLocales() {
 
+                    if (!this.locales.length) return false;
+
                     for (let i=0;i<this.fields.length;i++) {
                         if (this.fields[i].i18n) return true;
                     }

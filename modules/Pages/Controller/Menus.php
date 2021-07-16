@@ -39,9 +39,17 @@ class Menus extends Controller {
 
         $groups = $this->getGroups();
 
+        $locales = $this->helper('locales')->locales();
+
+        if (count($locales) == 1) {
+            $locales = [];
+        } else {
+            $locales[0]['visible'] = true;
+        }
+
         $this->helper('theme')->favicon('pages:assets/icons/nav.svg', $menu['color'] ?? '#000');
 
-        return $this->render('pages:views/menus/menu.php', compact('menu', 'groups'));
+        return $this->render('pages:views/menus/menu.php', compact('menu', 'groups', 'locales'));
     }
 
     public function save() {
