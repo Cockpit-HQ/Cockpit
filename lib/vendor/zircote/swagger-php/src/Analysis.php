@@ -66,15 +66,17 @@ class Analysis
     public $openapi;
 
     /**
+     * @var Context
+     */
+    protected $context;
+
+    /**
      * Registry for the post-processing operations.
      *
      * @var callable[]
      */
     private static $processors;
 
-    /**
-     * @param null $context
-     */
     public function __construct(array $annotations = [], ?Context $context = null)
     {
         $this->annotations = new \SplObjectStorage();
@@ -84,6 +86,7 @@ class Analysis
             }
             $this->addAnnotations($annotations, $context);
         }
+        $this->context = $context;
     }
 
     public function addAnnotation($annotation, ?Context $context): void
@@ -301,7 +304,9 @@ class Analysis
     }
 
     /**
-     * @param bool $strict innon-strict mode childclasses are also detected
+     * @param bool $strict in non-strict mode child classes are also detected
+     *
+     * @return AbstractAnnotation[]
      */
     public function getAnnotationsOfType(string $class, bool $strict = false): array
     {
@@ -381,7 +386,7 @@ class Analysis
         }
         $unmerged = $this->openapi->_unmerged;
         $this->openapi->_unmerged = [];
-        $analysis = new Analysis([$this->openapi]);
+        $analysis = new Analysis([$this->openapi], $this->context);
         $this->openapi->_unmerged = $unmerged;
 
         return $analysis;
@@ -405,7 +410,7 @@ class Analysis
     {
         $result = new \stdClass();
         $result->merged = $this->merged();
-        $result->unmerged = new Analysis();
+        $result->unmerged = new Analysis([], $this->context);
         foreach ($this->annotations as $annotation) {
             if ($result->merged->annotations->contains($annotation) === false) {
                 $result->unmerged->annotations->attach($annotation, $this->annotations[$annotation]);

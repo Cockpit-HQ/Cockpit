@@ -144,6 +144,31 @@ class Generator
         return $this;
     }
 
+    /**
+     * Update/replace an existing processor with a new one.
+     *
+     * @param callable      $processor the new processor
+     * @param null|callable $matcher   Optional matcher callable to identify the processor to replace.
+     *                                 If none given, matching is based on the processors class.
+     */
+    public function updateProcessor(callable $processor, ?callable $matcher = null): Generator
+    {
+        if (!$matcher) {
+            $matcher = $matcher ?: function ($other) use ($processor) {
+                $otherClass = get_class($other);
+
+                return $processor instanceof $otherClass;
+            };
+        }
+
+        $processors = array_map(function ($other) use ($processor, $matcher) {
+            return $matcher($other) ? $processor : $other;
+        }, $this->getProcessors());
+        $this->setProcessors($processors);
+
+        return $this;
+    }
+
     public function getLogger(): ?LoggerInterface
     {
         return $this->logger;
@@ -163,8 +188,8 @@ class Generator
      *                          analyser:   null|StaticAnalyser           Defaults to a new `StaticAnalyser`.
      *                          analysis:   null|Analysis                 Defaults to a new `Analysis`.
      *                          processors: null|array                    Defaults to `Analysis::processors()`.
-     *                          validate:   bool                          Defaults to `true`.
      *                          logger:     null|\Psr\Log\LoggerInterface If not set logging will use \OpenApi\Logger as before.
+     *                          validate:   bool                          Defaults to `true`.
      */
     public static function scan(iterable $sources, array $options = []): OpenApi
     {
@@ -175,10 +200,11 @@ class Generator
                 'analyser' => null,
                 'analysis' => null,
                 'processors' => null,
+                'logger' => null,
                 'validate' => true,
             ];
 
-        return (new Generator())
+        return (new Generator($config['logger']))
             ->setAliases($config['aliases'])
             ->setNamespaces($config['namespaces'])
             ->setAnalyser($config['analyser'])
@@ -199,7 +225,7 @@ class Generator
      */
     public function generate(iterable $sources, ?Analysis $analysis = null, bool $validate = true): OpenApi
     {
-        $analysis = $analysis ?: new Analysis();
+        $analysis = $analysis ?: new Analysis([], new Context());
 
         $this->configStack->push($this);
         try {
@@ -226,11 +252,15 @@ class Generator
             if (is_iterable($source)) {
                 $this->scanSources($source, $analysis);
             } else {
-                $source = $source instanceof \SplFileInfo ? $source->getPathname() : realpath($source);
-                if (is_dir($source)) {
-                    $this->scanSources(Util::finder($source), $analysis);
+                $resolvedSource = $source instanceof \SplFileInfo ? $source->getPathname() : realpath($source);
+                if (!$resolvedSource) {
+                    Logger::warning(sprintf('Skipping invalid source: %s', $source));
+                    continue;
+                }
+                if (is_dir($resolvedSource)) {
+                    $this->scanSources(Util::finder($resolvedSource), $analysis);
                 } else {
-                    $analysis->addAnalysis($analyser->fromFile($source));
+                    $analysis->addAnalysis($analyser->fromFile($resolvedSource));
                 }
             }
         }

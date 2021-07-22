@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => 'ee4859e15126432c93393a37596e9e1b6a0f50c2',
+    'reference' => '0857339b4f926f87bdea4f28501a7d76c0dbb5cd',
     'name' => 'agentejo/cockpit',
   ),
   'versions' => 
@@ -18,7 +18,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => 'ee4859e15126432c93393a37596e9e1b6a0f50c2',
+      'reference' => '0857339b4f926f87bdea4f28501a7d76c0dbb5cd',
     ),
     'bacon/bacon-qr-code' => 
     array (
@@ -112,12 +112,12 @@
     ),
     'guzzlehttp/psr7' => 
     array (
-      'pretty_version' => '1.8.2',
-      'version' => '1.8.2.0',
+      'pretty_version' => '2.0.0',
+      'version' => '2.0.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'dc960a912984efb74d0a90222870c72c87f10c91',
+      'reference' => '1dc8d9cba3897165e16d12bb13d813afb1eb3fe7',
     ),
     'jean85/pretty-package-versions' => 
     array (
@@ -139,12 +139,12 @@
     ),
     'league/flysystem' => 
     array (
-      'pretty_version' => '2.1.0',
-      'version' => '2.1.0.0',
+      'pretty_version' => '2.2.0',
+      'version' => '2.2.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'a025209072f2d3a50b7bfd683a67fa0a2e6d2721',
+      'reference' => '29a3ba148287db3142412ef34f6fdcbc22c957cd',
     ),
     'league/mime-type-detection' => 
     array (
@@ -215,6 +215,22 @@
       'reference' => '2dfb5f6c5eff0e91e20e913f8c5452ed95b86621',
     ),
     'psr/http-client-implementation' => 
+    array (
+      'provided' => 
+      array (
+        0 => '1.0',
+      ),
+    ),
+    'psr/http-factory' => 
+    array (
+      'pretty_version' => '1.0.1',
+      'version' => '1.0.1.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '12ac7fcd07e5b077433f5f2bee95b3a771bf61be',
+    ),
+    'psr/http-factory-implementation' => 
     array (
       'provided' => 
       array (
@@ -311,12 +327,12 @@
     ),
     'symfony/yaml' => 
     array (
-      'pretty_version' => 'v5.3.2',
-      'version' => '5.3.2.0',
+      'pretty_version' => 'v5.3.3',
+      'version' => '5.3.3.0',
       'aliases' => 
       array (
       ),
-      'reference' => '71719ab2409401711d619765aa255f9d352a59b2',
+      'reference' => '485c83a2fb5893e2ff21bf4bfc7fdf48b4967229',
     ),
     'webonyx/graphql-php' => 
     array (
@@ -329,12 +345,12 @@
     ),
     'zircote/swagger-php' => 
     array (
-      'pretty_version' => '3.2.1',
-      'version' => '3.2.1.0',
+      'pretty_version' => '3.2.3',
+      'version' => '3.2.3.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'eef1dd98e6f6071573908fd7007270510051e5f9',
+      'reference' => '41ed0eb1dacebe2c365623b3f9ab13d1531a03da',
     ),
   ),
 );

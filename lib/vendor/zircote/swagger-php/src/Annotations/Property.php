@@ -21,7 +21,14 @@ class Property extends Schema
     public $property = Generator::UNDEFINED;
 
     /**
-     * {@inheritdoc}
+     * Indicates the property is nullable.
+     *
+     * @var bool
+     */
+    public $nullable = Generator::UNDEFINED;
+
+    /**
+     * @inheritdoc
      */
     public static $_parents = [
         AdditionalProperties::class,
@@ -33,7 +40,7 @@ class Property extends Schema
     ];
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public static $_nested = [
         Discriminator::class => 'discriminator',
