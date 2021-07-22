@@ -8,6 +8,7 @@ import ui from "./app/ui.js";
 import assets from "./app/assets.js";
 import "./components.js";
 
+
 let html = document.documentElement;
 let App = {
 
