@@ -3,7 +3,7 @@
 
         <kiss-container class="login-wrapper animated pulse">
 
-            <div class="kiss-flex kiss-flex-center kiss-margin-large">
+            <div class="kiss-flex kiss-flex-center kiss-margin">
                 <img class="app-logo" src="<?=$this->helper('theme')->logo()?>" style="height: 40px;" alt="Logo">
             </div>
 

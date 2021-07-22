@@ -108,8 +108,19 @@ let FieldsManager = {
                             <input class="kiss-input kiss-width-1-1" type="text" v-model="field.name" required>
                         </div>
 
-                        <div class="kiss-margin">
+                        <div class="kiss-margin kiss-display-block kiss-overlay-input">
                             <label>{{t('Type')}}</label>
+
+                            <kiss-card class="kiss-padding-small kiss-flex kiss-flex-middle" theme="bordered">
+                                <div class="kiss-padding-small app-border-radius kiss-margin-right" :style="{background: _.get(fieldTypes, field.type+'.color', 'rgb(255, 248, 214)')}">
+                                    <img :src="$base(_.get(fieldTypes, field.type+'.icon', 'settings:assets/icons/edit.svg'))" width="20" height="20">
+                                </div>
+                                <div>
+                                    <div class="kiss-text-bold kiss-size-small">{{ _.get(fieldTypes, field.type+'.label', field.type) }}</div>
+                                    <div class="kiss-color-muted kiss-size-xsmall">{{ _.get(fieldTypes, field.type+'.info', '') }}</div>
+                                </div>
+                            </kiss-card>
+
                             <select class="kiss-input kiss-width-1-1" type="text" v-model="field.type" required>
                                 <option></option>
                                 <option :value="fieldType" v-for="(f,fieldType) in fieldTypes">{{ f.label || fieldType }}</option>
