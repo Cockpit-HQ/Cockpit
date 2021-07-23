@@ -24,17 +24,19 @@
                     </div>
 
                     <app-scrollcontainer mode="boundary" boundary="#lokalize-actionbar">
-                        <ul class="app-list-items animated fadeIn kiss-overflow-y-auto">
-                            <li v-for="key in visibleKeys">
-                                <kiss-row class="kiss-margin-small-top kiss-margin-small-bottom">
+                        <div class="animated fadeIn kiss-overflow-y-auto">
+                            <app-fieldcontainer v-for="key in visibleKeys">
+                                <kiss-row class="kiss-margin-small-top kiss-margin-small-bottom" match="true">
                                     <div class="kiss-width-1-4@m">
+                                        <div class="kiss-bgcolor-contrast kiss-padding-small">
                                         <div class="kiss-flex kiss-flex-middle kiss-text-bold">
                                             <div class="kiss-flex-1 kiss-size-small kiss-text-truncate kiss-margin-small-right">
                                                 {{ key.name }}
                                             </div>
                                             <a class="kiss-margin-xsmall-left" @click="toggleKeyActions(key)"><icon>more_horiz</icon></a>
                                         </div>
-                                        <div class="kiss-size-xsmall kiss-color-muted kiss-margin-small-top">{{ key.info }}</div>
+                                        <div class="kiss-size-xsmall kiss-color-muted">{{ key.info }}</div>
+                                        </div>
                                     </div>
                                     <div class="kiss-flex-1">
 
@@ -97,8 +99,8 @@
 
                                     </div>
                                 </kiss-row>
-                            </li>
-                        </ul>
+                            </app-fieldcontainer>
+                        </div>
                     </app-scrollcontainer>
 
                 </div>
