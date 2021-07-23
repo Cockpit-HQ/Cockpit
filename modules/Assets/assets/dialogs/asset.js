@@ -16,6 +16,10 @@ export default {
         }
     },
 
+    components: {
+        'fields-renderer': Vue.defineAsyncComponent(() => App.utils.import('settings:assets/vue-components/fields-renderer.js'))
+    },
+
     mounted() {
 
         this.loading = true;
@@ -56,7 +60,7 @@ export default {
 
                 <form v-if="item" @submit.prevent="update">
 
-                    <div class="kiss-bgcolor-contrast kiss-position-relative kiss-padding kiss-margin-bottom" :class="{'kiss-bgcolor-transparentimage': item.type == 'image'}">
+                    <div class="kiss-bgcolor-contrast kiss-position-relative kiss-padding" :class="{'kiss-bgcolor-transparentimage': item.type == 'image'}">
                         <canvas width="400" height="150"></canvas>
                         <div class="kiss-cover kiss-align-center kiss-flex kiss-flex-middle kiss-flex-center">
                             <asset-preview :asset="item"></asset-preview>
@@ -78,28 +82,18 @@ export default {
                         </div>
                     </div>
 
-
-                    <div class="kiss-margin-small">
-                        <label>{{ t('Title') }}</label>
-                        <input class="kiss-input" type="text" v-model="item.title">
-                    </div>
-
-                    <div class="kiss-margin-small">
-                        <label>{{ t('Description') }}</label>
-                        <textarea class="kiss-input" v-model="item.description"></textarea>
-                    </div>
-
-                    <div class="kiss-margin-small" v-if="item.type == 'image' && Array.isArray(item.colors) && item.colors.length">
-                        <label>{{ t('Colors') }}</label>
-                        <div class="kiss-size-4">
-                            <a class="kiss-margin-xsmall-right" :style="{color}" :title="color" @click="copyColor(color)" v-for="color in item.colors"><icon>invert_colors</icon></a>
+                    <div class="kiss-margin-small kiss-flex kiss-flex-middle">
+                        <div class="kiss-margin-small-right kiss-color-muted kiss-text-monospace kiss-size-small kiss-flex-1">
+                            {{ size }} <span v-if="item.type=='image' && item.mime!='image/svg+xml'">&mdash; {{ item.width }}x{{ item.height }}</span>
+                        </div>
+                        <div v-if="item.type == 'image' && Array.isArray(item.colors) && item.colors.length">
+                            <div class="kiss-size-4">
+                                <a class="kiss-margin-xsmall-right" :style="{color}" :title="color" @click="copyColor(color)" v-for="color in item.colors"><icon>invert_colors</icon></a>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="kiss-margin-small kiss-color-muted kiss-text-monospace kiss-size-small">
-                        {{ size }} <span v-if="item.type=='image' && item.mime!='image/svg+xml'">&mdash; {{ item.width }}x{{ item.height }}</span>
-                    </div>
-
+                    <fields-renderer class="kiss-margin" v-model="item" :fields="[{name:'title', type:'text'},{name:'description', type:'text', opts: {multiline:true, height:200}},{name:'tags', type:'text', multiple:true}]"></fields-renderer>
 
                 </form>
 

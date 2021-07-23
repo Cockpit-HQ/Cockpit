@@ -50,6 +50,7 @@ class Assets extends App {
                         '$or' => [
                             ['title' => ['$regex' => $term, '$options' => 'i']],
                             ['description' => ['$regex' => $term, '$options' => 'i']],
+                            ['tags' => $term],
                         ]
                     ];
                 }
@@ -57,8 +58,6 @@ class Assets extends App {
 
             $options['filter'] = $filter;
         }
-
-
 
         if ($folder) {
             $options['filter'] = $options['filter'] ?? [];
