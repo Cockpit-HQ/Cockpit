@@ -22,6 +22,13 @@ let ready = new Promise(function(resolve) {
             '/modules/App/assets/vendor/codemirror/mode/yaml/yaml.js',
             '/modules/App/assets/vendor/codemirror/mode/yaml-frontmatter/yaml-frontmatter.js',
 
+            '/modules/App/assets/vendor/codemirror/addon/fold/foldgutter.css',
+            '/modules/App/assets/vendor/codemirror/addon/fold/foldcode.js',
+            '/modules/App/assets/vendor/codemirror/addon/fold/foldgutter.js',
+            '/modules/App/assets/vendor/codemirror/addon/fold/brace-fold.js',
+            '/modules/App/assets/vendor/codemirror/addon/fold/indent-fold.js',
+            '/modules/App/assets/vendor/codemirror/addon/fold/xml-fold.js',
+
         ], function() {
             resolve(window.CodeMirror);
         });
@@ -119,6 +126,8 @@ export default {
                 lineNumbers: true,
                 mode: null,
                 height: this.height,
+                foldGutter: mode ? true:false,
+                gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
                 mode,
             }, this.codemirror || {}));
 
