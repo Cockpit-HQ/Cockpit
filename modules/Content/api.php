@@ -49,6 +49,11 @@ $this->on('restApi.config', function($restApi) {
      *         required=false,
      *         @OA\Schema(type="int")
      *     ),
+     *     @OA\OpenApi(
+     *         security={
+     *             {"api_key": {}}
+     *         }
+     *     ),
      *     @OA\Response(response="200", description="Get model item"),
      *     @OA\Response(response="404", description="Model not found")
      * )
@@ -161,6 +166,11 @@ $this->on('restApi.config', function($restApi) {
      *         name="populate",
      *         required=false,
      *         @OA\Schema(type="int")
+     *     ),
+     *     @OA\OpenApi(
+     *         security={
+     *             {"api_key": {}}
+     *         }
      *     ),
      *     @OA\Response(response="200", description="Get list of published model items"),
      *     @OA\Response(response="404", description="Model not found")

@@ -106,7 +106,7 @@ if (APP_API_REQUEST) {
 
     $app->on('before', function() {
 
-        $cors = $this->retrieve('config/cors', []);
+        $cors = $this->retrieve('cors', []);
 
         $this->response->headers['Access-Control-Allow-Origin']      = $cors['allowedOrigins'] ?? '*';
         $this->response->headers['Access-Control-Allow-Credentials'] = $cors['allowCredentials'] ?? 'true';

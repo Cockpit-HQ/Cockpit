@@ -9,7 +9,7 @@
  *     type="apiKey",
  *     in="header",
  *     securityScheme="api_key",
- *     name="api_key"
+ *     name="api-key"
  * )
  */
 
@@ -28,6 +28,37 @@ $this->service('restApi', function() use($app) {
 });
 
 $this->bind('/api/*', function($params) {
+
+    $token = $this->param('api_key', $this->request->server['HTTP_API_KEY'] ?? $this->request->getBearerToken());
+
+    if (!$token) {
+
+        // set public user
+        $this->helper('auth')->setUser([
+            'user' => 'anonymous',
+            'role' => 'public'
+        ], false);
+
+    } elseif (preg_match('/^USR-/', $token)) {
+
+        $user = $this->dataStorage->findOne('system/users', ['apiKey' => $token]);
+
+        if (!$user) {
+            $this->response->status = 412;
+            return ['error' => 'Authentication failed'];
+        }
+
+        $this->helper('auth')->setUser($user, false);
+
+    } else {
+
+        $key = $this->helper('api')->getKey($token);
+
+        if (!$key) {
+            $this->response->status = 412;
+            return ['error' => 'Authentication failed'];
+        }
+    }
 
     //graphql query
     if ($params[':splat'][0] == 'gql') {

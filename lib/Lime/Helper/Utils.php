@@ -364,8 +364,8 @@ class Utils extends \Lime\Helper {
     public function buildTreeList(array $items, array $options = [], mixed $parent = null, mixed $result = null, int $depth = 0, string $path = '-'): array {
 
         $options = \array_merge([
-              'parent_id_column_name' => '_pid',
-              'id_column_name' => '_id'
+            'parent_id_column_name' => '_pid',
+            'id_column_name' => '_id'
         ], $options);
 
         if (!$result) {

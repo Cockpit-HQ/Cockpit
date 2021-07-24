@@ -13,19 +13,12 @@ class Api extends \Lime\Helper {
         });
     }
 
+    public function getKey(string $key) {
+        return $this->keys[$key] ?? null;
+    }
+
     public function keys(): array {
-
-        $keys = [];
-
-        foreach ($this->keys as $key) {
-
-            $keys[] = [
-                'i18n' => $key['i18n'],
-                'name' => $key['name'],
-            ];
-        }
-
-        return $keys;
+        return array_keys($this->keys);
     }
 
     public function cache(): array {
