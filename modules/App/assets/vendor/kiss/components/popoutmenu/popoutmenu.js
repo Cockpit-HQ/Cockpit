@@ -20,7 +20,14 @@ customElements.define('kiss-popoutmenu', class extends HTMLElement {
     connectedCallback() {
 
         on(this, 'click', e => {
-            this.close();
+
+            if (e.target.matches('[kiss-popoutmenu-close]') || e.target.closest('[kiss-popoutmenu-close]')) {
+                return this.close();
+            }
+
+            if (this.getAttribute('modal') !== 'true') {
+                this.close();
+            }
         });
     }
 

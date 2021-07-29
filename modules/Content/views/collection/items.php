@@ -4,7 +4,7 @@
         <li><a href="<?=$this->route('/content')?>"><?=t('Content')?></a></li>
     </ul>
 
-    <div class="kiss-flex kiss-flex-middle kiss-margin-large-bottom">
+    <div class="kiss-flex kiss-flex-middle kiss-margin-bottom">
         <div class="kiss-margin-small-right">
             <kiss-svg class="kiss-margin-auto" src="<?=$this->base('content:assets/icons/collection.svg')?>" width="25" height="25" style="color:<?=($this->escape($model['color'] ?? 'inherit'))?>"><canvas width="35" height="35"></canvas></kiss-svg>
         </div>
@@ -43,10 +43,11 @@
                     <tr>
                         <th class="kiss-align-center" width="20"><input class="kiss-checkbox" type="checkbox" @click="toggleAllSelect"></th>
                         <th width="50">ID</th>
-                        <th width="20">State</th>
-                        <th v-for="field in model.fields">{{ field.label || field.name}}</th>
+                        <th class="kiss-align-center" width="20">State</th>
+                        <th v-for="field in visibleFields">{{ field.label || field.name}}</th>
                         <th width="120"><?=t('Modified')?></th>
-                        <th width="20"></th>
+                        <th width="120"><?=t('Created')?></th>
+                        <th width="20"><a class="kiss-size-4" :class="model.fields.length != visibleFields.length ? 'kiss-color-danger': 'kiss-link-muted'" kiss-popoutmenu="#model-column-options"><icon>more_horiz</icon></a></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -54,7 +55,7 @@
                         <td class="kiss-align-center"><input class="kiss-checkbox" type="checkbox" v-model="selected" :value="item._id"></td>
                         <td><a class="kiss-badge kiss-link-muted" :href="$route(`/content/collection/item/${model.name}/${item._id}`)" :title="item._id">...{{ item._id.substr(-5) }}</a></td>
                         <td class="kiss-align-center"><icon :class="{'kiss-color-success': item._state === 1, 'kiss-color-danger': !item._state}">trip_origin</icon></td>
-                        <td v-for="field in model.fields">
+                        <td v-for="field in visibleFields">
                             <span class="kiss-badge kiss-badge-outline kiss-color-muted" v-if="item[field.name] == null">n/a</span>
                             <div class="kiss-text-truncate" v-else-if="fieldTypes[field.type] && fieldTypes[field.type].render" v-html="fieldTypes[field.type].render(item[field.name], field, 'table-cell')"></div>
                             <div class="kiss-text-truncate" v-else>
@@ -63,7 +64,8 @@
                                 <span v-else>{{ item[field.name] }}</span>
                             </div>
                         </td>
-                        <td><span class="kiss-flex kiss-badge kiss-badge-outline kiss-color-primary">{{ (new Date(item._modified * 1000).toLocaleString()) }}</span></td>
+                        <td><span class="kiss-flex kiss-badge kiss-badge-outline kiss-color-primary" :title="(new Date(item._modified * 1000).toLocaleString())">{{ (new Date(item._modified * 1000).toLocaleString()) }}</span></td>
+                        <td><span class="kiss-flex kiss-badge kiss-badge-outline kiss-color-primary" :title="(new Date(item._created * 1000).toLocaleString())">{{ (new Date(item._created * 1000).toLocaleString()) }}</span></td>
                         <td>
                             <a @click="toggleItemActions(item)"><icon>more_horiz</icon></a>
                         </td>
@@ -91,6 +93,28 @@
                                 </li>
                             </ul>
                         </kiss-navlist>
+                </kiss-content>
+            </kiss-popoutmenu>
+
+            <kiss-popoutmenu id="model-column-options" modal="true">
+                <kiss-content>
+                    <kiss-navlist class="kiss-margin">
+                        <ul>
+                            <li class="kiss-nav-header"><?=t('Show Fields')?></li>
+                        </ul>
+
+                        <ul class="kiss-overflow-y-auto" style="max-height:250px;">
+                            <li v-for="field in model.fields">
+                                <div class="kiss-flex kiss-flex-middle" :class="field.__visible === false ? 'kiss-color-muted':''">
+                                    <div class="kiss-margin-small-right"><input class="kiss-checkbox" type="checkbox" v-model="field.__visible"></div>
+                                    <div>{{ field.label || field.name}}</div>
+                                </div>
+                            </li>
+
+                        </ul>
+                    </kiss-navlist>
+
+                    <button type="button" class="kiss-button kiss-button-small kiss-width-1-1 kiss-margin-small-top" kiss-popoutmenu-close><?=t('Close')?></button>
                 </kiss-content>
             </kiss-popoutmenu>
 
@@ -126,16 +150,26 @@
 
         <script type="module">
 
+
             export default {
+
                 data() {
+
+                    let model = <?=json_encode($model)?>;
+
+                    model.fields.forEach(field => {
+                        field.__visible = true;
+                    });
+
                     return {
-                        model: <?=json_encode($model)?>,
+                        model,
                         locales: <?=json_encode($locales)?>,
                         actionItem: null,
                         items: [],
                         selected: [],
                         fieldTypes: null,
                         filter: '',
+                        sort: {_created: -1},
                         txtFilter: '',
                         page: 1,
                         pages: 1,
@@ -163,6 +197,16 @@
                     }
                 },
 
+                computed: {
+
+                    visibleFields() {
+
+                        return this.model.fields.filter(field => {
+                            return field.__visible !== false;
+                        });
+                    }
+                },
+
                 methods: {
 
                     load(page = 1) {
@@ -170,6 +214,7 @@
                         let options = {
                             limit: this.limit,
                             skip: (page - 1) * this.limit,
+                            sort: this.sort
                         };
 
                         this.loading = true;
