@@ -212,8 +212,25 @@
                     App.utils.import('settings:assets/js/settings.js').then(exp => {
 
                         exp.FieldTypes.get().then(types => {
+
                             this.fieldTypes = types;
-                            this.load();
+
+                            let searchParams = new URLSearchParams(location.search);
+
+                            if (searchParams.has('state')) {
+                                try {
+                                    var q = JSON.parse(searchParams.get('state'));
+                                    if (q.sort) this.sort = q.sort;
+                                    if (q.page) this.page = q.page;
+                                    if (q.limit) this.limit = (parseInt(q.limit) || 20);
+                                    if (q.filter) {
+                                        this.filter = q.filter;
+                                        this.txtFilter = q.filter;
+                                    }
+                                } catch(e){}
+                            }
+
+                            this.load(this.page, false);
                         });
                     });
                 },
@@ -237,7 +254,7 @@
 
                 methods: {
 
-                    load(page = 1) {
+                    load(page = 1, history = true) {
 
                         let options = {
                             limit: this.limit,
@@ -250,6 +267,19 @@
 
                         if (this.filter) {
                             options.filter = this.filter;
+                        }
+
+                        if (history) {
+
+                            window.history.pushState(
+                                null, null,
+                                App.route(['/content/collection/items/', this.model.name, '?state=', JSON.stringify({
+                                    page: this.page || null,
+                                    filter: this.filter || null,
+                                    sort: this.sort || null,
+                                    limit: this.limit
+                                })].join(''))
+                            );
                         }
 
                         this.$request(`/content/collection/find/${this.model.name}`, {options}).then(rsp => {
