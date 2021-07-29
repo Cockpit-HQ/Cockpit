@@ -73,50 +73,54 @@
                 </tbody>
             </table>
 
-            <kiss-popoutmenu :open="actionItem && 'true'" @popoutmenuclose="toggleItemActions(null)">
-                <kiss-content>
-                        <kiss-navlist v-if="actionItem">
+            <teleport to="body">
+
+                <kiss-popoutmenu :open="actionItem && 'true'" @popoutmenuclose="toggleItemActions(null)">
+                    <kiss-content>
+                            <kiss-navlist v-if="actionItem">
+                                <ul>
+                                    <li class="kiss-nav-header">{{ t('Item actions') }}</li>
+                                    <li>
+                                        <a class="kiss-flex kiss-flex-middle" :href="$route(`/content/collection/item/${model.name}/${actionItem._id}`)">
+                                            <icon class="kiss-margin-small-right">create</icon>
+                                            <?=t('Edit')?>
+                                        </a>
+                                    </li>
+                                    <li class="kiss-nav-divider"></li>
+                                    <li>
+                                        <a class="kiss-color-danger kiss-flex kiss-flex-middle" @click="remove(actionItem)">
+                                            <icon class="kiss-margin-small-right">delete</icon>
+                                            <?=t('Delete')?>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </kiss-navlist>
+                    </kiss-content>
+                </kiss-popoutmenu>
+
+                <kiss-popoutmenu id="model-column-options" modal="true">
+                    <kiss-content>
+                        <kiss-navlist class="kiss-margin">
                             <ul>
-                                <li class="kiss-nav-header">{{ t('Item actions') }}</li>
-                                <li>
-                                    <a class="kiss-flex kiss-flex-middle" :href="$route(`/content/collection/item/${model.name}/${actionItem._id}`)">
-                                        <icon class="kiss-margin-small-right">create</icon>
-                                        <?=t('Edit')?>
-                                    </a>
+                                <li class="kiss-nav-header"><?=t('Show Fields')?></li>
+                            </ul>
+
+                            <ul class="kiss-overflow-y-auto" style="max-height:250px;">
+                                <li v-for="field in model.fields">
+                                    <div class="kiss-flex kiss-flex-middle" :class="field.__visible === false ? 'kiss-color-muted':''">
+                                        <div class="kiss-margin-small-right"><input class="kiss-checkbox" type="checkbox" v-model="field.__visible"></div>
+                                        <div>{{ field.label || field.name}}</div>
+                                    </div>
                                 </li>
-                                <li class="kiss-nav-divider"></li>
-                                <li>
-                                    <a class="kiss-color-danger kiss-flex kiss-flex-middle" @click="remove(actionItem)">
-                                        <icon class="kiss-margin-small-right">delete</icon>
-                                        <?=t('Delete')?>
-                                    </a>
-                                </li>
+
                             </ul>
                         </kiss-navlist>
-                </kiss-content>
-            </kiss-popoutmenu>
 
-            <kiss-popoutmenu id="model-column-options" modal="true">
-                <kiss-content>
-                    <kiss-navlist class="kiss-margin">
-                        <ul>
-                            <li class="kiss-nav-header"><?=t('Show Fields')?></li>
-                        </ul>
+                        <button type="button" class="kiss-button kiss-button-small kiss-width-1-1 kiss-margin-small-top" kiss-popoutmenu-close><?=t('Close')?></button>
+                    </kiss-content>
+                </kiss-popoutmenu>
 
-                        <ul class="kiss-overflow-y-auto" style="max-height:250px;">
-                            <li v-for="field in model.fields">
-                                <div class="kiss-flex kiss-flex-middle" :class="field.__visible === false ? 'kiss-color-muted':''">
-                                    <div class="kiss-margin-small-right"><input class="kiss-checkbox" type="checkbox" v-model="field.__visible"></div>
-                                    <div>{{ field.label || field.name}}</div>
-                                </div>
-                            </li>
-
-                        </ul>
-                    </kiss-navlist>
-
-                    <button type="button" class="kiss-button kiss-button-small kiss-width-1-1 kiss-margin-small-top" kiss-popoutmenu-close><?=t('Close')?></button>
-                </kiss-content>
-            </kiss-popoutmenu>
+            </teleport>
 
             <app-actionbar>
 
