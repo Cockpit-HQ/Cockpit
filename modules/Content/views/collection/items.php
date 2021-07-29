@@ -43,10 +43,34 @@
                     <tr>
                         <th class="kiss-align-center" width="20"><input class="kiss-checkbox" type="checkbox" @click="toggleAllSelect"></th>
                         <th width="50">ID</th>
-                        <th class="kiss-align-center" width="20">State</th>
-                        <th v-for="field in visibleFields">{{ field.label || field.name}}</th>
-                        <th width="120"><?=t('Modified')?></th>
-                        <th width="120"><?=t('Created')?></th>
+                        <th class="kiss-position-relative kiss-align-center" width="20">
+                            <div class="kiss-flex kiss-flex-middle">
+                                <span><?=t('State')?></span>
+                                <span class="kiss-size-6" v-if="sort._state"><icon>{{sort._state == 1 ? 'south':'north'}}</icon><span>
+                            </div>
+                            <a class="kiss-cover" @click="sortItems('_state')"></a>
+                        </th>
+                        <th class="kiss-position-relative" v-for="field in visibleFields">
+                            <div class="kiss-flex kiss-flex-middle">
+                                <span>{{ field.label || field.name}}</span>
+                                <span class="kiss-size-6" v-if="sort[field.name]"><icon>{{sort[field.name] == 1 ? 'south':'north'}}</icon><span>
+                            </div>
+                            <a class="kiss-cover" @click="sortItems(field.name)"></a>
+                        </th>
+                        <th class="kiss-position-relative" width="120">
+                            <div class="kiss-flex kiss-flex-middle">
+                                <span><?=t('Modified')?></span>
+                                <span class="kiss-size-6" v-if="sort._modified"><icon>{{sort._modified == 1 ? 'south':'north'}}</icon><span>
+                            </div>
+                            <a class="kiss-cover" @click="sortItems('_modified')"></a>
+                        </th>
+                        <th class="kiss-position-relative" width="120">
+                            <div class="kiss-flex kiss-flex-middle">
+                                <span><?=t('Created')?></span>
+                                <span class="kiss-size-6" v-if="sort._created"><icon>{{sort._created == 1 ? 'south':'north'}}</icon><span>
+                            </div>
+                            <a class="kiss-cover" @click="sortItems('_created')"></a>
+                        </th>
                         <th width="20"><a class="kiss-size-4" :class="model.fields.length != visibleFields.length ? 'kiss-color-danger': 'kiss-link-muted'" kiss-popoutmenu="#model-column-options"><icon>more_horiz</icon></a></th>
                     </tr>
                 </thead>
@@ -276,6 +300,18 @@
                         if (e.target.checked) {
                             this.items.forEach(item => this.selected.push(item._id));
                         }
+                    },
+
+                    sortItems(field) {
+
+                        if (this.sort[field]) {
+                            this.sort[field] = this.sort[field] == 1 ? -1 : 1;
+                        } else {
+                            this.sort = {};
+                            this.sort[field] = 1;
+                        }
+
+                        this.load();
                     }
                 }
             }
