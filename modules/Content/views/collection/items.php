@@ -183,10 +183,11 @@
 
                 data() {
 
-                    let model = <?=json_encode($model)?>;
+                    let model = <?=json_encode($model)?>,
+                        hiddenFields = App.session.get(`content.${model.name}.hiddenFields`, []);
 
                     model.fields.forEach(field => {
-                        field.__visible = true;
+                        field.__visible = !hiddenFields.includes(field.name);
                     });
 
                     return {
@@ -239,6 +240,20 @@
                     filter(val) {
                         this.txtFilter = val;
                         this.load();
+                    },
+
+                    'model.fields': {
+                        handler() {
+
+                            let hiddenFields = [];
+
+                            this.model.fields.forEach(field => {
+                                if (field.__visible === false) hiddenFields.push(field.name);
+                            });
+
+                            App.session.set(`content.${this.model.name}.hiddenFields`, hiddenFields);
+                        },
+                        deep: true
                     }
                 },
 

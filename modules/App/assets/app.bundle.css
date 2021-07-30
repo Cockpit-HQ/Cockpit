@@ -4020,22 +4020,20 @@ kiss-card[hover*="contrast"]:hover {
     transition: all 0.3s ease-in-out;
 }
 .kiss-checkbox:checked:before {
-    background: rgba(0, 0, 0, 0.15);
+    background: var(--kiss-color-primary);
 }
 .kiss-checkbox:checked:after {
     font-family: 'Material Icons Outlined';
     content: "done";
     position: absolute;
     box-sizing: border-box;
-    top: 0;
-    left: 0;
+    top: 60%;
+    left: 50%;
     z-index: 1;
-    width: 1.2em;
-    height: 1.2em;
     font-size: 1em;
     text-align: center;
-    transform: translateY(-5%);
-    color: currentColor;
+    transform: translateY(-50%) translateX(-50%);
+    color: #fff;
 }
 .kiss-checkbox[disabled] {
     opacity: .6;
