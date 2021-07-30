@@ -5,6 +5,7 @@ import "../components/app-actionbar/app-actionbar.js";
 import "../components/app-fieldcontainer/app-fieldcontainer.js";
 import "../components/app-loader/app-loader.js";
 import "../components/app-scrollcontainer/app-scrollcontainer.js";
+import "../components/seamless-iframe/seamless-iframe.js";
 import "../components/app-tabs/app-tabs.js";
 
 // General

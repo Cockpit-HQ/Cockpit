@@ -2219,6 +2219,19 @@ app-scrollcontainer {
     display: block;
     overflow: auto;
 }
+seamless-iframe {
+    display: block;
+}
+seamless-iframe iframe {
+    border:none;
+    width:100%;
+    height:auto;
+    padding: 0px;
+    background-color: transparent;
+    overflow:visible;
+    overflow-y:visible;
+    overflow-x:visible;
+}
 app-tabs {
     display: block;
 }

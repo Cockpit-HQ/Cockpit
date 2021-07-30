@@ -9,6 +9,7 @@
 @import "../components/app-fieldcontainer/app-fieldcontainer.css";
 @import "../components/app-loader/app-loader.css";
 @import "../components/app-scrollcontainer/app-scrollcontainer.css";
+@import "../components/seamless-iframe/seamless-iframe.css";
 @import "../components/app-tabs/app-tabs.css";
 
 @import "../vendor/kiss/lib.css";

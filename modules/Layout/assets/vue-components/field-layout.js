@@ -365,7 +365,7 @@ export default {
                 }
             },
             template: /*html*/`
-                <div v-is="previewComponent" :data="data"></component>
+                <div v-is="previewComponent" :data="data"></div>
             `,
             methods: {
 
