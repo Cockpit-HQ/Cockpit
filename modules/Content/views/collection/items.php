@@ -219,7 +219,7 @@
 
                             if (searchParams.has('state')) {
                                 try {
-                                    var q = JSON.parse(searchParams.get('state'));
+                                    var q = JSON.parse(atob(searchParams.get('state')));
                                     if (q.sort) this.sort = q.sort;
                                     if (q.page) this.page = q.page;
                                     if (q.limit) this.limit = (parseInt(q.limit) || 20);
@@ -273,12 +273,12 @@
 
                             window.history.pushState(
                                 null, null,
-                                App.route(['/content/collection/items/', this.model.name, '?state=', JSON.stringify({
+                                App.route(['/content/collection/items/', this.model.name, '?state=', btoa(JSON.stringify({
                                     page: this.page || null,
                                     filter: this.filter || null,
                                     sort: this.sort || null,
                                     limit: this.limit
-                                })].join(''))
+                                }))].join(''))
                             );
                         }
 
