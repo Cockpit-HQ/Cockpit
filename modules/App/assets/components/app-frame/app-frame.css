@@ -1,8 +1,8 @@
-seamless-iframe {
+app-frame {
     display: block;
 }
 
-seamless-iframe iframe {
+app-frame iframe {
     border:none;
     width:100%;
     height:auto;

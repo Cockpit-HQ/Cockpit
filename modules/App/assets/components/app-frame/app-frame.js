@@ -1,4 +1,4 @@
-customElements.define('seamless-iframe', class extends HTMLElement {
+customElements.define('app-frame', class extends HTMLElement {
 
     static get observedAttributes() {
         return ['src'];
@@ -16,7 +16,10 @@ customElements.define('seamless-iframe', class extends HTMLElement {
 
             this.iframe = this.querySelector('iframe');
             this.update();
-            setInterval(() => this.resize(), 150);
+
+            if (this.getAttribute('seamless') == 'true') {
+                setInterval(() => this.resize(), 150);
+            }
 
         }, 0);
     }

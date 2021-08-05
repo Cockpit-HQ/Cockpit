@@ -104,7 +104,7 @@ export default {
 
             <app-loader v-if="loading"></app-loader>
 
-            <kiss-row class="kiss-row-small kiss-child-width-1-2 kiss-child-width-1-5@m kiss-margin-bottom" match="true" v-if="!loading && folders.length">
+            <kiss-row class="kiss-row-small kiss-child-width-1-4@m kiss-child-width-1-5@xl kiss-margin-bottom" match="true" v-if="!loading && folders.length">
 
                 <div v-for="folder in folders">
                     <kiss-card class="kiss-flex kiss-flex-middle" theme="shadowed contrast">

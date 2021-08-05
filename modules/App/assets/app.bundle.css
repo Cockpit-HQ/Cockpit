@@ -2051,6 +2051,19 @@ app-fieldcontainer:not([disabled="true"]):hover  .app-fieldcontainer-visible-hov
         opacity: 1;
     }
 }
+app-frame {
+    display: block;
+}
+app-frame iframe {
+    border:none;
+    width:100%;
+    height:auto;
+    padding: 0px;
+    background-color: transparent;
+    overflow:visible;
+    overflow-y:visible;
+    overflow-x:visible;
+}
 app-loader {
     display: block;
     position: relative;
@@ -2218,19 +2231,6 @@ app-loader-cover[label] .app-loader-cover-label {
 app-scrollcontainer {
     display: block;
     overflow: auto;
-}
-seamless-iframe {
-    display: block;
-}
-seamless-iframe iframe {
-    border:none;
-    width:100%;
-    height:auto;
-    padding: 0px;
-    background-color: transparent;
-    overflow:visible;
-    overflow-y:visible;
-    overflow-x:visible;
 }
 app-tabs {
     display: block;
