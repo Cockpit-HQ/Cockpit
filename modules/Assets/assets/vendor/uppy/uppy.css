@@ -3105,15 +3105,18 @@ button.uppy-Dashboard-Item-progressIndicator:focus .uppy-Dashboard-Item-progress
   color: #eaeaea;
 }
 
-[dir="ltr"] .uppy-DashboardContent-back{
+[dir="ltr"] .uppy-DashboardContent-back,[dir="ltr"]
+.uppy-DashboardContent-save{
           margin-left: -6px;
 }
 
-[dir="rtl"] .uppy-DashboardContent-back{
+[dir="rtl"] .uppy-DashboardContent-back,[dir="rtl"]
+.uppy-DashboardContent-save{
           margin-right: -6px;
 }
 
-.uppy-DashboardContent-back {
+.uppy-DashboardContent-back,
+.uppy-DashboardContent-save {
   background: none;
   -webkit-appearance: none;
   font-family: inherit;
@@ -3131,25 +3134,32 @@ button.uppy-Dashboard-Item-progressIndicator:focus .uppy-Dashboard-Item-progress
   padding: 7px 6px;
   -webkit-margin-start: -6px;
 }
-.uppy-DashboardContent-back:focus {
+.uppy-DashboardContent-back:focus,
+.uppy-DashboardContent-save:focus {
   outline: none;
 }
-.uppy-DashboardContent-back::-moz-focus-inner {
+.uppy-DashboardContent-back::-moz-focus-inner,
+.uppy-DashboardContent-save::-moz-focus-inner {
   border: 0;
 }
-.uppy-DashboardContent-back:hover {
+.uppy-DashboardContent-back:hover,
+.uppy-DashboardContent-save:hover {
   color: #1b5dab;
 }
-.uppy-DashboardContent-back:focus {
+.uppy-DashboardContent-back:focus,
+.uppy-DashboardContent-save:focus {
   background-color: #eceef2;
 }
-[data-uppy-theme=dark] .uppy-DashboardContent-back:focus {
+[data-uppy-theme=dark] .uppy-DashboardContent-back:focus,
+[data-uppy-theme=dark] .uppy-DashboardContent-save:focus {
   background-color: #333;
 }
-.uppy-size--md .uppy-DashboardContent-back {
+.uppy-size--md .uppy-DashboardContent-back,
+.uppy-size--md .uppy-DashboardContent-save {
   font-size: 14px;
 }
-[data-uppy-theme=dark] .uppy-DashboardContent-back {
+[data-uppy-theme=dark] .uppy-DashboardContent-back,
+[data-uppy-theme=dark] .uppy-DashboardContent-save {
   color: #02baf2;
 }
 
@@ -4053,6 +4063,110 @@ a.uppy-Dashboard-poweredBy {
   background-color: #bc1828;
 }
 
+[type=range] {
+  -webkit-appearance: none;
+  background: transparent;
+  margin: 9px 0;
+  width: 100%;
+}
+[type=range]::-moz-focus-outer {
+  border: 0;
+}
+[type=range]:focus {
+  outline: 0;
+}
+[type=range]:focus::-webkit-slider-runnable-track {
+  background: rgba(255, 255, 255, 0.2);
+}
+[type=range]:focus::-ms-fill-lower {
+  background: rgba(255, 255, 255, 0.2);
+}
+[type=range]:focus::-ms-fill-upper {
+  background: rgba(255, 255, 255, 0.2);
+}
+[type=range]::-webkit-slider-runnable-track {
+  cursor: default;
+  height: 4px;
+  -webkit-transition: all 0.2s ease;
+  transition: all 0.2s ease;
+  width: 100%;
+  box-shadow: 0 0 0 transparent, 0 0 0 rgba(13, 13, 13, 0);
+  background: rgba(255, 255, 255, 0.2);
+  border: 0 solid transparent;
+  border-radius: 5px;
+}
+[type=range]::-webkit-slider-thumb {
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2), 0 0 0 rgba(13, 13, 13, 0.2);
+  background: #fff;
+  border: 0 solid transparent;
+  border-radius: 9px;
+  box-sizing: border-box;
+  cursor: default;
+  height: 18px;
+  width: 18px;
+  -webkit-appearance: none;
+  margin-top: -7px;
+}
+[type=range]::-moz-range-track {
+  box-shadow: 0 0 0 transparent, 0 0 0 rgba(13, 13, 13, 0);
+  cursor: default;
+  height: 4px;
+  -moz-transition: all 0.2s ease;
+  transition: all 0.2s ease;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  border: 0 solid transparent;
+  border-radius: 5px;
+  height: 4px;
+}
+[type=range]::-moz-range-thumb {
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2), 0 0 0 rgba(13, 13, 13, 0.2);
+  background: #fff;
+  border: 0 solid transparent;
+  border-radius: 9px;
+  box-sizing: border-box;
+  cursor: default;
+  height: 18px;
+  width: 18px;
+}
+[type=range]::-ms-track {
+  cursor: default;
+  height: 4px;
+  -ms-transition: all 0.2s ease;
+  transition: all 0.2s ease;
+  width: 100%;
+  background: transparent;
+  border-color: transparent;
+  border-width: 9px 0;
+  color: transparent;
+}
+[type=range]::-ms-fill-lower {
+  box-shadow: 0 0 0 transparent, 0 0 0 rgba(13, 13, 13, 0);
+  background: rgba(242, 242, 242, 0.2);
+  border: 0 solid transparent;
+  border-radius: 10px;
+}
+[type=range]::-ms-fill-upper {
+  box-shadow: 0 0 0 transparent, 0 0 0 rgba(13, 13, 13, 0);
+  background: rgba(255, 255, 255, 0.2);
+  border: 0 solid transparent;
+  border-radius: 10px;
+}
+[type=range]::-ms-thumb {
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2), 0 0 0 rgba(13, 13, 13, 0.2);
+  background: #fff;
+  border: 0 solid transparent;
+  border-radius: 9px;
+  box-sizing: border-box;
+  cursor: default;
+  height: 18px;
+  width: 18px;
+  margin-top: 1px;
+}
+[type=range]:disabled::-webkit-slider-thumb, [type=range]:disabled::-moz-range-thumb, [type=range]:disabled::-ms-thumb, [type=range]:disabled::-webkit-slider-runnable-track, [type=range]:disabled::-ms-fill-lower, [type=range]:disabled::-ms-fill-upper {
+  cursor: not-allowed;
+}
+
 /*!
  * Cropper.js v1.5.6
  * https://fengyuanchen.github.io/cropperjs
@@ -4109,7 +4223,7 @@ a.uppy-Dashboard-poweredBy {
 
 .cropper-modal {
   background-color: #000;
-  opacity: 0.5;
+  opacity: 1;
 }
 
 .cropper-view-box {
@@ -4192,6 +4306,7 @@ a.uppy-Dashboard-poweredBy {
   background-color: #fff;
   left: 0;
   top: 0;
+  opacity: 0;
 }
 
 .cropper-line {
@@ -4385,6 +4500,12 @@ a.uppy-Dashboard-poweredBy {
       justify-content: center;
   -ms-flex-align: center;
       align-items: center;
+  padding-top: 38px;
+}
+@media screen and (min-width: 768px) {
+  .uppy-ImageCropper-controls {
+    padding-top: 0;
+  }
 }
 
 .uppy-ImageCropper-controls button {
@@ -4407,6 +4528,28 @@ a.uppy-Dashboard-poweredBy {
 .uppy-ImageCropper-controls button:focus {
   outline: none;
   background-color: rgba(34, 117, 215, 0.8);
+}
+
+.uppy-ImageCropper-rangeWrapper {
+  position: absolute !important;
+  height: 38px;
+  top: 0;
+  right: 10px;
+  left: 10px;
+}
+@media screen and (min-width: 768px) {
+  .uppy-ImageCropper-rangeWrapper {
+    position: static !important;
+    height: auto;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .uppy-ImageCropper-range {
+    margin-right: 15px;
+    margin-left: 5px;
+    width: 180px;
+  }
 }
 
 .uppy-ImageCropper .cropper-point {
