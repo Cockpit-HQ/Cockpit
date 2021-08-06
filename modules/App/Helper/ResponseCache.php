@@ -72,7 +72,7 @@ class ResponseCacheFileHandler extends \Lime\AppAware {
 
         $hash = trim($request->route.'/'.md5(serialize($request->request)), '/').'.php';
 
-        $this->app->fileStorage->write("tmp://{$hash}", '<?php return '.var_export([
+        $this->app->fileStorage->write("cache://{$hash}", '<?php return '.var_export([
             'mime' => $response->mime,
             'eol' => (time() + $this->retrieve('responseCache/duration', 60)),
             'contents' => is_object($response->body) ? json_decode(json_encode($response->body), true) : $response->body
@@ -82,7 +82,7 @@ class ResponseCacheFileHandler extends \Lime\AppAware {
     public function getCache($request) {
 
         $hash = trim($request->route.'/'.md5(serialize($request->request)), '/').'.php';
-        $file = $this->app->path("#tmp:{$hash}");
+        $file = $this->app->path("#cache:{$hash}");
         $cache = null;
 
         if ($file) {
