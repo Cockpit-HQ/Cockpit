@@ -10,7 +10,7 @@ class Api extends \Lime\Helper {
 
         $this->keys = $this->app['debug'] ? $this->cache() : $this->app->helper('cache')->read('app.api.keys', function() {
             return $this->cache();
-        });
+        }, true);
     }
 
     public function getKey(string $key) {
@@ -30,7 +30,7 @@ class Api extends \Lime\Helper {
             $cache[$key['key']] = $key;
         }
 
-        $this->app->helper('cache')->write('app.api.keys', $cache);
+        $this->app->helper('cache')->write('app.api.keys', $cache, -1, true);
 
         return $cache;
     }

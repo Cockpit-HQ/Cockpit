@@ -22,7 +22,7 @@ class Cache extends \Lime\Helper {
         return $this->cachePath;
     }
 
-    public function write(string $key, mixed $value, int $duration = -1): void {
+    public function write(string $key, mixed $value, int $duration = -1, $encrypt = false): void {
 
         $expire = ($duration==-1) ? -1:(\time() + (\is_string($duration) ? \strtotime($duration):$duration));
 
@@ -31,10 +31,14 @@ class Cache extends \Lime\Helper {
             'value' => \serialize($value)
         ];
 
+        if ($encrypt) {
+            $safe_var['value'] = $this->app->encode($safe_var['value'], $this->app->retrieve('sec-key'));
+        }
+
         \file_put_contents($this->cachePath.\md5($this->prefix.'-'.$key).".cache" , \serialize($safe_var));
     }
 
-    public function read(string $key, mixed $default = null): mixed {
+    public function read(string $key, mixed $default = null, $decrypt = false): mixed {
 
         $var = @\file_get_contents($this->cachePath.\md5($this->prefix.'-'.$key).".cache");
 
@@ -52,6 +56,10 @@ class Cache extends \Lime\Helper {
             if (($var['expire'] < $time) && $var['expire']!=-1) {
                 $this->delete($key);
                 return \is_callable($default) ? \call_user_func($default):$default;
+            }
+
+            if ($decrypt) {
+                $var['value'] = $this->app->decode($var['value'], $this->app->retrieve('sec-key'));
             }
 
             return \unserialize($var['value']);

@@ -66,7 +66,7 @@ class APP {
             'i18n' => 'en',
 
             'database' => ['server' => 'mongolite://'.(APP_ENV_DIR.'/storage/data'), 'options' => ['db' => 'app'], 'driverOptions' => [] ],
-            'memory'       => ['server' => 'redislite://'.(APP_ENV_DIR.'/storage/data/app.memory.sqlite'), 'options' => [] ],
+            'memory'   => ['server' => 'redislite://'.(APP_ENV_DIR.'/storage/data/app.memory.sqlite'), 'options' => [] ],
 
             'paths' => [
                 '#root'    => APP_ENV_DIR,
@@ -74,9 +74,11 @@ class APP {
                 '#modules' => APP_ENV_DIR.'/modules',
                 '#addons'  => APP_ENV_DIR.'/addons',
                 '#storage' => APP_ENV_DIR.'/storage',
+                '#cache'   => APP_ENV_DIR.'/storage/cache',
                 '#tmp'     => APP_ENV_DIR.'/storage/tmp',
                 '#uploads' => APP_ENV_DIR.'/storage/uploads',
             ]
+
         ], $config ?? []);
 
         define('APP_VERSION', $config['debug'] ? time() : $config['app.version']);
@@ -87,6 +89,9 @@ class APP {
         foreach ($config['paths'] as $key => $path) {
             $app->path($key, $path);
         }
+
+        // set app cache path
+        $app->helper('cache')->setCachePath($app->path('#cache:'));
 
         // file storage
         $app->service('fileStorage', function() use($config, $app) {
@@ -105,6 +110,13 @@ class APP {
                     'args' => [$app->path('#tmp:')],
                     'mount' => true,
                     'url' => $app->pathToUrl('#tmp:', true)
+                ],
+
+                'cache' => [
+                    'adapter' => 'League\Flysystem\Local\LocalFilesystemAdapter',
+                    'args' => [$app->path('#cache:')],
+                    'mount' => true,
+                    'url' => $app->pathToUrl('#cache:', true)
                 ],
 
                 'uploads' => [
