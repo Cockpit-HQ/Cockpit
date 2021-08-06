@@ -8,19 +8,27 @@
     <vue-view>
         <template>
 
-            <h1 class="kiss-margin-large-bottom">
+            <h1 class="kiss-margin-large-bottom" v-if="key.key != 'public'">
                 <span v-if="!key._id"><?=t('Create key')?></span>
                 <span v-if="key._id"><?=t('Edit key')?></span>
             </h1>
 
+            <h1 class="kiss-margin-remove" v-if="key.key == 'public'">
+                <?=t('Public API')?>
+            </h1>
+
+            <div class="kiss-color-muted kiss-size-small kiss-margin-small-top kiss-margin-large-bottom" v-if="key.key == 'public'">
+                <?=t('Configure public API access permissions for unauthenticated requests.')?>
+            </div>
+
             <form :class="{'kiss-disabled':saving}" @submit.prevent="save">
 
-                <div class="kiss-margin">
+                <div class="kiss-margin" v-if="key.key != 'public'">
                     <label><?=t('Name')?></label>
                     <input class="kiss-input" type="text" v-model="key.name" required>
                 </div>
 
-                <kiss-card class="kiss-margin kiss-margin-large-top kiss-padding" theme="bordered contrast">
+                <kiss-card class="kiss-margin kiss-margin-large-top kiss-padding" theme="bordered contrast" v-if="key.key != 'public'">
                     <label><?=t('API Key')?></label>
                     <div class="kiss-flex kiss-flex-middle">
                         <div class="kiss-flex-1 kiss-margin-small-right kiss-text-truncate kiss-disabled">
@@ -41,7 +49,10 @@
                                     <span v-if="!key._id"><?=t('Cancel')?></span>
                                     <span v-if="key._id"><?=t('Close')?></span>
                                 </a>
-                                <button type="submit" class="kiss-button kiss-button-primary">
+                                <button type="submit" class="kiss-button kiss-button-primary" v-if="key.key == 'public'">
+                                    <?=t('Save')?>
+                                </button>
+                                <button type="submit" class="kiss-button kiss-button-primary" v-if="key.key != 'public'">
                                     <span v-if="!key._id"><?=t('Create key')?></span>
                                     <span v-if="key._id"><?=t('Update key')?></span>
                                 </button>

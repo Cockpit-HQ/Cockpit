@@ -37,6 +37,17 @@
                 </div>
             </kiss-card>
 
+            <kiss-card class="kiss-padding kiss-position-relative" theme="bordered contrast">
+
+                <div class="kiss-margin-small kiss-text-caption"><strong><?=t('Public API')?></strong></div>
+
+                <div class="kiss-color-muted kiss-size-small">
+                    <?=t('Configure public API access permissions for unauthenticated requests.')?>
+                </div>
+
+                <a class="kiss-cover" :href="$route('/settings/api/public')"></a>
+            </kiss-card>
+
             <app-loader class="kiss-margin-large" v-if="loading"></app-loader>
 
             <div class="animated fadeIn kiss-height-50vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted" v-if="keys && !keys.length">
@@ -46,7 +57,7 @@
                 </div>
             </div>
 
-            <div class="animated fadeIn kiss-margin-large" v-if="keys && keys.length">
+            <kiss-card class="animated fadeIn kiss-padding kiss-margin" theme="bordered" v-if="keys && keys.length">
 
                 <div class="kiss-margin kiss-text-caption"><strong><?=t('Api keys')?></strong></div>
 
@@ -67,7 +78,7 @@
 
                 </ul>
 
-            </div>
+            </kiss-card>
 
             <app-actionbar>
 

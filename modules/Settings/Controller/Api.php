@@ -18,6 +18,25 @@ class Api extends App {
         return $this->render('settings:views/api/index.php');
     }
 
+    public function public() {
+
+        $key = $this->app->dataStorage->findOne('system/api_keys', ['key' => 'public']);
+
+        if (!$key) {
+
+            $key = [
+                'key'  => 'public',
+                'name'  => 'public',
+                'meta' => new ArrayObject([])
+            ];
+
+        }
+
+        $this->checkAndLockResource('api.settings.public');
+
+        return $this->render('settings:views/api/key.php', compact('key'));
+    }
+
     public function key($id = null) {
 
         if (!$id) {
@@ -113,6 +132,7 @@ class Api extends App {
         \session_write_close();
 
         $keys = $this->app->dataStorage->find('system/api_keys', [
+            'filter' => ['key' => ['$ne' => 'public']],
             'sort' => ['name' => 1]
         ])->toArray();
 

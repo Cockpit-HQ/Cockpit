@@ -2037,8 +2037,13 @@
           setTimeout(() => {
 
               this.iframe = this.querySelector('iframe');
+
+              if (this.getAttribute('seamless') == 'true') {
+                  this.iframe.style.height = '0px';
+                  setInterval(() => this.resize(), 150);
+              }
+
               this.update();
-              setInterval(() => this.resize(), 150);
 
           }, 0);
       }

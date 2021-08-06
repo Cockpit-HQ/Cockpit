@@ -15,11 +15,13 @@ customElements.define('app-frame', class extends HTMLElement {
         setTimeout(() => {
 
             this.iframe = this.querySelector('iframe');
-            this.update();
 
             if (this.getAttribute('seamless') == 'true') {
+                this.iframe.style.height = '0px';
                 setInterval(() => this.resize(), 150);
             }
+
+            this.update();
 
         }, 0);
     }
