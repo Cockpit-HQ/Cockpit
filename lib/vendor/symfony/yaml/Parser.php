@@ -309,7 +309,7 @@ class Parser
                 $subTag = null;
                 if ($mergeNode) {
                     // Merge keys
-                } elseif (!isset($values['value']) || '' === $values['value'] || '#' === ($values['value'][0] ?? '') || (null !== $subTag = $this->getLineTag($values['value'], $flags)) || '<<' === $key) {
+                } elseif (!isset($values['value']) || '' === $values['value'] || 0 === strpos($values['value'], '#') || (null !== $subTag = $this->getLineTag($values['value'], $flags)) || '<<' === $key) {
                     // hash
                     // if next line is less indented or equal, then it means that the current value is null
                     if (!$this->isNextLineIndented() && !$this->isNextLineUnIndentedCollection()) {
@@ -467,7 +467,7 @@ class Parser
                             $value .= ' ';
                         }
 
-                        if ('' !== $trimmedLine && '\\' === $line[-1]) {
+                        if ('' !== $trimmedLine && '\\' === substr($line, -1)) {
                             $value .= ltrim(substr($line, 0, -1));
                         } elseif ('' !== $trimmedLine) {
                             $value .= $trimmedLine;
@@ -476,7 +476,7 @@ class Parser
                         if ('' === $trimmedLine) {
                             $previousLineWasNewline = true;
                             $previousLineWasTerminatedWithBackslash = false;
-                        } elseif ('\\' === $line[-1]) {
+                        } elseif ('\\' === substr($line, -1)) {
                             $previousLineWasNewline = false;
                             $previousLineWasTerminatedWithBackslash = true;
                         } else {
@@ -724,7 +724,7 @@ class Parser
      */
     private function parseValue(string $value, int $flags, string $context)
     {
-        if ('*' === ($value[0] ?? '')) {
+        if (0 === strpos($value, '*')) {
             if (false !== $pos = strpos($value, '#')) {
                 $value = substr($value, 1, $pos - 2);
             } else {
@@ -1081,7 +1081,7 @@ class Parser
      */
     private function isStringUnIndentedCollectionItem(): bool
     {
-        return 0 === strncmp($this->currentLine, '- ', 2) || '-' === rtrim($this->currentLine);
+        return '-' === rtrim($this->currentLine) || 0 === strpos($this->currentLine, '- ');
     }
 
     /**
