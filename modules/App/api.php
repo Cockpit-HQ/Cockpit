@@ -31,15 +31,12 @@ $this->bind('/api/*', function($params) {
 
     $token = $this->param('api_key', $this->request->server['HTTP_API_KEY'] ?? $this->request->getBearerToken());
 
-    if (!$token) {
+    $apiUser = [
+        'user' => 'anonymous',
+        'role' => null
+    ];
 
-        // set public user
-        $this->helper('auth')->setUser([
-            'user' => 'anonymous',
-            'role' => 'public'
-        ], false);
-
-    } elseif (preg_match('/^USR-/', $token)) {
+    if ($token && preg_match('/^USR-/', $token)) {
 
         $user = $this->dataStorage->findOne('system/users', ['apiKey' => $token]);
 
@@ -48,9 +45,10 @@ $this->bind('/api/*', function($params) {
             return ['error' => 'Authentication failed'];
         }
 
-        $this->helper('auth')->setUser($user, false);
+        $apiUser['user'] = $user['user'];
+        $apiUser['role'] = $user['role'];
 
-    } else {
+    } elseif ($token) {
 
         $key = $this->helper('api')->getKey($token);
 
@@ -58,7 +56,12 @@ $this->bind('/api/*', function($params) {
             $this->response->status = 412;
             return ['error' => 'Authentication failed'];
         }
+
+        $apiUser['role'] = $key['role'] ?? null;
     }
+
+    // set api user
+    $this->helper('auth')->setUser($apiUser, false);
 
     //graphql query
     if ($params[':splat'][0] == 'gql') {
