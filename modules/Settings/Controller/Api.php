@@ -27,6 +27,7 @@ class Api extends App {
             $key = [
                 'key'  => 'public',
                 'name'  => 'public',
+                'role'  => null,
                 'meta' => new ArrayObject([])
             ];
 
@@ -61,6 +62,7 @@ class Api extends App {
         $key = [
             'key'  => '',
             'name'  => '',
+            'role'  => null,
             'meta' => new ArrayObject([])
         ];
 

@@ -1,3 +1,7 @@
+<?php
+
+    $roles = $this->helper('acl')->roles();
+?>
 <kiss-container class="kiss-margin" size="small">
 
     <ul class="kiss-breadcrumbs">
@@ -28,16 +32,38 @@
                     <input class="kiss-input" type="text" v-model="key.name" required>
                 </div>
 
-                <kiss-card class="kiss-margin kiss-margin-large-top kiss-padding" theme="bordered contrast" v-if="key.key != 'public'">
-                    <label><?=t('API Key')?></label>
-                    <div class="kiss-flex kiss-flex-middle">
-                        <div class="kiss-flex-1 kiss-margin-small-right kiss-text-truncate kiss-disabled">
-                            <span class="kiss-text-caption" v-if="!key.key"><?=t('No api key created yet')?></span>
-                            <span class="kiss-text-monospace kiss-text-bold" v-if="key.key">{{ key.key }}</span>
+                <kiss-card class="kiss-margin kiss-padding kiss-position-relative" theme="bordered contrast">
+
+                    <div class="kiss-margin">
+
+                        <label><?=t('Role')?></label>
+
+                        <div class="kiss-overlay-input">
+                            <div :class="{'kiss-color-muted': !key.role}">{{ key.role || t('No role set') }}</div>
+                            <select class="kiss-input kiss-select" v-model="key.role">
+                                <option value="">No role</option>
+                                <option v-for="role in roles" :value="role.appid">{{ role.name }}</option>
+                            </select>
                         </div>
-                        <a @click="generateToken"><icon>refresh</icon></a>
-                        <a class="kiss-margin-small-left" v-if="key.key" @click="copyToken"><icon>content_copy</icon></a>
+
                     </div>
+
+                    <hr v-if="key.key != 'public'">
+
+                    <div class="kiss-margin" v-if="key.key != 'public'">
+
+                        <label><?=t('API Key')?></label>
+                        <div class="kiss-flex kiss-flex-middle">
+                            <div class="kiss-flex-1 kiss-margin-small-right kiss-text-truncate kiss-disabled">
+                                <span class="kiss-text-caption" v-if="!key.key"><?=t('No api key created yet')?></span>
+                                <span class="kiss-text-monospace kiss-text-bold" v-if="key.key">{{ key.key }}</span>
+                            </div>
+                            <a @click="generateToken"><icon>refresh</icon></a>
+                            <a class="kiss-margin-small-left" v-if="key.key" @click="copyToken"><icon>content_copy</icon></a>
+                        </div>
+
+                    </div>
+
                 </kiss-card>
 
                 <app-actionbar>
@@ -73,7 +99,8 @@
 
                     return {
                         saving: false,
-                        key: <?=json_encode($key)?>
+                        key: <?=json_encode($key)?>,
+                        roles: <?=json_encode($roles)?>
                     };
                 },
 
