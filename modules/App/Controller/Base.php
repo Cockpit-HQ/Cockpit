@@ -39,7 +39,7 @@ class Base extends \Lime\AppAware {
      * @param array $params
      * @return mixed
      */
-    protected function render(string $view, array $params = []) {
+    protected function render(string $view, array $params = []): mixed {
 
         $view .= $this->layout ? " with ".$this->layout:"";
 
@@ -57,9 +57,9 @@ class Base extends \Lime\AppAware {
 
     /**
      * @param $module
-     * @return null
+     * @return mixed
      */
-    protected function module(string $module) {
+    protected function module(string $module): mixed {
         return $this->app->module($module);
     }
 
@@ -67,14 +67,14 @@ class Base extends \Lime\AppAware {
      * @param $name
      * @return mixed
      */
-    protected function helper(string $name) {
+    protected function helper(string $name): mixed {
         return $this->app->helper($name);
     }
 
     /**
      *
      */
-    protected function stop(mixed $data = false, mixed $status = null) {
+    protected function stop(mixed $data = null, mixed $status = null) {
         $this->app->stop($data, $status);
     }
 }

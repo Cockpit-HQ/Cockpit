@@ -10,7 +10,7 @@ class App extends Authenticated {
 
     protected $layout = 'app:layouts/app.php';
 
-    protected function render(string $view, array $params = []) {
+    protected function render(string $view, array $params = []): mixed {
 
         $this->app->trigger('app.layout.render');
 
