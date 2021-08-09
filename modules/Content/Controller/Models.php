@@ -70,6 +70,10 @@ class Models extends App {
             return $this->stop(404);
         }
 
+        if (!$this->isAllowed("content/{$model['name']}/managemodel")) {
+            $this->stop(401);
+        }
+
         $this->module('content')->removeModel($name);
 
         return ['success' => true];
@@ -81,6 +85,10 @@ class Models extends App {
 
         if (!$model) {
             return $this->stop(['error' => 'Model data is missing'], 412);
+        }
+
+        if (!$this->isAllowed("content/{$model}/managemodel")) {
+            $this->stop(401);
         }
 
         $model = $this->module('content')->saveModel($model['name'], $model);
@@ -103,8 +111,18 @@ class Models extends App {
             return $this->stop(['error' => 'Model unknown'], 404);
         }
 
+        $isUpdate = isset($item['_id']) && $item['_id'];
+
+        if ($isUpdate && !$this->isAllowed("content/{$model['name']}/update")) {
+            $this->stop(401);
+        }
+
+        if (!$isUpdate && !$this->isAllowed("content/{$model['name']}/create")) {
+            $this->stop(401);
+        }
+
         if (!$item) {
-            return $this->stop(['error' => 'Item item is missing'], 412);
+            return $this->stop(['error' => 'Item is missing'], 412);
         }
 
         $item = $this->module('content')->saveItem($model, $item, ['user' => $this->user]);
@@ -126,6 +144,10 @@ class Models extends App {
 
         if (!$model || !$this->module('content')->exists($model)) {
             return $this->stop(['error' => 'Model unknown'], 404);
+        }
+
+        if (!$this->isAllowed("content/{$model['name']}/create")) {
+            $this->stop(401);
         }
 
         $model = $this->module('content')->model($model);

@@ -20,6 +20,10 @@ class Collection extends App {
             return $this->stop(404);
         }
 
+        if (!$this->isAllowed("content/{$model['name']}/read")) {
+            $this->stop(401);
+        }
+
         $fields = $model['fields'];
 
         $locales = $this->helper('locales')->locales();
@@ -46,6 +50,10 @@ class Collection extends App {
 
         if (!$model || $model['type'] != 'collection') {
             return $this->stop(404);
+        }
+
+        if (!$this->isAllowed("content/{$model['name']}/read")) {
+            $this->stop(401);
         }
 
         $item = $this->module('content')->getDefaultModelItem($model['name']);
@@ -151,6 +159,14 @@ class Collection extends App {
 
         if (!$model || $model['type'] != 'collection' || !is_array($ids)) {
             return $this->stop(404);
+        }
+
+        if (!$ids) {
+            return $this->stop(['error' => 'Item ids to delete are missing'], 412);
+        }
+
+        if (!$this->isAllowed("content/{$model['name']}/delete")) {
+            $this->stop(401);
         }
 
         $this->app->module('content')->remove($model['name'], ['_id' => ['$in' => $ids]]);

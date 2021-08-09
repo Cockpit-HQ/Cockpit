@@ -44,6 +44,26 @@ import ui from "./vue-view/ui.js";
 
             def.components = def.components || {};
 
+            // view router
+            if (def.$router && window.VueRouter) {
+
+                def.$router = Object.assign({
+                    history: VueRouter.createWebHashHistory(),
+                    routes: []
+                }, def.$router);
+
+                def.$router.routes.forEach(route => {
+
+                    if (typeof(route.component) == 'string') {
+                        route.component = (function(url) {
+                            return Vue.defineAsyncComponent(() => App.utils.import(url));
+                        })(route.component);
+                    }
+                })
+
+                app.use(new VueRouter.createRouter(def.$router));
+            }
+
             Object.keys(def.components).forEach(name => {
 
                 if (typeof(def.components[name]) == 'string') {

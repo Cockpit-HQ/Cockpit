@@ -20,6 +20,10 @@ class Singleton extends App {
             return $this->stop(404);
         }
 
+        if (!$this->isAllowed("content/{$model['name']}/read")) {
+            $this->stop(401);
+        }
+
         $item = $this->module('content')->item($model['name']);
 
         $this->checkAndLockResource("content:singleton:{$model['name']}");
