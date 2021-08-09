@@ -1114,7 +1114,7 @@ class App implements \ArrayAccess {
         return '/' == $path[0] || '\\' == $path[0] || (3 < \strlen($path) && \ctype_alpha($path[0]) && $path[1] == ':' && ('\\' == $path[2] || '/' == $path[2]));
     }
 
-    public function module(string $name) {
+    public function module(string $name): mixed {
         return $this->registry['modules']->offsetExists($name) && $this->registry['modules'][$name] ? $this->registry['modules'][$name] : null;
     }
 

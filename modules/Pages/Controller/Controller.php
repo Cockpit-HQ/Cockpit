@@ -13,7 +13,7 @@ class Controller extends App {
         }
     }
 
-    protected function render(string $view, array $params = []) {
+    protected function render(string $view, array $params = []): mixed {
 
         $contents = $this->app->render($view, $params);
 
