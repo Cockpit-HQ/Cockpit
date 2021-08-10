@@ -20,6 +20,16 @@ export default {
 
     template: /*html */`
         <div>
+
+            <div class="kiss-margin-small kiss-size-small kiss-flex kiss-middle">
+                <div><field-boolean v-model="modelValue['content/models/manage']"></field-boolean></div>
+                <div class="kiss-flex-1 kiss-margin-small-left">
+                    <div :class="{'kiss-color-muted':!modelValue['content/models/manage']}">
+                        {{ t('Manage models') }}
+                    </div>
+                </div>
+            </div>
+
             <kiss-card class="kiss-margin-small" theme="bordered contrast" hover="shadow" v-for="(model, name) in models">
 
                 <div class="kiss-margin-small kiss-bgcolor-contrast kiss-color-muted kiss-padding-small">
@@ -31,7 +41,7 @@ export default {
                         <div>
                             <strong class="kiss-size-xsmall">{{ t('Model') }}</strong>
                             <kiss-row class="kiss-flex kiss-margin-xsmall kiss-size-small">
-                                <div><input class="kiss-checkbox kiss-margin-xsmall-right" type="checkbox" v-model="modelValue['content/'+name+'/managemodel']" :value="true"> <span :class="{'kiss-color-muted':!modelValue['content/'+name+'/managemodel']}">{{ t('Edit model') }}</span></div>
+                                <div><input class="kiss-checkbox kiss-margin-xsmall-right" type="checkbox" v-model="modelValue['content/'+name+'/manage']" :value="true"> <span :class="{'kiss-color-muted':!modelValue['content/'+name+'/manage']}">{{ t('Edit model') }}</span></div>
                             </kiss-row>
                         </div>
 

@@ -9,6 +9,10 @@ class Models extends App {
 
     public function create() {
 
+        if (!$this->isAllowed("content/models/manage")) {
+            $this->stop(401);
+        }
+
         $type = $this->param('type', 'collection');
 
         if (!\in_array($type, ['collection', 'singleton'])) {
@@ -45,6 +49,10 @@ class Models extends App {
             return $this->stop(404);
         }
 
+        if (!$this->isAllowed("content/models/manage") && !$this->isAllowed("content/{$model['name']}/manage")) {
+            $this->stop(401);
+        }
+
         // legacy model update
         $model = array_merge([
             'preview' => []
@@ -70,7 +78,7 @@ class Models extends App {
             return $this->stop(404);
         }
 
-        if (!$this->isAllowed("content/{$model['name']}/managemodel")) {
+        if (!$this->isAllowed("content/models/manage")) {
             $this->stop(401);
         }
 
@@ -87,7 +95,7 @@ class Models extends App {
             return $this->stop(['error' => 'Model data is missing'], 412);
         }
 
-        if (!$this->isAllowed("content/{$model}/managemodel")) {
+        if (!$this->isAllowed("content/models/manage") && !$this->isAllowed("content/{$model}/manage")) {
             $this->stop(401);
         }
 
@@ -125,6 +133,10 @@ class Models extends App {
             return $this->stop(['error' => 'Item is missing'], 412);
         }
 
+        if (isset($item['_state']) && !$this->isAllowed("content/{$model['name']}/publish")) {
+            unset($item['_state']);
+        }
+
         $item = $this->module('content')->saveItem($model, $item, ['user' => $this->user]);
 
         return $item;
@@ -146,7 +158,7 @@ class Models extends App {
             return $this->stop(['error' => 'Model unknown'], 404);
         }
 
-        if (!$this->isAllowed("content/{$model['name']}/create")) {
+        if (!$this->isAllowed("content/models/manage")) {
             $this->stop(401);
         }
 
