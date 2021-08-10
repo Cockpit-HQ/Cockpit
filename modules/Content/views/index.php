@@ -98,6 +98,7 @@
 
             </div>
 
+            <?php if (_allowed("content/models/manage")): ?>
             <app-actionbar>
 
                 <kiss-container size="medium">
@@ -108,6 +109,7 @@
                 </kiss-container>
 
             </app-actionbar>
+            <?php endif ?>
 
             <kiss-popoutmenu :open="actionModel && 'true'" @popoutmenuclose="toggleModelActions(null)">
                 <kiss-content>
@@ -229,7 +231,9 @@
                             this.$request(`/content/models/remove/${model.name}`, {}).then(res => {
                                 this.models.splice(this.models.indexOf(model), 1);
                                 App.ui.notify('Model removed!');
-                            });
+                            }).catch(rsp => {
+                                App.ui.notify(rsp.error || 'Removing model failed!', 'error');
+                            });;
                         });
                     },
 
