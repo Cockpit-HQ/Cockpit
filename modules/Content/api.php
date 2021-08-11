@@ -55,7 +55,8 @@ $this->on('restApi.config', function($restApi) {
      *         }
      *     ),
      *     @OA\Response(response="200", description="Get model item"),
-     *     @OA\Response(response="404", description="Model not found")
+     *     @OA\Response(response="404", description="Model not found"),
+     *     @OA\Response(response="401", description="Unauthorized")
      * )
      */
 
@@ -68,6 +69,11 @@ $this->on('restApi.config', function($restApi) {
             if (!$app->module('content')->model($model)) {
                 $app->response->status = 404;
                 return ["error" => "Model <{$model}> not found"];
+            }
+
+            if (!$app->helper('acl')->isAllowed("content/{$model}/read", $app->helper('auth')->getUser('role'))) {
+                $app->response->status = 412;
+                return ['error' => 'Permission denied'];
             }
 
             $process = [
@@ -173,6 +179,7 @@ $this->on('restApi.config', function($restApi) {
      *         }
      *     ),
      *     @OA\Response(response="200", description="Get list of published model items"),
+     *     @OA\Response(response="401", description="Unauthorized"),
      *     @OA\Response(response="404", description="Model not found")
      * )
      */
@@ -186,6 +193,11 @@ $this->on('restApi.config', function($restApi) {
             if (!$app->module('content')->model($model)) {
                 $app->response->status = 404;
                 return ["error" => "Model <{$model}> not found"];
+            }
+
+            if (!$app->helper('acl')->isAllowed("content/{$model}/read", $app->helper('auth')->getUser('role'))) {
+                $app->response->status = 412;
+                return ['error' => 'Permission denied'];
             }
 
             $options = [];

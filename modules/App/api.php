@@ -31,12 +31,16 @@ $this->bind('/api/*', function($params) {
 
     $token = $this->param('api_key', $this->request->server['HTTP_API_KEY'] ?? $this->request->getBearerToken());
 
+    if (!$token) {
+        $token = 'public';
+    }
+
     $apiUser = [
         'user' => 'anonymous',
         'role' => null
     ];
 
-    if ($token && preg_match('/^USR-/', $token)) {
+    if (preg_match('/^USR-/', $token)) {
 
         $user = $this->dataStorage->findOne('system/users', ['apiKey' => $token]);
 
@@ -48,7 +52,7 @@ $this->bind('/api/*', function($params) {
         $apiUser['user'] = $user['user'];
         $apiUser['role'] = $user['role'];
 
-    } elseif ($token) {
+    } else {
 
         $key = $this->helper('api')->getKey($token);
 

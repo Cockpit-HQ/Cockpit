@@ -43,7 +43,10 @@ foreach ($collections as $name => &$meta) {
 
         'resolve' => function ($root, $args) use($app, $name) {
 
-            $model = $app->module('content')->model($name);
+            if (!$app->helper('acl')->isAllowed("content/{$name}/read", $app->helper('auth')->getUser('role'))) {
+                $app->response->status = 412;
+                return [];
+            }
 
             $process  = ['locale' => $args['locale']];
             $options  = [];
@@ -105,7 +108,10 @@ foreach ($singletons as $name => &$meta) {
 
         'resolve' => function ($root, $args) use($app, $name) {
 
-            $model = $app->module('content')->model($name);
+            if (!$app->helper('acl')->isAllowed("content/{$name}/read", $app->helper('auth')->getUser('role'))) {
+                $app->response->status = 412;
+                return null;
+            }
 
             $process  = ['locale' => $args['locale']];
             $options  = [];

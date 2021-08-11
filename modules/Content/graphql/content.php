@@ -27,6 +27,11 @@ $gql->queries['fields']['content'] = [
             return [];
         }
 
+        if (!$app->helper('acl')->isAllowed("content/{$model}/read", $app->helper('auth')->getUser('role'))) {
+            $app->response->status = 412;
+            return [];
+        }
+
         $meta = $app->module('content')->model($model);
 
         if ($meta['type'] == 'singleton') {
