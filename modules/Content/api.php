@@ -74,7 +74,7 @@ $this->on('restApi.config', function($restApi) {
                 'locale' => $app->param('locale:string', 'default')
             ];
 
-            $filter = $app->param('filter:string', null);
+            $filter = $app->param('filter:string');
             $fields = $app->param('fields:string', null);
             $populate = $app->param('populate:int', null);
 
@@ -100,7 +100,7 @@ $this->on('restApi.config', function($restApi) {
                 $process['populate'] = $populate;
             }
 
-            $item = $app->module('content')->item($model, $filter, $fields, $process);
+            $item = $app->module('content')->item($model, $filter ? $filter : [], $fields, $process);
 
             return $item ?? false;
         }
@@ -226,6 +226,15 @@ $this->on('restApi.config', function($restApi) {
             $options['filter']['_state'] = 1;
 
             $items = $app->module('content')->items($model, $options, $process);
+
+            if (isset($options['skip'], $options['limit'])) {
+                return [
+                    'data' => $items,
+                    'meta' => [
+                        'total' => $app->module('content')->count($model, $options['filter'] ?? [])
+                    ]
+                ];
+            }
 
             return $items;
         }
