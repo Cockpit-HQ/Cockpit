@@ -74,7 +74,7 @@
                     <strong class="kiss-text-caption">{{ group }}</strong>
 
                     <div class="kiss-margin-small">
-                         <div v-is="meta.component" v-model="role.permissions" v-bind="meta.props || {}"></div>
+                         <component :is="meta.component" v-model="role.permissions" v-bind="meta.props || {}"></component>
                     </div>
 
                 </div>

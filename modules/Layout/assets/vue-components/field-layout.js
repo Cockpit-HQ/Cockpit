@@ -365,7 +365,7 @@ export default {
                 }
             },
             template: /*html*/`
-                <div v-is="previewComponent" :data="data"></div>
+                <component :is="previewComponent" :data="data"></component>
             `,
             methods: {
 
@@ -418,7 +418,7 @@ export default {
                         </div>
                         <field-layout class="kiss-margin-small" v-model="element.children" :group="group || uid" :level="++level" :preview="showPreview" v-if="element.children" @hide-preview="dragStart" @show-preview="showPreview = true"></field-layout>
                         <grid-component class="kiss-margin-small" v-model="element" :group="group || uid" :level="++level" :preview="showPreview" v-if="element.component == 'grid'"></grid-component>
-                        <div class="kiss-margin-xsmall-top kiss-size-small" v-is="'component-preview'" :component="element" v-if="showPreview && !element.children && hasPreview(element)"></div>
+                        <component class="kiss-margin-xsmall-top kiss-size-small" :is="'component-preview'" :component="element" v-if="showPreview && !element.children && hasPreview(element)"></component>
                     </kiss-card>
                 </template>
             </vue-draggable>

@@ -42,7 +42,7 @@ let FieldRenderer = {
     template: /*html*/`
         <div v-if="fieldTypes">
 
-            <div v-is="getFieldType()" v-model="val" v-bind="field.opts" v-if="!field.multiple"></div>
+            <component :is="getFieldType()" v-model="val" v-bind="field.opts" v-if="!field.multiple"></component>
 
             <div v-if="field.multiple">
                 <kiss-card class="kiss-padding-small kiss-size-small kiss-color-muted" theme="bordered contrast" v-show="!val || !Array.isArray(val) || !val.length">{{ t('No items') }}</kiss-card>
@@ -80,7 +80,7 @@ let FieldRenderer = {
 
                     <div class="kiss-margin-top">
                         <div class="kiss-margin-bottom"><span class="kiss-badge kiss-text-upper">{{fieldItem.field.type}}</span></div>
-                        <div v-is="getFieldType()" v-model="fieldItem.value" v-bind="field.opts"></div>
+                        <component :is="getFieldType()" v-model="fieldItem.value" v-bind="field.opts"></component>
                     </div>
 
                     <div class="kiss-button-group kiss-child-width-1-2 kiss-flex kiss-margin-top">
