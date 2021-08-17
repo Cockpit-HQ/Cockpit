@@ -38,12 +38,15 @@
 
                         <label><?=t('Role')?></label>
 
-                        <div class="kiss-overlay-input">
-                            <div :class="{'kiss-color-muted': !key.role}">{{ key.role || t('No role set') }}</div>
-                            <select class="kiss-input kiss-select" v-model="key.role">
-                                <option value="">No role</option>
-                                <option v-for="role in roles" :value="role.appid">{{ role.name }}</option>
-                            </select>
+                        <div class="kiss-flex kiss-flex-middle">
+                            <div class="kiss-overlay-input">
+                                <div class="kiss-text-caption kiss-size-small" :class="{'kiss-color-muted': !key.role}">{{ key.role || t('No role set') }}</div>
+                                <select class="kiss-input kiss-select" v-model="key.role">
+                                    <option value="">No role</option>
+                                    <option v-for="role in roles" :value="role.appid">{{ role.name }}</option>
+                                </select>
+                            </div>
+                            <div class="kiss-margin-left kiss-flex-1 kiss-align-right"><a href="<?=$this->route('/settings/users/roles')?>"><icon>tune</icon></a></div>
                         </div>
 
                     </div>

@@ -54,30 +54,32 @@
 
                 <div class="kiss-margin kiss-margin-large-top kiss-size-4"><strong><?=t('Permissions')?></strong></div>
 
-                <div class="kiss-margin" v-for="(permissions, group) in simplePermissions">
+                <kiss-card class="kiss-margin kiss-padding" theme="bordered contrast" v-for="(permissions, group) in simplePermissions">
 
                     <strong class="kiss-text-caption">{{ group }}</strong>
 
-                    <div class="kiss-margin-small kiss-size-small kiss-flex kiss-middle" v-for="(label, permission) in permissions">
-                        <div><field-boolean v-model="role.permissions[permission]"></field-boolean></div>
-                        <div class="kiss-flex-1 kiss-margin-small-left">
-                            <div :class="{'kiss-color-muted':!role.permissions[permission]}">
-                                {{label}}
+                    <div class="kiss-margin">
+                        <div class="kiss-margin-small kiss-size-small kiss-flex kiss-middle" v-for="(label, permission) in permissions">
+                            <div><field-boolean v-model="role.permissions[permission]"></field-boolean></div>
+                            <div class="kiss-flex-1 kiss-margin-small-left">
+                                <div :class="{'kiss-color-muted':!role.permissions[permission]}">
+                                    {{label}}
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                </div>
+                </kiss-card>
 
-                <div class="kiss-margin" v-for="(meta, group) in componentPermissions">
+                <kiss-card class="kiss-margin kiss-padding" theme="bordered contrast" v-for="(meta, group) in componentPermissions">
 
                     <strong class="kiss-text-caption">{{ group }}</strong>
 
-                    <div class="kiss-margin-small">
-                         <component :is="meta.component" v-model="role.permissions" v-bind="meta.props || {}"></component>
+                    <div class="kiss-margin">
+                        <component :is="meta.component" v-model="role.permissions" v-bind="meta.props || {}"></component>
                     </div>
 
-                </div>
+                </kiss-card>
 
                 <app-actionbar>
 
