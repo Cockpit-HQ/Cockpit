@@ -30,7 +30,6 @@ class Api extends App {
                 'role'  => null,
                 'meta' => new ArrayObject([])
             ];
-
         }
 
         $this->checkAndLockResource('api.settings.public');

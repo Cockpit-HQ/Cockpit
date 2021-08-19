@@ -2,11 +2,20 @@
 
     <?php foreach ($this->helper('settings')->groups(true) as $group => $items):?>
 
+    <?php
+
+        $items = array_filter($items, function($item) {
+            return isset($item['permission']) && $this->helper('acl')->isAllowed($item['permission']);
+        });
+
+        if (!count($items)) continue;
+    ?>
+
     <div class="kiss-text-bold kiss-text-caption"><?=$this->escape(t($group))?></div>
 
     <kiss-row class="kiss-margin kiss-child-width-1-4@m">
 
-        <?php foreach ($items as $item): if (isset($item['permission']) && !$this->helper('acl')->isAllowed($item['permission'])) continue; ?>
+        <?php foreach ($items as $item): ?>
         <div>
             <kiss-card class="kiss-position-relative" theme="shadowed contrast" hover="shadow">
 

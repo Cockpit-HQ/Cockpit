@@ -25,11 +25,11 @@ $this->on('app.layout.assets', function(array &$assets) {
 
 $this->on('app.settings.collect', function($settings) {
 
-    $settings['System'][] = [
+    $settings['Addons'][] = [
         'icon' => null,
         'route' => '/layout-components',
         'label' => 'Layout Components',
-        'permission' => 'layout.components.manage'
+        'permission' => 'layout/components/manage'
     ];
 });
 
