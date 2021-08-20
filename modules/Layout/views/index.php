@@ -9,8 +9,8 @@
 
         <template>
 
-            <div class="kiss-margin-large-bottom kiss-flex kiss-flex-middle">
-                <div class="kiss-size-1 kiss-flex-1"><strong><?=t('Layout Components')?></strong></div>
+            <div class="kiss-margin-large-bottom kiss-size-1 kiss-text-bold">
+                <?=t('Layout Components')?>
             </div>
 
             <app-loader v-if="loading"></app-loader>
