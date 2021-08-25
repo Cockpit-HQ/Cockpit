@@ -41,7 +41,12 @@ class Webhooks extends App {
             'name' => '',
             'info' => '',
             'url' => '',
-            'headers' => []
+            'headers' => [],
+            'body' => [
+                'payload' => false,
+                'custom' => false,
+                'contents' => null
+            ]
         ];
 
         if ($id) {
@@ -57,6 +62,40 @@ class Webhooks extends App {
 
 
         return $this->render('webhooks:views/webhook.php', compact('webhook'));
+    }
+
+    public function save() {
+
+        $webhook = $this->param('webhook');
+
+        if (!$webhook) {
+            return false;
+        }
+
+        $webhook['_modified'] = time();
+        $webhook['_mby'] = $this->user['_id'];
+
+        if (!isset($webhook['_id'])) {
+            $webhook['_created'] = $webhook['_modified'];
+            $webhook['_cby'] = $this->user['_id'];
+        }
+
+        $this->app->dataStorage->save('webhooks', $webhook);
+
+        return $webhook;
+    }
+
+    public function remove() {
+
+        $webhook = $this->param('webhook');
+
+        if (!$webhook) {
+            return $this->stop(['error' => 'Webhook paramater is missing'], 412);
+        }
+
+        $this->app->dataStorage->remove('webhooks', ['_id' => $webhook['_id']]);
+
+        return ['success' => true];
     }
 
 

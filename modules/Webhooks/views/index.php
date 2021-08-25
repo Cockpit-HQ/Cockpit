@@ -40,14 +40,13 @@
                 </div>
 
                 <kiss-card class="kiss-margin-small kiss-padding kiss-flex kiss-flex-middle animated fadeIn" theme="shadowed contrast" hover="shadow" v-for="webhook in filtered">
-                    <div>
+                    <div :class="[webhook.enabled ? 'kiss-color-success':'kiss-color-danger']">
                         <kiss-svg :src="$base('webhooks:icon.svg')" width="30" height="30"></kiss-svg>
                     </div>
                     <div class="kiss-margin-small-left">
                         <a class="kiss-text-bold kiss-link-muted" :href="$route(`/webhooks/webhook/${webhook._id}`)">{{ webhook.name }}</a>
                     </div>
                     <div class="kiss-flex-1 kiss-size-small kiss-color-muted kiss-margin-small-left">{{ webhook.info }}</div>
-                    <div class="kiss-align-right kiss-size-small kiss-margin-left">{{ webhook.status._overall }}%</div>
                     <div class=" kiss-margin-small-left">
                         <a @click="toggleWebhookActions(webhook)"><icon>more_horiz</icon></a>
                     </div>
@@ -66,9 +65,9 @@
 
             </app-actionbar>
 
-            <kiss-popoutmenu :open="actionProject && 'true'" @popoutmenuclose="toggleWebhookActions(null)">
+            <kiss-popoutmenu :open="actionWebhook && 'true'" @popoutmenuclose="toggleWebhookActions(null)">
                 <kiss-content>
-                        <kiss-navlist v-if="actionProject">
+                        <kiss-navlist v-if="actionWebhook">
                             <ul>
                                 <li class="kiss-nav-header">{{ actionWebhook.name }}</li>
                                 <li>
@@ -79,7 +78,7 @@
                                 </li>
                                 <li class="kiss-nav-divider"></li>
                                 <li>
-                                    <a class="kiss-color-danger kiss-flex kiss-flex-middle" @click="remove(actionProject)">
+                                    <a class="kiss-color-danger kiss-flex kiss-flex-middle" @click="remove(actionWebhook)">
                                         <icon class="kiss-margin-small-right">delete</icon>
                                         <?=t('Delete')?>
                                     </a>
