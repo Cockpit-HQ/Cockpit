@@ -29,7 +29,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '0f76ef648fb157c7520dd3150d1371b18c83f5ad',
+    'reference' => '31ffe70c876995e76507532b4e830571aacb0adf',
     'name' => 'agentejo/cockpit',
   ),
   'versions' => 
@@ -41,7 +41,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '0f76ef648fb157c7520dd3150d1371b18c83f5ad',
+      'reference' => '31ffe70c876995e76507532b4e830571aacb0adf',
     ),
     'bacon/bacon-qr-code' => 
     array (
@@ -72,12 +72,12 @@ private static $installed = array (
     ),
     'composer/package-versions-deprecated' => 
     array (
-      'pretty_version' => '1.11.99.2',
-      'version' => '1.11.99.2',
+      'pretty_version' => '1.11.99.3',
+      'version' => '1.11.99.3',
       'aliases' => 
       array (
       ),
-      'reference' => 'c6522afe5540d5fc46675043d3ed5a45a740b27c',
+      'reference' => 'fff576ac850c045158a250e7e27666e146e78d18',
     ),
     'dasprid/enum' => 
     array (
@@ -162,12 +162,12 @@ private static $installed = array (
     ),
     'league/flysystem' => 
     array (
-      'pretty_version' => '2.2.0',
-      'version' => '2.2.0.0',
+      'pretty_version' => '2.2.3',
+      'version' => '2.2.3.0',
       'aliases' => 
       array (
       ),
-      'reference' => '29a3ba148287db3142412ef34f6fdcbc22c957cd',
+      'reference' => '811bdc2d52a07eafbb6cb68a7b368b0668b362c8',
     ),
     'league/mime-type-detection' => 
     array (
@@ -212,12 +212,12 @@ private static $installed = array (
     ),
     'phpmailer/phpmailer' => 
     array (
-      'pretty_version' => 'v6.5.0',
-      'version' => '6.5.0.0',
+      'pretty_version' => 'v6.5.1',
+      'version' => '6.5.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'a5b5c43e50b7fba655f793ad27303cd74c57363c',
+      'reference' => 'dd803df5ad7492e1b40637f7ebd258fee5ca7355',
     ),
     'psr/cache' => 
     array (
