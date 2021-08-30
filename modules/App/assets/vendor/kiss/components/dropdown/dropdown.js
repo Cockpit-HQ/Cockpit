@@ -21,7 +21,7 @@ customElements.define('kiss-dropdown', class extends HTMLElement {
             if (e.target.matches('input,select,textarea')) {
                 return;
             }
-            
+
             if (this.getAttribute('open') == 'true') {
 
                 if (this.getAttribute('autohide') == 'false') {
