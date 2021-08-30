@@ -1,5 +1,4 @@
 <?php
-
 /**
  * RedisLite class.
  */

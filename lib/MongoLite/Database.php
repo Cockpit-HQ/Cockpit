@@ -535,7 +535,7 @@ function createMongoDbLikeId(): string {
     // Building binary data.
     $bin = \sprintf(
         '%s%s%s%s',
-        \pack('N', $timestamp),
+        \pack('N', $timestamp * 10000),
         \substr(md5(uniqid()), 0, 3),
         \pack('n', $processId),
         \substr(\pack('N', $id), 1, 3)
