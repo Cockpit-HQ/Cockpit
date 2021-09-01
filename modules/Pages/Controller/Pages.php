@@ -146,8 +146,6 @@ class Pages extends Controller {
                 $suffix = '';
             }
 
-            $page["data{$suffix}"] = new ArrayObject($page["data{$suffix}"]);
-
             $title = "title{$suffix}";
             $slug = "slug{$suffix}";
             $seo = "seo{$suffix}";
