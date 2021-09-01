@@ -121,11 +121,11 @@ class Models extends App {
 
         $isUpdate = isset($item['_id']) && $item['_id'];
 
-        if ($isUpdate && !$this->isAllowed("content/{$model['name']}/update")) {
+        if ($isUpdate && !$this->isAllowed("content/{$model}/update")) {
             $this->stop(401);
         }
 
-        if (!$isUpdate && !$this->isAllowed("content/{$model['name']}/create")) {
+        if (!$isUpdate && !$this->isAllowed("content/{$model}/create")) {
             $this->stop(401);
         }
 
@@ -133,7 +133,7 @@ class Models extends App {
             return $this->stop(['error' => 'Item is missing'], 412);
         }
 
-        if (isset($item['_state']) && !$this->isAllowed("content/{$model['name']}/publish")) {
+        if (isset($item['_state']) && !$this->isAllowed("content/{$model}/publish")) {
             unset($item['_state']);
         }
 
