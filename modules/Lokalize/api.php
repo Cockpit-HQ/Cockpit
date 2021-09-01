@@ -45,7 +45,7 @@ $this->on('restApi.config', function($restApi) {
 
             $name = $params['name'];
 
-            $project = $app->dataStorage->findOne('lokalize/projects', ['name' => $name]);
+            $project = $app->module('lokalize')->project($name);
 
             if (!$project) {
                 $app->response->status = 404;

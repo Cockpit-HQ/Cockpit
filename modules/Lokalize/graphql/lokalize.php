@@ -17,7 +17,7 @@ $gql->queries['fields']['lokalize'] = [
 
         $name = $args['project'];
 
-        $project = $app->dataStorage->findOne('lokalize/projects', ['name' => $name]);
+        $project = $app->module('lokalize')->project($name);
 
         if (!$project) {
             return null;

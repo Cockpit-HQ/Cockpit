@@ -25,6 +25,13 @@ $this->module('lokalize')->extend([
         return $projects;
     },
 
+    'project' => function(string $name) {
+
+        $project = $this->app->dataStorage->findOne('lokalize/projects', ['name' => $name]);
+
+        return $project;
+    },
+
     'saveProject' => function(array $project) {
 
         $this->app->trigger('lokalize.save.project', [&$project]);
@@ -39,6 +46,62 @@ $this->module('lokalize')->extend([
         $this->app->dataStorage->save('lokalize/projects', $project);
 
         return $project;
+    },
+
+    'value' => function(string $projectName, string $key, ?string $locale = null) {
+
+        static $projects;
+
+        if (is_null($projects)) {
+            $projects = [];
+        }
+
+        // chack for cached project
+        if (!isset($projects[$projectName])) {
+
+            $project = $this->project($projectName);
+
+            if (!$project) {
+                $projects[$projectName] = false;
+                return null;
+            }
+
+            $values = new \ArrayObject(isset($project['values']) ? $project['values'] : []);
+
+            foreach ($project['locales'] as $_locale) {
+
+                if (!isset($values[$_locale['i18n']]))  {
+                    $values[$_locale['i18n']] = new \ArrayObject([]);
+                }
+            }
+
+            $project['values'] = $values;
+
+            // cache project for further calls
+            $projects[$projectName] = $project;
+        }
+
+        $project = $projects[$projectName];
+
+        if (!$project) {
+            return null;
+        }
+
+        if ($locale && !isset($project['values'][$locale])) {
+            return null;
+        }
+
+        if ($locale) {
+            return $project['values'][$locale][$key]['value'] ?? null;
+        }
+
+        $values = [];
+
+        foreach ($project['locales'] as $_locale) {
+            $values[$_locale['i18n']] = $project['values'][$_locale['i18n']][$key]['value'] ?? null;
+        }
+
+        return $values;
     }
 
 ]);
