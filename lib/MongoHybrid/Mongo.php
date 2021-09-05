@@ -22,6 +22,20 @@ class Mongo {
         $this->options = $options;
     }
 
+    public function lstCollections(): array {
+
+        $return = [];
+
+        $collections = $this->db->listCollectionNames();
+
+        foreach ($collections as $collection) {
+
+            $return[] = str_replace('_', '/', $collection);
+        }
+
+        return $return;
+    }
+
     public function getCollection(string $name, ?string $db = null): \MongoDB\Collection {
 
         if ($db) {

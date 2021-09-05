@@ -38,65 +38,74 @@
                 </div>
             </div>
 
-            <table class="kiss-table kiss-margin animated fadeIn" v-if="!loading && items.length">
-                <thead>
-                    <tr>
-                        <th class="kiss-align-center" width="20"><input class="kiss-checkbox" type="checkbox" @click="toggleAllSelect"></th>
-                        <th width="50">ID</th>
-                        <th class="kiss-position-relative kiss-align-center" width="20">
-                            <div class="kiss-flex kiss-flex-middle">
-                                <span><?=t('State')?></span>
-                                <span class="kiss-size-6" v-if="sort._state"><icon>{{sort._state == 1 ? 'south':'north'}}</icon><span>
-                            </div>
-                            <a class="kiss-cover" @click="sortItems('_state')"></a>
-                        </th>
-                        <th class="kiss-position-relative" v-for="field in visibleFields">
-                            <div class="kiss-flex kiss-flex-middle">
-                                <span>{{ field.label || field.name}}</span>
-                                <span class="kiss-size-6" v-if="sort[field.name]"><icon>{{sort[field.name] == 1 ? 'south':'north'}}</icon><span>
-                            </div>
-                            <a class="kiss-cover" @click="sortItems(field.name)"></a>
-                        </th>
-                        <th class="kiss-position-relative" width="120">
-                            <div class="kiss-flex kiss-flex-middle">
-                                <span><?=t('Modified')?></span>
-                                <span class="kiss-size-6" v-if="sort._modified"><icon>{{sort._modified == 1 ? 'south':'north'}}</icon><span>
-                            </div>
-                            <a class="kiss-cover" @click="sortItems('_modified')"></a>
-                        </th>
-                        <th class="kiss-position-relative" width="120">
-                            <div class="kiss-flex kiss-flex-middle">
-                                <span><?=t('Created')?></span>
-                                <span class="kiss-size-6" v-if="sort._created"><icon>{{sort._created == 1 ? 'south':'north'}}</icon><span>
-                            </div>
-                            <a class="kiss-cover" @click="sortItems('_created')"></a>
-                        </th>
-                        <th width="20"><a class="kiss-size-4" :class="model.fields.length != visibleFields.length ? 'kiss-color-danger': 'kiss-link-muted'" kiss-popoutmenu="#model-column-options"><icon>more_horiz</icon></a></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="item in items">
-                        <td class="kiss-align-center"><input class="kiss-checkbox" type="checkbox" v-model="selected" :value="item._id"></td>
-                        <td><a class="kiss-badge kiss-link-muted" :href="$route(`/content/collection/item/${model.name}/${item._id}`)" :title="item._id">...{{ item._id.substr(-5) }}</a></td>
-                        <td class="kiss-align-center"><icon :class="{'kiss-color-success': item._state === 1, 'kiss-color-danger': !item._state}">trip_origin</icon></td>
-                        <td v-for="field in visibleFields">
-                            <span class="kiss-badge kiss-badge-outline kiss-color-muted" v-if="item[field.name] == null">n/a</span>
-                            <div class="kiss-text-truncate" v-else-if="fieldTypes[field.type] && fieldTypes[field.type].render" v-html="fieldTypes[field.type].render(item[field.name], field, 'table-cell')"></div>
-                            <div class="kiss-text-truncate" v-else>
-                                <span class="kiss-badge kiss-badge-outline" v-if="Array.isArray(item[field.name])">{{ item[field.name].length }}</span>
-                                <span class="kiss-badge kiss-badge-outline" v-else-if="typeof(item[field.name]) == 'object'">Object</span>
-                                <span v-else>{{ item[field.name] }}</span>
-                            </div>
-                        </td>
-                        <td><span class="kiss-flex kiss-badge kiss-badge-outline kiss-color-primary" :title="(new Date(item._modified * 1000).toLocaleString())">{{ (new Date(item._modified * 1000).toLocaleString()) }}</span></td>
-                        <td><span class="kiss-flex kiss-badge kiss-badge-outline kiss-color-primary" :title="(new Date(item._created * 1000).toLocaleString())">{{ (new Date(item._created * 1000).toLocaleString()) }}</span></td>
-                        <td>
-                            <a @click="toggleItemActions(item)"><icon>more_horiz</icon></a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
+            <div class="table-scroll kiss-margin animated fadeIn" v-if="!loading && items.length">
+                <table class="kiss-table">
+                    <thead>
+                        <tr>
+                            <th fixed="left" class="kiss-align-center" width="70">
+                                <div class="kiss-flex kiss-flex-middle">
+                                    <input class="kiss-checkbox" type="checkbox" @click="toggleAllSelect">
+                                    <span class="kiss-margin-small-left">ID</span>
+                                </div>
+                            </th>
+                            <th class="kiss-position-relative kiss-align-center" width="20">
+                                <div class="kiss-flex kiss-flex-middle">
+                                    <span><?=t('State')?></span>
+                                    <span class="kiss-size-6" v-if="sort._state"><icon>{{sort._state == 1 ? 'south':'north'}}</icon><span>
+                                </div>
+                                <a class="kiss-cover" @click="sortItems('_state')"></a>
+                            </th>
+                            <th class="kiss-position-relative" v-for="field in visibleFields">
+                                <div class="kiss-flex kiss-flex-middle">
+                                    <span>{{ field.label || field.name}}</span>
+                                    <span class="kiss-size-6" v-if="sort[field.name]"><icon>{{sort[field.name] == 1 ? 'south':'north'}}</icon><span>
+                                </div>
+                                <a class="kiss-cover" @click="sortItems(field.name)"></a>
+                            </th>
+                            <th class="kiss-position-relative" width="120">
+                                <div class="kiss-flex kiss-flex-middle">
+                                    <span><?=t('Modified')?></span>
+                                    <span class="kiss-size-6" v-if="sort._modified"><icon>{{sort._modified == 1 ? 'south':'north'}}</icon><span>
+                                </div>
+                                <a class="kiss-cover" @click="sortItems('_modified')"></a>
+                            </th>
+                            <th class="kiss-position-relative" width="120">
+                                <div class="kiss-flex kiss-flex-middle">
+                                    <span><?=t('Created')?></span>
+                                    <span class="kiss-size-6" v-if="sort._created"><icon>{{sort._created == 1 ? 'south':'north'}}</icon><span>
+                                </div>
+                                <a class="kiss-cover" @click="sortItems('_created')"></a>
+                            </th>
+                            <th fixed="right" width="20"><a class="kiss-size-4" :class="model.fields.length != visibleFields.length ? 'kiss-color-danger': 'kiss-link-muted'" kiss-popoutmenu="#model-column-options"><icon>more_horiz</icon></a></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="item in items">
+                            <td fixed="left" class="kiss-align-center">
+                                <div class="kiss-flex kiss-flex-middle">
+                                    <input class="kiss-checkbox" type="checkbox" v-model="selected" :value="item._id">
+                                    <a class="kiss-badge kiss-link-muted kiss-margin-small-left" :href="$route(`/content/collection/item/${model.name}/${item._id}`)" :title="item._id">...{{ item._id.substr(-5) }}</a>
+                                </div>
+                            </td>
+                            <td class="kiss-align-center"><icon :class="{'kiss-color-success': item._state === 1, 'kiss-color-danger': !item._state}">trip_origin</icon></td>
+                            <td v-for="field in visibleFields">
+                                <span class="kiss-badge kiss-badge-outline kiss-color-muted" v-if="item[field.name] == null">n/a</span>
+                                <div class="kiss-text-truncate" v-else-if="fieldTypes[field.type] && fieldTypes[field.type].render" v-html="fieldTypes[field.type].render(item[field.name], field, 'table-cell')"></div>
+                                <div class="kiss-text-truncate" v-else>
+                                    <span class="kiss-badge kiss-badge-outline" v-if="Array.isArray(item[field.name])">{{ item[field.name].length }}</span>
+                                    <span class="kiss-badge kiss-badge-outline" v-else-if="typeof(item[field.name]) == 'object'">Object</span>
+                                    <span v-else>{{ item[field.name] }}</span>
+                                </div>
+                            </td>
+                            <td><span class="kiss-flex kiss-badge kiss-badge-outline kiss-color-primary" :title="(new Date(item._modified * 1000).toLocaleString())">{{ (new Date(item._modified * 1000).toLocaleString()) }}</span></td>
+                            <td><span class="kiss-flex kiss-badge kiss-badge-outline kiss-color-primary" :title="(new Date(item._created * 1000).toLocaleString())">{{ (new Date(item._created * 1000).toLocaleString()) }}</span></td>
+                            <td class="kiss-align-center" fixed="right">
+                                <a @click="toggleItemActions(item)"><icon>more_horiz</icon></a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
             <teleport to="body">
 
                 <kiss-popoutmenu :open="actionItem && 'true'" @popoutmenuclose="toggleItemActions(null)">

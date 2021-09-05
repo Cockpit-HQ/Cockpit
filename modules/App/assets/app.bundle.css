@@ -3811,6 +3811,7 @@ td.kiss-text-truncate { max-width: 0; }
     --kiss-card-bordered-color: rgb(106, 85, 85, .15);
 
     --kiss-breadcrumbs-size: 11px;
+    --kiss-table-heading-background-color: #171b24;
 }
 [kiss-container="medium"],
 kiss-container[size="medium"] {
@@ -4155,6 +4156,7 @@ html[data-theme='light'].login-page {
 /* Works on Chrome, Edge, and Safari */
 *::-webkit-scrollbar {
     width: 8px;
+    height: 8px;
 }
 *::-webkit-scrollbar-track {
     background: var(--kiss-base-background-color);
@@ -4350,6 +4352,23 @@ app-fieldcontainer app-fieldcontainer {
     all: unset;
     display: block;
 }
+.table-scroll {
+    overflow-x: scroll;
+    white-space: nowrap;
+    max-width: 100%;
+
+}
+.table-scroll > table { margin: 0; }
+.table-scroll [fixed] {
+    position: sticky;
+    position: -webkit-sticky;
+    z-index: 1;
+}
+.table-scroll [fixed="top"] { top: 0; }
+.table-scroll [fixed="left"] { left: 0; }
+.table-scroll [fixed="right"] { right: 0; }
+.table-scroll th[fixed] {background-color: var(--kiss-table-heading-background-color);}
+.table-scroll td[fixed] {background: var(--kiss-color-contrast);}
 @media (min-width: 768px) {
 
     app-header {

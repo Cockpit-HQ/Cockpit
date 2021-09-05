@@ -14,6 +14,25 @@ class MongoLite {
         $this->db     = $options['db'];
     }
 
+    public function lstCollections(): array {
+
+        $return = [];
+
+        $databases = $this->client->listDBs();
+
+        foreach ($databases as $database) {
+
+            $collections = $this->client->selectDB($database)->getCollectionNames();
+
+            foreach ($collections as $collection) {
+
+                $return[] = str_replace('_', '/', "{$database}/{$collection}");
+            }
+        }
+
+        return $return;
+    }
+
     public function getCollection(string $name, ?string $db = null): \MongoLite\Collection {
 
         if (strpos($name, '/') !== false) {

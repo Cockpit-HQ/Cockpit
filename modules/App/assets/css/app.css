@@ -124,6 +124,7 @@ html[data-theme='light'].login-page {
 /* Works on Chrome, Edge, and Safari */
 *::-webkit-scrollbar {
     width: 8px;
+    height: 8px;
 }
 
 *::-webkit-scrollbar-track {
@@ -354,6 +355,28 @@ app-fieldcontainer app-fieldcontainer {
     display: block;
 }
 
+.table-scroll {
+    overflow-x: scroll;
+    white-space: nowrap;
+    max-width: 100%;
+
+}
+
+.table-scroll > table { margin: 0; }
+
+.table-scroll [fixed] {
+    position: sticky;
+    position: -webkit-sticky;
+    z-index: 1;
+}
+
+.table-scroll [fixed="top"] { top: 0; }
+.table-scroll [fixed="left"] { left: 0; }
+.table-scroll [fixed="right"] { right: 0; }
+
+
+.table-scroll th[fixed] {background-color: var(--kiss-table-heading-background-color);}
+.table-scroll td[fixed] {background: var(--kiss-color-contrast);}
 
 @media (min-width: 768px) {
 
