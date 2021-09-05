@@ -359,7 +359,6 @@ app-fieldcontainer app-fieldcontainer {
     overflow-x: scroll;
     white-space: nowrap;
     max-width: 100%;
-
 }
 
 .table-scroll > table { margin: 0; }

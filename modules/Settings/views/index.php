@@ -13,14 +13,16 @@
 
     <div class="kiss-text-bold kiss-text-caption"><?=$this->escape(t($group))?></div>
 
-    <kiss-row class="kiss-margin kiss-child-width-1-4@m">
+    <kiss-row class="kiss-margin kiss-child-width-1-2 kiss-child-width-1-4@m">
 
         <?php foreach ($items as $item): ?>
         <div>
             <kiss-card class="kiss-position-relative" theme="shadowed contrast" hover="shadow">
 
                 <div class="kiss-position-relative">
-                    <div class="kiss-position-absolute kiss-size-xlarge" center="true"><icon>blur_on</icon></div>
+                    <div class="kiss-position-absolute kiss-size-xlarge" center="true">
+                        <kiss-svg src="<?=$this->base((isset($item['icon']) && $item['icon']) ? $item['icon'] : 'settings:assets/icons/settings.svg')?>" width="50" height="50"><canvas width="50" height="50"></canvas></kiss-svg>
+                    </div>
                     <canvas width="800" height="500"></canvas>
                 </div>
 

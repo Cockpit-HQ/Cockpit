@@ -17,13 +17,13 @@ class Settings extends \Lime\Helper {
                     'permission' => null
                 ],
                 [
-                    'icon' => null,
+                    'icon' => 'settings:assets/icons/users.svg',
                     'route' => '/settings/users',
                     'label' => 'Users',
                     'permission' => 'app/users/manage'
                 ],
                 [
-                    'icon' => null,
+                    'icon' => 'settings:assets/icons/lock.svg',
                     'route' => '/settings/users/roles',
                     'label' => 'Roles & Permissions',
                     'permission' => 'app/roles/manage'
@@ -35,13 +35,13 @@ class Settings extends \Lime\Helper {
                     'permission' => 'app/api/manage'
                 ],
                 [
-                    'icon' => null,
+                    'icon' => 'settings:assets/icons/locales.svg',
                     'route' => '/settings/locales',
                     'label' => 'Locales',
                     'permission' => 'app/locales/manage'
                 ],
                 [
-                    'icon' => null,
+                    'icon' => 'settings:assets/icons/info.svg',
                     'route' => '/settings/info',
                     'label' => 'System info',
                     'permission' => 'app/system/info'
