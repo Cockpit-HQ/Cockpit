@@ -54,6 +54,11 @@ class Auth extends Base {
             return $this->stop(412);
         }
 
+        $auth = [
+            'user' => $auth['user'],
+            'password' => $auth['password'],
+        ];
+
         if (isset($auth['user']) && $this->helper('utils')->isEmail($auth['user'])) {
             $auth['email'] = $auth['user'];
             $auth['user']  = '';
