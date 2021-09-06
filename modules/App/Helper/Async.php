@@ -10,7 +10,7 @@ namespace App\Helper;
  *
  * App::instance()->helper('async')->exec('
  *    sleep(10);
- *    file_put_contents(COCKPIT_DIR."/debug.txt", json_encode(ASYNC_PARAMS));
+ *    file_put_contents(COCKPIT_DIR."/debug.txt", $test);
  * ', ['test' => 222]);
  */
 
@@ -121,7 +121,7 @@ unlink(__FILE__);
 
     protected function isExecAvailable() {
 
-        if (\in_array(\strtolower(\ini_get('safe_mode')), ['on', '1'], true) || (!\function_exists('exec'))) {
+        if (!$this->phpPath || \in_array(\strtolower(\ini_get('safe_mode')), ['on', '1'], true) || (!\function_exists('exec'))) {
             return false;
         }
 

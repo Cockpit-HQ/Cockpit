@@ -62,7 +62,7 @@ window.AppEventStream =  {
             });
         }
 
-        this._idle = setInterval(check, 5000);
+        this._idle = setInterval(check, 10000);
     },
 
     stop() {

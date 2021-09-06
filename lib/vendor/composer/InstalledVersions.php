@@ -29,7 +29,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '31ffe70c876995e76507532b4e830571aacb0adf',
+    'reference' => '202626e0a90240ebbce661ba0a86c56262d539bf',
     'name' => 'agentejo/cockpit',
   ),
   'versions' => 
@@ -41,7 +41,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '31ffe70c876995e76507532b4e830571aacb0adf',
+      'reference' => '202626e0a90240ebbce661ba0a86c56262d539bf',
     ),
     'bacon/bacon-qr-code' => 
     array (
@@ -305,12 +305,12 @@ private static $installed = array (
     ),
     'symfony/finder' => 
     array (
-      'pretty_version' => 'v5.3.4',
-      'version' => '5.3.4.0',
+      'pretty_version' => 'v5.3.7',
+      'version' => '5.3.7.0',
       'aliases' => 
       array (
       ),
-      'reference' => '17f50e06018baec41551a71a15731287dbaab186',
+      'reference' => 'a10000ada1e600d109a6c7632e9ac42e8bf2fb93',
     ),
     'symfony/polyfill-ctype' => 
     array (

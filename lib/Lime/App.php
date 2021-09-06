@@ -487,7 +487,7 @@ class App implements \ArrayAccess {
     * @param  Integer $priority
     * @return App
     */
-    public function on(string $event, mixed $callback, int $priority = 0): self {
+    public function on(string|array $event, mixed $callback, int $priority = 0): self {
 
         if (\is_array($event)) {
 

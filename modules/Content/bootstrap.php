@@ -262,6 +262,8 @@ $this->module('content')->extend([
 
         $this->app->dataStorage->save($collection, $item);
 
+        $this->app->trigger('content.item.save', [$modelName, $item, $isUpdate]);
+
         return $item;
     },
 

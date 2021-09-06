@@ -58,7 +58,7 @@ final class Versions
   'ralouphie/getallheaders' => '3.0.3@120b605dfeb996808c31b6477290a714d356e822',
   'robthree/twofactorauth' => '1.8.0@30a38627ae1e7c9399dae67e265063cd6ec5276c',
   'symfony/deprecation-contracts' => 'v2.4.0@5f38c8804a9e97d23e0c8d63341088cd8a22d627',
-  'symfony/finder' => 'v5.3.4@17f50e06018baec41551a71a15731287dbaab186',
+  'symfony/finder' => 'v5.3.7@a10000ada1e600d109a6c7632e9ac42e8bf2fb93',
   'symfony/polyfill-ctype' => 'v1.23.0@46cd95797e9df938fdd2b03693b5fca5e64b01ce',
   'symfony/polyfill-mbstring' => 'v1.23.1@9174a3d80210dca8daa7f31fec659150bbeabfc6',
   'symfony/polyfill-php80' => 'v1.23.1@1100343ed1a92e3a38f9ae122fc0eb21602547be',
@@ -66,7 +66,7 @@ final class Versions
   'symfony/yaml' => 'v5.3.6@4500fe63dc9c6ffc32d3b1cb0448c329f9c814b7',
   'webonyx/graphql-php' => 'v14.9.0@36b83621deb5eae354347a2e86dc7aec81b32a82',
   'zircote/swagger-php' => '3.2.3@41ed0eb1dacebe2c365623b3f9ab13d1531a03da',
-  'agentejo/cockpit' => 'dev-master@31ffe70c876995e76507532b4e830571aacb0adf',
+  'agentejo/cockpit' => 'dev-master@202626e0a90240ebbce661ba0a86c56262d539bf',
 );
 
     private function __construct()
