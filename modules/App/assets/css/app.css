@@ -28,6 +28,7 @@ vue-view:not([init="true"]) { display: none; }
 
     --app-loader-color1: var(--kiss-color-primary);
     --app-loader-color2: #fff;
+    --app-loader-cover-bg: var(--kiss-color-overlay);
 
     --app-fieldcontainer-border-color-active: var(--kiss-color-primary);
     --app-fieldcontainer-border-color-inactive: rgba(255, 255, 255, .1);

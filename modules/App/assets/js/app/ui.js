@@ -18,12 +18,15 @@ export default {
         }).show();
     },
 
-    block: function (content) {
+    block: function (info='', context = 'ui-block') {
 
+        document.body.insertAdjacentHTML('beforeend', `
+            <app-loader-cover class="${context}" label="${info}"></app-loader-cover>
+        `);
     },
 
-    unblock: function () {
-
+    unblock: function (context = 'ui-block') {
+        document.querySelectorAll(`.${context}`).forEach(node => node.parentNode.removeChild(node))
     },
 
     offcanvas: function (content, options) {
