@@ -82,7 +82,7 @@
 
                         <kiss-card class="kiss-padding-small kiss-margin-small kiss-text-muted kiss-size-small kiss-color-muted kiss-flex kiss-flex-middle" theme="bordered" v-if="!locales.length">
                             <span class="kiss-flex-1 kiss-margin-small-right">{{ t('No locales.') }}</span>
-                            <a class="kiss-size-xsmall kiss-text-bolder" href="<?=$this->route('/settings/locales')?>">{{ t('Manage') }}</a>
+                            <a class="kiss-size-xsmall kiss-text-bolder" href="<?=$this->route('/system/locales')?>">{{ t('Manage') }}</a>
                         </kiss-card>
 
                         <div class="kiss-margin-small" v-if="locales.length">
@@ -204,7 +204,7 @@
                 },
 
                 components: {
-                    'fields-renderer': 'settings:assets/vue-components/fields-renderer.js',
+                    'fields-renderer': 'system:assets/vue-components/fields-renderer.js',
                 },
 
                 computed: {
@@ -269,12 +269,12 @@
                     },
 
                     showJSON() {
-                        VueView.ui.offcanvas('settings:assets/dialogs/json-viewer.js', {data: this.item}, {}, {flip: true, size: 'large'})
+                        VueView.ui.offcanvas('system:assets/dialogs/json-viewer.js', {data: this.item}, {}, {flip: true, size: 'large'})
                     },
 
                     showPreviewUri(uri) {
 
-                        VueView.ui.offcanvas('settings:assets/dialogs/content-preview.js', {
+                        VueView.ui.offcanvas('system:assets/dialogs/content-preview.js', {
                             uri,
                             fields: this.model.fields,
                             item: this.item,

@@ -59,18 +59,18 @@
                 <kiss-navlist space="small">
                     <ul>
                         <li>
-                            <a class="kiss-flex kiss-flex-center" href="<?=$this->route('/settings/users/user')?>" aria-label="<?=t('Account')?>" kiss-tooltip="right">
+                            <a class="kiss-flex kiss-flex-center" href="<?=$this->route('/system/users/user')?>" aria-label="<?=t('Account')?>" kiss-tooltip="right">
                                 <icon>account_circle</icon>
                             </a>
                         </li>
                         <li>
-                            <a class="kiss-flex kiss-flex-center" href="<?=$this->route('/settings')?>" aria-label="<?=t('Settings')?>" kiss-tooltip="right">
+                            <a class="kiss-flex kiss-flex-center" href="<?=$this->route('/system')?>" aria-label="<?=t('Settings')?>" kiss-tooltip="right">
                                 <icon>tune</icon>
                             </a>
                         </li>
                         <?php if (_allowed('app.users.manage')): ?>
                         <li>
-                            <a class="kiss-flex kiss-flex-center" href="<?=$this->route('/settings/users')?>" aria-label="<?=t('Users')?>" kiss-tooltip="right">
+                            <a class="kiss-flex kiss-flex-center" href="<?=$this->route('/system/users')?>" aria-label="<?=t('Users')?>" kiss-tooltip="right">
                                 <icon>supervisor_account</icon>
                             </a></li>
                         <?php endif ?>
@@ -111,7 +111,7 @@
             <kiss-navlist>
                 <ul>
                     <li class="kiss-nav-header"><?=t('System')?></li>
-                    <li><a class="kiss-flex kiss-flex-middle" href="<?=$this->route('/settings/users/user')?>"><icon class="kiss-margin-small-right">account_circle</icon> <?=t('Account')?></a></li>
+                    <li><a class="kiss-flex kiss-flex-middle" href="<?=$this->route('/system/users/user')?>"><icon class="kiss-margin-small-right">account_circle</icon> <?=t('Account')?></a></li>
                     <li class="kiss-nav-divider"></li>
                     <li><a class="kiss-flex kiss-flex-middle kiss-color-danger" href="<?=$this->route('/auth/logout')?>"><icon class="kiss-margin-small-right">power_settings_new</icon> <?=t('Logout')?></a></li>
                 </ul>
@@ -170,18 +170,18 @@
                     <ul>
                         <li class="kiss-nav-header kiss-flex kiss-flex-middle"><?=t('System')?></li>
                         <li>
-                            <a class="kiss-flex kiss-flex-middle" href="<?=$this->route('/settings/users/user')?>">
+                            <a class="kiss-flex kiss-flex-middle" href="<?=$this->route('/system/users/user')?>">
                                 <icon class="kiss-margin-small-right">account_circle</icon> <?=t('Account')?>
                             </a>
                         </li>
                         <li>
-                            <a class="kiss-flex kiss-flex-middle" href="<?=$this->route('/settings')?>">
+                            <a class="kiss-flex kiss-flex-middle" href="<?=$this->route('/system')?>">
                                 <icon class="kiss-margin-small-right">tune</icon> <?=t('Settings')?>
                             </a>
                         </li>
                         <?php if (_allowed('app.users.manage')): ?>
                         <li>
-                            <a class="kiss-flex kiss-flex-middle" href="<?=$this->route('/settings/users')?>">
+                            <a class="kiss-flex kiss-flex-middle" href="<?=$this->route('/system/users')?>">
                                 <icon class="kiss-margin-small-right">supervisor_account</icon> <?=t('Users')?>
                             </a></li>
                         <?php endif ?>

@@ -26,7 +26,7 @@ export default {
 
     mounted() {
 
-        App.utils.import('settings:assets/js/settings.js').then(exp => {
+        App.utils.import('system:assets/js/settings.js').then(exp => {
 
             exp.FieldTypes.get().then(types => {
                 this.fieldTypes = types;

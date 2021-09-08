@@ -9,6 +9,27 @@ $this->helpers['csrf']  = 'App\\Helper\\Csrf';
 $this->helpers['i18n']  = 'App\\Helper\\i18n';
 $this->helpers['rspc']  = 'App\\Helper\\ResponseCache';
 
+
+$this->module('app')->extend([
+
+    'rescue' => function(callable $callback, $rescue = null, $report = true) {
+        try {
+            return $callback();
+        } catch (Throwable $e) {
+            if ($report) {
+                $this->report($e);
+            }
+
+            return $rescue instanceof Closure ? $rescue($e) : $rescue;
+        }
+    },
+
+    'report' => function() {
+        // to be implemented
+    }
+]);
+
+
 $this->on('app.admin.init', function() {
     include(__DIR__.'/admin.php');
 }, 1000);

@@ -14,7 +14,7 @@ export default {
     _meta: {
         label: 'Wysiwyg',
         info: 'A rich text field with formatting options',
-        icon: 'settings:assets/icons/wysiwyg.svg',
+        icon: 'system:assets/icons/wysiwyg.svg',
         render(value, field, context) {
             return App.utils.truncate(App.utils.stripTags(value), context == 'table-cell' ? 20 : 50);
         }

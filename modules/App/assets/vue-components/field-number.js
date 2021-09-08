@@ -4,7 +4,7 @@ export default {
     _meta: {
         label: 'Number',
         info: 'Quantityt etc',
-        icon: 'settings:assets/icons/number.svg',
+        icon: 'system:assets/icons/number.svg',
         settings: [
             {name: 'readonly', type: 'boolean', opts: {default: false}},
             {name: 'placeholder', type: 'text'},

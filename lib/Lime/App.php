@@ -1145,7 +1145,7 @@ class App implements \ArrayAccess {
 
         foreach ($dirs as &$dir) {
 
-            if (\file_exists($dir)){
+            if (\file_exists($dir)) {
 
                 $pfx = \is_bool($prefix) && $prefix ? \strtolower(basename($dir)) : $prefix;
 
@@ -1154,13 +1154,14 @@ class App implements \ArrayAccess {
 
                     if ($module->isFile() || $module->isDot()) continue;
 
-                    $name = $prefix ? "{$pfx}-".$module->getBasename() : $module->getBasename();
+                    $basename = $module->getBasename();
+                    $name = $prefix ? "{$pfx}-{$basename}" : $basename;
 
                     if ($disabled && \in_array($name, $disabled)) continue;
 
                     $this->registerModule($name, $module->getRealPath());
 
-                    $modules[] = \strtolower($module);
+                    $modules[] = \strtolower($basename);
                 }
 
                 if ($autoload) $this['autoload']->append($dir);

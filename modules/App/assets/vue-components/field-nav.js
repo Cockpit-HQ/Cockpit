@@ -25,7 +25,7 @@ let editItem = {
     },
 
     components: {
-        'fields-renderer': Vue.defineAsyncComponent(() => App.utils.import('settings:assets/vue-components/fields-renderer.js'))
+        'fields-renderer': Vue.defineAsyncComponent(() => App.utils.import('system:assets/vue-components/fields-renderer.js'))
     },
 
     template: /*html*/`
@@ -83,7 +83,7 @@ export default {
     _meta: {
         label: 'Navigation',
         info: 'Manage nested navigation tree',
-        icon: 'settings:assets/icons/list.svg',
+        icon: 'system:assets/icons/list.svg',
         settings: [
             {name: 'fields', type: 'fields-manager'},
         ],

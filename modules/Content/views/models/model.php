@@ -166,7 +166,7 @@
                 },
 
                 components: {
-                    'fields-manager': 'settings:assets/vue-components/fields-manager.js'
+                    'fields-manager': 'system:assets/vue-components/fields-manager.js'
                 },
 
                 methods: {

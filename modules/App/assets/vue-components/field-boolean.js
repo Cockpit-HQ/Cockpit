@@ -3,7 +3,7 @@ export default {
     _meta: {
         label: 'Boolean',
         info: 'An input that is either true or false',
-        icon: 'settings:assets/icons/boolean.svg',
+        icon: 'system:assets/icons/boolean.svg',
         color: 'rgb(253, 229, 227)',
         settings: [
             {name: 'label', type: 'text'},

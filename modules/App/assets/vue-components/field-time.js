@@ -6,7 +6,7 @@ export default {
     _meta: {
         label: 'Time',
         info: 'Pick a time',
-        icon: 'settings:assets/icons/time.svg',
+        icon: 'system:assets/icons/time.svg',
         settings: [
             {name: 'readonly', type: 'boolean', opts: {default: false}},
             {name: 'placeholder', type: 'text'},

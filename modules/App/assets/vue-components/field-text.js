@@ -6,7 +6,7 @@ export default {
     _meta: {
         label: 'Text',
         info: 'Simple text',
-        icon: 'settings:assets/icons/text.svg',
+        icon: 'system:assets/icons/text.svg',
         settings: [
             {name: 'multiline', type: 'boolean', opts: {default: false}},
             {name: 'showCount', type: 'boolean', opts: {default: true}},

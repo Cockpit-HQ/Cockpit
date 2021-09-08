@@ -6,7 +6,7 @@ export default {
     _meta: {
         label: 'Date',
         info: 'Pick a date',
-        icon: 'settings:assets/icons/date.svg',
+        icon: 'system:assets/icons/date.svg',
         settings: [
             {name: 'readonly', type: 'boolean', opts: {default: false}},
             {name: 'placeholder', type: 'text'},

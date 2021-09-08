@@ -3,7 +3,7 @@ export default {
     _meta: {
         label: 'Color',
         info: 'Color input',
-        icon: 'settings:assets/icons/color.svg',
+        icon: 'system:assets/icons/color.svg',
         settings: [
             {name: 'size', type: 'number', opts: {placeholder: '40'}},
         ]

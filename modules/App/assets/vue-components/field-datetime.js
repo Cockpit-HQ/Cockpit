@@ -6,7 +6,7 @@ export default {
     _meta: {
         label: 'Date-Time',
         info: 'Pick a date & time',
-        icon: 'settings:assets/icons/datetime.svg'
+        icon: 'system:assets/icons/datetime.svg'
     },
 
     data() {

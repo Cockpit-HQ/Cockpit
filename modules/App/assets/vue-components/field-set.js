@@ -5,7 +5,7 @@ export default {
     _meta: {
         label: 'Set',
         info: 'Set of fields',
-        icon: 'settings:assets/icons/object.svg',
+        icon: 'system:assets/icons/object.svg',
         settings: [
             {name: 'fields', type: 'fields-manager'},
             {name: 'display', type: 'text'},
