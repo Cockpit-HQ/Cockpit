@@ -1137,31 +1137,42 @@ class App implements \ArrayAccess {
         return $this->registry['modules'][$name];
     }
 
+    public function loadModule($path, $prefix = null) {
+
+        if (is_array($path)) {
+            foreach ($path as $p) $this->loadModule($p);
+            return true;
+        }
+
+        $disabled = $this->registry['modules.disabled'] ?? null;
+        $basename = basename($path);
+        $pfx = \is_bool($prefix) && $prefix ? \strtolower(basename($path)) : $prefix;
+        $name = $prefix ? "{$pfx}-{$basename}" : $basename;
+
+        if ($disabled && \in_array($name, $disabled)) return false;
+
+        $this->registerModule($name, $path);
+
+        return true;
+    }
+
     public function loadModules(mixed $dirs, bool $autoload = true, mixed $prefix = null): array {
 
         $modules  = [];
         $dirs     = (array)$dirs;
-        $disabled = $this->registry['modules.disabled'] ?? null;
 
         foreach ($dirs as &$dir) {
 
             if (\file_exists($dir)) {
-
-                $pfx = \is_bool($prefix) && $prefix ? \strtolower(basename($dir)) : $prefix;
 
                 // load modules
                 foreach (new \DirectoryIterator($dir) as $module) {
 
                     if ($module->isFile() || $module->isDot()) continue;
 
-                    $basename = $module->getBasename();
-                    $name = $prefix ? "{$pfx}-{$basename}" : $basename;
-
-                    if ($disabled && \in_array($name, $disabled)) continue;
-
-                    $this->registerModule($name, $module->getRealPath());
-
-                    $modules[] = \strtolower($basename);
+                    if ($this->loadModule($module->getRealPath(), $prefix)) {
+                        $modules[] = \strtolower($module->getBasename());
+                    }
                 }
 
                 if ($autoload) $this['autoload']->append($dir);

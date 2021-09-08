@@ -38,7 +38,7 @@ $this->on('app.api.request', function($request) {
 
     // simple response cache ?rspc=1
     if ($this->helper('rspc')->handle($request)) {
-        return;
+        return false;
     }
 
     include(__DIR__.'/api.php');
