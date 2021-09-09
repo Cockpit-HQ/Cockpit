@@ -38,6 +38,12 @@ class Query extends \Lime\AppAware {
             return \call_user_func($handler[$method], $params, $this->app);
         }
 
+        // custom file based route
+        // normalize path
+        if (strpos($path, '../') !== false) {
+            $path = implode('/', array_filter(explode('/', $path), fn($s) => trim($s, '.')));
+        }
+
         if ($file = $this->app->path('#config:api/'.trim($path, '/').'.php')) {
 
             $handler = (function() use($file) {
