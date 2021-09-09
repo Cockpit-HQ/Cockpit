@@ -81,7 +81,8 @@
             method: 'post',
             headers: {
               'Accept': 'application/json',
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
+              'API-TOKEN': (window.apiToken && apiToken.value) || ''
             },
             body: JSON.stringify(graphQLParams),
           }).then(function (response) {
@@ -110,6 +111,8 @@
       );
 
   </script>
+
+  <input id="apiToken" type="text" placeholder="API Token">
 
 <style>
 
@@ -289,6 +292,17 @@ a {
   color: #7b9ad4;
 }
 
+#apiToken {
+  position: absolute;
+  z-index: 2;
+  top: 12px;
+  left: 440px;
+  border: none;
+  padding: 5px;
+  border-radius: 2px;
+  background: #2c313e;
+  color: #ccc;
+}
 </style>
 </body>
 </html>
