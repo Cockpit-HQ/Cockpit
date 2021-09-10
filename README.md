@@ -25,7 +25,7 @@ make also sure that <code>$_SERVER['DOCUMENT_ROOT']</code> exists and is set cor
 
 ## 💐 Partners
 
-[![ginetta](https://user-images.githubusercontent.com/321047/62825759-0fc9ce00-bbb1-11e9-866a-3148260e1548.png)](https://www.ginetta.net)<br>
+[![ginetta](https://user-images.githubusercontent.com/321047/132780497-37da444d-d910-4433-a92a-d7629f3a4405.png)](https://www.ginetta.net)<br>
 We create websites and apps that click with users.
 
 
