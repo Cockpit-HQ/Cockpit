@@ -22,10 +22,10 @@ if (!isset($user['twofa'])) {
         <template>
 
             <?php if (!$isAccountView): ?>
-            <h1 class="kiss-margin-large-bottom">
-                <span v-if="!user._id"><?=t('Create user')?></span>
-                <span v-if="user._id"><?=t('Edit user')?></span>
-            </h1>
+            <div class="kiss-margin-large-bottom kiss-size-4">
+                <strong v-if="!user._id"><?=t('Create user')?></strong>
+                <strong v-if="user._id"><?=t('Edit user')?></strong>
+            </div>
             <?php endif ?>
 
             <div class="kiss-flex kiss-flex-middle kiss-has-transition kiss-margin-large-bottom" v-if="user._id" :class="{'kiss-inactive': !user.active}">
@@ -105,7 +105,7 @@ if (!isset($user['twofa'])) {
                         <field-boolean class="kiss-size-3" v-model="user.twofa.enabled"></field-boolean>
                     </div>
                     <kiss-row class="kiss-margin animated fadeIn" v-if="user.twofa.enabled">
-                        <div><img src="<?=$this->route("/settings/users/getSecretQRCode/{$user['twofa']['secret']}/150")?>" width="150" height="150" loading="lazy" style="background:#fff;border:10px #fff solid;"></div>
+                        <div><img src="<?=$this->route("/system/users/getSecretQRCode/{$user['twofa']['secret']}/150")?>" width="150" height="150" loading="lazy" style="background:#fff;border:10px #fff solid;"></div>
                         <div class="kiss-flex-1">
 
                             <p class="kiss-text-caption">

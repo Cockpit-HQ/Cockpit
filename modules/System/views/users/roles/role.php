@@ -30,10 +30,10 @@
     <vue-view>
         <template>
 
-            <h1 class="kiss-margin-large-bottom">
-                <span v-if="!role._id"><?=t('Create role')?></span>
-                <span v-if="role._id"><?=t('Edit role')?></span>
-            </h1>
+            <div class="kiss-margin-large-bottom kiss-size-4">
+                <strong v-if="!role._id"><?=t('Create role')?></strong>
+                <strong v-if="role._id"><?=t('Edit role')?></strong>
+            </div>
 
             <form :class="{'kiss-disabled':saving}" @submit.prevent="save">
 

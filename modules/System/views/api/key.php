@@ -12,10 +12,10 @@
     <vue-view>
         <template>
 
-            <h1 class="kiss-margin-large-bottom" v-if="key.key != 'public'">
-                <span v-if="!key._id"><?=t('Create key')?></span>
-                <span v-if="key._id"><?=t('Edit key')?></span>
-            </h1>
+            <div class="kiss-margin-large-bottom kiss-size-4" v-if="key.key != 'public'">
+                <strong v-if="!key._id"><?=t('Create key')?></strong>
+                <strong v-if="key._id"><?=t('Edit key')?></strong>
+            </div>
 
             <h1 class="kiss-margin-remove" v-if="key.key == 'public'">
                 <?=t('Public API')?>

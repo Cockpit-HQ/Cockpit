@@ -117,7 +117,8 @@ if (APP_API_REQUEST) {
     });
 
     if ($request->is('preflight')) {
-        exit(0);
+        header('HTTP/1.1 200 OK CORS');
+        die();
     }
 }
 

@@ -7,10 +7,10 @@
     <vue-view>
         <template>
 
-            <h1 class="kiss-margin-large-bottom">
-                <span v-if="!isUpdate"><?=t('Create model')?></span>
-                <span v-if="isUpdate"><?=t('Edit model')?></span>
-            </h1>
+            <div class="kiss-margin-large-bottom kiss-size-4">
+                <strong v-if="!isUpdate"><?=t('Create model')?></strong>
+                <strong v-if="isUpdate"><?=t('Edit model')?></strong>
+            </div>
 
             <form :class="{'kiss-disabled':saving}" @submit.prevent="save">
 

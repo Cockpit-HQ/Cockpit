@@ -6,7 +6,7 @@
     </ul>
 
     <div class="kiss-margin-large-bottom kiss-flex kiss-flex-middle">
-        <div class="kiss-size-1 kiss-flex-1"><strong><?=t('System')?></strong></div>
+        <div class="kiss-size-4 kiss-flex-1"><strong><?=t('System')?></strong></div>
     </div>
 
     <vue-view>

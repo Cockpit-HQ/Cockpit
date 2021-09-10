@@ -8,10 +8,10 @@
     <vue-view>
         <template>
 
-            <h1 class="kiss-margin-large-bottom">
-                <span v-if="!locale._id"><?=t('Create locale')?></span>
-                <span v-if="locale._id"><?=t('Edit locale')?></span>
-            </h1>
+            <div class="kiss-margin-large-bottom kiss-size-4">
+                <strong v-if="!locale._id"><?=t('Create locale')?></strong>
+                <strong v-if="locale._id"><?=t('Edit locale')?></strong>
+            </div>
 
             <form :class="{'kiss-disabled':saving}" @submit.prevent="save">
 

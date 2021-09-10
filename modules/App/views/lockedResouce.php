@@ -4,7 +4,7 @@
 
         <div class="kiss-flex-1">
 
-            <div class="kiss-size-3 kiss-text-bold"><?=t('This resource is currently being worked on by another editor')?></div>
+            <div class="kiss-size-4 kiss-text-bold"><?=t('This resource is currently being worked on by another editor')?></div>
 
             <div class="kiss-margin-top kiss-margin-small-bottom kiss-color-muted">
                 <span class="kiss-text-caption kiss-size-small"><?=t('Current Editor')?></span>
