@@ -37,7 +37,7 @@ export default {
                     <span class="kiss-badge kiss-badge-outline kiss-margin-small-left">{{model.type}}</span>
                 </div>
                 <div class="kiss-padding-small">
-                    <kiss-row class="kiss-row-large">
+                    <kiss-row gap="large">
                         <div>
                             <strong class="kiss-size-xsmall">{{ t('Model') }}</strong>
                             <kiss-row class="kiss-flex kiss-margin-xsmall kiss-size-small">

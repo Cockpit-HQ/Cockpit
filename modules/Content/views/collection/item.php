@@ -28,7 +28,7 @@
                 <?=t('No fields defined')?>
             </kiss-card>
 
-            <kiss-row class="kiss-row-large kiss-margin-large" v-if="fields.length">
+            <kiss-row class="kiss-margin-large" gap="large" v-if="fields.length">
                 <div class="kiss-flex-1">
                     <div class="kiss-width-2-3@xl kiss-margin-auto">
                         <fields-renderer v-model="item" :fields="fields" :locales="locales"></fields-renderer>

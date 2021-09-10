@@ -35,7 +35,7 @@
 
                 <div class="kiss-margin-large-top" v-if="singletons.length">
 
-                    <kiss-row class="kiss-row-small kiss-child-width-1-3@m" match="true">
+                    <kiss-row class="kiss-child-width-1-3@m" gap="small" match="true">
                         <div v-for="model in singletons">
                             <kiss-card class="animated fadeIn kiss-flex" theme="shadowed contrast" hover="shadow">
                                 <div class="kiss-position-relative kiss-padding-small kiss-bgcolor-contrast kiss-width-1-6">

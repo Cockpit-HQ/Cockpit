@@ -104,7 +104,7 @@ export default {
 
             <app-loader v-if="loading"></app-loader>
 
-            <kiss-row class="kiss-row-small kiss-child-width-1-4@m kiss-child-width-1-5@xl kiss-margin-bottom" match="true" v-if="!loading && folders.length">
+            <kiss-row class="kiss-child-width-1-4@m kiss-child-width-1-5@xl kiss-margin-bottom" gap="small" match="true" v-if="!loading && folders.length">
 
                 <div v-for="folder in folders">
                     <kiss-card class="kiss-flex kiss-flex-middle" theme="shadowed contrast">
@@ -134,7 +134,7 @@ export default {
                 </div>
             </div>
 
-            <kiss-row class="kiss-row-small kiss-child-width-1-2 kiss-child-width-1-5@m kiss-child-width-1-6@xl spotlight-group" v-if="!loading && assets.length" match="true" hover="shadow">
+            <kiss-row class="kiss-child-width-1-2 kiss-child-width-1-5@m kiss-child-width-1-6@xl spotlight-group" gap="small" v-if="!loading && assets.length" match="true" hover="shadow">
                 <div v-for="asset in assets">
                     <kiss-card class="kiss-position-relative kiss-bgcolor-contrast" theme="bordered" :style="{borderColor: (selectedAsset && selectedAsset._id == asset._id && 'var(--kiss-color-primary)') || null}">
                         <div class="kiss-position-relative" :class="{'kiss-bgcolor-transparentimage': asset.type == 'image'}">

@@ -1,0 +1,58 @@
+kiss-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    gap: var(--kiss-row-gap, 20px);
+}
+
+kiss-row > * { margin: 0; }
+kiss-row > * > :last-child { margin-bottom: 0; }
+
+
+/*
+ * Small
+ */
+
+kiss-row[gap="small"] {
+    gap: var(--kiss-row-gap, 10px);
+}
+
+/*
+ * Large
+ */
+
+kiss-row[gap="large"] {
+    gap: var(--kiss-row-gap, 3vw);
+}
+
+/*
+ * xLarge
+ */
+
+kiss-row[gap="xlarge"] {
+    gap: var(--kiss-row-gap, 5vw);
+}
+
+
+kiss-row[gap="none"] {
+    gap: 0;
+}
+
+kiss-row + kiss-row[collapse],
+kiss-row[collapse] > .kiss-row-margin { margin-top: 0; }
+
+
+kiss-row[match] > *,
+.kiss-row-item-match {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+kiss-row[match] > * > :not([class*='kiss-width']),
+.kiss-row-item-match > :not([class*='kiss-width']) {
+    box-sizing: border-box;
+    width: 100%;
+    flex: auto;
+}
