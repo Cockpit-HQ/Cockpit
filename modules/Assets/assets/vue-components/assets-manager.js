@@ -104,7 +104,7 @@ export default {
 
             <app-loader v-if="loading"></app-loader>
 
-            <kiss-row class="kiss-child-width-1-4@m kiss-child-width-1-5@xl kiss-margin-bottom" gap="small" match="true" v-if="!loading && folders.length">
+            <kiss-grid cols="4@m 5@xl" class="kiss-margin-bottom" gap="small" v-if="!loading && folders.length">
 
                 <div v-for="folder in folders">
                     <kiss-card class="kiss-flex kiss-flex-middle" theme="shadowed contrast">
@@ -116,7 +116,7 @@ export default {
                     </kiss-card>
                 </div>
 
-            </kiss-row>
+            </kiss-grid>
 
             <form class="kiss-margin kiss-flex kiss-flex-middle" v-if="(!loading && assets.length) || filter" @submit.prevent="filter = txtFilter">
                 <input type="text" class="kiss-input kiss-flex-1 kiss-margin-xsmall-right" :placeholder="t('Filter assets...')" v-model="txtFilter">
@@ -134,7 +134,7 @@ export default {
                 </div>
             </div>
 
-            <kiss-row class="kiss-child-width-1-2 kiss-child-width-1-5@m kiss-child-width-1-6@xl spotlight-group" gap="small" v-if="!loading && assets.length" match="true" hover="shadow">
+            <kiss-grid cols="2@s 5@m 6@xl" class="spotlight-group" gap="small" v-if="!loading && assets.length" match="true" hover="shadow">
                 <div v-for="asset in assets">
                     <kiss-card class="kiss-position-relative kiss-bgcolor-contrast" theme="bordered" :style="{borderColor: (selectedAsset && selectedAsset._id == asset._id && 'var(--kiss-color-primary)') || null}">
                         <div class="kiss-position-relative" :class="{'kiss-bgcolor-transparentimage': asset.type == 'image'}">
@@ -151,7 +151,7 @@ export default {
                         </div>
                     </kiss-card>
                 </div>
-            </kiss-row>
+            </kiss-grid>
 
         </div>
 

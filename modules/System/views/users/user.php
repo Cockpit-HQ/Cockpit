@@ -124,7 +124,7 @@ if (!isset($user['twofa'])) {
                 <div class="kiss-margin-large">
                     <label><?=t('Color theme')?></label>
 
-                    <kiss-row class="kiss-child-width-1-4@m">
+                    <kiss-grid cols="4@m" gap="small">
                         <div>
                             <kiss-card class="kiss-padding kiss-position-relative" theme="bordered" :class="{'kiss-color-muted': user.theme != 'auto'}" :style="{borderColor: user.theme == 'auto' ? 'var(--kiss-color-primary)':null}">
                                 <strong class="kiss-size-small"><?=t('Auto')?></strong>
@@ -146,7 +146,7 @@ if (!isset($user['twofa'])) {
                                 <a class="kiss-cover" @click="user.theme = 'light'"></a>
                             </kiss-card>
                         </div>
-                    </kiss-row>
+                    </kiss-grid>
 
                 </div>
 

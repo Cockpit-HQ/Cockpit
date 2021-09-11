@@ -13,7 +13,7 @@
 
     <div class="kiss-text-bold kiss-text-caption"><?=$this->escape(t($group))?></div>
 
-    <kiss-row class="kiss-margin kiss-child-width-1-2 kiss-child-width-1-4@m">
+    <kiss-grid cols="2@s 4@m" class="kiss-margin">
 
         <?php foreach ($items as $item): ?>
         <div>
@@ -34,7 +34,7 @@
         </div>
         <?php endforeach ?>
 
-    </kiss-row>
+    </kiss-grid>
     <?php endforeach ?>
 
 </kiss-container>

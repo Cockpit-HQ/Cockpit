@@ -17,7 +17,7 @@
                 <div class="kiss-margin-large" v-if="!isUpdate">
                     <label><?=t('Type')?></label>
 
-                    <kiss-row class="kiss-child-width-1-3" gap="small">
+                    <kiss-grid cols="3@m" gap="small">
                         <div>
                             <kiss-card class="kiss-flex kiss-padding kiss-position-relative" theme="bordered" :class="model.type == 'singleton' ? '': 'kiss-color-muted'" :style="{borderColor:model.type == 'singleton' ? 'var(--kiss-color-primary)': null}">
                                 <div class="kiss-margin-small-right"><kiss-svg src="<?=$this->base('content:assets/icons/singleton.svg')?>" width="30" height="30"><canvas width="30" height="30"></canvas></kiss-svg></div>
@@ -42,7 +42,7 @@
                                 <a class="kiss-cover" @click="model.type = 'collection'"></a>
                             </kiss-card>
                         </div>
-                    </kiss-row>
+                    </kiss-grid>
                 </div>
 
                 <div class="kiss-margin-large" v-if="isUpdate">
@@ -60,7 +60,7 @@
                     </kiss-card>
                 </div>
 
-                <kiss-row class="kiss-margin kiss-child-width-1-2@m">
+                <kiss-grid cols="2@m" class="kiss-margin">
                     <div :class="{'kiss-disabled': isUpdate}">
                         <label><?=t('Name')?></label>
                         <input class="kiss-input" type="text" pattern="[a-zA-Z0-9_]+" v-model="model.name" :disabled="isUpdate" required>
@@ -69,7 +69,7 @@
                         <label><?=t('Display name')?></label>
                         <input class="kiss-input" type="text" v-model="model.label">
                     </div>
-                </kiss-row>
+                </kiss-grid>
 
                 <div class="kiss-margin">
                     <label><?=t('Group')?></label>

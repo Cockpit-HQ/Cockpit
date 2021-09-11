@@ -75,14 +75,14 @@ export default {
 
     template: /*html*/`
         <div field="datetime">
-            <kiss-row class="kiss-child-width-1-2">
+            <kiss-grid cols="2">
                 <div>
                     <input type="date" class="kiss-input kiss-width-1-1" v-model="date" @input="update" :max="maxDate" :min="minDate" :step="stepDate" :readonly="readonly">
                 </div>
                 <div>
                     <input type="time" class="kiss-input kiss-width-1-1" v-model="time" @input="update" :max="maxTime" :min="minTime" :step="stepTime" :list="uid+'-list'" :readonly="readonly">
                 </div>
-            </kiss-row>
+            </kiss-grid>
             <datalist :id="uid+'-list'" v-if="listTime.length">
                 <option v-for="option in listTime">{{ option }}</option>
             </datalist>

@@ -35,7 +35,7 @@
 
                 <div class="kiss-margin-large-top" v-if="singletons.length">
 
-                    <kiss-row class="kiss-child-width-1-3@m" gap="small" match="true">
+                    <kiss-grid cols="3@m" gap="small">
                         <div v-for="model in singletons">
                             <kiss-card class="animated fadeIn kiss-flex" theme="shadowed contrast" hover="shadow">
                                 <div class="kiss-position-relative kiss-padding-small kiss-bgcolor-contrast kiss-width-1-6">
@@ -59,7 +59,7 @@
                                 <a class="kiss-size-large" href="<?=$this->route('/content/models/create')?>?type=singleton" title="<?=t('Add singleton model')?>"><icon>add_circle_outline</icon></a>
                             </kiss-card>
                         </div>
-                    </kiss-row>
+                    </kiss-grid>
 
                 </div>
 

@@ -1,13 +1,16 @@
 kiss-row {
+    --row-gap: var(--kiss-row-gap, 20px);
     display: flex;
     flex-wrap: wrap;
     margin: 0;
     padding: 0;
     list-style: none;
-    gap: var(--kiss-row-gap, 20px);
+    gap: var(--row-gap);
 }
 
-kiss-row > * { margin: 0; }
+kiss-row > * {
+    margin: 0;
+}
 kiss-row > * > :last-child { margin-bottom: 0; }
 
 
@@ -16,7 +19,7 @@ kiss-row > * > :last-child { margin-bottom: 0; }
  */
 
 kiss-row[gap="small"] {
-    gap: var(--kiss-row-gap, 10px);
+    --row-gap: var(--kiss-row-gap-small, 10px);
 }
 
 /*
@@ -24,7 +27,7 @@ kiss-row[gap="small"] {
  */
 
 kiss-row[gap="large"] {
-    gap: var(--kiss-row-gap, 3vw);
+    --row-gap: var(--kiss-row-gap-large, 3vw);
 }
 
 /*
@@ -32,16 +35,13 @@ kiss-row[gap="large"] {
  */
 
 kiss-row[gap="xlarge"] {
-    gap: var(--kiss-row-gap, 5vw);
+    --row-gap: var(--kiss-row-gap-xlarge, 5vw);
 }
 
 
 kiss-row[gap="none"] {
-    gap: 0;
+    --row-gap: 0;
 }
-
-kiss-row + kiss-row[collapse],
-kiss-row[collapse] > .kiss-row-margin { margin-top: 0; }
 
 
 kiss-row[match] > *,
