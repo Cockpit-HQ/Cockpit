@@ -16,22 +16,22 @@
     <kiss-grid cols="2@s 4@m" class="kiss-margin">
 
         <?php foreach ($items as $item): ?>
-        <div>
-            <kiss-card class="kiss-position-relative" theme="shadowed contrast" hover="shadow">
 
-                <div class="kiss-position-relative">
-                    <div class="kiss-position-absolute kiss-size-xlarge" center="true">
-                        <kiss-svg src="<?=$this->base((isset($item['icon']) && $item['icon']) ? $item['icon'] : 'system:assets/icons/settings.svg')?>" width="50" height="50"><canvas width="50" height="50"></canvas></kiss-svg>
-                    </div>
-                    <canvas width="800" height="500"></canvas>
-                </div>
+        <kiss-card class="kiss-position-relative" theme="shadowed contrast" hover="shadow">
 
-                <div class="kiss-padding kiss-size-small kiss-align-center kiss-text-caption">
-                    <?=$this->escape(t($item['label'] ?? 'n/a'))?>
+            <div class="kiss-position-relative">
+                <div class="kiss-position-absolute kiss-size-xlarge" center="true">
+                    <kiss-svg src="<?=$this->base((isset($item['icon']) && $item['icon']) ? $item['icon'] : 'system:assets/icons/settings.svg')?>" width="50" height="50"><canvas width="50" height="50"></canvas></kiss-svg>
                 </div>
-                <a class="kiss-cover" href="<?=$this->route($item['route'])?>"></a>
-            </kiss-card>
-        </div>
+                <canvas width="800" height="500"></canvas>
+            </div>
+
+            <div class="kiss-padding kiss-size-small kiss-align-center kiss-text-caption">
+                <?=$this->escape(t($item['label'] ?? 'n/a'))?>
+            </div>
+            <a class="kiss-cover" href="<?=$this->route($item['route'])?>"></a>
+        </kiss-card>
+
         <?php endforeach ?>
 
     </kiss-grid>

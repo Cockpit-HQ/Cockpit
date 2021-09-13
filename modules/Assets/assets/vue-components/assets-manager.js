@@ -106,15 +106,13 @@ export default {
 
             <kiss-grid cols="4@m 5@xl" class="kiss-margin-bottom" gap="small" v-if="!loading && folders.length">
 
-                <div v-for="folder in folders">
-                    <kiss-card class="kiss-flex kiss-flex-middle" theme="shadowed contrast">
-                        <div class="kiss-padding kiss-bgcolor-contrast"><icon size="larger">folder</icon></div>
-                        <div class="kiss-padding kiss-text-truncate kiss-flex-1 kiss-text-bold">
-                            <a class="kiss-link-muted" @click="openFolder(folder)">{{ folder.name }}</a>
-                        </div>
-                        <a class="kiss-padding" @click="toggleFolderActions(folder)"><icon>more_horiz</icon></a>
-                    </kiss-card>
-                </div>
+                <kiss-card class="kiss-flex kiss-flex-middle" theme="shadowed contrast" v-for="folder in folders">
+                    <div class="kiss-padding kiss-bgcolor-contrast"><icon size="larger">folder</icon></div>
+                    <div class="kiss-padding kiss-text-truncate kiss-flex-1 kiss-text-bold">
+                        <a class="kiss-link-muted" @click="openFolder(folder)">{{ folder.name }}</a>
+                    </div>
+                    <a class="kiss-padding" @click="toggleFolderActions(folder)"><icon>more_horiz</icon></a>
+                </kiss-card>
 
             </kiss-grid>
 
@@ -135,8 +133,8 @@ export default {
             </div>
 
             <kiss-grid cols="2@s 5@m 6@xl" class="spotlight-group" gap="small" v-if="!loading && assets.length" match="true" hover="shadow">
-                <div v-for="asset in assets">
-                    <kiss-card class="kiss-position-relative kiss-bgcolor-contrast" theme="bordered" :style="{borderColor: (selectedAsset && selectedAsset._id == asset._id && 'var(--kiss-color-primary)') || null}">
+
+                    <kiss-card class="kiss-position-relative kiss-bgcolor-contrast" theme="bordered" :style="{borderColor: (selectedAsset && selectedAsset._id == asset._id && 'var(--kiss-color-primary)') || null}" v-for="asset in assets">
                         <div class="kiss-position-relative" :class="{'kiss-bgcolor-transparentimage': asset.type == 'image'}">
                             <canvas width="400" height="300"></canvas>
                             <div class="kiss-cover kiss-padding kiss-flex kiss-flex-middle kiss-flex-center">
@@ -150,7 +148,7 @@ export default {
                             <a class="kiss-margin-small-left" @click="toggleAssetActions(asset)"><icon>more_horiz</icon></a>
                         </div>
                     </kiss-card>
-                </div>
+
             </kiss-grid>
 
         </div>

@@ -36,29 +36,28 @@
                 <div class="kiss-margin-large-top" v-if="singletons.length">
 
                     <kiss-grid cols="3@m" gap="small">
-                        <div v-for="model in singletons">
-                            <kiss-card class="animated fadeIn kiss-flex" theme="shadowed contrast" hover="shadow">
-                                <div class="kiss-position-relative kiss-padding-small kiss-bgcolor-contrast kiss-width-1-6">
-                                    <canvas width="600" height="200"></canvas>
-                                    <div class="kiss-cover kiss-flex kiss-flex-middle kiss-flex-center">
-                                        <div :style="{color: model.color || 'inherit' }"><kiss-svg src="<?=$this->base('content:assets/icons/singleton.svg')?>" width="30" height="30"></kiss-svg></div>
-                                    </div>
-                                    <a class="kiss-cover" :href="$route(`/content/singleton/item/${model.name}`)"></a>
+
+                        <kiss-card class="animated fadeIn kiss-flex" theme="shadowed contrast" hover="shadow" v-for="model in singletons">
+                            <div class="kiss-position-relative kiss-padding-small kiss-bgcolor-contrast kiss-width-1-6">
+                                <canvas width="600" height="200"></canvas>
+                                <div class="kiss-cover kiss-flex kiss-flex-middle kiss-flex-center">
+                                    <div :style="{color: model.color || 'inherit' }"><kiss-svg src="<?=$this->base('content:assets/icons/singleton.svg')?>" width="30" height="30"></kiss-svg></div>
                                 </div>
-                                <div class="kiss-padding-small kiss-flex-1">
-                                    <div class="kiss-flex kiss-flex-middle">
-                                        <a class="kiss-flex-1 kiss-margin-right kiss-text-bold kiss-link-muted" :href="$route(`/content/singleton/item/${model.name}`)">{{ model.label || model.name }}</a>
-                                        <a @click="toggleModelActions(model)"><icon>more_horiz</icon></a>
-                                    </div>
-                                    <div class="kiss-margin-xsmall-top kiss-color-muted kiss-size-xsmall" v-if="model.info">{{model.info}}</div>
+                                <a class="kiss-cover" :href="$route(`/content/singleton/item/${model.name}`)"></a>
+                            </div>
+                            <div class="kiss-padding-small kiss-flex-1">
+                                <div class="kiss-flex kiss-flex-middle">
+                                    <a class="kiss-flex-1 kiss-margin-right kiss-text-bold kiss-link-muted" :href="$route(`/content/singleton/item/${model.name}`)">{{ model.label || model.name }}</a>
+                                    <a @click="toggleModelActions(model)"><icon>more_horiz</icon></a>
                                 </div>
-                            </kiss-card>
-                        </div>
-                        <div>
-                            <kiss-card class="animated fadeIn kiss-padding kiss-flex kiss-flex-middle kiss-flex-center" theme="bordered" hover="shadow">
-                                <a class="kiss-size-large" href="<?=$this->route('/content/models/create')?>?type=singleton" title="<?=t('Add singleton model')?>"><icon>add_circle_outline</icon></a>
-                            </kiss-card>
-                        </div>
+                                <div class="kiss-margin-xsmall-top kiss-color-muted kiss-size-xsmall" v-if="model.info">{{model.info}}</div>
+                            </div>
+                        </kiss-card>
+
+                        <kiss-card class="animated fadeIn kiss-padding kiss-flex kiss-flex-middle kiss-flex-center" theme="bordered" hover="shadow">
+                            <a class="kiss-size-large" href="<?=$this->route('/content/models/create')?>?type=singleton" title="<?=t('Add singleton model')?>"><icon>add_circle_outline</icon></a>
+                        </kiss-card>
+
                     </kiss-grid>
 
                 </div>

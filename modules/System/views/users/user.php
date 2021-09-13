@@ -125,27 +125,25 @@ if (!isset($user['twofa'])) {
                     <label><?=t('Color theme')?></label>
 
                     <kiss-grid cols="4@m" gap="small">
-                        <div>
-                            <kiss-card class="kiss-padding kiss-position-relative" theme="bordered" :class="{'kiss-color-muted': user.theme != 'auto'}" :style="{borderColor: user.theme == 'auto' ? 'var(--kiss-color-primary)':null}">
-                                <strong class="kiss-size-small"><?=t('Auto')?></strong>
-                                <div class="kiss-color-muted kiss-size-xsmall kiss-margin-xsmall-top"><?=t('Use system preference')?></div>
-                                <a class="kiss-cover" @click="user.theme = 'auto'"></a>
-                            </kiss-card>
-                        </div>
-                        <div>
-                            <kiss-card class="kiss-padding kiss-position-relative" theme="bordered" :class="{'kiss-color-muted': user.theme != 'dark'}" :style="{borderColor: user.theme == 'dark' ? 'var(--kiss-color-primary)':null}">
-                                <strong class="kiss-size-small"><?=t('Dark')?></strong>
-                                <div class="kiss-color-muted kiss-size-xsmall kiss-margin-xsmall-top"><?=t('Dark mode')?></div>
-                                <a class="kiss-cover" @click="user.theme = 'dark'"></a>
-                            </kiss-card>
-                        </div>
-                        <div>
-                            <kiss-card class="kiss-padding kiss-position-relative" theme="bordered" :class="{'kiss-color-muted': user.theme != 'light'}" :style="{borderColor: user.theme == 'light' ? 'var(--kiss-color-primary)':null}">
-                                <strong class="kiss-size-small"><?=t('Light')?></strong>
-                                <div class="kiss-color-muted kiss-size-xsmall kiss-margin-xsmall-top"><?=t('Light mode')?></div>
-                                <a class="kiss-cover" @click="user.theme = 'light'"></a>
-                            </kiss-card>
-                        </div>
+
+                        <kiss-card class="kiss-padding kiss-position-relative" theme="bordered" :class="{'kiss-color-muted': user.theme != 'auto'}" :style="{borderColor: user.theme == 'auto' ? 'var(--kiss-color-primary)':null}">
+                            <strong class="kiss-size-small"><?=t('Auto')?></strong>
+                            <div class="kiss-color-muted kiss-size-xsmall kiss-margin-xsmall-top"><?=t('Use system preference')?></div>
+                            <a class="kiss-cover" @click="user.theme = 'auto'"></a>
+                        </kiss-card>
+
+                        <kiss-card class="kiss-padding kiss-position-relative" theme="bordered" :class="{'kiss-color-muted': user.theme != 'dark'}" :style="{borderColor: user.theme == 'dark' ? 'var(--kiss-color-primary)':null}">
+                            <strong class="kiss-size-small"><?=t('Dark')?></strong>
+                            <div class="kiss-color-muted kiss-size-xsmall kiss-margin-xsmall-top"><?=t('Dark mode')?></div>
+                            <a class="kiss-cover" @click="user.theme = 'dark'"></a>
+                        </kiss-card>
+
+                        <kiss-card class="kiss-padding kiss-position-relative" theme="bordered" :class="{'kiss-color-muted': user.theme != 'light'}" :style="{borderColor: user.theme == 'light' ? 'var(--kiss-color-primary)':null}">
+                            <strong class="kiss-size-small"><?=t('Light')?></strong>
+                            <div class="kiss-color-muted kiss-size-xsmall kiss-margin-xsmall-top"><?=t('Light mode')?></div>
+                            <a class="kiss-cover" @click="user.theme = 'light'"></a>
+                        </kiss-card>
+
                     </kiss-grid>
 
                 </div>

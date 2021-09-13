@@ -18,30 +18,29 @@
                     <label><?=t('Type')?></label>
 
                     <kiss-grid cols="3@m" gap="small">
-                        <div>
-                            <kiss-card class="kiss-flex kiss-padding kiss-position-relative" theme="bordered" :class="model.type == 'singleton' ? '': 'kiss-color-muted'" :style="{borderColor:model.type == 'singleton' ? 'var(--kiss-color-primary)': null}">
-                                <div class="kiss-margin-small-right"><kiss-svg src="<?=$this->base('content:assets/icons/singleton.svg')?>" width="30" height="30"><canvas width="30" height="30"></canvas></kiss-svg></div>
-                                <div class="kiss-size-small">
-                                    <strong>{{ t('Singleton') }}</strong>
-                                    <div class="kiss-size-xsmall kiss-color-muted kiss-margin-xsmall-top">
-                                        <?=t('Model has one single item')?>
-                                    </div>
+
+                        <kiss-card class="kiss-flex kiss-padding kiss-position-relative" theme="bordered" :class="model.type == 'singleton' ? '': 'kiss-color-muted'" :style="{borderColor:model.type == 'singleton' ? 'var(--kiss-color-primary)': null}">
+                            <div class="kiss-margin-small-right"><kiss-svg src="<?=$this->base('content:assets/icons/singleton.svg')?>" width="30" height="30"><canvas width="30" height="30"></canvas></kiss-svg></div>
+                            <div class="kiss-size-small">
+                                <strong>{{ t('Singleton') }}</strong>
+                                <div class="kiss-size-xsmall kiss-color-muted kiss-margin-xsmall-top">
+                                    <?=t('Model has one single item')?>
                                 </div>
-                                <a class="kiss-cover" @click="model.type = 'singleton'"></a>
-                            </kiss-card>
-                        </div>
-                        <div>
-                            <kiss-card class="kiss-flex kiss-padding kiss-position-relative kiss-padding" theme="bordered" :class="model.type == 'collection' ? '': 'kiss-color-muted'" :style="{borderColor:model.type == 'collection' ? 'var(--kiss-color-primary)': null}">
-                                <div class="kiss-margin-small-right"><kiss-svg src="<?=$this->base('content:assets/icons/collection.svg')?>" width="30" height="30"><canvas width="30" height="30"></canvas></kiss-svg></div>
-                                <div class="kiss-size-small">
-                                    <strong>{{ t('Collection') }}</strong>
-                                    <div class="kiss-size-xsmall kiss-color-muted kiss-margin-xsmall-top">
-                                        <?=t('Model can have multiple items')?>
-                                    </div>
+                            </div>
+                            <a class="kiss-cover" @click="model.type = 'singleton'"></a>
+                        </kiss-card>
+
+                        <kiss-card class="kiss-flex kiss-padding kiss-position-relative kiss-padding" theme="bordered" :class="model.type == 'collection' ? '': 'kiss-color-muted'" :style="{borderColor:model.type == 'collection' ? 'var(--kiss-color-primary)': null}">
+                            <div class="kiss-margin-small-right"><kiss-svg src="<?=$this->base('content:assets/icons/collection.svg')?>" width="30" height="30"><canvas width="30" height="30"></canvas></kiss-svg></div>
+                            <div class="kiss-size-small">
+                                <strong>{{ t('Collection') }}</strong>
+                                <div class="kiss-size-xsmall kiss-color-muted kiss-margin-xsmall-top">
+                                    <?=t('Model can have multiple items')?>
                                 </div>
-                                <a class="kiss-cover" @click="model.type = 'collection'"></a>
-                            </kiss-card>
-                        </div>
+                            </div>
+                            <a class="kiss-cover" @click="model.type = 'collection'"></a>
+                        </kiss-card>
+
                     </kiss-grid>
                 </div>
 
