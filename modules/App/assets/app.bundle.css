@@ -3843,6 +3843,11 @@ kiss-tooltip {
 .kiss-height-30vh { min-height: 30vh; }
 .kiss-height-50vh { min-height: 50vh; }
 .kiss-height-100vh { min-height: 100vh; }
+kiss-dialog,
+kiss-offcanvas,
+kiss-popoutmenu {
+    backdrop-filter: grayscale(1) blur(1.5px);
+}
 kiss-offcanvas kiss-content,
 kiss-dialog kiss-content,
 kiss-popoutmenu kiss-content {
