@@ -273,32 +273,25 @@ class Mongo {
             if ($k === '_id') {
 
                 if (is_string($v)) {
-
-                    $v = $v[0] === '@' ? \substr($v, 1) : new ObjectID($v);
-
+                    $v = $v[0] === '@' ? \substr($v, 1) : $this->getObjectID($v);
                 } elseif (is_array($v)) {
 
                     if (isset($v['$in'])) {
 
                         foreach ($v['$in'] as &$id) {
-                            if (is_string($id)) {
-                                $id = new ObjectID($id);
-                            }
+                            $id = $this->getObjectID($id);
                         }
                     }
 
                     if (isset($v['$nin'])) {
 
                         foreach ($v['$nin'] as &$id) {
-                            if (is_string($id)) {
-                                $id = new ObjectID($id);
-                            }
+                            $id = $this->getObjectID($id);
                         }
                     }
 
                     if (isset($v['$ne']) && is_string($v['$ne'])) {
-
-                        $v['$ne'] = new ObjectID($v['$ne']);
+                        $v['$ne'] = $this->getObjectID($v['$ne']);
                     }
 
                 }
@@ -311,5 +304,16 @@ class Mongo {
         }
 
         return $data;
+    }
+
+    protected function getObjectID($v) {
+
+        if (is_string($v)) {
+            try {
+                $v = new ObjectID($v);
+            } catch (\Throwable $e) {}
+        }
+
+        return $v;
     }
 }
