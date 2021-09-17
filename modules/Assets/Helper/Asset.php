@@ -47,10 +47,17 @@ class Asset extends \Lime\Helper {
             }
         }
 
-        $src   = str_replace('../', '', rawurldecode($src));
+        // normalize path
+        if (strpos($src, '../') !== false) {
+            $src = implode('/', array_filter(explode('/', $src), fn($s) => trim($s, '.')));
+        }
+
+        $src   = rawurldecode($src);
         $asset = null;
 
-        if (!preg_match('/\.(png|jpg|jpeg|gif|svg|webp)$/i', $src)) {
+        if (\strpos($src, 'assets://') === 0) {
+            $asset = ['path' => \str_replace('assets://', '', $src)];
+        } elseif (!preg_match('/\.(png|jpg|jpeg|gif|svg|webp)$/i', $src)) {
             $asset = $this->app->dataStorage->findOne('assets', ['_id' => $src]);
         } else {
             $asset = $this->app->dataStorage->findOne('assets', ['path' => $src]);
@@ -172,7 +179,6 @@ class Asset extends \Lime\Helper {
         }
 
         return $asPath ? $thumbpath : $this->app->fileStorage->getURL($thumbpath);
-
     }
 }
 
