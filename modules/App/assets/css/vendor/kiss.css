@@ -38,7 +38,7 @@
     --kiss-dialog-large-width: 840px;
     --kiss-dialog-xlarge-width: var(--kiss-container-max-width);
 
-    --kiss-dropdown-background: rgba(0,0,0,.95);
+    --kiss-dropdown-background: #030915f2;
 
     --kiss-offcanvas-content-background: var(--kiss-base-background-color);
     --kiss-offcanvas-background: var(--kiss-color-overlay);
