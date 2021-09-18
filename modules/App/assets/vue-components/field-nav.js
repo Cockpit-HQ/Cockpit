@@ -21,6 +21,15 @@ let editItem = {
         fields: {
             type: Array,
             default: []
+        },
+        url: {
+            type: Object,
+            default: {
+                type: 'field-text',
+                opts: {
+                    placeholder: 'https://...'
+                }
+            }
         }
     },
 
@@ -43,7 +52,7 @@ let editItem = {
                     </div>
                     <div class="kiss-margin">
                         <label class="kiss-size-small kiss-text-caption">{{ t('Url') }}</label>
-                        <input class="kiss-input" type="text" v-model="data.url">
+                        <component :is="url.type" v-model="data.url" v-bind="url.opts"></component>
                     </div>
                     <div class="kiss-margin">
                         <label class="kiss-size-small kiss-text-caption">{{ t('Target') }}</label>
@@ -112,6 +121,15 @@ export default {
         level: {
             type: Number,
             default: 0
+        },
+        url: {
+            type: Object,
+            default: {
+                type: 'field-text',
+                opts: {
+                    placeholder: 'https://...'
+                }
+            }
         }
     },
 
@@ -151,7 +169,7 @@ export default {
                         </kiss-card>
 
                         <div :style="{paddingLeft: (((level+1)*15)+'px')}">
-                            <field-nav class="kiss-display-block" v-model="element.children" :group="group || uid" :fields="fields" :level="level+1"></field-nav>
+                            <field-nav class="kiss-display-block" v-model="element.children" :group="group || uid" :fields="fields" :level="level+1" :url="url"></field-nav>
                         </div>
                     </div>
                 </template>
@@ -187,7 +205,7 @@ export default {
 
         edit(item) {
 
-            VueView.ui.modal(editItem, {item, fields: this.fields}, {
+            VueView.ui.modal(editItem, {item, fields: this.fields, url: this.url}, {
 
             }, {size: 'large'})
         },
