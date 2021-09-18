@@ -62,6 +62,8 @@ class Auth extends \Lime\Helper {
         }
 
         if ($permanent) {
+            // prevent session fixation attacks
+            session_regenerate_id(true);
             $this->app->helper('session')->write($this->sessionKey, $user);
         }
 
@@ -70,8 +72,12 @@ class Auth extends \Lime\Helper {
     }
 
     public function logout(): void {
+
         $this->app->trigger('app.user.logout', [$this->getUser()]);
         $this->app->helper('session')->delete($this->sessionKey);
         $this->app->set($this->sessionKey, null);
+
+        // prevent session fixation attacks
+        session_regenerate_id(true);
     }
 }

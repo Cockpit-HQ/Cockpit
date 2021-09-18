@@ -44,6 +44,10 @@ class Auth extends Base {
 
     public function check() {
 
+        if ($this->helper('auth')->getUser()) {
+            return false;
+        }
+
         $auth = $this->param('auth');
 
         if (!$auth || !isset($auth['user'], $auth['password']) || !\is_string($auth['user']) || !\is_string($auth['password'])) {
