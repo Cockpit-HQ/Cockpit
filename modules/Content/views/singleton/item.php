@@ -232,7 +232,7 @@
                 watch: {
                     item: {
                         handler() {
-                            this.isModified = true;
+                            //this.isModified = true;
                         },
                         deep: true
                     }
