@@ -155,8 +155,8 @@ export default {
                 style="min-height: 100px;"
             >
                 <template #item="{ element }">
-                    <div class="kiss-margin-small">
-                        <kiss-card class="kiss-padding-small" theme="bordered contrast" style="margin: 8px 0;">
+                    <div class="kiss-margin-xsmall">
+                        <kiss-card class="kiss-padding-small" theme="bordered shadowed" hover="contrast" style="margin: 8px 0;">
                             <div class="kiss-flex kiss-flex-middle">
                                 <a class="lm-handle kiss-margin-small-right kiss-color-muted"><icon>drag_handle</icon></a>
                                 <div class="kiss-flex-1 kiss-size-xsmall kiss-text-bold" :class="{'kiss-color-muted': !element.title}">
