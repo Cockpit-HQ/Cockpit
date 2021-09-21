@@ -36,15 +36,15 @@ vue-view:not([init="true"]) { display: none; }
 }
 
 html[data-theme='light'] {
-    --kiss-base-background-color: #eff7f7;
+    --kiss-base-background-color: #f6f8fa;
     --kiss-base-text-color: #121212;
     --kiss-hr-color: rgba(0,0,0,.1);
     --kiss-link-hover-color: #1994ff;
     --kiss-button-default-background: #e0dee6;
     --kiss-button-default-color: #000;
     --kiss-color-alternate: #fff;
-    --kiss-color-contrast: #e8ebef;
-    --kiss-color-primary: #0e8fff;
+    --kiss-color-contrast: #fafcfe;
+    --kiss-color-primary: #8932ff;
     --kiss-color-success: #4caf50;
     --kiss-color-warning: orange;
     --kiss-color-danger: #f91941;
