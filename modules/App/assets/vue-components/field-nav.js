@@ -40,7 +40,7 @@ let editItem = {
     template: /*html*/`
         <div>
 
-            <div class="kiss-size-4 kiss-text-bold kiss-margin-bottom">{{ t('Edit nav item') }}</div>
+            <div class="kiss-size-4 kiss-text-bold kiss-margin-bottom">{{ t('Edit item') }}</div>
 
             <app-tabs class="kiss-margin-large">
 
