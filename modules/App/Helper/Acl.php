@@ -39,7 +39,7 @@ class Acl extends \Lime\Helper {
             return true;
         }
 
-        return isset($this->roles[$role][$permission]) && $this->roles[$role][$permission];
+        return isset($this->roles[$role]['permissions'][$permission]) && $this->roles[$role]['permissions'][$permission];
     }
 
     public function isSuperAdmin($role = null) {
