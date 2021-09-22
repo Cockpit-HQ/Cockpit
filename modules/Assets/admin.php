@@ -11,11 +11,9 @@ $this->helper('menus')->addLink('modules', [
     'prio'   => 1
 ]);
 
-
 // events
 $this->on('app.layout.assets', function(array &$assets) {
     $assets[] = ['src' => 'assets:assets/js/assets.js', 'type' => 'module'];
-    ?><script> window.ASSETS_BASE_URL = '<?=rtrim($this->fileStorage->getURL('uploads://'), '/') ?>'; </script><?php
 });
 
 $this->on('app.permissions.collect', function($permissions) {

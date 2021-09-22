@@ -27,7 +27,6 @@ export default {
 
     data() {
         return {
-            ASSETS_BASE_URL: window.ASSETS_BASE_URL,
             assets: [],
             selected: [],
             selectedAsset: null,
@@ -140,7 +139,7 @@ export default {
                             <div class="kiss-cover kiss-padding kiss-flex kiss-flex-middle kiss-flex-center">
                                 <div><asset-preview :asset="asset"></asset-preview></div>
                             </div>
-                            <a class="kiss-cover spotlight" :href="ASSETS_BASE_URL+asset.path" :data-media="asset.type" :data-title="asset.title" v-if="['image', 'video'].indexOf(asset.type) > -1"></a>
+                            <a class="kiss-cover spotlight" :href="$base('#uploads:'+asset.path)" :data-media="asset.type" :data-title="asset.title" v-if="['image', 'video'].indexOf(asset.type) > -1"></a>
                             <a class="kiss-cover" @click="selectedAsset=asset" v-if="modal"></a>
                         </div>
                         <div class="kiss-padding kiss-flex kiss-flex-middle">
@@ -215,7 +214,7 @@ export default {
                                 </a>
                             </li>
                             <li>
-                                <a class="kiss-flex kiss-flex-middle" :href="actionAsset && ASSETS_BASE_URL+actionAsset.path" target="_blank" rel="noopener" download>
+                                <a class="kiss-flex kiss-flex-middle" :href="actionAsset && $base('#uploads:'+actionAsset.path)" target="_blank" rel="noopener" download>
                                     <icon class="kiss-margin-small-right" size="larger">cloud_download</icon>
                                     {{ t('Download') }}
                                 </a>

@@ -19,7 +19,6 @@ export default {
 
     data() {
         return {
-            ASSETS_BASE_URL: window.ASSETS_BASE_URL,
             val: this.modelValue,
         }
     },
@@ -55,7 +54,7 @@ export default {
                 <div class="kiss-bgcolor-contrast kiss-position-relative kiss-padding" :class="{'kiss-bgcolor-transparentimage': val.type == 'image'}">
                     <canvas width="400" height="150"></canvas>
                     <div class="kiss-cover kiss-align-center kiss-flex kiss-flex-middle kiss-flex-center"><asset-preview :asset="val"></asset-preview></div>
-                    <a class="kiss-cover" :href="ASSETS_BASE_URL+val.path" target="_blank" rel="noopener"></a>
+                    <a class="kiss-cover" :href="$base('#uploads:'+val.path)" target="_blank" rel="noopener"></a>
                 </div>
                 <div class="kiss-margin-small kiss-flex kiss-flex-middle">
                     <div class="kiss-text-truncate kiss-size-xsmall kiss-flex-1">{{ val.title }}</div>

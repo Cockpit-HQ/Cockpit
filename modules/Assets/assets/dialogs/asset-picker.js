@@ -4,7 +4,7 @@ export default {
 
     data() {
         return {
-            ASSETS_BASE_URL: window.ASSETS_BASE_URL,
+
         }
     },
 

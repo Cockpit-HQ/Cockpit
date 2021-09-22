@@ -3,7 +3,6 @@ export default {
     data() {
 
         return {
-            ASSETS_BASE_URL: window.ASSETS_BASE_URL,
             item: null,
             loading: true,
             focalPointing: false
@@ -68,7 +67,7 @@ export default {
                         <div class="kiss-cover kiss-padding-small" v-if="!focalPointing">
                             <span class="kiss-badge">{{ item.mime }}</span>
                         </div>
-                        <a class="kiss-cover" :href="ASSETS_BASE_URL+item.path" target="_blank" rel="noopener" v-if="!focalPointing"></a>
+                        <a class="kiss-cover" :href="$base('#uploads:'+item.path)" target="_blank" rel="noopener" v-if="!focalPointing"></a>
                         <div class="kiss-cover kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center" v-if="focalPointing">
                             <div class="kiss-display-inline-block kiss-position-relative" style="height:100%;" @click="setFocalPoint">
                                 <canvas class="kiss-responsive-height" :width="asset.width" :height="asset.height"></canvas>
