@@ -27,13 +27,27 @@
 
     <script type="module">
 
-        let paths = {};
+        <?php
 
-        <?php foreach($this['modules'] as $name => $module): ?>
-            paths['<?=$name?>'] = '<?=$this->base("{$name}:")?>';
-        <?php endforeach ?>
+        $paths = [
+            '#config' => $this->baseUrl("#config:"),
+            '#uploads' => $this->fileStorage->getURL('uploads://'),
+        ];
 
-        App._paths = paths;
+        foreach($this['modules'] as $name => $module) {
+            $paths[$name] = $this->baseUrl("{$name}:");
+        }
+
+        $locales = [];
+
+        foreach ($this->helper('locales')->locales(true) as $i18n => $loc) {
+            $locales[$i18n] = $loc['name'] ? $loc['name']  : $i18n;
+        }
+        ?>
+
+        App._paths = <?=json_encode($paths)?>;
+        App._locales = <?=json_encode($locales)?>;
+
     </script>
 
 </body>

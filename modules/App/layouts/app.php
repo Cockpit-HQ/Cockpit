@@ -198,7 +198,10 @@
 
         <?php
 
-            $paths = [];
+            $paths = [
+                '#config' => $this->baseUrl("#config:"),
+                '#uploads' => $this->fileStorage->getURL('uploads://'),
+            ];
 
             foreach($this['modules'] as $name => $module) {
                 $paths[$name] = $this->baseUrl("{$name}:");
