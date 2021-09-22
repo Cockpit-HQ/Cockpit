@@ -82,9 +82,9 @@ set_exception_handler(function($exception) use($app) {
     ];
 
     if ($app['debug']) {
-        $body = $app->request->is('ajax') || APP_API_REQUEST ? json_encode(['error' => $error['message'], 'file' => $error['file'], 'line' => $error['line']]) : $app->render('app:views/errors/500-debug.php', ['error' => $error]);
+        $body = (isset($app->request) && $app->request->is('ajax')) || APP_API_REQUEST ? json_encode(['error' => $error['message'], 'file' => $error['file'], 'line' => $error['line']]) : $app->render('app:views/errors/500-debug.php', ['error' => $error]);
     } else {
-        $body = $app->request->is('ajax') || APP_API_REQUEST ? '{"error": "500", "message": "system error"}' : $app->render('app:views/errors/500.php');
+        $body = (isset($app->request) && $app->request->is('ajax')) || APP_API_REQUEST ? '{"error": "500", "message": "system error"}' : $app->render('app:views/errors/500.php');
     }
 
     $app->trigger('error', [$error, $exception]);
