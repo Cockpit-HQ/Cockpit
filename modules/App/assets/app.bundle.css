@@ -3007,6 +3007,11 @@ kiss-tooltip[show="true"] {
     padding-bottom: var(--kiss-form-padding-vertical, 4px);
     vertical-align: top;
 }
+.kiss-input[seamless="true"] {
+    background: none !important;
+    border: none !important;
+    color: inherit;
+}
 /* Focus */
 .kiss-input:focus,
 .kiss-select:focus,
@@ -3881,6 +3886,9 @@ kiss-popoutmenu kiss-navlist > ul > li > a > icon {
 .kiss-input:focus {
     background: var(--kiss-input-background-active, rgba(255,255,255,.15));
     border-color: var(--kiss-input-border-color-active, var(--kiss-color-primary));
+}
+.kiss-input[seamless="true"]:focus {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.12);
 }
 .kiss-input::placeholder {
     color: var(--kiss-input-placeholder-color, rgba(255,255,255,.2));

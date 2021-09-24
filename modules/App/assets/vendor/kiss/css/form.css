@@ -73,6 +73,12 @@
     vertical-align: top;
 }
 
+.kiss-input[seamless="true"] {
+    background: none !important;
+    border: none !important;
+    color: inherit;
+}
+
 /* Focus */
 .kiss-input:focus,
 .kiss-select:focus,
