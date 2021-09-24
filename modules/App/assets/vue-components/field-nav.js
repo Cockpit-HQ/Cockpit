@@ -134,6 +134,10 @@ export default {
     },
 
     watch: {
+        val: {
+            handler() { this.update() },
+            deep: true
+        },
         modelValue() {
             this.val = this.modelValue || [];
             this.update();

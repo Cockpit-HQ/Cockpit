@@ -2276,7 +2276,7 @@
 
       base: function (url) {
 
-          let path = url.match(/^(\w+)\:/);
+          let path = url.match(/^(.*?)\:/);
 
           if (path && this._paths[path[1]]) {
               return url.replace(path[0], this._paths[path[1]]);
