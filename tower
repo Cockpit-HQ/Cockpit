@@ -10,6 +10,6 @@ use Symfony\Component\Console\Application;
 $app = APP::instance();
 $cli = new Application("Tower - {$app['app.name']}", $app['app.version']);
 
-// ... register commands
+$app->trigger('cli.bootstrap', [$cli]);
 
 $cli->run();
