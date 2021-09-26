@@ -127,7 +127,7 @@ class_exists(InstalledVersions::class);
             }
         } else {
             $rawData = InstalledVersions::getRawData();
-            if ($rawData === []) {
+            if ($rawData === null || $rawData === []) {
                 return false;
             }
         }

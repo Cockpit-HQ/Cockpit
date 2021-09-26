@@ -1,0 +1,15 @@
+#!/usr/bin/env php
+<?php
+
+define('APP_CLI', true);
+
+require __DIR__.'/bootstrap.php';
+
+use Symfony\Component\Console\Application;
+
+$app = APP::instance();
+$cli = new Application("Tower - {$app['app.name']}", $app['app.version']);
+
+// ... register commands
+
+$cli->run();
