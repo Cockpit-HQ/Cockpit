@@ -17,6 +17,11 @@ export default {
             {name: 'list', type: 'text', multiple: true},
         ],
         render(value, field, context) {
+
+            if (typeof(value) === 'object') {
+                value = JSON.stringify(value);
+            }
+
             return App.utils.truncate(value, context == 'table-cell' ? 20 : 50);
         }
     },

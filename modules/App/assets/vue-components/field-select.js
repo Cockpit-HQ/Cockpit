@@ -42,9 +42,10 @@ export default {
     },
 
     computed: {
+
         list() {
 
-            let list = [];
+            let list = [], groups = {'': []};
 
             if (typeof(this.options) === 'string' || Array.isArray(this.options)) {
 
@@ -59,19 +60,22 @@ export default {
                     list.push(option)
                 });
 
-            } else if (typeof(this.options) === 'object') {
-
-                Object.keys(opts.options).forEach(function(key) {
-
-                    list.push({
-                        value: key,
-                        label: this.options[key].label || this.options[key],
-                        group: this.options[key].group || ''
-                    })
-                })
             }
 
-            return list;
+            list.forEach(item => {
+
+                if (!groups[item.group]) {
+                    groups[item.group] = [];
+                }
+
+                groups[item.group].push(item);
+            });
+
+            if (!groups[''].length) {
+                delete groups[''];
+            }
+
+            return groups;
         }
     },
 
@@ -79,15 +83,22 @@ export default {
         <div field="select">
             <select class="kiss-input kiss-width-1-1" v-model="val" @change="update" v-if="!multiple">
                 <option :value="null"></option>
-                <option v-for="option in list" :value="option.value">{{ option.label }}</option>
+                <optgroup :label="group || 'Options'" v-for="(lst,group) in list">
+                    <option v-for="option in lst" :value="option.value">{{ option.label }}</option>
+                </optgroup>
             </select>
 
             <div v-if="multiple">
 
-                <div class="kiss-flex kiss-flex-middle kiss-position-relative" :class="{'kiss-color-muted': !selected(option.value)}" v-for="option in list">
-                    <div class="kiss-size-4"><icon>{{ selected(option.value) ? 'radio_button_checked' : 'radio_button_unchecked' }}</icon></div>
-                    <div class="kiss-size-small kiss-margin-small-left">{{ option.label }}</div>
-                    <a class="kiss-cover" @click="select(option.value)"></a>
+                <div class="kiss-margin-small" v-for="(lst,group) in list">
+
+                    <div class="kiss-text-bold kiss-margin-xsmall kiss-size-xsmall" v-if="group">{{ group }}</div>
+
+                    <div class="kiss-flex kiss-flex-middle kiss-position-relative" :class="{'kiss-color-muted': !selected(option.value)}" v-for="option in lst">
+                        <div class="kiss-size-4"><icon>{{ selected(option.value) ? 'radio_button_checked' : 'radio_button_unchecked' }}</icon></div>
+                        <div class="kiss-size-small kiss-margin-small-left">{{ option.label }}</div>
+                        <a class="kiss-cover" @click="select(option.value)"></a>
+                    </div>
                 </div>
 
             </div>
