@@ -28,6 +28,8 @@
     --kiss-input-border-color: rgba(255,255,255,.1);
     --kiss-input-background: rgba(255,255,255,.05);
 
+    --kiss-badge-bgcolor: var(--kiss-color-primary);
+
     --kiss-button-primary-background: var(--kiss-color-primary);
     --kiss-button-large-padding-horizontal: 5em;
     --kiss-button-large-font-size: 5em;
