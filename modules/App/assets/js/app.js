@@ -3,6 +3,7 @@ import "../vendor/vue/vue-router.js";
 import "../vendor/kiss/lib.js"
 import "../vendor/storage.js";
 import "../vendor/i18n.js";
+import "../vendor/dompurify.js";
 import utils from "./app/utils.js";
 import ui from "./app/ui.js";
 import assets from "./app/assets.js";
