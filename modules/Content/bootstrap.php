@@ -283,7 +283,7 @@ $this->module('content')->extend([
                 $item = $this->getDefaultModelItem($modelName);
             }
 
-            unset($item['_model']);
+            $item['_model'] = $modelName;
 
         } elseif ($model['type'] == 'collection') {
 
