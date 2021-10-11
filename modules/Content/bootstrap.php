@@ -283,7 +283,7 @@ $this->module('content')->extend([
                 $item = $this->getDefaultModelItem($modelName);
             }
 
-            $item['_model'] = $modelName;
+            unset($item['_model']);
 
         } elseif ($model['type'] == 'collection') {
 
@@ -380,7 +380,7 @@ $this->module('content')->extend([
             return $array;
         }
 
-        foreach ($array as $k => &$v) {
+        foreach ($array as $k => $v) {
 
             if (!is_array($v)) {
                 continue;
@@ -391,9 +391,13 @@ $this->module('content')->extend([
             }
 
             if ($level > 0 && isset($v['_id'], $v['_model'])) {
+
                 $model = $v['_model'];
                 $array[$k] = $this->_resolveContentRef($v['_model'], (string)$v['_id'], $process);
-                $array[$k]['_model'] = $model;
+
+                if ($array[$k]) {
+                    $array[$k]['_model'] = $model;
+                }
             }
         }
 
