@@ -213,6 +213,13 @@ export default {
                                     {{ t('Edit') }}
                                 </a>
                             </li>
+                            <li class="kiss-nav-divider"></li>
+                            <li>
+                                <a class="kiss-flex kiss-flex-middle" @click="copyAssetLinkID(actionAsset)">
+                                    <icon class="kiss-margin-small-right" size="larger">share</icon>
+                                    {{ t('Copy asset link') }}
+                                </a>
+                            </li>
                             <li>
                                 <a class="kiss-flex kiss-flex-middle" :href="actionAsset && $base('#uploads:'+actionAsset.path)" target="_blank" rel="noopener" download>
                                     <icon class="kiss-margin-small-right" size="larger">cloud_download</icon>
@@ -452,7 +459,11 @@ export default {
             }
 
             this.load(1);
-        }
+        },
+
+        copyAssetLinkID(asset) {
+            App.utils.copyText(location.origin + App.base(`/assets/link/${asset._id}`), () =>  App.ui.notify('Asset link copied!'));
+        },
     }
 
 }

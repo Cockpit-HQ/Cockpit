@@ -1,6 +1,24 @@
 <?php
 
 // Register routes
+
+$this->bind('/assets/link/:id', function($params) {
+
+    if (!$params['id']) {
+        return false;
+    }
+
+    $asset = $this->dataStorage->findOne('assets', ['_id' => $params['id']]);
+    $path = trim($asset['path'] ?? '', '/');
+
+    if (!$asset || !$this->fileStorage->fileExists("uploads://{$path}")) {
+        return false;
+    }
+
+    $url = $this->fileStorage->getURL("uploads://{$path}");
+    $this->reroute($url);
+});
+
 $this->bindClass('Assets\\Controller\\Assets', '/assets');
 
 $this->helper('menus')->addLink('modules', [

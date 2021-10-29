@@ -103,7 +103,10 @@ export default {
 
                     <div class="kiss-flex kiss-flex-middle">
                         <div class="kiss-size-4 kiss-margin-small-right kiss-flex" title="ID"><icon>adjust</icon></div>
-                        <div class="kiss-text-truncate kiss-text-bold kiss-text-monospace kiss-size-small kiss-flex-1">{{ item._id }}</div>
+                        <div class="kiss-text-truncate kiss-text-bold kiss-text-monospace kiss-size-small kiss-flex-1">
+                            {{ item._id }}
+                            </div>
+                        <a class="kiss-margin-xsmall-right" :title="t('Copy asset link')" @click="copyAssetLinkID()"><icon>share</icon></a>
                         <a :title="t('Copy')" @click="copyID()"><icon>copy</icon></a>
                     </div>
 
@@ -132,6 +135,10 @@ export default {
 
         copyID() {
             App.utils.copyText(this.item._id, () =>  App.ui.notify('ID copied!'));
+        },
+
+        copyAssetLinkID() {
+            App.utils.copyText(location.origin + App.base(`/assets/link/${this.item._id}`), () =>  App.ui.notify('Asset link copied!'));
         },
 
         copyColor(color) {
