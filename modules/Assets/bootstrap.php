@@ -95,7 +95,7 @@ $this->module('assets')->extend([
 
         if (count($_files)) {
 
-            $assets = $this->add($_files, $meta);
+            $assets = $this->add($_files, $meta, isset($meta['_id']));
 
             foreach ($_files as $file) {
                 unlink($file);

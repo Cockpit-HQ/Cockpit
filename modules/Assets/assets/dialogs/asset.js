@@ -23,6 +23,13 @@ export default {
 
         this.loading = true;
 
+        App.assets.require([
+            'assets:assets/vendor/uppy/uppy.js',
+            'assets:assets/css/uppy.css',
+        ]).then(() => {
+            this.uppy = true;
+        })
+
         this.$request(`/assets/asset/${this.asset._id}`, {asset:this.asset}).then(asset => {
             this.item = asset;
             this.loading = false;
@@ -76,8 +83,9 @@ export default {
                                 </div>
                             </div>
                         </div>
-                        <div class="kiss-position-absolute kiss-position-bottom-right kiss-padding-small" v-if="item.type == 'image'">
-                            <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-bgcolor-warning': focalPointing}" :title="t('Set focal point')" @click="focalPointing = !focalPointing"><icon>gps_fixed</icon></button>
+                        <div class="kiss-position-absolute kiss-position-bottom-right kiss-padding-small">
+                            <button type="button" class="kiss-button kiss-button-small" @click="uploadAsset" v-if="!focalPointing"><icon>upload</icon></button>
+                            <button type="button" class="kiss-button kiss-button-small kiss-margin-xsmall-left" :class="{'kiss-bgcolor-warning': focalPointing}" :title="t('Set focal point')" @click="focalPointing = !focalPointing" v-if="item.type == 'image'"><icon>gps_fixed</icon></button>
                         </div>
                     </div>
 
@@ -155,6 +163,39 @@ export default {
                 x: (e.offsetX / e.target.offsetWidth),
                 y: (e.offsetY / e.target.offsetHeight)
             };
+        },
+
+        uploadAsset() {
+
+            if (!window.Uppy) return;
+
+            this.uppy = new Uppy.Core({
+                meta: {
+                    assetId: this.item._id
+                },
+                autoProceed: false,
+                restrictions: {
+                    //maxFileSize: 1000000,
+                    maxNumberOfFiles: 1,
+                    minNumberOfFiles: 1,
+                }
+            }).use(Uppy.Dashboard, {
+                showProgressDetails: true,
+                height: 450,
+                browserBackButtonClose: false
+            }).use(Uppy.XHRUpload, {
+                endpoint: App.route('/assets/replace')
+            }).use(Uppy.Webcam, { target: Uppy.Dashboard, showVideoSourceDropdown: true })
+            .use(Uppy.ScreenCapture, { target: Uppy.Dashboard })
+            .use(Uppy.ImageEditor, { target: Uppy.Dashboard });
+
+            this.uppy.on('complete', result => {
+                Object.assign(this.item, result.successful[0].response.body)
+                this.$call('update', this.item);
+                App.ui.notify('Asset file updated!');
+            });
+
+            this.uppy.getPlugin('Dashboard').openModal();
         },
 
         update() {

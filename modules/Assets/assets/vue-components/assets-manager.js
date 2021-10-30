@@ -68,19 +68,13 @@ export default {
 
         App.assets.require([
             'assets:assets/vendor/uppy/uppy.js',
-            'assets:assets/vendor/uppy/uppy.css',
+            'assets:assets/css/uppy.css',
 
             'assets:assets/vendor/spotlight/spotlight.bundle.js',
             'assets:assets/vendor/spotlight/css/spotlight.min.css',
         ]).then(() => {
-
-            App.assets.require([
-                'assets:assets/css/uppy.css',
-            ]);
-
             this.uppy = true;
-
-        }, 1000)
+        })
     },
 
     watch: {
@@ -306,7 +300,7 @@ export default {
                 this.load();
             })
 
-            this.uppy.getPlugin('Dashboard').openModal()
+            this.uppy.getPlugin('Dashboard').openModal();
         },
 
         load(page = 1) {

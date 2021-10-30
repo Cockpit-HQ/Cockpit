@@ -127,6 +127,31 @@ class Assets extends App {
         return $this->module('assets')->upload('files', $meta);
     }
 
+    public function replace() {
+
+        \session_write_close();
+
+        if (!$this->param('assetId')) {
+            return false;
+        }
+
+        $asset = $this->app->dataStorage->findOne('assets', ['_id' => $this->param('assetId')]);
+
+        if (!$asset) {
+            return false;
+        }
+
+        $result = $this->module('assets')->upload('files', [
+            '_id' => $asset['_id'],
+            'title' => $asset['title'],
+            'description' => $asset['description'],
+            'tags' => $asset['tags'],
+            '_created' => $asset['_created'],
+        ]);
+
+        return $result['assets'][0] ?? false;
+    }
+
     public function remove() {
 
         \session_write_close();
