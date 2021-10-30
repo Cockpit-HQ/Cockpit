@@ -149,6 +149,11 @@ class Assets extends App {
             '_created' => $asset['_created'],
         ]);
 
+        // remove old asset file
+        if (isset($result['assets'][0]) && $this->app->fileStorage->fileExists('uploads://'.trim($asset['path'], '/'))) {
+            $this->app->fileStorage->delete('uploads://'.trim($asset['path'], '/'));
+        }
+
         return $result['assets'][0] ?? false;
     }
 
