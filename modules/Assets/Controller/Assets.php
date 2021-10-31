@@ -131,6 +131,10 @@ class Assets extends App {
 
         \session_write_close();
 
+        if (!$this->isAllowed('assets/upload')) {
+            $this->stop(['error' => 'Upload not allowed'], 401);
+        }
+
         if (!$this->param('assetId')) {
             return false;
         }
