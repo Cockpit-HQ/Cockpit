@@ -75,15 +75,20 @@ export default {
     `,
 
     mounted() {
+
         this.code = this.$el.querySelector('.field-object-code');
 
-        let val = this.modelValue;
+        try {
 
-        if (this.asString && typeof(val) == 'string') {
-            val = JSON5.parse(val);
-        }
+            let val = this.modelValue;
 
-        this.val = JSON5.stringify(val, null, 2);
+            if (this.asString && typeof(val) == 'string') {
+                val = JSON5.parse(val);
+            }
+
+            this.val = JSON5.stringify(val, null, 2);
+
+        } catch (e) {}
     },
 
     methods: {
@@ -91,10 +96,18 @@ export default {
 
             this.error = null
 
+            if (!this.val) {
+                this.$emit('update:modelValue', null);
+                return;
+            }
+
             try {
-                let val = this.val ? JSON5.parse(this.val) : null;
-                this.$emit('update:modelValue', this.asString ? JSON5.stringify(val) : val);
-            } catch(e) {
+
+                let val = JSON5.parse(this.val);
+
+                this.$emit('update:modelValue', this.asString ? this.val : val);
+
+            } catch (e) {
                 this.error = `${e.lineNumber}: ${e.message}`;
             }
         }
