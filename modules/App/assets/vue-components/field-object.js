@@ -29,6 +29,10 @@ export default {
             type: Number,
             default: 14
         },
+        asString: {
+            type: Boolean,
+            default: false
+        },
         codemirror: {
             type: Object,
             default: {}
@@ -46,8 +50,14 @@ export default {
         },
         modelValue: {
             handler(val) {
+
                 if (this.code.editor && !this.code.editor.hasFocus()) {
-                    this.val = JSON5.stringify(this.modelValue, null, 2);
+
+                    if (this.asString && typeof(val) == 'string') {
+                        this.val = val;
+                    } else {
+                        this.val = JSON5.stringify(val, null, 2);
+                    }
                 }
             },
             deep: true
@@ -66,7 +76,14 @@ export default {
 
     mounted() {
         this.code = this.$el.querySelector('.field-object-code');
-        this.val = JSON5.stringify(this.modelValue, null, 2);
+
+        let val = this.modelValue;
+
+        if (this.asString && typeof(val) == 'string') {
+            val = JSON5.parse(val);
+        }
+
+        this.val = JSON5.stringify(val, null, 2);
     },
 
     methods: {
@@ -75,7 +92,8 @@ export default {
             this.error = null
 
             try {
-                this.$emit('update:modelValue', this.val ? JSON5.parse(this.val) : null)
+                let val = this.val ? JSON5.parse(this.val) : null;
+                this.$emit('update:modelValue', this.asString ? JSON5.stringify(val) : val);
             } catch(e) {
                 this.error = `${e.lineNumber}: ${e.message}`;
             }
