@@ -4,6 +4,15 @@ let FieldRenderer = {
 
     data() {
 
+        if (this.modelValue === null) {
+
+            if (this.locale) {
+                this.$emit('update:modelValue', this.field.opts && this.field.opts[`default_${this.locale}`] ? this.field.opts[`default_${this.locale}`] : null);
+            } else {
+                this.$emit('update:modelValue', this.field.opts && this.field.opts.default ? this.field.opts.default : null);
+            }
+        }
+
         return {
             val: this.modelValue,
             fieldItem: null,
@@ -16,6 +25,9 @@ let FieldRenderer = {
             default: null
         },
         field: {
+            default: null
+        },
+        locale: {
             default: null
         }
     },
@@ -327,7 +339,7 @@ export default {
                                 </kiss-dropdownbox>
                             </kiss-dropdown>
                         </div>
-                        <field-renderer :field="field" v-model="val[field.name+(locale.i18n == 'default' ? '': '_'+locale.i18n)]"></field-renderer>
+                        <field-renderer :field="field" :locale="locale.i18n" v-model="val[field.name+(locale.i18n == 'default' ? '': '_'+locale.i18n)]"></field-renderer>
                     </div>
                 </div>
 
@@ -341,7 +353,7 @@ export default {
 
             val[field.name] = (field.opts && field.opts.default !== undefined && field.opts.default) || null;
 
-            if (field.i18n  && this.locales.length) {
+            if (field.i18n && this.locales.length) {
 
                 this.locales.forEach(l => {
                     val[`${field.name}_${l.i18n}`] = ((field.opts && field.opts[`default_${l.i18n}`]) || null)
