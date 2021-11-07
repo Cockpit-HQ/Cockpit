@@ -64,7 +64,6 @@ functions:
            PROJECT_DIRECTORY: "$PROJECT_DIRECTORY"
            PREPARE_SHELL: |
               set -o errexit
-              set -o xtrace
               export DRIVERS_TOOLS="$DRIVERS_TOOLS"
               export MONGO_ORCHESTRATION_HOME="$MONGO_ORCHESTRATION_HOME"
               export MONGODB_BINARIES="$MONGODB_BINARIES"
@@ -164,7 +163,9 @@ functions:
   "upload test results":
     - command: attach.xunit_results
       params:
-        file: "${PROJECT_DIRECTORY}/test-results.xml"
+        # Uploading test results does not work when using ${PROJECT_DIRECTORY},
+        # so we use an absolute path to work around this
+        file: "src/test-results.xml"
     - command: attach.results
       params:
         file_location: "${DRIVERS_TOOLS}/results.json"
@@ -174,7 +175,7 @@ functions:
       params:
         script: |
           ${PREPARE_SHELL}
-          MONGODB_VERSION=${VERSION} ORCHESTRATION_FILE=${ORCHESTRATION_FILE} TOPOLOGY=${TOPOLOGY} AUTH=${AUTH} SSL=${SSL} STORAGE_ENGINE=${STORAGE_ENGINE} sh ${PROJECT_DIRECTORY}/.evergreen/run-orchestration.sh
+          MONGODB_VERSION=${VERSION} ORCHESTRATION_FILE=${ORCHESTRATION_FILE} TOPOLOGY=${TOPOLOGY} AUTH=${AUTH} SSL=${SSL} STORAGE_ENGINE=${STORAGE_ENGINE} REQUIRE_API_VERSION=${REQUIRE_API_VERSION} sh ${DRIVERS_TOOLS}/.evergreen/run-orchestration.sh
     # run-orchestration generates expansion file with the MONGODB_URI for the cluster
     - command: expansions.update
       params:
@@ -198,6 +199,38 @@ functions:
         script: |
           DRIVERS_TOOLS="${DRIVERS_TOOLS}" sh ${DRIVERS_TOOLS}/.evergreen/atlas_data_lake/run-mongohouse-local.sh
 
+  "create serverless instance":
+    - command: shell.exec
+      params:
+        working_dir: "src"
+        shell: bash
+        script: |-
+          ${PREPARE_SHELL}
+          export PROJECT=${PROJECT}
+          export SERVERLESS_DRIVERS_GROUP=${SERVERLESS_DRIVERS_GROUP}
+          export SERVERLESS_API_PUBLIC_KEY=${SERVERLESS_API_PUBLIC_KEY}
+          export SERVERLESS_API_PRIVATE_KEY=${SERVERLESS_API_PRIVATE_KEY}
+          export SERVERLESS_ATLAS_USER=${SERVERLESS_ATLAS_USER}
+          export SERVERLESS_ATLAS_PASSWORD=${SERVERLESS_ATLAS_PASSWORD}
+          sh ${PROJECT_DIRECTORY}/.evergreen/serverless/create-instance.sh
+    - command: expansions.update
+      params:
+        file: src/serverless-expansion.yml
+
+  "delete serverless instance":
+    - command: shell.exec
+      params:
+        shell: bash
+        script: |-
+          set -o errexit
+          export SERVERLESS_DRIVERS_GROUP=${SERVERLESS_DRIVERS_GROUP}
+          export SERVERLESS_API_PUBLIC_KEY=${SERVERLESS_API_PUBLIC_KEY}
+          export SERVERLESS_API_PRIVATE_KEY=${SERVERLESS_API_PRIVATE_KEY}
+          export SERVERLESS_ATLAS_USER=${SERVERLESS_ATLAS_USER}
+          export SERVERLESS_ATLAS_PASSWORD=${SERVERLESS_ATLAS_PASSWORD}
+          export SERVERLESS_INSTANCE_NAME=${SERVERLESS_INSTANCE_NAME}
+          sh ${PROJECT_DIRECTORY}/.evergreen/serverless/delete-instance.sh
+
   "run tests":
     - command: shell.exec
       type: test
@@ -205,7 +238,15 @@ functions:
         working_dir: "src"
         script: |
           ${PREPARE_SHELL}
-          PHP_VERSION=${PHP_VERSION} AUTH=${AUTH} SSL=${SSL} MONGODB_URI="${MONGODB_URI}" sh ${PROJECT_DIRECTORY}/.evergreen/run-tests.sh
+          export AWS_ACCESS_KEY_ID="${client_side_encryption_aws_access_key_id}"
+          export AWS_SECRET_ACCESS_KEY="${client_side_encryption_aws_secret_access_key}"
+          export AZURE_TENANT_ID="${client_side_encryption_azure_tenant_id}"
+          export AZURE_CLIENT_ID="${client_side_encryption_azure_client_id}"
+          export AZURE_CLIENT_SECRET="${client_side_encryption_azure_client_secret}"
+          export GCP_EMAIL="${client_side_encryption_gcp_email}"
+          export GCP_PRIVATEKEY="${client_side_encryption_gcp_privatekey}"
+          export PATH="${PHP_PATH}/bin:$PATH"
+          MOCK_SERVICE_ID=${MOCK_SERVICE_ID} API_VERSION=${API_VERSION} PHP_VERSION=${PHP_VERSION} AUTH=${AUTH} SSL=${SSL} MONGODB_URI="${MONGODB_URI}" sh ${PROJECT_DIRECTORY}/.evergreen/run-tests.sh
 
   "run atlas data lake test":
      - command: shell.exec
@@ -214,7 +255,22 @@ functions:
          working_dir: "src"
          script: |
            ${PREPARE_SHELL}
+           export PATH="${PHP_PATH}/bin:$PATH"
            PHP_VERSION=${PHP_VERSION} TESTS="atlas-data-lake" AUTH=${AUTH} SSL=${SSL} MONGODB_URI="${MONGODB_URI}" sh ${PROJECT_DIRECTORY}/.evergreen/run-tests.sh
+
+  "run serverless tests":
+    - command: shell.exec
+      type: test
+      params:
+        working_dir: "src"
+        shell: bash
+        script: |-
+          ${PREPARE_SHELL}
+          export MONGODB_IS_SERVERLESS=on
+          export MONGODB_USERNAME=${SERVERLESS_ATLAS_USER}
+          export MONGODB_PASSWORD=${SERVERLESS_ATLAS_PASSWORD}
+          export PATH="${PHP_PATH}/bin:$PATH"
+          PHP_VERSION=${PHP_VERSION} TESTS="serverless" MONGODB_URI="${MONGODB_URI}" sh ${PROJECT_DIRECTORY}/.evergreen/run-tests.sh
 
   "cleanup":
     - command: shell.exec
@@ -261,7 +317,29 @@ functions:
           ${PREPARE_SHELL}
           file="${PROJECT_DIRECTORY}/.evergreen/install-dependencies.sh"
           # Don't use ${file} syntax here because evergreen treats it as an empty expansion.
-          [ -f "$file" ] && PHP_VERSION=${PHP_VERSION} DRIVER_VERSION=${DRIVER_VERSION} DRIVER_REPO=${DRIVER_REPO} DRIVER_BRANCH=${DRIVER_BRANCH} DEPENDENCIES=${DEPENDENCIES} sh $file || echo "$file not available, skipping"
+          [ -f "$file" ] && PHP_VERSION=${PHP_VERSION} EXTENSION_VERSION=${EXTENSION_VERSION} EXTENSION_REPO=${EXTENSION_REPO} EXTENSION_BRANCH=${EXTENSION_BRANCH} DEPENDENCIES=${DEPENDENCIES} sh $file || echo "$file not available, skipping"
+    # install-dependencies generates expansion file with the PHP_PATH for the chosen PHP version
+    - command: expansions.update
+      params:
+        file: src/php-expansion.yml
+
+  "start load balancer":
+    - command: shell.exec
+      params:
+        script: |
+          MONGODB_URI="${MONGODB_URI}" ${DRIVERS_TOOLS}/.evergreen/run-load-balancer.sh start
+    - command: expansions.update
+      params:
+        file: lb-expansion.yml
+
+  "stop load balancer":
+    - command: shell.exec
+      params:
+        script: |
+          # Only run if a load balancer was started
+          if [ -n "${SINGLE_MONGOS_LB_URI}" ]; then
+            ${DRIVERS_TOOLS}/.evergreen/run-load-balancer.sh stop
+          fi
 
 pre:
   - func: "fetch source"
@@ -276,6 +354,7 @@ post:
   # - func: "upload working dir"
   - func: "upload mo artifacts"
   - func: "upload test results"
+  - func: "stop load balancer"
   - func: "stop mongo-orchestration"
   - func: "cleanup"
 
@@ -289,7 +368,6 @@ tasks:
           type: test
           params:
             script: |
-               set -o xtrace
                . ${DRIVERS_TOOLS}/.evergreen/download-mongodb.sh || true
                get_distro || true
                echo $DISTRO
@@ -342,7 +420,54 @@ tasks:
         - func: "bootstrap mongohoused"
         - func: "run atlas data lake test"
 
+    - name: "test-requireApiVersion"
+      tags: ["versioned-api"]
+      commands:
+        - func: "bootstrap mongo-orchestration"
+          vars:
+            TOPOLOGY: "server"
+            AUTH: "auth"
+            REQUIRE_API_VERSION: "yes"
+        - func: "run tests"
+          vars:
+            API_VERSION: "1"
 
+    - name: "test-acceptApiVersion2"
+      tags: ["versioned-api"]
+      commands:
+        - func: "bootstrap mongo-orchestration"
+          vars:
+            TOPOLOGY: "server"
+            ORCHESTRATION_FILE: "versioned-api-testing.json"
+        - func: "run tests"
+          vars:
+            TESTS: "versioned-api"
+
+    - name: "test-serverless"
+      tags: ["serverless"]
+      commands:
+        - func: "create serverless instance"
+          vars:
+            PROJECT: "mongo-php-library"
+        - func: "run serverless tests"
+        - func: "delete serverless instance"
+
+    - name: "test-loadBalanced"
+      tags: ["loadbalanced"]
+      commands:
+        - func: "bootstrap mongo-orchestration"
+          vars:
+            TOPOLOGY: "sharded_cluster"
+            SSL: "yes"
+        - func: "start load balancer"
+        - func: "run tests"
+          vars:
+            # Testing with HAProxy requires service ID mocking
+            MOCK_SERVICE_ID: 1
+            # Note: loadBalanced=true should already be appended to SINGLE_MONGOS_LB_URI
+            MONGODB_URI: "${SINGLE_MONGOS_LB_URI}"
+            SSL: "yes"
+        # Note: "stop load balancer" will be called from "post"
 # }}}
 
 
@@ -366,10 +491,6 @@ axes:
         display_name: "7.1"
         variables:
           PHP_VERSION: "7.1.31"
-      - id: "7.0"
-        display_name: "7.0"
-        variables:
-          PHP_VERSION: "7.0.32"
 
   - id: php-edge-versions
     display_name: PHP Version
@@ -379,9 +500,9 @@ axes:
         variables:
           PHP_VERSION: "7.4.7"
       - id: "oldest-supported"
-        display_name: "7.0"
+        display_name: "7.1"
         variables:
-          PHP_VERSION: "7.0.32"
+          PHP_VERSION: "7.1.31"
 
   - id: versions
     display_name: MongoDB Version
@@ -390,6 +511,10 @@ axes:
         display_name: "latest"
         variables:
            VERSION: "latest"
+      - id: "5.0"
+        display_name: "5.0"
+        variables:
+           VERSION: "5.0"
       - id: "4.4"
         display_name: "4.4"
         variables:
@@ -434,26 +559,23 @@ axes:
   - id: driver-versions
     display_name: Driver Version
     values:
-      - id: "lowest-supported"
-        display_name: "1.8.1"
-        variables:
-          DRIVER_VERSION: "1.8.1"
-      - id: "latest-stable"
-        display_name: "1.9-stable"
-        variables:
-          DRIVER_VERSION: "stable"
-      - id: "1.8-dev"
-        display_name: "1.8-dev"
-        variables:
-          DRIVER_BRANCH: "v1.8"
-      - id: "1.9-dev"
-        display_name: "1.9-dev"
-        variables:
-          DRIVER_BRANCH: "v1.9"
+      # * lowest-supported can be enabled once a 1.10 patch release has been tagged
+#      - id: "lowest-supported"
+#        display_name: "1.10.0"
+#        variables:
+#          EXTENSION_VERSION: "1.10.0"
+#      - id: "latest-stable"
+#        display_name: "Latest Stable (1.10.x)"
+#        variables:
+#          EXTENSION_VERSION: "stable"
+#      - id: "upcoming-stable"
+#        display_name: "1.10-dev"
+#        variables:
+#          EXTENSION_BRANCH: "v1.10"
       - id: "latest-dev"
-        display_name: "1.10-dev (master)"
+        display_name: "1.11-dev (master)"
         variables:
-          DRIVER_BRANCH: "master"
+          EXTENSION_BRANCH: "master"
 
   - id: os-php7
     display_name: OS
@@ -543,7 +665,7 @@ buildvariants:
 # Tests all PHP versions on all operating systems.
 # Only tests against latest MongoDB and ext-mongodb versions
 - matrix_name: "test-php-versions"
-  matrix_spec: {"os-php7": "*", "php-versions": "*", "edge-versions": "latest-stable", "driver-versions": "latest-stable" }
+  matrix_spec: {"os-php7": "*", "php-versions": "*", "edge-versions": "latest-stable", "driver-versions": "latest-dev" }
   exclude_spec:
     # rhel71-power8 fails due to not reaching pecl
     - { "os-php7": "rhel71-power8", "php-versions": "*", edge-versions: "*", "driver-versions": "*" }
@@ -569,7 +691,7 @@ buildvariants:
 # Only tests on Ubuntu 18.04, with latest stable PHP and driver versions
 # Tests against various topologies
 - matrix_name: "test-mongodb-versions"
-  matrix_spec: {"os-php7": "rhel70-test", "php-edge-versions": "latest-stable", "versions": "*", "driver-versions": "latest-stable" }
+  matrix_spec: {"os-php7": "rhel70-test", "php-edge-versions": "latest-stable", "versions": "*", "driver-versions": "latest-dev" }
   display_name: "MongoDB ${versions}, PHP ${php-edge-versions}, ${os-php7}, ext-mongodb ${driver-versions}"
   tasks:
     - name: "test-standalone"
@@ -578,8 +700,9 @@ buildvariants:
 
 # Tests oldest supported version
 # Enables --prefer-lowest for composer to test oldest dependencies against all server versions
+# TODO: driver-versions can be changed back to lowest-supported when that version is enabled in the axis
 - matrix_name: "test-dependencies"
-  matrix_spec: { "dependencies": "lowest", "os-php7": "rhel70-test", "php-edge-versions": "oldest-supported", "versions": "*", "driver-versions": "lowest-supported" }
+  matrix_spec: { "dependencies": "lowest", "os-php7": "rhel70-test", "php-edge-versions": "oldest-supported", "versions": "*", "driver-versions": "latest-dev" }
   display_name: "Dependencies: ${dependencies}, MongoDB ${versions}, PHP ${php-edge-versions}, ${os-php7}, ext-mongodb ${driver-versions}"
   tasks:
     - name: "test-standalone"
@@ -587,8 +710,28 @@ buildvariants:
     - name: "test-sharded_cluster"
 
 - matrix_name: "atlas-data-lake-test"
-  matrix_spec: { "php-edge-versions": "latest-stable" }
+  matrix_spec: { "php-edge-versions": "latest-stable", "driver-versions": "latest-dev" }
   display_name: "Atlas Data Lake test"
   run_on: rhel70
   tasks:
     - name: "test-atlas-data-lake"
+
+- matrix_name: "test-versioned-api"
+  matrix_spec: { "php-edge-versions": "latest-stable", "versions": ["5.0", "latest"], "driver-versions": "latest-dev" }
+  display_name: "Versioned API - ${versions}"
+  run_on: rhel70
+  tasks:
+    - .versioned-api
+
+- matrix_name: "serverless"
+  matrix_spec: { "php-edge-versions": "latest-stable", "driver-versions": "latest-dev" }
+  display_name: "Serverless"
+  run_on: rhel70
+  tasks:
+    - .serverless
+
+- matrix_name: "test-loadBalanced"
+  matrix_spec: { "os-php7": "debian92-test", "php-versions": "7.3", "versions": ["5.0", "latest"], "driver-versions": "latest-dev" }
+  display_name: "Load balanced - ${versions}"
+  tasks:
+    - name: "test-loadBalanced"

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016-2017 MongoDB, Inc.
+ * Copyright 2016-present MongoDB, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ use MongoDB\Model\BSONArray;
 use MongoDB\Model\BSONDocument;
 use MongoDB\Operation\Find;
 use stdClass;
+
 use function array_intersect_key;
 use function fopen;
 use function get_resource_type;
@@ -629,6 +630,7 @@ class Bucket
 
         if (@stream_copy_to_stream($source, $destination) === false) {
             $destinationUri = $this->createPathForFile($this->getRawFileDocumentForStream($destination));
+
             throw StreamException::uploadFailed($filename, $source, $destinationUri);
         }
 

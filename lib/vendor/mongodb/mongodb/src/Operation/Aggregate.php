@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2015-2017 MongoDB, Inc.
+ * Copyright 2015-present MongoDB, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ namespace MongoDB\Operation;
 
 use ArrayIterator;
 use MongoDB\Driver\Command;
+use MongoDB\Driver\Cursor;
 use MongoDB\Driver\Exception\RuntimeException as DriverRuntimeException;
 use MongoDB\Driver\ReadConcern;
 use MongoDB\Driver\ReadPreference;
@@ -30,6 +31,7 @@ use MongoDB\Exception\UnexpectedValueException;
 use MongoDB\Exception\UnsupportedException;
 use stdClass;
 use Traversable;
+
 use function current;
 use function is_array;
 use function is_bool;
@@ -74,6 +76,12 @@ class Aggregate implements Executable, Explainable
     /** @var array */
     private $options;
 
+    /** @var bool */
+    private $isExplain;
+
+    /** @var bool */
+    private $isWrite;
+
     /**
      * Constructs an aggregate command.
      *
@@ -106,6 +114,14 @@ class Aggregate implements Executable, Explainable
      *  * hint (string|document): The index to use. Specify either the index
      *    name as a string or the index key pattern as a document. If specified,
      *    then the query system will only consider plans using the hinted index.
+     *
+     *  * let (document): Map of parameter names and values. Values must be
+     *    constant or closed expressions that do not reference document fields.
+     *    Parameters can then be accessed as variables in an aggregate
+     *    expression context (e.g. "$$var").
+     *
+     *    This is not supported for server versions < 5.0 and will result in an
+     *    exception at execution time if used.
      *
      *  * maxTimeMS (integer): The maximum amount of time to allow the query to
      *    run.
@@ -196,6 +212,10 @@ class Aggregate implements Executable, Explainable
             throw InvalidArgumentException::invalidType('"hint" option', $options['hint'], 'string or array or object');
         }
 
+        if (isset($options['let']) && ! is_array($options['let']) && ! is_object($options['let'])) {
+            throw InvalidArgumentException::invalidType('"let" option', $options['let'], ['array', 'object']);
+        }
+
         if (isset($options['maxAwaitTimeMS']) && ! is_integer($options['maxAwaitTimeMS'])) {
             throw InvalidArgumentException::invalidType('"maxAwaitTimeMS" option', $options['maxAwaitTimeMS'], 'integer');
         }
@@ -240,8 +260,19 @@ class Aggregate implements Executable, Explainable
             unset($options['writeConcern']);
         }
 
-        if (! empty($options['explain'])) {
+        $this->isExplain = ! empty($options['explain']);
+        $this->isWrite = is_last_pipeline_operator_write($pipeline) && ! $this->isExplain;
+
+        // Explain does not use a cursor
+        if ($this->isExplain) {
             $options['useCursor'] = false;
+            unset($options['batchSize']);
+        }
+
+        /* Ignore batchSize for writes, since no documents are returned and a
+         * batchSize of zero could prevent the pipeline from executing. */
+        if ($this->isWrite) {
+            unset($options['batchSize']);
         }
 
         $this->databaseName = (string) $databaseName;
@@ -279,25 +310,20 @@ class Aggregate implements Executable, Explainable
             if (isset($this->options['readConcern'])) {
                 throw UnsupportedException::readConcernNotSupportedInTransaction();
             }
+
             if (isset($this->options['writeConcern'])) {
                 throw UnsupportedException::writeConcernNotSupportedInTransaction();
             }
         }
 
-        $hasExplain = ! empty($this->options['explain']);
-        $hasWriteStage = $this->hasWriteStage();
-
         $command = new Command(
-            $this->createCommandDocument($server, $hasWriteStage),
+            $this->createCommandDocument($server),
             $this->createCommandOptions()
         );
-        $options = $this->createOptions($hasWriteStage, $hasExplain);
 
-        $cursor = $hasWriteStage && ! $hasExplain
-            ? $server->executeReadWriteCommand($this->databaseName, $command, $options)
-            : $server->executeReadCommand($this->databaseName, $command, $options);
+        $cursor = $this->executeCommand($server, $command);
 
-        if ($this->options['useCursor'] || $hasExplain) {
+        if ($this->options['useCursor'] || $this->isExplain) {
             if (isset($this->options['typeMap'])) {
                 $cursor->setTypeMap($this->options['typeMap']);
             }
@@ -318,12 +344,19 @@ class Aggregate implements Executable, Explainable
         return new ArrayIterator($result->result);
     }
 
+    /**
+     * Returns the command document for this operation.
+     *
+     * @see Explainable::getCommandDocument()
+     * @param Server $server
+     * @return array
+     */
     public function getCommandDocument(Server $server)
     {
-        return $this->createCommandDocument($server, $this->hasWriteStage());
+        return $this->createCommandDocument($server);
     }
 
-    private function createCommandDocument(Server $server, bool $hasWriteStage) : array
+    private function createCommandDocument(Server $server): array
     {
         $cmd = [
             'aggregate' => $this->collectionName ?? 1,
@@ -332,7 +365,8 @@ class Aggregate implements Executable, Explainable
 
         $cmd['allowDiskUse'] = $this->options['allowDiskUse'];
 
-        if (! empty($this->options['bypassDocumentValidation']) &&
+        if (
+            ! empty($this->options['bypassDocumentValidation']) &&
             server_supports_feature($server, self::$wireVersionForDocumentLevelValidation)
         ) {
             $cmd['bypassDocumentValidation'] = $this->options['bypassDocumentValidation'];
@@ -344,8 +378,10 @@ class Aggregate implements Executable, Explainable
             }
         }
 
-        if (isset($this->options['collation'])) {
-            $cmd['collation'] = (object) $this->options['collation'];
+        foreach (['collation', 'let'] as $option) {
+            if (isset($this->options[$option])) {
+                $cmd[$option] = (object) $this->options[$option];
+            }
         }
 
         if (isset($this->options['hint'])) {
@@ -353,10 +389,7 @@ class Aggregate implements Executable, Explainable
         }
 
         if ($this->options['useCursor']) {
-            /* Ignore batchSize if pipeline includes an $out or $merge stage, as
-             * no documents will be returned and sending a batchSize of zero
-             * could prevent the pipeline from executing at all. */
-            $cmd['cursor'] = isset($this->options["batchSize"]) && ! $hasWriteStage
+            $cmd['cursor'] = isset($this->options["batchSize"])
                 ? ['batchSize' => $this->options["batchSize"]]
                 : new stdClass();
         }
@@ -364,7 +397,7 @@ class Aggregate implements Executable, Explainable
         return $cmd;
     }
 
-    private function createCommandOptions() : array
+    private function createCommandOptions(): array
     {
         $cmdOptions = [];
 
@@ -376,39 +409,38 @@ class Aggregate implements Executable, Explainable
     }
 
     /**
-     * Create options for executing the command.
+     * Execute the aggregate command using the appropriate Server method.
      *
+     * @see http://php.net/manual/en/mongodb-driver-server.executecommand.php
      * @see http://php.net/manual/en/mongodb-driver-server.executereadcommand.php
      * @see http://php.net/manual/en/mongodb-driver-server.executereadwritecommand.php
-     * @param boolean $hasWriteStage
-     * @param boolean $hasExplain
-     * @return array
      */
-    private function createOptions($hasWriteStage, $hasExplain)
+    private function executeCommand(Server $server, Command $command): Cursor
     {
         $options = [];
 
-        if (isset($this->options['readConcern'])) {
-            $options['readConcern'] = $this->options['readConcern'];
+        foreach (['readConcern', 'readPreference', 'session'] as $option) {
+            if (isset($this->options[$option])) {
+                $options[$option] = $this->options[$option];
+            }
         }
 
-        if (! $hasWriteStage && isset($this->options['readPreference'])) {
-            $options['readPreference'] = $this->options['readPreference'];
-        }
-
-        if (isset($this->options['session'])) {
-            $options['session'] = $this->options['session'];
-        }
-
-        if ($hasWriteStage && ! $hasExplain && isset($this->options['writeConcern'])) {
+        if ($this->isWrite && isset($this->options['writeConcern'])) {
             $options['writeConcern'] = $this->options['writeConcern'];
         }
 
-        return $options;
-    }
+        if (! $this->isWrite) {
+            return $server->executeReadCommand($this->databaseName, $command, $options);
+        }
 
-    private function hasWriteStage() : bool
-    {
-        return is_last_pipeline_operator_write($this->pipeline);
+        /* Server::executeReadWriteCommand() does not support a "readPreference"
+         * option, so fall back to executeCommand(). This means that libmongoc
+         * will not apply any client-level options (e.g. writeConcern), but that
+         * should not be an issue as PHPLIB handles inheritance on its own. */
+        if (isset($options['readPreference'])) {
+            return $server->executeCommand($this->databaseName, $command, $options);
+        }
+
+        return $server->executeReadWriteCommand($this->databaseName, $command, $options);
     }
 }

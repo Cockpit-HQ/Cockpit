@@ -73,9 +73,13 @@ final class Json5Decoder
         // Try parsing with json_decode first, since that's much faster
         // We only attempt this on PHP 7+ because 5.x doesn't parse some edge cases correctly
         if (PHP_VERSION_ID >= 70000) {
-            $result = \json_decode($source, $associative, $depth, $options);
-            if (\json_last_error() === \JSON_ERROR_NONE) {
-                return $result;
+            try {
+                $result = \json_decode($source, $associative, $depth, $options);
+                if (\json_last_error() === \JSON_ERROR_NONE) {
+                    return $result;
+                }
+            } catch (\Throwable $e) {
+                // ignore exception, continue parsing as JSON5
             }
         }
 
@@ -135,7 +139,7 @@ final class Json5Decoder
         }
 
         $this->at++;
-        
+
         return $this->currentByte = $this->getByte($this->at);
     }
 

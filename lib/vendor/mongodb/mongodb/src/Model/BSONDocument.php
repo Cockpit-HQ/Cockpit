@@ -21,6 +21,8 @@ use ArrayObject;
 use JsonSerializable;
 use MongoDB\BSON\Serializable;
 use MongoDB\BSON\Unserializable;
+use ReturnTypeWillChange;
+
 use function MongoDB\recursive_copy;
 
 /**
@@ -50,11 +52,11 @@ class BSONDocument extends ArrayObject implements JsonSerializable, Serializable
      * @see http://php.net/arrayobject.construct
      * @param array   $input
      * @param integer $flags
-     * @param string  $iterator_class
+     * @param string  $iteratorClass
      */
-    public function __construct($input = [], $flags = ArrayObject::ARRAY_AS_PROPS, $iterator_class = 'ArrayIterator')
+    public function __construct($input = [], $flags = ArrayObject::ARRAY_AS_PROPS, $iteratorClass = 'ArrayIterator')
     {
-        parent::__construct($input, $flags, $iterator_class);
+        parent::__construct($input, $flags, $iteratorClass);
     }
 
     /**
@@ -101,6 +103,7 @@ class BSONDocument extends ArrayObject implements JsonSerializable, Serializable
      * @see http://php.net/jsonserializable.jsonserialize
      * @return object
      */
+    #[ReturnTypeWillChange]
     public function jsonSerialize()
     {
         return (object) $this->getArrayCopy();

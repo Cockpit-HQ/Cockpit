@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2015-2017 MongoDB, Inc.
+ * Copyright 2015-present MongoDB, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,8 @@ namespace MongoDB\Model;
 
 use ArrayAccess;
 use MongoDB\Exception\BadMethodCallException;
+use ReturnTypeWillChange;
+
 use function array_key_exists;
 
 /**
@@ -93,6 +95,7 @@ class DatabaseInfo implements ArrayAccess
      * @param mixed $key
      * @return boolean
      */
+    #[ReturnTypeWillChange]
     public function offsetExists($key)
     {
         return array_key_exists($key, $this->info);
@@ -105,6 +108,7 @@ class DatabaseInfo implements ArrayAccess
      * @param mixed $key
      * @return mixed
      */
+    #[ReturnTypeWillChange]
     public function offsetGet($key)
     {
         return $this->info[$key];
@@ -117,7 +121,9 @@ class DatabaseInfo implements ArrayAccess
      * @param mixed $key
      * @param mixed $value
      * @throws BadMethodCallException
+     * @return void
      */
+    #[ReturnTypeWillChange]
     public function offsetSet($key, $value)
     {
         throw BadMethodCallException::classIsImmutable(self::class);
@@ -129,7 +135,9 @@ class DatabaseInfo implements ArrayAccess
      * @see http://php.net/arrayaccess.offsetunset
      * @param mixed $key
      * @throws BadMethodCallException
+     * @return void
      */
+    #[ReturnTypeWillChange]
     public function offsetUnset($key)
     {
         throw BadMethodCallException::classIsImmutable(self::class);

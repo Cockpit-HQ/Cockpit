@@ -27,7 +27,7 @@
         "claviska/simpleimage": "^3.6",
         "league/flysystem": "^2.0",
         "firebase/php-jwt": "^5.2",
-        "mongodb/mongodb": "^1.8",
+        "mongodb/mongodb": "^1.10",
         "maennchen/zipstream-php": "^0.5.2",
         "colinodell/json5": "^2.2",
         "robthree/twofactorauth": "^1.8",

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2015-2017 MongoDB, Inc.
+ * Copyright 2015-present MongoDB, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ namespace MongoDB\Operation;
 
 use EmptyIterator;
 use MongoDB\Driver\Command;
+use MongoDB\Driver\Exception\CommandException;
 use MongoDB\Driver\Exception\RuntimeException as DriverRuntimeException;
 use MongoDB\Driver\Server;
 use MongoDB\Driver\Session;
@@ -26,6 +27,7 @@ use MongoDB\Exception\InvalidArgumentException;
 use MongoDB\Model\CachingIterator;
 use MongoDB\Model\IndexInfoIterator;
 use MongoDB\Model\IndexInfoIteratorIterator;
+
 use function is_integer;
 
 /**
@@ -135,7 +137,7 @@ class ListIndexes implements Executable
 
         try {
             $cursor = $server->executeReadCommand($this->databaseName, new Command($cmd), $this->createOptions());
-        } catch (DriverRuntimeException $e) {
+        } catch (CommandException $e) {
             /* The server may return an error if the collection does not exist.
              * Check for possible error codes (see: SERVER-20463) and return an
              * empty iterator instead of throwing.

@@ -6,6 +6,10 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## [Unreleased][unreleased]
 
+## [2.2.1] - 2021-11-06
+### Fixed
+ - Fixed exceptions always being thrown on PHP 7.3+ when parsing valid JSON5 with `JSON_THROW_ON_ERROR` explicitly set to true (#15)
+
 ## [2.2.0] - 2020-11-29
 ### Added
  - Added support for PHP 8.0
@@ -58,7 +62,8 @@ This release contains massive performance improvements of 98% or more, especiall
 ### Added
  - Initial commit
 
-[unreleased]: https://github.com/colinodell/json5/compare/v2.2.0...HEAD
+[unreleased]: https://github.com/colinodell/json5/compare/v2.2.1...HEAD
+[2.2.1]: https://github.com/colinodell/json5/compare/v2.2.0...v2.2.1
 [2.2.0]: https://github.com/colinodell/json5/compare/v2.1.0...v2.2.0
 [2.1.0]: https://github.com/colinodell/json5/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/colinodell/json5/compare/v1.0.5...v2.0.0

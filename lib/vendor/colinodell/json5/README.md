@@ -61,7 +61,7 @@ This package adds a `json5_decode()` function which is a drop-in replacement for
 
 ``` php
 $json = file_get_contents('foo.json5');
-$arr = json5_decode($json);
+$data = json5_decode($json);
 ```
 
 It takes the same exact parameters in the same order.  For more details on these, see the [PHP docs][link-php-jsondecode].

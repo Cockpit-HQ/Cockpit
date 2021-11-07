@@ -1,25 +1,77 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Jean85;
 
-use PackageVersions\Versions;
+use Composer\InstalledVersions;
+use Jean85\Exception\ProvidedPackageException;
+use Jean85\Exception\ReplacedPackageException;
+use Jean85\Exception\VersionMissingExceptionInterface;
 
 class PrettyVersions
 {
-    const SHORT_COMMIT_LENGTH = 7;
-
+    /**
+     * @throws VersionMissingExceptionInterface When a package is provided ({@see ProvidedPackageException}) or replaced ({@see ReplacedPackageException})
+     */
     public static function getVersion(string $packageName): Version
     {
-        return new Version($packageName, Versions::getVersion($packageName));
+        self::checkProvidedPackages($packageName);
+
+        self::checkReplacedPackages($packageName);
+
+        return new Version(
+            $packageName,
+            InstalledVersions::getPrettyVersion($packageName),
+            InstalledVersions::getReference($packageName)
+        );
     }
 
     public static function getRootPackageName(): string
     {
-        return Versions::ROOT_PACKAGE_NAME;
+        return InstalledVersions::getRootPackage()['name'];
     }
 
     public static function getRootPackageVersion(): Version
     {
-        return self::getVersion(Versions::ROOT_PACKAGE_NAME);
+        return new Version(
+            self::getRootPackageName(),
+            InstalledVersions::getRootPackage()['pretty_version'],
+            InstalledVersions::getRootPackage()['reference']
+        );
+    }
+
+    protected static function checkProvidedPackages(string $packageName): void
+    {
+        if (! method_exists(InstalledVersions::class, 'getAllRawData')) {
+            if (isset(InstalledVersions::getRawData()['versions'][$packageName]['provided'])) {
+                throw ProvidedPackageException::create($packageName);
+            }
+
+            return;
+        }
+
+        foreach (InstalledVersions::getAllRawData() as $installed) {
+            if (isset($installed['versions'][$packageName]['provided'])) {
+                throw ProvidedPackageException::create($packageName);
+            }
+        }
+    }
+
+    protected static function checkReplacedPackages(string $packageName): void
+    {
+        if (! method_exists(InstalledVersions::class, 'getAllRawData')) {
+            if (isset(InstalledVersions::getRawData()['versions'][$packageName]['replaced'])) {
+                throw ReplacedPackageException::create($packageName);
+            }
+
+            return;
+        }
+
+        foreach (InstalledVersions::getAllRawData() as $installed) {
+            if (isset($installed['versions'][$packageName]['replaced'])) {
+                throw ReplacedPackageException::create($packageName);
+            }
+        }
     }
 }

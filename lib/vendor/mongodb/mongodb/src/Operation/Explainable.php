@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2018 MongoDB, Inc.
+ * Copyright 2018-present MongoDB, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,5 +27,11 @@ use MongoDB\Driver\Server;
  */
 interface Explainable extends Executable
 {
+    /**
+     * Returns the command document for this operation.
+     *
+     * @param Server $server
+     * @return array
+     */
     public function getCommandDocument(Server $server);
 }

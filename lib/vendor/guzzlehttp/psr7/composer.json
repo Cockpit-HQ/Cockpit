@@ -1,6 +1,5 @@
 {
     "name": "guzzlehttp/psr7",
-    "type": "library",
     "description": "PSR-7 message implementation that also provides common utility methods",
     "keywords": [
         "request",
@@ -15,12 +14,33 @@
     "license": "MIT",
     "authors": [
         {
+            "name": "Graham Campbell",
+            "email": "hello@gjcampbell.co.uk",
+            "homepage": "https://github.com/GrahamCampbell"
+        },
+        {
             "name": "Michael Dowling",
             "email": "mtdowling@gmail.com",
             "homepage": "https://github.com/mtdowling"
         },
         {
+            "name": "George Mponos",
+            "email": "gmponos@gmail.com",
+            "homepage": "https://github.com/gmponos"
+        },
+        {
+            "name": "Tobias Nyholm",
+            "email": "tobias.nyholm@gmail.com",
+            "homepage": "https://github.com/Nyholm"
+        },
+        {
+            "name": "Márk Sági-Kazár",
+            "email": "mark.sagikazar@gmail.com",
+            "homepage": "https://github.com/sagikazarmark"
+        },
+        {
             "name": "Tobias Schultze",
+            "email": "webmaster@tubo-world.de",
             "homepage": "https://github.com/Tobion"
         },
         {
@@ -47,11 +67,6 @@
     "suggest": {
         "laminas/laminas-httphandlerrunner": "Emit PSR-7 responses"
     },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "2.0-dev"
-        }
-    },
     "autoload": {
         "psr-4": {
             "GuzzleHttp\\Psr7\\": "src/"
@@ -61,5 +76,14 @@
         "psr-4": {
             "GuzzleHttp\\Tests\\Psr7\\": "tests/"
         }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.1-dev"
+        }
+    },
+    "config": {
+        "preferred-install": "dist",
+        "sort-packages": true
     }
 }

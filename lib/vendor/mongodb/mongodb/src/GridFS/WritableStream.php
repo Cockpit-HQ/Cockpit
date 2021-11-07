@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016-2017 MongoDB, Inc.
+ * Copyright 2016-present MongoDB, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ use MongoDB\BSON\UTCDateTime;
 use MongoDB\Driver\Exception\RuntimeException as DriverRuntimeException;
 use MongoDB\Exception\InvalidArgumentException;
 use stdClass;
+
 use function array_intersect_key;
 use function hash_final;
 use function hash_init;
@@ -261,6 +262,9 @@ class WritableStream
         $this->isClosed = true;
     }
 
+    /**
+     * @return mixed
+     */
     private function fileCollectionInsert()
     {
         $this->file['length'] = $this->length;
