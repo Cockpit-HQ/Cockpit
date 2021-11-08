@@ -11,6 +11,10 @@ App.on('field-wysiwyg-setup', evt => {
 
     let editor = evt.params[0];
 
+    if (editor.settings && editor.settings.assetsPicker === false) {
+        return;
+    }
+
     editor.ui.registry.addButton("insertAssetButton", {
         text: 'Asset',
         onAction: function () {
