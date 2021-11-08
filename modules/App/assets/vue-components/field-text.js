@@ -91,7 +91,7 @@ export default {
                 <span class="kiss-size-xsmall kiss-color-muted">{{countIndicator}}</span>
             </div>
 
-            <datalist :id="uid+'-list'" v-if="list.length">
+            <datalist :id="uid+'-list'" v-if="Array.isArray(list) && list.length">
                 <option v-for="option in list">{{ option }}</option>
             </datalist>
         </div>
