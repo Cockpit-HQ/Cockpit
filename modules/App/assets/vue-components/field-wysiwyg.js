@@ -87,7 +87,8 @@ export default {
                     }
                 `,
 
-                skin_url: App.base('/modules/App/assets/css/vendor/tinymce')
+                skin_url: App.base('/modules/App/assets/css/vendor/tinymce'),
+                relative_urls : false,
 
             }, this.tinymce || {})
 
