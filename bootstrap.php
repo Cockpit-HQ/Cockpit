@@ -126,6 +126,14 @@ class APP {
                     'url' => $app->pathToUrl('#uploads:', true)
                 ],
 
+                // local uploads folder
+                '#uploads' => [
+                    'adapter' => 'League\Flysystem\Local\LocalFilesystemAdapter',
+                    'args' => [$app->path('#uploads:')],
+                    'mount' => true,
+                    'url' => $app->pathToUrl('#uploads:', true)
+                ],
+
             ], $config['fileStorage'] ?? []);
 
             $app->trigger('app.filestorage.init', [&$storages]);

@@ -262,6 +262,10 @@ class Assets extends App {
 
         $thumbUrl = $this->helper('asset')->image($options);
 
+        if (!$thumbUrl) {
+            return false;
+        }
+
         $this->app->reroute($thumbUrl);
     }
 

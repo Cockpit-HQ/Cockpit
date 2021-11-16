@@ -76,7 +76,7 @@ class Asset extends \Lime\Helper {
             $stream = $this->app->fileStorage->readStream("uploads://{$path}");
 
             if ($stream) {
-                $this->app->fileStorage->writeStream("uploads://{$path}", $stream);
+                $this->app->fileStorage->writeStream("#uploads://{$path}", $stream);
                 $src = $this->app->path("#uploads:{$path}");
             }
         }
