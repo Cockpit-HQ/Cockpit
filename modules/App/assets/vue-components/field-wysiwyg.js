@@ -92,6 +92,7 @@ export default {
                     background-color: ${getComputedStyle(document.documentElement).getPropertyValue('background-color')};
                     color: ${getComputedStyle(document.documentElement).getPropertyValue('color')};
                 }
+                a { color: ${getComputedStyle(document.documentElement).getPropertyValue('--kiss-color-primary')};}
             `;
 
             opts.setup = (editor) => {
