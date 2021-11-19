@@ -80,21 +80,19 @@ export default {
 
                 height: 400,
 
-                content_style: `
-                    html,body {
-                        background-color: ${getComputedStyle(document.documentElement).getPropertyValue('background-color')};
-                        color: ${getComputedStyle(document.documentElement).getPropertyValue('color')};
-                    }
-                `,
+                content_style: '',
 
                 skin_url: App.base('/modules/App/assets/css/vendor/tinymce'),
                 relative_urls : false,
 
             }, this.tinymce || {});
 
-            if (opts.contentCSS) {
-                opts.content_style += opts.contentCSS;
-            }
+            opts.content_style += `
+                html,body {
+                    background-color: ${getComputedStyle(document.documentElement).getPropertyValue('background-color')};
+                    color: ${getComputedStyle(document.documentElement).getPropertyValue('color')};
+                }
+            `;
 
             opts.setup = (editor) => {
 
