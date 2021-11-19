@@ -90,7 +90,11 @@ export default {
                 skin_url: App.base('/modules/App/assets/css/vendor/tinymce'),
                 relative_urls : false,
 
-            }, this.tinymce || {})
+            }, this.tinymce || {});
+
+            if (opts.contentCSS) {
+                opts.content_style += opts.contentCSS;
+            }
 
             opts.setup = (editor) => {
 
