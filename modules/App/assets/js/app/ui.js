@@ -61,6 +61,10 @@ export default {
 
         let offcanvas = document.getElementById(`offcanvas-${id}`);
 
+        if (options.zIndex) {
+            offcanvas.style.zIndex = options.zIndex;
+        }
+
         offcanvas.__close = offcanvas.close;
         offcanvas.__show = offcanvas.show;
 
@@ -100,6 +104,10 @@ export default {
         `);
 
         let dialog = document.getElementById(`dialog-${id}`);
+
+        if (options.zIndex) {
+            dialog.style.zIndex = options.zIndex;
+        }
 
         dialog.__close = dialog.close;
         dialog.__show = dialog.show;

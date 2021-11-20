@@ -12,7 +12,7 @@ kiss-dialog {
     opacity: 0;
     pointer-events: none;
     overflow-y: auto;
-    z-index: 1400;
+    z-index: 1000;
 }
 
 kiss-dialog > kiss-content {
