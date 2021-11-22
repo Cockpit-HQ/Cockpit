@@ -69,13 +69,13 @@ export default {
                 plugins: [
                     'advlist autolink lists link image imagetools preview anchor',
                     'searchreplace visualblocks code fullscreen',
-                    'insertdatetime media table paste code wordcount'
+                    'insertdatetime media table hr paste code wordcount'
                 ],
                 toolbar: [
                     'undo redo | formatselect',
                     'bold italic | alignleft aligncenter',
                     'alignright alignjustify | bullist numlist outdent indent',
-                    'removeformat | image link table'
+                    'removeformat | hr image link table'
                 ].join(' | '),
 
                 height: 400,
