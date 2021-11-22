@@ -4,6 +4,16 @@ namespace App\Helper;
 
 class Theme extends \Lime\Helper {
 
+    protected array $vars;
+
+    protected function initialize() {
+
+        $this->vars = [
+            'app.version' => \APP_VERSION,
+            'maxUploadSize' => $this->helper('utils')->getMaxUploadSize(),
+        ];
+    }
+
     public function title(?string $newTitle = null): ?string {
 
         static $customTitle;
@@ -113,5 +123,18 @@ class Theme extends \Lime\Helper {
         }
 
         return $cls;
+    }
+
+    public function vars(...$args) {
+
+        switch (count($args)) {
+            case 1:
+                return $this->vars[$args[0]] ?? null;
+            case 2:
+                $this->vars[$args[0]] = $args[1];
+                break;
+        }
+
+        return $this->vars;
     }
 }

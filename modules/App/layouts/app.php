@@ -216,6 +216,7 @@
 
         App._paths = <?=json_encode($paths)?>;
         App._locales = <?=json_encode($locales)?>;
+        App._vars = <?=json_encode($this->helper('theme')->vars())?>;
 
     </script>
 

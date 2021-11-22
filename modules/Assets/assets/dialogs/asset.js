@@ -175,7 +175,7 @@ export default {
                 },
                 autoProceed: false,
                 restrictions: {
-                    //maxFileSize: 1000000,
+                    maxFileSize: App._vars.maxUploadSize || null,
                     maxNumberOfFiles: 1,
                     minNumberOfFiles: 1,
                 }
