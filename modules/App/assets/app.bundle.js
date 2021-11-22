@@ -1342,7 +1342,7 @@
 
           let offcanvas = document.getElementById(`offcanvas-${id}`);
 
-          if (options.zIndex) {
+          if (options && options.zIndex) {
               offcanvas.style.zIndex = options.zIndex;
           }
 
@@ -1386,7 +1386,7 @@
 
           let dialog = document.getElementById(`dialog-${id}`);
 
-          if (options.zIndex) {
+          if (options && options.zIndex) {
               dialog.style.zIndex = options.zIndex;
           }
 
