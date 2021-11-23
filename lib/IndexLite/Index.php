@@ -36,6 +36,7 @@ class Index {
         $stmt = $this->db->prepare("INSERT INTO documents (".implode(',', array_map(fn($f) => $this->db->escapeString($f), $fields)).") VALUES(".implode(',', array_map(fn($f) => ":{$f}", $fields)).")");
 
         foreach ($fields as $field) {
+            $document[$field] = $this->stringify($document[$field]);
             $stmt->bindParam(":{$field}", $document[$field]);
         }
 
@@ -48,7 +49,11 @@ class Index {
         $stmt->execute();
     }
 
-    public function search(string $query, ?array $fields = null) {
+    public function search(string $query, ?array $fields = null): array {
+
+        if (!trim($query)) {
+            return [];
+        }
 
         $fields = $fields ?? ['*'];
 
@@ -63,5 +68,36 @@ class Index {
         }
 
         return $hits;
+    }
+
+    protected function stringify($value) {
+
+        if (\is_string($value)) {
+            return $value;
+        }
+
+        if (!$value) {
+            return '';
+        }
+
+        if (\is_numeric($value)) {
+            return $value.'';
+        }
+
+        if (\is_array($value)) {
+
+            $str = [];
+
+            array_walk_recursive($value, function($val) use(&$str) {
+
+                if (is_string($val) && strlen($val) > 15) {
+                    $str[] = $val;
+                }
+            });
+
+            return implode(' ', $str);
+        }
+
+        return '';
     }
 }
