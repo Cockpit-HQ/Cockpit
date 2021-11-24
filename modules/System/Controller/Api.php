@@ -144,14 +144,14 @@ class Api extends App {
 
         \session_write_close();
 
-        $paths = [APP_DIR.'/modules'];
+        $paths = [(new \Symfony\Component\Finder\Finder())->files()->in(APP_DIR.'/modules')->notPath('#vendor#')];
 
         if (\file_exists(APP_DIR.'/addons')) {
-            $paths[] = APP_DIR.'/addons';
+            $paths[] = (new \Symfony\Component\Finder\Finder())->files()->in(APP_DIR.'/addons')->notPath('#vendor#');
         }
 
         if (\file_exists(APP_DIR.'/config/api')) {
-            $paths[] = APP_DIR.'/config/api';
+            $paths[] = (new \Symfony\Component\Finder\Finder())->files()->in(APP_DIR.'/config/api')->notPath('#vendor#');
         }
 
         $yaml = \OpenApi\Generator::scan($paths)->toYaml();
