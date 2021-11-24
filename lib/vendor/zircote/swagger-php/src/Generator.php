@@ -7,8 +7,8 @@
 namespace OpenApi;
 
 use OpenApi\Annotations\OpenApi;
+use OpenApi\Logger\DefaultLogger;
 use Psr\Log\LoggerInterface;
-use Psr\Log\LogLevel;
 
 /**
  * OpenApi spec generator.
@@ -50,35 +50,22 @@ class Generator
         $this->configStack = new class() {
             private $defaultImports;
             private $whitelist;
-            private $log;
 
             public function push(Generator $generator): void
             {
+                // save current state
                 $this->defaultImports = Analyser::$defaultImports;
                 $this->whitelist = Analyser::$whitelist;
-                $this->log = Logger::getInstance()->log;
 
+                // update state with generator config
                 Analyser::$defaultImports = $generator->getAliases();
                 Analyser::$whitelist = $generator->getNamespaces();
-                if ($logger = $generator->getLogger()) {
-                    Logger::getInstance()->log = function ($msg, $type) use ($logger) {
-                        $context = [];
-                        if ($msg instanceof \Exception) {
-                            $context['exception'] = $exception = $msg;
-                            $msg = $exception->getMessage();
-                        }
-
-                        $level = E_USER_ERROR == $type ? LogLevel::ERROR : LogLevel::INFO;
-                        $logger->log($level, $msg, $context);
-                    };
-                }
             }
 
             public function pop(): void
             {
                 Analyser::$defaultImports = $this->defaultImports;
                 Analyser::$whitelist = $this->whitelist;
-                Logger::getInstance()->log = $this->log;
             }
         };
     }
@@ -144,6 +131,30 @@ class Generator
         return $this;
     }
 
+    public function addProcessor(callable $processor): Generator
+    {
+        $processors = $this->getProcessors();
+        $processors[] = $processor;
+        $this->setProcessors($processors);
+
+        return $this;
+    }
+
+    public function removeProcessor(callable $processor, bool $silent = false): Generator
+    {
+        $processors = $this->getProcessors();
+        if (false === ($key = array_search($processor, $processors, true))) {
+            if ($silent) {
+                return $this;
+            }
+            throw new \InvalidArgumentException('Processor not found');
+        }
+        unset($processors[$key]);
+        $this->setProcessors($processors);
+
+        return $this;
+    }
+
     /**
      * Update/replace an existing processor with a new one.
      *
@@ -171,7 +182,7 @@ class Generator
 
     public function getLogger(): ?LoggerInterface
     {
-        return $this->logger;
+        return $this->logger ?: new DefaultLogger();
     }
 
     /**
@@ -225,11 +236,12 @@ class Generator
      */
     public function generate(iterable $sources, ?Analysis $analysis = null, bool $validate = true): OpenApi
     {
-        $analysis = $analysis ?: new Analysis([], new Context());
+        $rootContext = new Context(['logger' => $this->getLogger()]);
+        $analysis = $analysis ?: new Analysis([], $rootContext);
 
         $this->configStack->push($this);
         try {
-            $this->scanSources($sources, $analysis);
+            $this->scanSources($sources, $analysis, $rootContext);
 
             // post processing
             $analysis->process($this->getProcessors());
@@ -245,22 +257,22 @@ class Generator
         return $analysis->openapi;
     }
 
-    protected function scanSources(iterable $sources, Analysis $analysis): void
+    protected function scanSources(iterable $sources, Analysis $analysis, Context $rootContext): void
     {
         $analyser = $this->getAnalyser();
         foreach ($sources as $source) {
             if (is_iterable($source)) {
-                $this->scanSources($source, $analysis);
+                $this->scanSources($source, $analysis, $rootContext);
             } else {
                 $resolvedSource = $source instanceof \SplFileInfo ? $source->getPathname() : realpath($source);
                 if (!$resolvedSource) {
-                    Logger::warning(sprintf('Skipping invalid source: %s', $source));
+                    $rootContext->logger->warning(sprintf('Skipping invalid source: %s', $source));
                     continue;
                 }
                 if (is_dir($resolvedSource)) {
-                    $this->scanSources(Util::finder($resolvedSource), $analysis);
+                    $this->scanSources(Util::finder($resolvedSource), $analysis, $rootContext);
                 } else {
-                    $analysis->addAnalysis($analyser->fromFile($resolvedSource));
+                    $analysis->addAnalysis($analyser->fromFile($resolvedSource, $rootContext));
                 }
             }
         }

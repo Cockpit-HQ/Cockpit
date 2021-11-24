@@ -77,5 +77,14 @@ class Examples extends AbstractAnnotation
         Components::class,
         Parameter::class,
         MediaType::class,
+        JsonContent::class,
+        XmlContent::class,
+    ];
+
+    /**
+     * @inheritdoc
+     */
+    public static $_nested = [
+        Attachable::class => ['attachables'],
     ];
 }

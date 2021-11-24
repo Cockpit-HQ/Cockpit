@@ -16,8 +16,8 @@ use OpenApi\Processors\BuildPaths;
 use OpenApi\Processors\CleanUnmerged;
 use OpenApi\Processors\DocBlockDescriptions;
 use OpenApi\Processors\ExpandInterfaces;
+use OpenApi\Processors\ExpandClasses;
 use OpenApi\Processors\ExpandTraits;
-use OpenApi\Processors\InheritProperties;
 use OpenApi\Processors\MergeIntoComponents;
 use OpenApi\Processors\MergeIntoOpenApi;
 use OpenApi\Processors\MergeJsonContent;
@@ -68,7 +68,7 @@ class Analysis
     /**
      * @var Context
      */
-    protected $context;
+    public $context;
 
     /**
      * Registry for the post-processing operations.
@@ -77,16 +77,12 @@ class Analysis
      */
     private static $processors;
 
-    public function __construct(array $annotations = [], ?Context $context = null)
+    public function __construct(array $annotations = [], Context $context = null)
     {
         $this->annotations = new \SplObjectStorage();
-        if (count($annotations) !== 0) {
-            if ($context === null) {
-                $context = Context::detect(1);
-            }
-            $this->addAnnotations($annotations, $context);
-        }
         $this->context = $context;
+
+        $this->addAnnotations($annotations, $context);
     }
 
     public function addAnnotation($annotation, ?Context $context): void
@@ -95,7 +91,7 @@ class Analysis
             return;
         }
         if ($annotation instanceof AbstractAnnotation) {
-            $context = $annotation->_context;
+            $context = $annotation->_context ?: $this->context;
             if ($this->openapi === null && $annotation instanceof OpenApi) {
                 $this->openapi = $annotation;
             }
@@ -129,7 +125,7 @@ class Analysis
         }
     }
 
-    public function addAnnotations(array $annotations, Context $context): void
+    public function addAnnotations(array $annotations, ?Context $context): void
     {
         foreach ($annotations as $annotation) {
             $this->addAnnotation($annotation, $context);
@@ -190,11 +186,12 @@ class Analysis
     /**
      * Get a list of all super classes for the given class.
      *
-     * @param string $class the class name
+     * @param string $class  the class name
+     * @param bool   $direct flag to find only the actual class parents
      *
      * @return array map of class => definition pairs of parent classes
      */
-    public function getSuperClasses(string $class): array
+    public function getSuperClasses(string $class, bool $direct = false): array
     {
         $classDefinition = isset($this->classes[$class]) ? $this->classes[$class] : null;
         if (!$classDefinition || empty($classDefinition['extends'])) {
@@ -208,7 +205,13 @@ class Analysis
             return [];
         }
 
-        return array_merge([$extends => $extendsDefinition], $this->getSuperClasses($extends));
+        $parentDetails = [$extends => $extendsDefinition];
+
+        if ($direct) {
+            return $parentDetails;
+        }
+
+        return array_merge($parentDetails, $this->getSuperClasses($extends));
     }
 
     /**
@@ -443,6 +446,8 @@ class Analysis
      * Get direct access to the processors array.
      *
      * @return array reference
+     *
+     * @deprecated Superseded by `Generator` methods
      */
     public static function &processors()
     {
@@ -452,12 +457,12 @@ class Analysis
                 new DocBlockDescriptions(),
                 new MergeIntoOpenApi(),
                 new MergeIntoComponents(),
+                new ExpandClasses(),
                 new ExpandInterfaces(),
                 new ExpandTraits(),
                 new AugmentSchemas(),
                 new AugmentProperties(),
                 new BuildPaths(),
-                new InheritProperties(),
                 new AugmentParameters(),
                 new MergeJsonContent(),
                 new MergeXmlContent(),
@@ -473,6 +478,8 @@ class Analysis
      * Register a processor.
      *
      * @param \Closure $processor
+     *
+     * @deprecated Superseded by `Generator` methods
      */
     public static function registerProcessor($processor): void
     {
@@ -483,6 +490,8 @@ class Analysis
      * Unregister a processor.
      *
      * @param \Closure $processor
+     *
+     * @deprecated Superseded by `Generator` methods
      */
     public static function unregisterProcessor($processor): void
     {
@@ -499,7 +508,7 @@ class Analysis
         if ($this->openapi !== null) {
             return $this->openapi->validate();
         }
-        Logger::notice('No openapi target set. Run the MergeIntoOpenApi processor before validate()');
+        $this->context->logger->warning('No openapi target set. Run the MergeIntoOpenApi processor before validate()');
 
         return false;
     }

@@ -8,7 +8,6 @@ namespace OpenApi\Annotations;
 
 use OpenApi\Analysis;
 use OpenApi\Generator;
-use OpenApi\Logger;
 use OpenApi\Util;
 
 /**
@@ -116,6 +115,7 @@ class OpenApi extends AbstractAnnotation
         Components::class => 'components',
         Tag::class => ['tags'],
         ExternalDocumentation::class => 'externalDocs',
+        Attachable::class => ['attachables'],
     ];
 
     /**
@@ -129,7 +129,7 @@ class OpenApi extends AbstractAnnotation
     public function validate(array $parents = null, array $skip = null, string $ref = ''): bool
     {
         if ($parents !== null || $skip !== null || $ref !== '') {
-            Logger::notice('Nested validation for ' . $this->identity() . ' not allowed');
+            $this->_context->logger->warning('Nested validation for ' . $this->identity() . ' not allowed');
 
             return false;
         }
@@ -143,13 +143,15 @@ class OpenApi extends AbstractAnnotation
     public function saveAs(string $filename, string $format = 'auto'): void
     {
         if ($format === 'auto') {
-            $format =   strtolower(substr($filename, -5)) === '.json' ? 'json' : 'yaml';
+            $format = strtolower(substr($filename, -5)) === '.json' ? 'json' : 'yaml';
         }
+
         if (strtolower($format) === 'json') {
             $content = $this->toJson();
         } else {
             $content = $this->toYaml();
         }
+
         if (file_put_contents($filename, $content) === false) {
             throw new \Exception('Failed to saveAs("' . $filename . '", "' . $format . '")');
         }
@@ -214,6 +216,7 @@ class OpenApi extends AbstractAnnotation
                 }
             }
         }
+
         throw new \Exception('$ref "' . $unresolved . '" not found');
     }
 }

@@ -36,5 +36,7 @@ class XmlContent extends Schema
         ExternalDocumentation::class => 'externalDocs',
         Xml::class => 'xml',
         AdditionalProperties::class => 'additionalProperties',
+        Examples::class => ['examples', 'example'],
+        Attachable::class => ['attachables'],
     ];
 }

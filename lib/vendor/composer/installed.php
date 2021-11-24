@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => 'e3660d4a96f20b70871b64f02296525fb1708628',
+    'reference' => '18ff00a9a42a1913e3d9cae1e24eb2a8d9e370af',
     'name' => 'agentejo/cockpit',
   ),
   'versions' => 
@@ -18,7 +18,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => 'e3660d4a96f20b70871b64f02296525fb1708628',
+      'reference' => '18ff00a9a42a1913e3d9cae1e24eb2a8d9e370af',
     ),
     'bacon/bacon-qr-code' => 
     array (
@@ -76,12 +76,12 @@
     ),
     'firebase/php-jwt' => 
     array (
-      'pretty_version' => 'v5.5.0',
-      'version' => '5.5.0.0',
+      'pretty_version' => 'v5.5.1',
+      'version' => '5.5.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'cf814442ce0e9eebe5317d61b63ccda4b85de67a',
+      'reference' => '83b609028194aa042ea33b5af2d41a7427de80e6',
     ),
     'guzzlehttp/guzzle' => 
     array (
@@ -139,12 +139,12 @@
     ),
     'league/mime-type-detection' => 
     array (
-      'pretty_version' => '1.8.0',
-      'version' => '1.8.0.0',
+      'pretty_version' => '1.9.0',
+      'version' => '1.9.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'b38b25d7b372e9fddb00335400467b223349fd7e',
+      'reference' => 'aa70e813a6ad3d1558fc927863d47309b4c23e69',
     ),
     'maennchen/zipstream-php' => 
     array (
@@ -246,6 +246,15 @@
         0 => '1.0',
       ),
     ),
+    'psr/log' => 
+    array (
+      'pretty_version' => '1.1.4',
+      'version' => '1.1.4.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'd49695b909c3b7628b6289db5479a1c204601f11',
+    ),
     'psr/log-implementation' => 
     array (
       'provided' => 
@@ -273,21 +282,21 @@
     ),
     'symfony/console' => 
     array (
-      'pretty_version' => 'v5.3.10',
-      'version' => '5.3.10.0',
+      'pretty_version' => 'v5.3.11',
+      'version' => '5.3.11.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'd4e409d9fbcfbf71af0e5a940abb7b0b4bad0bd3',
+      'reference' => '3e7ab8f5905058984899b05a4648096f558bfeba',
     ),
     'symfony/deprecation-contracts' => 
     array (
-      'pretty_version' => 'v2.4.0',
-      'version' => '2.4.0.0',
+      'pretty_version' => 'v2.5.0',
+      'version' => '2.5.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '5f38c8804a9e97d23e0c8d63341088cd8a22d627',
+      'reference' => '6f981ee24cf69ee7ce9736146d1c57c2780598a8',
     ),
     'symfony/finder' => 
     array (
@@ -363,12 +372,12 @@
     ),
     'symfony/service-contracts' => 
     array (
-      'pretty_version' => 'v2.4.0',
-      'version' => '2.4.0.0',
+      'pretty_version' => 'v2.5.0',
+      'version' => '2.5.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'f040a30e04b57fbcc9c6cbcf4dbaa96bd318b9bb',
+      'reference' => '1ab11b933cd6bc5464b08e81e2c5b07dec58b0fc',
     ),
     'symfony/string' => 
     array (
@@ -381,30 +390,30 @@
     ),
     'symfony/yaml' => 
     array (
-      'pretty_version' => 'v5.3.6',
-      'version' => '5.3.6.0',
+      'pretty_version' => 'v5.3.11',
+      'version' => '5.3.11.0',
       'aliases' => 
       array (
       ),
-      'reference' => '4500fe63dc9c6ffc32d3b1cb0448c329f9c814b7',
+      'reference' => '226638aa877bc4104e619a15f27d8141cd6b4e4a',
     ),
     'webonyx/graphql-php' => 
     array (
-      'pretty_version' => 'v14.11.0',
-      'version' => '14.11.0.0',
+      'pretty_version' => 'v14.11.3',
+      'version' => '14.11.3.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'd191b0c34365c025c6cd953b5a63aa62946c7060',
+      'reference' => 'a7192e7a2b0487dc5e185feb4f4df1fc24d35d86',
     ),
     'zircote/swagger-php' => 
     array (
-      'pretty_version' => '3.2.3',
-      'version' => '3.2.3.0',
+      'pretty_version' => '3.3.2',
+      'version' => '3.3.2.0',
       'aliases' => 
       array (
       ),
-      'reference' => '41ed0eb1dacebe2c365623b3f9ab13d1531a03da',
+      'reference' => '68c76ce2bb43fb4603315fb973d4595711dcbfd3',
     ),
   ),
 );

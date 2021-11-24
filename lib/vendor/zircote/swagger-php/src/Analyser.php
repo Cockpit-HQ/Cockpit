@@ -88,9 +88,8 @@ class Analyser
      *
      * @return array Annotations
      */
-    public function fromComment(string $comment, ?Context $context = null): array
+    public function fromComment(string $comment, Context $context): array
     {
-        $context = $context ?: new Context();
         $context->comment = $comment;
 
         try {
@@ -98,7 +97,7 @@ class Analyser
             if ($context->is('annotations') === false) {
                 $context->annotations = [];
             }
-            $annotations = $this->docParser->parse($comment, $context);
+            $annotations = $this->docParser->parse($comment);
             self::$context = null;
 
             return $annotations;
@@ -111,9 +110,9 @@ class Analyser
                 $context->line += substr_count($comment, "\n", 0, $atPos + $errorPos);
                 $lines = explode("\n", substr($comment, $atPos, $errorPos));
                 $context->character = strlen(array_pop($lines)) + 1; // position starts at 0 character starts at 1
-                Logger::warning(new \Exception($errorMessage . ' in ' . $context, $e->getCode(), $e));
+                $context->logger->error($errorMessage . ' in ' . $context, ['exception' => $e]);
             } else {
-                Logger::warning($e);
+                $context->logger->error($e);
             }
 
             return [];

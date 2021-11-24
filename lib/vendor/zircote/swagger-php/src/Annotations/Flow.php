@@ -79,7 +79,15 @@ class Flow extends AbstractAnnotation
         SecurityScheme::class,
     ];
 
+    /**
+     * @inheritdoc
+     */
+    public static $_nested = [
+        Attachable::class => ['attachables'],
+    ];
+
     /** @inheritdoc */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         if (is_array($this->scopes) && empty($this->scopes)) {

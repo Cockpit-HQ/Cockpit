@@ -17,6 +17,7 @@ class Serializer
 {
     private static $VALID_ANNOTATIONS = [
         OA\AdditionalProperties::class,
+        OA\Attachable::class,
         OA\Components::class,
         OA\Contact::class,
         OA\Delete::class,
@@ -105,7 +106,7 @@ class Serializer
      */
     protected function doDeserialize(\stdClass $c, string $class)
     {
-        $annotation = new $class([]);
+        $annotation = new $class(['_context' => new Context(['generated' => true])]);
         foreach ((array) $c as $property => $value) {
             if ($property === '$ref') {
                 $property = 'ref';

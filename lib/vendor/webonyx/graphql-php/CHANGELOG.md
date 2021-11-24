@@ -2,6 +2,21 @@
 
 #### Unreleased
 
+#### 14.11.3
+
+Fixed:
+- Fix compatibility of more methods with native return type in PHP 8.1
+
+#### 14.11.2
+
+Fixed:
+- Support non-JSON `ServerRequestInterface`
+
+#### 14.11.1
+
+Fixed:
+- Fix compatibility of methods with native return type in PHP 8.1
+
 #### 14.11.0
 
 Feat:
