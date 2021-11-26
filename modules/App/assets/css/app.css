@@ -347,10 +347,6 @@ app-actionbar kiss-container {
     border-radius: var(--app-border-radius);
 }
 
-.field-layout-dragarea:empty {
-    background-color: var(--kiss-color-contrast);
-}
-
 app-fieldcontainer app-fieldcontainer {
     all: unset;
     display: block;
