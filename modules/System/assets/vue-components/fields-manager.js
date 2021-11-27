@@ -72,16 +72,25 @@ let FieldsManager = {
             <vue-draggable v-model="fields" v-if="fieldTypes && fields.length" handle=".fm-handle">
                 <template #item="{ element }">
                     <kiss-card class="kiss-padding-small kiss-flex kiss-flex-middle" theme="bordered contrast" style="margin: 8px 0;">
+                        <a class="fm-handle kiss-margin-small-right kiss-color-muted"><icon>drag_handle</icon></a>
                         <div class="kiss-margin-right">
                             <div class="kiss-padding-small app-border-radius" :style="{background: _.get(fieldTypes, element.type+'.color', 'rgb(255, 248, 214)')}">
                                 <img :src="$base(_.get(fieldTypes, element.type+'.icon', 'system:assets/icons/edit.svg'))" width="20" height="20" style="opacity:.6" :title="element.type">
                             </div>
                         </div>
-                        <div class="kiss-flex-1 kiss-text-bold">{{ element.label || element.name }}</div>
+                        <div class="kiss-flex-1">
+                            <div class="kiss-text-bold">
+                                {{ element.label || element.name }}
+                                <icon class="kiss-color-muted kiss-margin-xsmall-left" v-if="element.i18n">language</icon>
+                                <icon class="kiss-color-muted kiss-margin-xsmall-left" v-if="element.multiple">format_list_numbered</icon>
+                            </div>
+                            <div class="kiss-size-xsmall">
+                                <span class="kiss-color-muted">{{ element.name }}</span>
+                            </div>
+                        </div>
                         <div class="kiss-margin-small-right kiss-size-small kiss-color-muted">{{ element.group || '' }}</div>
                         <a class="kiss-margin-left" @click="edit(element)"><icon>settings</icon></a>
                         <a class="kiss-margin-left kiss-color-danger" @click="remove(element)"><icon>delete</icon></a>
-                        <a class="fm-handle kiss-margin-left kiss-color-muted"><icon>drag_handle</icon></a>
                     </kiss-card>
                 </template>
             </vue-draggable>
