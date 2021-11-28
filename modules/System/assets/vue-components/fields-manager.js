@@ -26,7 +26,12 @@ let FieldsManager = {
 
     mounted() {
         FieldTypes.get().then(fieldTypes => {
-            this.fieldTypes = fieldTypes;
+
+            this.fieldTypes = {};
+
+            Object.keys(fieldTypes).sort().forEach(ft => {
+                this.fieldTypes[ft] = fieldTypes[ft];
+            });
         });
     },
 
@@ -117,10 +122,10 @@ let FieldsManager = {
                             <input class="kiss-input kiss-width-1-1" type="text" v-model="field.name" required>
                         </div>
 
-                        <div class="kiss-margin kiss-display-block kiss-overlay-input">
+                        <div class="kiss-margin">
                             <label>{{t('Type')}}</label>
 
-                            <kiss-card class="kiss-padding-small kiss-flex kiss-flex-middle" theme="bordered">
+                            <kiss-card class="kiss-padding-small kiss-flex kiss-flex-middle kiss-position-relative" theme="bordered">
                                 <div class="kiss-padding-small app-border-radius kiss-margin-right" :style="{background: _.get(fieldTypes, field.type+'.color', 'rgb(255, 248, 214)')}">
                                     <img :src="$base(_.get(fieldTypes, field.type+'.icon', 'system:assets/icons/edit.svg'))" width="20" height="20">
                                 </div>
@@ -128,12 +133,8 @@ let FieldsManager = {
                                     <div class="kiss-text-bold kiss-size-small">{{ _.get(fieldTypes, field.type+'.label', field.type) }}</div>
                                     <div class="kiss-color-muted kiss-size-xsmall">{{ _.get(fieldTypes, field.type+'.info', '') }}</div>
                                 </div>
+                                <a class="kiss-cover" :kiss-popoutmenu="'#'+uid+'-fieldtype-selector'"></a>
                             </kiss-card>
-
-                            <select class="kiss-input kiss-width-1-1" type="text" v-model="field.type" required>
-                                <option></option>
-                                <option :value="fieldType" v-for="(f,fieldType) in fieldTypes">{{ f.label || fieldType }}</option>
-                            </select>
                         </div>
 
                         <app-tabs class="kiss-margin-large">
@@ -209,6 +210,33 @@ let FieldsManager = {
                     </form>
                 </kiss-content>
             </kiss-dialog>
+
+            <kiss-popoutmenu :id="uid+'-fieldtype-selector'">
+                <kiss-content class="kiss-width-1-2@m">
+                        <kiss-navlist v-if="field">
+                            <ul>
+                                <li class="kiss-nav-header">{{ t('Select field type') }}</li>
+                            </ul>
+                            <kiss-grid class="kiss-margin-top" cols="1@s 2@m 3@l" gap="small">
+                                <kiss-card class="kiss-padding-xsmall" hover="contrast" v-for="(f,fieldType) in fieldTypes">
+                                    <kiss-row class="kiss-position-relative" gap="small">
+                                        <div>
+                                            <div class="kiss-padding-small app-border-radius" :style="{background: f.color || 'rgb(255, 248, 214)'}">
+                                                <img :src="$base(f.icon || 'system:assets/icons/edit.svg')" width="20" height="20" :title="fieldType">
+                                            </div>
+                                        </div>
+                                        <div class="kiss-flex-1">
+                                            <strong class="kiss-size-small">{{ f.label || fieldType }}</strong>
+                                            <div class="kiss-color-muted kiss-size-xsmall">{{ f.info || '' }}</div>
+                                        </div>
+                                        <a class="kiss-cover" @click="field.type = fieldType"></a>
+                                    </kiss-row>
+                                </kiss-card>
+
+                            </kiss-grid>
+                        </kiss-navlist>
+                </kiss-content>
+            </kiss-popoutmenu>
         </teleport>
     `,
 
