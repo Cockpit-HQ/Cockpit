@@ -153,7 +153,7 @@ class App implements \ArrayAccess {
 
         foreach ($this->registry['modules'] as $name => $module) {
             $module = clone $module;
-            $module->app = $this;
+            $module->bindApp($this);
             $this->registry['modules'][$name] = $module;
         }
 
@@ -1283,6 +1283,20 @@ class Module extends AppAware {
     public function extend(array $api) {
 
         foreach ($api as $name => $value) {
+
+            if ($value instanceof \Closure) {
+                $value = $value->bindTo($this, $this);
+            }
+
+            $this->apis[$name] = $value;
+        }
+    }
+
+    public function bindApp(App $app) {
+
+        $this->app = $app;
+
+        foreach ($this->apis as $name => $value) {
 
             if ($value instanceof \Closure) {
                 $value = $value->bindTo($this, $this);
