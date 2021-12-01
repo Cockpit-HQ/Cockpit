@@ -3,7 +3,7 @@
     font-family: 'Material Icons Outlined';
     font-style: normal;
     font-weight: 400;
-    src: url(material-icons.woff2) format('woff2');
+    src: url(material-icons-outlined.woff2) format('woff2');
 }
 
 icon { display: inline-block; }
@@ -22,8 +22,15 @@ icon,
     word-wrap: normal;
     direction: ltr;
     vertical-align: middle;
-    -webkit-font-feature-settings: 'liga';
+
+    /* Support for all WebKit browsers. */
     -webkit-font-smoothing: antialiased;
+    /* Support for Safari and Chrome. */
+    text-rendering: optimizeLegibility;
+    /* Support for Firefox. */
+    -moz-osx-font-smoothing: grayscale;
+
+    -webkit-font-feature-settings: 'liga';
 }
 
 icon[size="larger"] {

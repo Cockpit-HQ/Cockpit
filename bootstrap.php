@@ -60,7 +60,7 @@ class APP {
             'docs_root' => defined('APP_DOCUMENT_ROOT') ? APP_DOCUMENT_ROOT : null,
             'debug' => APP_CLI ? true : preg_match('/(localhost|::1|\.local)$/', $_SERVER['SERVER_NAME'] ?? ''),
             'app.name' => 'Cockpit',
-            'app.version'  => '2.0-dev-2021-11-26',
+            'app.version'  => '2.0-dev-2021-12-01',
             'session.name' => md5(APP_ENV_DIR),
             'sec-key' => 'c3b40c4c-db44-s5h7-a814-b5931a15e5e1',
             'i18n' => 'en',

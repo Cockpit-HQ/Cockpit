@@ -86,7 +86,7 @@ $this->on('restApi.config', function($restApi) {
 
             if ($filter) {
                 try {
-                    $filter && json5_decode($filter, true);
+                    $filter = json5_decode($filter, true);
                 } catch(\Throwable $e) {
                     $app->response->status = 400;
                     return ['error' => "<filter> is not valid json"];
@@ -95,7 +95,7 @@ $this->on('restApi.config', function($restApi) {
 
             if ($fields) {
                 try {
-                    $fields && json5_decode($fields, true);
+                    $fields = json5_decode($fields, true);
                 } catch(\Throwable $e) {
                     $app->response->status = 400;
                     return ['error' => "<fields> is not valid json"];
