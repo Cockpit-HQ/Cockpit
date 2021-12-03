@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '18ff00a9a42a1913e3d9cae1e24eb2a8d9e370af',
+    'reference' => 'eb8edcab7e6921d81207b0f461c9d5837268a89e',
     'name' => 'agentejo/cockpit',
   ),
   'versions' => 
@@ -18,7 +18,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '18ff00a9a42a1913e3d9cae1e24eb2a8d9e370af',
+      'reference' => 'eb8edcab7e6921d81207b0f461c9d5837268a89e',
     ),
     'bacon/bacon-qr-code' => 
     array (
@@ -31,8 +31,8 @@
     ),
     'claviska/simpleimage' => 
     array (
-      'pretty_version' => '3.6.3',
-      'version' => '3.6.3.0',
+      'pretty_version' => '3.6.4',
+      'version' => '3.6.4.0',
       'aliases' => 
       array (
       ),
@@ -130,12 +130,12 @@
     ),
     'league/flysystem' => 
     array (
-      'pretty_version' => '2.3.1',
-      'version' => '2.3.1.0',
+      'pretty_version' => '2.3.2',
+      'version' => '2.3.2.0',
       'aliases' => 
       array (
       ),
-      'reference' => '8f037e8f3321d5fd4178dcd4d91498220cebd688',
+      'reference' => '4b6da3e75b5e8eee53bb5ee46ded15a532843f80',
     ),
     'league/mime-type-detection' => 
     array (
@@ -173,12 +173,12 @@
     ),
     'phpmailer/phpmailer' => 
     array (
-      'pretty_version' => 'v6.5.1',
-      'version' => '6.5.1.0',
+      'pretty_version' => 'v6.5.3',
+      'version' => '6.5.3.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'dd803df5ad7492e1b40637f7ebd258fee5ca7355',
+      'reference' => 'baeb7cde6b60b1286912690ab0693c7789a31e71',
     ),
     'psr/cache' => 
     array (
@@ -191,12 +191,12 @@
     ),
     'psr/container' => 
     array (
-      'pretty_version' => '1.1.2',
-      'version' => '1.1.2.0',
+      'pretty_version' => '2.0.2',
+      'version' => '2.0.2.0',
       'aliases' => 
       array (
       ),
-      'reference' => '513e0666f7216c7459170d56df27dfcefe1689ea',
+      'reference' => 'c71ecc56dfe541dbd90c5360474fbc405f8d5963',
     ),
     'psr/http-client' => 
     array (
@@ -282,12 +282,12 @@
     ),
     'symfony/console' => 
     array (
-      'pretty_version' => 'v5.3.11',
-      'version' => '5.3.11.0',
+      'pretty_version' => 'v5.4.0',
+      'version' => '5.4.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '3e7ab8f5905058984899b05a4648096f558bfeba',
+      'reference' => 'ec3661faca1d110d6c307e124b44f99ac54179e3',
     ),
     'symfony/deprecation-contracts' => 
     array (
@@ -300,12 +300,12 @@
     ),
     'symfony/finder' => 
     array (
-      'pretty_version' => 'v5.3.7',
-      'version' => '5.3.7.0',
+      'pretty_version' => 'v6.0.0',
+      'version' => '6.0.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'a10000ada1e600d109a6c7632e9ac42e8bf2fb93',
+      'reference' => '07debda41a4d32d33e59e6ab302af1701e15f173',
     ),
     'symfony/polyfill-ctype' => 
     array (
@@ -372,30 +372,30 @@
     ),
     'symfony/service-contracts' => 
     array (
-      'pretty_version' => 'v2.5.0',
-      'version' => '2.5.0.0',
+      'pretty_version' => 'v3.0.0',
+      'version' => '3.0.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '1ab11b933cd6bc5464b08e81e2c5b07dec58b0fc',
+      'reference' => '36715ebf9fb9db73db0cb24263c79077c6fe8603',
     ),
     'symfony/string' => 
     array (
-      'pretty_version' => 'v5.3.10',
-      'version' => '5.3.10.0',
+      'pretty_version' => 'v6.0.0',
+      'version' => '6.0.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'd70c35bb20bbca71fc4ab7921e3c6bda1a82a60c',
+      'reference' => 'ba727797426af0f587f4800566300bdc0cda0777',
     ),
     'symfony/yaml' => 
     array (
-      'pretty_version' => 'v5.3.11',
-      'version' => '5.3.11.0',
+      'pretty_version' => 'v6.0.0',
+      'version' => '6.0.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '226638aa877bc4104e619a15f27d8141cd6b4e4a',
+      'reference' => 'f3064a2e0b5eabaeaf92db0a5913a77098b3b91e',
     ),
     'webonyx/graphql-php' => 
     array (

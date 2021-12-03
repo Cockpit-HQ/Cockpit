@@ -103,7 +103,7 @@ export default {
 
                     editor.setContent(this.modelValue || '');
 
-                    editor.on('input ExecCommand', e => {
+                    editor.on('change input undo redo ExecCommand', e => {
                         this.$emit('update:modelValue', editor.getContent())
                     });
 
