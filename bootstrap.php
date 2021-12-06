@@ -13,7 +13,7 @@ if (file_exists(APP_ENV_DIR.'/config/defines.php')) {
 }
 
 // Autoload vendor libs
-include(__DIR__.'/lib/vendor/autoload.php');
+include_once(__DIR__.'/lib/_autoload.php');
 
 /*
  * Autoload from lib folder (PSR-0)
