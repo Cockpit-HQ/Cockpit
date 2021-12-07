@@ -1,10 +1,12 @@
 <?php
 
 define('APP_VERSION', '2.0-dev-2021-12-07');
-define('APP_DIR', str_replace(DIRECTORY_SEPARATOR, '/', __DIR__));
 
+if (!defined('APP_START_TIME')) define('APP_START_TIME', microtime(true));
 if (!defined('APP_CLI')) define('APP_CLI', PHP_SAPI == 'cli');
 if (!defined('APP_ADMIN')) define('APP_ADMIN', false);
+
+define('APP_DIR', str_replace(DIRECTORY_SEPARATOR, '/', __DIR__));
 
 // Autoload vendor libs
 include_once(__DIR__.'/lib/_autoload.php');
