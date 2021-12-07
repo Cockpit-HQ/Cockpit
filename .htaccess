@@ -1,5 +1,5 @@
 # Deny access to database + config files
-<Files ~ "\.(sqlite|sdb|s3db|db|yaml|yml)$">
+<Files ~ "\.(sqlite|sdb|s3db|db|yaml|yml|env)$">
   Require all denied
 </Files>
 
@@ -7,7 +7,7 @@
   Require all denied
 </Files>
 
-<Files "cp">
+<Files "tower">
   Require all denied
 </Files>
 
