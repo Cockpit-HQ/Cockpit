@@ -1,5 +1,6 @@
 <?php
 
+define('APP_VERSION', '2.0-dev-2021-12-07');
 define('APP_DIR', str_replace(DIRECTORY_SEPARATOR, '/', __DIR__));
 
 if (!defined('APP_CLI')) define('APP_CLI', PHP_SAPI == 'cli');
@@ -60,7 +61,7 @@ class Cockpit {
             'docs_root' => defined('APP_DOCUMENT_ROOT') ? APP_DOCUMENT_ROOT : null,
             'debug' => APP_CLI ? true : preg_match('/(localhost|::1|\.local)$/', $_SERVER['SERVER_NAME'] ?? ''),
             'app.name' => 'Cockpit',
-            'app.version'  => '2.0-dev-2021-12-07',
+            'app.version'  => APP_VERSION,
             'session.name' => md5($envDir),
             'sec-key' => 'c3b40c4c-db44-s5h7-a814-b5931a15e5e1',
             'i18n' => 'en',
@@ -82,7 +83,10 @@ class Cockpit {
 
         ], $cfg ?? [], $config);
 
-        define('APP_VERSION', $config['debug'] ? time() : $config['app.version']);
+
+        if ($config['debug']) {
+            $config['app.version'] .= '-'.time();
+        }
 
         $app = new Lime\App($config);
 

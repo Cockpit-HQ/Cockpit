@@ -63,7 +63,7 @@ define('APP_DOCUMENT_ROOT', $APP_DOCUMENT_ROOT);
 define('APP_BASE_URL', $APP_BASE_URL);
 define('APP_API_REQUEST', strpos($APP_ROUTE, '/api/') === 0 ? 1:0);
 
-$app = Cockpit::instance(__DIR__);
+$app = clone Cockpit::instance(__DIR__);
 
 if (!APP_API_REQUEST) {
     $app->helper('session')->init();

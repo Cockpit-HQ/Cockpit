@@ -23,8 +23,12 @@
                     <table class="kiss-table">
                         <tbody>
                             <tr>
-                                <td width="50%" class="kiss-size-small">Version</td>
-                                <td class="kiss-size-small kiss-color-muted"><?=$this->retrieve('app.version')?></td>
+                                <td width="50%" class="kiss-size-xsmall">Version</td>
+                                <td class="kiss-size-small kiss-text-bold kiss-color-muted"><?=APP_VERSION?></td>
+                            </tr>
+                            <tr>
+                                <td width="50%" class="kiss-size-xsmall">Debug mode</td>
+                                <td class="kiss-size-small kiss-color-muted"><span class="kiss-badge kiss-badge-outline kiss-color-<?=($this->retrieve('debug') ? 'success':'danger')?>"><?=($this->retrieve('debug') ? 'Enabled':'Disabled')?></span></td>
                             </tr>
                         </tbody>
                     </table>

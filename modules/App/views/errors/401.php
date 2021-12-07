@@ -11,7 +11,7 @@
         'app:assets/css/app.css',
         'app:assets/vendor/noty/noty.min.js',
         ['src' => 'app:assets/js/app.js', 'type' => 'module']
-    ], APP_VERSION)?>
+    ], $this->retrieve('app.version'))?>
 
 </head>
 <body class="kiss-flex kiss-flex-middle">

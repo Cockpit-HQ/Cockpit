@@ -9,7 +9,7 @@ class Theme extends \Lime\Helper {
     protected function initialize() {
 
         $this->vars = [
-            'app.version' => \APP_VERSION,
+            'app.version' => $this->app->retrieve('app.version'),
             'maxUploadSize' => $this->helper('utils')->getMaxUploadSize(),
         ];
     }
@@ -104,13 +104,13 @@ class Theme extends \Lime\Helper {
             ['src' => $this->app->routeUrl('/app.i18n.data.js'), 'type' => 'module'],
         ], $assets);
 
-        $this->app->trigger('app.layout.assets', [&$assets, APP_VERSION, $context]);
+        $this->app->trigger('app.layout.assets', [&$assets, $this->app->retrieve('app.version'), $context]);
 
         if ($this->app->path('#config:theme.css')) {
             $assets[] = '#config:theme.css';
         }
 
-        return $this->app->assets($assets, APP_VERSION);
+        return $this->app->assets($assets, $this->app->retrieve('app.version'));
     }
 
     public function pageClass(?string $class = null) {
