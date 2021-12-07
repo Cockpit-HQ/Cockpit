@@ -10,7 +10,7 @@ export default {
 
                 let height = context == 'table-cell' ? 20 : 50;
 
-                return '<img class="kiss-responsive-height" src="'+App.route(`/assets/thumbnail/${value._id}?m=bestFit&mime=auto&h=${height}`)+'" style="height:'+height+'px">'
+                return '<img class="kiss-responsive-height" src="'+App.route(`/assets/thumbnail/${value._id}?m=bestFit&mime=auto&h=${height}&t=${value._modified}`)+'" style="height:'+height+'px">'
             }
 
             return value.type;

@@ -44,7 +44,7 @@
                 <kiss-container size="small">
                     <div class="kiss-flex kiss-flex-middle kiss-flex-right">
                         <div class="kiss-button-group">
-                            <?php if (_allowed('app.roles.manage')): ?>
+                            <?php if ($this->helper('acl')->isAllowed('app.roles.manage')): ?>
                             <a class="kiss-button" href="<?=$this->route('/system/users/roles')?>"><?=t('Manage roles')?></a>
                             <?php endif ?>
                             <a class="kiss-button kiss-button-primary" href="<?=$this->route('/system/users/create')?>"><?=t('Add user')?></a>

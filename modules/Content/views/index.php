@@ -97,7 +97,7 @@
 
             </div>
 
-            <?php if (_allowed("content/models/manage")): ?>
+            <?php if ($this->helper('acl')->isAllowed("content/models/manage")): ?>
             <app-actionbar>
 
                 <kiss-container size="medium">

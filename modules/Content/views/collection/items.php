@@ -176,7 +176,7 @@
                         </div>
                         <div class="kiss-button-group">
                             <a class="kiss-button" href="<?=$this->route("/content")?>"><?=t('Close')?></a>
-                            <?php if (_allowed("content/{$model['name']}/create")): ?>
+                            <?php if ($this->helper('acl')->isAllowed("content/{$model['name']}/create")): ?>
                             <a class="kiss-button kiss-button-primary" href="<?=$this->route("/content/collection/item/{$model['name']}")?>"><?=t('Create item')?></a>
                             <?php endif ?>
                         </div>

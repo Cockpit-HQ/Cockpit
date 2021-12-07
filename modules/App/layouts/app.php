@@ -68,7 +68,7 @@
                                 <icon>tune</icon>
                             </a>
                         </li>
-                        <?php if (_allowed('app.users.manage')): ?>
+                        <?php if ($this->helper('acl')->isAllowed('app.users.manage')): ?>
                         <li>
                             <a class="kiss-flex kiss-flex-center" href="<?=$this->route('/system/users')?>" aria-label="<?=t('Users')?>" kiss-tooltip="right">
                                 <icon>supervisor_account</icon>
@@ -179,7 +179,7 @@
                                 <icon class="kiss-margin-small-right">tune</icon> <?=t('Settings')?>
                             </a>
                         </li>
-                        <?php if (_allowed('app.users.manage')): ?>
+                        <?php if ($this->helper('acl')->isAllowed('app.users.manage')): ?>
                         <li>
                             <a class="kiss-flex kiss-flex-middle" href="<?=$this->route('/system/users')?>">
                                 <icon class="kiss-margin-small-right">supervisor_account</icon> <?=t('Users')?>

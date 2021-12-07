@@ -9,8 +9,6 @@ $this->helpers['csrf']  = 'App\\Helper\\Csrf';
 $this->helpers['i18n']  = 'App\\Helper\\i18n';
 $this->helpers['rspc']  = 'App\\Helper\\ResponseCache';
 
-
-
 $this->on('app.admin.init', function() {
     include(__DIR__.'/admin.php');
 }, 1000);
@@ -26,7 +24,7 @@ $this->on('app.api.request', function($request) {
 
 }, 1000);
 
-include(__DIR__.'/functions.php');
+include_once(__DIR__.'/functions.php');
 
 // events
 $this->on('app.user.disguise', function(array &$user) {
