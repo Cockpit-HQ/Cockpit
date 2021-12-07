@@ -17,7 +17,7 @@ class System extends \Lime\Helper {
 
             return $rescue instanceof Closure ? $rescue($e) : $rescue;
         }
-    },
+    }
 
     public function report() {
         // to be implemented
