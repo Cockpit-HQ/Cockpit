@@ -20,7 +20,7 @@
     <?php endif ?>
 
 </head>
-<body class="animated fadeIn">
+<body>
 
     <div class="app-container">
         <aside class="app-container-aside">
