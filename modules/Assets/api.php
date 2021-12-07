@@ -64,6 +64,13 @@ $this->on('restApi.config', function($restApi) {
      *         @OA\Schema(type="int")
      *     ),
      *     @OA\Parameter(
+     *         description="Time string for cache invalidation - usable for cache invalidation",
+     *         in="query",
+     *         name="t",
+     *         required=false,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
      *         description="Get binary of generated thumbnail",
      *         in="query",
      *         name="o",
@@ -104,6 +111,7 @@ $this->on('restApi.config', function($restApi) {
                 'base64' => intval($app->param('b64:int', false)),
                 'redirect' => intval($app->param('re:int', false)),
                 'output' => intval($app->param('o:int', false)),
+                'timestamp' => $this->param('t', null),
             ];
 
             $imgPath = $app->helper('asset')->image($options, true);

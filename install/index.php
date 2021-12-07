@@ -55,7 +55,7 @@ if (!count($failed)) {
         include (__DIR__.'/../bootstrap.php');
     }
 
-    $app = APP::instance();
+    $app = Cockpit::instance();
 
     // check whether cockpit is already installed
     try {

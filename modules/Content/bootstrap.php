@@ -469,7 +469,7 @@ $this->module('content')->extend([
 $this->on('assets.asset.remove', function(array $asset) {
 
     if ($this->helper('async')->possible()) {
-        $this->helper('async')->exec('APP::instance()->module("content")->updateRefs($asset["_id"], null);', compact('asset'));
+        $this->helper('async')->exec('Cockpit()->module("content")->updateRefs($asset["_id"], null);', compact('asset'));
     } else {
         $this->module('content')->updateRefs($asset['_id'], null);
     }
@@ -479,7 +479,7 @@ $this->on('assets.asset.remove', function(array $asset) {
 $this->on('assets.asset.update', function(array $asset) {
 
     if ($this->helper('async')->possible()) {
-        $this->helper('async')->exec('APP::instance()->module("content")->updateRefs($asset["_id"], $asset);', compact('asset'));
+        $this->helper('async')->exec('Cockpit()->module("content")->updateRefs($asset["_id"], $asset);', compact('asset'));
     } else {
         $this->module('content')->updateRefs($asset['_id'], $asset);
     }

@@ -20,6 +20,7 @@ class Asset extends \Lime\Helper {
             'quality' => 100,
             'rebuild' => false,
             'base64' => false,
+            'timestamp' => null
         ], $options);
 
         extract($options);
@@ -138,7 +139,7 @@ class Asset extends \Lime\Helper {
 
         $method = $mode;
 
-        $hash = md5(json_encode($options))."_{$quality}_{$mode}.{$ext}";
+        $hash = md5(json_encode(array_merge($options, $asset)))."_{$quality}_{$mode}.{$ext}";
         $thumbpath = $cachefolder."/{$hash}";
 
         if ($rebuild || !$this->app->fileStorage->fileExists($thumbpath)) {

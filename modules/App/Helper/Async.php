@@ -8,7 +8,7 @@ namespace App\Helper;
  *
  * Usage:
  *
- * App::instance()->helper('async')->exec('
+ * Cockpit::instance()->helper('async')->exec('
  *    sleep(10);
  *    file_put_contents(COCKPIT_DIR."/debug.txt", $test);
  * ', ['test' => 222]);
@@ -38,7 +38,8 @@ class Async extends \Lime\Helper {
             $script = "<?php ".$script;
         }
 
-
+$appDir = APP_DIR;
+$envDir = rtrim($this->app->path('#root:'), '/');
 $script = "<?php
 
 if (isset(\$_GET['async'])) {
@@ -46,7 +47,18 @@ if (isset(\$_GET['async'])) {
 }
 
 // include cockpit
-include('".APP_DIR."/bootstrap.php');
+include('{$appDir}/bootstrap.php');
+
+function Cockpit() {
+
+    static \$instance;
+
+    if (!isset(\$instance)) {
+        \$instance = Cockpit::instance('{$envDir}');
+    }
+
+    return \$instance;
+}
 
 extract(".\var_export($params, true).");
 

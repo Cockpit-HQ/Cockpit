@@ -258,6 +258,7 @@ class Assets extends App {
             'height' => intval($this->param('h', null)),
             'quality' => intval($this->param('q', 80)),
             'rebuild' => intval($this->param('r', false)),
+            'timestamp' => $this->param('t', null),
         ];
 
         $thumbUrl = $this->helper('asset')->image($options);

@@ -7,7 +7,7 @@ require __DIR__.'/bootstrap.php';
 
 use Symfony\Component\Console\Application;
 
-$app = APP::instance();
+$app = Cockpit::instance();
 $cli = new Application("Tower - {$app['app.name']}", $app['app.version']);
 
 $app->trigger('cli.bootstrap', [$cli]);

@@ -5,15 +5,11 @@ define('APP_DIR', str_replace(DIRECTORY_SEPARATOR, '/', __DIR__));
 if (!defined('APP_CLI')) define('APP_CLI', PHP_SAPI == 'cli');
 if (!defined('APP_ADMIN')) define('APP_ADMIN', false);
 
-if (!defined('APP_ENV_DIR')) define('APP_ENV_DIR', APP_DIR);
-
-// check for custom defines
-if (file_exists(APP_ENV_DIR.'/config/defines.php')) {
-    include(APP_ENV_DIR.'/config/defines.php');
-}
-
 // Autoload vendor libs
 include_once(__DIR__.'/lib/_autoload.php');
+
+// load .env file if exists
+DotEnv::load(APP_DIR);
 
 /*
  * Autoload from lib folder (PSR-0)
@@ -23,36 +19,40 @@ spl_autoload_register(function($class) {
     if (file_exists($class_path)) include_once($class_path);
 });
 
-// load .env file if exists
-DotEnv::load(APP_ENV_DIR);
 
-if (APP_ENV_DIR != APP_DIR) {
-    DotEnv::load(APP_ENV_DIR);
-}
+class Cockpit {
 
+    protected static $instance = [];
 
-class APP {
+    public static function instance(?string $envDir = null, array $config = []): Lime\App {
 
-    protected static $instance = null;
-    protected static $app = null;
-
-    public static function instance(bool $clone = false): Lime\App {
-
-        if (!static::$instance) {
-            static::init();
-            static::$app = clone static::$instance;
+        if (!$envDir) {
+            $envDir = APP_DIR;
         }
 
-        return !$clone ? static::$app : clone static::$instance;
+        if (!isset(static::$instance[$envDir])) {
+            static::$instance[$envDir] = static::init($envDir, $config);
+        }
+
+        return static::$instance[$envDir];
     }
 
-    protected static function init(): Lime\App {
+    protected static function init(?string $envDir = null, array $config = []): Lime\App {
 
-        $app = null;
-        $config = null;
+        $appDir = APP_DIR;
+        $app    = null;
+        $cfg    = null;
 
-        if (file_exists(APP_ENV_DIR.'/config/config.php')) {
-            $config = include(APP_ENV_DIR.'/config/config.php');
+        if (!$envDir) {
+            $envDir = $appDir;
+        }
+
+        if ($appDir != $envDir) {
+            DotEnv::load($envDir);
+        }
+
+        if (file_exists("{$envDir}/config/config.php")) {
+            $cfg = include("{$envDir}/config/config.php");
         }
 
         $config = array_replace_recursive([
@@ -60,26 +60,27 @@ class APP {
             'docs_root' => defined('APP_DOCUMENT_ROOT') ? APP_DOCUMENT_ROOT : null,
             'debug' => APP_CLI ? true : preg_match('/(localhost|::1|\.local)$/', $_SERVER['SERVER_NAME'] ?? ''),
             'app.name' => 'Cockpit',
-            'app.version'  => '2.0-dev-2021-12-01',
-            'session.name' => md5(APP_ENV_DIR),
+            'app.version'  => '2.0-dev-2021-12-07',
+            'session.name' => md5($envDir),
             'sec-key' => 'c3b40c4c-db44-s5h7-a814-b5931a15e5e1',
             'i18n' => 'en',
 
-            'database' => ['server' => 'mongolite://'.(APP_ENV_DIR.'/storage/data'), 'options' => ['db' => 'app'], 'driverOptions' => [] ],
-            'memory'   => ['server' => 'redislite://'.(APP_ENV_DIR.'/storage/data/app.memory.sqlite'), 'options' => [] ],
+            'database' => ['server' => 'mongolite://'.($envDir.'/storage/data'), 'options' => ['db' => 'app'], 'driverOptions' => [] ],
+            'memory'   => ['server' => 'redislite://'.($envDir.'/storage/data/app.memory.sqlite'), 'options' => [] ],
 
             'paths' => [
-                '#root'    => APP_ENV_DIR,
-                '#config'  => APP_ENV_DIR.'/config',
-                '#modules' => APP_ENV_DIR.'/modules',
-                '#addons'  => APP_ENV_DIR.'/addons',
-                '#storage' => APP_ENV_DIR.'/storage',
-                '#cache'   => APP_ENV_DIR.'/storage/cache',
-                '#tmp'     => APP_ENV_DIR.'/storage/tmp',
-                '#uploads' => APP_ENV_DIR.'/storage/uploads',
+                '#app'     => __DIR__,
+                '#root'    => $envDir,
+                '#config'  => $envDir.'/config',
+                '#modules' => $envDir.'/modules',
+                '#addons'  => $envDir.'/addons',
+                '#storage' => $envDir.'/storage',
+                '#cache'   => $envDir.'/storage/cache',
+                '#tmp'     => $envDir.'/storage/tmp',
+                '#uploads' => $envDir.'/storage/uploads',
             ]
 
-        ], $config ?? []);
+        ], $cfg ?? [], $config);
 
         define('APP_VERSION', $config['debug'] ? time() : $config['app.version']);
 
@@ -97,6 +98,13 @@ class APP {
         $app->service('fileStorage', function() use($config, $app) {
 
             $storages = array_replace_recursive([
+
+                '#app' => [
+                    'adapter' => 'League\Flysystem\Local\LocalFilesystemAdapter',
+                    'args' => [$app->path('#app:')],
+                    'mount' => true,
+                    'url' => $app->pathToUrl('#app:', true)
+                ],
 
                 'root' => [
                     'adapter' => 'League\Flysystem\Local\LocalFilesystemAdapter',
@@ -171,13 +179,12 @@ class APP {
         });
 
         $modulesPaths = [
-            APP_DIR.'/modules',  # core
-            APP_DIR.'/addons' # addons
+            "{$appDir}/modules",  # core
+            "{$appDir}/addons" # addons
         ];
 
         // if custon env dir
-        if (APP_ENV_DIR != APP_ENV_DIR) {
-            $modulesPaths[] = $config['paths']['#modules'];
+        if ($appDir != $envDir) {
             $modulesPaths[] = $config['paths']['#addons'];
         }
 
@@ -191,9 +198,7 @@ class APP {
 
         $app->trigger('bootstrap');
 
-        static::$instance = $app;
-
-        return static::$instance;
+        return $app;
     }
 
 }
