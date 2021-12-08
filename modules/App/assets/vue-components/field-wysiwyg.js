@@ -64,6 +64,7 @@ export default {
         ready.then(() => {
 
             let opts = Object.assign({
+                deprecation_warnings: false,
                 target: this.$el.querySelector('.wysiwyg-container'),
                 menubar: false,
                 plugins: [

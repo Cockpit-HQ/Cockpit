@@ -1,3 +1,23 @@
+## 5.64.0 (2021-11-20)
+
+### Bug fixes
+
+Fix a crash that occurred in some situations with replacing marks across line breaks.
+
+Make sure native scrollbars reset their position when hidden and re-shown.
+
+### New features
+
+[vim bindings](https://codemirror.net/demo/vim.html): Support C-u to delete back a line.
+
+## 5.63.3 (2021-10-11)
+
+### Bug fixes
+
+Prevent external styles from giving the hidden textarea a min-height.
+
+Remove a stray autosave file that was part of the previous release.
+
 ## 5.63.1 (2021-09-29)
 
 ### Bug fixes
