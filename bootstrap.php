@@ -1,6 +1,6 @@
 <?php
 
-define('APP_VERSION', '2.0-dev-2021-12-07');
+define('APP_VERSION', '2.0-dev-2021-12-10');
 
 if (!defined('APP_START_TIME')) define('APP_START_TIME', microtime(true));
 if (!defined('APP_CLI')) define('APP_CLI', PHP_SAPI == 'cli');
@@ -68,8 +68,15 @@ class Cockpit {
             'sec-key' => 'c3b40c4c-db44-s5h7-a814-b5931a15e5e1',
             'i18n' => 'en',
 
-            'database' => ['server' => 'mongolite://'.($envDir.'/storage/data'), 'options' => ['db' => 'app'], 'driverOptions' => [] ],
-            'memory'   => ['server' => 'redislite://'.($envDir.'/storage/data/app.memory.sqlite'), 'options' => [] ],
+            'database' => [
+                'server' => "mongolite://{$envDir}/storage/data",
+                'options' => ['db' => 'app'],
+                'driverOptions' => []
+            ],
+            'memory' => [
+                'server' => "redislite://{$envDir}/storage/data/app.memory.sqlite",
+                'options' => []
+            ],
 
             'paths' => [
                 '#app'     => __DIR__,
@@ -185,8 +192,8 @@ class Cockpit {
         });
 
         $modulesPaths = [
-            "{$appDir}/modules",  # core
-            "{$appDir}/addons" # addons
+            "{$appDir}/modules", # core
+            "{$appDir}/addons"   # addons
         ];
 
         // if custon env dir
