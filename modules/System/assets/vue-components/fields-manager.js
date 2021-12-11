@@ -229,7 +229,7 @@ let FieldsManager = {
                                             <strong class="kiss-size-small">{{ f.label || fieldType }}</strong>
                                             <div class="kiss-color-muted kiss-size-xsmall">{{ f.info || '' }}</div>
                                         </div>
-                                        <a class="kiss-cover" @click="field.type = fieldType"></a>
+                                        <a class="kiss-cover" @click="setFieldType(fieldType)"></a>
                                     </kiss-row>
                                 </kiss-card>
 
@@ -283,6 +283,14 @@ let FieldsManager = {
             this.$forceUpdate();
 
             this.field = null;
+        },
+
+        setFieldType(fieldType) {
+
+            if (this.field.type != fieldType) {
+                this.field.opts = {};
+                this.field.type = fieldType;
+            }
         },
 
         update() {

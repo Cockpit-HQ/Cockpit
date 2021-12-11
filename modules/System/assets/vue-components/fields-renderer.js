@@ -4,13 +4,20 @@ let FieldRenderer = {
 
     data() {
 
-        if (this.modelValue === null) {
+        if (this.modelValue === undefined) {
 
-            if (this.locale) {
-                this.$emit('update:modelValue', this.field.opts && this.field.opts[`default_${this.locale}`] ? this.field.opts[`default_${this.locale}`] : null);
-            } else {
-                this.$emit('update:modelValue', this.field.opts && this.field.opts.default ? this.field.opts.default : null);
+            let val =  null;
+
+            if (this.field.opts) {
+
+                val = (!this.locale && this.field.opts.default !== undefined) || null;
+
+                if (this.locale && this.field.opts[`default_${this.locale}`]) {
+                    val = this.field.opts[`default_${this.locale}`];
+                }
             }
+
+            this.$emit('update:modelValue', val);
         }
 
         return {
@@ -22,7 +29,7 @@ let FieldRenderer = {
 
     props: {
         modelValue: {
-            default: null
+            default: undefined
         },
         field: {
             default: null
