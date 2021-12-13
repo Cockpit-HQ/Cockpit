@@ -59,10 +59,18 @@ export default {
 
         selectAsset: {
             default: null
+        },
+
+        initFilter: {
+            default: null
         }
     },
 
     mounted() {
+
+        if (this.initFilter) {
+            this.filter = typeof(this.initFilter) == 'string' ? this.initFilter : JSON5.stringify(this.initFilter);
+        }
 
         this.load();
 

@@ -27,6 +27,10 @@ export default {
         modelValue: {
             type: String,
             default: null
+        },
+
+        filter: {
+            default: null
         }
     },
 
@@ -79,7 +83,7 @@ export default {
 
         pickAsset() {
 
-            VueView.ui.modal('assets:assets/dialogs/asset-picker.js', {}, {
+            VueView.ui.modal('assets:assets/dialogs/asset-picker.js', {filter:this.filter}, {
                 selectAsset: (asset) => {
 
                     this.val = asset;

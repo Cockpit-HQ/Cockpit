@@ -1665,6 +1665,7 @@
               },
 
               data() {
+
                   return  {
                       data
                   }

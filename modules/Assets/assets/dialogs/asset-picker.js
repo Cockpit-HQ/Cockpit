@@ -8,6 +8,13 @@ export default {
         }
     },
 
+    props: {
+        filter: {
+            default: null
+        }
+    },
+
+
     components: {
         assetsManager
     },
@@ -21,7 +28,7 @@ export default {
             </div>
 
             <div class="kiss-margin">
-                <assets-manager :modal="true" :selectAsset="selectAsset"></assets-manager>
+                <assets-manager :modal="true" :selectAsset="selectAsset" :initFilter="filter"></assets-manager>
             </div>
 
         </div>
