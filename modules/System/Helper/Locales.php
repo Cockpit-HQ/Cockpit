@@ -107,6 +107,11 @@ class Locales extends \Lime\Helper {
         ])->toArray();
 
         foreach ($locales as $locale) {
+
+            if (isset($locale['enabled']) && !$locale['enabled']) {
+                continue;
+            }
+
             $cache[$locale['i18n']] = $locale;
         }
 

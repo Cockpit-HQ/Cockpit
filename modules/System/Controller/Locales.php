@@ -34,6 +34,11 @@ class Locales extends App {
 
         $locale['meta'] = new ArrayObject($locale['meta']);
 
+        // to be removed
+        if (!isset($locale['enabled'])) {
+            $locale['enabled'] = true;
+        }
+
         return $this->render('system:views/locales/locale.php', compact('locale'));
     }
 
@@ -42,7 +47,8 @@ class Locales extends App {
         $locale = [
             'i18n' => '',
             'name'  => '',
-            'meta' => new ArrayObject([])
+            'enabled' => true,
+            'meta' => new ArrayObject([]),
         ];
 
         return $this->render('system:views/locales/locale.php', compact('locale'));
@@ -86,6 +92,10 @@ class Locales extends App {
 
         foreach (['i18n', 'name'] as $key) {
             $locale[$key] = strip_tags(trim($locale[$key]));
+        }
+
+        if ($locale['i18n'] == 'default') {
+            $locale['enabled'] = true;
         }
 
         // unique check

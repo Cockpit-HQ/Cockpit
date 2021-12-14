@@ -25,6 +25,11 @@
                     <input class="kiss-input" type="text" v-model="locale.name" required>
                 </div>
 
+                <div class="kiss-margin">
+                    <label><?=t('Enabled')?></label>
+                    <field-boolean v-model="locale.enabled"></field-boolean>
+                </div>
+
                 <app-actionbar>
 
                     <kiss-container size="small">
