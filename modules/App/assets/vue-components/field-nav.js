@@ -156,7 +156,6 @@ export default {
                 @change="change"
                 handle=".lm-handle"
                 class="field-nav-dragarea"
-                style="min-height: 100px;"
             >
                 <template #item="{ element }">
                     <div class="kiss-margin-xsmall">
