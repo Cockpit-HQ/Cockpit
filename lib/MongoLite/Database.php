@@ -423,6 +423,10 @@ class UtilArrayQuery {
                 }
                 break;
 
+            case '$ne':
+                $r = $a != $b;
+                break;
+
             case '$size' :
                 if (!\is_array($a)) $a = @\json_decode($a, true) ?  : [];
                 $r = (int) $b == \count($a);
