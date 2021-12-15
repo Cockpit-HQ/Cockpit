@@ -10,7 +10,7 @@ let FieldRenderer = {
 
             if (this.field.opts) {
 
-                val = (!this.locale && this.field.opts.default !== undefined) || null;
+                val = (!this.locale && this.field.opts.default !== undefined && this.field.opts.default) || null;
 
                 if (this.locale && this.field.opts[`default_${this.locale}`]) {
                     val = this.field.opts[`default_${this.locale}`];
