@@ -28,35 +28,47 @@ class Assets extends App {
         if ($skip   = $this->param('skip'  , null)) $options['skip']   = $skip;
         if ($folder = $this->param('folder', null)) $options['folder'] = $folder;
 
-        if (isset($options['filter']) && is_string($options['filter'])) {
+        if (isset($options['filter']) && (is_string($options['filter']) || \is_countable($options['filter']))) {
 
-            $filter = null;
+            $filter = [];
 
-            if (\preg_match('/^\{(.*)\}$/', $options['filter'])) {
+            $options['filter'] = \is_countable($options['filter']) ? $options['filter'] : [$options['filter']];
 
-                try {
-                    $filter = json5_decode($options['filter'], true);
-                } catch (\Exception $e) {}
-            }
+            foreach ($options['filter'] as $f) {
 
-            if (!$filter) {
-
-                $terms = str_getcsv(trim($options['filter']), ' ');
-
-                $filter = ['$or' => []];
-
-                foreach ($terms as $term) {
-                    $filter['$or'][] = [
-                        '$or' => [
-                            ['title' => ['$regex' => $term, '$options' => 'i']],
-                            ['description' => ['$regex' => $term, '$options' => 'i']],
-                            ['tags' => $term],
-                        ]
-                    ];
+                if (!is_string($f)) {
+                    $filter[] = $f;
+                    continue;
                 }
+
+                if (\preg_match('/^\{(.*)\}$/', $f)) {
+
+                    try {
+                        $f = json5_decode($f, true);
+                    } catch (\Exception $e) {}
+
+                } else {
+
+                    $terms = str_getcsv(trim($f), ' ');
+
+                    $f = ['$or' => []];
+
+                    foreach ($terms as $term) {
+                        $f['$or'][] = [
+                            '$or' => [
+                                ['title' => ['$regex' => $term, '$options' => 'i']],
+                                ['description' => ['$regex' => $term, '$options' => 'i']],
+                                ['tags' => $term],
+                            ]
+                        ];
+                    }
+                }
+
+                $filter[] = $f;
             }
 
-            $options['filter'] = $filter;
+            $options['filter'] = count($filter) ? ['$and' => $filter] : null;
+
         }
 
         if ($folder) {

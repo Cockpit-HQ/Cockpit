@@ -68,10 +68,6 @@ export default {
 
     mounted() {
 
-        if (this.initFilter) {
-            this.filter = typeof(this.initFilter) == 'string' ? this.initFilter : JSON5.stringify(this.initFilter);
-        }
-
         this.load();
 
         App.assets.require([
@@ -318,8 +314,8 @@ export default {
                 skip: (page - 1) * this.limit,
             };
 
-            if (this.filter) {
-                options.filter = this.filter;
+            if (this.filter || this.initFilter) {
+                options.filter = [this.filter, this.initFilter].filter(f => f);
             }
 
             this.loading = true;
