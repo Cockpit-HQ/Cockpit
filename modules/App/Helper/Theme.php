@@ -60,7 +60,7 @@ class Theme extends \Lime\Helper {
             return $this->app->pathToUrl('#config:favicon.png');
         }
 
-        return $this->baseUrl('/favicon.png');
+        return $this->pathToUrl('#app:favicon.png');
     }
 
     public function logo(?string $url = null): ?string {

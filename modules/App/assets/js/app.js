@@ -9,11 +9,14 @@ import ui from "./app/ui.js";
 import assets from "./app/assets.js";
 import "./components.js";
 
-
 let html = document.documentElement;
+let baseUrl = (html.getAttribute('data-base') || '').replace(/\/$/, '');
+let routeUrl = (html.getAttribute('data-route') || '').replace(/\/$/, '');
+
 let App = {
 
-    base_url: (html.getAttribute("data-base") || '').replace(/\/$/, ''),
+    base_url: baseUrl,
+    route_url: routeUrl,
     version: (html.getAttribute("data-version") || '0.0.1'),
 
     _events: {},
@@ -31,7 +34,7 @@ let App = {
     },
 
     route: function (url) {
-        return this.base_url + url;
+        return this.route_url + url;
     },
 
     reroute: function (url) {

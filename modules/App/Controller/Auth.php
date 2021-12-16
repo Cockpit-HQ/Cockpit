@@ -24,7 +24,7 @@ class Auth extends Base {
             $redirectTo = '/';
         }
 
-        $redirectTo = htmlspecialchars($this->baseUrl($redirectTo), ENT_QUOTES, 'UTF-8');
+        $redirectTo = htmlspecialchars($this->routeUrl($redirectTo), ENT_QUOTES, 'UTF-8');
 
         $this->helper('theme')->pageClass('login-page');
 
