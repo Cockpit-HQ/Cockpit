@@ -1,33 +1,33 @@
 let ready = new Promise(function(resolve) {
 
     App.assets.require([
-        '/modules/App/assets/vendor/codemirror/lib/codemirror.js',
-        '/modules/App/assets/css/vendor/codemirror.css',
+        'app:assets/vendor/codemirror/lib/codemirror.js',
+        'app:assets/css/vendor/codemirror.css',
     ], function() {
 
         App.assets.require([
             // Modes
-            '/modules/App/assets/vendor/codemirror/mode/clike/clike.js',
-            '/modules/App/assets/vendor/codemirror/mode/css/css.js',
-            '/modules/App/assets/vendor/codemirror/mode/gfm/gfm.js',
-            '/modules/App/assets/vendor/codemirror/mode/htmlembedded/htmlembedded.js',
-            '/modules/App/assets/vendor/codemirror/mode/htmlmixed/htmlmixed.js',
-            '/modules/App/assets/vendor/codemirror/mode/javascript/javascript.js',
-            '/modules/App/assets/vendor/codemirror/mode/markdown/markdown.js',
-            '/modules/App/assets/vendor/codemirror/mode/php/php.js',
-            '/modules/App/assets/vendor/codemirror/mode/sql/sql.js',
-            '/modules/App/assets/vendor/codemirror/mode/twig/twig.js',
-            '/modules/App/assets/vendor/codemirror/mode/xml/xml.js',
-            '/modules/App/assets/vendor/codemirror/mode/xquery/xquery.js',
-            '/modules/App/assets/vendor/codemirror/mode/yaml/yaml.js',
-            '/modules/App/assets/vendor/codemirror/mode/yaml-frontmatter/yaml-frontmatter.js',
+            'app:assets/vendor/codemirror/mode/clike/clike.js',
+            'app:assets/vendor/codemirror/mode/css/css.js',
+            'app:assets/vendor/codemirror/mode/gfm/gfm.js',
+            'app:assets/vendor/codemirror/mode/htmlembedded/htmlembedded.js',
+            'app:assets/vendor/codemirror/mode/htmlmixed/htmlmixed.js',
+            'app:assets/vendor/codemirror/mode/javascript/javascript.js',
+            'app:assets/vendor/codemirror/mode/markdown/markdown.js',
+            'app:assets/vendor/codemirror/mode/php/php.js',
+            'app:assets/vendor/codemirror/mode/sql/sql.js',
+            'app:assets/vendor/codemirror/mode/twig/twig.js',
+            'app:assets/vendor/codemirror/mode/xml/xml.js',
+            'app:assets/vendor/codemirror/mode/xquery/xquery.js',
+            'app:assets/vendor/codemirror/mode/yaml/yaml.js',
+            'app:assets/vendor/codemirror/mode/yaml-frontmatter/yaml-frontmatter.js',
 
-            '/modules/App/assets/vendor/codemirror/addon/fold/foldgutter.css',
-            '/modules/App/assets/vendor/codemirror/addon/fold/foldcode.js',
-            '/modules/App/assets/vendor/codemirror/addon/fold/foldgutter.js',
-            '/modules/App/assets/vendor/codemirror/addon/fold/brace-fold.js',
-            '/modules/App/assets/vendor/codemirror/addon/fold/indent-fold.js',
-            '/modules/App/assets/vendor/codemirror/addon/fold/xml-fold.js',
+            'app:assets/vendor/codemirror/addon/fold/foldgutter.css',
+            'app:assets/vendor/codemirror/addon/fold/foldcode.js',
+            'app:assets/vendor/codemirror/addon/fold/foldgutter.js',
+            'app:assets/vendor/codemirror/addon/fold/brace-fold.js',
+            'app:assets/vendor/codemirror/addon/fold/indent-fold.js',
+            'app:assets/vendor/codemirror/addon/fold/xml-fold.js',
 
         ], function() {
             resolve(window.CodeMirror);

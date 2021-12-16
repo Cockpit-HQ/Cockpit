@@ -1,7 +1,7 @@
 let ready = new Promise(function(resolve) {
 
     App.assets.require([
-        '/modules/App/assets/vendor/tinymce/tinymce.min.js'
+        'app:assets/vendor/tinymce/tinymce.min.js'
     ], function() {
         resolve(window.tinymce);
     });
@@ -83,7 +83,7 @@ export default {
 
                 content_style: '',
 
-                skin_url: App.base('/modules/App/assets/css/vendor/tinymce'),
+                skin_url: App.base('app:assets/css/vendor/tinymce'),
                 relative_urls : false,
                 paste_as_text: true
 
