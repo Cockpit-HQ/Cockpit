@@ -849,7 +849,7 @@ class App implements \ArrayAccess {
     * @param  String $route Route to parse
     * @return void
     */
-    public function run(?string $route = null, ?Request $request, bool $flush = true): Response {
+    public function run(?string $route = null, ?Request $request = null, bool $flush = true): Response {
 
         $self = $this;
 
@@ -1197,7 +1197,7 @@ class App implements \ArrayAccess {
 
     // Array Access implementation
 
-    public function offsetSet($key, $value): mixed {
+    public function offsetSet(mixed $key, mixed $value): void {
         $this->registry[$key] = $value;
     }
 
@@ -1216,7 +1216,7 @@ class App implements \ArrayAccess {
         return isset($this->registry[$key]);
     }
 
-    public function offsetUnset($key) {
+    public function offsetUnset(mixed $key): void {
         unset($this->registry[$key]);
     }
 
