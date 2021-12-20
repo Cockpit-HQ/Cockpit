@@ -30,6 +30,7 @@ icon,
     /* Support for Firefox. */
     -moz-osx-font-smoothing: grayscale;
 
+    font-feature-settings: 'liga';
     -webkit-font-feature-settings: 'liga';
 }
 

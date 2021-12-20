@@ -29,7 +29,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => 'eb8edcab7e6921d81207b0f461c9d5837268a89e',
+    'reference' => '045b3d9981d1a2b73bbc5fca815fe68dc4e73d12',
     'name' => 'agentejo/cockpit',
   ),
   'versions' => 
@@ -41,7 +41,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => 'eb8edcab7e6921d81207b0f461c9d5837268a89e',
+      'reference' => '045b3d9981d1a2b73bbc5fca815fe68dc4e73d12',
     ),
     'bacon/bacon-qr-code' => 
     array (
@@ -54,12 +54,12 @@ private static $installed = array (
     ),
     'claviska/simpleimage' => 
     array (
-      'pretty_version' => '3.6.4',
-      'version' => '3.6.4.0',
+      'pretty_version' => '3.6.5',
+      'version' => '3.6.5.0',
       'aliases' => 
       array (
       ),
-      'reference' => '21b6f4bf4ef1927158b3e29bd0c2d99c6681c750',
+      'reference' => '00f90662686696b9b7157dbb176183aabe89700f',
     ),
     'colinodell/json5' => 
     array (
@@ -108,12 +108,12 @@ private static $installed = array (
     ),
     'guzzlehttp/guzzle' => 
     array (
-      'pretty_version' => '7.4.0',
-      'version' => '7.4.0.0',
+      'pretty_version' => '7.4.1',
+      'version' => '7.4.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => '868b3571a039f0ebc11ac8f344f4080babe2cb94',
+      'reference' => 'ee0a041b1760e6a53d2a39c8c34115adc2af2c79',
     ),
     'guzzlehttp/promises' => 
     array (
@@ -187,12 +187,12 @@ private static $installed = array (
     ),
     'mongodb/mongodb' => 
     array (
-      'pretty_version' => '1.10.0',
-      'version' => '1.10.0.0',
+      'pretty_version' => '1.11.0',
+      'version' => '1.11.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'b0bbd657f84219212487d01a8ffe93a789e1e488',
+      'reference' => 'e4aa59ab15b6fe00a0e56b6772f8b515a0f01bf0',
     ),
     'phpmailer/phpmailer' => 
     array (
@@ -305,21 +305,21 @@ private static $installed = array (
     ),
     'symfony/console' => 
     array (
-      'pretty_version' => 'v5.4.0',
-      'version' => '5.4.0.0',
+      'pretty_version' => 'v5.4.1',
+      'version' => '5.4.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'ec3661faca1d110d6c307e124b44f99ac54179e3',
+      'reference' => '9130e1a0fc93cb0faadca4ee917171bd2ca9e5f4',
     ),
     'symfony/deprecation-contracts' => 
     array (
-      'pretty_version' => 'v2.5.0',
-      'version' => '2.5.0.0',
+      'pretty_version' => 'v3.0.0',
+      'version' => '3.0.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '6f981ee24cf69ee7ce9736146d1c57c2780598a8',
+      'reference' => 'c726b64c1ccfe2896cb7df2e1331c357ad1c8ced',
     ),
     'symfony/finder' => 
     array (
@@ -404,21 +404,21 @@ private static $installed = array (
     ),
     'symfony/string' => 
     array (
-      'pretty_version' => 'v6.0.0',
-      'version' => '6.0.0.0',
+      'pretty_version' => 'v6.0.1',
+      'version' => '6.0.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'ba727797426af0f587f4800566300bdc0cda0777',
+      'reference' => '0cfed595758ec6e0a25591bdc8ca733c1896af32',
     ),
     'symfony/yaml' => 
     array (
-      'pretty_version' => 'v6.0.0',
-      'version' => '6.0.0.0',
+      'pretty_version' => 'v6.0.1',
+      'version' => '6.0.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'f3064a2e0b5eabaeaf92db0a5913a77098b3b91e',
+      'reference' => 'd34390fe7e8c0fe7e4192c67c27ecf58bc7d3ed7',
     ),
     'webonyx/graphql-php' => 
     array (

@@ -135,7 +135,8 @@ class Cursor implements \Iterator {
      */
     public function each(mixed $callable): self {
 
-        foreach ($this->rewind() as $document) {
+
+        foreach ($this->current() as $document) {
             $callable($document);
         }
 
@@ -237,7 +238,7 @@ class Cursor implements \Iterator {
     /**
      * Iterator implementation
      */
-    public function rewind() {
+    public function rewind(): void {
 
         if ($this->position!==false) {
             $this->position = 0;

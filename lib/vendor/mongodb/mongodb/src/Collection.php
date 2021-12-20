@@ -87,9 +87,6 @@ class Collection
     /** @var integer */
     private static $wireVersionForReadConcernWithWriteStage = 8;
 
-    /** @var integer */
-    private static $wireVersionForSecondarySupportsWriteStage = 13;
-
     /** @var string */
     private $collectionName;
 
@@ -140,11 +137,11 @@ class Collection
      */
     public function __construct(Manager $manager, $databaseName, $collectionName, array $options = [])
     {
-        if (strlen($databaseName) < 1) {
+        if (strlen((string) $databaseName) < 1) {
             throw new InvalidArgumentException('$databaseName is invalid: ' . $databaseName);
         }
 
-        if (strlen($collectionName) < 1) {
+        if (strlen((string) $collectionName) < 1) {
             throw new InvalidArgumentException('$collectionName is invalid: ' . $collectionName);
         }
 
@@ -228,21 +225,9 @@ class Collection
             $options['readPreference'] = $this->readPreference;
         }
 
-        $server = select_server($this->manager, $options);
-
-        /* If a write stage is being used with a read preference (explicit or
-         * inherited), check that the wire version supports it. If not, force a
-         * primary read preference and select a new server if necessary. */
-        if (
-            $hasWriteStage && isset($options['readPreference']) &&
-            ! server_supports_feature($server, self::$wireVersionForSecondarySupportsWriteStage)
-        ) {
-            $options['readPreference'] = new ReadPreference(ReadPreference::RP_PRIMARY);
-
-            if ($server->isSecondary()) {
-                $server = select_server($this->manager, $options);
-            }
-        }
+        $server = $hasWriteStage
+            ? select_server_for_aggregate_write_stage($this->manager, $options)
+            : select_server($this->manager, $options);
 
         /* MongoDB 4.2 and later supports a read concern when an $out stage is
          * being used, but earlier versions do not.
