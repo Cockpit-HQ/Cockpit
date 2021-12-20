@@ -50,7 +50,7 @@ class Asset extends \Lime\Helper {
 
         // normalize path
         if (strpos($src, '../') !== false) {
-            $src = implode('/', array_filter(explode('/', $src), fn($s) => trim($s, '.')));
+            $src = implode('/', array_filter(explode('/', $src), fn ($s) => trim($s, '.')));
         }
 
         $src   = rawurldecode($src);
@@ -103,7 +103,7 @@ class Asset extends \Lime\Helper {
         }
 
         // check if image
-        if (!in_array($ext, ['png','jpg','jpeg','gif', 'webp'])) {
+        if (!in_array($ext, ['png', 'jpg', 'jpeg', 'gif', 'webp'])) {
             return $srcUrl;
         }
 
@@ -114,8 +114,8 @@ class Asset extends \Lime\Helper {
             if ($width == 'original') $width = $w;
             if ($height == 'original') $height = $h;
 
-            if (!$width) $width = ceil($w * ($height/$h));
-            if (!$height) $height = ceil($h * ($width/$w));
+            if (!$width) $width = ceil($w * ($height / $h));
+            if (!$height) $height = ceil($h * ($width / $w));
         }
 
         if (is_null($width) && is_null($height)) {
@@ -126,11 +126,11 @@ class Asset extends \Lime\Helper {
             $fp = 'center';
         }
 
-        if (!in_array($mode, ['thumbnail', 'bestFit', 'resize','fitToWidth','fitToHeight'])) {
+        if (!in_array($mode, ['thumbnail', 'bestFit', 'resize', 'fitToWidth', 'fitToHeight'])) {
             $mode = 'thumbnail';
         }
 
-        if ($mime && in_array($mime, ['gif','jpeg','png','webp','bmp'])) {
+        if ($mime && in_array($mime, ['gif', 'jpeg', 'png', 'webp', 'bmp'])) {
             $ext = $mime;
             $mime = "image/{$ext}";
         } else {
@@ -139,7 +139,7 @@ class Asset extends \Lime\Helper {
 
         $method = $mode;
 
-        $hash = md5(json_encode(array_merge($options, $asset)))."_{$quality}_{$mode}.{$ext}";
+        $hash = md5(json_encode($options))."_{$quality}_{$mode}.{$ext}";
         $thumbpath = $cachefolder."/{$hash}";
 
         if ($rebuild || !$this->app->fileStorage->fileExists($thumbpath)) {
@@ -202,11 +202,11 @@ class Img {
         return $this;
     }
 
-    public function base64data($format=null, $quality=100) {
+    public function base64data($format = null, $quality = 100) {
         return $this->image->toDataUri($format, $quality);
     }
 
-    public function show($format=null, $quality=100) {
+    public function show($format = null, $quality = 100) {
         $this->image->toScreen($format, $quality);
     }
 
@@ -225,9 +225,9 @@ class Img {
 
             // Fit to height/width
             if ($targetRatio > $currentRatio) {
-              $this->image->resize(null, $height);
+                $this->image->resize(null, $height);
             } else {
-              $this->image->resize($width, null);
+                $this->image->resize($width, null);
             }
 
             $anchor = \explode(' ', $anchor);
