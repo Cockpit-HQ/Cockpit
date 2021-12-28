@@ -275,7 +275,7 @@ class Assets extends App {
 
         $thumbUrl = $this->helper('asset')->image($options);
 
-        if (!$thumbUrl) {
+        if (!$thumbUrl || isset($thumbUrl['error'])) {
             return false;
         }
 

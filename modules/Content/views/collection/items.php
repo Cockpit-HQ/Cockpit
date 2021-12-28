@@ -1,18 +1,20 @@
 <kiss-container class="kiss-margin-small">
 
     <ul class="kiss-breadcrumbs">
-        <li><a href="<?=$this->route('/content')?>"><?=t('Content')?></a></li>
+        <li><a href="<?= $this->route('/content') ?>"><?= t('Content') ?></a></li>
     </ul>
 
     <div class="kiss-flex kiss-flex-middle kiss-margin-bottom">
         <div class="kiss-margin-small-right">
-            <kiss-svg class="kiss-margin-auto" src="<?=$this->base('content:assets/icons/collection.svg')?>" width="25" height="25" style="color:<?=($this->escape($model['color'] ?? 'inherit'))?>"><canvas width="35" height="35"></canvas></kiss-svg>
+            <kiss-svg class="kiss-margin-auto" src="<?= $this->base('content:assets/icons/collection.svg') ?>" width="25" height="25" style="color:<?= ($this->escape($model['color'] ?? 'inherit')) ?>"><canvas width="35" height="35"></canvas></kiss-svg>
         </div>
         <div class="kiss-margin-small-right">
-            <div class="kiss-size-5 kiss-text-bold"><?=$this->escape($model['label'] ? $model['label'] : $model['name'])?></div>
+            <div class="kiss-size-5 kiss-text-bold"><?= $this->escape($model['label'] ? $model['label'] : $model['name']) ?></div>
         </div>
         <div>
-            <a class="kiss-size-large" kiss-popoutmenu="#model-menu-actions"><icon>more_horiz</icon></a>
+            <a class="kiss-size-large" kiss-popoutmenu="#model-menu-actions">
+                <icon>more_horiz</icon>
+            </a>
         </div>
     </div>
 
@@ -24,8 +26,8 @@
                 <input type="text" class="kiss-input kiss-flex-1 kiss-margin-xsmall-right" :placeholder="t('Filter items...')" v-model="txtFilter">
 
                 <div class="kiss-button-group kiss-margin-small-left">
-                    <button type="button" class="kiss-button" @click="filter = ''" v-if="filter"><?=t('Reset')?></button>
-                    <button class="kiss-button kiss-flex"><?=t('Search')?></button>
+                    <button type="button" class="kiss-button" @click="filter = ''" v-if="filter"><?= t('Reset') ?></button>
+                    <button class="kiss-button kiss-flex"><?= t('Search') ?></button>
                 </div>
             </form>
 
@@ -33,8 +35,8 @@
 
             <div class="animated fadeIn kiss-height-50vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted" v-if="fieldTypes && !loading && !items.length">
                 <div>
-                    <kiss-svg class="kiss-margin-auto" src="<?=$this->base('content:assets/icons/collection.svg')?>" width="40" height="40"><canvas width="40" height="40"></canvas></kiss-svg>
-                    <p class="kiss-size-large kiss-text-bold kiss-margin-small-top"><?=t('No items')?></p>
+                    <kiss-svg class="kiss-margin-auto" src="<?= $this->base('content:assets/icons/collection.svg') ?>" width="40" height="40"><canvas width="40" height="40"></canvas></kiss-svg>
+                    <p class="kiss-size-large kiss-text-bold kiss-margin-small-top"><?= t('No items') ?></p>
                 </div>
             </div>
 
@@ -50,33 +52,39 @@
                             </th>
                             <th class="kiss-position-relative kiss-align-center" width="20">
                                 <div class="kiss-flex kiss-flex-middle">
-                                    <span><?=t('State')?></span>
-                                    <span class="kiss-size-6" v-if="sort._state"><icon>{{sort._state == 1 ? 'south':'north'}}</icon><span>
+                                    <span><?= t('State') ?></span>
+                                    <span class="kiss-size-6" v-if="sort._state">
+                                        <icon>{{sort._state == 1 ? 'south':'north'}}</icon><span>
                                 </div>
                                 <a class="kiss-cover" @click="sortItems('_state')"></a>
                             </th>
                             <th class="kiss-position-relative" v-for="field in visibleFields">
                                 <div class="kiss-flex kiss-flex-middle">
                                     <span>{{ field.label || field.name}}</span>
-                                    <span class="kiss-size-6" v-if="sort[field.name]"><icon>{{sort[field.name] == 1 ? 'south':'north'}}</icon><span>
+                                    <span class="kiss-size-6" v-if="sort[field.name]">
+                                        <icon>{{sort[field.name] == 1 ? 'south':'north'}}</icon><span>
                                 </div>
                                 <a class="kiss-cover" @click="sortItems(field.name)"></a>
                             </th>
                             <th class="kiss-position-relative" width="120">
                                 <div class="kiss-flex kiss-flex-middle">
-                                    <span><?=t('Modified')?></span>
-                                    <span class="kiss-size-6" v-if="sort._modified"><icon>{{sort._modified == 1 ? 'south':'north'}}</icon><span>
+                                    <span><?= t('Modified') ?></span>
+                                    <span class="kiss-size-6" v-if="sort._modified">
+                                        <icon>{{sort._modified == 1 ? 'south':'north'}}</icon><span>
                                 </div>
                                 <a class="kiss-cover" @click="sortItems('_modified')"></a>
                             </th>
                             <th class="kiss-position-relative" width="120">
                                 <div class="kiss-flex kiss-flex-middle">
-                                    <span><?=t('Created')?></span>
-                                    <span class="kiss-size-6" v-if="sort._created"><icon>{{sort._created == 1 ? 'south':'north'}}</icon><span>
+                                    <span><?= t('Created') ?></span>
+                                    <span class="kiss-size-6" v-if="sort._created">
+                                        <icon>{{sort._created == 1 ? 'south':'north'}}</icon><span>
                                 </div>
                                 <a class="kiss-cover" @click="sortItems('_created')"></a>
                             </th>
-                            <th fixed="right" width="20"><a class="kiss-size-4" :class="model.fields.length != visibleFields.length ? 'kiss-color-danger': 'kiss-link-muted'" kiss-popoutmenu="#model-column-options"><icon>more_horiz</icon></a></th>
+                            <th fixed="right" width="20"><a class="kiss-size-4" :class="model.fields.length != visibleFields.length ? 'kiss-color-danger': 'kiss-link-muted'" kiss-popoutmenu="#model-column-options">
+                                <a><icon>more_horiz</icon></a>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -87,7 +95,9 @@
                                     <a class="kiss-badge kiss-link-muted kiss-margin-small-left" :href="$route(`/content/collection/item/${model.name}/${item._id}`)" :title="item._id">...{{ item._id.substr(-5) }}</a>
                                 </div>
                             </td>
-                            <td class="kiss-align-center"><icon :class="{'kiss-color-success': item._state === 1, 'kiss-color-danger': !item._state}">trip_origin</icon></td>
+                            <td class="kiss-align-center">
+                                <icon :class="{'kiss-color-success': item._state === 1, 'kiss-color-danger': !item._state}">trip_origin</icon>
+                            </td>
                             <td v-for="field in visibleFields">
                                 <span class="kiss-badge kiss-badge-outline kiss-color-muted" v-if="item[field.name] == null">n/a</span>
                                 <div class="kiss-text-truncate" v-else-if="fieldTypes[field.type] && fieldTypes[field.type].render" v-html="fieldTypes[field.type].render(item[field.name], field, 'table-cell')"></div>
@@ -100,7 +110,9 @@
                             <td><span class="kiss-flex kiss-badge kiss-badge-outline kiss-color-primary" :title="(new Date(item._modified * 1000).toLocaleString())">{{ (new Date(item._modified * 1000).toLocaleString()) }}</span></td>
                             <td><span class="kiss-flex kiss-badge kiss-badge-outline kiss-color-primary" :title="(new Date(item._created * 1000).toLocaleString())">{{ (new Date(item._created * 1000).toLocaleString()) }}</span></td>
                             <td class="kiss-align-center" fixed="right">
-                                <a @click="toggleItemActions(item)"><icon>more_horiz</icon></a>
+                                <a @click="toggleItemActions(item)">
+                                    <icon>more_horiz</icon>
+                                </a>
                             </td>
                         </tr>
                     </tbody>
@@ -110,24 +122,24 @@
 
                 <kiss-popoutmenu :open="actionItem && 'true'" @popoutmenuclose="toggleItemActions(null)">
                     <kiss-content>
-                            <kiss-navlist v-if="actionItem">
-                                <ul>
-                                    <li class="kiss-nav-header">{{ t('Item actions') }}</li>
-                                    <li>
-                                        <a class="kiss-flex kiss-flex-middle" :href="$route(`/content/collection/item/${model.name}/${actionItem._id}`)">
-                                            <icon class="kiss-margin-small-right">create</icon>
-                                            <?=t('Edit')?>
-                                        </a>
-                                    </li>
-                                    <li class="kiss-nav-divider"></li>
-                                    <li>
-                                        <a class="kiss-color-danger kiss-flex kiss-flex-middle" @click="remove(actionItem)">
-                                            <icon class="kiss-margin-small-right">delete</icon>
-                                            <?=t('Delete')?>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </kiss-navlist>
+                        <kiss-navlist v-if="actionItem">
+                            <ul>
+                                <li class="kiss-nav-header">{{ t('Item actions') }}</li>
+                                <li>
+                                    <a class="kiss-flex kiss-flex-middle" :href="$route(`/content/collection/item/${model.name}/${actionItem._id}`)">
+                                        <icon class="kiss-margin-small-right">create</icon>
+                                        <?= t('Edit') ?>
+                                    </a>
+                                </li>
+                                <li class="kiss-nav-divider"></li>
+                                <li>
+                                    <a class="kiss-color-danger kiss-flex kiss-flex-middle" @click="remove(actionItem)">
+                                        <icon class="kiss-margin-small-right">delete</icon>
+                                        <?= t('Delete') ?>
+                                    </a>
+                                </li>
+                            </ul>
+                        </kiss-navlist>
                     </kiss-content>
                 </kiss-popoutmenu>
 
@@ -135,7 +147,7 @@
                     <kiss-content>
                         <kiss-navlist class="kiss-margin">
                             <ul>
-                                <li class="kiss-nav-header"><?=t('Show Fields')?></li>
+                                <li class="kiss-nav-header"><?= t('Show Fields') ?></li>
                             </ul>
 
                             <ul class="kiss-overflow-y-auto" style="max-height:250px;">
@@ -149,7 +161,7 @@
                             </ul>
                         </kiss-navlist>
 
-                        <button type="button" class="kiss-button kiss-button-small kiss-width-1-1 kiss-margin-small-top" kiss-popoutmenu-close><?=t('Close')?></button>
+                        <button type="button" class="kiss-button kiss-button-small kiss-width-1-1 kiss-margin-small-top" kiss-popoutmenu-close><?= t('Close') ?></button>
                     </kiss-content>
                 </kiss-popoutmenu>
 
@@ -163,11 +175,13 @@
                             <div class="kiss-size-small">{{ `${count} ${count == 1 ? t('Item') : t('Items')}` }}</div>
                             <div class="kiss-margin-small-left kiss-overlay-input">
                                 <span class="kiss-badge kiss-badge-outline kiss-color-muted">{{ page }} / {{pages}}</span>
-                                <select v-model="page" @change="load(page)" v-if="pages > 1"><option v-for="p in pages" :value="p">{{ p }}</option></select>
+                                <select v-model="page" @change="load(page)" v-if="pages > 1">
+                                    <option v-for="p in pages" :value="p">{{ p }}</option>
+                                </select>
                             </div>
                             <div class="kiss-margin-small-left kiss-size-small">
-                                <a class="kiss-margin-small-right" v-if="(page - 1) >= 1" @click="load(page - 1)"><?=t('Previous')?></a>
-                                <a v-if="(page + 1) <= pages" @click="load(page + 1)"><?=t('Next')?></a>
+                                <a class="kiss-margin-small-right" v-if="(page - 1) >= 1" @click="load(page - 1)"><?= t('Previous') ?></a>
+                                <a v-if="(page + 1) <= pages" @click="load(page + 1)"><?= t('Next') ?></a>
                             </div>
                         </div>
                         <div class="kiss-flex-1"></div>
@@ -175,9 +189,9 @@
                             <button class="kiss-button kiss-button-danger" @click="removeSelected()">{{ t('Delete') }} -{{ selected.length }}-</button>
                         </div>
                         <div class="kiss-button-group">
-                            <a class="kiss-button" href="<?=$this->route("/content")?>"><?=t('Close')?></a>
-                            <?php if ($this->helper('acl')->isAllowed("content/{$model['name']}/create")): ?>
-                            <a class="kiss-button kiss-button-primary" href="<?=$this->route("/content/collection/item/{$model['name']}")?>"><?=t('Create item')?></a>
+                            <a class="kiss-button" href="<?= $this->route("/content") ?>"><?= t('Close') ?></a>
+                            <?php if ($this->helper('acl')->isAllowed("content/{$model['name']}/create")) : ?>
+                                <a class="kiss-button kiss-button-primary" href="<?= $this->route("/content/collection/item/{$model['name']}") ?>"><?= t('Create item') ?></a>
                             <?php endif ?>
                         </div>
                     </div>
@@ -188,13 +202,11 @@
         </template>
 
         <script type="module">
-
-
             export default {
 
                 data() {
 
-                    let model = <?=json_encode($model)?>,
+                    let model = <?= json_encode($model) ?>,
                         hiddenFields = App.session.get(`content.${model.name}.hiddenFields`, []);
 
                     model.fields.forEach(field => {
@@ -203,13 +215,15 @@
 
                     return {
                         model,
-                        locales: <?=json_encode($locales)?>,
+                        locales: <?= json_encode($locales) ?>,
                         actionItem: null,
                         items: [],
                         selected: [],
                         fieldTypes: null,
                         filter: '',
-                        sort: {_created: -1},
+                        sort: {
+                            _created: -1
+                        },
                         txtFilter: '',
                         page: 1,
                         pages: 1,
@@ -239,7 +253,7 @@
                                         this.filter = q.filter;
                                         this.txtFilter = q.filter;
                                     }
-                                } catch(e){}
+                                } catch (e) {}
                             }
 
                             this.load(this.page, false);
@@ -308,7 +322,9 @@
                             );
                         }
 
-                        this.$request(`/content/collection/find/${this.model.name}`, {options}).then(rsp => {
+                        this.$request(`/content/collection/find/${this.model.name}`, {
+                            options
+                        }).then(rsp => {
                             this.items = rsp.items;
                             this.page = rsp.page;
                             this.pages = rsp.pages;
@@ -332,7 +348,9 @@
 
                         App.ui.confirm('Are you sure?', () => {
 
-                            this.$request(`/content/collection/remove/${this.model.name}`, {ids: [item._id]}).then(res => {
+                            this.$request(`/content/collection/remove/${this.model.name}`, {
+                                ids: [item._id]
+                            }).then(res => {
                                 this.load(this.page == 1 ? 1 : (this.items.length - 1 ? this.page : this.page - 1));
                                 App.ui.notify('Item removed!');
                             });
@@ -342,7 +360,9 @@
                     removeSelected() {
                         App.ui.confirm('Are you sure?', () => {
 
-                            this.$request(`/content/collection/remove/${this.model.name}`, {ids: this.selected}).then(res => {
+                            this.$request(`/content/collection/remove/${this.model.name}`, {
+                                ids: this.selected
+                            }).then(res => {
                                 this.load(this.page == 1 ? 1 : (this.items.length - this.selected.length ? this.page : this.page - 1));
                                 App.ui.notify('Items removed!');
                             });
@@ -371,7 +391,6 @@
                     }
                 }
             }
-
         </script>
 
 
@@ -383,18 +402,18 @@
     <kiss-content>
         <kiss-navlist class="kiss-margin">
             <ul>
-                <li class="kiss-nav-header"><?=t('Model actions')?></li>
+                <li class="kiss-nav-header"><?= t('Model actions') ?></li>
                 <li>
-                    <a class="kiss-flex kiss-flex-middle" href="<?=$this->route("/content/models/edit/{$model['name']}")?>">
+                    <a class="kiss-flex kiss-flex-middle" href="<?= $this->route("/content/models/edit/{$model['name']}") ?>">
                         <icon class="kiss-margin-small-right">create</icon>
-                        <?=t('Edit')?>
+                        <?= t('Edit') ?>
                     </a>
                 </li>
                 <li class="kiss-nav-divider"></li>
                 <li>
-                    <a class="kiss-flex kiss-flex-middle" href="<?=$this->route("/content/collection/item/{$model['name']}")?>">
+                    <a class="kiss-flex kiss-flex-middle" href="<?= $this->route("/content/collection/item/{$model['name']}") ?>">
                         <icon class="kiss-margin-small-right">add_circle_outline</icon>
-                        <?=t('Create item')?>
+                        <?= t('Create item') ?>
                     </a>
                 </li>
             </ul>

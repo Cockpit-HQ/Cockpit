@@ -22,7 +22,7 @@ export default {
                 value = JSON.stringify(value);
             }
 
-            return App.utils.truncate(value, context == 'table-cell' ? 20 : 50);
+            return context == 'table-cell' && value.length > 100 ? App.utils.truncate(value, 100) : value;
         }
     },
 

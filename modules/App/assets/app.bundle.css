@@ -28,6 +28,7 @@ icon,
     /* Support for Firefox. */
     -moz-osx-font-smoothing: grayscale;
 
+    font-feature-settings: 'liga';
     -webkit-font-feature-settings: 'liga';
 }
 icon[size="larger"] {
@@ -2566,6 +2567,10 @@ kiss-container[size="small"] {
 kiss-container[size="large"] {
     max-width: var(--kiss-container-large-max-width, 1600px);
 }
+[kiss-container="expand"],
+kiss-container[size="expand"] {
+    max-width: 100%;
+}
 kiss-container::before,
 kiss-container::after {
     content: "";
@@ -4008,6 +4013,8 @@ kiss-card[hover*="contrast"]:hover {
     font-weight: bold;
 }
 .kiss-table {
+    display: contents;
+    overflow: auto;
     width: 100%;
     background: var(--kiss-color-contrast);
 }
@@ -4022,7 +4029,6 @@ kiss-card[hover*="contrast"]:hover {
 .kiss-table thead {
     background: rgba(0, 0, 0, 0.15);
     border-radius: var(--app-border-radius);
-    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 22%);
 }
 .kiss-table thead tr {
     box-shadow: 0 1px 2px 0 rgb(0 0 0 / 22%);
