@@ -35,7 +35,7 @@ export default {
         });
     },
 
-    template: /*html */`
+    template: /*html*/`
         <div>
 
             <div class="kiss-size-4 kiss-text-bold kiss-margin kiss-flex kiss-flex-middle">
