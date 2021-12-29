@@ -208,6 +208,16 @@ class Collection {
     }
 
     /**
+     * Data aggregation
+     *
+     * @param  array $pipeline
+     * @return Aggregation\Cursor
+     */
+    public function aggregate(array $pipeline): Aggregation\Cursor {
+        return new Aggregation\Cursor($this, $pipeline);
+    }
+
+    /**
      * Rename Collection
      *
      * @param  string $newname [description]

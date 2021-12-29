@@ -141,6 +141,15 @@ class Mongo {
         return $resultSet;
     }
 
+    public function aggregate(string $collection, array $pipeline) {
+
+        $cursor = $this->getCollection($collection)->aggregate($pipeline);
+        $docs = $cursor->toArray();
+        $resultSet = new ResultSet($this, $docs);
+
+        return $resultSet;
+    }
+
     public function getFindTermFilter($term) {
 
         $terms = str_getcsv(trim($term), ' ');
