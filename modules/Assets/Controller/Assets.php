@@ -254,7 +254,12 @@ class Assets extends App {
 
             $mime = null;
 
-            if (strpos($this->app->request->headers['Accept'] ?? '', 'image/webp') !== false) {
+            if (strpos($this->app->request->headers['Accept'] ?? '', 'image/avif') !== false) {
+                $gdinfo = \gd_info();
+                $mime = isset($gdinfo['AVIF Support']) && $gdinfo['AVIF Support'] ? 'avif' : null;
+            }
+
+            if (!$mime && strpos($this->app->request->headers['Accept'] ?? '', 'image/webp') !== false) {
                 $gdinfo = \gd_info();
                 $mime = isset($gdinfo['WebP Support']) && $gdinfo['WebP Support'] ? 'webp' : null;
             }
