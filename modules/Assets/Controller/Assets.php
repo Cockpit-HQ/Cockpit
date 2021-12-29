@@ -273,7 +273,7 @@ class Assets extends App {
             'filters' => (array) $this->param('f', []),
             'width' => intval($this->param('w', null)),
             'height' => intval($this->param('h', null)),
-            'quality' => intval($this->param('q', 80)),
+            'quality' => intval($this->param('q', 30)),
             'rebuild' => intval($this->param('r', false)),
             'timestamp' => $this->param('t', null),
         ];

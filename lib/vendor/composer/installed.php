@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '045b3d9981d1a2b73bbc5fca815fe68dc4e73d12',
+    'reference' => 'eafbfdbac5d578d133c31cc53da798f98eb1abe7',
     'name' => 'agentejo/cockpit',
   ),
   'versions' => 
@@ -18,7 +18,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '045b3d9981d1a2b73bbc5fca815fe68dc4e73d12',
+      'reference' => 'eafbfdbac5d578d133c31cc53da798f98eb1abe7',
     ),
     'bacon/bacon-qr-code' => 
     array (
@@ -248,12 +248,12 @@
     ),
     'psr/log' => 
     array (
-      'pretty_version' => '1.1.4',
-      'version' => '1.1.4.0',
+      'pretty_version' => '2.0.0',
+      'version' => '2.0.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'd49695b909c3b7628b6289db5479a1c204601f11',
+      'reference' => 'ef29f6d262798707a9edd554e2b82517ef3a9376',
     ),
     'psr/log-implementation' => 
     array (
@@ -408,12 +408,12 @@
     ),
     'zircote/swagger-php' => 
     array (
-      'pretty_version' => '3.3.2',
-      'version' => '3.3.2.0',
+      'pretty_version' => '3.3.3',
+      'version' => '3.3.3.0',
       'aliases' => 
       array (
       ),
-      'reference' => '68c76ce2bb43fb4603315fb973d4595711dcbfd3',
+      'reference' => 'cec9943f974df43370c51be7c489fc1007f80f2b',
     ),
   ),
 );

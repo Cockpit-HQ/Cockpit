@@ -4,7 +4,7 @@ export default {
 
         return {
             items: [],
-            loading: false,
+            loading: true,
             fieldTypes: null,
             page: 1,
             pages: 1,
@@ -47,6 +47,13 @@ export default {
             <div class="kiss-dialog-overflow kiss-margin-large" expand="true">
 
                 <app-loader v-if="!fieldTypes || loading"></app-loader>
+
+                <div class="kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted kiss-height-50vh" v-if="!loading && !items.length">
+                    <div>
+                        <kiss-svg class="kiss-margin-auto" :src="$base('content:assets/icons/collection.svg')" width="40" height="40"><canvas width="40" height="40"></canvas></kiss-svg>
+                        <p class="kiss-size-large kiss-text-bold kiss-margin-small-top">{{ t('No items') }}</p>
+                    </div>
+                </div>
 
                 <div class="table-scroll" v-if="!loading && items.length">
                     <table class="kiss-table animated fadeIn">
