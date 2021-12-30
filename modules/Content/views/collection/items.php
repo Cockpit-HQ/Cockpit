@@ -40,8 +40,8 @@
                 </div>
             </div>
 
-            <div class="table-scroll kiss-margin animated fadeIn" v-if="!loading && items.length">
-                <table class="kiss-table">
+            <div class="table-scroll kiss-margin" ref="tblContainer" v-show="!loading && items.length">
+                <table class="kiss-table animated fadeIn" v-if="!loading && items.length">
                     <thead>
                         <tr>
                             <th fixed="left" class="kiss-align-center" width="70">
@@ -260,6 +260,8 @@
                             }
 
                             this.load(this.page, false);
+
+                            window.addEventListener('resize', () => this.fixTableContainerWidth());
                         });
                     });
                 },
@@ -334,6 +336,7 @@
                             this.count = rsp.count;
 
                             this.loading = false;
+                            this.fixTableContainerWidth();
                         })
                     },
 
@@ -391,6 +394,13 @@
                         }
 
                         this.load();
+                    },
+
+                    // fix browser behaviour if table is too long
+                    fixTableContainerWidth() {
+                        Object.assign(this.$refs.tblContainer.style, {position: 'absolute', opacity: 0});
+                        this.$refs.tblContainer.style.maxWidth = this.$refs.tblContainer.parentNode.offsetWidth + 'px';
+                        Object.assign(this.$refs.tblContainer.style, {position: '', opacity: ''});
                     }
                 }
             }
