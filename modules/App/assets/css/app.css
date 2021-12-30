@@ -353,12 +353,13 @@ app-fieldcontainer app-fieldcontainer {
 }
 
 .table-scroll {
-    overflow-x: scroll;
+    overflow-x: auto;
     white-space: nowrap;
-    max-width: 100%;
 }
 
-.table-scroll > table { margin: 0; }
+.table-scroll > table {
+    margin: 0;
+}
 
 .table-scroll [fixed] {
     position: sticky;

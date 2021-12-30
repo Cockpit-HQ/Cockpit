@@ -82,8 +82,10 @@
                                 </div>
                                 <a class="kiss-cover" @click="sortItems('_created')"></a>
                             </th>
-                            <th fixed="right" width="20"><a class="kiss-size-4" :class="model.fields.length != visibleFields.length ? 'kiss-color-danger': 'kiss-link-muted'" kiss-popoutmenu="#model-column-options">
-                                <a><icon>more_horiz</icon></a>
+                            <th fixed="right" width="20">
+                                <a class="kiss-size-4" :class="model.fields.length != visibleFields.length ? 'kiss-color-danger': 'kiss-link-muted'" kiss-popoutmenu="#model-column-options">
+                                    <icon>more_horiz</icon>
+                                </a>
                             </th>
                         </tr>
                     </thead>
@@ -118,6 +120,7 @@
                     </tbody>
                 </table>
             </div>
+
             <teleport to="body">
 
                 <kiss-popoutmenu :open="actionItem && 'true'" @popoutmenuclose="toggleItemActions(null)">

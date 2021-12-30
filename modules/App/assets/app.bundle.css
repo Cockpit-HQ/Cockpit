@@ -4013,8 +4013,6 @@ kiss-card[hover*="contrast"]:hover {
     font-weight: bold;
 }
 .kiss-table {
-    display: contents;
-    overflow: auto;
     width: 100%;
     background: var(--kiss-color-contrast);
 }
@@ -4387,11 +4385,12 @@ app-fieldcontainer app-fieldcontainer {
     display: block;
 }
 .table-scroll {
-    overflow-x: scroll;
+    overflow-x: auto;
     white-space: nowrap;
-    max-width: 100%;
 }
-.table-scroll > table { margin: 0; }
+.table-scroll > table {
+    margin: 0;
+}
 .table-scroll [fixed] {
     position: sticky;
     position: -webkit-sticky;
