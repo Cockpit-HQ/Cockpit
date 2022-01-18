@@ -129,6 +129,10 @@ class Filesystem extends \Lime\Helper {
 
         $path = $this->app->path($path);
 
+        if (is_null($path)) {
+            return;
+        }
+
         if (\is_file($path) || \is_link($path)) {
             $func = DIRECTORY_SEPARATOR === '\\' && \is_dir($path) ? 'rmdir' : 'unlink';
             if (!@$func($path)) {
