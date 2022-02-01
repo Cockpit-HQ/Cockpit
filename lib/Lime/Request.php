@@ -56,6 +56,7 @@ class Request {
     public function __construct(array $config = []) {
 
         $this->request = $config['request'] ?? [];
+        $this->method = $config['method'] ?? 'GET';
         $this->post = $config['post'] ?? [];
         $this->query = $config['query'] ?? [];
         $this->server = $config['server'] ?? [];
