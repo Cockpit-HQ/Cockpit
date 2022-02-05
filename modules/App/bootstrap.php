@@ -9,6 +9,10 @@ $this->helpers['csrf']  = 'App\\Helper\\Csrf';
 $this->helpers['i18n']  = 'App\\Helper\\i18n';
 $this->helpers['rspc']  = 'App\\Helper\\ResponseCache';
 
+include_once(__DIR__.'/functions.php');
+
+// events
+
 $this->on('app.admin.init', function() {
     include(__DIR__.'/admin.php');
 }, 1000);
@@ -24,9 +28,11 @@ $this->on('app.api.request', function($request) {
 
 }, 1000);
 
-include_once(__DIR__.'/functions.php');
-
-// events
 $this->on('app.user.disguise', function(array &$user) {
     unset($user['password'], $user['apiKey'], $user['_reset_token']);
+});
+
+$this->on('app.cli.init', function($cli) {
+    $app = $this;
+    include(__DIR__.'/cli.php');
 });
