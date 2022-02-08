@@ -1,6 +1,6 @@
 <?php
 
-define('APP_VERSION', '2.0-dev-2021-12-19');
+define('APP_VERSION', '2.0-dev-2022-08-02');
 
 if (!defined('APP_START_TIME')) define('APP_START_TIME', microtime(true));
 if (!defined('APP_CLI')) define('APP_CLI', PHP_SAPI == 'cli');
@@ -105,7 +105,7 @@ class Cockpit {
         }
 
         // set app cache path
-        $app->helper('cache')->setCachePath($app->path('#cache:'));
+        $app->helper('cache')->setCachePath($app->path('#cache:') ?? sys_get_temp_dir());
 
         // file storage
         $app->service('fileStorage', function() use($config, $app) {

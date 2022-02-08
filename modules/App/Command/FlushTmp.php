@@ -44,7 +44,7 @@ class FlushTmp extends Command {
             opcache_reset();
         }
 
-        $output->writeln('<info>Tmp folder was flushed!</info>');
+        $output->writeln('<info>[✓]</info> Tmp folder was flushed!');
         return Command::SUCCESS;
     }
 }
