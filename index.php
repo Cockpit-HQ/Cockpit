@@ -12,7 +12,7 @@ require(__DIR__.'/bootstrap.php');
 /*
  * Collect needed paths
  */
-$APP_ENV_DIR = __DIR__;
+$APP_SPACE_DIR = __DIR__;
 $APP_DIR = str_replace(DIRECTORY_SEPARATOR, '/', __DIR__);
 $APP_DOCUMENT_ROOT = str_replace(DIRECTORY_SEPARATOR, '/', isset($_SERVER['DOCUMENT_ROOT']) ? realpath($_SERVER['DOCUMENT_ROOT']) : __DIR__);
 
@@ -60,13 +60,13 @@ if ($APP_ROUTE && substr($APP_ROUTE, 0, 2) == '/:') {
 
     $parts  = explode('/', $APP_ROUTE);
     $env    = substr($parts[1], 1);
-    $envDir = __DIR__."/.envs/{$env}";
+    $spaceDir = __DIR__."/.spaces/{$env}";
 
-    if (file_exists($envDir)) {
+    if (file_exists($spaceDir)) {
         $APP_ROUTE = '/'.trim(implode('/', array_slice($parts, 2)), '/');
-        $APP_BASE_URL .= "/.envs/{$env}";
+        $APP_BASE_URL .= "/.spaces/{$env}";
         $APP_BASE_ROUTE .= "/:{$env}";
-        $APP_ENV_DIR = $envDir;
+        $APP_SPACE_DIR = $spaceDir;
     }
 }
 
@@ -78,7 +78,7 @@ define('APP_DOCUMENT_ROOT', $APP_DOCUMENT_ROOT);
 define('APP_BASE_URL', $APP_BASE_URL);
 define('APP_API_REQUEST', strpos($APP_ROUTE, '/api/') === 0 ? 1:0);
 
-$app = Cockpit::instance($APP_ENV_DIR, [
+$app = Cockpit::instance($APP_SPACE_DIR, [
     'base_route' => $APP_BASE_ROUTE,
     'base_url' => $APP_BASE_URL
 ]);

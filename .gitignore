@@ -10,7 +10,7 @@
 composer.lock
 composer.phar
 package-lock.json
-/.envs/
+/.spaces/
 /lib/**/.github/*
 /lib/**/bin/*
 /lib/**/doc/*
