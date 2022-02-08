@@ -9,6 +9,8 @@
 
     <?=$this->helper('theme')->assets([], 'canvas')?>
 
+    <script src="<?=$this->route('/app.i18n.data.js')?>" type="module"></script>
+
     <?php $this->block('app.layout.header') ?>
 
     <?php if ($this->helper('theme')->theme() == 'auto'): ?>

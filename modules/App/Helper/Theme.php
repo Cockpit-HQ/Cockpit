@@ -100,8 +100,7 @@ class Theme extends \Lime\Helper {
             'app:assets/vendor/JSON5.js',
             'app:assets/vendor/noty/noty.min.js',
             'app:assets/vendor/lodash.js',
-            $debug ? ['src' => 'app:assets/js/app.js', 'type' => 'module'] : 'app:assets/app.bundle.js',
-            ['src' => $this->app->routeUrl('/app.i18n.data.js'), 'type' => 'module'],
+            $debug ? ['src' => 'app:assets/js/app.js', 'type' => 'module'] : 'app:assets/app.bundle.js'
         ], $assets);
 
         $this->app->trigger('app.layout.assets', [&$assets, $this->app->retrieve('app.version'), $context]);

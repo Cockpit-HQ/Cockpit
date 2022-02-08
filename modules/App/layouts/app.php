@@ -9,6 +9,8 @@
 
     <?=$this->helper('theme')->assets([['src' => 'app:assets/js/admin.js', 'type' => 'module']], 'app')?>
 
+    <script src="<?=$this->route('/app.i18n.data.js')?>" type="module"></script>
+
     <?php $this->trigger('app.layout.header') ?>
     <?php $this->block('app.layout.header') ?>
 
@@ -90,6 +92,9 @@
                             <icon class="kiss-margin-small-left kiss-hidden@m">more_horiz</icon>
                         </a>
                     </div>
+                    <?php if($this->path('#app:') != $this->path('#root:')): ?>
+                    <div class="kiss-margin-small-left"><span class="kiss-badge kiss-color-primary kiss-badge-outline"><?=basename($this->path('#root:'))?></span></div>
+                    <?php endif ?>
                     <div class="kiss-flex-1 kiss-margin-left">
 
                     </div>
