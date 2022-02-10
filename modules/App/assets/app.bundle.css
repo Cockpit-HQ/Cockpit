@@ -4380,6 +4380,9 @@ app-actionbar kiss-container {
     min-height: 47px;
     border-radius: var(--app-border-radius);
 }
+.sortable-chosen[data-draggable="true"] {
+    box-shadow: 0 0 2px var(--kiss-color-primary);
+}
 app-fieldcontainer app-fieldcontainer {
     all: unset;
     display: block;
