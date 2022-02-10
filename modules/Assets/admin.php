@@ -4,6 +4,8 @@
 
 $this->bind('/assets/link/:id', function($params) {
 
+    session_write_close();
+
     if (!$params['id']) {
         return false;
     }
