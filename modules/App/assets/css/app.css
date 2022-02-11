@@ -348,7 +348,7 @@ app-actionbar kiss-container {
 }
 
 .sortable-chosen[data-draggable="true"] {
-    box-shadow: 0 0 2px var(--kiss-color-primary);
+    border: 1px var(--kiss-color-primary) solid;
 }
 
 app-fieldcontainer app-fieldcontainer {
