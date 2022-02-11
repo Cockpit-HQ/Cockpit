@@ -203,7 +203,7 @@ export default {
                         <ul>
                             <li class="kiss-nav-header">{{ t('Asset actions') }}</li>
                             <li v-if="actionAsset">
-                                <div class="kiss-color-muted kiss-text-truncate kiss-margin-small-bottom">{{ actionAsset.title }}</div>
+                                <div class="kiss-color-muted kiss-text-truncate kiss-margin-small-bottom">{{ App.utils.truncate(actionAsset.title, 30) }}</div>
                             </li>
                             <li>
                                 <a class="kiss-flex kiss-flex-middle" @click="edit(actionAsset)">
