@@ -277,6 +277,7 @@ export default {
 
             (this.fields || []).forEach(field => {
                 if (!field.group || groups.indexOf(field.group) > -1) return;
+                if (!this.checkFieldCondition(field)) return;
                 groups.push(field.group);
             });
 
@@ -285,7 +286,12 @@ export default {
 
         visibleFields() {
 
-            return this.fields.filter(field => {
+            return (this.fields || []).filter(field => {
+
+                if (!this.checkFieldCondition(field)) {
+                    return false;
+                }
+
                 return !this.group || this.group == field.group;
             });
         },
@@ -377,6 +383,24 @@ export default {
 
         update() {
             this.$emit('update:modelValue', this.val)
+        },
+
+        checkFieldCondition(field) {
+
+            if (!field.condition) {
+                return true;
+            }
+
+            // compile condition
+            if (typeof(field.condition) === 'string') {
+                field.condition = new Function('data', `return ${field.condition}`);
+            }
+
+            try {
+                return field.condition(this.val);
+            } catch(e) {}
+
+            return true;
         }
     }
 }

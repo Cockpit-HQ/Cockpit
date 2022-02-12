@@ -189,6 +189,11 @@ let FieldsManager = {
                                     <label>{{t('Meta')}}</label>
                                     <field-object v-model="field.meta" :height="150"></field-object>
                                 </div>
+                                <div class="kiss-margin">
+                                    <label>{{t('Condition')}}</label>
+                                    <field-code v-model="field.condition" mode="js" :height="100"></field-code>
+                                    <div class="kiss-size-small kiss-color-muted kiss-margin-small-top">{{ t('Show or hide field based on a condition') }}</div>
+                                </div>
                             </tab>
                         </app-tabs>
 
