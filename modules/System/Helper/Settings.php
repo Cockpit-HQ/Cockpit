@@ -41,6 +41,12 @@ class Settings extends \Lime\Helper {
                     'permission' => 'app/locales/manage'
                 ],
                 [
+                    'icon' => 'system:assets/icons/logging.svg',
+                    'route' => '/system/logs',
+                    'label' => 'Logs',
+                    'permission' => 'app/logs'
+                ],
+                [
                     'icon' => 'system:assets/icons/info.svg',
                     'route' => '/system/info',
                     'label' => 'System info',

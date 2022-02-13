@@ -6,6 +6,7 @@ $this->helpers['settings'] = 'System\\Helper\\Settings';
 // Register routes
 $this->bindClass('System\\Controller\\Api', '/system/api');
 $this->bindClass('System\\Controller\\Locales', '/system/locales');
+$this->bindClass('System\\Controller\\Logs', '/system/logs');
 $this->bindClass('System\\Controller\\Users\\Roles', '/system/users/roles');
 $this->bindClass('System\\Controller\\Users', '/system/users');
 $this->bindClass('System\\Controller\\Settings', '/system');
@@ -27,4 +28,9 @@ $this->on('app.permissions.collect', function (ArrayObject $permissions) {
     $permissions['Api & Security'] = [
         'app/api/manage' => 'Manage Api access',
     ];
+
+    $permissions['Logs'] = [
+        'app/logs' => 'View app logs',
+    ];
+
 });
