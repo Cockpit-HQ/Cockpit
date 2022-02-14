@@ -138,8 +138,7 @@ class Collection extends App {
         }
 
         $items = $this->app->module('content')->items($model['name'], $options);
-
-        $count = $this->app->module('content')->count($model['name'], isset($options['filter']) ? $options['filter'] : []);
+        $count = $this->app->module('content')->count($model['name'], $options['filter'] ?? []);
         $pages = isset($options['limit']) ? ceil($count / $options['limit']) : 1;
         $page  = 1;
 

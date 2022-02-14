@@ -47,6 +47,14 @@ class Base extends \Lime\AppAware {
     }
 
     /**
+     * @param $path
+     * @return mixed
+     */
+    protected function path(string $path): mixed {
+        return $this->app->path($path);
+    }
+
+    /**
      * @param $key
      * @param null $default
      * @return Mixed

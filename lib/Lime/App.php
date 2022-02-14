@@ -1115,7 +1115,7 @@ class App implements \ArrayAccess {
     }
 
     public function module(string $name): mixed {
-        return $this->registry['modules']->offsetExists($name) && $this->registry['modules'][$name] ? $this->registry['modules'][$name] : null;
+        return $this->registry['modules'][$name] ?? null;
     }
 
     public function registerModule(string $name, string $dir): Module {
