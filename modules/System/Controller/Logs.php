@@ -14,6 +14,7 @@ class Logs extends App {
     }
 
     public function index() {
+
         return $this->render('system:views/logs/index.php');
     }
 

@@ -29,7 +29,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '1a04edccf0ee24b37d9a8f2e00c1b491531753ae',
+    'reference' => 'f991321011c6a0f2a5e25bedebef9b005108f877',
     'name' => 'agentejo/cockpit',
   ),
   'versions' => 
@@ -41,16 +41,16 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '1a04edccf0ee24b37d9a8f2e00c1b491531753ae',
+      'reference' => 'f991321011c6a0f2a5e25bedebef9b005108f877',
     ),
     'bacon/bacon-qr-code' => 
     array (
-      'pretty_version' => '2.0.5',
-      'version' => '2.0.5.0',
+      'pretty_version' => '2.0.6',
+      'version' => '2.0.6.0',
       'aliases' => 
       array (
       ),
-      'reference' => '7190fc6c20370e0e93da6717b182b8249d5b8e71',
+      'reference' => '0069435e2a01a57193b25790f105a5d3168653c1',
     ),
     'claviska/simpleimage' => 
     array (
@@ -194,15 +194,6 @@ private static $installed = array (
       ),
       'reference' => 'e4aa59ab15b6fe00a0e56b6772f8b515a0f01bf0',
     ),
-    'monolog/monolog' => 
-    array (
-      'pretty_version' => '2.3.5',
-      'version' => '2.3.5.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => 'fd4380d6fc37626e2f799f29d91195040137eba9',
-    ),
     'phpmailer/phpmailer' => 
     array (
       'pretty_version' => 'v6.5.3',
@@ -291,8 +282,7 @@ private static $installed = array (
     array (
       'provided' => 
       array (
-        0 => '1.0.0 || 2.0.0 || 3.0.0',
-        1 => '1.0|2.0',
+        0 => '1.0|2.0',
       ),
     ),
     'ralouphie/getallheaders' => 
