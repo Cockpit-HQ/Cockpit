@@ -23,13 +23,13 @@ class LogChannel {
     protected $app;
     protected $name;
 
-    public function __construct($name, $app) {
+    public function __construct(string $name, $app) {
 
         $this->name = $name;
         $this->app = $app;
     }
 
-    protected function addRecord($message, $type = 'info', $context = []) {
+    protected function addRecord(string $message, $type = 'info', ?array $context = null): void {
 
         $time = time();
 
@@ -46,27 +46,27 @@ class LogChannel {
 
     }
 
-    public function info($message, $context = []) {
+    public function info(string $message, ?array $context = null): void {
         $this->addRecord($message, 'info', $context);
     }
 
-    public function debug($message, $context = []) {
+    public function debug(string $message, ?array $context = null): void {
         $this->addRecord($message, 'debug', $context);
     }
 
-    public function notice($message, $context = []) {
+    public function notice(string $message, ?array $context = null): void {
         $this->addRecord($message, 'notice', $context);
     }
 
-    public function warning($message, $context = []) {
+    public function warning(string $message, ?array $context = null): void {
         $this->addRecord($message, 'warning', $context);
     }
 
-    public function alert($message, $context = []) {
+    public function alert(string $message, ?array $context = null): void {
         $this->addRecord($message, 'alert', $context);
     }
 
-    public function error($message, $context = []) {
+    public function error(string $message, ?array $context = null): void {
         $this->addRecord($message, 'error', $context);
     }
 

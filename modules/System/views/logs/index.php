@@ -41,6 +41,32 @@
 
                     <app-loader class="kiss-margin" v-if="loading"></app-loader>
 
+                    <div class="animated fadeIn kiss-height-50vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted" v-if="!loading && !items.length">
+                        <div>
+                            <kiss-svg class="kiss-margin-auto" src="<?= $this->base('system:assets/icons/logging.svg') ?>" width="60" height="60"><canvas width="60" height="60"></canvas></kiss-svg>
+                            <p class="kiss-size-large kiss-text-bold kiss-margin-small-top"><?= t('No log items') ?></p>
+                        </div>
+                    </div>
+
+                    <table class="kiss-table animated fadeIn" v-if="!loading && items.length">
+                        <thead>
+                            <tr>
+                                <th width="30">Type</th>
+                                <th width="100">Date</th>
+                                <th width="25" v-if="!activeChannel">Channel</th>
+                                <th>Message</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="item in items">
+                                <td class="kiss-align-center"><icon>trip_origin</icon></td>
+                                <td class="kiss-text-bold kiss-text-monospace"><div class="kiss-size-xsmall">{{ (new Date(item.timestamp * 1000).toLocaleString()) }}</div></td>
+                                <td class="kiss-text-bold kiss-color-muted kiss-align-center" v-if="!activeChannel"><app-avatar :name="item.channel" size="25" kiss-tooltip="bottom" :aria-label="item.channel"></app-avatar></td>
+                                <td>{{ item.message }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
                 </div>
             </kiss-row>
 
@@ -91,6 +117,12 @@
                     this.load();
                 },
 
+                watch: {
+                    activeChannel() {
+                        this.load();
+                    }
+                },
+
                 methods: {
 
                     load(page = 1, history = true) {
@@ -103,6 +135,10 @@
 
                         this.loading = true;
                         this.selected = [];
+
+                        if (this.activeChannel) {
+                            options.filter = {channel: this.activeChannel};
+                        }
 
                         if (this.filter) {
                             options.filter = this.filter;
