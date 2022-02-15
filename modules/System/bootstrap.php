@@ -11,7 +11,10 @@ $this->on('app.admin.init', function() {
 }, 500);
 
 $app->on('error', function($error, $exception) {
-    $this->module('system')->log('System error', type: 'error', context: $error);
+
+    try {
+        $this->module('system')->log("System error: {$error['message']}", type: 'error', context: $error);
+    } catch(Throwable $e) {}
 });
 
 // system api

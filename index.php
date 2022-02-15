@@ -97,6 +97,7 @@ set_exception_handler(function($exception) use($app) {
         'message' => $exception->getMessage(),
         'file' => $exception->getFile(),
         'line' => $exception->getLine(),
+        'trace' => array_slice($exception->getTrace(), 0, 4),
     ];
 
     if ($app['debug']) {
