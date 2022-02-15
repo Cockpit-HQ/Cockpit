@@ -190,11 +190,17 @@ $this->module('assets')->extend([
             }
 
             // move file
-            $stream = fopen($file, 'r+');
-            $this->app->fileStorage->writeStream("uploads://{$path}", $stream, $opts);
+            try {
 
-            if (is_resource($stream)) {
-                fclose($stream);
+                $stream = fopen($file, 'r+');
+                $this->app->fileStorage->writeStream("uploads://{$path}", $stream, $opts);
+
+                if (is_resource($stream)) {
+                    fclose($stream);
+                }
+
+            } catch (Throwable $exception) {
+                continue;
             }
 
             foreach ($_meta as $key => $val) {
