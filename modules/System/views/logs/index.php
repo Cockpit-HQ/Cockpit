@@ -1,11 +1,22 @@
 <style>
 
-    icon[type="info"] { color: blue; }
+    icon[type="info"] { color: #4082fd; }
+    icon[type="info"]:before { content: "\e88e"; }
+
     icon[type="warning"] { color: orange; }
+    icon[type="warning"]:before { content: "\e002"; }
+
     icon[type="error"] { color: red;}
+    icon[type="error"]:before { content: "\e031"; }
+
     icon[type="notice"] { color: yellow;}
+    icon[type="notice"]:before { content: "\f1fc"; }
+
     icon[type="debug"] { color: turquoise;}
+    icon[type="debug"]:before { content: "\e868"; }
+
     icon[type="alert"] { color: darkmagenta;}
+    icon[type="alert"]:before { content: "\e7f7"; }
 
 </style>
 
@@ -31,15 +42,15 @@
                         <ul>
                             <li class="kiss-nav-header kiss-padding-small">Channels</li>
                             <li>
-                                <kiss-card class="kiss-padding-small" :theme="!activeChannel && 'bordered contrast'">
-                                    <a class="kiss-display-block" @click="activeChannel = null" :class="!activeChannel ? 'kiss-text-bold kiss-color-primary':'kiss-color-muted'">{{ t('All') }}</a>
+                                <kiss-card class="kiss-padding-small" :theme="!selectedChannel && 'bordered contrast'">
+                                    <a class="kiss-display-block" @click="selectedChannel = null" :class="!selectedChannel ? 'kiss-text-bold kiss-color-primary':'kiss-color-muted'">{{ t('All') }}</a>
                                 </kiss-card>
                             </li>
                             <li class="kiss-nav-divider"></li>
                             <li v-for="channel in channels">
-                                <kiss-card class="kiss-flex kiss-flex-middle kiss-padding-small" :theme="activeChannel == channel.name && 'bordered contrast'">
-                                    <a class="kiss-flex-1" @click="activeChannel = channel.name" :class="activeChannel == channel.name ? 'kiss-text-bold kiss-color-primary':'kiss-color-muted'">{{ channel.label}}</a>
-                                    <div class="kiss-margin-xsmall-left" v-if="activeChannel == channel.name">
+                                <kiss-card class="kiss-flex kiss-flex-middle kiss-padding-small" :theme="selectedChannel == channel.name && 'bordered contrast'">
+                                    <a class="kiss-flex-1" @click="selectedChannel = channel.name" :class="selectedChannel == channel.name ? 'kiss-text-bold kiss-color-primary':'kiss-color-muted'">{{ channel.label}}</a>
+                                    <div class="kiss-margin-xsmall-left" v-if="selectedChannel == channel.name">
                                         <kiss-svg class="kiss-color-muted" :src="$base(channel.icon)" width="20" height="20"><canvas width="20" height="20"></canvas></kiss-svg>
                                     </div>
                                 </kiss-card>
@@ -50,10 +61,17 @@
                 </div>
                 <div class="kiss-flex-1">
 
+                    <div class="kiss-flex kiss-flex-middle kiss-margin-large-bottom">
+                        <div class="kiss-margin-small-right" v-if="selectedChannel"><kiss-svg class="kiss-color-muted" :src="$base(channels[selectedChannel].icon)" width="35" height="35"><canvas width="20" height="20"></canvas></kiss-svg></div>
+                        <div class="kiss-size-1 kiss-text-bold kiss-flex-1">{{ (selectedChannel && channels[selectedChannel].label) || 'All' }}</div>
+
+                    </div>
+
+
                     <app-loader class="kiss-margin" v-if="loading"></app-loader>
 
-                    <div class="animated fadeIn kiss-height-50vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted" v-if="!loading && !items.length">
-                        <div>
+                    <div class="kiss-height-50vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted" v-if="!loading && !items.length">
+                        <div class="animated fadeInUp">
                             <kiss-svg class="kiss-margin-auto" src="<?= $this->base('system:assets/icons/logging.svg') ?>" width="60" height="60"><canvas width="60" height="60"></canvas></kiss-svg>
                             <p class="kiss-size-large kiss-text-bold kiss-margin-small-top"><?= t('No log items') ?></p>
                         </div>
@@ -64,16 +82,16 @@
                             <tr>
                                 <th width="30">Type</th>
                                 <th width="100">Date</th>
-                                <th width="25" v-if="!activeChannel">Channel</th>
+                                <th width="25" v-if="!selectedChannel">Channel</th>
                                 <th>Message</th>
                                 <th width="25"></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="item in items">
-                                <td class="kiss-align-center"><icon :type="item.type">trip_origin</icon></td>
+                                <td class="kiss-align-center"><icon class="kiss-size-3" :type="item.type"></icon></td>
                                 <td class="kiss-text-bold kiss-text-monospace"><div class="kiss-size-xsmall">{{ (new Date(item.timestamp * 1000).toLocaleString()) }}</div></td>
-                                <td class="kiss-text-bold kiss-color-muted kiss-align-center" v-if="!activeChannel"><app-avatar :name="item.channel" size="25" kiss-tooltip="bottom" :aria-label="item.channel"></app-avatar></td>
+                                <td class="kiss-text-bold kiss-color-muted kiss-align-center" v-if="!selectedChannel"><app-avatar :name="item.channel" size="25" kiss-tooltip="bottom" :aria-label="item.channel"></app-avatar></td>
                                 <td>{{ item.message }}</td>
                                 <td class="kiss-align-center"><a class="kiss-color-primary kiss-size-3" v-if="item.context" @click="showContext(item.context)"><icon>more_horiz</icon></a></td>
                             </tr>
@@ -114,7 +132,7 @@
                 data() {
                     return {
                         channels: <?=json_encode($channels)?>,
-                        activeChannel: null,
+                        selectedChannel: null,
                         items: [],
                         filter: '',
                         txtFilter: '',
@@ -131,7 +149,7 @@
                 },
 
                 watch: {
-                    activeChannel() {
+                    selectedChannel() {
                         this.load(1);
                     }
                 },
@@ -149,8 +167,8 @@
                         this.loading = true;
                         this.selected = [];
 
-                        if (this.activeChannel) {
-                            options.filter = {channel: this.activeChannel};
+                        if (this.selectedChannel) {
+                            options.filter = {channel: this.selectedChannel};
                         }
 
                         if (this.filter) {
@@ -168,7 +186,7 @@
                     },
 
                     showContext(context) {
-                        VueView.ui.offcanvas('system:assets/dialogs/json-viewer.js', {data: context, caption: 'LOG Context'}, {}, {flip: true, size: 'large'})
+                        VueView.ui.offcanvas('system:assets/dialogs/json-viewer.js', {data: context, caption: 'LOG Context'}, {}, {flip: true, size: 'xlarge'})
                     },
                 }
             }
