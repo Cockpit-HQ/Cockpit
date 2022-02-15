@@ -44,6 +44,20 @@
                         <div class="kiss-size-4 kiss-text-light kiss-flex-1">{{ (selectedChannel && channels[selectedChannel].label) || 'All' }}</div>
                     </div>
 
+                    <div class="kiss-margin">
+
+                        <button class="kiss-button kiss-button-small kiss-margin-small-right" :class="{'kiss-button-primary': !selectedTypes.length}" @click="selectedTypes = []">All</button>
+
+                        <div class="kiss-button-group">
+                            <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': selectedTypes.indexOf('alert') > -1}" @click="toggleType('alert')">Alert</button>
+                            <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': selectedTypes.indexOf('debug') > -1}" @click="toggleType('debug')">Debug</button>
+                            <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': selectedTypes.indexOf('error') > -1}" @click="toggleType('error')">Error</button>
+                            <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': selectedTypes.indexOf('info') > -1}" @click="toggleType('info')">Info</button>
+                            <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': selectedTypes.indexOf('notice') > -1}" @click="toggleType('notice')">Notice</button>
+                            <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': selectedTypes.indexOf('warning') > -1}" @click="toggleType('warning')">Warning</button>
+                        </div>
+                    </div>
+
                     <app-loader class="kiss-margin" v-if="loading"></app-loader>
 
                     <div class="kiss-height-50vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted" v-if="!loading && !items.length">
@@ -132,6 +146,7 @@
                     return {
                         channels: <?=json_encode($channels)?>,
                         selectedChannel: null,
+                        selectedTypes: [],
                         items: [],
                         filter: '',
                         txtFilter: '',
@@ -150,6 +165,10 @@
                 watch: {
                     selectedChannel() {
                         this.load(1);
+                    },
+                    selectedTypes: {
+                        handler() { this.load(1) },
+                        deep: true
                     }
                 },
 
@@ -166,12 +185,12 @@
                         this.loading = true;
                         this.selected = [];
 
-                        if (this.selectedChannel) {
-                            options.filter = {channel: this.selectedChannel};
-                        }
+                        if (this.selectedChannel || this.selectedTypes.length) {
 
-                        if (this.filter) {
-                            options.filter = this.filter;
+                            options.filter = {};
+
+                            if (this.selectedChannel) options.filter.channel = this.selectedChannel;
+                            if (this.selectedTypes.length) options.filter.type = {$in: this.selectedTypes};
                         }
 
                         this.$request(`/system/logs/load`, { options }).then(rsp => {
@@ -187,6 +206,18 @@
                     showContext(context) {
                         VueView.ui.offcanvas('system:assets/dialogs/json-viewer.js', {data: context, caption: 'LOG Context'}, {}, {flip: true, size: 'xlarge'})
                     },
+
+                    toggleType($type) {
+
+                        let idx = this.selectedTypes.indexOf($type);
+
+                        if (idx > -1) {
+                            this.selectedTypes.splice(idx, 1);
+                        } else {
+                            this.selectedTypes.push($type);
+                        }
+
+                    }
                 }
             }
 
