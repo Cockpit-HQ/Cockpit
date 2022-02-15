@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace League\Flysystem\Local;
 
-use function file_put_contents;
 use const DIRECTORY_SEPARATOR;
 use const LOCK_EX;
 use DirectoryIterator;
@@ -38,11 +37,11 @@ use function dirname;
 use function error_clear_last;
 use function error_get_last;
 use function file_exists;
+use function file_put_contents;
 use function is_dir;
 use function is_file;
 use function mkdir;
 use function rename;
-use function stream_copy_to_stream;
 
 class LocalFilesystemAdapter implements FilesystemAdapter
 {
@@ -213,7 +212,7 @@ class LocalFilesystemAdapter implements FilesystemAdapter
             $permissions = octdec(substr(sprintf('%o', $fileInfo->getPerms()), -4));
             $visibility = $isDirectory ? $this->visibility->inverseForDirectory($permissions) : $this->visibility->inverseForFile($permissions);
 
-            yield $isDirectory ? new DirectoryAttributes($path, $visibility, $lastModified) : new FileAttributes(
+            yield $isDirectory ? new DirectoryAttributes(str_replace('\\', '/', $path), $visibility, $lastModified) : new FileAttributes(
                 str_replace('\\', '/', $path),
                 $fileInfo->getSize(),
                 $visibility,
@@ -302,6 +301,13 @@ class LocalFilesystemAdapter implements FilesystemAdapter
         $location = $this->prefixer->prefixPath($location);
 
         return is_file($location);
+    }
+
+    public function directoryExists(string $location): bool
+    {
+        $location = $this->prefixer->prefixPath($location);
+
+        return is_dir($location);
     }
 
     public function createDirectory(string $path, Config $config): void

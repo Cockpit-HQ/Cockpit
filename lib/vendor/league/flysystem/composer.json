@@ -17,26 +17,29 @@
         }
     },
     "require": {
-        "php": "^7.2 || ^8.0",
-        "ext-json": "*",
+        "php": "^8.0.2",
         "league/mime-type-detection": "^1.0.0"
     },
     "require-dev": {
+        "ext-zip": "*",
         "ext-fileinfo": "*",
         "ext-ftp": "*",
-        "phpunit/phpunit": "^8.5 || ^9.4",
+        "microsoft/azure-storage-blob": "^1.1",
+        "phpunit/phpunit": "^9.5.11",
         "phpstan/phpstan": "^0.12.26",
         "phpseclib/phpseclib": "^2.0",
-        "aws/aws-sdk-php": "^3.132.4",
+        "aws/aws-sdk-php": "^3.198.1",
         "composer/semver": "^3.0",
-        "friendsofphp/php-cs-fixer": "^3.2",
+        "friendsofphp/php-cs-fixer": "^3.5",
         "google/cloud-storage": "^1.23",
         "async-aws/s3": "^1.5",
         "async-aws/simple-s3": "^1.0",
-        "sabre/dav": "^4.1"
+        "sabre/dav": "^4.3.1"
     },
     "conflict": {
-        "guzzlehttp/ringphp": "<1.1.1"
+        "symfony/http-client": "<5.2",
+        "guzzlehttp/ringphp": "<1.1.1",
+        "guzzlehttp/guzzle": "<7.0"
     },
     "license": "MIT",
     "authors": [

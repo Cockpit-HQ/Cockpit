@@ -3369,6 +3369,9 @@ small,
 .kiss-text-bold {
     font-weight: bold !important;
 }
+.kiss-text-light {
+    font-weight: 100 !important;
+}
 .kiss-text-bolder {
     font-weight: bolder !important;
 }

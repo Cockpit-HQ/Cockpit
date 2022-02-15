@@ -29,7 +29,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => 'f991321011c6a0f2a5e25bedebef9b005108f877',
+    'reference' => '0cbcb0c1da361d5224b095f61d214c040b6c3491',
     'name' => 'agentejo/cockpit',
   ),
   'versions' => 
@@ -41,7 +41,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => 'f991321011c6a0f2a5e25bedebef9b005108f877',
+      'reference' => '0cbcb0c1da361d5224b095f61d214c040b6c3491',
     ),
     'bacon/bacon-qr-code' => 
     array (
@@ -153,12 +153,12 @@ private static $installed = array (
     ),
     'league/flysystem' => 
     array (
-      'pretty_version' => '2.4.2',
-      'version' => '2.4.2.0',
+      'pretty_version' => '3.0.7',
+      'version' => '3.0.7.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'ca8e4c10535be5c59c03f491310b60b9d6a60e24',
+      'reference' => '6f60c44080ebcd62ee8bef25edba4ba58400c052',
     ),
     'league/mime-type-detection' => 
     array (

@@ -25,7 +25,7 @@
         "ext-json": "*",
         "phpmailer/phpmailer": "^6.4",
         "claviska/simpleimage": "^3.6",
-        "league/flysystem": "^2.0",
+        "league/flysystem": "^3.0",
         "firebase/php-jwt": "^5.2",
         "mongodb/mongodb": "^1.10",
         "maennchen/zipstream-php": "^0.5.2",

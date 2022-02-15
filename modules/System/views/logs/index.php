@@ -36,37 +36,13 @@
         <template>
 
             <kiss-row gap="large">
-                <div class="kiss-width-1-6@m">
 
-                    <kiss-navlist>
-                        <ul>
-                            <li class="kiss-nav-header kiss-padding-small">Channels</li>
-                            <li>
-                                <kiss-card class="kiss-padding-small" :theme="!selectedChannel && 'bordered contrast'">
-                                    <a class="kiss-display-block" @click="selectedChannel = null" :class="!selectedChannel ? 'kiss-text-bold kiss-color-primary':'kiss-color-muted'">{{ t('All') }}</a>
-                                </kiss-card>
-                            </li>
-                            <li class="kiss-nav-divider"></li>
-                            <li v-for="channel in channels">
-                                <kiss-card class="kiss-flex kiss-flex-middle kiss-padding-small" :theme="selectedChannel == channel.name && 'bordered contrast'">
-                                    <a class="kiss-flex-1" @click="selectedChannel = channel.name" :class="selectedChannel == channel.name ? 'kiss-text-bold kiss-color-primary':'kiss-color-muted'">{{ channel.label}}</a>
-                                    <div class="kiss-margin-xsmall-left" v-if="selectedChannel == channel.name">
-                                        <kiss-svg class="kiss-color-muted" :src="$base(channel.icon)" width="20" height="20"><canvas width="20" height="20"></canvas></kiss-svg>
-                                    </div>
-                                </kiss-card>
-                            </li>
-                        </ul>
-                    </kiss-navlist>
-
-                </div>
                 <div class="kiss-flex-1">
 
-                    <div class="kiss-flex kiss-flex-middle kiss-margin-large-bottom">
-                        <div class="kiss-margin-small-right" v-if="selectedChannel"><kiss-svg class="kiss-color-muted" :src="$base(channels[selectedChannel].icon)" width="35" height="35"><canvas width="20" height="20"></canvas></kiss-svg></div>
-                        <div class="kiss-size-1 kiss-text-bold kiss-flex-1">{{ (selectedChannel && channels[selectedChannel].label) || 'All' }}</div>
-
+                    <div class="kiss-flex kiss-flex-middle kiss-margin-bottom">
+                        <div class="kiss-margin-small-right" v-if="selectedChannel"><kiss-svg class="kiss-color-muted" :src="$base(channels[selectedChannel].icon)" width="25" height="25"><canvas width="20" height="20"></canvas></kiss-svg></div>
+                        <div class="kiss-size-4 kiss-text-light kiss-flex-1">{{ (selectedChannel && channels[selectedChannel].label) || 'All' }}</div>
                     </div>
-
 
                     <app-loader class="kiss-margin" v-if="loading"></app-loader>
 
@@ -97,6 +73,29 @@
                             </tr>
                         </tbody>
                     </table>
+
+                </div>
+                <div class="kiss-width-1-6@m">
+
+                    <kiss-navlist>
+                        <ul>
+                            <li class="kiss-nav-header kiss-padding-small">Channels</li>
+                            <li>
+                                <kiss-card class="kiss-padding-small" :theme="!selectedChannel && 'bordered contrast'">
+                                    <a class="kiss-display-block" @click="selectedChannel = null" :class="!selectedChannel ? 'kiss-text-bold kiss-color-primary':'kiss-color-muted'">{{ t('All') }}</a>
+                                </kiss-card>
+                            </li>
+                            <li class="kiss-nav-divider"></li>
+                            <li v-for="channel in channels">
+                                <kiss-card class="kiss-flex kiss-flex-middle kiss-padding-small" :theme="selectedChannel == channel.name && 'bordered contrast'">
+                                    <a class="kiss-flex-1" @click="selectedChannel = channel.name" :class="selectedChannel == channel.name ? 'kiss-text-bold kiss-color-primary':'kiss-color-muted'">{{ channel.label}}</a>
+                                    <div class="kiss-margin-xsmall-left" v-if="selectedChannel == channel.name">
+                                        <kiss-svg class="kiss-color-muted" :src="$base(channel.icon)" width="20" height="20"><canvas width="20" height="20"></canvas></kiss-svg>
+                                    </div>
+                                </kiss-card>
+                            </li>
+                        </ul>
+                    </kiss-navlist>
 
                 </div>
             </kiss-row>

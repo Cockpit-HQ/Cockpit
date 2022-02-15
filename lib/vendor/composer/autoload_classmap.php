@@ -421,6 +421,8 @@ return array(
     'League\\Flysystem\\ProxyArrayAccessToProperties' => $vendorDir . '/league/flysystem/src/ProxyArrayAccessToProperties.php',
     'League\\Flysystem\\StorageAttributes' => $vendorDir . '/league/flysystem/src/StorageAttributes.php',
     'League\\Flysystem\\SymbolicLinkEncountered' => $vendorDir . '/league/flysystem/src/SymbolicLinkEncountered.php',
+    'League\\Flysystem\\UnableToCheckDirectoryExistence' => $vendorDir . '/league/flysystem/src/UnableToCheckDirectoryExistence.php',
+    'League\\Flysystem\\UnableToCheckExistence' => $vendorDir . '/league/flysystem/src/UnableToCheckExistence.php',
     'League\\Flysystem\\UnableToCheckFileExistence' => $vendorDir . '/league/flysystem/src/UnableToCheckFileExistence.php',
     'League\\Flysystem\\UnableToCopyFile' => $vendorDir . '/league/flysystem/src/UnableToCopyFile.php',
     'League\\Flysystem\\UnableToCreateDirectory' => $vendorDir . '/league/flysystem/src/UnableToCreateDirectory.php',
