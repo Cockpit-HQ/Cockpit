@@ -1,3 +1,14 @@
+<style>
+
+    icon[type="info"] { color: blue; }
+    icon[type="warning"] { color: orange; }
+    icon[type="error"] { color: red;}
+    icon[type="notice"] { color: yellow;}
+    icon[type="debug"] { color: turquoise;}
+    icon[type="alert"] { color: darkmagenta;}
+
+</style>
+
 
 <kiss-container class="kiss-margin">
 
@@ -55,14 +66,16 @@
                                 <th width="100">Date</th>
                                 <th width="25" v-if="!activeChannel">Channel</th>
                                 <th>Message</th>
+                                <th width="20"></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="item in items">
-                                <td class="kiss-align-center"><icon>trip_origin</icon></td>
+                                <td class="kiss-align-center"><icon :type="item.type">trip_origin</icon></td>
                                 <td class="kiss-text-bold kiss-text-monospace"><div class="kiss-size-xsmall">{{ (new Date(item.timestamp * 1000).toLocaleString()) }}</div></td>
                                 <td class="kiss-text-bold kiss-color-muted kiss-align-center" v-if="!activeChannel"><app-avatar :name="item.channel" size="25" kiss-tooltip="bottom" :aria-label="item.channel"></app-avatar></td>
                                 <td>{{ item.message }}</td>
+                                <td><a class="kiss-badge kiss-badge-outline kiss-color-primary" v-if="item.context" @click="showContext(item.context)">&bull;&bull;&bull;</a></td>
                             </tr>
                         </tbody>
                     </table>
@@ -119,7 +132,7 @@
 
                 watch: {
                     activeChannel() {
-                        this.load();
+                        this.load(1);
                     }
                 },
 
@@ -149,10 +162,14 @@
                             this.page = rsp.page;
                             this.pages = rsp.pages;
                             this.count = rsp.count;
-                            console.log(this.items)
+
                             this.loading = false;
                         });
-                    }
+                    },
+
+                    showContext(context) {
+                        VueView.ui.offcanvas('system:assets/dialogs/json-viewer.js', {data: context, caption: 'LOG Context'}, {}, {flip: true, size: 'large'})
+                    },
                 }
             }
 

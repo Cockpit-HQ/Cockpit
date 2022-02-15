@@ -34,6 +34,9 @@ export default {
     props: {
         data: {
             type: Object
+        },
+        caption: {
+            type: String
         }
     },
 
@@ -47,7 +50,7 @@ export default {
 
         <div class="app-offcanvas-container">
             <div class="kiss-padding kiss-text-bold">
-                {{ t('JSON Viewer') }}
+                {{ caption || t('JSON Viewer') }}
             </div>
             <div class="app-offcanvas-content kiss-padding kiss-bgcolor-contrast kiss-flex-1">
                 <pre class="kiss-size-small" v-html="highlighted"></pre>

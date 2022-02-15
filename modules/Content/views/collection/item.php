@@ -233,7 +233,6 @@
 
             components: {
                 'fields-renderer': 'system:assets/vue-components/fields-renderer.js',
-                'json-viewer': 'system:assets/vue-components/json-viewer.js',
             },
 
             computed: {

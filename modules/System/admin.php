@@ -34,3 +34,14 @@ $this->on('app.permissions.collect', function (ArrayObject $permissions) {
     ];
 
 });
+
+$this->on('app.user.login', function($user) {
+
+    $this->module('system')->log("User Login: {$user['user']}", type: 'info', context: [
+        '_id' => $user['_id'],
+        'user' => $user['user'],
+        'name' => $user['name'],
+        'email' => $user['email'],
+        'ip' => $this->getClientIp()
+    ]);
+});
