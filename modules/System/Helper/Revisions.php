@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Helper;
+namespace System\Helper;
 
 class Revisions extends \Lime\Helper {
 

@@ -23,7 +23,7 @@ export default {
 
             this.loading = true;
 
-            this.$request(`/utils/revisions/${this.oid}`).then(revisions => {
+            this.$request(`/system/utils/revisions/${this.oid}`).then(revisions => {
 
                 this.revisions = revisions;
                 this.loading = false;
@@ -43,7 +43,7 @@ export default {
         <ul class="app-list-items animated fadeIn">
             <li v-for="rev in revisions">
                 <div class="kiss-size-small">{{ (new Date(rev._created * 1000).toLocaleString()) }}</div>
-                <div class="kiss-color-muted kiss-size-xsmall">{{ rev._by }}</div>
+                <div class="kiss-color-muted kiss-size-xsmall">{{ rev._by && rev._by.user ? rev._by.user : 'n/a' }}</div>
             </li>
         </ul>
 

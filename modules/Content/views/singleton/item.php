@@ -105,7 +105,7 @@
                         <a class="kiss-button kiss-width-1-1" @click="showPreviewUri(model.preview[0].uri)" v-if="model.preview.length == 1">{{ t('Open preview') }}</a>
                     </div>
 
-                    <kiss-card class="kiss-margin kiss-padding-small kiss-visible@m" theme="contrast bordered" v-if="model.revisions && item._id">
+                    <kiss-card class="kiss-margin kiss-padding kiss-visible@m" theme="contrast bordered" v-if="model.revisions && item._id">
 
                         <div class="kiss-text-caption kiss-size-xsmall kiss-text-bold kiss-margin-small-bottom">{{ t('Revisions') }}</div>
                         <revisions-info :oid="item._id"></revisions-info>

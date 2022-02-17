@@ -9,6 +9,7 @@ $this->bindClass('System\\Controller\\Locales', '/system/locales');
 $this->bindClass('System\\Controller\\Logs', '/system/logs');
 $this->bindClass('System\\Controller\\Users\\Roles', '/system/users/roles');
 $this->bindClass('System\\Controller\\Users', '/system/users');
+$this->bindClass('System\\Controller\\Utils', '/system/utils');
 $this->bindClass('System\\Controller\\Settings', '/system');
 
 $this->helper('menus')->addLink('modules', [
