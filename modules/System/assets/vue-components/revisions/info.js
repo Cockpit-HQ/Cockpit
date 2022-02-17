@@ -11,11 +11,21 @@ export default {
         oid: {
             type: String,
             default: false
+        },
+        current: {
+            type: Object,
+            default: {}
         }
     },
 
     mounted() {
         this.load();
+    },
+
+    computed: {
+        latest() {
+            return this.revisions.length ? this.revisions.slice(0, 2) : [];
+        }
     },
 
     methods: {
@@ -41,11 +51,20 @@ export default {
         <div class="kiss-size-small kiss-color-muted" v-if="!loading && !revisions.length">{{ t('No revisions yet') }}</div>
 
         <ul class="app-list-items animated fadeIn">
-            <li v-for="rev in revisions">
-                <div class="kiss-size-small">{{ (new Date(rev._created * 1000).toLocaleString()) }}</div>
-                <div class="kiss-color-muted kiss-size-xsmall">{{ rev._by && rev._by.user ? rev._by.user : 'n/a' }}</div>
+            <li class="kiss-flex" v-for="rev in latest">
+                <div class="kiss-flex-1">
+                    <div class="kiss-size-small">{{ (new Date(rev._created * 1000).toLocaleString()) }}</div>
+                    <div class="kiss-color-muted kiss-size-xsmall">By {{ rev._by && rev._by.user ? rev._by.user : 'n/a' }}</div>
+                </div>
+                <div>
+                    <a><icon class="kiss-size-4">settings_backup_restore</icon></a>
+                </div>
             </li>
         </ul>
+
+        <div class="kiss-margin-top">
+            <button type="button" class="kiss-button kiss-button-small">{{ t('Show more revisions') }}</button>
+        </div>
 
     `
 }
