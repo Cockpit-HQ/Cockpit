@@ -49,6 +49,10 @@ class Revisions extends \Lime\Helper {
             $filtered[$key] = $value;
         }
 
+        if (!count($filtered)) {
+            return false;
+        }
+
         $revision = [
             '_oid' => $id,
             'data' => $filtered,

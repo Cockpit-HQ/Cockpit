@@ -43,6 +43,16 @@ export default {
                 App.ui.notify(rsp.error || 'Loading revisions count failed!', 'error');
             });
 
+        },
+
+        restore(revision) {
+
+            Object.keys(revision.data).forEach(key => {
+
+                if (this.current[key] !== undefined) {
+                    this.current[key] = JSON.parse(JSON.stringify(revision.data[key]));
+                }
+            });
         }
     },
 
@@ -57,7 +67,7 @@ export default {
                     <div class="kiss-color-muted kiss-size-xsmall">By {{ rev._by && rev._by.user ? rev._by.user : 'n/a' }}</div>
                 </div>
                 <div>
-                    <a><icon class="kiss-size-4">settings_backup_restore</icon></a>
+                    <a @click="restore(rev)"><icon class="kiss-size-4">settings_backup_restore</icon></a>
                 </div>
             </li>
         </ul>
