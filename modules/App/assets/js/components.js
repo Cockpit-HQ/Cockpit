@@ -17,6 +17,8 @@ VueView.component('vue-draggable', Vue.defineAsyncComponent(() => {
     })
 }));
 
+VueView.component('revisions-info', 'app:assets/vue-components/revisions/info.js');
+
 // Fields
 VueView.component('field-boolean', 'app:assets/vue-components/field-boolean.js');
 VueView.component('field-code', 'app:assets/vue-components/field-code.js');

@@ -25,6 +25,7 @@ class Models extends App {
             'type' => $type,
             'group' => '',
             'color' => null,
+            'revisions' => false,
             'fields' => [],
             'preview' => []
         ];
@@ -119,13 +120,14 @@ class Models extends App {
             return $this->stop(['error' => 'Model unknown'], 404);
         }
 
+        $model = $this->module('content')->model($model);
         $isUpdate = isset($item['_id']) && $item['_id'];
 
-        if ($isUpdate && !$this->isAllowed("content/{$model}/update")) {
+        if ($isUpdate && !$this->isAllowed("content/{$model['name']}/update")) {
             $this->stop(401);
         }
 
-        if (!$isUpdate && !$this->isAllowed("content/{$model}/create")) {
+        if (!$isUpdate && !$this->isAllowed("content/{$model['name']}/create")) {
             $this->stop(401);
         }
 
@@ -133,11 +135,26 @@ class Models extends App {
             return $this->stop(['error' => 'Item is missing'], 412);
         }
 
-        if (isset($item['_state']) && !$this->isAllowed("content/{$model}/publish")) {
+        if (isset($item['_state']) && !$this->isAllowed("content/{$model['name']}/publish")) {
             unset($item['_state']);
         }
 
-        $item = $this->module('content')->saveItem($model, $item, ['user' => $this->user]);
+        if ($isUpdate && ($model['revisions'] ?? false)) {
+
+            $current = null;
+
+            if ($model['type'] == 'collection') {
+                $current = $this->module('content')->item($model['name'], ['_id' => $item['_id']]);
+            } else {
+                $current = $this->module('content')->item($model['name']);
+            }
+
+            if ($current) {
+                $this->app->helper('revisions')->add($item['_id'], $current, "content/{$model['name']}", $this->user['_id'], $current['_modified']);
+            }
+        }
+
+        $item = $this->module('content')->saveItem($model['name'], $item, ['user' => $this->user]);
 
         return $item;
     }

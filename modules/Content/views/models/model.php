@@ -80,11 +80,6 @@
                     <textarea class="kiss-input kiss-textarea" style="height:100px;" v-model="model.info"></textarea>
                 </div>
 
-                <div class="kiss-margin">
-                    <label><?=t('Color')?></label>
-                    <field-color v-model="model.color"></field-color>
-                </div>
-
                 <div class="kiss-margin kiss-margin-large-top">
 
                     <app-tabs class="kiss-margin-large">
@@ -115,6 +110,30 @@
                                 <a class="kiss-size-large" @click="model.preview.push({name:'', uri:''})"><icon>control_point</icon></a>
                             </div>
 
+                        </tab>
+                        <tab :caption="'Misc'">
+
+                            <div class="kiss-flex">
+                                <div class="kiss-flex-1">
+                                    <label><?=t('Color')?></label>
+                                    <div class="kiss-size-xsmall kiss-color-muted kiss-margin-xsmall-top">
+                                        <?=t('Model accent color')?>
+                                    </div>
+                                </div>
+                                <field-color v-model="model.color" size="30"></field-color>
+                            </div>
+
+                            <hr>
+
+                            <div class="kiss-flex">
+                                <div class="kiss-flex-1">
+                                    <label><?=t('Enable revisions')?></label>
+                                    <div class="kiss-size-xsmall kiss-color-muted kiss-margin-xsmall-top">
+                                        <?=t('Store every content update as version')?>
+                                    </div>
+                                </div>
+                                <field-boolean class="kiss-size-large" v-model="model.revisions"></field-boolean>
+                            </div>
                         </tab>
                     </app-tabs>
                 </div>

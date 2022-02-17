@@ -19,4 +19,9 @@ class Utils extends App {
 
         return ['token' => $this->helper('csrf')->token($name, $generate, $expire)];
     }
+
+    public function revisions($oid) {
+
+        return $this->app->helper('revisions')->getList($oid);
+    }
 }
