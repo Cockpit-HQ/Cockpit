@@ -31,7 +31,7 @@
 
             <kiss-row class="kiss-margin-large" gap="large" :class="{'kiss-disabled': saving}" v-if="fields.length">
                 <div class="kiss-flex-1">
-                    <div class="kiss-width-2-3@xl kiss-margin-auto">
+                    <div class="kiss-width-3-4@xl kiss-margin-auto">
                         <fields-renderer v-model="item" :fields="fields" :locales="locales"></fields-renderer>
                     </div>
                 </div>
@@ -124,7 +124,7 @@
                             <a class="kiss-button" href="<?=$this->route("/content")?>">
                                 <?=t('Close')?>
                             </a>
-                            <a class="kiss-button kiss-button-primary" @click="save()">
+                            <a class="kiss-button kiss-button-primary" :class="{'kiss-disabled': item._id && !isModified}" @click="save()">
                                 <?=t('Save')?>
                             </a>
                         </div>
@@ -206,7 +206,7 @@
                         fields: <?=json_encode($fields)?>,
                         locales: <?=json_encode($locales)?>,
                         saving: false,
-                        isModified: false
+                        savedItemState: null
                     }
                 },
 
@@ -215,6 +215,11 @@
                 },
 
                 computed: {
+
+                    isModified() {
+                        return JSON.stringify(this.item) != this.savedItemState;
+                    },
+
                     hasLocales() {
 
                         for (let i=0;i<this.fields.length;i++) {
@@ -226,6 +231,8 @@
 
                 created() {
 
+                    this.savedItemState = JSON.stringify(this.item);
+
                     window.onbeforeunload = e => {
 
                         if (this.isModified) {
@@ -234,15 +241,6 @@
                         }
                     };
 
-                },
-
-                watch: {
-                    item: {
-                        handler() {
-                            //this.isModified = true;
-                        },
-                        deep: true
-                    }
                 },
 
                 methods: {
@@ -264,10 +262,9 @@
                         this.$request(`/content/models/saveItem/${model}`, {item: this.item}).then(item => {
 
                             this.item = Object.assign(this.item, item);
+                            this.savedItemState = JSON.stringify(this.item);
                             this.saving = false;
                             App.ui.notify('Data updated!');
-
-                            this.$nextTick(() => this.isModified = false);
 
                         }).catch(rsp => {
                             this.saving = false;

@@ -4,25 +4,32 @@
         <li><a href="<?= $this->route('/content') ?>"><?= t('Content') ?></a></li>
     </ul>
 
-    <div class="kiss-flex kiss-flex-middle kiss-margin-bottom">
-        <div class="kiss-margin-small-right">
-            <kiss-svg class="kiss-margin-auto" src="<?= $this->base('content:assets/icons/collection.svg') ?>" width="25" height="25" style="color:<?= ($this->escape($model['color'] ?? 'inherit')) ?>"><canvas width="35" height="35"></canvas></kiss-svg>
-        </div>
-        <div class="kiss-margin-small-right">
-            <div class="kiss-size-5 kiss-text-bold"><?= $this->escape($model['label'] ? $model['label'] : $model['name']) ?></div>
-        </div>
-        <div>
-            <a class="kiss-size-large" kiss-popoutmenu="#model-menu-actions">
-                <icon>more_horiz</icon>
-            </a>
-        </div>
-    </div>
-
     <vue-view>
 
         <template>
 
+            <div class="kiss-flex kiss-flex-middle kiss-margin-bottom">
+                <div class="kiss-margin-small-right">
+                    <kiss-svg class="kiss-margin-auto" src="<?= $this->base('content:assets/icons/collection.svg') ?>" width="25" height="25" style="color:<?= ($this->escape($model['color'] ?? 'inherit')) ?>"><canvas width="35" height="35"></canvas></kiss-svg>
+                </div>
+                <div class="kiss-margin-small-right">
+                    <div class="kiss-size-5 kiss-text-bold"><?= $this->escape($model['label'] ? $model['label'] : $model['name']) ?></div>
+                </div>
+
+                <kiss-card class="kiss-overlay-input kiss-padding-small kiss-margin-small-right" theme="contrast shadowed" v-if="Object.keys(App._locales).length > 1">
+                            <icon class="kiss-margin-xsmall-right">language</icon>
+                            <span class="kiss-size-small kiss-text-caption kiss-text-bolder">{{ App._locales[this.locale] }}</span>
+                            <select v-model="locale"><option :value="i18n" v-for="(label,i18n) in App._locales">{{label}}</option></select>
+                </kiss-card>
+                <div>
+                    <a class="kiss-size-large" kiss-popoutmenu="#model-menu-actions">
+                        <icon>more_horiz</icon>
+                    </a>
+                </div>
+            </div>
+
             <form class="kiss-flex kiss-flex-middle" v-if="fieldTypes && ((!loading && items.length) || filter)" @submit.prevent="filter = txtFilter">
+
                 <input type="text" class="kiss-input kiss-flex-1 kiss-margin-xsmall-right" :placeholder="t('Filter items...')" v-model="txtFilter">
 
                 <div class="kiss-button-group kiss-margin-small-left">
@@ -232,7 +239,8 @@
                         pages: 1,
                         limit: 25,
                         count: 0,
-                        loading: false
+                        loading: false,
+                        locale: 'default'
                     }
                 },
 
@@ -284,6 +292,9 @@
                             App.session.set(`content.${this.model.name}.hiddenFields`, hiddenFields);
                         },
                         deep: true
+                    },
+                    locale() {
+                        this.load();
                     }
                 },
 
@@ -307,11 +318,17 @@
                             sort: this.sort
                         };
 
+                        let process = {};
+
                         this.loading = true;
                         this.selected = [];
 
                         if (this.filter) {
                             options.filter = this.filter;
+                        }
+
+                        if (this.locale != 'default') {
+                            process.locale = this.locale;
                         }
 
                         if (history) {
@@ -328,7 +345,7 @@
                         }
 
                         this.$request(`/content/collection/find/${this.model.name}`, {
-                            options
+                            options, process
                         }).then(rsp => {
                             this.items = rsp.items;
                             this.page = rsp.page;

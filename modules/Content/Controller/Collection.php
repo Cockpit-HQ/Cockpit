@@ -99,6 +99,7 @@ class Collection extends App {
         }
 
         $options = $this->app->param('options');
+        $process = $this->app->param('process', []);
 
         if (isset($options['filter']) && is_string($options['filter'])) {
 
@@ -137,7 +138,7 @@ class Collection extends App {
             $options['filter'] = $filter;
         }
 
-        $items = $this->app->module('content')->items($model['name'], $options);
+        $items = $this->app->module('content')->items($model['name'], $options, $process);
         $count = $this->app->module('content')->count($model['name'], $options['filter'] ?? []);
         $pages = isset($options['limit']) ? ceil($count / $options['limit']) : 1;
         $page  = 1;

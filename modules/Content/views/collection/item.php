@@ -30,7 +30,7 @@
 
             <kiss-row class="kiss-margin-large" gap="large" v-if="fields.length">
                 <div class="kiss-flex-1">
-                    <div class="kiss-width-2-3@xl kiss-margin-auto">
+                    <div class="kiss-width-3-4@xl kiss-margin-auto">
                         <fields-renderer v-model="item" :fields="fields" :locales="locales"></fields-renderer>
                     </div>
                 </div>
@@ -113,6 +113,13 @@
                         <a class="kiss-button kiss-width-1-1" @click="showPreviewUri(model.preview[0].uri)" v-if="model.preview.length == 1">{{ t('Open preview') }}</a>
                     </div>
 
+                    <kiss-card class="kiss-margin kiss-padding kiss-visible@m" theme="contrast bordered" hover="shadow" v-if="model.revisions && item._id">
+
+                        <div class="kiss-text-caption kiss-size-xsmall kiss-text-bold kiss-margin-small-bottom">{{ t('Revisions') }}</div>
+                        <revisions-info :oid="item._id" :current="item"></revisions-info>
+
+                    </kiss-card>
+
                 </div>
             </kiss-row>
         </kiss-container>
@@ -132,7 +139,7 @@
                             <span v-if="!item._id"><?=t('Cancel')?></span>
                             <span v-if="item._id"><?=t('Close')?></span>
                         </a>
-                        <a class="kiss-button kiss-button-primary" @click="save()">
+                        <a class="kiss-button kiss-button-primary" :class="{'kiss-disabled': item._id && !isModified}" @click="save()">
                             <span v-if="!item._id"><?=t('Create item')?></span>
                             <span v-if="item._id"><?=t('Update item')?></span>
                         </a>
@@ -227,7 +234,7 @@
                     fields: <?=json_encode($fields)?>,
                     locales: <?=json_encode($locales)?>,
                     saving: false,
-                    isModified: false
+                    savedItemState: null
                 }
             },
 
@@ -236,6 +243,11 @@
             },
 
             computed: {
+
+                isModified() {
+                    return JSON.stringify(this.item) != this.savedItemState;
+                },
+
                 hasLocales() {
 
                     for (let i=0;i<this.fields.length;i++) {
@@ -247,6 +259,8 @@
 
             created() {
 
+                this.savedItemState = JSON.stringify(this.item);
+
                 window.onbeforeunload = e => {
 
                     if (this.isModified) {
@@ -254,15 +268,6 @@
                         e.returnValue = this.t('You have unsaved data! Are you sure you want to leave?');
                     }
                 };
-            },
-
-            watch: {
-                item: {
-                    handler() {
-                        //this.isModified = true;
-                    },
-                    deep: true
-                }
             },
 
             methods: {
@@ -284,10 +289,9 @@
                     this.$request(`/content/models/saveItem/${model}`, {item: this.item}).then(item => {
 
                         this.item = Object.assign(this.item, item);
+                        this.savedItemState = JSON.stringify(this.item);
                         this.saving = false;
                         App.ui.notify('Data updated!');
-
-                        this.$nextTick(() => this.isModified = false);
 
                     }).catch(rsp => {
                         this.saving = false;
