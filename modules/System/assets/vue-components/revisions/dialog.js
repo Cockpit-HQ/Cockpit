@@ -102,8 +102,15 @@ export default {
                 </kiss-row>
 
             </div>
-            <div class="kiss-padding kiss-bgcolor-contrast kiss-flex kiss-flex-right">
-                <button class="kiss-button" kiss-offcanvas-close>{{ t('Close') }}</button>
+            <div class="kiss-padding kiss-bgcolor-contrast">
+                <kiss-row>
+                    <div class="kiss-flex-1">
+                        <button class="kiss-button kiss-button-primary kiss-width-1-1 kiss-margin-right" @click="restoreAll()" v-if="selectedRev && changes.length">{{ t('Restore all') }}</button>
+                    </div>
+                    <div class="kiss-width-1-5">
+                        <button class="kiss-button kiss-width-1-1" kiss-offcanvas-close>{{ t('Close') }}</button>
+                    </div>
+                </kiss-row>
             </div>
         </div>
     `,
@@ -130,9 +137,18 @@ export default {
         },
 
         restoreField(key) {
-
             this.current[key] = JSON.parse(JSON.stringify(this.selectedRev.data[key]));
         },
+
+        restoreAll() {
+
+            Object.keys(this.selectedRev.data).forEach(key => {
+
+                if (this.current[key] !== undefined) {
+                    this.current[key] = JSON.parse(JSON.stringify(this.selectedRev.data[key]));
+                }
+            });
+        }
 
     }
 }
