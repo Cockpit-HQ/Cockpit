@@ -20,6 +20,10 @@ export default {
         },
         caption: {
             type: String
+        },
+        revision: {
+            type: Object,
+            default: null
         }
     },
 
@@ -46,7 +50,7 @@ export default {
     },
 
     mounted() {
-        this.load()
+        this.load(this.revision)
     },
 
     template: /*html*/`
@@ -117,7 +121,7 @@ export default {
 
     methods: {
 
-        load() {
+        load(rev) {
 
             this.loading = true;
 
@@ -127,6 +131,14 @@ export default {
 
                     this.revisions = revisions;
                     this.loading = false;
+
+                    if (rev) {
+                        this.revisions.forEach(r => {
+                            if (r._created == rev._created) {
+                                this.selectedRev = r;
+                            }
+                        })
+                    }
                 });
 
             }).catch(rsp => {

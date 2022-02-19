@@ -55,6 +55,14 @@ export default {
             });
         },
 
+        showVersion(rev) {
+            VueView.ui.offcanvas('system:assets/vue-components/revisions/dialog.js', {
+                oid: this.oid,
+                current: this.current,
+                revision: rev
+            }, {}, {flip: true, size: 'xxlarge'})
+        },
+
         showRevisions() {
             VueView.ui.offcanvas('system:assets/vue-components/revisions/dialog.js', {
                 oid: this.oid,
@@ -69,9 +77,10 @@ export default {
 
         <ul class="app-list-items animated fadeIn">
             <li class="kiss-flex" v-for="rev in latest">
-                <div class="kiss-flex-1">
+                <div class="kiss-flex-1 kiss-position-relative">
                     <div class="kiss-size-small">{{ (new Date(rev._created * 1000).toLocaleString()) }}</div>
                     <div class="kiss-color-muted kiss-size-xsmall">By {{ rev._by && rev._by.user ? rev._by.user : 'n/a' }}</div>
+                    <a class="kiss-cover" @click="showVersion(rev)"></a>
                 </div>
                 <div>
                     <a @click="restore(rev)"><icon class="kiss-size-4">settings_backup_restore</icon></a>
