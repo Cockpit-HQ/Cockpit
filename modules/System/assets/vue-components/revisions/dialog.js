@@ -37,7 +37,7 @@ export default {
                     key,
                     current: this.current[key],
                     revision: this.selectedRev.data[key],
-                    diff: htmldiff(JSON.stringify(this.selectedRev.data[key]), JSON.stringify(this.current[key]))
+                    diff: htmldiff(JSON.stringify(this.selectedRev.data[key], null, ' '), JSON.stringify(this.current[key], null, ' '))
                 });
             });
 
@@ -73,8 +73,9 @@ export default {
 
                                 <div class="kiss-text-bold kiss-text-caption">{{ item.key }}</div>
 
-                                <kiss-card class="kiss-margin-small-top kiss-padding" theme="contrast">
-                                    <div v-html="item.diff"></div>
+                                <kiss-card class="kiss-margin-small-top kiss-padding kiss-flex kiss-flex-middle" theme="contrast">
+                                    <pre class="kiss-text-monospace kiss-size-small kiss-overflow-y-auto kiss-margin-small-right kiss-flex-1" style="max-height:15vh" v-html="item.diff"></pre>
+                                    <div><a @click="restoreField(item.key)"><icon class="kiss-size-4">settings_backup_restore</icon></a></div>
                                 </kiss-card>
                             </div>
 
@@ -86,7 +87,7 @@ export default {
                         <ul class="app-list-items kiss-margin-top kiss-margin-bottom">
                             <li class="kiss-flex kiss-position-relative" v-for="rev in revisions">
                                 <div class="kiss-flex-1">
-                                    <div :class="(selectedRev == rev) ? 'kiss-color-primary kiss-size-4':'kiss-size-small'">{{ (new Date(rev._created * 1000).toLocaleString()) }}</div>
+                                    <div :class="(selectedRev == rev) ? 'kiss-color-primary kiss-text-bold':'kiss-size-small'">{{ (new Date(rev._created * 1000).toLocaleString()) }}</div>
                                     <div class="kiss-color-muted kiss-size-xsmall">By {{ rev._by && rev._by.user ? rev._by.user : 'n/a' }}</div>
                                 </div>
                                 <a class="kiss-cover" @click="selectedRev = rev"></a>
@@ -122,6 +123,11 @@ export default {
                 App.ui.notify(rsp.error || 'Loading revisions failed!', 'error');
             });
 
+        },
+
+        restoreField(key) {
+
+            this.current[key] = JSON.parse(JSON.stringify(this.selectedRev.data[key]));
         },
 
     }
