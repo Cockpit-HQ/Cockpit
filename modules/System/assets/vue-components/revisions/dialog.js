@@ -68,6 +68,10 @@ export default {
                             <div class="kiss-color-muted kiss-size-2 kiss-width-1-2 kiss-align-center">{{ t('Select a version') }}</div>
                         </div>
 
+                        <div class="kiss-flex kiss-height-30vh kiss-flex-middle kiss-flex-center" v-if="selectedRev && !changes.length">
+                            <div class="kiss-color-muted kiss-size-2 kiss-width-1-2 kiss-align-center">{{ t('No changes') }}</div>
+                        </div>
+
                         <div v-if="selectedRev">
                             <div class="kiss-margin" v-for="item in changes">
 
@@ -99,7 +103,7 @@ export default {
 
             </div>
             <div class="kiss-padding kiss-bgcolor-contrast kiss-flex kiss-flex-right">
-                <button class="kiss-button" kiss-offcanvas-close>{{ t('Cancel') }}</button>
+                <button class="kiss-button" kiss-offcanvas-close>{{ t('Close') }}</button>
             </div>
         </div>
     `,
