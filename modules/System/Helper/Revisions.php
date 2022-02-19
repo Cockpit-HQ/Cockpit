@@ -14,7 +14,7 @@ class Revisions extends \Lime\Helper {
         return $this->storage->count('system/revisions', ['_oid' => $id]);
     }
 
-    public function getList($id, int $limit = 50, int $skip = 0) {
+    public function getList(string $id, int $limit = 50, int $skip = 0) {
 
         $options = [
             'filter' => ['_oid' => $id],

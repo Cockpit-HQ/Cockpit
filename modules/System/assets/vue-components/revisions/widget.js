@@ -24,7 +24,7 @@ export default {
 
     computed: {
         latest() {
-            return this.revisions.length ? this.revisions.slice(0, 2) : [];
+            return this.revisions.length ? this.revisions.slice(0, 3) : [];
         }
     },
 
@@ -33,7 +33,7 @@ export default {
 
             this.loading = true;
 
-            this.$request(`/system/utils/revisions/${this.oid}`).then(revisions => {
+            this.$request(`/system/utils/revisions/${this.oid}?limit=4`).then(revisions => {
 
                 this.revisions = revisions;
                 this.loading = false;

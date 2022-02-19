@@ -116,7 +116,7 @@
                     <kiss-card class="kiss-margin kiss-padding kiss-visible@m" theme="contrast bordered" hover="shadow" v-if="model.revisions && item._id">
 
                         <div class="kiss-text-caption kiss-size-xsmall kiss-text-bold kiss-margin-small-bottom">{{ t('Revisions') }}</div>
-                        <revisions-info :oid="item._id" :current="item"></revisions-info>
+                        <revisions-widget :oid="item._id" :current="item"></revisions-widget>
 
                     </kiss-card>
 
