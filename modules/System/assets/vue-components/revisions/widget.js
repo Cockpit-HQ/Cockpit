@@ -40,7 +40,7 @@ export default {
 
             }).catch(rsp => {
                 this.saving = false;
-                App.ui.notify(rsp.error || 'Loading revisions count failed!', 'error');
+                App.ui.notify(rsp.error || 'Loading revisions failed!', 'error');
             });
 
         },
@@ -53,6 +53,13 @@ export default {
                     this.current[key] = JSON.parse(JSON.stringify(revision.data[key]));
                 }
             });
+        },
+
+        showRevisions() {
+            VueView.ui.offcanvas('system:assets/vue-components/revisions/dialog.js', {
+                oid: this.oid,
+                current: this.current
+            }, {}, {flip: true, size: 'xxlarge'})
         }
     },
 
@@ -73,7 +80,7 @@ export default {
         </ul>
 
         <div class="kiss-margin-top">
-            <button type="button" class="kiss-button kiss-button-small">{{ t('Show more revisions') }}</button>
+            <button type="button" class="kiss-button kiss-button-small" @click="showRevisions()">{{ t('Show more revisions') }}</button>
         </div>
 
     `

@@ -4208,6 +4208,12 @@ body {
     font-weight: 400;
     min-height: 100vh;
 }
+ins, del {
+    color: #fff;
+    text-decoration: none;
+}
+ins { background: #249924 }
+del { background: #c92a2a }
 .app-container {
     display: flex;
 }
