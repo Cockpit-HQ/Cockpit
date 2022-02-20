@@ -58,65 +58,6 @@ let FieldRenderer = {
         });
     },
 
-    template: /*html*/`
-        <div v-if="fieldTypes">
-
-            <component :is="getFieldType()" v-model="val" v-bind="field.opts" v-if="!field.multiple"></component>
-
-            <div v-if="field.multiple">
-                <kiss-card class="kiss-padding-small kiss-size-small kiss-color-muted" theme="bordered contrast" v-show="!val || !Array.isArray(val) || !val.length">{{ t('No items') }}</kiss-card>
-
-                <vue-draggable v-model="val" handle=".fm-handle" v-if="Array.isArray(val)">
-                    <template #item="{ element, index }">
-                        <div class="kiss-margin-small kiss-flex kiss-flex-middle">
-                            <kiss-card class="kiss-flex-1 kiss-padding-small kiss-size-small kiss-position-relative" theme="bordered contrast">
-                                <span class="kiss-badge kiss-badge-outline kiss-color-muted" v-if="val[index] == null">n/a</span>
-                                <div class="kiss-text-truncate" v-else-if="fieldTypes[field.type] && fieldTypes[field.type].render" v-html="fieldTypes[field.type].render(val[index], field)"></div>
-                                <div v-else>
-                                    <span class="kiss-badge kiss-badge-outline" v-if="Array.isArray(val[index])">{{ val[index].length }}</span>
-                                    <span class="kiss-badge kiss-badge-outline" v-else-if="typeof(val[index]) == 'object'">Object</span>
-                                    <div class="kiss-text-truncate" v-else>{{ val[index] }}</div>
-                                </div>
-                                <a class="kiss-cover" @click="editFieldItem(field, index)"></a>
-                            </kiss-card>
-                            <a class="kiss-margin-small-left kiss-color-danger" @click="removeFieldItem(val, index)"><icon>delete</icon></a>
-                            <a class="fm-handle kiss-margin-left kiss-color-muted"><icon>drag_handle</icon></a>
-                        </div>
-                    </template>
-                </vue-draggable>
-
-                <div class="kiss-margin kiss-align-center">
-                    <a @click="addFieldItem(field)" :tooltip="t('Add item')" flow="down"><icon class="kiss-size-large">control_point</icon></a>
-                </div>
-            </div>
-        </div>
-
-        <teleport to="body">
-            <kiss-dialog open="true" size="large" v-if="fieldItem">
-                <kiss-content class="animated fadeInUp faster">
-
-                    <div class="kiss-size-4 kiss-text-bold kiss-margin">{{fieldItem.create ? t('Add item'):t('Edit item')}}</div>
-
-                    <div class="kiss-margin-top">
-                        <div class="kiss-margin-bottom"><span class="kiss-badge kiss-text-upper">{{fieldItem.field.type}}</span></div>
-                        <component :is="getFieldType()" v-model="fieldItem.value" v-bind="field.opts"></component>
-                    </div>
-
-                    <div class="kiss-button-group kiss-child-width-1-2 kiss-flex kiss-margin-top">
-                        <a class="kiss-button" @click="fieldItem=null">
-                            {{ t('Cancel') }}
-                        </a>
-                        <button class="kiss-button kiss-button-primary" @click="saveFieldItem">
-                            <span v-if="!fieldItem.create">{{ t('Edit item') }}</span>
-                            <span v-if="fieldItem.create">{{ t('Add item') }}</span>
-                        </button>
-                    </div>
-
-                </kiss-content>
-            </kiss-dialog>
-        </teleport>
-    `,
-
     methods: {
 
         getFieldType() {
@@ -190,7 +131,66 @@ let FieldRenderer = {
         update() {
             this.$emit('update:modelValue', this.val)
         }
-    }
+    },
+
+    template: /*html*/`
+        <div v-if="fieldTypes">
+
+            <component :is="getFieldType()" v-model="val" v-bind="field.opts" v-if="!field.multiple"></component>
+
+            <div v-if="field.multiple">
+                <kiss-card class="kiss-padding-small kiss-size-small kiss-color-muted" theme="bordered contrast" v-show="!val || !Array.isArray(val) || !val.length">{{ t('No items') }}</kiss-card>
+
+                <vue-draggable v-model="val" handle=".fm-handle" v-if="Array.isArray(val)">
+                    <template #item="{ element, index }">
+                        <div class="kiss-margin-small kiss-flex kiss-flex-middle">
+                            <kiss-card class="kiss-flex-1 kiss-padding-small kiss-size-small kiss-position-relative" theme="bordered contrast">
+                                <span class="kiss-badge kiss-badge-outline kiss-color-muted" v-if="val[index] == null">n/a</span>
+                                <div class="kiss-text-truncate" v-else-if="fieldTypes[field.type] && fieldTypes[field.type].render" v-html="fieldTypes[field.type].render(val[index], field)"></div>
+                                <div v-else>
+                                    <span class="kiss-badge kiss-badge-outline" v-if="Array.isArray(val[index])">{{ val[index].length }}</span>
+                                    <span class="kiss-badge kiss-badge-outline" v-else-if="typeof(val[index]) == 'object'">Object</span>
+                                    <div class="kiss-text-truncate" v-else>{{ val[index] }}</div>
+                                </div>
+                                <a class="kiss-cover" @click="editFieldItem(field, index)"></a>
+                            </kiss-card>
+                            <a class="kiss-margin-small-left kiss-color-danger" @click="removeFieldItem(val, index)"><icon>delete</icon></a>
+                            <a class="fm-handle kiss-margin-left kiss-color-muted"><icon>drag_handle</icon></a>
+                        </div>
+                    </template>
+                </vue-draggable>
+
+                <div class="kiss-margin kiss-align-center">
+                    <a @click="addFieldItem(field)" :tooltip="t('Add item')" flow="down"><icon class="kiss-size-large">control_point</icon></a>
+                </div>
+            </div>
+        </div>
+
+        <teleport to="body">
+            <kiss-dialog open="true" size="large" v-if="fieldItem">
+                <kiss-content class="animated fadeInUp faster">
+
+                    <div class="kiss-size-4 kiss-text-bold kiss-margin">{{fieldItem.create ? t('Add item'):t('Edit item')}}</div>
+
+                    <div class="kiss-margin-top">
+                        <div class="kiss-margin-bottom"><span class="kiss-badge kiss-text-upper">{{fieldItem.field.type}}</span></div>
+                        <component :is="getFieldType()" v-model="fieldItem.value" v-bind="field.opts"></component>
+                    </div>
+
+                    <div class="kiss-button-group kiss-child-width-1-2 kiss-flex kiss-margin-top">
+                        <a class="kiss-button" @click="fieldItem=null">
+                            {{ t('Cancel') }}
+                        </a>
+                        <button class="kiss-button kiss-button-primary" @click="saveFieldItem">
+                            <span v-if="!fieldItem.create">{{ t('Edit item') }}</span>
+                            <span v-if="fieldItem.create">{{ t('Add item') }}</span>
+                        </button>
+                    </div>
+
+                </kiss-content>
+            </kiss-dialog>
+        </teleport>
+    `
 }
 
 
@@ -304,6 +304,50 @@ export default {
         fieldRenderer: FieldRenderer
     },
 
+    methods: {
+
+        clear(field, val) {
+
+            val[field.name] = (field.opts && field.opts.default !== undefined && field.opts.default) || null;
+
+            if (field.i18n && this.locales.length) {
+
+                this.locales.forEach(l => {
+                    val[`${field.name}_${l.i18n}`] = ((field.opts && field.opts[`default_${l.i18n}`]) || null)
+                });
+            }
+        },
+
+        copyLocaleValue(to, from, field) {
+            to = field+(to == 'default' ? '': '_'+to);
+            from = field+(from == 'default' ? '': '_'+from);
+
+            this.val[to] = JSON.parse(JSON.stringify(this.val[from]));
+        },
+
+        update() {
+            this.$emit('update:modelValue', this.val)
+        },
+
+        checkFieldCondition(field) {
+
+            if (!field.condition) {
+                return true;
+            }
+
+            // compile condition
+            if (typeof(field.condition) === 'string') {
+                field.condition = new Function('data', `return ${field.condition}`);
+            }
+
+            try {
+                return field.condition(this.val);
+            } catch(e) {}
+
+            return true;
+        }
+    },
+
     template: /*html*/`
         <div class="fields-renderer" :nested="nested">
 
@@ -358,49 +402,5 @@ export default {
 
             </app-fieldcontainer>
         </div>
-    `,
-
-    methods: {
-
-        clear(field, val) {
-
-            val[field.name] = (field.opts && field.opts.default !== undefined && field.opts.default) || null;
-
-            if (field.i18n && this.locales.length) {
-
-                this.locales.forEach(l => {
-                    val[`${field.name}_${l.i18n}`] = ((field.opts && field.opts[`default_${l.i18n}`]) || null)
-                });
-            }
-        },
-
-        copyLocaleValue(to, from, field) {
-            to = field+(to == 'default' ? '': '_'+to);
-            from = field+(from == 'default' ? '': '_'+from);
-
-            this.val[to] = JSON.parse(JSON.stringify(this.val[from]));
-        },
-
-        update() {
-            this.$emit('update:modelValue', this.val)
-        },
-
-        checkFieldCondition(field) {
-
-            if (!field.condition) {
-                return true;
-            }
-
-            // compile condition
-            if (typeof(field.condition) === 'string') {
-                field.condition = new Function('data', `return ${field.condition}`);
-            }
-
-            try {
-                return field.condition(this.val);
-            } catch(e) {}
-
-            return true;
-        }
-    }
+    `
 }

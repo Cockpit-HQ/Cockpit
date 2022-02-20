@@ -46,12 +46,6 @@ export default {
         }
     },
 
-    template: /*html*/`
-        <div field="wysiwyg">
-            <div :id="'mce-field-'+id" class="wysiwyg-container"></div>
-        </div>
-    `,
-
     beforeUnmount() {
 
         if (this.editor) {
@@ -139,5 +133,11 @@ export default {
         update() {
             this.$emit('update:modelValue', this.editor.getContent())
         }
-    }
+    },
+
+    template: /*html*/`
+        <div field="wysiwyg">
+            <div :id="'mce-field-'+id" class="wysiwyg-container"></div>
+        </div>
+    `
 }

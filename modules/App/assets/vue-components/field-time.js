@@ -57,6 +57,12 @@ export default {
         }
     },
 
+    methods: {
+        update() {
+            this.$emit('update:modelValue', this.val)
+        }
+    },
+
     template: /*html*/`
         <div field="time">
             <input type="time" class="kiss-input kiss-width-1-1" v-model="val" @input="update" :max="max" :min="min" :list="uid+'-list'" :readonly="readonly">
@@ -64,11 +70,5 @@ export default {
                 <option v-for="option in list">{{ option }}</option>
             </datalist>
         </div>
-    `,
-
-    methods: {
-        update() {
-            this.$emit('update:modelValue', this.val)
-        }
-    }
+    `
 }

@@ -18,7 +18,7 @@ export default {
         }
     },
 
-    template: /*html */`
+    template: /*html*/`
         <div>
 
             <div class="kiss-margin-small kiss-size-small kiss-flex kiss-middle">

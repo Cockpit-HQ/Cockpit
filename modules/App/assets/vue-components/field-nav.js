@@ -37,6 +37,13 @@ let editItem = {
         'fields-renderer': Vue.defineAsyncComponent(() => App.utils.import('system:assets/vue-components/fields-renderer.js'))
     },
 
+    methods: {
+        save() {
+            Object.assign(this.item, this.data);
+            this.$close();
+        }
+    },
+
     template: /*html*/`
         <div>
 
@@ -70,16 +77,8 @@ let editItem = {
                 <button type="button" class="kiss-button kiss-flex-1" @click="$close()">{{ t('Cancel') }}</button>
                 <button type="button" class="kiss-button kiss-button-primary kiss-flex-1" @click="save">{{ t('Save') }}</button>
             </div>
-        </kiss-row>
-    `,
-
-    methods: {
-        save() {
-            Object.assign(this.item, this.data);
-            this.$close();
-        }
-    }
-
+        </div>
+    `
 }
 
 
@@ -144,47 +143,6 @@ export default {
         }
     },
 
-    template: /*html*/`
-        <div field="nav">
-
-            <vue-draggable
-                :list="val"
-                :group="group || uid"
-                :swapThreshold="0.65"
-                :animation="150",
-		        :fallbackOnBody="true"
-                @change="change"
-                handle=".lm-handle"
-                class="field-nav-dragarea"
-            >
-                <template #item="{ element }">
-                    <div class="kiss-margin-xsmall">
-                        <kiss-card class="kiss-padding-small kiss-margin-xsmall" theme="bordered shadowed" hover="contrast">
-                            <div class="kiss-flex kiss-flex-middle">
-                                <a class="lm-handle kiss-margin-small-right kiss-color-muted"><icon>drag_handle</icon></a>
-                                <div class="kiss-flex-1 kiss-size-xsmall kiss-text-bold" :class="{'kiss-color-muted': !element.title}">
-                                    <a class="kiss-link-muted" @click="edit(element)">{{ element.title || t('Title...') }}</a>
-                                </div>
-                                <a class="kiss-margin-small-left" @click="edit(element)"><icon>tune</icon></a>
-                                <a class="kiss-margin-small-left" @click="addItem(element.children)"><icon>create_new_folder</icon></a>
-                                <a class="kiss-margin-small-left kiss-color-danger" @click="remove(element)"><icon>delete</icon></a>
-                            </div>
-                        </kiss-card>
-
-                        <div :style="{paddingLeft: (((level+1)*15)+'px')}">
-                            <field-nav class="kiss-display-block" v-model="element.children" :group="group || uid" :fields="fields" :level="level+1" :url="url"></field-nav>
-                        </div>
-                    </div>
-                </template>
-            </vue-draggable>
-
-            <div class="kiss-margin-small kiss-align-center" v-if="!level">
-                <a @click="addItem()"><icon :class="{'kiss-size-small':level}">control_point</icon></a>
-            </div>
-
-        </div>
-    `,
-
     methods: {
 
         addItem(collection) {
@@ -225,5 +183,46 @@ export default {
         update() {
             this.$emit('update:modelValue', this.val)
         }
-    }
+    },
+
+    template: /*html*/`
+        <div field="nav">
+
+            <vue-draggable
+                :list="val"
+                :group="group || uid"
+                :swapThreshold="0.65"
+                :animation="150",
+		        :fallbackOnBody="true"
+                @change="change"
+                handle=".lm-handle"
+                class="field-nav-dragarea"
+            >
+                <template #item="{ element }">
+                    <div class="kiss-margin-xsmall">
+                        <kiss-card class="kiss-padding-small kiss-margin-xsmall" theme="bordered shadowed" hover="contrast">
+                            <div class="kiss-flex kiss-flex-middle">
+                                <a class="lm-handle kiss-margin-small-right kiss-color-muted"><icon>drag_handle</icon></a>
+                                <div class="kiss-flex-1 kiss-size-xsmall kiss-text-bold" :class="{'kiss-color-muted': !element.title}">
+                                    <a class="kiss-link-muted" @click="edit(element)">{{ element.title || t('Title...') }}</a>
+                                </div>
+                                <a class="kiss-margin-small-left" @click="edit(element)"><icon>tune</icon></a>
+                                <a class="kiss-margin-small-left" @click="addItem(element.children)"><icon>create_new_folder</icon></a>
+                                <a class="kiss-margin-small-left kiss-color-danger" @click="remove(element)"><icon>delete</icon></a>
+                            </div>
+                        </kiss-card>
+
+                        <div :style="{paddingLeft: (((level+1)*15)+'px')}">
+                            <field-nav class="kiss-display-block" v-model="element.children" :group="group || uid" :fields="fields" :level="level+1" :url="url"></field-nav>
+                        </div>
+                    </div>
+                </template>
+            </vue-draggable>
+
+            <div class="kiss-margin-small kiss-align-center" v-if="!level">
+                <a @click="addItem()"><icon :class="{'kiss-size-small':level}">control_point</icon></a>
+            </div>
+
+        </div>
+    `,
 }

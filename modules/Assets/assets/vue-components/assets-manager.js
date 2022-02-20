@@ -88,6 +88,180 @@ export default {
         }
     },
 
+    methods: {
+
+        upload() {
+
+            this.uppy = getUppy({
+                folder: this.folder || ''
+            });
+
+            this.uppy.on('complete', result => {
+                // console.log('successful files:', result.successful)
+                // console.log('failed files:', result.failed)
+                this.load();
+            })
+
+            this.uppy.getPlugin('Dashboard').openModal();
+        },
+
+        load(page = 1) {
+
+            let options = {
+                limit: this.limit,
+                skip: (page - 1) * this.limit,
+            };
+
+            if (this.filter || this.initFilter) {
+                options.filter = [this.filter, this.initFilter].filter(f => f);
+            }
+
+            this.loading = true;
+            this.selected = [];
+            this.selectedAsset = null;
+
+            this.$request('/assets/assets', {options, folder: this.folder}).then(rsp => {
+                this.assets = rsp.assets;
+                this.folders = rsp.folders;
+                this.page = rsp.page;
+                this.pages = rsp.pages;
+                this.count = rsp.count;
+
+                this.view = 'assets';
+                this.loading = false;
+            })
+        },
+
+        edit(asset) {
+
+            VueView.ui.offcanvas('assets:assets/dialogs/asset.js', {asset}, {
+
+                update: updatedAsset => {
+                    Object.assign(asset, updatedAsset)
+                }
+
+            }, {flip: true, size: 'large'})
+        },
+
+        remove(asset) {
+
+            App.ui.confirm('Are you sure?', () => {
+
+                this.$request(`/assets/remove`, {assets: [asset._id]}).then(res => {
+                    this.load(this.page == 1 ? 1 : (this.assets.length - 1 ? this.page : this.page - 1));
+                    App.ui.notify('Asset removed!');
+                }).catch(rsp => {
+                    App.ui.notify(rsp.error || 'Deleting asset failed!', 'error');
+                });;
+            });
+        },
+
+        removeSelected() {
+
+            App.ui.confirm('Are you sure?', () => {
+
+                this.$request(`/assets/remove`, {assets: this.selected}).then(res => {
+                    this.load(this.page == 1 ? 1 : (this.assets.length - this.selected.length ? this.page : this.page - 1));
+                    App.ui.notify('Assets removed!');
+                });
+            });
+        },
+
+        toggleAllSelect(e) {
+
+            this.selected = [];
+
+            if (e.target.checked) {
+                this.assets.forEach(asset => this.selected.push(asset._id));
+            }
+        },
+
+        toggleAssetActions(asset) {
+
+            if (!asset) {
+                setTimeout(() => this.actionAsset = null, 300);
+                return;
+            }
+
+            this.actionAsset = asset;
+        },
+
+        toggleFolderActions(folder) {
+
+            if (!folder) {
+                setTimeout(() => this.actionFolder = null, 300);
+                return;
+            }
+
+            this.actionFolder = folder;
+        },
+
+        createFolder() {
+
+            App.ui.prompt(this.t('Foldername'), '', name => {
+
+                this.$request(`/assets/saveFolder`, {name, parent: this.folder}).then(folder => {
+                    this.folders.push(folder);
+                    App.ui.notify('Folder created!');
+                }).catch(rsp => {
+                    App.ui.notify(rsp.error || 'Creating folder failed!', 'error');
+                });
+            });
+        },
+
+        renameFolder(folder) {
+
+            App.ui.prompt(this.t('Foldername'), folder.name, name => {
+
+                this.$request(`/assets/saveFolder`, {name, parent: this.folder, folder}).then(f => {
+                    Object.assign(folder, f);
+                    App.ui.notify('Folder renamed!');
+                }).catch(rsp => {
+                    App.ui.notify(rsp.error || 'Renaming folder failed!', 'error');
+                });
+            });
+        },
+
+        removeFolder(folder) {
+
+            App.ui.confirm('Are you sure?', () => {
+
+                this.$request(`/assets/removeFolder`, {folder}).then(res => {
+                    this.folders.splice(this.folders.indexOf(folder), 1);
+                    App.ui.notify('Folder removed!');
+                }).catch(rsp => {
+                    App.ui.notify(rsp.error || 'Deleting folder failed!', 'error');
+                });
+            });
+        },
+
+        openFolder(folder) {
+
+            this.folder = folder ? folder._id : null;
+
+            if (this.folder) {
+
+                let skip = false;
+
+                this.breadcrumbs = this.breadcrumbs.filter(f => {
+                    if (f._id == folder._id) skip = true;
+                    return !skip;
+                });
+
+                this.breadcrumbs.push(folder);
+
+            } else {
+                this.breadcrumbs = [];
+            }
+
+            this.load(1);
+        },
+
+        copyAssetLinkID(asset) {
+            App.utils.copyText(location.origin + App.base(`/assets/link/${asset._id}`), () =>  App.ui.notify('Asset link copied!'));
+        },
+    },
+
     template: /*html*/`
 
         <div>
@@ -288,180 +462,5 @@ export default {
             </kiss-popoutmenu>
         </teleport>
 
-    `,
-
-    methods: {
-
-        upload() {
-
-            this.uppy = getUppy({
-                folder: this.folder || ''
-            });
-
-            this.uppy.on('complete', result => {
-                // console.log('successful files:', result.successful)
-                // console.log('failed files:', result.failed)
-                this.load();
-            })
-
-            this.uppy.getPlugin('Dashboard').openModal();
-        },
-
-        load(page = 1) {
-
-            let options = {
-                limit: this.limit,
-                skip: (page - 1) * this.limit,
-            };
-
-            if (this.filter || this.initFilter) {
-                options.filter = [this.filter, this.initFilter].filter(f => f);
-            }
-
-            this.loading = true;
-            this.selected = [];
-            this.selectedAsset = null;
-
-            this.$request('/assets/assets', {options, folder: this.folder}).then(rsp => {
-                this.assets = rsp.assets;
-                this.folders = rsp.folders;
-                this.page = rsp.page;
-                this.pages = rsp.pages;
-                this.count = rsp.count;
-
-                this.view = 'assets';
-                this.loading = false;
-            })
-        },
-
-        edit(asset) {
-
-            VueView.ui.offcanvas('assets:assets/dialogs/asset.js', {asset}, {
-
-                update: updatedAsset => {
-                    Object.assign(asset, updatedAsset)
-                }
-
-            }, {flip: true, size: 'large'})
-        },
-
-        remove(asset) {
-
-            App.ui.confirm('Are you sure?', () => {
-
-                this.$request(`/assets/remove`, {assets: [asset._id]}).then(res => {
-                    this.load(this.page == 1 ? 1 : (this.assets.length - 1 ? this.page : this.page - 1));
-                    App.ui.notify('Asset removed!');
-                }).catch(rsp => {
-                    App.ui.notify(rsp.error || 'Deleting asset failed!', 'error');
-                });;
-            });
-        },
-
-        removeSelected() {
-
-            App.ui.confirm('Are you sure?', () => {
-
-                this.$request(`/assets/remove`, {assets: this.selected}).then(res => {
-                    this.load(this.page == 1 ? 1 : (this.assets.length - this.selected.length ? this.page : this.page - 1));
-                    App.ui.notify('Assets removed!');
-                });
-            });
-        },
-
-        toggleAllSelect(e) {
-
-            this.selected = [];
-
-            if (e.target.checked) {
-                this.assets.forEach(asset => this.selected.push(asset._id));
-            }
-        },
-
-        toggleAssetActions(asset) {
-
-            if (!asset) {
-                setTimeout(() => this.actionAsset = null, 300);
-                return;
-            }
-
-            this.actionAsset = asset;
-        },
-
-        toggleFolderActions(folder) {
-
-            if (!folder) {
-                setTimeout(() => this.actionFolder = null, 300);
-                return;
-            }
-
-            this.actionFolder = folder;
-        },
-
-        createFolder() {
-
-            App.ui.prompt(this.t('Foldername'), '', name => {
-
-                this.$request(`/assets/saveFolder`, {name, parent: this.folder}).then(folder => {
-                    this.folders.push(folder);
-                    App.ui.notify('Folder created!');
-                }).catch(rsp => {
-                    App.ui.notify(rsp.error || 'Creating folder failed!', 'error');
-                });
-            });
-        },
-
-        renameFolder(folder) {
-
-            App.ui.prompt(this.t('Foldername'), folder.name, name => {
-
-                this.$request(`/assets/saveFolder`, {name, parent: this.folder, folder}).then(f => {
-                    Object.assign(folder, f);
-                    App.ui.notify('Folder renamed!');
-                }).catch(rsp => {
-                    App.ui.notify(rsp.error || 'Renaming folder failed!', 'error');
-                });
-            });
-        },
-
-        removeFolder(folder) {
-
-            App.ui.confirm('Are you sure?', () => {
-
-                this.$request(`/assets/removeFolder`, {folder}).then(res => {
-                    this.folders.splice(this.folders.indexOf(folder), 1);
-                    App.ui.notify('Folder removed!');
-                }).catch(rsp => {
-                    App.ui.notify(rsp.error || 'Deleting folder failed!', 'error');
-                });
-            });
-        },
-
-        openFolder(folder) {
-
-            this.folder = folder ? folder._id : null;
-
-            if (this.folder) {
-
-                let skip = false;
-
-                this.breadcrumbs = this.breadcrumbs.filter(f => {
-                    if (f._id == folder._id) skip = true;
-                    return !skip;
-                });
-
-                this.breadcrumbs.push(folder);
-
-            } else {
-                this.breadcrumbs = [];
-            }
-
-            this.load(1);
-        },
-
-        copyAssetLinkID(asset) {
-            App.utils.copyText(location.origin + App.base(`/assets/link/${asset._id}`), () =>  App.ui.notify('Asset link copied!'));
-        },
-    }
-
+    `
 }

@@ -38,7 +38,13 @@ export default {
         }
     },
 
-    template: /*html */`
+    methods: {
+        update() {
+            this.$emit('update:modelValue', this.val ? this.val || null : null)
+        }
+    },
+
+    template: /*html*/`
         <div>
             <app-loader size="small" v-if="!models"></app-loader>
 
@@ -53,11 +59,5 @@ export default {
 
 
         </div>
-    `,
-
-    methods: {
-        update() {
-            this.$emit('update:modelValue', this.val ? this.val || null : null)
-        }
-    }
+    `
 }

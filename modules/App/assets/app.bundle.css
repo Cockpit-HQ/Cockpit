@@ -3975,6 +3975,7 @@ kiss-card[hover="shadow"]:hover {
 kiss-card[theme*="contrast"],
 kiss-card[hover*="contrast"]:hover {
     background: var(--kiss-card-theme-contrast-color, #141923);
+    background: var(--kiss-card-theme-contrast-color, #171d28);
 }
 .kiss-button-group {
     display: inline-flex;

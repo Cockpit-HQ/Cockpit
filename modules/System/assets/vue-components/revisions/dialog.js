@@ -30,18 +30,39 @@ export default {
     computed: {
         changes() {
 
-            let changes = [];
+            let changes = [], _diff, _diffhtml;
 
             Object.keys(this.selectedRev.data).forEach(key => {
 
                 if (this.current[key] == undefined) return;
                 if (JSON.stringify(this.current[key]) == JSON.stringify(this.selectedRev.data[key])) return;
 
+                _diff = Diff.diffChars(JSON.stringify(this.selectedRev.data[key], null, ' '), JSON.stringify(this.current[key], null, ' '));
+                _diffhtml = '';
+
+                for (let i=0; i < _diff.length; i++) {
+
+                    if (_diff[i].added && _diff[i + 1] && _diff[i + 1].removed) {
+                        let swap = _diff[i];
+                        _diff[i] = _diff[i + 1];
+                        _diff[i + 1] = swap;
+                    }
+
+                    if (_diff[i].removed) {
+                        _diffhtml += '<del>'+_diff[i].value+'</del>';
+                    } else if (_diff[i].added) {
+                        _diffhtml += '<ins>'+_diff[i].value+'</ins>';
+                    } else {
+                        _diffhtml += _diff[i].value;
+                    }
+                }
+
                 changes.push({
                     key,
                     current: this.current[key],
                     revision: this.selectedRev.data[key],
-                    diff: htmldiff(JSON.stringify(this.selectedRev.data[key], null, ' '), JSON.stringify(this.current[key], null, ' '))
+                    //diff: htmldiff(JSON.stringify(this.selectedRev.data[key], null, ' '), JSON.stringify(this.current[key], null, ' '))
+                    diff: _diffhtml
                 });
             });
 
@@ -53,72 +74,6 @@ export default {
         this.load(this.revision)
     },
 
-    template: /*html*/`
-
-        <div class="app-offcanvas-container">
-            <div class="kiss-padding kiss-text-bold">
-                {{ caption || t('Revisions') }}
-            </div>
-            <div class="app-offcanvas-content kiss-bgcolor-contrast kiss-flex-1 kiss-flex kiss-flex-column kiss-position-relative">
-
-                <div class="kiss-height-50vh kiss-padding kiss-flex kiss-flex-middle" v-if="loading">
-                    <app-loader size="small"></app-loader>
-                </div>
-
-                <kiss-row class="kiss-cover animated fadeIn" v-if="!loading && revisions.length">
-                    <div class="kiss-flex-1 kiss-padding kiss-overflow-y-auto" style="max-height:100%;">
-
-                        <div class="kiss-flex kiss-height-30vh kiss-flex-middle kiss-flex-center" v-if="!selectedRev">
-                            <div class="kiss-color-muted kiss-size-2 kiss-width-1-2 kiss-align-center">{{ t('Select a version') }}</div>
-                        </div>
-
-                        <div class="kiss-flex kiss-height-30vh kiss-flex-middle kiss-flex-center" v-if="selectedRev && !changes.length">
-                            <div class="kiss-color-muted kiss-size-2 kiss-width-1-2 kiss-align-center">{{ t('No changes') }}</div>
-                        </div>
-
-                        <div v-if="selectedRev">
-                            <div class="kiss-margin" v-for="item in changes">
-
-                                <div class="kiss-text-bold kiss-text-caption">{{ item.key }}</div>
-
-                                <kiss-card class="kiss-margin-small-top kiss-padding kiss-flex kiss-flex-middle" theme="contrast shadowed">
-                                    <pre class="kiss-text-monospace kiss-size-small kiss-overflow-y-auto kiss-margin-small-right kiss-flex-1" style="max-height:15vh" v-html="item.diff"></pre>
-                                    <div><a @click="restoreField(item.key)"><icon class="kiss-size-4">settings_backup_restore</icon></a></div>
-                                </kiss-card>
-                            </div>
-
-                        </div>
-
-                    </div>
-                    <div class="kiss-width-1-5 kiss-overflow-y-auto" style="max-height:100%;">
-
-                        <ul class="app-list-items kiss-margin-top kiss-margin-bottom">
-                            <li class="kiss-flex kiss-position-relative" v-for="rev in revisions">
-                                <div class="kiss-flex-1">
-                                    <div :class="(selectedRev == rev) ? 'kiss-color-primary kiss-text-bold':'kiss-size-small'">{{ (new Date(rev._created * 1000).toLocaleString()) }}</div>
-                                    <div class="kiss-color-muted kiss-size-xsmall">By {{ rev._by && rev._by.user ? rev._by.user : 'n/a' }}</div>
-                                </div>
-                                <a class="kiss-cover" @click="selectedRev = rev"></a>
-                            </li>
-                        </ul>
-
-                    </div>
-                </kiss-row>
-
-            </div>
-            <div class="kiss-padding kiss-bgcolor-contrast">
-                <kiss-row>
-                    <div class="kiss-flex-1">
-                        <button class="kiss-button kiss-button-primary kiss-width-1-1 kiss-margin-right" @click="restoreAll()" v-if="selectedRev && changes.length">{{ t('Restore all fields') }}</button>
-                    </div>
-                    <div class="kiss-width-1-5">
-                        <button class="kiss-button kiss-width-1-1" kiss-offcanvas-close>{{ t('Close') }}</button>
-                    </div>
-                </kiss-row>
-            </div>
-        </div>
-    `,
-
     methods: {
 
         load(rev) {
@@ -127,7 +82,9 @@ export default {
 
             this.$request(`/system/utils/revisions/${this.oid}?limit=20`).then(revisions => {
 
-                App.assets.require(['system:assets/vendor/htmldiff.js']).then(() => {
+                App.assets.require([
+                    'system:assets/vendor/jsdiff.js',
+                ]).then(() => {
 
                     this.revisions = revisions;
                     this.loading = false;
@@ -162,5 +119,71 @@ export default {
             });
         }
 
-    }
+    },
+
+    template: /*html*/`
+
+        <div class="app-offcanvas-container">
+            <div class="kiss-padding kiss-text-bold">
+                {{ caption || t('Revisions') }}
+            </div>
+            <div class="app-offcanvas-content kiss-flex-1 kiss-flex kiss-flex-column kiss-position-relative">
+
+                <div class="kiss-height-50vh kiss-padding kiss-flex kiss-flex-middle" v-if="loading">
+                    <app-loader size="small"></app-loader>
+                </div>
+
+                <kiss-row class="kiss-cover animated fadeIn" v-if="!loading && revisions.length">
+                    <div class="kiss-flex-1 kiss-padding kiss-overflow-y-auto" style="max-height:100%;">
+
+                        <div class="kiss-flex kiss-height-30vh kiss-flex-middle kiss-flex-center" v-if="!selectedRev">
+                            <div class="kiss-color-muted kiss-size-2 kiss-width-1-2 kiss-align-center">{{ t('Select a version') }}</div>
+                        </div>
+
+                        <div class="kiss-flex kiss-height-30vh kiss-flex-middle kiss-flex-center" v-if="selectedRev && !changes.length">
+                            <div class="kiss-color-muted kiss-size-2 kiss-width-1-2 kiss-align-center">{{ t('No changes') }}</div>
+                        </div>
+
+                        <div v-if="selectedRev">
+                            <div class="kiss-margin" v-for="item in changes">
+
+                                <div class="kiss-text-bold kiss-text-caption">{{ item.key }}</div>
+
+                                <kiss-card class="kiss-margin-small-top kiss-padding-small kiss-flex kiss-flex-middle" theme="contrast shadowed">
+                                    <pre class="kiss-text-monospace kiss-size-small kiss-overflow-y-auto kiss-margin-small-right kiss-flex-1" style="max-height:15vh" v-html="item.diff"></pre>
+                                    <div><a @click="restoreField(item.key)"><icon class="kiss-size-4">settings_backup_restore</icon></a></div>
+                                </kiss-card>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="kiss-width-1-5 kiss-overflow-y-auto" style="max-height:100%;">
+
+                        <ul class="app-list-items kiss-margin-top kiss-margin-bottom">
+                            <li class="kiss-flex kiss-position-relative" v-for="rev in revisions">
+                                <div class="kiss-flex-1">
+                                    <div :class="(selectedRev == rev) ? 'kiss-color-primary kiss-text-bold':'kiss-size-small'">{{ (new Date(rev._created * 1000).toLocaleString()) }}</div>
+                                    <div class="kiss-color-muted kiss-size-xsmall">By {{ rev._by && rev._by.user ? rev._by.user : 'n/a' }}</div>
+                                </div>
+                                <a class="kiss-cover" @click="selectedRev = rev"></a>
+                            </li>
+                        </ul>
+
+                    </div>
+                </kiss-row>
+
+            </div>
+            <div class="kiss-padding">
+                <kiss-row>
+                    <div class="kiss-flex-1">
+                        <button class="kiss-button kiss-button-primary kiss-width-1-1 kiss-margin-right" @click="restoreAll()" v-if="selectedRev && changes.length">{{ t('Restore all fields') }}</button>
+                    </div>
+                    <div class="kiss-width-1-5">
+                        <button class="kiss-button kiss-width-1-1" kiss-offcanvas-close>{{ t('Close') }}</button>
+                    </div>
+                </kiss-row>
+            </div>
+        </div>
+    `
 }

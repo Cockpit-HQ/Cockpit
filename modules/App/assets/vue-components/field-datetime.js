@@ -73,6 +73,16 @@ export default {
         }
     },
 
+    methods: {
+        update() {
+
+            if (this.date && this.time) {
+                this.val = `${this.date} ${this.time}`;
+                this.$emit('update:modelValue', this.val)
+            }
+        }
+    },
+
     template: /*html*/`
         <div field="datetime">
             <kiss-grid cols="2">
@@ -87,15 +97,5 @@ export default {
                 <option v-for="option in listTime">{{ option }}</option>
             </datalist>
         </div>
-    `,
-
-    methods: {
-        update() {
-
-            if (this.date && this.time) {
-                this.val = `${this.date} ${this.time}`;
-                this.$emit('update:modelValue', this.val)
-            }
-        }
-    }
+    `
 }

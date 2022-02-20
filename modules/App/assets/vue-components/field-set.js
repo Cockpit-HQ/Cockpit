@@ -63,12 +63,6 @@ export default {
         }
     },
 
-    template: /*html*/`
-        <div class="kiss-position-relative" field="set">
-            <fields-renderer v-model="val" :fields="fields" :nested="true"></fields-renderer>
-        </div>
-    `,
-
     mounted() {
 
     },
@@ -77,5 +71,11 @@ export default {
         update() {
             this.$emit('update:modelValue', this.val ? this.val || {} : null)
         }
-    }
+    },
+
+    template: /*html*/`
+        <div class="kiss-position-relative" field="set">
+            <fields-renderer v-model="val" :fields="fields" :nested="true"></fields-renderer>
+        </div>
+    `
 }

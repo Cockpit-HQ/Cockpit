@@ -79,6 +79,32 @@ export default {
         }
     },
 
+    methods: {
+
+        selected(value) {
+            return !Array.isArray(this.val) || this.val.indexOf(value) == -1 ? false : true;
+        },
+
+        select(value) {
+
+            if (!Array.isArray(this.val)) {
+                this.val = [];
+            }
+
+            if (this.selected(value)) {
+                this.val.splice(this.val.indexOf(value), 1);
+            } else {
+                this.val.push(value);
+            }
+
+            this.update();
+        },
+
+        update() {
+            this.$emit('update:modelValue', this.val)
+        }
+    },
+
     template: /*html*/`
         <div field="select">
             <select class="kiss-input kiss-width-1-1" v-model="val" @change="update" v-if="!multiple">
@@ -104,31 +130,5 @@ export default {
             </div>
 
         </div>
-    `,
-
-    methods: {
-
-        selected(value) {
-            return !Array.isArray(this.val) || this.val.indexOf(value) == -1 ? false : true;
-        },
-
-        select(value) {
-
-            if (!Array.isArray(this.val)) {
-                this.val = [];
-            }
-
-            if (this.selected(value)) {
-                this.val.splice(this.val.indexOf(value), 1);
-            } else {
-                this.val.push(value);
-            }
-
-            this.update();
-        },
-
-        update() {
-            this.$emit('update:modelValue', this.val)
-        }
-    }
+    `
 }

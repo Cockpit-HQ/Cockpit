@@ -87,12 +87,6 @@ export default {
         }
     },
 
-    template: /*html*/`
-        <div field="code">
-            <div class="codemirror-wrapper" :style="{fontSize: size+'px'}"></div>
-        </div>
-    `,
-
     mounted() {
 
         let observer = new IntersectionObserver((entries, observer) => {
@@ -155,5 +149,11 @@ export default {
         update() {
             if (this.editor) this.$emit('update:modelValue', this.editor.getValue())
         }
-    }
+    },
+
+    template: /*html*/`
+        <div field="code">
+            <div class="codemirror-wrapper" :style="{fontSize: size+'px'}"></div>
+        </div>
+    `
 }

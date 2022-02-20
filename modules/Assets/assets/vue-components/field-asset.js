@@ -45,6 +45,36 @@ export default {
         }
     },
 
+    methods: {
+
+        pickAsset() {
+
+            VueView.ui.modal('assets:assets/dialogs/asset-picker.js', {filter:this.filter}, {
+                selectAsset: (asset) => {
+
+                    this.val = asset;
+                    this.update();
+                }
+            }, {size: 'xlarge'})
+        },
+
+        edit() {
+
+            VueView.ui.offcanvas('assets:assets/dialogs/asset.js', {asset: this.val}, {
+
+                update: updatedAsset => {
+                    this.val = updatedAsset;
+                    this.update();
+                }
+
+            }, {flip: true, size: 'large'})
+        },
+
+        update() {
+            this.$emit('update:modelValue', this.val)
+        }
+    },
+
     template: /*html*/`
         <div field="asset">
 
@@ -77,35 +107,5 @@ export default {
                 </a>
             </div>
         </div>
-    `,
-
-    methods: {
-
-        pickAsset() {
-
-            VueView.ui.modal('assets:assets/dialogs/asset-picker.js', {filter:this.filter}, {
-                selectAsset: (asset) => {
-
-                    this.val = asset;
-                    this.update();
-                }
-            }, {size: 'xlarge'})
-        },
-
-        edit() {
-
-            VueView.ui.offcanvas('assets:assets/dialogs/asset.js', {asset: this.val}, {
-
-                update: updatedAsset => {
-                    this.val = updatedAsset;
-                    this.update();
-                }
-
-            }, {flip: true, size: 'large'})
-        },
-
-        update() {
-            this.$emit('update:modelValue', this.val)
-        }
-    }
+    `
 }

@@ -51,15 +51,15 @@ export default {
         }
     },
 
+    methods: {
+        update() {
+            this.$emit('update:modelValue', this.val)
+        }
+    },
+
     template: /*html*/`
         <div field="number">
             <input type="number" class="kiss-input kiss-width-1-1" v-model.number="val" @input="update" :placeholder="placeholder" :max="max" :min="min" :step="step" :readonly="readonly">
         </div>
     `,
-
-    methods: {
-        update() {
-            this.$emit('update:modelValue', this.val)
-        }
-    }
 }

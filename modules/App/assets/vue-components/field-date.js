@@ -52,15 +52,15 @@ export default {
         }
     },
 
-    template: /*html*/`
-        <div field="date">
-            <input type="date" class="kiss-input kiss-width-1-1" v-model="val" @input="update" :max="max" :min="min" :step="step" :readonly="readonly">
-        </div>
-    `,
-
     methods: {
         update() {
             this.$emit('update:modelValue', this.val)
         }
-    }
+    },
+
+    template: /*html*/`
+        <div field="date">
+            <input type="date" class="kiss-input kiss-width-1-1" v-model="val" @input="update" :max="max" :min="min" :step="step" :readonly="readonly">
+        </div>
+    `
 }

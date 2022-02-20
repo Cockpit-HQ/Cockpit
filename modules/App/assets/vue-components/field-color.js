@@ -42,18 +42,18 @@ export default {
         }
     },
 
+    methods: {
+
+        update() {
+            this.$emit('update:modelValue', this.val)
+        }
+    },
+
     template: /*html*/`
         <div class="kiss-overlay-input" field="color">
             <canvas class="app-border-radius" :width="size" :height="size" :style="{ background: val }" v-if="val"></canvas>
             <canvas class="app-border-radius" :width="size" :height="size" :style="transparent" v-if="!val"></canvas>
             <input v-model="val" type="color" style="cursor:pointer;" @change="update">
         </div>
-    `,
-
-    methods: {
-
-        update() {
-            this.$emit('update:modelValue', this.val)
-        }
-    }
+    `
 }

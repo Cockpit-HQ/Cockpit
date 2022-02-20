@@ -65,6 +65,71 @@ let FieldsManager = {
         }
     },
 
+    methods: {
+
+        add() {
+
+            this.state.editField = false;
+
+            this.field = {
+                name: '',
+                type: 'text',
+                label: '',
+                info: '',
+                group: '',
+                i18n: false,
+                required: false,
+                multiple: false,
+                meta: {},
+                opts: {},
+            };
+        },
+
+        edit(field) {
+
+            this.state.editField = true;
+
+            if (Array.isArray(field.opts)) field.opts = {};
+            if (Array.isArray(field.meta)) field.meta = {};
+
+            this.field = field;
+        },
+
+        remove(field) {
+            this.fields.splice(this.fields.indexOf(field), 1);
+        },
+
+        addOrEditField() {
+
+            if (!this.state.editField) {
+                this.fields.push(this.field);
+            }
+
+            this.$forceUpdate();
+
+            this.field = null;
+        },
+
+        setFieldType(fieldType) {
+
+            if (this.field.type != fieldType) {
+                this.field.opts = {};
+                this.field.type = fieldType;
+            }
+        },
+
+        update() {
+
+            this.error = null
+
+            try {
+                this.$emit('update:modelValue', this.fields)
+            } catch(e) {
+                this.error = `${e.lineNumber}: ${e.message}`;
+            }
+        }
+    },
+
     template: /*html*/`
         <div>
 
@@ -243,72 +308,7 @@ let FieldsManager = {
                 </kiss-content>
             </kiss-popoutmenu>
         </teleport>
-    `,
-
-    methods: {
-
-        add() {
-
-            this.state.editField = false;
-
-            this.field = {
-                name: '',
-                type: 'text',
-                label: '',
-                info: '',
-                group: '',
-                i18n: false,
-                required: false,
-                multiple: false,
-                meta: {},
-                opts: {},
-            };
-        },
-
-        edit(field) {
-
-            this.state.editField = true;
-
-            if (Array.isArray(field.opts)) field.opts = {};
-            if (Array.isArray(field.meta)) field.meta = {};
-
-            this.field = field;
-        },
-
-        remove(field) {
-            this.fields.splice(this.fields.indexOf(field), 1);
-        },
-
-        addOrEditField() {
-
-            if (!this.state.editField) {
-                this.fields.push(this.field);
-            }
-
-            this.$forceUpdate();
-
-            this.field = null;
-        },
-
-        setFieldType(fieldType) {
-
-            if (this.field.type != fieldType) {
-                this.field.opts = {};
-                this.field.type = fieldType;
-            }
-        },
-
-        update() {
-
-            this.error = null
-
-            try {
-                this.$emit('update:modelValue', this.fields)
-            } catch(e) {
-                this.error = `${e.lineNumber}: ${e.message}`;
-            }
-        }
-    }
+    `
 }
 
 export default FieldsManager;
