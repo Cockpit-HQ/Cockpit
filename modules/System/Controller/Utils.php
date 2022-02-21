@@ -18,6 +18,8 @@ class Utils extends App {
 
     public function revisions($oid) {
 
+        \session_write_close();
+
         $users = [];
         $limit = $this->param('limit:int', 50);
         $revisions = $this->app->helper('revisions')->getList($oid, $limit);

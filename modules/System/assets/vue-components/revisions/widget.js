@@ -20,6 +20,8 @@ export default {
 
     mounted() {
         this.load();
+
+        this.$watch('current._modified', (newVal, oldVal) => this.load());
     },
 
     computed: {
