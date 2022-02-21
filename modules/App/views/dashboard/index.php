@@ -2,8 +2,8 @@
 
     <div class="kiss-flex kiss-flex-middle">
         <div class="kiss-margin-small-right">
-            <app-avatar size="50" name="<?=$this['user/name']?>">
-                <canvas width="50" height="50"></canvas>
+            <app-avatar size="40" name="<?=$this['user/name']?>">
+                <canvas width="40" height="40"></canvas>
             </app-avatar>
         </div>
         <div>
