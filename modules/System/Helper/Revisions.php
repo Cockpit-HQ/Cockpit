@@ -26,7 +26,7 @@ class Revisions extends \Lime\Helper {
         return $this->storage->find('system/revisions', $options)->toArray();
     }
 
-    public function add($id, $data, $meta = null, $by = null, $created = null) {
+    public function add($id, $data, $meta = null, $by = null, $created = null, $ref = null) {
 
         if ($by === true) {
 
@@ -51,6 +51,23 @@ class Revisions extends \Lime\Helper {
 
         if (!count($filtered)) {
             return false;
+        }
+
+        if ($ref) {
+
+            $isDifferent = false;
+
+            foreach ($filtered as $key => $value) {
+
+                if (json_encode($value) !== json_encode($ref[$key] ?? null)) {
+                    $isDifferent = true;
+                    break;
+                }
+            }
+
+            if (!$isDifferent) {
+                return false;
+            }
         }
 
         $revision = [

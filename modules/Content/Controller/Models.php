@@ -120,7 +120,8 @@ class Models extends App {
             return $this->stop(['error' => 'Model unknown'], 404);
         }
 
-        $model = $this->module('content')->model($model);
+        $state    = $item['_state'] ?? null;
+        $model    = $this->module('content')->model($model);
         $isUpdate = isset($item['_id']) && $item['_id'];
 
         if ($isUpdate && !$this->isAllowed("content/{$model['name']}/update")) {
@@ -139,7 +140,7 @@ class Models extends App {
             unset($item['_state']);
         }
 
-        if ($isUpdate && ($model['revisions'] ?? false)) {
+        if ($isUpdate && $state === 1 && ($model['revisions'] ?? false)) {
 
             $current = null;
 
@@ -150,7 +151,15 @@ class Models extends App {
             }
 
             if ($current) {
-                $this->app->helper('revisions')->add($item['_id'], $current, "content/{$model['name']}", $this->user['_id'], $current['_modified']);
+
+                $this->app->helper('revisions')->add(
+                    id: $item['_id'],
+                    data: $current,
+                    meta: "content/{$model['name']}",
+                    by: $this->user['_id'],
+                    created: $current['_modified'],
+                    ref: $item
+                );
             }
         }
 
