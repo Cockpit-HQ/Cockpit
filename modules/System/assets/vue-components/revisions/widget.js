@@ -21,7 +21,7 @@ export default {
     mounted() {
         this.load();
 
-        this.$watch('current._modified', (newVal, oldVal) => this.load());
+        this.$watch('current._modified', (nVal, oVal) => this.current._state == 1 && this.load());
     },
 
     computed: {
