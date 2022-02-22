@@ -8,7 +8,8 @@
 }
 
 .uppy-StatusBar-actionBtn,
-.uppy-size--md .uppy-DashboardContent-bar button {
+.uppy-size--md .uppy-DashboardContent-bar button,
+.uppy-StatusBar.is-waiting .uppy-StatusBar-action button {
   display: inline-flex;
   align-items: center;
   border: none;

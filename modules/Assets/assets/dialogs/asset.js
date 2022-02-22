@@ -178,13 +178,15 @@ export default {
                     maxFileSize: App._vars.maxUploadSize || null,
                     maxNumberOfFiles: 1,
                     minNumberOfFiles: 1,
-                }
+                },
+                allowMultipleUploadBatches: false
             }).use(Uppy.Dashboard, {
                 showProgressDetails: true,
                 height: 450,
                 browserBackButtonClose: false
             }).use(Uppy.XHRUpload, {
-                endpoint: App.route('/assets/replace')
+                endpoint: App.route('/assets/replace'),
+                bundle: true
             }).use(Uppy.Webcam, { target: Uppy.Dashboard, showVideoSourceDropdown: true })
             .use(Uppy.ScreenCapture, { target: Uppy.Dashboard })
             .use(Uppy.ImageEditor, { target: Uppy.Dashboard });

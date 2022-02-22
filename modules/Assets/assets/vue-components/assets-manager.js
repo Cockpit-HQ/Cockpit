@@ -8,14 +8,16 @@ function getUppy(meta = {}) {
             //maxNumberOfFiles: 3,
             minNumberOfFiles: 1,
             //allowedFileTypes: ['image/*', 'video/*']
-        }
+        },
+        allowMultipleUploadBatches: false
     }).use(Uppy.Dashboard, {
         showProgressDetails: true,
         //note: 'Images and video only, 2–3 files, up to 1 MB',
         height: 450,
         browserBackButtonClose: false
     }).use(Uppy.XHRUpload, {
-        endpoint: App.route('/assets/upload')
+        endpoint: App.route('/assets/upload'),
+        bundle: true
     }).use(Uppy.Webcam, { target: Uppy.Dashboard, showVideoSourceDropdown: true })
     .use(Uppy.ScreenCapture, { target: Uppy.Dashboard })
     //.use(Uppy.Url, { target: Uppy.Dashboard, companionUrl: 'https://companion.uppy.io' })

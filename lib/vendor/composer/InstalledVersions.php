@@ -29,7 +29,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '0cbcb0c1da361d5224b095f61d214c040b6c3491',
+    'reference' => '1640d7cec1293aacd2fa8a6f5b61d760e3d8a203',
     'name' => 'agentejo/cockpit',
   ),
   'versions' => 
@@ -41,7 +41,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '0cbcb0c1da361d5224b095f61d214c040b6c3491',
+      'reference' => '1640d7cec1293aacd2fa8a6f5b61d760e3d8a203',
     ),
     'bacon/bacon-qr-code' => 
     array (
@@ -153,12 +153,12 @@ private static $installed = array (
     ),
     'league/flysystem' => 
     array (
-      'pretty_version' => '3.0.7',
-      'version' => '3.0.7.0',
+      'pretty_version' => '3.0.9',
+      'version' => '3.0.9.0',
       'aliases' => 
       array (
       ),
-      'reference' => '6f60c44080ebcd62ee8bef25edba4ba58400c052',
+      'reference' => 'fb0801a60b7f9ea4188f01c25cb48aed26db7fb6',
     ),
     'league/mime-type-detection' => 
     array (
@@ -196,12 +196,12 @@ private static $installed = array (
     ),
     'phpmailer/phpmailer' => 
     array (
-      'pretty_version' => 'v6.5.3',
-      'version' => '6.5.3.0',
+      'pretty_version' => 'v6.5.4',
+      'version' => '6.5.4.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'baeb7cde6b60b1286912690ab0693c7789a31e71',
+      'reference' => 'c0d9f7dd3c2aa247ca44791e9209233829d82285',
     ),
     'psr/cache' => 
     array (
