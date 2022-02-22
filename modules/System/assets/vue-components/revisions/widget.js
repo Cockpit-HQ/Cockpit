@@ -77,7 +77,7 @@ export default {
         <app-loader size="small" v-if="loading"></app-loader>
         <div class="kiss-size-small kiss-color-muted" v-if="!loading && !revisions.length">{{ t('No revisions yet') }}</div>
 
-        <ul class="app-list-items animated fadeIn">
+        <ul class="app-list-items animated fadeIn" v-if="revisions.length">
             <li class="kiss-flex" v-for="rev in latest">
                 <div class="kiss-flex-1 kiss-position-relative">
                     <div class="kiss-size-small">{{ (new Date(rev._created * 1000).toLocaleString()) }}</div>
@@ -90,7 +90,7 @@ export default {
             </li>
         </ul>
 
-        <div class="kiss-margin-top">
+        <div class="kiss-margin-top" v-if="revisions.length">
             <button type="button" class="kiss-button kiss-button-small" @click="showRevisions()">{{ t('Show more revisions') }}</button>
         </div>
 
