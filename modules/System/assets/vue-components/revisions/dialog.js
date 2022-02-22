@@ -127,14 +127,14 @@ export default {
             <div class="kiss-padding kiss-text-bold">
                 {{ caption || t('Revisions') }}
             </div>
-            <div class="app-offcanvas-content kiss-flex-1 kiss-flex kiss-flex-column kiss-position-relative">
+            <div class="app-offcanvas-content kiss-flex kiss-flex-column">
 
                 <div class="kiss-height-50vh kiss-padding kiss-flex kiss-flex-middle" v-if="loading">
                     <app-loader size="small"></app-loader>
                 </div>
 
-                <kiss-row class="kiss-cover animated fadeIn" v-if="!loading && revisions.length">
-                    <div class="kiss-flex-1 kiss-padding kiss-overflow-y-auto" style="max-height:100%;">
+                <kiss-row class="kiss-flex-1" v-if="!loading && revisions.length">
+                    <div class="kiss-flex-1 kiss-padding kiss-overflow-y-auto">
 
                         <div class="kiss-flex kiss-height-30vh kiss-flex-middle kiss-flex-center" v-if="!selectedRev">
                             <div class="kiss-color-muted kiss-size-2 kiss-width-1-2 kiss-align-center">{{ t('Select a version') }}</div>
@@ -158,17 +158,23 @@ export default {
                         </div>
 
                     </div>
-                    <div class="kiss-width-1-5 kiss-overflow-y-auto" style="max-height:100%;">
+                    <div class="kiss-width-1-5 kiss-flex kiss-flex-column">
 
-                        <ul class="app-list-items kiss-margin-top kiss-margin-bottom">
-                            <li class="kiss-flex kiss-position-relative" v-for="rev in revisions">
-                                <div class="kiss-flex-1">
-                                    <div :class="(selectedRev == rev) ? 'kiss-color-primary kiss-text-bold':'kiss-size-small'">{{ (new Date(rev._created * 1000).toLocaleString()) }}</div>
-                                    <div class="kiss-color-muted kiss-size-xsmall">By {{ rev._by && rev._by.user ? rev._by.user : 'n/a' }}</div>
-                                </div>
-                                <a class="kiss-cover" @click="selectedRev = rev"></a>
-                            </li>
-                        </ul>
+                        <div class="kiss-text-caption kiss-margin-small"><strong>{{ t('Versions') }}</strong></div>
+
+                        <div class="kiss-flex-1 kiss-overflow-y-auto kiss-position-relative">
+
+                            <ul class="app-list-items kiss-cover">
+                                <li class="kiss-flex kiss-position-relative" v-for="rev in revisions">
+                                    <div class="kiss-flex-1">
+                                        <div :class="(selectedRev == rev) ? 'kiss-color-primary kiss-text-bold':'kiss-size-small kiss-color-muted'">{{ (new Date(rev._created * 1000).toLocaleString()) }}</div>
+                                        <div class="kiss-size-xsmall" :class="(selectedRev == rev) ? '':'kiss-color-muted'">By {{ rev._by && rev._by.user ? rev._by.user : 'n/a' }}</div>
+                                    </div>
+                                    <a class="kiss-cover" @click="selectedRev = rev"></a>
+                                </li>
+                            </ul>
+
+                        </div>
 
                     </div>
                 </kiss-row>
