@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Command;
+namespace App\Command\Cache;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class FlushTmp extends Command {
+class Flush extends Command {
 
-    protected static $defaultName = 'app:flush:tmp';
+    protected static $defaultName = 'app:cache:flush';
     protected $app = null;
 
     public function __construct(\Lime\App $app) {
