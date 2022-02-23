@@ -134,7 +134,7 @@ export default {
                 </div>
 
                 <kiss-row class="kiss-flex-1" v-if="!loading && revisions.length">
-                    <div class="kiss-bgcolor-contrast kiss-flex-1 kiss-padding kiss-overflow-y-auto">
+                    <div class="kiss-bgcolor-contrast kiss-flex-1 kiss-padding kiss-position-relative kiss-overflow-y-auto">
 
                         <div class="kiss-flex kiss-height-30vh kiss-flex-middle kiss-flex-center" v-if="!selectedRev">
                             <div class="kiss-color-muted kiss-size-2 kiss-width-1-2 kiss-align-center">{{ t('Select a version') }}</div>
@@ -144,7 +144,7 @@ export default {
                             <div class="kiss-color-muted kiss-size-2 kiss-width-1-2 kiss-align-center">{{ t('No changes') }}</div>
                         </div>
 
-                        <div v-if="selectedRev">
+                        <div class="kiss-cover kiss-padding" v-if="selectedRev">
                             <div class="kiss-margin" v-for="item in changes">
 
                                 <div class="kiss-text-bold kiss-text-caption">{{ item.key }}</div>
