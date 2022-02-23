@@ -91,6 +91,7 @@ class Models extends App {
     public function save() {
 
         $model = $this->param('model');
+        $isUpdate = $this->param('isUpdate', false);
 
         if (!$model) {
             return $this->stop(['error' => 'Model data is missing'], 412);
@@ -98,6 +99,10 @@ class Models extends App {
 
         if (!$this->isAllowed("content/models/manage") && !$this->isAllowed("content/{$model}/manage")) {
             $this->stop(401);
+        }
+
+        if (!$isUpdate && $this->module('content')->exists($model['name'])) {
+            return $this->stop(['error' => "Model {$model['name']} already exists."], 412);
         }
 
         $model = $this->module('content')->saveModel($model['name'], $model);

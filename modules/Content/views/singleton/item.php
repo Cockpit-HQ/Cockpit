@@ -25,9 +25,11 @@
 
         <template>
 
-            <kiss-card class="kiss-margin-large kiss-size-5 kiss-align-center kiss-color-muted kiss-text-bolder kiss-padding-large" theme="bordered" v-if="!fields.length">
-                <?=t('No fields defined')?>
-            </kiss-card>
+            <div class="kiss-height-50vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center" v-if="!fields.length">
+                <div class="animated fadeInUp kiss-size-large kiss-color-muted">
+                    <?=t('No fields defined')?>
+                </div>
+            </div>
 
             <kiss-row class="kiss-margin-large" gap="large" :class="{'kiss-disabled': saving}" v-if="fields.length">
                 <div class="kiss-flex-1">

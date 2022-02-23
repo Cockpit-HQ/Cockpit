@@ -63,7 +63,7 @@
                     <div class="kiss-height-50vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted" v-if="!loading && !items.length">
                         <div class="animated fadeInUp">
                             <kiss-svg class="kiss-margin-auto" src="<?= $this->base('system:assets/icons/logging.svg') ?>" width="60" height="60"><canvas width="60" height="60"></canvas></kiss-svg>
-                            <p class="kiss-size-large kiss-text-bold kiss-margin-small-top"><?= t('No log items') ?></p>
+                            <p class="kiss-size-large kiss-margin-small-top"><?= t('No log items') ?></p>
                         </div>
                     </div>
 

@@ -194,7 +194,7 @@
                         this.saving = true;
                         this.model.preview = this.model.preview.filter(preview => (preview.name && preview.uri));
 
-                        this.$request('/content/models/save', {model: this.model}).then(model => {
+                        this.$request('/content/models/save', {model: this.model, isUpdate: this.isUpdate}).then(model => {
 
                             this.model = model;
                             this.saving = false;
