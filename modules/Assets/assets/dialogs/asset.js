@@ -5,7 +5,8 @@ export default {
         return {
             item: null,
             loading: true,
-            focalPointing: false
+            focalPointing: false,
+            folders: null
         }
     },
 
@@ -36,9 +37,25 @@ export default {
         }).catch(rsp => {
             App.ui.notify(rsp.error || 'Asset not found!', 'error');
         });
+
+        this.$request(`/assets/folders`, {nc:Math.random()}).then(folders => {
+            this.folders = folders;
+        }).catch(rsp => {
+            App.ui.notify(rsp.error || 'Loading folders failed!', 'error');
+        });
     },
 
     computed: {
+
+        folder() {
+
+            if (this.item && Array.isArray(this.folders) && this.folders.length) {
+                return this.folders.find(folder => folder._id == this.item.folder) || null;
+            }
+
+            return null;
+        },
+
         size() {
             return App.utils.formatSize(this.item.size);
         },
@@ -99,6 +116,22 @@ export default {
                             </div>
                         </div>
                     </div>
+
+                    <app-fieldcontainer v-if="Array.isArray(folders) && folders.length">
+                        <label>{{ t('Folder') }}</label>
+                        <div class="kiss-overlay-input kiss-display-block">
+                            <kiss-card class="kiss-flex kiss-flex-middle" theme="shadowed contrast">
+                                <div class="kiss-padding kiss-bgcolor-contrast"><icon size="larger">folder</icon></div>
+                                <div class="kiss-padding kiss-text-truncate kiss-flex-1" :class="{'kiss-color-muted kiss-text-caption': !folder, 'kiss-text-bold': folder}">
+                                    {{ (folder && folder.name) || t('Assign folder') }}
+                                </div>
+                            </kiss-card>
+                            <select v-model="item.folder">
+                                <option vlaie="">- {{ t('none') }} -</option>
+                                <option v-for="f in folders" :value="f._id">{{ (new Array(f._depth+1).join('-'))}} {{ f.name }}</option>
+                            </select>
+                        </div>
+                    </app-fieldcontainer>
 
                     <fields-renderer class="kiss-margin" v-model="item" :fields="[{name:'title', type:'text'},{name:'description', type:'text', opts: {multiline:true, height:200}},{name:'tags', type:'text', multiple:true}]"></fields-renderer>
 

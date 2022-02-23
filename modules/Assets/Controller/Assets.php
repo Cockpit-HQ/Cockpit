@@ -196,6 +196,14 @@ class Assets extends App {
         return false;
     }
 
+    public function folders() {
+
+        $folders = $this->module('assets')->folders(['sort' => ['name' => 1]]);
+        $folders = $this->helper('utils')->buildTreeList($folders, ['parent_id_column_name' => '_p']);
+
+        return $folders;
+    }
+
     public function saveFolder() {
 
         $name   = $this->param('name', null);
