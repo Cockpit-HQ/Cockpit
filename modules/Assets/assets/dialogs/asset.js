@@ -27,6 +27,7 @@ export default {
         App.assets.require([
             'assets:assets/vendor/uppy/uppy.js',
             'assets:assets/css/uppy.css',
+            'assets:assets/css/asset.css',
         ]).then(() => {
             this.uppy = true;
         })
@@ -96,7 +97,7 @@ export default {
                             <div class="kiss-display-inline-block kiss-position-relative" style="height:100%;" @click="setFocalPoint">
                                 <canvas class="kiss-responsive-height" :width="asset.width" :height="asset.height"></canvas>
                                 <div class="kiss-position-absolute" style="pointer-events:none;" :style="focalPoint">
-                                    <div style="width:8px;height:8px;background:red;border-radius:50%;transform: translate(-50%, -50%);"></div>
+                                    <div class="asset-focalpoint-pointer"></div>
                                 </div>
                             </div>
                         </div>
@@ -184,10 +185,6 @@ export default {
 
         copyColor(color) {
             App.utils.copyText(color, () =>  App.ui.notify('Color copied!'));
-        },
-
-        replace() {
-
         },
 
         setFocalPoint(e) {

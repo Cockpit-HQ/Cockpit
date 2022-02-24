@@ -12,7 +12,7 @@
             <div class="animated fadeIn kiss-height-30vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted kiss-margin-large" v-if="!loading && !models.length">
                 <div>
                     <kiss-svg src="<?=$this->base('content:icon.svg')?>" width="40" height="40"></kiss-svg>
-                    <p class="kiss-size-large kiss-text-bold kiss-margin-top"><?=t('No models')?></p>
+                    <p class="kiss-size-large kiss-margin-top"><?=t('No models')?></p>
                 </div>
             </div>
 

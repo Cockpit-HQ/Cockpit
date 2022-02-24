@@ -1,0 +1,21 @@
+.asset-focalpoint-pointer {
+    width: 10px;
+    height: 10px;
+    background:red;
+    border: 2px #fff solid;
+    border-radius:50%;
+    transform: translate(-50%, -50%);
+}
+.asset-focalpoint-pointer:before {
+    content: "";
+    width: 30px;
+    height: 30px;
+    border: 1px solid rgba(255,255,255,.4);
+    background: rgba(0,0,0,.1);
+    z-index: 2;
+    border-radius: 100px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+}

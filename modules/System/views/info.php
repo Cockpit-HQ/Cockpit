@@ -16,16 +16,28 @@
 
                 <tab class="kiss-margin animated fadeIn" caption="<?=t('App')?>">
 
+                    <kiss-card class="kiss-padding" theme="bordered contrast shadowed">
+
+                        <kiss-row class="kiss-flex-middle">
+                            <div><kiss-svg src="<?=$this->baseUrl('app:assets/logo.svg')?>" width="60" height="60"></kiss-svg></div>
+                            <div class="kiss-flex-1">
+                                <div class="kiss-size-4 kiss-text-bold">Cockpit</div>
+                                <div class="kiss-text-caption kiss-margin-small">
+                                    <span class="kiss-color-muted">v<?=APP_VERSION?></span> &mdash;
+                                    A product by
+                                    <strong><a class="kiss-link-muted" href="https://agentejo.com/" target="_blank" rel="noopener">Agentejo</a></strong>
+                                </div>
+                            </div>
+                        </kiss-row>
+
+                    </kiss-card>
+
                     <div class="kiss-text-caption kiss-text-bold kiss-size-bold kiss-margin">
                         <?=('General')?>
                     </div>
 
                     <table class="kiss-table">
                         <tbody>
-                            <tr>
-                                <td width="50%" class="kiss-size-xsmall">Version</td>
-                                <td class="kiss-size-small kiss-text-bold kiss-color-muted"><?=APP_VERSION?></td>
-                            </tr>
                             <tr>
                                 <td width="50%" class="kiss-size-xsmall">Debug mode</td>
                                 <td class="kiss-size-small kiss-color-muted"><span class="kiss-badge kiss-badge-outline kiss-color-<?=($this->retrieve('debug') ? 'success':'danger')?>"><?=($this->retrieve('debug') ? 'Enabled':'Disabled')?></span></td>
