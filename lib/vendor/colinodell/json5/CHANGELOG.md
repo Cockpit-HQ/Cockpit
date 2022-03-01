@@ -6,6 +6,12 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## [Unreleased][unreleased]
 
+## [2.2.2] - 2022-02-21
+
+### Fixed
+ - Fixed "small" integers always being cast to strings when `JSON_BIGINT_AS_STRING` is set (#17)
+ - Fixed exceptions not being thrown when invalid UTF-16 escape sequences are encountered in strings
+
 ## [2.2.1] - 2021-11-06
 ### Fixed
  - Fixed exceptions always being thrown on PHP 7.3+ when parsing valid JSON5 with `JSON_THROW_ON_ERROR` explicitly set to true (#15)
@@ -62,7 +68,8 @@ This release contains massive performance improvements of 98% or more, especiall
 ### Added
  - Initial commit
 
-[unreleased]: https://github.com/colinodell/json5/compare/v2.2.1...HEAD
+[unreleased]: https://github.com/colinodell/json5/compare/v2.2.2...HEAD
+[2.2.2]: https://github.com/colinodell/json5/compare/v2.2.1...v2.2.2
 [2.2.1]: https://github.com/colinodell/json5/compare/v2.2.0...v2.2.1
 [2.2.0]: https://github.com/colinodell/json5/compare/v2.1.0...v2.2.0
 [2.1.0]: https://github.com/colinodell/json5/compare/v2.0.0...v2.1.0

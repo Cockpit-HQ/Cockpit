@@ -146,17 +146,17 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 
 [ico-version]: https://img.shields.io/packagist/v/colinodell/json5.svg?style=flat-square
 [ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
-[ico-build-status]: https://img.shields.io/github/workflow/status/colinodell/json5/Tests/latest.svg?style=flat-square
+[ico-build-status]: https://img.shields.io/github/workflow/status/colinodell/json5/Tests/main.svg?style=flat-square
 [ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/colinodell/json5.svg?style=flat-square
 [ico-code-quality]: https://img.shields.io/scrutinizer/g/colinodell/json5.svg?style=flat-square
 [ico-downloads]: https://img.shields.io/packagist/dt/colinodell/json5.svg?style=flat-square
 [ico-utf8]: https://img.shields.io/badge/utf--8-compatible-brightgreen.svg?style=flat-square
-[ico-sensio]: https://img.shields.io/sensiolabs/i/45decdff-5544-43c4-9547-61c9f514b121.svg?style=flat-square
+[ico-sensio]: https://img.shields.io/symfony/i/grade/920abb3b-a7d0-431a-bb5a-9831d142690e?style=flat-square
 [ico-php]: https://img.shields.io/packagist/php-v/colinodell/json5.svg?style=flat-square
 
 [link-packagist]: https://packagist.org/packages/colinodell/json5
-[link-build-status]: https://github.com/colinodell/json5/actions?query=workflow%3ATests+branch%3Alatest
-[link-scrutinizer]: https://scrutinizer-ci.com/g/colinodell/json5/code-structure/master/code-coverage
+[link-build-status]: https://github.com/colinodell/json5/actions?query=workflow%3ATests+branch%3Amain
+[link-scrutinizer]: https://scrutinizer-ci.com/g/colinodell/json5/code-structure/main/code-coverage
 [link-code-quality]: https://scrutinizer-ci.com/g/colinodell/json5
 [link-downloads]: https://packagist.org/packages/colinodell/json5
 [link-sensio]: https://insight.sensiolabs.com/projects/45decdff-5544-43c4-9547-61c9f514b121
@@ -166,4 +166,4 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 [link-upstream-author]: https://github.com/aseemk
 [link-upstream-contributors]: https://github.com/json5/json5#credits
 [link-json5-site]: http://json5.org
-[link-contributors]: ../../contributors
+[link-contributors]: https://github.com/colinodell/json5/graphs/contributors

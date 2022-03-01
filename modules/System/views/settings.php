@@ -17,7 +17,7 @@
 
         <?php foreach ($items as $item): ?>
 
-        <kiss-card class="kiss-position-relative" theme="shadowed contrast" hover="shadow">
+        <kiss-card class="kiss-position-relative" theme="contrast" hover="shadow">
 
             <div class="kiss-position-relative">
                 <div class="kiss-position-absolute kiss-size-xlarge" center="true">
