@@ -56,8 +56,8 @@
                         <label>2FA Code:</label>
                         <input class="kiss-input" type="text" placeholder="Code" v-model="twofaCode" autofocus required>
                     </div>
-                    <div class="kiss-margin-large-top">
-                        <button class="kiss-button kiss-button-outline kiss-button-large kiss-color-primary kiss-width-1-1">{{ t('Authenticate') }}</button>
+                    <div class="kiss-margin-top">
+                        <button class="kiss-button kiss-button-outline kiss-button-primary kiss-width-1-1">{{ t('Verify code') }}</button>
                     </div>
                 </form>
 
