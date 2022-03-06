@@ -2,8 +2,6 @@
 
 namespace App\Helper;
 
-use Firebase\JWT\JWT;
-
 class Csrf extends \Lime\Helper {
 
     public function generateToken(string $key, ?int $expire = null): string {
@@ -14,7 +12,7 @@ class Csrf extends \Lime\Helper {
             $payload['exp'] = $expire;
         }
 
-        $token = JWT::encode($payload, $this->app['sec-key']);
+        $token = $this->app->helper('jwt')->create($payload);
 
         $this->app->helper('session')->write("app.csrf.token.{$key}", $token);
 
@@ -40,7 +38,7 @@ class Csrf extends \Lime\Helper {
 
         if ($checkpayload) {
             try {
-                $payload = JWT::decode($token, $this->app['sec-key'], ['HS256']);
+                $payload = $this->app->helper('jwt')->decode($token);
                 return isset($payload->csrf) && $payload->csrf == $key;
             } catch(\Exception $e) {
                 return false;
@@ -54,7 +52,7 @@ class Csrf extends \Lime\Helper {
         }
 
         try {
-            $token = JWT::decode($token, $this->app['sec-key'], ['HS256']);
+            $token = $this->app->helper('jwt')->decode($token);
         } catch(\Exception $e) {
             return false;
         }

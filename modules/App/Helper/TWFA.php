@@ -30,6 +30,10 @@ class TWFA extends \Lime\Helper {
         $binary = file_get_contents($uri);
         return $binary;
     }
+
+    public function verifyCode(string $secret, string $code): bool {
+        return $this->tfa->verifyCode($secret, $code);
+    }
 }
 
 class TWFAQRCodeRenderer implements IQRCodeProvider {

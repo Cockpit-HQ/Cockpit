@@ -25,9 +25,9 @@
 
             </form>
 
-            <kiss-card class="kiss-padding animated fadeIn" theme="contrast" v-if="!loading && view=='success'">
+            <kiss-card class="kiss-padding animated fadeIn" theme="contrast" v-if="!loading && view=='success' && !user.twofa">
 
-                <kiss-row>
+                <kiss-row class="kiss-flex-middle">
                     <div><app-avatar size="50" :name="user.name"></app-avatar></div>
                     <div class="kiss-size-small">
                         <div class="kiss-text-bold">{{ user.name }}</div>
@@ -36,6 +36,32 @@
                 </kiss-row>
 
             </kiss-card>
+
+            <div class="kiss-padding animated fadeIn" :class="{'kiss-disabled': loading}" v-if="view=='success' && user.twofa">
+
+                <kiss-card class="kiss-padding-small" theme="contrast">
+
+                    <kiss-row class="kiss-flex-middle">
+                        <div><app-avatar size="50" :name="user.name"></app-avatar></div>
+                        <div class="kiss-size-small">
+                            <div class="kiss-text-bold">{{ user.name }}</div>
+                            <div class="kiss-color-muted">{{ user.email }}</div>
+                        </div>
+                    </kiss-row>
+
+                </kiss-card>
+
+                <form class="kiss-margin-top" @submit.prevent="verify2FA" v-if="!loading">
+                    <div>
+                        <label>2FA Code:</label>
+                        <input class="kiss-input" type="text" placeholder="Code" v-model="twofaCode" autofocus required>
+                    </div>
+                    <div class="kiss-margin-large-top">
+                        <button class="kiss-button kiss-button-outline kiss-button-large kiss-color-primary kiss-width-1-1">{{ t('Authenticate') }}</button>
+                    </div>
+                </form>
+
+            </div>
 
         </kiss-container>
 
@@ -53,7 +79,8 @@
                     auth: {user:'',password:''},
                     view: 'form',
                     loading: false,
-                    user: null
+                    user: null,
+                    twofaCode: null
                 }
             },
 
@@ -83,7 +110,7 @@
                             setTimeout(() => {
                                 this.$el.parentNode.classList.add('animated');
                                 this.$el.parentNode.classList.add('shake');
-                            }, 100)
+                            }, 100);
 
                             return;
                         }
@@ -91,14 +118,43 @@
                         this.user = rsp.user;
                         this.view = 'success';
 
-                        setTimeout(() => {
-                            window.location = '<?=$redirectTo?>';
-                        }, 1500)
+                        // redirect if twofa is disabled for the user
+                        if (!rsp.user.twofa) {
+                            setTimeout(() => window.location = '<?=$redirectTo?>', 1500);
+                        }
 
                     }, rsp => {
                         this.loading = false;
                         App.ui.notify(rsp && (rsp.message || rsp.error) ? (rsp.message || rsp.error) : '<?=t('Login failed.')?>', 'error');
                     });
+                },
+
+                verify2FA() {
+
+                    this.loading = true;
+
+                    this.$request('/auth/validate2FA', {
+                        code: this.twofaCode,
+                        token : this.user.twofa
+                    }).then(rsp => {
+
+                        if (rsp && rsp.success) {
+                            setTimeout(() => window.location = '<?=$redirectTo?>', 1500);
+                            return;
+                        }
+
+                    }, rsp => {
+
+                        this.loading = false;
+
+                        App.ui.notify(rsp && (rsp.message || rsp.error) ? (rsp.message || rsp.error) : '<?=t('Verification failed.')?>', 'error');
+
+                        setTimeout(() => {
+                            this.$el.parentNode.classList.add('animated');
+                            this.$el.parentNode.classList.add('shake');
+                        }, 100);
+                    });
+
                 }
             }
         }

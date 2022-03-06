@@ -76,6 +76,23 @@ class Auth extends Base {
 
         if ($user) {
 
+            if (isset($user['twofa']['enabled']) && $user['twofa']['enabled']) {
+
+                return [
+                    'success' => true,
+                    'user' => [
+                        'name' => $user['name'],
+                        'user' => $user['user'],
+                        'email' => $user['email'],
+                        'twofa' => $this->helper('jwt')->create($user)
+                    ]
+                ];
+
+            } else {
+                // remove twofa settings
+                unset($user['twofa']);
+            }
+
             $this->app->trigger('app.user.disguise', [&$user]);
 
             $this->helper('auth')->setUser($user);
@@ -87,5 +104,40 @@ class Auth extends Base {
         }
 
         return ['success' => false];
+    }
+
+    public function validate2FA() {
+
+        $code = $this->param('code', null);
+        $token = $this->param('token', null);
+
+        try {
+            $user = (array) $this->app->helper('jwt')->decode($token);
+        } catch(\Exception $e) {
+            return $this->stop(412);
+        }
+
+        if (!$code || !isset($user['_id'])) {
+            return $this->stop(412);
+        }
+
+        $user = $this->app->dataStorage->findOne('system/users', ['_id' => $user['_id']]);
+
+        if ($user && $this->helper('twfa')->verifyCode($user['twofa']['secret'], $code)) {
+
+            unset($user['twofa']);
+
+            $this->app->trigger('app.user.disguise', [&$user]);
+
+            $this->helper('auth')->setUser($user);
+            $this->helper('session')->write('app.session.start', time());
+
+            $this->trigger('app.user.login', [&$user]);
+
+            return ['success' => true, 'user' => $user];
+        }
+
+        return $this->stop(412);
+
     }
 }
