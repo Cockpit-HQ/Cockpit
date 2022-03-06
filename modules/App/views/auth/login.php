@@ -88,6 +88,20 @@
 
             },
 
+            watch: {
+                view() {
+                    setTimeout(() => {
+
+                        const input = this.$el.parentNode.querySelector('input[type="text"]');
+
+                        if (input) {
+                            input.focus();
+                        }
+
+                    }, 300);
+                }
+            },
+
             methods: {
 
                 login() {
