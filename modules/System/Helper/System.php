@@ -23,4 +23,31 @@ class System extends \Lime\Helper {
         // to be implemented
     }
 
+    public function flushCache() {
+
+        $dirs = ['#cache:','#tmp:'];
+        $fs = $this->app->helper('fs');
+
+        foreach ($dirs as $dir) {
+
+            $path = $this->app->path($dir);
+            $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path), \RecursiveIteratorIterator::SELF_FIRST);
+
+            foreach ($files as $file) {
+
+                if (!$file->isFile() || preg_match('/(\.gitkeep|\.gitignore|index\.html)$/', $file)) continue;
+
+                @unlink($file->getRealPath());
+            }
+
+            $fs->removeEmptySubFolders($path);
+        }
+
+        $this->app->trigger('app.system.cache.flush');
+
+        if (function_exists('opcache_reset')) {
+            opcache_reset();
+        }
+    }
+
 }
