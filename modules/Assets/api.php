@@ -121,7 +121,7 @@ $this->on('restApi.config', function($restApi) {
 
             $imgPath = $app->helper('asset')->image($options, true);
 
-            if (!$imgPath) {
+            if (!$imgPath || isset($imgPath['error'])) {
                 return false;
             }
 
