@@ -204,6 +204,22 @@ class Cockpit {
         // load modules
         $app->loadModules($modulesPaths);
 
+        // handle exceptions
+        if (APP_CLI || APP_ADMIN) {
+
+            set_exception_handler(function($exception) use($app) {
+
+                $error = [
+                    'message' => $exception->getMessage(),
+                    'file' => $exception->getFile(),
+                    'line' => $exception->getLine(),
+                    'trace' => array_slice($exception->getTrace(), 0, 4),
+                ];
+
+                $app->trigger('error', [$error, $exception]);
+            });
+        }
+
         // load config global bootstrap file
         if ($custombootfile = $app->path('#config:bootstrap.php')) {
             include($custombootfile);

@@ -91,22 +91,17 @@ if (!APP_API_REQUEST) {
 }
 
 // handle exceptions
-set_exception_handler(function($exception) use($app) {
+$app->on('error', function($error) {
 
-    $error = [
-        'message' => $exception->getMessage(),
-        'file' => $exception->getFile(),
-        'line' => $exception->getLine(),
-        'trace' => array_slice($exception->getTrace(), 0, 4),
-    ];
-
-    if ($app['debug']) {
-        $body = (isset($app->request) && $app->request->is('ajax')) || APP_API_REQUEST ? json_encode(['error' => $error['message'], 'file' => $error['file'], 'line' => $error['line']]) : $app->render('app:views/errors/500-debug.php', ['error' => $error]);
-    } else {
-        $body = (isset($app->request) && $app->request->is('ajax')) || APP_API_REQUEST ? '{"error": "500", "message": "system error"}' : $app->render('app:views/errors/500.php');
+    if (!isset($this->request)) {
+        return;
     }
 
-    $app->trigger('error', [$error, $exception]);
+    if ($this['debug']) {
+        $body = $this->request->is('ajax') || APP_API_REQUEST ? json_encode(['error' => $error['message'], 'file' => $error['file'], 'line' => $error['line']]) : $this->render('app:views/errors/500-debug.php', ['error' => $error]);
+    } else {
+        $body = $this->request->is('ajax') || APP_API_REQUEST ? '{"error": "500", "message": "system error"}' : $this->render('app:views/errors/500.php');
+    }
 
     header('HTTP/1.0 500 Internal Server Error');
     echo $body;
