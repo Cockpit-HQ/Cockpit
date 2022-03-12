@@ -106,6 +106,8 @@ $this->on('app.admin.request', function(Lime\Request $request) {
         $this->helper('i18n')->load($translationspath, $locale);
     }
 
+    $this->trigger('app.admin.i18n.load', [$locale, $this->helper('i18n')]);
+
     $this->bind('/app.i18n.data.js', function() use($locale) {
         session_write_close();
         $this->response->mime = 'js';
