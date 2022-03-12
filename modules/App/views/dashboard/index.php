@@ -14,7 +14,7 @@
 
     <div class="kiss-height-50vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center">
         <div class="animated fadeInUp">
-            <div class="kiss-size-xlarge">Hello.</div>
+            <div class="kiss-size-xlarge"><?=t('Hello.')?></div>
         </div>
     </div>
 
