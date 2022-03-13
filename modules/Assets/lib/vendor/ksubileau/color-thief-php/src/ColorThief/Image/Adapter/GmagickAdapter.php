@@ -1,72 +1,72 @@
 <?php
 
+/*
+ * This file is part of the Color Thief PHP project.
+ *
+ * (c) Kevin Subileau
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+declare(strict_types=1);
+
 namespace ColorThief\Image\Adapter;
 
+use ColorThief\Exception\InvalidArgumentException;
+use ColorThief\Exception\NotReadableException;
 use Gmagick;
 
-class GmagickImageAdapter extends ImageAdapter
+/**
+ * @property ?Gmagick $resource
+ */
+class GmagickAdapter extends AbstractAdapter
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function load($resource)
+    public static function isAvailable(): bool
+    {
+        return extension_loaded('gmagick') && class_exists('Gmagick');
+    }
+
+    public function load($resource): AdapterInterface
     {
         if (!($resource instanceof Gmagick)) {
-            throw new \InvalidArgumentException('Passed variable is not an instance of Gmagick');
+            throw new InvalidArgumentException('Argument is not an instance of Gmagick.');
         }
 
-        if ($resource->getImageColorSpace() == Gmagick::COLORSPACE_CMYK) {
+        if (Gmagick::COLORSPACE_CMYK == $resource->getImageColorSpace()) {
             // Leave original object unmodified
             $resource = clone $resource;
             $resource->setImageColorspace(Gmagick::COLORSPACE_RGB);
         }
 
-        parent::load($resource);
+        return parent::load($resource);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function loadBinaryString($data)
+    public function loadFromBinary(string $data): AdapterInterface
     {
         $resource = new Gmagick();
         try {
             $resource->readImageBlob($data);
         } catch (\GmagickException $e) {
-            throw new \InvalidArgumentException('Passed binary string is empty or is not a valid image', 0, $e);
+            throw new NotReadableException('Unable to read image from binary data.', 0, $e);
         }
-        $this->load($resource);
+
+        return $this->load($resource);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function loadFile($file)
+    public function loadFromPath(string $file): AdapterInterface
     {
-        // GMagick doesn't support HTTPS URL directly, so we download the image with file_get_contents first
-        // and then we passed the binary string to GmagickImageAdapter::loadBinaryString().
-        if (filter_var($file, FILTER_VALIDATE_URL)) {
-            $image = @file_get_contents($file);
-            if ($image === false) {
-                throw new \RuntimeException("Image '" . $file . "' is not readable or does not exists.", 0);
-            }
-
-            return $this->loadBinaryString($image);
-        }
-
         $resource = null;
         try {
             $resource = new Gmagick($file);
         } catch (\GmagickException $e) {
-            throw new \RuntimeException("Image '" . $file . "' is not readable or does not exists.", 0, $e);
+            throw new NotReadableException("Unable to read image from path ({$file}).", 0, $e);
         }
-        $this->load($resource);
+
+        return $this->load($resource);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function destroy()
+    public function destroy(): void
     {
         if ($this->resource) {
             $this->resource->clear();
@@ -75,26 +75,17 @@ class GmagickImageAdapter extends ImageAdapter
         parent::destroy();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getHeight()
+    public function getHeight(): int
     {
         return $this->resource->getimageheight();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getWidth()
+    public function getWidth(): int
     {
         return $this->resource->getimagewidth();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getPixelColor($x, $y)
+    public function getPixelColor(int $x, int $y): \stdClass
     {
         $cropped = clone $this->resource;    // No need to modify the original object.
         $histogram = $cropped->cropImage(1, 1, $x, $y)->getImageHistogram();

@@ -2,42 +2,45 @@
     "packages": [
         {
             "name": "ksubileau/color-thief-php",
-            "version": "v1.4.1",
-            "version_normalized": "1.4.1.0",
+            "version": "v2.0.0",
+            "version_normalized": "2.0.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ksubileau/color-thief-php.git",
-                "reference": "fc2acefacbd037f68cf61bcc62b30ac1bb16ed59"
+                "reference": "f905264d26c468f41989bb269546de6076aa7961"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ksubileau/color-thief-php/zipball/fc2acefacbd037f68cf61bcc62b30ac1bb16ed59",
-                "reference": "fc2acefacbd037f68cf61bcc62b30ac1bb16ed59",
+                "url": "https://api.github.com/repos/ksubileau/color-thief-php/zipball/f905264d26c468f41989bb269546de6076aa7961",
+                "reference": "f905264d26c468f41989bb269546de6076aa7961",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.4.0"
+                "ext-fileinfo": "*",
+                "php": "^7.2|^8.0"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "^2.13",
-                "phpunit/phpunit": "~4.8|~5.7"
+                "friendsofphp/php-cs-fixer": "^3.4",
+                "phpstan/phpstan": "^1.2.0",
+                "phpstan/phpstan-phpunit": "^1.0.0",
+                "phpunit/phpunit": "^8.5"
             },
             "suggest": {
                 "ext-gd": "to use the GD image adapter.",
                 "ext-gmagick": "to use the Gmagick image adapter.",
                 "ext-imagick": "to use the Imagick image adapter."
             },
-            "time": "2018-10-27T18:57:38+00:00",
+            "time": "2022-03-12T20:27:56+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "ColorThief\\": "lib/ColorThief"
+                    "ColorThief\\": "src/ColorThief"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "CC-BY-2.5"
+                "MIT"
             ],
             "authors": [
                 {
@@ -56,7 +59,7 @@
             ],
             "support": {
                 "issues": "https://github.com/ksubileau/color-thief-php/issues",
-                "source": "https://github.com/ksubileau/color-thief-php/tree/master"
+                "source": "https://github.com/ksubileau/color-thief-php/tree/v2.0.0"
             },
             "install-path": "../ksubileau/color-thief-php"
         }

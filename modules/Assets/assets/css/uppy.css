@@ -35,6 +35,7 @@
 .uppy-DashboardTab-btn:active,
 .uppy-DashboardTab-btn:focus {
   background-color: var(--kiss-color-primary);
+  color: #fff;
   font-size: .9em;
 }
 

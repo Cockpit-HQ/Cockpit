@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitb99914ce2fba39e89a840e2fb007941d
+class ComposerStaticInit05e79f1c0a61bd31841b9c7a1b54b18c
 {
     public static $prefixLengthsPsr4 = array (
         'C' => 
@@ -16,30 +16,35 @@ class ComposerStaticInitb99914ce2fba39e89a840e2fb007941d
     public static $prefixDirsPsr4 = array (
         'ColorThief\\' => 
         array (
-            0 => __DIR__ . '/..' . '/ksubileau/color-thief-php/lib/ColorThief',
+            0 => __DIR__ . '/..' . '/ksubileau/color-thief-php/src/ColorThief',
         ),
     );
 
     public static $classMap = array (
-        'ColorThief\\CMap' => __DIR__ . '/..' . '/ksubileau/color-thief-php/lib/ColorThief/CMap.php',
-        'ColorThief\\ColorThief' => __DIR__ . '/..' . '/ksubileau/color-thief-php/lib/ColorThief/ColorThief.php',
-        'ColorThief\\Image\\Adapter\\GDImageAdapter' => __DIR__ . '/..' . '/ksubileau/color-thief-php/lib/ColorThief/Image/Adapter/GDImageAdapter.php',
-        'ColorThief\\Image\\Adapter\\GmagickImageAdapter' => __DIR__ . '/..' . '/ksubileau/color-thief-php/lib/ColorThief/Image/Adapter/GmagickImageAdapter.php',
-        'ColorThief\\Image\\Adapter\\IImageAdapter' => __DIR__ . '/..' . '/ksubileau/color-thief-php/lib/ColorThief/Image/Adapter/IImageAdapter.php',
-        'ColorThief\\Image\\Adapter\\ImageAdapter' => __DIR__ . '/..' . '/ksubileau/color-thief-php/lib/ColorThief/Image/Adapter/ImageAdapter.php',
-        'ColorThief\\Image\\Adapter\\ImagickImageAdapter' => __DIR__ . '/..' . '/ksubileau/color-thief-php/lib/ColorThief/Image/Adapter/ImagickImageAdapter.php',
-        'ColorThief\\Image\\ImageLoader' => __DIR__ . '/..' . '/ksubileau/color-thief-php/lib/ColorThief/Image/ImageLoader.php',
-        'ColorThief\\PQueue' => __DIR__ . '/..' . '/ksubileau/color-thief-php/lib/ColorThief/PQueue.php',
-        'ColorThief\\VBox' => __DIR__ . '/..' . '/ksubileau/color-thief-php/lib/ColorThief/VBox.php',
+        'ColorThief\\Color' => __DIR__ . '/..' . '/ksubileau/color-thief-php/src/ColorThief/Color.php',
+        'ColorThief\\ColorThief' => __DIR__ . '/..' . '/ksubileau/color-thief-php/src/ColorThief/ColorThief.php',
+        'ColorThief\\Exception\\Exception' => __DIR__ . '/..' . '/ksubileau/color-thief-php/src/ColorThief/Exception/Exception.php',
+        'ColorThief\\Exception\\InvalidArgumentException' => __DIR__ . '/..' . '/ksubileau/color-thief-php/src/ColorThief/Exception/InvalidArgumentException.php',
+        'ColorThief\\Exception\\NotReadableException' => __DIR__ . '/..' . '/ksubileau/color-thief-php/src/ColorThief/Exception/NotReadableException.php',
+        'ColorThief\\Exception\\NotSupportedException' => __DIR__ . '/..' . '/ksubileau/color-thief-php/src/ColorThief/Exception/NotSupportedException.php',
+        'ColorThief\\Exception\\RuntimeException' => __DIR__ . '/..' . '/ksubileau/color-thief-php/src/ColorThief/Exception/RuntimeException.php',
+        'ColorThief\\Image\\Adapter\\AbstractAdapter' => __DIR__ . '/..' . '/ksubileau/color-thief-php/src/ColorThief/Image/Adapter/AbstractAdapter.php',
+        'ColorThief\\Image\\Adapter\\AdapterInterface' => __DIR__ . '/..' . '/ksubileau/color-thief-php/src/ColorThief/Image/Adapter/AdapterInterface.php',
+        'ColorThief\\Image\\Adapter\\GdAdapter' => __DIR__ . '/..' . '/ksubileau/color-thief-php/src/ColorThief/Image/Adapter/GdAdapter.php',
+        'ColorThief\\Image\\Adapter\\GmagickAdapter' => __DIR__ . '/..' . '/ksubileau/color-thief-php/src/ColorThief/Image/Adapter/GmagickAdapter.php',
+        'ColorThief\\Image\\Adapter\\ImagickAdapter' => __DIR__ . '/..' . '/ksubileau/color-thief-php/src/ColorThief/Image/Adapter/ImagickAdapter.php',
+        'ColorThief\\Image\\ImageLoader' => __DIR__ . '/..' . '/ksubileau/color-thief-php/src/ColorThief/Image/ImageLoader.php',
+        'ColorThief\\PQueue' => __DIR__ . '/..' . '/ksubileau/color-thief-php/src/ColorThief/PQueue.php',
+        'ColorThief\\VBox' => __DIR__ . '/..' . '/ksubileau/color-thief-php/src/ColorThief/VBox.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitb99914ce2fba39e89a840e2fb007941d::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitb99914ce2fba39e89a840e2fb007941d::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInitb99914ce2fba39e89a840e2fb007941d::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit05e79f1c0a61bd31841b9c7a1b54b18c::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit05e79f1c0a61bd31841b9c7a1b54b18c::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit05e79f1c0a61bd31841b9c7a1b54b18c::$classMap;
 
         }, null, ClassLoader::class);
     }
