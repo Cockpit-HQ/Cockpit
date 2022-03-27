@@ -203,12 +203,33 @@ $jwks = ['keys' => []];
 JWT::decode($payload, JWK::parseKeySet($jwks));
 ```
 
+Miscellaneous
+-------------
+
+#### Casting to array
+
+The return value of `JWT::decode` is the generic PHP object `stdClass`. If you'd like to handle with arrays
+instead, you can do the following:
+
+```php
+// return type is stdClass
+$decoded = JWT::decode($payload, $keys);
+
+// cast to array
+$decoded = json_decode(json_encode($decoded), true);
+```
+
 Changelog
 ---------
 
+#### 6.1.0 / 2022-03-23
+
+ - Drop support for PHP 5.3, 5.4, 5.5, 5.6, and 7.0
+ - Add parameter typing and return types where possible
+
 #### 6.0.0 / 2022-01-24
 
- - **Backwards-Compatibility Breaking Changes**: See the [Release Notes](https://github.com/firebase/php-jwt/releases/tag/v5.5.1) for more information.
+ - **Backwards-Compatibility Breaking Changes**: See the [Release Notes](https://github.com/firebase/php-jwt/releases/tag/v6.0.0) for more information.
  - New Key object to prevent key/algorithm type confusion (#365)
  - Add JWK support (#273)
  - Add ES256 support (#256)

@@ -11,7 +11,7 @@
     padding: 0 var(--kiss-button-padding, 2.5em);
     vertical-align: middle;
     font-size: .65em;
-    line-height: 4.5em;
+    line-height: var(--kiss-button-default-line-height, 4.5em);
     letter-spacing: .1em;
     text-align: center;
     text-decoration: none;
@@ -29,7 +29,7 @@
 
 .kiss-button-outline {
     background: rgba(0, 0, 0, 0);
-    border: 1px currentColor solid;
+    border: var(--kiss-button-outline-width, 1px) currentColor solid;
     color: currentColor;
 }
 
@@ -86,11 +86,11 @@
 
 .kiss-button-large {
     padding: 0 var(--kiss-button-large-padding-horizontal, 5em);
-    line-height: var(--kiss-button-large-font-size, 5em);
+    line-height: var(--kiss-button-large-line-height, 5em);
 }
 
 .kiss-button-small {
     padding: 0 var(--kiss-button-small-padding-horizontal, 2em);
-    line-height: var(--kiss-button-small-font-size, 4em);
+    line-height: var(--kiss-button-small-line-height, 4em);
     font-size: var(--kiss-button-small-font-size, .5em);
 }

@@ -2421,7 +2421,7 @@ template { display: none; }
     padding: 0 var(--kiss-button-padding, 2.5em);
     vertical-align: middle;
     font-size: .65em;
-    line-height: 4.5em;
+    line-height: var(--kiss-button-default-line-height, 4.5em);
     letter-spacing: .1em;
     text-align: center;
     text-decoration: none;
@@ -2437,7 +2437,7 @@ template { display: none; }
 }
 .kiss-button-outline {
     background: rgba(0, 0, 0, 0);
-    border: 1px currentColor solid;
+    border: var(--kiss-button-outline-width, 1px) currentColor solid;
     color: currentColor;
 }
 .kiss-button:not(:disabled) { cursor: pointer; }
@@ -2483,11 +2483,11 @@ template { display: none; }
 }
 .kiss-button-large {
     padding: 0 var(--kiss-button-large-padding-horizontal, 5em);
-    line-height: var(--kiss-button-large-font-size, 5em);
+    line-height: var(--kiss-button-large-line-height, 5em);
 }
 .kiss-button-small {
     padding: 0 var(--kiss-button-small-padding-horizontal, 2em);
-    line-height: var(--kiss-button-small-font-size, 4em);
+    line-height: var(--kiss-button-small-line-height, 4em);
     font-size: var(--kiss-button-small-font-size, .5em);
 }
 .kiss-badge {
@@ -4173,7 +4173,7 @@ html[data-theme='light'] kiss-card[hover="shadow"]:hover {
     0 41.8px 33.4px rgba(0, 0, 0, 0.066),
     0 100px 80px rgba(0, 0, 0, 0.06);
 }
-html[data-theme='light'] .app-logo[src$="App/assets/logo.svg"] {
+html[data-theme='light'] [src$="App/assets/logo.svg"] {
     filter: invert(1);
 }
 html[data-theme='light'] kiss-offcanvas kiss-content {

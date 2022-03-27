@@ -96,7 +96,7 @@ html[data-theme='light'] kiss-card[hover="shadow"]:hover {
     0 100px 80px rgba(0, 0, 0, 0.06);
 }
 
-html[data-theme='light'] .app-logo[src$="App/assets/logo.svg"] {
+html[data-theme='light'] [src$="App/assets/logo.svg"] {
     filter: invert(1);
 }
 

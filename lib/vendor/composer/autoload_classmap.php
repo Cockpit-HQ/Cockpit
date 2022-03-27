@@ -642,6 +642,7 @@ return array(
     'RobThree\\Auth\\Providers\\Qr\\EndroidQrCodeProvider' => $vendorDir . '/robthree/twofactorauth/lib/Providers/Qr/EndroidQrCodeProvider.php',
     'RobThree\\Auth\\Providers\\Qr\\EndroidQrCodeWithLogoProvider' => $vendorDir . '/robthree/twofactorauth/lib/Providers/Qr/EndroidQrCodeWithLogoProvider.php',
     'RobThree\\Auth\\Providers\\Qr\\GoogleChartsQrCodeProvider' => $vendorDir . '/robthree/twofactorauth/lib/Providers/Qr/GoogleChartsQrCodeProvider.php',
+    'RobThree\\Auth\\Providers\\Qr\\HandlesDataUri' => $vendorDir . '/robthree/twofactorauth/lib/Providers/Qr/HandlesDataUri.php',
     'RobThree\\Auth\\Providers\\Qr\\IQRCodeProvider' => $vendorDir . '/robthree/twofactorauth/lib/Providers/Qr/IQRCodeProvider.php',
     'RobThree\\Auth\\Providers\\Qr\\ImageChartsQRCodeProvider' => $vendorDir . '/robthree/twofactorauth/lib/Providers/Qr/ImageChartsQRCodeProvider.php',
     'RobThree\\Auth\\Providers\\Qr\\QRException' => $vendorDir . '/robthree/twofactorauth/lib/Providers/Qr/QRException.php',

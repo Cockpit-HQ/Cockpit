@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '9eeb6a89edcd6562ca3b9677569428563503ead7',
+    'reference' => 'bb10fa968d8e1bb10f053340a788c1051384240a',
     'name' => 'agentejo/cockpit',
   ),
   'versions' => 
@@ -18,16 +18,16 @@
       'aliases' => 
       array (
       ),
-      'reference' => '9eeb6a89edcd6562ca3b9677569428563503ead7',
+      'reference' => 'bb10fa968d8e1bb10f053340a788c1051384240a',
     ),
     'bacon/bacon-qr-code' => 
     array (
-      'pretty_version' => '2.0.6',
-      'version' => '2.0.6.0',
+      'pretty_version' => '2.0.7',
+      'version' => '2.0.7.0',
       'aliases' => 
       array (
       ),
-      'reference' => '0069435e2a01a57193b25790f105a5d3168653c1',
+      'reference' => 'd70c840f68657ce49094b8d91f9ee0cc07fbf66c',
     ),
     'claviska/simpleimage' => 
     array (
@@ -76,21 +76,21 @@
     ),
     'firebase/php-jwt' => 
     array (
-      'pretty_version' => 'v6.0.0',
-      'version' => '6.0.0.0',
+      'pretty_version' => 'v6.1.0',
+      'version' => '6.1.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '0541cba75ab108ef901985e68055a92646c73534',
+      'reference' => 'fbb2967a3a68b07e37678c00c0cf51165051495f',
     ),
     'guzzlehttp/guzzle' => 
     array (
-      'pretty_version' => '7.4.1',
-      'version' => '7.4.1.0',
+      'pretty_version' => '7.4.2',
+      'version' => '7.4.2.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'ee0a041b1760e6a53d2a39c8c34115adc2af2c79',
+      'reference' => 'ac1ec1cd9b5624694c3a40be801d94137afb12b4',
     ),
     'guzzlehttp/promises' => 
     array (
@@ -103,12 +103,12 @@
     ),
     'guzzlehttp/psr7' => 
     array (
-      'pretty_version' => '2.1.0',
-      'version' => '2.1.0.0',
+      'pretty_version' => '2.2.1',
+      'version' => '2.2.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => '089edd38f5b8abba6cb01567c2a8aaa47cec4c72',
+      'reference' => 'c94a94f120803a18554c1805ef2e539f8285f9a2',
     ),
     'jean85/pretty-package-versions' => 
     array (
@@ -130,12 +130,12 @@
     ),
     'league/flysystem' => 
     array (
-      'pretty_version' => '3.0.11',
-      'version' => '3.0.11.0',
+      'pretty_version' => '3.0.12',
+      'version' => '3.0.12.0',
       'aliases' => 
       array (
       ),
-      'reference' => '1ca148713c23cadeb9d7526973f81fb4a04090a3',
+      'reference' => '4744d96fb2456d9808be3ad596a2520b902996e2',
     ),
     'league/mime-type-detection' => 
     array (
@@ -273,12 +273,12 @@
     ),
     'robthree/twofactorauth' => 
     array (
-      'pretty_version' => '1.8.1',
-      'version' => '1.8.1.0',
+      'pretty_version' => '1.8.2',
+      'version' => '1.8.2.0',
       'aliases' => 
       array (
       ),
-      'reference' => '5afcb45282f1c75562a48d479ecd1732c9bdb11b',
+      'reference' => '65681de5a324eae05140ac58b08648a60212afc0',
     ),
     'symfony/console' => 
     array (
