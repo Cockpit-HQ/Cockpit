@@ -412,57 +412,5 @@ export default {
                 </kiss-content>
             </kiss-popoutmenu>
         </teleport>
-
-        <app-actionbar v-if="!modal">
-            <kiss-container>
-                <div class="kiss-flex kiss-flex-middle">
-                    <div class="kiss-flex kiss-flex-middle" v-if="!loading && count">
-                        <div class="kiss-size-small">{{ count }} {{ count == 1 ? t('Item') : t('Items') }}</div>
-                        <div class="kiss-margin-small-left kiss-overlay-input">
-                            <span class="kiss-badge kiss-badge-outline kiss-color-muted">{{ page }} / {{pages}}</span>
-                            <select v-model="page" @change="load(page)" v-if="pages > 1"><option v-for="p in pages" :value="p">{{ p }}</option></select>
-                        </div>
-                        <div class="kiss-margin-small-left kiss-size-small">
-                            <a class="kiss-margin-small-right" v-if="(page - 1) >= 1" @click="load(page - 1)">{{ t('Previous') }}</a>
-                            <a v-if="(page + 1) <= pages" @click="load(page + 1)">{{ t('Next') }}</a>
-                        </div>
-                    </div>
-                    <div class="kiss-flex-1 kiss-margin-right"></div>
-                    <div class="kiss-button-group">
-                        <button class="kiss-button" @click="createFolder()">{{ t('Create folder') }}</button>
-                        <button class="kiss-button kiss-button-primary" :disabled="!uppy" @click="upload()">{{ t('Upload asset') }}</button>
-                    </div>
-                </div>
-            </kiss-container>
-        </app-actionbar>
-
-        <teleport to="body">
-            <kiss-popoutmenu :open="actionFolder && 'true'" id="asset-folder-actions" @popoutmenuclose="toggleFolderActions(null)">
-                <kiss-content>
-                    <kiss-navlist class="kiss-margin">
-                        <ul>
-                            <li class="kiss-nav-header">{{ t('Folder actions') }}</li>
-                            <li v-if="actionFolder">
-                                <div class="kiss-color-muted kiss-text-truncate kiss-margin-small-bottom">{{ actionFolder.name }}</div>
-                            </li>
-                            <li>
-                                <a class="kiss-flex kiss-flex-middle" @click="renameFolder(actionFolder)">
-                                    <icon class="kiss-margin-small-right" size="larger">drive_file_rename_outline</icon>
-                                    {{ t('Rename') }}
-                                </a>
-                            </li>
-                            <li class="kiss-nav-divider"></li>
-                            <li>
-                                <a class="kiss-color-danger kiss-flex kiss-flex-middle" @click="removeFolder(actionFolder)">
-                                    <icon class="kiss-margin-small-right" size="larger">delete</icon>
-                                    {{ t('Delete') }}
-                                </a>
-                            </li>
-                        </ul>
-                    </kiss-navlist>
-                </kiss-content>
-            </kiss-popoutmenu>
-        </teleport>
-
     `
 }
