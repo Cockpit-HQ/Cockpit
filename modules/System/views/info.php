@@ -12,25 +12,25 @@
     <vue-view>
         <template>
 
+            <kiss-card class="kiss-padding kiss-margin-large" theme="bordered contrast shadowed">
+
+                <kiss-row class="kiss-flex-middle">
+                    <div><kiss-svg src="<?=$this->baseUrl('app:assets/logo.svg')?>" width="60" height="60"></kiss-svg></div>
+                    <div class="kiss-flex-1">
+                        <div class="kiss-size-4 kiss-text-bold">Cockpit</div>
+                        <div class="kiss-text-caption kiss-margin-small">
+                            <span class="kiss-color-muted">v<?=APP_VERSION?></span> &mdash;
+                            A product by
+                            <strong><a class="kiss-link-muted" href="https://agentejo.com/" target="_blank" rel="noopener">Agentejo</a></strong>
+                        </div>
+                    </div>
+                </kiss-row>
+
+            </kiss-card>
+
             <app-tabs>
 
                 <tab class="kiss-margin animated fadeIn" caption="<?=t('App')?>">
-
-                    <kiss-card class="kiss-padding" theme="bordered contrast shadowed">
-
-                        <kiss-row class="kiss-flex-middle">
-                            <div><kiss-svg src="<?=$this->baseUrl('app:assets/logo.svg')?>" width="60" height="60"></kiss-svg></div>
-                            <div class="kiss-flex-1">
-                                <div class="kiss-size-4 kiss-text-bold">Cockpit</div>
-                                <div class="kiss-text-caption kiss-margin-small">
-                                    <span class="kiss-color-muted">v<?=APP_VERSION?></span> &mdash;
-                                    A product by
-                                    <strong><a class="kiss-link-muted" href="https://agentejo.com/" target="_blank" rel="noopener">Agentejo</a></strong>
-                                </div>
-                            </div>
-                        </kiss-row>
-
-                    </kiss-card>
 
                     <div class="kiss-text-caption kiss-text-bold kiss-size-bold kiss-margin">
                         <?=('General')?>

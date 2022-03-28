@@ -161,7 +161,10 @@
             <kiss-popoutmenu id="model-item-menu-state">
                 <kiss-content>
                     <kiss-navlist class="kiss-margin-small">
-                        <ul class="app-list-items">
+
+                        <strong class="kiss-text-bold kiss-text-caption"><?=t('State')?></strong>
+
+                        <ul class="app-list-items kiss-margin-small-top">
                             <li>
                                 <a class="kiss-flex kiss-flex-middle" :class="{'kiss-color-muted': item._state != 1, 'kiss-text-bold': item._state == 1}" @click="item._state=1">
                                     <icon class="kiss-margin-small-right">{{ item._state != 1 ? 'radio_button_unchecked' : 'radio_button_checked'}}</icon>
