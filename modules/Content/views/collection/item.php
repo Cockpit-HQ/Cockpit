@@ -153,24 +153,24 @@
 
         <kiss-popoutmenu id="model-item-menu-state">
             <kiss-content>
-                <kiss-navlist class="kiss-margin">
-                    <ul>
-                        <li class="kiss-nav-header"><?=t('Change state to')?></li>
-                        <li v-show="item._state != 1">
-                            <a class="kiss-flex kiss-flex-middle kiss-color-success kiss-text-bold" @click="item._state=1">
-                                <icon class="kiss-margin-small-right">bookmark</icon>
+
+                <kiss-navlist class="kiss-margin-small">
+                    <ul class="app-list-items">
+                        <li>
+                            <a class="kiss-flex kiss-flex-middle" :class="{'kiss-color-muted': item._state != 1, 'kiss-text-bold': item._state == 1}" @click="item._state=1">
+                                <icon class="kiss-margin-small-right">{{ item._state != 1 ? 'radio_button_unchecked' : 'radio_button_checked'}}</icon>
                                 <?=t('Published')?>
                             </a>
                         </li>
-                        <li v-show="item._state">
-                            <a class="kiss-flex kiss-flex-middle kiss-color-danger kiss-text-bold" @click="item._state=0">
-                                <icon class="kiss-margin-small-right">bookmark</icon>
+                        <li>
+                            <a class="kiss-flex kiss-flex-middle" :class="{'kiss-color-muted': item._state != 0, 'kiss-text-bold': item._state == 0}" @click="item._state=0">
+                                <icon class="kiss-margin-small-right">{{ item._state != 0 ? 'radio_button_unchecked' : 'radio_button_checked'}}</icon>
                                 <?=t('Unpublished')?>
                             </a>
                         </li>
-                        <li v-show="item._state != -1">
-                            <a class="kiss-flex kiss-flex-middle kiss-color-muted kiss-text-bold" @click="item._state=-1">
-                                <icon class="kiss-margin-small-right">bookmark</icon>
+                        <li v-if="item._id">
+                            <a class="kiss-flex kiss-flex-middle" :class="{'kiss-color-muted': item._state != -1, 'kiss-text-bold': item._state == -1}" @click="item._state=-1">
+                                <icon class="kiss-margin-small-right">{{ item._state != -1 ? 'radio_button_unchecked' : 'radio_button_checked'}}</icon>
                                 <?=t('Archive')?>
                             </a>
                         </li>
