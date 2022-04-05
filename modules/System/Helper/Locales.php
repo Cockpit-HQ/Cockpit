@@ -102,20 +102,28 @@ class Locales extends \Lime\Helper {
             ]
         ];
 
-        $locales = $this->app->dataStorage->find('system/locales', [
-            'sort' => ['name' => 1]
-        ])->toArray();
+        try {
 
-        foreach ($locales as $locale) {
+            $locales = $this->app->dataStorage->find('system/locales', [
+                'sort' => ['name' => 1]
+            ])->toArray();
 
-            if (isset($locale['enabled']) && !$locale['enabled']) {
-                continue;
+            foreach ($locales as $locale) {
+
+                if (isset($locale['enabled']) && !$locale['enabled']) {
+                    continue;
+                }
+
+                $cache[$locale['i18n']] = $locale;
             }
 
-            $cache[$locale['i18n']] = $locale;
+        } catch (\Throwable $e) {
+            $locales = null;
         }
 
-        $this->app->helper('cache')->write('app.locales', $cache);
+        if ($locales) {
+            $this->app->helper('cache')->write('app.locales', $cache);
+        }
 
         return $cache;
     }

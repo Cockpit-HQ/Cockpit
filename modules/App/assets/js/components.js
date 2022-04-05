@@ -30,6 +30,7 @@ VueView.component('field-number', 'app:assets/vue-components/field-number.js');
 VueView.component('field-object', 'app:assets/vue-components/field-object.js');
 VueView.component('field-select', 'app:assets/vue-components/field-select.js');
 VueView.component('field-set', 'app:assets/vue-components/field-set.js');
+VueView.component('field-tags', 'app:assets/vue-components/field-tags.js');
 VueView.component('field-text', 'app:assets/vue-components/field-text.js');
 VueView.component('field-time', 'app:assets/vue-components/field-time.js');
 VueView.component('field-wysiwyg', 'app:assets/vue-components/field-wysiwyg.js');
