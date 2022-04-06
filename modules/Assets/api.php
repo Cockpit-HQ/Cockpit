@@ -142,4 +142,28 @@ $this->on('restApi.config', function($restApi) {
             return $app->fileStorage->getURL($imgPath);
         }
     ]);
+
+    /**
+     * @OA\Get(
+     *     path="/assets/{id}",
+     *     tags={"assets"},
+     *     @OA\Parameter(
+     *         description="Asset ID",
+     *         in="path",
+     *         name="id",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(response="200", description="Assets data"),
+     *     @OA\Response(response="404", description="Asset not found")
+     * )
+     */
+
+    $restApi->addEndPoint('/assets/{id}', [
+
+        'GET' => function($params, $app) {
+
+            return  $app->dataStorage->findOne('assets', ['_id' => $params['id']]) ?? false;
+        }
+    ]);
 });

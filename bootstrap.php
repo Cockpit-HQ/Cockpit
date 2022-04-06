@@ -110,6 +110,17 @@ class Cockpit {
         // file storage
         $app->service('fileStorage', function() use($config, $app) {
 
+            $visibility = League\Flysystem\UnixVisibility\PortableVisibilityConverter::fromArray([
+                'file' => [
+                    'public' => 0644,
+                    'private' => 0644,
+                ],
+                'dir' => [
+                    'public' => 0755,
+                    'private' => 0755,
+                ],
+            ]);
+
             $storages = array_replace_recursive([
 
                 '#app' => [
@@ -128,21 +139,21 @@ class Cockpit {
 
                 'tmp' => [
                     'adapter' => 'League\Flysystem\Local\LocalFilesystemAdapter',
-                    'args' => [$app->path('#tmp:')],
+                    'args' => [$app->path('#tmp:'), $visibility],
                     'mount' => true,
                     'url' => $app->pathToUrl('#tmp:', true)
                 ],
 
                 'cache' => [
                     'adapter' => 'League\Flysystem\Local\LocalFilesystemAdapter',
-                    'args' => [$app->path('#cache:')],
+                    'args' => [$app->path('#cache:'), $visibility],
                     'mount' => true,
                     'url' => $app->pathToUrl('#cache:', true)
                 ],
 
                 'uploads' => [
                     'adapter' => 'League\Flysystem\Local\LocalFilesystemAdapter',
-                    'args' => [$app->path('#uploads:')],
+                    'args' => [$app->path('#uploads:'), $visibility],
                     'mount' => true,
                     'url' => $app->pathToUrl('#uploads:', true)
                 ],
@@ -150,7 +161,7 @@ class Cockpit {
                 // local uploads folder
                 '#uploads' => [
                     'adapter' => 'League\Flysystem\Local\LocalFilesystemAdapter',
-                    'args' => [$app->path('#uploads:')],
+                    'args' => [$app->path('#uploads:'), $visibility],
                     'mount' => true,
                     'url' => $app->pathToUrl('#uploads:', true)
                 ],
