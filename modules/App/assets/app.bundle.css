@@ -3148,7 +3148,11 @@ kiss-tooltip[show="true"] {
 }
 .kiss-flex-none { flex: none; }
 .kiss-flex-auto { flex: auto; }
-.kiss-flex-1 { flex: 1; }
+.kiss-flex-1 {
+    flex-grow: 1;
+    min-width: 0;
+    flex-basis: 0;
+}
 .kiss-align-center {
   text-align: center !important;
 }
