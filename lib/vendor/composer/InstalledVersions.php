@@ -29,7 +29,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => 'bb10fa968d8e1bb10f053340a788c1051384240a',
+    'reference' => 'bc93f688282fdc8796b568bf6bd7ba26120d861b',
     'name' => 'agentejo/cockpit',
   ),
   'versions' => 
@@ -41,7 +41,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => 'bb10fa968d8e1bb10f053340a788c1051384240a',
+      'reference' => 'bc93f688282fdc8796b568bf6bd7ba26120d861b',
     ),
     'bacon/bacon-qr-code' => 
     array (
@@ -99,12 +99,12 @@ private static $installed = array (
     ),
     'firebase/php-jwt' => 
     array (
-      'pretty_version' => 'v6.1.0',
-      'version' => '6.1.0.0',
+      'pretty_version' => 'v6.1.1',
+      'version' => '6.1.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'fbb2967a3a68b07e37678c00c0cf51165051495f',
+      'reference' => 'e67638d067a537731e3f9c03e097c7c1b1f31fe8',
     ),
     'guzzlehttp/guzzle' => 
     array (
@@ -153,21 +153,21 @@ private static $installed = array (
     ),
     'league/flysystem' => 
     array (
-      'pretty_version' => '3.0.12',
-      'version' => '3.0.12.0',
+      'pretty_version' => '3.0.17',
+      'version' => '3.0.17.0',
       'aliases' => 
       array (
       ),
-      'reference' => '4744d96fb2456d9808be3ad596a2520b902996e2',
+      'reference' => '29eb78cac0be0c22237c5e0f6f98234d97037d79',
     ),
     'league/mime-type-detection' => 
     array (
-      'pretty_version' => '1.9.0',
-      'version' => '1.9.0.0',
+      'pretty_version' => '1.11.0',
+      'version' => '1.11.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'aa70e813a6ad3d1558fc927863d47309b4c23e69',
+      'reference' => 'ff6248ea87a9f116e78edd6002e39e5128a0d4dd',
     ),
     'maennchen/zipstream-php' => 
     array (
@@ -305,21 +305,21 @@ private static $installed = array (
     ),
     'symfony/console' => 
     array (
-      'pretty_version' => 'v5.4.5',
-      'version' => '5.4.5.0',
+      'pretty_version' => 'v5.4.7',
+      'version' => '5.4.7.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'd8111acc99876953f52fe16d4c50eb60940d49ad',
+      'reference' => '900275254f0a1a2afff1ab0e11abd5587a10e1d6',
     ),
     'symfony/deprecation-contracts' => 
     array (
-      'pretty_version' => 'v3.0.0',
-      'version' => '3.0.0.0',
+      'pretty_version' => 'v3.0.1',
+      'version' => '3.0.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'c726b64c1ccfe2896cb7df2e1331c357ad1c8ced',
+      'reference' => '26954b3d62a6c5fd0ea8a2a00c0353a14978d05c',
     ),
     'symfony/finder' => 
     array (
@@ -395,12 +395,12 @@ private static $installed = array (
     ),
     'symfony/service-contracts' => 
     array (
-      'pretty_version' => 'v3.0.0',
-      'version' => '3.0.0.0',
+      'pretty_version' => 'v3.0.1',
+      'version' => '3.0.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => '36715ebf9fb9db73db0cb24263c79077c6fe8603',
+      'reference' => 'e517458f278c2131ca9f262f8fbaf01410f2c65c',
     ),
     'symfony/string' => 
     array (
@@ -422,12 +422,12 @@ private static $installed = array (
     ),
     'webonyx/graphql-php' => 
     array (
-      'pretty_version' => 'v14.11.5',
-      'version' => '14.11.5.0',
+      'pretty_version' => 'v14.11.6',
+      'version' => '14.11.6.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'ffa431c0821821839370a68dab3c2597c06bf7f0',
+      'reference' => '6070542725b61fc7d0654a8a9855303e5e157434',
     ),
     'zircote/swagger-php' => 
     array (

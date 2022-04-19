@@ -92,7 +92,7 @@ class LocalFilesystemAdapter implements FilesystemAdapter
         $this->linkHandling = $linkHandling;
         $this->visibility = $visibility ?: new PortableVisibilityConverter();
         $this->ensureDirectoryExists($location, $this->visibility->defaultForDirectories());
-        $this->mimeTypeDetector = $mimeTypeDetector ?: new FinfoMimeTypeDetector();
+        $this->mimeTypeDetector = $mimeTypeDetector ?: new FallbackMimeTypeDetector(new FinfoMimeTypeDetector());
     }
 
     public function write(string $path, string $contents, Config $config): void
@@ -367,6 +367,11 @@ class LocalFilesystemAdapter implements FilesystemAdapter
     {
         $location = $this->prefixer->prefixPath($path);
         error_clear_last();
+
+        if ( ! is_file($location)) {
+            throw UnableToRetrieveMetadata::mimeType($location, 'No such file exists.');
+        }
+
         $mimeType = $this->mimeTypeDetector->detectMimeTypeFromFile($location);
 
         if ($mimeType === null) {

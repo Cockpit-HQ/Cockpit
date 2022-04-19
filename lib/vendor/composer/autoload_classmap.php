@@ -412,6 +412,7 @@ return array(
     'League\\Flysystem\\FilesystemWriter' => $vendorDir . '/league/flysystem/src/FilesystemWriter.php',
     'League\\Flysystem\\InvalidStreamProvided' => $vendorDir . '/league/flysystem/src/InvalidStreamProvided.php',
     'League\\Flysystem\\InvalidVisibilityProvided' => $vendorDir . '/league/flysystem/src/InvalidVisibilityProvided.php',
+    'League\\Flysystem\\Local\\FallbackMimeTypeDetector' => $vendorDir . '/league/flysystem/src/Local/FallbackMimeTypeDetector.php',
     'League\\Flysystem\\Local\\LocalFilesystemAdapter' => $vendorDir . '/league/flysystem/src/Local/LocalFilesystemAdapter.php',
     'League\\Flysystem\\MountManager' => $vendorDir . '/league/flysystem/src/MountManager.php',
     'League\\Flysystem\\PathNormalizer' => $vendorDir . '/league/flysystem/src/PathNormalizer.php',
