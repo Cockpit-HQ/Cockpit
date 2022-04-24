@@ -1,0 +1,34 @@
+
+kiss-carousel,
+kiss-slides {
+    display: block;
+    position: relative;
+}
+
+kiss-slides {
+    overflow: hidden;
+}
+
+kiss-slide {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    opacity: 0;
+    pointer-events: none;
+}
+
+kiss-slide.active {
+    pointer-events: auto;
+    opacity: 1;
+}
+
+kiss-slide.visible {
+    opacity: 1;
+}
+
+[kiss-slide] {
+    user-select: none;
+    -webkit-user-select: none;
+}

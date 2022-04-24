@@ -1,4 +1,4 @@
-customElements.define('app-tabs', class extends HTMLElement {
+customElements.define('kiss-tabs', class extends HTMLElement {
 
     static get observedAttributes() {
         return [];
@@ -18,13 +18,13 @@ customElements.define('app-tabs', class extends HTMLElement {
 
         this.nav = document.createElement("ul");
 
-        this.nav.classList.add('app-tabs-nav');
+        this.nav.classList.add('kiss-tabs-nav');
         this.prepend(this.nav);
 
         this.render();
 
         this.addEventListener('click', e => {
-            if (!e.target.classList.contains('app-tabs-nav-link')) return;
+            if (!e.target.classList.contains('kiss-tabs-nav-link')) return;
             this.setIndex(e.target.getAttribute('index'));
             e.preventDefault();
         })
@@ -62,7 +62,7 @@ customElements.define('app-tabs', class extends HTMLElement {
             if (this.children[i].tagName.toLowerCase() == 'tab') {
 
                 item = document.createElement("li");
-                item.innerHTML = `<a class="app-tabs-nav-link" index="${this.tabs.length}">${this.children[i].getAttribute('caption') || 'Tab'}</a>`
+                item.innerHTML = `<a class="kiss-tabs-nav-link" index="${this.tabs.length}">${this.children[i].getAttribute('caption') || 'Tab'}</a>`
                 this.nav.append(item);
 
                 this.tabs.push(this.children[i]);

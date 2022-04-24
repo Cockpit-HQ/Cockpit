@@ -1,0 +1,20 @@
+kiss-accordion {
+    display: block;
+}
+
+kiss-accordion > kiss-content {
+    display: block;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.25s ease-in-out;
+}
+
+kiss-accordion-trigger {
+    display: block;
+    cursor: pointer;
+    font-weight: var(--kiss-accordion-trigger-font-weight, bold);
+}
+
+kiss-accordion-trigger[active="true"] + kiss-content {
+    max-height: 100vh;
+}

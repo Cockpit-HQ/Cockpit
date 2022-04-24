@@ -1,16 +1,16 @@
-app-tabs {
+kiss-tabs {
     display: block;
 }
 
-app-tabs tab {
+kiss-tabs tab {
     display: none;
 }
 
-app-tabs tab[active="true"] {
+kiss-tabs tab[active="true"] {
     display: block;
 }
 
-.app-tabs-nav {
+.kiss-tabs-nav {
     display: flex;
     list-style: none;
     padding: 0;
@@ -18,11 +18,11 @@ app-tabs tab[active="true"] {
     margin: 0 0 20px 0;
 }
 
-.app-tabs-nav-link:hover {
+.kiss-tabs-nav-link:hover {
     color: inherit;
 }
 
-.app-tabs-nav-link {
+.kiss-tabs-nav-link {
     display: block;
     position: relative;
     font-size: .8em;
@@ -35,12 +35,13 @@ app-tabs tab[active="true"] {
     opacity: .5;
 }
 
-[active="true"] .app-tabs-nav-link {
+[active="true"] .kiss-tabs-nav-link {
     opacity: 1;
+    color: var(--kiss-tabs-active-color, inherit);
     font-weight: bold;
 }
 
-[active="true"] .app-tabs-nav-link:after {
+[active="true"] .kiss-tabs-nav-link:after {
     content: "";
     position: absolute;
     left: 0;
@@ -49,6 +50,6 @@ app-tabs tab[active="true"] {
     border-bottom: 1px currentColor solid;
 }
 
-.app-tabs-nav-link > * {
+.kiss-tabs-nav-link > * {
     pointer-events: none;
 }
