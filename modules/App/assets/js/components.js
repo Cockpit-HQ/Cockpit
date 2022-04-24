@@ -6,7 +6,6 @@ import "../components/app-fieldcontainer/app-fieldcontainer.js";
 import "../components/app-frame/app-frame.js";
 import "../components/app-loader/app-loader.js";
 import "../components/app-scrollcontainer/app-scrollcontainer.js";
-import "../components/app-tabs/app-tabs.js";
 
 // General
 VueView.component('vue-draggable', Vue.defineAsyncComponent(() => {

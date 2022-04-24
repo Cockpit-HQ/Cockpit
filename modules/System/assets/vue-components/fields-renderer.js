@@ -351,16 +351,16 @@ export default {
     template: /*html*/`
         <div class="fields-renderer" :nested="nested">
 
-            <app-tabs class="kiss-margin-large-bottom" static="true" v-if="groups.length">
-                <ul class="app-tabs-nav">
+            <kiss-tabs class="kiss-margin-large-bottom" static="true" v-if="groups.length">
+                <ul class="kiss-tabs-nav">
                     <li :active="group === null">
-                        <a class="app-tabs-nav-link" @click="group = null">{{t('All')}}</a>
+                        <a class="kiss-tabs-nav-link" @click="group = null">{{t('All')}}</a>
                     </li>
                     <li :active="group == name" v-for="name in groups">
-                        <a class="app-tabs-nav-link" @click="group = name">{{ name }}</a>
+                        <a class="kiss-tabs-nav-link" @click="group = name">{{ name }}</a>
                     </li>
                 </ul>
-            </app-tabs>
+            </kiss-tabs>
 
             <app-fieldcontainer class="kiss-margin" v-for="field in visibleFields">
                 <div>

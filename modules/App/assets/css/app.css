@@ -10,7 +10,6 @@
 @import "../components/app-frame/app-frame.css";
 @import "../components/app-loader/app-loader.css";
 @import "../components/app-scrollcontainer/app-scrollcontainer.css";
-@import "../components/app-tabs/app-tabs.css";
 
 @import "../vendor/kiss/lib.css";
 @import "./vendor/kiss.css";
@@ -78,7 +77,7 @@ html[data-theme='light'] .kiss-bgcolor-transparentimage {
     background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
 }
 
-html[data-theme='light'] [active="true"] .app-tabs-nav-link:after {
+html[data-theme='light'] [active="true"] .kiss-tabs-nav-link:after {
     border-color: var(--kiss-color-primary);
     border-width: 2px;
 }

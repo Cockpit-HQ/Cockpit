@@ -53,23 +53,24 @@ class Cursor implements \Iterator {
 
             if (!$op) continue;
 
-            if ($op == '$match') {
-                $fn = null;
-                eval('$fn = function($document) { return ' . UtilArrayQuery::buildCondition($stage['$match']) . '; };');
-                $data = array_filter($data, $fn);
-                continue;
-            }
+            switch ($op) {
 
-            if ($op == '$skip') {
-                $data = array_slice($data, intval($stage['$skip']));
-                continue;
-            }
+                case '$match':
+                    $fn = null;
+                    eval('$fn = function($document) { return ' . UtilArrayQuery::buildCondition($stage['$match']) . '; };');
+                    $data = array_filter($data, $fn);
+                    break;
 
-            if ($op == '$limit') {
-                $data = array_slice($data, 0, intval($stage['$limit']));
-                continue;
+                case '$skip':
+                    $data = array_slice($data, intval($stage['$skip']));
+                    break;
+                case '$limit':
+                    $data = array_slice($data, 0, intval($stage['$limit']));
+                    break;
+                case '$sort':
+                    usort($data, $this->make_cmp($stage['$sort']));
+                    break;
             }
-
         }
 
         return $data;
@@ -109,5 +110,21 @@ class Cursor implements \Iterator {
         return isset($this->data[$this->position]);
     }
 
+    protected function make_cmp(array $sortValues): \Closure {
+
+        return function ($a, $b) use (&$sortValues) {
+
+            foreach ($sortValues as $column => $sortDir) {
+
+                $diff = strcmp($a[$column], $b[$column]);
+
+                if ($diff !== 0) {
+                    return 1 === $sortDir ? $diff : $diff * -1;
+                }
+            }
+
+            return 0;
+        };
+    }
 
 }

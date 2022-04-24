@@ -82,7 +82,7 @@
 
                 <div class="kiss-margin kiss-margin-large-top">
 
-                    <app-tabs class="kiss-margin-large">
+                    <kiss-tabs class="kiss-margin-large">
                         <tab :caption="t('Fields')">
                             <fields-manager class="kiss-margin" v-model="model.fields"></fields-manager>
                         </tab>
@@ -135,7 +135,7 @@
                                 <field-boolean class="kiss-size-large" v-model="model.revisions"></field-boolean>
                             </div>
                         </tab>
-                    </app-tabs>
+                    </kiss-tabs>
                 </div>
 
                 <app-actionbar>

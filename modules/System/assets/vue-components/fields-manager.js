@@ -202,7 +202,7 @@ let FieldsManager = {
                             </kiss-card>
                         </div>
 
-                        <app-tabs class="kiss-margin-large">
+                        <kiss-tabs class="kiss-margin-large">
                             <tab :caption="t('General')">
 
                                 <div class="kiss-margin">
@@ -260,7 +260,7 @@ let FieldsManager = {
                                     <div class="kiss-size-small kiss-color-muted kiss-margin-small-top">{{ t('Show or hide field based on a condition') }}</div>
                                 </div>
                             </tab>
-                        </app-tabs>
+                        </kiss-tabs>
 
 
                         <div class="kiss-margin-large-top kiss-flex kiss-flex-right">

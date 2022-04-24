@@ -28,7 +28,7 @@
 
             </kiss-card>
 
-            <app-tabs>
+            <kiss-tabs>
 
                 <tab class="kiss-margin animated fadeIn" caption="<?=t('App')?>">
 
@@ -87,7 +87,7 @@
 
                 </tab>
 
-            </app-tabs>
+            </kiss-tabs>
 
         </template>
 

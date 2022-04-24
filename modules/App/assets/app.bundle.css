@@ -2240,52 +2240,6 @@ app-scrollcontainer {
     display: block;
     overflow: auto;
 }
-app-tabs {
-    display: block;
-}
-app-tabs tab {
-    display: none;
-}
-app-tabs tab[active="true"] {
-    display: block;
-}
-.app-tabs-nav {
-    display: flex;
-    list-style: none;
-    padding: 0;
-    justify-content: center;
-    margin: 0 0 20px 0;
-}
-.app-tabs-nav-link:hover {
-    color: inherit;
-}
-.app-tabs-nav-link {
-    display: block;
-    position: relative;
-    font-size: .8em;
-    line-height: inherit;
-    letter-spacing: .015em;
-    text-decoration: none;
-    text-transform: uppercase;
-    color: inherit;
-    padding: 8px 12px;
-    opacity: .5;
-}
-[active="true"] .app-tabs-nav-link {
-    opacity: 1;
-    font-weight: bold;
-}
-[active="true"] .app-tabs-nav-link:after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    border-bottom: 1px currentColor solid;
-}
-.app-tabs-nav-link > * {
-    pointer-events: none;
-}
 html,
 body {
     margin: 0;
@@ -2408,6 +2362,23 @@ th {
     text-shadow: none;
 }
 template { display: none; }
+kiss-accordion {
+    display: block;
+}
+kiss-accordion > kiss-content {
+    display: block;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.25s ease-in-out;
+}
+kiss-accordion-trigger {
+    display: block;
+    cursor: pointer;
+    font-weight: var(--kiss-accordion-trigger-font-weight, bold);
+}
+kiss-accordion-trigger[active="true"] + kiss-content {
+    max-height: 100vh;
+}
 .kiss-button {
     margin: 0;
     border: none;
@@ -2548,6 +2519,34 @@ kiss-card[hover] {
 kiss-card[hover*="shadow"]:hover {
     box-shadow: 0 25px 80px rgba(0,0,0,0.12), 0 3px 12px rgba(0,0,0,0.05);
     z-index: 1;
+}
+kiss-carousel,
+kiss-slides {
+    display: block;
+    position: relative;
+}
+kiss-slides {
+    overflow: hidden;
+}
+kiss-slide {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    opacity: 0;
+    pointer-events: none;
+}
+kiss-slide.active {
+    pointer-events: auto;
+    opacity: 1;
+}
+kiss-slide.visible {
+    opacity: 1;
+}
+[kiss-slide] {
+    user-select: none;
+    -webkit-user-select: none;
 }
 [kiss-container],
 kiss-container {
@@ -2924,6 +2923,53 @@ kiss-svg:not([preserve]) [stroke*='#']:not(.kiss-preserve) { stroke: currentcolo
  * Fix Firefox blurry SVG rendering: https://bugzilla.mozilla.org/show_bug.cgi?id=1046835
  */
 kiss-svg > svg { transform: translate(0,0); }
+kiss-tabs {
+    display: block;
+}
+kiss-tabs tab {
+    display: none;
+}
+kiss-tabs tab[active="true"] {
+    display: block;
+}
+.kiss-tabs-nav {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    justify-content: center;
+    margin: 0 0 20px 0;
+}
+.kiss-tabs-nav-link:hover {
+    color: inherit;
+}
+.kiss-tabs-nav-link {
+    display: block;
+    position: relative;
+    font-size: .8em;
+    line-height: inherit;
+    letter-spacing: .015em;
+    text-decoration: none;
+    text-transform: uppercase;
+    color: inherit;
+    padding: 8px 12px;
+    opacity: .5;
+}
+[active="true"] .kiss-tabs-nav-link {
+    opacity: 1;
+    color: var(--kiss-tabs-active-color, inherit);
+    font-weight: bold;
+}
+[active="true"] .kiss-tabs-nav-link:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    border-bottom: 1px currentColor solid;
+}
+.kiss-tabs-nav-link > * {
+    pointer-events: none;
+}
 kiss-tooltip {
     display: block;
     position:fixed;
@@ -4162,7 +4208,7 @@ html[data-theme='light'] .kiss-bgcolor-transparentimage {
     background-size: 20px 20px;
     background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
 }
-html[data-theme='light'] [active="true"] .app-tabs-nav-link:after {
+html[data-theme='light'] [active="true"] .kiss-tabs-nav-link:after {
     border-color: var(--kiss-color-primary);
     border-width: 2px;
 }

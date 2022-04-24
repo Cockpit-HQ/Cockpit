@@ -49,7 +49,7 @@ let editItem = {
 
             <div class="kiss-size-4 kiss-text-bold kiss-margin-bottom">{{ t('Edit item') }}</div>
 
-            <app-tabs class="kiss-margin-large">
+            <kiss-tabs class="kiss-margin-large">
 
                 <tab :caption="t('General')">
 
@@ -71,7 +71,7 @@ let editItem = {
                 <tab :caption="t('Meta')">
                     <field-object v-model="data.meta"></field-object>
                 </tab>
-            </app-tabs>
+            </kiss-tabs>
 
             <div class="kiss-margin-top kiss-flex kiss-flex-middle kiss-button-group">
                 <button type="button" class="kiss-button kiss-flex-1" @click="$close()">{{ t('Cancel') }}</button>
