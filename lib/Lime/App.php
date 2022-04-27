@@ -311,7 +311,7 @@ class App implements \ArrayAccess {
             $path = $this->routeUrl($path);
         }
 
-        $this->response->status = 302;
+        $this->response->status = 307;
         $this->response->headers['Location'] = $path;
 
         $this->stop();
@@ -869,6 +869,12 @@ class App implements \ArrayAccess {
         $this->trigger('after');
 
         if ($flush) {
+
+            if ($this->response->status === 307 && isset($this->response->headers['Location'])) {
+                header("Location: {$this->response->headers['Location']}");
+                exit;
+            }
+
             $this->response->flush();
         }
 
