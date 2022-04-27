@@ -116,7 +116,7 @@ class Assets extends App {
         \session_write_close();
 
         if (!$this->isAllowed('assets/edit')) {
-            $this->stop(['error' => 'Editing not allowed'], 401);
+            return $this->stop(['error' => 'Editing not allowed'], 401);
         }
 
         if ($asset = $this->param('asset', false)) {
@@ -131,7 +131,7 @@ class Assets extends App {
         \session_write_close();
 
         if (!$this->isAllowed('assets/upload')) {
-            $this->stop(['error' => 'Upload not allowed'], 401);
+            return $this->stop(['error' => 'Upload not allowed'], 401);
         }
 
         $meta = ['folder' => $this->param('folder', '')];
@@ -144,7 +144,7 @@ class Assets extends App {
         \session_write_close();
 
         if (!$this->isAllowed('assets/upload')) {
-            $this->stop(['error' => 'Upload not allowed'], 401);
+            return $this->stop(['error' => 'Upload not allowed'], 401);
         }
 
         if (!$this->param('assetId')) {
@@ -186,7 +186,7 @@ class Assets extends App {
         \session_write_close();
 
         if (!$this->isAllowed('assets/delete')) {
-            $this->stop(['error' => 'Deleting assets not allowed'], 401);
+            return $this->stop(['error' => 'Deleting assets not allowed'], 401);
         }
 
         if ($assets = $this->param('assets', false)) {
@@ -231,7 +231,7 @@ class Assets extends App {
     public function removeFolder() {
 
         if (!$this->isAllowed('assets/folders/delete')) {
-            $this->stop(['error' => 'Deleting folders not allowed'], 401);
+            return $this->stop(['error' => 'Deleting folders not allowed'], 401);
         }
 
         $folder = $this->param('folder');

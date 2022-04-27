@@ -10,7 +10,7 @@ class Api extends App {
     protected function before() {
 
         if (!$this->isAllowed('app/api/manage')) {
-            $this->stop(401);
+            return $this->stop(401);
         }
     }
 

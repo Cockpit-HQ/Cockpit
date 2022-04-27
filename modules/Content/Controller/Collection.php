@@ -21,7 +21,7 @@ class Collection extends App {
         }
 
         if (!$this->isAllowed("content/{$model['name']}/read")) {
-            $this->stop(401);
+            return $this->stop(401);
         }
 
         $fields = $model['fields'];
@@ -53,7 +53,7 @@ class Collection extends App {
         }
 
         if (!$this->isAllowed("content/{$model['name']}/read")) {
-            $this->stop(401);
+            return $this->stop(401);
         }
 
         $item = $this->module('content')->getDefaultModelItem($model['name']);
@@ -166,7 +166,7 @@ class Collection extends App {
         }
 
         if (!$this->isAllowed("content/{$model['name']}/delete")) {
-            $this->stop(401);
+            return $this->stop(401);
         }
 
         $this->app->module('content')->remove($model['name'], ['_id' => ['$in' => $ids]]);

@@ -11,7 +11,7 @@ class Users extends App {
         $isAccountView = $this->context['action'] == 'user' && !count($this->context['params']);
 
         if (!$isAccountView && !$this->isAllowed('app/users/manage')) {
-            $this->stop(401);
+            return $this->stop(401);
         }
     }
 
@@ -114,13 +114,13 @@ class Users extends App {
         $_user = $this->app->dataStorage->findOne('system/users', ['user' => $user['user']]);
 
         if ($_user && (!isset($user['_id']) || $user['_id'] != $_user['_id'])) {
-            $this->app->stop(['error' =>  'Username is already used!'], 412);
+            return $this->app->stop(['error' =>  'Username is already used!'], 412);
         }
 
         $_user = $this->app->dataStorage->findOne('system/users', ['email'  => $user['email']]);
 
         if ($_user && (!isset($user['_id']) || $user['_id'] != $_user['_id'])) {
-            $this->app->stop(['error' =>  'Email is already used!'], 412);
+            return $this->app->stop(['error' =>  'Email is already used!'], 412);
         }
         // --
 

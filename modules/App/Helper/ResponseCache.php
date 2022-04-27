@@ -51,12 +51,18 @@ class ResponseCache extends \Lime\Helper {
         if ($cache) {
 
             $this->app->on('before', function() use($cache) {
+
+                if (!isset($this->response)) {
+                    return;
+                }
+
                 $this->response->headers[] = 'APP_RSP_CACHE: true';
                 $this->response->mime = $cache['mime'] ?? 'text/html';
                 $this->response->body = $cache['contents'];
                 $this->response->flush();
                 $this->trigger('app.response.cache.after');
-                $this->stop();
+
+                return $this->stop();
             });
 
             return true;

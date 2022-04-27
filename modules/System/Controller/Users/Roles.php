@@ -94,12 +94,12 @@ class Roles extends App {
         $_role = $this->app->dataStorage->findOne('system/roles', ['appid' => $role['appid']]);
 
         if ($_role && (!isset($role['_id']) || $role['_id'] != $_role['_id'])) {
-            $this->app->stop(['error' => 'appid is already used!'], 412);
+            return $this->app->stop(['error' => 'appid is already used!'], 412);
         }
 
         // admin role is protected (superadmin)
         if ($role['appid'] == 'admin') {
-            $this->app->stop(['error' => 'appid is already used!'], 412);
+            return $this->app->stop(['error' => 'appid is already used!'], 412);
         }
 
         // cleanup permissions

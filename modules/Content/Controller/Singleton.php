@@ -21,7 +21,7 @@ class Singleton extends App {
         }
 
         if (!$this->isAllowed("content/{$model['name']}/read")) {
-            $this->stop(401);
+            return $this->stop(401);
         }
 
         $item = $this->module('content')->item($model['name']);

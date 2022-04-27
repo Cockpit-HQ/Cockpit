@@ -27,7 +27,7 @@ $this->bind('/app-event-stream', function() {
     $user = $this->helper('auth')->getUser();
 
     if (!$user) {
-        $this->stop(404);
+        return $this->stop(404);
     }
 
     $sessionId = md5(session_id());

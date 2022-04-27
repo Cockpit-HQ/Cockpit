@@ -9,7 +9,7 @@ class Logs extends App {
     protected function before() {
 
         if (!$this->isAllowed('app/logs')) {
-            $this->stop(401);
+            return $this->stop(401);
         }
     }
 

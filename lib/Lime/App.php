@@ -41,8 +41,6 @@ class App implements \ArrayAccess {
     protected array $events   = [];
     protected array $blocks   = [];
 
-    protected bool $exit = false;
-
     /** @var Response|null  */
     public ?Response $response = null;
 
@@ -201,8 +199,6 @@ class App implements \ArrayAccess {
     */
     public function stop(mixed $data = null, ?int $status = null): void {
 
-        $this->exit = true;
-
         if (!isset($this->response)) {
 
             if (\is_array($data) || \is_object($data)) {
@@ -213,11 +209,13 @@ class App implements \ArrayAccess {
                 echo $data;
             }
 
+            $this->trigger('after', [true]);
+
             exit;
         }
 
         if ($status) {
-           $this->response->status = $status;
+            $this->response->status = $status;
         }
 
         if ($data) {
@@ -235,21 +233,7 @@ class App implements \ArrayAccess {
             }
         }
 
-        $this->trigger('after', [true]);
-
-        if ($data || $status) {
-            echo $this->response->flush();
-        }
-
-        exit;
-    }
-
-    /**
-    * Is application stopped?
-    * @return boolean
-    */
-    public function isExit(): bool {
-        return $this->exit;
+        $this->request->stopped = true;
     }
 
     /**
@@ -327,7 +311,9 @@ class App implements \ArrayAccess {
             $path = $this->routeUrl($path);
         }
 
-        \header('Location: '.$path);
+        $this->response->status = 302;
+        $this->response->headers['Location'] = $path;
+
         $this->stop();
     }
 
@@ -654,13 +640,13 @@ class App implements \ArrayAccess {
     * @param  String $charset
     * @return String
     */
-    public function escape(string $string, ?string $charset = null): string {
+    public function escape(?string $string, ?string $charset = null): string {
 
         if (\is_null($charset)){
             $charset = $this['charset'];
         }
 
-        return \htmlspecialchars($string, \ENT_QUOTES, $charset);
+        return \htmlspecialchars($string ?? '', \ENT_QUOTES, $charset);
     }
 
     /**
@@ -866,9 +852,17 @@ class App implements \ArrayAccess {
 
         $this->response = new Response();
         $this->trigger('before');
-        $this->response->body = $this->dispatch($route);
 
-        if ($this->response->body === false) {
+        if (!$this->request->stopped) {
+
+            $contents = $this->dispatch($route);
+
+            if (!$this->request->stopped) {
+                $this->response->body = $contents;
+            }
+        }
+
+        if ($this->response->status == 200 && $this->response->body === false) {
             $this->response->status = 404;
         }
 

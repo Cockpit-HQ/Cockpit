@@ -20,6 +20,8 @@ class Request {
     public string $route = '/';
     public string $method = 'GET';
 
+    public bool $stopped = false;
+
     public static function fromGlobalRequest(array $config = []): self {
 
         $config = array_merge([

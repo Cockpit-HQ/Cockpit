@@ -13,7 +13,7 @@ class Settings extends App {
     public function info() {
 
         if (!$this->isAllowed('app/system/info')) {
-            $this->stop(401);
+            return $this->stop(401);
         }
 
         return $this->render('system:views/info.php');

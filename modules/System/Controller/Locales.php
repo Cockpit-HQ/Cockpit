@@ -10,7 +10,7 @@ class Locales extends App {
     protected function before() {
 
         if (!$this->isAllowed('app/locales/manage')) {
-            $this->stop(401);
+            return $this->stop(401);
         }
     }
 
@@ -103,7 +103,7 @@ class Locales extends App {
         $_locale = $this->app->dataStorage->findOne('system/locales', ['i18n' => $locale['i18n']]);
 
         if ($_locale && (!isset($locale['_id']) || $locale['_id'] != $_locale['_id'])) {
-            $this->app->stop(['error' => 'Locale is already used!'], 412);
+            return $this->app->stop(['error' => 'Locale is already used!'], 412);
         }
 
         $this->app->trigger('app.locales.save', [&$locale, $isUpdate]);

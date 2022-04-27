@@ -83,6 +83,6 @@ class Base extends \Lime\AppAware {
      *
      */
     protected function stop(mixed $data = null, mixed $status = null) {
-        $this->app->stop($data, $status);
+        return $this->app->stop($data, $status);
     }
 }

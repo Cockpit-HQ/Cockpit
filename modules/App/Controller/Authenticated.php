@@ -34,7 +34,7 @@ class Authenticated extends Base {
         $meta = null;
 
         if (!$this->helper('admin')->isResourceEditableByCurrentUser($resourceId, $meta)) {
-            $this->stop($this->render('app:views/lockedResouce.php', compact('meta', 'resourceId')), 200);
+            return $this->stop($this->render('app:views/lockedResouce.php', compact('meta', 'resourceId')), 200);
         }
 
         $this->helper('admin')->lockResourceId($resourceId);

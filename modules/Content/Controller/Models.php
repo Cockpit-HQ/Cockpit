@@ -10,7 +10,7 @@ class Models extends App {
     public function create() {
 
         if (!$this->isAllowed("content/models/manage")) {
-            $this->stop(401);
+            return $this->stop(401);
         }
 
         $type = $this->param('type', 'collection');
@@ -51,7 +51,7 @@ class Models extends App {
         }
 
         if (!$this->isAllowed("content/models/manage") && !$this->isAllowed("content/{$model['name']}/manage")) {
-            $this->stop(401);
+            return $this->stop(401);
         }
 
         // legacy model update
@@ -80,7 +80,7 @@ class Models extends App {
         }
 
         if (!$this->isAllowed("content/models/manage")) {
-            $this->stop(401);
+            return $this->stop(401);
         }
 
         $this->module('content')->removeModel($name);
@@ -98,7 +98,7 @@ class Models extends App {
         }
 
         if (!$this->isAllowed("content/models/manage") && !$this->isAllowed("content/{$model}/manage")) {
-            $this->stop(401);
+            return $this->stop(401);
         }
 
         if (!$isUpdate && $this->module('content')->exists($model['name'])) {
@@ -130,11 +130,11 @@ class Models extends App {
         $isUpdate = isset($item['_id']) && $item['_id'];
 
         if ($isUpdate && !$this->isAllowed("content/{$model['name']}/update")) {
-            $this->stop(401);
+            return $this->stop(401);
         }
 
         if (!$isUpdate && !$this->isAllowed("content/{$model['name']}/create")) {
-            $this->stop(401);
+            return $this->stop(401);
         }
 
         if (!$item) {
@@ -190,7 +190,7 @@ class Models extends App {
         }
 
         if (!$this->isAllowed("content/models/manage")) {
-            $this->stop(401);
+            return $this->stop(401);
         }
 
         $model = $this->module('content')->model($model);
