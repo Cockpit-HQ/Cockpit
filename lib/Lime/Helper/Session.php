@@ -40,4 +40,8 @@ class Session extends \Lime\Helper {
     public function destroy(): void {
         \session_destroy();
     }
+
+    public function regenerateId(bool $delete_old_session = false): bool {
+        return \session_regenerate_id(true);
+    }
 }

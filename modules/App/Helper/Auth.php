@@ -63,7 +63,7 @@ class Auth extends \Lime\Helper {
 
         if ($permanent) {
             // prevent session fixation attacks
-            session_regenerate_id(true);
+            $this->app->helper('session')->regenerateId(true);
             $this->app->helper('session')->write($this->sessionKey, $user);
         }
 
@@ -78,6 +78,6 @@ class Auth extends \Lime\Helper {
         $this->app->set($this->sessionKey, null);
 
         // prevent session fixation attacks
-        session_regenerate_id(true);
+        $this->app->helper('session')->regenerateId(true);
     }
 }
