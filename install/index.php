@@ -35,7 +35,9 @@ function ensureWritableStorageFolder($path) {
 $checks = array(
     'Php version >= 8.0.0'                              => (version_compare(PHP_VERSION, '8.0.0') >= 0),
     'Missing PDO extension with Sqlite support'         => hasSQLiteSupport(),
+    'Curl extension not available'                      => extension_loaded('curl'),
     'GD extension not available'                        => extension_loaded('gd'),
+    'OpenSSL extension not available'                   => extension_loaded('openssl'),
     'Data folder is not writable: /storage/data'        => ensureWritableStorageFolder('/data'),
     'Cache folder is not writable: /storage/cache'      => ensureWritableStorageFolder('/cache'),
     'Temp folder is not writable: /storage/tmp'         => ensureWritableStorageFolder('/tmp'),

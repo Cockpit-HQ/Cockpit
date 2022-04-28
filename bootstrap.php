@@ -65,7 +65,7 @@ class Cockpit {
             'app.name' => 'Cockpit',
             'app.version'  => APP_VERSION,
             'session.name' => md5($envDir),
-            'sec-key' => 'c3b40c4c-db44-s5h7-a814-b5931a15e5e1',
+            'sec-key' => 'c3b40c4c-db44-s5h7-a814-b5931a15e5e1', // change me in custom config
             'i18n' => 'en',
 
             'database' => [
@@ -88,6 +88,13 @@ class Cockpit {
                 '#cache'   => $envDir.'/storage/cache',
                 '#tmp'     => $envDir.'/storage/tmp',
                 '#uploads' => $envDir.'/storage/uploads',
+            ],
+
+            'response' => [
+                'cache' => [
+                    'handler' => 'memory',
+                    'duration' => 600,
+                ]
             ]
 
         ], $cfg ?? [], $config);
@@ -184,7 +191,11 @@ class Cockpit {
 
         // key-value storage
         $app->service('memory', function() use($config) {
-            $client = new MemoryStorage\Client($config['memory']['server'], $config['memory']['options']);
+
+            $client = new MemoryStorage\Client($config['memory']['server'], array_merge([
+                'key' => $config['sec-key']
+            ],$config['memory']['options']));
+
             return $client;
         });
 

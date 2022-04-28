@@ -5,6 +5,7 @@ namespace MemoryStorage;
 class Client {
 
     protected $driver;
+    protected $key;
 
     public function __construct(string $server, array $options = []) {
 
@@ -25,27 +26,81 @@ class Client {
                 $this->driver->setOption(\Redis::OPT_PREFIX, $options['prefix']);
             }
 
+            // select database
+            if (isset($options['db']) && is_numeric($options['db'])) {
+                $this->driver->select($options['db']);
+            }
+
             $this->driver->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_PHP);
 
         } elseif (strpos($server, 'redislite://')===0) {
             $this->driver = new \RedisLite(str_replace('redislite://', '', $server), $options);
         }
+
+        if (isset($options['key']) && is_string($options['key'])) {
+            $this->key = $options['key'];
+        }
     }
 
-    public function get(string $key, mixed $default = false): mixed {
+    public function flush(): void  {
+        $this->driver->flushdb();
+    }
 
-        $val = $this->driver->get($key);
+    public function get(string $key, mixed $default = null, bool $decrypt = false): mixed {
 
-        if ($val === false) {
-            return $default;
+        $value = $this->driver->get($key);
+
+        if ($value !== false && $decrypt) {
+            $value = $this->decrypt($value);
         }
 
-        return $val;
+        if ($value === false) {
+            return \is_callable($default) ? \call_user_func($default) : $default;
+        }
+
+        return $value;
     }
 
+    public function set(string $key, mixed $value, bool $encrypt = false): void {
+
+        if ($encrypt) {
+            $value = $this->encrypt($value);
+        }
+
+        $this->driver->set($key, $value);
+    }
+
+    protected function encrypt(mixed $value): string {
+
+        $str = json_encode($value);
+        $key = hash('sha256', $this->key, true);
+        $iv = openssl_random_pseudo_bytes(16);
+
+        $ciphertext = openssl_encrypt($str, 'AES-256-CBC', $key, OPENSSL_RAW_DATA, $iv);
+        $hash = hash_hmac('sha256', $ciphertext . $iv, $key, true);
+
+        return base64_encode($iv . $hash . $ciphertext);
+    }
+
+    protected function decrypt(string $value): mixed {
+
+        $value = base64_decode($value);
+
+        $iv = substr($value, 0, 16);
+        $hash = substr($value, 16, 32);
+        $ciphertext = substr($value, 48);
+        $key = hash('sha256', $this->key, true);
+
+        if (!hash_equals(hash_hmac('sha256', $ciphertext . $iv, $key, true), $hash)) {
+            return false;
+        }
+
+        return json_decode(openssl_decrypt($ciphertext, 'AES-256-CBC', $key, OPENSSL_RAW_DATA, $iv), true);
+    }
 
     public function __call($method, $args) {
 
         return call_user_func_array([$this->driver, $method], $args);
     }
+
 }

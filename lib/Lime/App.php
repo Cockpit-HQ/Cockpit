@@ -457,10 +457,10 @@ class App implements \ArrayAccess {
         $args = \func_get_args();
 
         switch(\count($args)){
-        case 1:
-            return $this->helper('cache')->read($args[0]);
-        case 2:
-            return $this->helper('cache')->write($args[0], $args[1]);
+            case 1:
+                return $this->helper('cache')->read($args[0]);
+            case 2:
+                return $this->helper('cache')->write($args[0], $args[1]);
         }
 
         return null;

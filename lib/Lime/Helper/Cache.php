@@ -22,7 +22,7 @@ class Cache extends \Lime\Helper {
         return $this->cachePath;
     }
 
-    public function write(string $key, mixed $value, int $duration = -1, $encrypt = false): void {
+    public function write(string $key, mixed $value, int $duration = -1, bool $encrypt = false): void {
 
         $expire = ($duration==-1) ? -1:(\time() + (\is_string($duration) ? \strtotime($duration):$duration));
 

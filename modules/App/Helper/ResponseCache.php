@@ -8,7 +8,7 @@ class ResponseCache extends \Lime\Helper {
 
     protected function initialize() {
 
-        if ($this->app->retrieve('responseCache/handler') == 'memory') {
+        if ($this->app->retrieve('response/cache/handler') == 'memory') {
             $this->cacheHandler = new ResponseCacheMemoryeHandler($this->app);
         } else {
             $this->cacheHandler = new ResponseCacheFileHandler($this->app);
@@ -35,7 +35,7 @@ class ResponseCache extends \Lime\Helper {
 
         $this->app->on('after', function() use($request, $cacheHandler) {
 
-            if ($this->response->status != 200) {
+            if ($request->stopped || $this->response->status != 200) {
                 return;
             }
 
@@ -56,10 +56,10 @@ class ResponseCache extends \Lime\Helper {
                     return;
                 }
 
-                $this->response->headers[] = 'APP_RSP_CACHE: true';
+                $this->response->headers['APP_RSP_CACHE'] = 'true';
                 $this->response->mime = $cache['mime'] ?? 'text/html';
                 $this->response->body = $cache['contents'];
-                $this->response->flush();
+
                 $this->trigger('app.response.cache.after');
 
                 return $this->stop();
@@ -80,7 +80,7 @@ class ResponseCacheFileHandler extends \Lime\AppAware {
 
         $this->app->fileStorage->write("cache://{$hash}", '<?php return '.var_export([
             'mime' => $response->mime,
-            'eol' => (time() + $this->retrieve('responseCache/duration', 60)),
+            'eol' => (time() + $this->retrieve('response/cache/duration', 60)),
             'contents' => is_object($response->body) ? json_decode(json_encode($response->body), true) : $response->body
         ], true ).';');
     }
@@ -113,7 +113,7 @@ class ResponseCacheMemoryeHandler extends \Lime\AppAware {
 
         $this->app->memory->set($hash, [
             'mime' => $response->mime,
-            'eol' => (time() + $this->retrieve('responseCache/duration', 60)),
+            'eol' => (time() + $this->retrieve('response/cache/duration', 60)),
             'contents' => is_object($response->body) ? json_decode(json_encode($response->body), true) : $response->body
         ]);
     }

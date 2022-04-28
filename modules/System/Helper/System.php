@@ -43,6 +43,7 @@ class System extends \Lime\Helper {
             $fs->removeEmptySubFolders($path);
         }
 
+        $this->app->memory->flush();
         $this->app->trigger('app.system.cache.flush');
 
         if (function_exists('opcache_reset')) {

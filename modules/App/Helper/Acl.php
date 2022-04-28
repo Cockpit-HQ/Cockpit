@@ -9,7 +9,7 @@ class Acl extends \Lime\Helper {
 
     protected function initialize() {
 
-        $this->roles = $this->app->helper('cache')->read('app.roles.permissions', function() {
+        $this->roles = $this->app->memory->get('app.roles.permissions', function() {
             return $this->cache();
         });
     }
@@ -65,7 +65,7 @@ class Acl extends \Lime\Helper {
             $cache[$role['appid']] = $role;
         }
 
-        $this->app->helper('cache')->write('app.roles.permissions', $cache);
+        $this->app->memory->set('app.roles.permissions', $cache);
 
         return $cache;
     }

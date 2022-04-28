@@ -40,6 +40,10 @@ class RedisLite {
         if (!isset($table['name'])) {
             $this->createTable();
         }
+
+        $this->connection->exec('PRAGMA journal_mode = MEMORY');
+        $this->connection->exec('PRAGMA synchronous = OFF');
+        $this->connection->exec('PRAGMA PAGE_SIZE = 4096');
     }
 
     protected function createTable() {
@@ -54,7 +58,7 @@ class RedisLite {
      * @param  mixed $default
      * @return mixed
      */
-    public function get(string $key, mixed $default = null): mixed {
+    public function get(string $key, mixed $default = false): mixed {
 
         $stmt = $this->connection->query("SELECT * FROM {$this->table} WHERE `key`='{$key}';");
 
