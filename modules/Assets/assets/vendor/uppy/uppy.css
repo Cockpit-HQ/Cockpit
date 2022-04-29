@@ -1608,7 +1608,6 @@
 .uppy-size--md .uppy-ProviderBrowser-headerBar {
   display: flex;
   align-items: center;
-  flex-direction: column;
 }
 [data-uppy-theme=dark] .uppy-ProviderBrowser-headerBar {
   background-color: #1f1f1f;
