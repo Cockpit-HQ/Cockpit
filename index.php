@@ -131,7 +131,7 @@ if (APP_API_REQUEST) {
 
 // init
 if (!APP_API_REQUEST) {
-    $app->helper('session')->init(request: $request);
+    $app->helper('session')->init();
     $app->trigger('app.admin.init');
 } else {
     $app->trigger('app.api.init');

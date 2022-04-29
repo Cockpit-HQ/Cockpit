@@ -1244,11 +1244,8 @@ class App implements \ArrayAccess {
 
 class AppAware {
 
-    /** @var App */
-    public $app;
-
-    /** @var Mixed */
-    public $context;
+    public App $app;
+    public mixed $context;
 
     public function __construct(App $app, mixed $context = null) {
         $this->app = $app;

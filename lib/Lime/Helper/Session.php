@@ -10,11 +10,12 @@ class Session extends \Lime\Helper {
     protected bool $initialized = false;
     public string $name;
 
-    public function init(?string $name = null, ?Request $request = null) {
+    public function init(?string $name = null) {
 
         if ($this->initialized) return;
 
-        if (!\strlen(\session_id())) {
+        if (\session_status() != PHP_SESSION_ACTIVE) {
+
             $this->name = $name ? $name : $this->app["session.name"];
 
             \session_name($this->name);

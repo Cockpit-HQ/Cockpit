@@ -5,6 +5,10 @@ namespace App\Helper;
 class Theme extends \Lime\Helper {
 
     protected array $vars;
+    protected ?string $title = null;
+    protected ?string $favicon = null;
+    protected ?string $logo = null;
+    protected ?string $pageClass = null;
 
     protected function initialize() {
 
@@ -16,15 +20,13 @@ class Theme extends \Lime\Helper {
 
     public function title(?string $newTitle = null): ?string {
 
-        static $customTitle;
-
         if ($newTitle) {
-            $customTitle = $newTitle;
+            $this->title = $newTitle;
             return null;
         }
 
-        if ($customTitle) {
-            return $customTitle;
+        if ($this->title) {
+            return $this->title;
         }
 
         return $this->app->retrieve('app.name');
@@ -32,11 +34,9 @@ class Theme extends \Lime\Helper {
 
     public function favicon(?string $url = null, ?string $color = null): ?string {
 
-        static $iconUrl;
-
         if ($url) {
-            $iconUrl = $this->pathToUrl($url);
-            $ext = \strtolower(\pathinfo($iconUrl, PATHINFO_EXTENSION));
+            $this->favicon = $this->pathToUrl($url);
+            $ext = \strtolower(\pathinfo($this->favicon, PATHINFO_EXTENSION));
 
             if ($ext != 'svg') {
                 return null;
@@ -46,14 +46,14 @@ class Theme extends \Lime\Helper {
                 $path = $this->app->path($url);
                 $svg = file_get_contents($path);
                 $svg = preg_replace('/fill="(.*?)"/', 'fill="'.$color.'"', $svg);
-                $iconUrl = 'data:image/svg+xml;base64,'.base64_encode($svg);
+                $this->favicon = 'data:image/svg+xml;base64,'.base64_encode($svg);
             }
 
             return null;
         }
 
-        if ($iconUrl) {
-            return $iconUrl;
+        if ($this->favicon) {
+            return $this->favicon;
         }
 
         if ($this->app->path('#config:favicon.png')) {
@@ -65,15 +65,13 @@ class Theme extends \Lime\Helper {
 
     public function logo(?string $url = null): ?string {
 
-        static $logo;
-
         if ($url) {
-            $logo = $this->pathToUrl($url);
+            $this->logo = $this->pathToUrl($url);
             return null;
         }
 
-        if ($logo) {
-            return $logo;
+        if ($this->logo) {
+            return $this->logo;
         }
 
         if ($this->app->path('#config:logo.svg')) {
@@ -114,14 +112,12 @@ class Theme extends \Lime\Helper {
 
     public function pageClass(?string $class = null) {
 
-        static $cls;
-
         if ($class) {
-            $cls = $class;
+            $this->pageClass = $class;
             return null;
         }
 
-        return $cls;
+        return $this->pageClass;
     }
 
     public function vars(...$args) {
