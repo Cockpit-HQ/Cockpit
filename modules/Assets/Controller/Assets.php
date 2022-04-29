@@ -17,7 +17,7 @@ class Assets extends App {
 
     public function assets() {
 
-        \session_write_close();
+        $this->helper('session')->close();
 
         $options = array_merge([
             'sort' => ['_created' => -1]
@@ -113,7 +113,7 @@ class Assets extends App {
 
     public function update() {
 
-        \session_write_close();
+        $this->helper('session')->close();
 
         if (!$this->isAllowed('assets/edit')) {
             return $this->stop(['error' => 'Editing not allowed'], 401);
@@ -128,7 +128,7 @@ class Assets extends App {
 
     public function upload() {
 
-        \session_write_close();
+        $this->helper('session')->close();
 
         if (!$this->isAllowed('assets/upload')) {
             return $this->stop(['error' => 'Upload not allowed'], 401);
@@ -141,7 +141,7 @@ class Assets extends App {
 
     public function replace() {
 
-        \session_write_close();
+        $this->helper('session')->close();
 
         if (!$this->isAllowed('assets/upload')) {
             return $this->stop(['error' => 'Upload not allowed'], 401);
@@ -183,7 +183,7 @@ class Assets extends App {
 
     public function remove() {
 
-        \session_write_close();
+        $this->helper('session')->close();
 
         if (!$this->isAllowed('assets/delete')) {
             return $this->stop(['error' => 'Deleting assets not allowed'], 401);
@@ -254,7 +254,7 @@ class Assets extends App {
 
     public function thumbnail($id = null) {
 
-        \session_write_close();
+        $this->helper('session')->close();
 
         $mime = $this->param('mime', 'auto');
 

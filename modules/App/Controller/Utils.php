@@ -6,7 +6,7 @@ class Utils extends App {
 
     public function generateToken($length = 20) {
 
-        \session_write_close();
+        $this->helper('session')->close();
 
         return ['token' => bin2hex(random_bytes($length))];
     }

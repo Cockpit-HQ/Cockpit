@@ -83,13 +83,6 @@ $app = Cockpit::instance($APP_SPACE_DIR, [
     'base_url' => $APP_BASE_URL
 ]);
 
-if (!APP_API_REQUEST) {
-    $app->helper('session')->init();
-    $app->trigger('app.admin.init');
-} else {
-    $app->trigger('app.api.init');
-}
-
 // handle exceptions
 $app->on('error', function($error) {
 
@@ -136,4 +129,13 @@ if (APP_API_REQUEST) {
     }
 }
 
+// init
+if (!APP_API_REQUEST) {
+    $app->helper('session')->init(request: $request);
+    $app->trigger('app.admin.init');
+} else {
+    $app->trigger('app.api.init');
+}
+
+// run app
 $app->trigger(APP_API_REQUEST ? 'app.api.request':'app.admin.request', [$request])->run($request->route, $request);

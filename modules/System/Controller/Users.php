@@ -157,7 +157,7 @@ class Users extends App {
 
     public function load() {
 
-        \session_write_close();
+        $this->helper('session')->close();
 
         $options = array_merge([
             'sort'   => ['user' => 1]
@@ -205,7 +205,7 @@ class Users extends App {
 
     public function getSecretQRCode($secret = null, $size = 150) {
 
-        \session_write_close();
+        $this->helper('session')->close();
 
         if (!$secret) {
             return false;

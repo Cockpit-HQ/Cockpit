@@ -9,7 +9,7 @@ class Utils extends App {
 
     public function user($id) {
 
-        \session_write_close();
+        $this->helper('session')->close();
 
         $user = $this->app->dataStorage->findOne('system/users', ['_id' => $id]);
 
@@ -18,7 +18,7 @@ class Utils extends App {
 
     public function revisions($oid) {
 
-        \session_write_close();
+        $this->helper('session')->close();
 
         $users = [];
         $limit = $this->param('limit:int', 50);

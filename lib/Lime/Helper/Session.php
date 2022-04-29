@@ -2,6 +2,7 @@
 
 namespace Lime\Helper;
 
+use Lime\Request;
 use function \Lime\fetch_from_array;
 
 class Session extends \Lime\Helper {
@@ -9,12 +10,12 @@ class Session extends \Lime\Helper {
     protected bool $initialized = false;
     public string $name;
 
-    public function init(?string $sessionname = null) {
+    public function init(?string $name = null, ?Request $request = null) {
 
         if ($this->initialized) return;
 
         if (!\strlen(\session_id())) {
-            $this->name = $sessionname ? $sessionname : $this->app["session.name"];
+            $this->name = $name ? $name : $this->app["session.name"];
 
             \session_name($this->name);
             \session_start();
@@ -39,6 +40,10 @@ class Session extends \Lime\Helper {
 
     public function destroy(): void {
         \session_destroy();
+    }
+
+    public function close(): void {
+        \session_write_close();
     }
 
     public function regenerateId(bool $delete_old_session = false): bool {

@@ -130,7 +130,7 @@ class Api extends App {
 
     public function load() {
 
-        \session_write_close();
+        $this->helper('session')->close();
 
         $keys = $this->app->dataStorage->find('system/api_keys', [
             'filter' => ['key' => ['$ne' => 'public']],
@@ -142,7 +142,7 @@ class Api extends App {
 
     public function openapi() {
 
-        \session_write_close();
+        $this->helper('session')->close();
 
         $paths = [(new \Symfony\Component\Finder\Finder())->files()->in(APP_DIR.'/modules')->notPath('#vendor#')];
 
@@ -174,7 +174,7 @@ class Api extends App {
 
     public function restApiViewer() {
 
-        \session_write_close();
+        $this->helper('session')->close();
 
         $bgColor = $this->param('bgColor');
         $primaryColor = $this->param('primaryColor');
@@ -189,7 +189,7 @@ class Api extends App {
 
     public function graphqlViewer() {
 
-        \session_write_close();
+        $this->helper('session')->close();
 
         $bgColor = $this->param('bgColor');
         $primaryColor = $this->param('primaryColor');

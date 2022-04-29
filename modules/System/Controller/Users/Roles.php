@@ -128,7 +128,7 @@ class Roles extends App {
 
     public function load() {
 
-        \session_write_close();
+        $this->helper('session')->close();
 
         $roles = $this->app->dataStorage->find('system/roles', [
             'sort' => ['name' => 1]

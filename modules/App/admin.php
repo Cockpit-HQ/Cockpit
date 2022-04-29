@@ -22,7 +22,7 @@ $this->bind('/app-event-stream', function() {
     $now = time();
     $lastCheck = $this->helper('session')->read('app.eventstream.lastcheck', $now);
 
-    session_write_close();
+    $this->helper('session')->close();
 
     $user = $this->helper('auth')->getUser();
 
@@ -109,7 +109,7 @@ $this->on('app.admin.request', function(Lime\Request $request) {
     $this->trigger('app.admin.i18n.load', [$locale, $this->helper('i18n')]);
 
     $this->bind('/app.i18n.data.js', function() use($locale) {
-        session_write_close();
+        $this->helper('session')->close();
         $this->response->mime = 'js';
         $data = $this->helper('i18n')->data($locale);
         return 'if (window.i18n) {

@@ -841,8 +841,11 @@ class App implements \ArrayAccess {
 
         $this->request = $request ?? $this->getRequestfromGlobals();
 
-        \register_shutdown_function(function() use($self){
-            \session_write_close();
+        \register_shutdown_function(function() use($self) {
+
+            if (\session_status() === \PHP_SESSION_ACTIVE) {
+                \session_write_close();
+            }
             $self->trigger('shutdown');
         });
 

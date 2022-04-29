@@ -86,7 +86,7 @@ class Collection extends App {
 
     public function find($model = null) {
 
-        \session_write_close();
+        $this->helper('session')->close();
 
         if (!$model) {
             return false;
@@ -152,7 +152,7 @@ class Collection extends App {
 
     public function remove($model = null) {
 
-        \session_write_close();
+        $this->helper('session')->close();
 
         $model = $this->module('content')->model($model);
         $ids = $this->param('ids');

@@ -120,7 +120,7 @@ class Locales extends App {
 
     public function load() {
 
-        \session_write_close();
+        $this->helper('session')->close();
 
         $locales = $this->app->dataStorage->find('system/locales', [
             'sort' => ['name' => 1]

@@ -36,7 +36,7 @@ class Logs extends App {
 
     public function load() {
 
-        \session_write_close();
+        $this->helper('session')->close();
 
         $options = array_merge([
             'sort' => ['timestamp' => -1]
