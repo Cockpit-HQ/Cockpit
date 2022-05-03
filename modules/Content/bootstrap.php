@@ -16,6 +16,10 @@ $this->on('app.api.request', function() {
 // content api
 $this->module('content')->extend([
 
+    // memoize data
+    '_models' => [],
+    '_refs' => [],
+
     'createModel' => function(string $name, array $data = []): mixed {
 
         if (!trim($name)) {
@@ -147,22 +151,16 @@ $this->module('content')->extend([
 
     'model' => function(string $name): mixed {
 
-        static $models; // cache
+        if (!isset($this->_models[$name])) {
 
-        if (is_null($models)) {
-            $models = [];
-        }
-
-        if (!isset($models[$name])) {
-
-            $models[$name] = false;
+            $this->_models[$name] = false;
 
             if ($path = $this->exists($name)) {
-                $models[$name] = include($path);
+                $this->_models[$name] = include($path);
             }
         }
 
-        return $models[$name];
+        return $this->_models[$name];
     },
 
     'getDefaultModelItem' => function(string $model): array {
@@ -406,25 +404,19 @@ $this->module('content')->extend([
 
     '_resolveContentRef' => function ($model, $_id, $process = []) {
 
-        static $cache;
-
-        if (null === $cache) {
-            $cache = [];
+        if (!isset($this->_refs[$model])) {
+            $this->_refs[$model] = [];
         }
 
-        if (!isset($cache[$model])) {
-            $cache[$model] = [];
-        }
+        if (!isset($this->_refs[$model][$_id])) {
+            $this->_refs[$model][$_id] = $this->item($model, ['_id' => $_id], null, $process);
 
-        if (!isset($cache[$model][$_id])) {
-            $cache[$model][$_id] = $this->item($model, ['_id' => $_id], null, $process);
-
-            if (is_null($cache[$model][$_id])) {
-                $cache[$model][$_id] = false;
+            if (is_null($this->_refs[$model][$_id])) {
+                $this->_refs[$model][$_id] = false;
             }
         }
 
-        return $cache[$model][$_id] ? $cache[$model][$_id] : null;
+        return $this->_refs[$model][$_id] ? $this->_refs[$model][$_id] : null;
     },
 
     'updateRefs' => function(string $refId, mixed $value = null) {

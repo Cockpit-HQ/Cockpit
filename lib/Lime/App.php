@@ -1129,7 +1129,7 @@ class App implements \ArrayAccess {
 
             $module = new Module($this);
 
-            $module->_dir      = $dir;
+            $module->_dir = $dir;
             $module->_bootfile = "{$dir}/bootstrap.php";
 
             $this->path($name, $dir);
@@ -1280,15 +1280,19 @@ class Module extends AppAware {
 
     protected $apis = [];
 
+    public ?string $_dir = null;
+    public ?string $_bootfile = null;
+
     public function extend(array $api) {
 
         foreach ($api as $name => $value) {
 
             if ($value instanceof \Closure) {
                 $value = $value->bindTo($this, $this);
+                $this->apis[$name] = $value;
+            } else {
+                $this->{$name} = $value;
             }
-
-            $this->apis[$name] = $value;
         }
     }
 
@@ -1307,10 +1311,10 @@ class Module extends AppAware {
     }
 
     public function __set($name , $value) {
-        $this->extend(array($name => $value));
+        $this->extend([$name => $value]);
     }
     public function __get($name) {
-        return isset($this->apis[$name]) ? $this->apis[$name] :null;
+        return isset($this->apis[$name]) ? $this->apis[$name] : null;
     }
     public function __isset($name) {
         return isset($this->apis[$name]);
