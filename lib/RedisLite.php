@@ -27,7 +27,12 @@ class RedisLite {
      */
     public function __construct(string $path = ':memory:', array $options = []) {
 
-        $options = array_merge(['storagetable' => 'storage'], $options);
+        $options = array_merge([
+            'storagetable' => 'storage',
+            PDO::ATTR_TIMEOUT => 60,
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        ], $options);
+
         $dns     = "sqlite:{$path}";
 
         $this->path  = $path;
@@ -37,10 +42,13 @@ class RedisLite {
         $stmt  = $this->connection->query("SELECT name FROM sqlite_master WHERE type='table' AND name='{$this->table}';");
         $table = $stmt->fetch(\PDO::FETCH_ASSOC);
 
+        $stmt->closeCursor();
+
         if (!isset($table['name'])) {
             $this->createTable();
         }
 
+        // some sqlite optimisations
         $this->connection->exec('PRAGMA journal_mode = MEMORY');
         $this->connection->exec('PRAGMA synchronous = OFF');
         $this->connection->exec('PRAGMA PAGE_SIZE = 4096');
@@ -68,6 +76,8 @@ class RedisLite {
 
         $res = $stmt->fetch(\PDO::FETCH_ASSOC);
 
+        $stmt->closeCursor();
+
         return isset($res['key']) ? json_decode($res['keyval'], true) : $default;
     }
 
@@ -81,13 +91,17 @@ class RedisLite {
 
         $value = $this->connection->quote(json_encode($value, JSON_NUMERIC_CHECK));
 
-        if ($this->exists($key)) {
-            $sql = "UPDATE {$this->table} SET `keyval`={$value} WHERE `key`='{$key}'";
-        } else {
-            $sql = "INSERT INTO {$this->table} (`key`,`keyval`) VALUES ('{$key}',{$value})";
-        }
+        try {
 
-        $this->connection->exec($sql);
+            if ($this->exists($key)) {
+                $sql = "UPDATE {$this->table} SET `keyval`={$value} WHERE `key`='{$key}'";
+            } else {
+                $sql = "INSERT INTO {$this->table} (`key`,`keyval`) VALUES ('{$key}',{$value})";
+            }
+
+            $this->connection->exec($sql);
+
+        } catch (\PDOException $e) {}
     }
 
     /**
@@ -108,6 +122,8 @@ class RedisLite {
         $stmt = $this->connection->query("SELECT `key` FROM {$this->table} WHERE `key`='{$key}';");
         $res  = $stmt->fetch(\PDO::FETCH_ASSOC);
 
+        $stmt->closeCursor();
+
         return isset($res["key"]);
     }
 
@@ -122,6 +138,8 @@ class RedisLite {
         $keys = [];
         $stmt = $this->connection->query("SELECT `key` FROM {$this->table} ORDER BY `key`;");
         $res  = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        $stmt->closeCursor();
 
         if (!$pattern) {
 

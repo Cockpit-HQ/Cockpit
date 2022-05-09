@@ -20,7 +20,7 @@ export default {
                 return `<span class="kiss-badge kiss-badge-outline">Object</span>`
             }
 
-            let html = 'n/a', span = document.createElement('span');;
+            let html = 'n/a', span = document.createElement('span');
 
             try {
                 html = App.utils.interpolate(field.opts.display, {value});
