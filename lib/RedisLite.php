@@ -29,8 +29,8 @@ class RedisLite {
 
         $options = array_merge([
             'storagetable' => 'storage',
-            PDO::ATTR_TIMEOUT => 60,
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            \PDO::ATTR_TIMEOUT => 60,
+            \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
         ], $options);
 
         $dns     = "sqlite:{$path}";

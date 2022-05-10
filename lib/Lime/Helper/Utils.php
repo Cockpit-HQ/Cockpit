@@ -474,18 +474,26 @@ class Utils extends \Lime\Helper {
      * Execute callable with retry if it fails
      * @param  int $times
      * @param  callable $fn
+     * @param  int $delay
      * @return null
      */
-    public function retry(int $times, callable $fn): mixed {
+    public function retry(int $times, callable $fn, int $delay = 0): mixed {
 
         retrybeginning:
         try {
             return $fn();
         } catch (\Exception $e) {
+
             if (!$times) {
                 throw new \Exception($e->getMessage(), 0, $e);
             }
+
             $times--;
+
+            if ($delay) {
+                sleep($delay);
+            }
+
             goto retrybeginning;
         }
     }
