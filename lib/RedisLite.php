@@ -29,15 +29,20 @@ class RedisLite {
 
         $options = array_merge([
             'storagetable' => 'storage',
-            \PDO::ATTR_TIMEOUT => 60,
+            \PDO::ATTR_TIMEOUT => 0,
             \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
         ], $options);
 
-        $dns     = "sqlite:{$path}";
+        $dns = "sqlite:{$path}";
 
         $this->path  = $path;
         $this->table = $options['storagetable'];
         $this->connection = new \PDO($dns, null, null, $options);
+
+        // some sqlite optimisations
+        $this->connection->exec('PRAGMA journal_mode = MEMORY');
+        $this->connection->exec('PRAGMA synchronous = OFF');
+        $this->connection->exec('PRAGMA PAGE_SIZE = 4096');
 
         $stmt  = $this->connection->query("SELECT name FROM sqlite_master WHERE type='table' AND name='{$this->table}';");
         $table = $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -47,16 +52,11 @@ class RedisLite {
         if (!isset($table['name'])) {
             $this->createTable();
         }
-
-        // some sqlite optimisations
-        $this->connection->exec('PRAGMA journal_mode = MEMORY');
-        $this->connection->exec('PRAGMA synchronous = OFF');
-        $this->connection->exec('PRAGMA PAGE_SIZE = 4096');
     }
 
     protected function createTable() {
-        $this->connection->exec("CREATE TABLE {$this->table} (key VARCHAR PRIMARY KEY, keyval TEXT)");
-        $this->connection->exec("CREATE UNIQUE INDEX key_name on {$this->table} (key);");
+        $this->connection->exec("CREATE TABLE {$this->table} (key VARCHAR, keyval TEXT)");
+        $this->connection->exec("CREATE INDEX key_name on {$this->table} (key);");
     }
 
     /**
@@ -68,7 +68,7 @@ class RedisLite {
      */
     public function get(string $key, mixed $default = false): mixed {
 
-        $stmt = $this->connection->query("SELECT * FROM {$this->table} WHERE `key`='{$key}';");
+        $stmt = $this->connection->query("SELECT * FROM {$this->table} WHERE `key`='{$key}' LIMIT 1;");
 
         if (!$stmt) {
             return $default;
@@ -119,7 +119,7 @@ class RedisLite {
      */
     public function exists(string $key): bool {
 
-        $stmt = $this->connection->query("SELECT `key` FROM {$this->table} WHERE `key`='{$key}';");
+        $stmt = $this->connection->query("SELECT `key` FROM {$this->table} WHERE `key`='{$key}' LIMIT 1;");
         $res  = $stmt->fetch(\PDO::FETCH_ASSOC);
 
         $stmt->closeCursor();
