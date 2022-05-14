@@ -9,16 +9,23 @@ class Client {
 
     public function __construct(string $server, array $options = []) {
 
-        if (strpos($server, 'redis://')===0) {
+        if (strpos($server, 'redis://') === 0) {
 
-            $server = explode(':', str_replace('redis://', '', $server));
+            $uri = parse_url($server);
+
+            $options = array_merge([
+                'host' => $uri['host'],
+                'port' => $uri['port'] ?? 6379,
+                'auth' => null,
+                'timeout' => 1,
+            ], $options);
 
             $this->driver = new \Redis();
 
-            $this->driver->connect($server[0], @$server[1]);
-
-            if (isset($options['auth']) && $options['auth']) {
-                $this->driver->auth($options['auth']);
+            if (isset($options['auth'])) {
+                $this->driver->connect($options['host'], $options['port'], $options['timeout'], NULL, 0, 0, ['auth' => $options['auth']]);
+            } else {
+                $this->driver->connect($options['host'], $options['port'], $options['timeout'], NULL, 0, 0);
             }
 
             // use custom prefix on all keys
@@ -33,7 +40,7 @@ class Client {
 
             $this->driver->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_PHP);
 
-        } elseif (strpos($server, 'redislite://')===0) {
+        } elseif (strpos($server, 'redislite://') === 0) {
             $this->driver = new \RedisLite(str_replace('redislite://', '', $server), $options);
         }
 
