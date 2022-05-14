@@ -8,7 +8,7 @@ class Api extends \Lime\Helper {
 
     protected function initialize() {
 
-        $this->keys = $this->app['debug'] ? $this->cache() : $this->app->memory->get('app.api.keys', function() {
+        $this->keys = $this->app['debug'] ? $this->cache(false) : $this->app->memory->get('app.api.keys', function() {
             return $this->cache();
         });
     }
@@ -21,7 +21,7 @@ class Api extends \Lime\Helper {
         return array_keys($this->keys);
     }
 
-    public function cache(): array {
+    public function cache(bool $persistent = true): array {
 
         $cache = [];
         $keys = $this->app->dataStorage->find('system/api_keys')->toArray();
@@ -30,7 +30,9 @@ class Api extends \Lime\Helper {
             $cache[$key['key']] = $key;
         }
 
-        $this->app->memory->set('app.api.keys', $cache);
+        if ($persistent) {
+            $this->app->memory->set('app.api.keys', $cache);
+        }
 
         return $cache;
     }

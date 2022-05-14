@@ -7,7 +7,7 @@ class Locales extends \Lime\Helper {
 
     protected function initialize() {
 
-        $this->locales = $this->app['debug'] ? $this->cache() : $this->app->memory->get('app.locales', function() {
+        $this->locales = $this->app['debug'] ? $this->cache(false) : $this->app->memory->get('app.locales', function() {
             return $this->cache();
         });
     }
@@ -93,7 +93,7 @@ class Locales extends \Lime\Helper {
         return $obj;
     }
 
-    public function cache(): array {
+    public function cache(bool $persistent = true): array {
 
         $cache = [
             'default' => [
@@ -121,7 +121,7 @@ class Locales extends \Lime\Helper {
             $locales = null;
         }
 
-        if ($locales) {
+        if ($locales && $persistent) {
             $this->app->memory->set('app.locales', $cache);
         }
 
