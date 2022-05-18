@@ -25,17 +25,19 @@ class Query extends \Lime\AppAware {
 
         $handler = false;
         $params  = [];
+        $idx = $method;
 
         foreach ($this->endpoints as $pattern => $endpoint) {
 
-            if (isset($endpoint[$method]) && $this->isPathMatching($path, $pattern, $params)) {
-                $handler = $endpoint;
+            if ((isset($endpoint[$method]) || isset($endpoint['*'])) && $this->isPathMatching($path, $pattern, $params)) {
+                $idx = isset($endpoint[$method]) ? $method : '*';
+                $handler = $endpoint[$idx];
                 break;
             }
         }
 
-        if ($handler && \is_callable($handler[$method])) {
-            return \call_user_func($handler[$method], $params, $this->app);
+        if ($handler && \is_callable($handler)) {
+            return \call_user_func($handler, $params, $this->app);
         }
 
         // custom file based route

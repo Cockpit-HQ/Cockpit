@@ -8,7 +8,7 @@ class ResponseCache extends \Lime\Helper {
 
     protected function initialize() {
 
-        if ($this->app->retrieve('response/cache/handler') == 'memory') {
+        if ($this->app->retrieve('response/cache/handler', 'memory') == 'memory') {
             $this->cacheHandler = new ResponseCacheMemoryeHandler($this->app);
         } else {
             $this->cacheHandler = new ResponseCacheFileHandler($this->app);
