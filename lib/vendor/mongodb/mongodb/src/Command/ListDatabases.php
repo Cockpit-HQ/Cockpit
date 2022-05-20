@@ -54,8 +54,6 @@ class ListDatabases implements Executable
      *
      *  * filter (document): Query by which to filter databases.
      *
-     *    For servers < 3.6, this option is ignored.
-     *
      *  * maxTimeMS (integer): The maximum amount of time to allow the query to
      *    run.
      *
@@ -64,8 +62,6 @@ class ListDatabases implements Executable
      *    information.
      *
      *  * session (MongoDB\Driver\Session): Client session.
-     *
-     *    Sessions are not supported for server versions < 3.6.
      *
      * @param array $options Command options
      * @throws InvalidArgumentException for parameter/option parsing errors
@@ -108,20 +104,14 @@ class ListDatabases implements Executable
     {
         $cmd = ['listDatabases' => 1];
 
-        if (isset($this->options['authorizedDatabases'])) {
-            $cmd['authorizedDatabases'] = $this->options['authorizedDatabases'];
-        }
-
         if (! empty($this->options['filter'])) {
             $cmd['filter'] = (object) $this->options['filter'];
         }
 
-        if (isset($this->options['maxTimeMS'])) {
-            $cmd['maxTimeMS'] = $this->options['maxTimeMS'];
-        }
-
-        if (isset($this->options['nameOnly'])) {
-            $cmd['nameOnly'] = $this->options['nameOnly'];
+        foreach (['authorizedDatabases', 'maxTimeMS', 'nameOnly'] as $option) {
+            if (isset($this->options[$option])) {
+                $cmd[$option] = $this->options[$option];
+            }
         }
 
         $cursor = $server->executeReadCommand('admin', new Command($cmd), $this->createOptions());

@@ -175,7 +175,7 @@ functions:
       params:
         script: |
           ${PREPARE_SHELL}
-          MONGODB_VERSION=${VERSION} ORCHESTRATION_FILE=${ORCHESTRATION_FILE} TOPOLOGY=${TOPOLOGY} AUTH=${AUTH} SSL=${SSL} STORAGE_ENGINE=${STORAGE_ENGINE} REQUIRE_API_VERSION=${REQUIRE_API_VERSION} sh ${DRIVERS_TOOLS}/.evergreen/run-orchestration.sh
+          MONGODB_VERSION=${VERSION} ORCHESTRATION_FILE=${ORCHESTRATION_FILE} TOPOLOGY=${TOPOLOGY} AUTH=${AUTH} SSL=${SSL} STORAGE_ENGINE=${STORAGE_ENGINE} LOAD_BALANCER=${LOAD_BALANCER} REQUIRE_API_VERSION=${REQUIRE_API_VERSION} sh ${DRIVERS_TOOLS}/.evergreen/run-orchestration.sh
     # run-orchestration generates expansion file with the MONGODB_URI for the cluster
     - command: expansions.update
       params:
@@ -203,16 +203,13 @@ functions:
     - command: shell.exec
       params:
         working_dir: "src"
-        shell: bash
-        script: |-
+        script: |
           ${PREPARE_SHELL}
-          export PROJECT=${PROJECT}
-          export SERVERLESS_DRIVERS_GROUP=${SERVERLESS_DRIVERS_GROUP}
-          export SERVERLESS_API_PUBLIC_KEY=${SERVERLESS_API_PUBLIC_KEY}
-          export SERVERLESS_API_PRIVATE_KEY=${SERVERLESS_API_PRIVATE_KEY}
-          export SERVERLESS_ATLAS_USER=${SERVERLESS_ATLAS_USER}
-          export SERVERLESS_ATLAS_PASSWORD=${SERVERLESS_ATLAS_PASSWORD}
-          bash ${PROJECT_DIRECTORY}/.evergreen/serverless/create-instance.sh
+          LOADBALANCED=ON \
+          SERVERLESS_DRIVERS_GROUP=${SERVERLESS_DRIVERS_GROUP} \
+          SERVERLESS_API_PUBLIC_KEY=${SERVERLESS_API_PUBLIC_KEY} \
+          SERVERLESS_API_PRIVATE_KEY=${SERVERLESS_API_PRIVATE_KEY} \
+          bash ${DRIVERS_TOOLS}/.evergreen/serverless/create-instance.sh
     - command: expansions.update
       params:
         file: src/serverless-expansion.yml
@@ -220,16 +217,15 @@ functions:
   "delete serverless instance":
     - command: shell.exec
       params:
-        shell: bash
-        script: |-
-          set -o errexit
-          export SERVERLESS_DRIVERS_GROUP=${SERVERLESS_DRIVERS_GROUP}
-          export SERVERLESS_API_PUBLIC_KEY=${SERVERLESS_API_PUBLIC_KEY}
-          export SERVERLESS_API_PRIVATE_KEY=${SERVERLESS_API_PRIVATE_KEY}
-          export SERVERLESS_ATLAS_USER=${SERVERLESS_ATLAS_USER}
-          export SERVERLESS_ATLAS_PASSWORD=${SERVERLESS_ATLAS_PASSWORD}
-          export SERVERLESS_INSTANCE_NAME=${SERVERLESS_INSTANCE_NAME}
-          bash ${PROJECT_DIRECTORY}/.evergreen/serverless/delete-instance.sh
+        script: |
+          # Only run if a serverless instance was started
+          if [ -n "${SERVERLESS_INSTANCE_NAME}" ]; then
+            SERVERLESS_DRIVERS_GROUP=${SERVERLESS_DRIVERS_GROUP} \
+            SERVERLESS_API_PUBLIC_KEY=${SERVERLESS_API_PUBLIC_KEY} \
+            SERVERLESS_API_PRIVATE_KEY=${SERVERLESS_API_PRIVATE_KEY} \
+            SERVERLESS_INSTANCE_NAME=${SERVERLESS_INSTANCE_NAME} \
+            bash ${DRIVERS_TOOLS}/.evergreen/serverless/delete-instance.sh
+          fi
 
   "run tests":
     - command: shell.exec
@@ -269,8 +265,7 @@ functions:
       type: test
       params:
         working_dir: "src"
-        shell: bash
-        script: |-
+        script: |
           ${PREPARE_SHELL}
           export MONGODB_IS_SERVERLESS=on
           export MONGODB_USERNAME=${SERVERLESS_ATLAS_USER}
@@ -396,6 +391,7 @@ post:
   # - func: "upload working dir"
   - func: "upload mo artifacts"
   - func: "upload test results"
+  - func: "delete serverless instance"
   - func: "stop load balancer"
   - func: "stop mongo-orchestration"
   - func: "cleanup"
@@ -494,10 +490,9 @@ tasks:
       tags: ["serverless"]
       commands:
         - func: "create serverless instance"
-          vars:
-            PROJECT: "mongo-php-library"
         - func: "run serverless tests"
-        - func: "delete serverless instance"
+          vars:
+            MONGODB_URI: "${SINGLE_ATLASPROXY_SERVERLESS_URI}"
 
     - name: "test-loadBalanced"
       tags: ["loadbalanced"]
@@ -505,13 +500,12 @@ tasks:
         - func: "bootstrap mongo-orchestration"
           vars:
             TOPOLOGY: "sharded_cluster"
+            LOAD_BALANCER: "true"
             SSL: "yes"
         - func: "start load balancer"
         - func: "start kms servers"
         - func: "run tests"
           vars:
-            # Testing with HAProxy requires service ID mocking
-            MOCK_SERVICE_ID: 1
             # Note: loadBalanced=true should already be appended to SINGLE_MONGOS_LB_URI
             MONGODB_URI: "${SINGLE_MONGOS_LB_URI}"
             SSL: "yes"
@@ -581,18 +575,6 @@ axes:
         display_name: "3.6"
         variables:
            VERSION: "3.6"
-      - id: "3.4"
-        display_name: "3.4"
-        variables:
-           VERSION: "3.4"
-      - id: "3.2"
-        display_name: "3.2"
-        variables:
-           VERSION: "3.2"
-      - id: "3.0"
-        display_name: "3.0"
-        variables:
-           VERSION: "3.0"
 
   - id: edge-versions
     display_name: MongoDB Version
@@ -602,23 +584,23 @@ axes:
         variables:
           VERSION: "5.0"
       - id: "oldest-supported"
-        display_name: "3.0"
+        display_name: "3.6"
         variables:
-          VERSION: "3.0"
+          VERSION: "3.6"
 
   - id: driver-versions
     display_name: Driver Version
     values:
       - id: "oldest-supported"
-        display_name: "1.12.0"
+        display_name: "1.13.0"
         variables:
-          EXTENSION_VERSION: "1.12.0"
+          EXTENSION_VERSION: "1.13.0"
       - id: "latest-stable"
-        display_name: "1.12.x"
+        display_name: "1.13.x"
         variables:
           EXTENSION_VERSION: "stable"
       - id: "latest-dev"
-        display_name: "1.13-dev (master)"
+        display_name: "1.14-dev (master)"
         variables:
           EXTENSION_BRANCH: "master"
 
@@ -767,7 +749,9 @@ buildvariants:
     - .serverless
 
 - matrix_name: "test-loadBalanced"
-  matrix_spec: { "versions": ["5.0", "latest"], "php-edge-versions": "latest-stable", "driver-versions": "latest-stable" }
+  # TODO: Add "5.2" server version alongside "latest" following its GA release
+  # TODO: Revert driver-version to latest-stable after PHPC 1.13.0 is released (for CDRIVER-4207)
+  matrix_spec: { "versions": "latest", "php-edge-versions": "latest-stable", "driver-versions": "latest-dev" }
   display_name: "Load balanced - ${versions}"
   run_on: debian92-test
   tasks:

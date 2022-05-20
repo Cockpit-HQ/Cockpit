@@ -44,14 +44,17 @@ class ListCollections implements Executable
      *
      * Supported options:
      *
+     *  * authorizedCollections (boolean): Determines which collections are
+     *    returned based on the user privileges.
+     *
+     *    For servers < 4.0, this option is ignored.
+     *
      *  * filter (document): Query by which to filter collections.
      *
      *  * maxTimeMS (integer): The maximum amount of time to allow the query to
      *    run.
      *
      *  * session (MongoDB\Driver\Session): Client session.
-     *
-     *    Sessions are not supported for server versions < 3.6.
      *
      * @param string $databaseName Database name
      * @param array  $options      Command options

@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '5713dc974e16c3bfc8c51007e08dda6f739743bc',
+    'reference' => 'b7a8572438036f589291d0894685868f8f565419',
     'name' => 'agentejo/cockpit',
   ),
   'versions' => 
@@ -18,7 +18,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '5713dc974e16c3bfc8c51007e08dda6f739743bc',
+      'reference' => 'b7a8572438036f589291d0894685868f8f565419',
     ),
     'bacon/bacon-qr-code' => 
     array (
@@ -76,12 +76,12 @@
     ),
     'firebase/php-jwt' => 
     array (
-      'pretty_version' => 'v6.1.2',
-      'version' => '6.1.2.0',
+      'pretty_version' => 'v6.2.0',
+      'version' => '6.2.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'c297139da7c6873dbd67cbd1093f09ec0bbd0c50',
+      'reference' => 'd28e6df83830252650da4623c78aaaf98fb385f3',
     ),
     'guzzlehttp/guzzle' => 
     array (
@@ -130,12 +130,12 @@
     ),
     'league/flysystem' => 
     array (
-      'pretty_version' => '3.0.18',
-      'version' => '3.0.18.0',
+      'pretty_version' => '3.0.19',
+      'version' => '3.0.19.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'c8e137e594948240b03372e012344b07c61b9193',
+      'reference' => '670df21225d68d165a8df38587ac3f41caf608f8',
     ),
     'league/mime-type-detection' => 
     array (
@@ -164,12 +164,12 @@
     ),
     'mongodb/mongodb' => 
     array (
-      'pretty_version' => '1.11.0',
-      'version' => '1.11.0.0',
+      'pretty_version' => '1.12.0',
+      'version' => '1.12.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'e4aa59ab15b6fe00a0e56b6772f8b515a0f01bf0',
+      'reference' => 'e4a7594ac4b31635fa77455c4038a7013024ba28',
     ),
     'phpmailer/phpmailer' => 
     array (
@@ -408,8 +408,8 @@
     ),
     'zircote/swagger-php' => 
     array (
-      'pretty_version' => '3.3.4',
-      'version' => '3.3.4.0',
+      'pretty_version' => '3.3.5',
+      'version' => '3.3.5.0',
       'aliases' => 
       array (
       ),
