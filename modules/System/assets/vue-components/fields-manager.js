@@ -14,6 +14,8 @@ let FieldsManager = {
             fieldTypes: null,
             field: null,
 
+            fieldTypeFilter: '',
+
             state: {
                 editField: false
             }
@@ -62,6 +64,24 @@ let FieldsManager = {
             })
 
             return _.uniq(groups).sort();
+        },
+
+        filteredFieledTypes() {
+
+            let meta = null, types = {};
+
+            Object.keys(this.fieldTypes).forEach(ft => {
+
+                meta = this.fieldTypes[ft]
+
+                if (this.fieldTypeFilter && !`${ft} ${meta.label || ''}`.toLocaleLowerCase().includes(this.fieldTypeFilter.toLocaleLowerCase())) {
+                    return;
+                }
+
+                types[ft] = meta;
+            });
+
+            return types;
         }
     },
 
@@ -285,11 +305,11 @@ let FieldsManager = {
                 <kiss-content class="kiss-width-1-2@m">
                         <div class="kiss-size-4 kiss-text-bold">{{ t('Select field type') }}</div>
                         <div class="kiss-margin">
-                            <input class="kiss-input kiss-width-1-1" :placeholder="t('Filter...')">
+                            <input class="kiss-input kiss-width-1-1" :placeholder="t('Filter...')" v-model="fieldTypeFilter">
                         </div>
                         <kiss-navlist kiss-popoutmenu-close="true" v-if="field">
                             <kiss-grid class="kiss-margin-top" cols="1@s 2@m 3@l" gap="small">
-                                <kiss-card class="kiss-padding-xsmall" hover="contrast" v-for="(f,fieldType) in fieldTypes">
+                                <kiss-card class="kiss-padding-xsmall" hover="contrast" v-for="(f,fieldType) in filteredFieledTypes">
                                     <kiss-row class="kiss-position-relative" gap="small">
                                         <div>
                                             <div class="kiss-padding-small app-border-radius" :style="{background: f.color || 'rgb(255, 248, 214)'}">
