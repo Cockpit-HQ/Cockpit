@@ -288,9 +288,9 @@
     display: inline-block;
     text-align: center;
     padding: 10px;
-    color: #ccc;
+    color: var(--kiss-color-muted);
     font-weight: bold;
-    font-size: 20px;
+    font-size: 16px;
     white-space: normal;
   }
 
@@ -299,6 +299,10 @@
     display: inline-block;
     white-space: nowrap;
     overflow: visible;
+  }
+
+  .tabulator .tabulator-tableholder .tabulator-table:empty {
+      display: none;
   }
 
   .tabulator .tabulator-tableholder .tabulator-table .tabulator-row.tabulator-calcs {

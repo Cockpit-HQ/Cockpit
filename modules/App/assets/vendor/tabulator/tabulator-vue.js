@@ -18,7 +18,11 @@ export default {
         },
         height: {
             type: String,
-            default: '250px'
+            default: '300px'
+        },
+        placeholder: {
+            type: String,
+            default: 'No data'
         }
     },
 
@@ -35,8 +39,8 @@ export default {
 
         //instantiate Tabulator when element is mounted
         this.tabulator = new Tabulator(this.$refs.table, {
-            layout:"fitDataFill",
-            renderVertical: 'basic',
+            layout: 'fitDataFill',
+            placeholder: this.placeholder,
             maxHeight: this.height,
             movableRows: true,
             data: this.rows,
