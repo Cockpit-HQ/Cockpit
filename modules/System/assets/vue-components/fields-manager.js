@@ -281,12 +281,13 @@ let FieldsManager = {
                 </kiss-content>
             </kiss-dialog>
 
-            <kiss-popoutmenu :id="uid+'-fieldtype-selector'">
+            <kiss-popoutmenu :id="uid+'-fieldtype-selector'" modal="true">
                 <kiss-content class="kiss-width-1-2@m">
-                        <kiss-navlist v-if="field">
-                            <ul>
-                                <li class="kiss-nav-header">{{ t('Select field type') }}</li>
-                            </ul>
+                        <div class="kiss-size-4 kiss-text-bold">{{ t('Select field type') }}</div>
+                        <div class="kiss-margin">
+                            <input class="kiss-input kiss-width-1-1" :placeholder="t('Filter...')">
+                        </div>
+                        <kiss-navlist kiss-popoutmenu-close="true" v-if="field">
                             <kiss-grid class="kiss-margin-top" cols="1@s 2@m 3@l" gap="small">
                                 <kiss-card class="kiss-padding-xsmall" hover="contrast" v-for="(f,fieldType) in fieldTypes">
                                     <kiss-row class="kiss-position-relative" gap="small">
@@ -305,6 +306,9 @@ let FieldsManager = {
 
                             </kiss-grid>
                         </kiss-navlist>
+                        <div class="kiss-margin">
+                            <button type="button" class="kiss-button kiss-button-primary kiss-width-1-1" kiss-popoutmenu-close="true">{{ t('Cancel') }}</button>
+                        </div>
                 </kiss-content>
             </kiss-popoutmenu>
         </teleport>

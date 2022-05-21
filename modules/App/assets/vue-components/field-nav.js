@@ -90,7 +90,7 @@ export default {
 
     _meta: {
         label: 'Navigation',
-        info: 'Manage nested navigation tree',
+        info: 'Nested navigation tree',
         icon: 'system:assets/icons/list.svg',
         settings: [
             {name: 'fields', type: 'fields-manager'},

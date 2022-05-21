@@ -5,7 +5,7 @@ export default {
 
     _meta: {
         label: 'Content Link',
-        info: 'Reference to another model item',
+        info: 'Content item reference',
         icon: 'content:assets/icons/reference.svg',
         settings: [
             {name: 'link', type: 'options-linkModel'},
