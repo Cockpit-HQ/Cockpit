@@ -3457,7 +3457,16 @@ td.kiss-text-truncate { max-width: 0; }
     letter-spacing: .1em !important;
 }
 .kiss-text-monospace {
-    font-family: 'Courier New', Courier, monospace;
+    font-family: ui-monospace,
+    Menlo, Monaco,
+    "Cascadia Mono", "Segoe UI Mono",
+    "Roboto Mono",
+    "Oxygen Mono",
+    "Ubuntu Monospace",
+    "Source Code Pro",
+    "Fira Mono",
+    "Droid Sans Mono",
+    "Courier New", Courier, monospace;
 }
 .kiss-text-leading-normal { line-height: var(--kiss-base-line-height, 1.5) !important; }
 .kiss-text-leading-tight { line-height: 1.25 !important; }

@@ -199,7 +199,7 @@
   z-index: 1;
   position: absolute;
   width: 100%;
-  background-color: var(--kiss-input-background);
+  background-color: var(--kiss-color-contrast);
   border: 1px solid #ddd;
   top: 100%;
   margin-top: -1px;

@@ -16,6 +16,17 @@ VueView.component('vue-draggable', Vue.defineAsyncComponent(() => {
     })
 }));
 
+VueView.component('vue-table', Vue.defineAsyncComponent(() => {
+    return new Promise(resolve => {
+        App.assets.require([
+            'app:assets/vendor/tabulator/tabulator.js',
+            'app:assets/vendor/tabulator/tabulator.css'
+        ]).then(() => {
+            App.utils.import('app:assets/vendor/tabulator/tabulator-vue.js').then((m) => resolve(m));
+        });
+    })
+}));
+
 VueView.component('revisions-widget', 'system:assets/vue-components/revisions/widget.js');
 
 // Fields
@@ -29,6 +40,7 @@ VueView.component('field-number', 'app:assets/vue-components/field-number.js');
 VueView.component('field-object', 'app:assets/vue-components/field-object.js');
 VueView.component('field-select', 'app:assets/vue-components/field-select.js');
 VueView.component('field-set', 'app:assets/vue-components/field-set.js');
+VueView.component('field-table', 'app:assets/vue-components/field-table.js');
 VueView.component('field-tags', 'app:assets/vue-components/field-tags.js');
 VueView.component('field-text', 'app:assets/vue-components/field-text.js');
 VueView.component('field-time', 'app:assets/vue-components/field-time.js');
