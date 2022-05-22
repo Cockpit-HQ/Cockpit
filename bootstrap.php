@@ -1,6 +1,6 @@
 <?php
 
-define('APP_VERSION', '2.0-dev-2022-05-14');
+define('APP_VERSION', '2.0-dev-2022-05-22');
 
 if (!defined('APP_START_TIME')) define('APP_START_TIME', microtime(true));
 if (!defined('APP_CLI')) define('APP_CLI', PHP_SAPI == 'cli');
