@@ -411,6 +411,33 @@ export default {
                     </kiss-navlist>
                 </kiss-content>
             </kiss-popoutmenu>
+
+            <kiss-popoutmenu :open="actionFolder && 'true'" id="asset-folder-actions" @popoutmenuclose="toggleFolderActions(null)">
+                <kiss-content>
+                    <kiss-navlist class="kiss-margin">
+                        <ul>
+                            <li class="kiss-nav-header">{{ t('Folder actions') }}</li>
+                            <li v-if="actionFolder">
+                                <div class="kiss-color-muted kiss-text-truncate kiss-margin-small-bottom">{{ actionFolder.name }}</div>
+                            </li>
+                            <li>
+                                <a class="kiss-flex kiss-flex-middle" @click="renameFolder(actionFolder)">
+                                    <icon class="kiss-margin-small-right" size="larger">drive_file_rename_outline</icon>
+                                    {{ t('Rename') }}
+                                </a>
+                            </li>
+                            <li class="kiss-nav-divider"></li>
+                            <li>
+                                <a class="kiss-color-danger kiss-flex kiss-flex-middle" @click="removeFolder(actionFolder)">
+                                    <icon class="kiss-margin-small-right" size="larger">delete</icon>
+                                    {{ t('Delete') }}
+                                </a>
+                            </li>
+                        </ul>
+                    </kiss-navlist>
+                </kiss-content>
+            </kiss-popoutmenu>
+
         </teleport>
     `
 }
