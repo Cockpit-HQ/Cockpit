@@ -134,7 +134,7 @@ export default {
                         </div>
                     </app-fieldcontainer>
 
-                    <fields-renderer class="kiss-margin" v-model="item" :fields="[{name:'title', type:'text'},{name:'description', type:'text', opts: {multiline:true, height:200}},{name:'tags', type:'text', multiple:true}]"></fields-renderer>
+                    <fields-renderer class="kiss-margin" v-model="item" :fields="[{name:'title', type:'text'},{name:'description', type:'text', opts: {multiline:true, height:200}},{name:'tags', type:'tags'}]"></fields-renderer>
 
                 </form>
 
