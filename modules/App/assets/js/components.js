@@ -20,7 +20,7 @@ VueView.component('vue-table', Vue.defineAsyncComponent(() => {
     return new Promise(resolve => {
         App.assets.require([
             'app:assets/vendor/tabulator/tabulator.js',
-            'app:assets/vendor/tabulator/tabulator.css'
+            'app:assets/css/vendor/tabulator.css'
         ]).then(() => {
             App.utils.import('app:assets/vendor/tabulator/tabulator-vue.js').then((m) => resolve(m));
         });
