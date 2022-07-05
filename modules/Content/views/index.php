@@ -121,6 +121,7 @@
                                         <?=t('Edit')?>
                                     </a>
                                 </li>
+                                <li class="kiss-nav-divider"></li>
                                 <li>
                                     <a class="kiss-flex kiss-flex-middle" @click="clone(actionModel)">
                                         <icon class="kiss-margin-small-right">control_point_duplicate</icon>
