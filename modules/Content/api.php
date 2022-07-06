@@ -108,6 +108,10 @@ $this->on('restApi.config', function($restApi) {
 
             $item = $app->module('content')->item($model, $filter ? $filter : [], $fields, $process);
 
+            if ($item) {
+                $app->trigger('content.api.item', [&$item, $model]);
+            }
+
             return $item ?? false;
         }
     ]);
@@ -246,6 +250,10 @@ $this->on('restApi.config', function($restApi) {
                         'total' => $app->module('content')->count($model, $options['filter'] ?? [])
                     ]
                 ];
+            }
+
+            if (count($items)) {
+                $app->trigger('content.api.items', [&$items, $model]);
             }
 
             return $items;

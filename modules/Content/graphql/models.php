@@ -75,7 +75,13 @@ foreach ($collections as $name => &$meta) {
 
             $options['filter']['_state'] = 1;
 
-            return $app->module('content')->items($name, $options, $process);
+            $items = $app->module('content')->items($name, $options, $process);
+
+            if (count($items)) {
+                $app->trigger('content.api.items', [&$items, $name]);
+            }
+
+            return $items;
         }
     ];
 }
@@ -125,6 +131,8 @@ foreach ($singletons as $name => &$meta) {
             if (!isset($item['_state']) || $item['_state'] != 1) {
                 return null;
             }
+
+            $app->trigger('content.api.item', [&$item, $name]);
 
             return $item;
         }
