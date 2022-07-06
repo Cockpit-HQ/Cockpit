@@ -1,5 +1,3 @@
-import FieldsRenderer from "../../../System/assets/vue-components/fields-renderer.js"
-
 export default {
 
     _meta: {
@@ -50,7 +48,7 @@ export default {
     },
 
     components: {
-        'fields-renderer': FieldsRenderer
+        'fields-renderer': Vue.defineAsyncComponent(() => App.utils.import('system:assets/vue-components/fields-renderer.js'))
     },
 
     watch: {

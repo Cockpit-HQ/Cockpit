@@ -5,7 +5,11 @@
     font-weight: 400;
     src: url(fonts/material-icons/material-icons-outlined.woff2) format('woff2');
 }
-icon { display: inline-block; }
+icon {
+    display: inline-block;
+    user-select: none;
+    -moz-user-select: none;
+}
 icon,
 .material-icons-outlined {
     font-family: 'Material Icons Outlined';
