@@ -29,7 +29,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => 'a35b18558d92491bc22607efa16534ab518233eb',
+    'reference' => '72ff06db4a923b6be0e153eb0c7e29403e5376f5',
     'name' => 'agentejo/cockpit',
   ),
   'versions' => 
@@ -41,7 +41,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => 'a35b18558d92491bc22607efa16534ab518233eb',
+      'reference' => '72ff06db4a923b6be0e153eb0c7e29403e5376f5',
     ),
     'bacon/bacon-qr-code' => 
     array (
@@ -54,12 +54,12 @@ private static $installed = array (
     ),
     'claviska/simpleimage' => 
     array (
-      'pretty_version' => '3.6.5',
-      'version' => '3.6.5.0',
+      'pretty_version' => '3.7.0',
+      'version' => '3.7.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '00f90662686696b9b7157dbb176183aabe89700f',
+      'reference' => 'abd15ced313c7b8041d7d73d8d2398b4f2510cf1',
     ),
     'colinodell/json5' => 
     array (
@@ -81,12 +81,12 @@ private static $installed = array (
     ),
     'doctrine/annotations' => 
     array (
-      'pretty_version' => '1.13.2',
-      'version' => '1.13.2.0',
+      'pretty_version' => '1.13.3',
+      'version' => '1.13.3.0',
       'aliases' => 
       array (
       ),
-      'reference' => '5b668aef16090008790395c02c893b1ba13f7e08',
+      'reference' => '648b0343343565c4a056bfc8392201385e8d89f0',
     ),
     'doctrine/lexer' => 
     array (
@@ -153,12 +153,12 @@ private static $installed = array (
     ),
     'league/flysystem' => 
     array (
-      'pretty_version' => '3.0.23',
-      'version' => '3.0.23.0',
+      'pretty_version' => '3.1.0',
+      'version' => '3.1.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '5b461a96d01144744077343908a2c196682c71e6',
+      'reference' => '34a68067b7ae3b836ea5e57e1fc432478372a4f5',
     ),
     'league/mime-type-detection' => 
     array (
