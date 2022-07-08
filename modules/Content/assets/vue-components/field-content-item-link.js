@@ -39,7 +39,7 @@ export default {
 
             getItem.then(item => {
 
-                let html = 'n/a';
+                let html = 'n/a', ele;
 
                 if (item) {
                     try {
@@ -47,7 +47,11 @@ export default {
                     } catch(e) {}
                 }
 
-                document.querySelector(`#${id}`).innerText = html;
+                ele = document.querySelector(`#${id}`);
+
+                if (ele) {
+                    ele.innerText = html;
+                }
             })
 
             return `<span id="${id}"><app-loader class="kiss-margin-remove-horizontal" size="small"></app-loader></span>`;
@@ -176,6 +180,11 @@ export default {
             </div>
 
             <div v-if="link && model">
+
+                <kiss-card class="kiss-padding kiss-color-muted kiss-align-center kiss-margin-small" theme="contrast" v-if="!val">
+                    <kiss-svg :src="$base('content:assets/icons/reference.svg')" width="40" height="40"></kiss-svg>
+                    <div class="kiss-margin-small kiss-size-small">{{ t('No content item linked' )}}</div>
+                </kiss-card>
 
                 <div class="kiss-margin-small kiss-position-relative" v-if="val && val._id">
                     <div class="kiss-size-small" v-if="display" v-html="getDisplay()"></div>

@@ -76,7 +76,8 @@ let FieldRenderer = {
             this.fieldItem = {
                 field,
                 value: JSON.parse(JSON.stringify(field.default || null)),
-                create: true
+                create: true,
+                meta: this.fieldTypes[field.type]
             };
         },
 
@@ -85,7 +86,8 @@ let FieldRenderer = {
             this.fieldItem = {
                 field,
                 value: JSON.parse(JSON.stringify(this.val[index])),
-                index
+                index,
+                meta: this.fieldTypes[field.type]
             };
         },
 
@@ -170,14 +172,23 @@ let FieldRenderer = {
             <kiss-dialog open="true" size="large" v-if="fieldItem">
                 <kiss-content class="animated fadeInUp faster">
 
-                    <div class="kiss-size-4 kiss-text-bold kiss-margin">{{fieldItem.create ? t('Add item'):t('Edit item')}}</div>
+                    <div class="kiss-flex kiss-flex-middle">
+                        <div>
+                            <kiss-svg class="kiss-color-primary" :src="$base(fieldItem.meta.icon || 'system:assets/icons/edit.svg')" width="50" height="50"></kiss-svg>
+                        </div>
+                        <div class="kiss-flex-1 kiss-margin-left">
+                            <span class="kiss-size-xsmall kiss-color-muted kiss-text-upper">{{ fieldItem.field.type }}</span>
+                            <kiss-row class="kiss-margin-xsmall-top kiss-flex-middle">
+                                <div class="kiss-size-4 kiss-text-bold kiss-flex-1">{{ fieldItem.create ? t('Add item'):t('Edit item') }}</div>
+                            </kiss-row>
+                        </div>
+                    </div>
 
-                    <div class="kiss-margin-top">
-                        <div class="kiss-margin-bottom"><span class="kiss-badge kiss-text-upper">{{fieldItem.field.type}}</span></div>
+                    <div class="kiss-margin">
                         <component :is="getFieldType()" v-model="fieldItem.value" v-bind="field.opts"></component>
                     </div>
 
-                    <div class="kiss-button-group kiss-child-width-1-2 kiss-flex kiss-margin-top">
+                    <div class="kiss-button-group kiss-child-width-1-2 kiss-flex kiss-margin">
                         <a class="kiss-button" @click="fieldItem=null">
                             {{ t('Cancel') }}
                         </a>
