@@ -148,7 +148,7 @@ export default {
 
                     if (item) {
                     try {
-                        html = App.utils.interpolate(this.display, {item, data:item});
+                        html = App.utils.interpolate(this.display, { /* deprecated */ item, data:item});
                     } catch(e) {
                         html = 'ERROR';
                     }
