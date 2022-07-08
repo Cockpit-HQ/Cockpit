@@ -43,7 +43,7 @@ export default {
 
                 if (item) {
                     try {
-                        html = App.utils.interpolate(field.opts.display, {item});
+                        html = App.utils.interpolate(field.opts.display, {item, data:item});
                     } catch(e) {}
                 }
 
@@ -148,7 +148,7 @@ export default {
 
                     if (item) {
                     try {
-                        html = App.utils.interpolate(this.display, {item});
+                        html = App.utils.interpolate(this.display, {item, data:item});
                     } catch(e) {
                         html = 'ERROR';
                     }
