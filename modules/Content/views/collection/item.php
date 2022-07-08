@@ -262,17 +262,20 @@
                 }
             },
 
-            created() {
+            mounted() {
 
-                this.savedItemState = JSON.stringify(this.item);
+                setTimeout(() => {
 
-                window.onbeforeunload = e => {
+                    this.savedItemState = JSON.stringify(this.item);
 
-                    if (this.isModified) {
-                        e.preventDefault();
-                        e.returnValue = this.t('You have unsaved data! Are you sure you want to leave?');
-                    }
-                };
+                    window.onbeforeunload = e => {
+
+                        if (this.isModified) {
+                            e.preventDefault();
+                            e.returnValue = this.t('You have unsaved data! Are you sure you want to leave?');
+                        }
+                    };
+                }, 1500);
             },
 
             methods: {
