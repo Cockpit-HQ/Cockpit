@@ -26,8 +26,9 @@
         <template>
 
             <div class="kiss-height-50vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center" v-if="!fields.length">
-                <div class="animated fadeInUp kiss-size-large kiss-color-muted">
-                    <?=t('No fields defined')?>
+                <div class="animated fadeInUp kiss-color-muted">
+                    <kiss-svg class="kiss-margin-auto" src="<?= $this->base('content:assets/icons/singleton.svg') ?>" width="40" height="40"><canvas width="40" height="40"></canvas></kiss-svg>
+                    <div class="kiss-size-large kiss-margin-small-top"><?=t('No fields defined')?></div>
                 </div>
             </div>
 
