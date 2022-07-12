@@ -31,7 +31,7 @@
                             <a class="kiss-cover" :href="$route('/system/users/user/'+user._id)"></a>
                         </div>
                         <div class="kiss-margin-left" v-if="user._id != '<?=$this['user/_id']?>'">
-                            <a class="kiss-color-danger" @click="remove(user)"><icon>delete</icon></a>
+                            <a class="kiss-color-danger" @click="remove(user)"><icon class="kiss-size-large">delete</icon></a>
                         </div>
                     </div>
 

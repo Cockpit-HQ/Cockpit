@@ -39,7 +39,7 @@
                         <a class="kiss-cover" :href="$route('/system/users/roles/role/'+role._id)"></a>
                     </div>
                     <div class="kiss-margin-left">
-                        <a class="kiss-color-danger" @click="remove(role)"><icon>delete</icon></a>
+                        <a class="kiss-color-danger" @click="remove(role)"><icon class="kiss-size-large">delete</icon></a>
                     </div>
                 </div>
 
