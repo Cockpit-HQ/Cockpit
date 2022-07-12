@@ -1,5 +1,5 @@
 
-<kiss-container class="kiss-margin" size="small">
+<kiss-container class="kiss-margin" size="medium">
 
     <ul class="kiss-breadcrumbs">
         <li><a href="<?=$this->route('/system')?>"><?=t('Settings')?></a></li>
@@ -20,7 +20,7 @@
                         <div class="kiss-text-truncate kiss-text-monospace kiss-flex-1">
                             <?=$this->getSiteUrl(true)?>/api
                         </div>
-                        <div class="kiss-margin-left"><a href="#" @click.prevent="copyEndpoint('<?=$this->getSiteUrl(true)?>/api', 'REST-Api endpoint copied!')"><icon>content_copy</icon></a></div>
+                        <div class="kiss-margin-left"><a href="#" @click.prevent="copyEndpoint('<?=$this->getSiteUrl(true)?>/api', 'REST-Api endpoint copied!')"><icon class="kiss-size-large">content_copy</icon></a></div>
                         <div class="kiss-margin-small-left kiss-width-1-5"><a class="kiss-button kiss-button-small kiss-width-1-1" href="#" @click="showApiViewer()">{{ t('Playground') }}</a></div>
                     </div>
                 </div>
@@ -31,21 +31,20 @@
                         <div class="kiss-text-truncate kiss-text-monospace kiss-flex-1">
                             <?=$this->getSiteUrl(true)?>/api/gql
                         </div>
-                        <div class="kiss-margin-left"><a href="#" @click.prevent="copyEndpoint('<?=$this->getSiteUrl(true)?>/api/gql', 'GraphQL endpoint copied!')"><icon>content_copy</icon></a></div>
+                        <div class="kiss-margin-left"><a href="#" @click.prevent="copyEndpoint('<?=$this->getSiteUrl(true)?>/api/gql', 'GraphQL endpoint copied!')"><icon class="kiss-size-large">content_copy</icon></a></div>
                         <div class="kiss-margin-small-left kiss-width-1-5"><a class="kiss-button kiss-button-small kiss-width-1-1" href="#" @click="showGraphQLViewer()">{{ t('Playground') }}</a></div>
                     </div>
                 </div>
             </kiss-card>
 
-            <kiss-card class="kiss-padding kiss-position-relative" theme="bordered contrast">
-
-                <div class="kiss-margin-small kiss-text-caption"><strong><?=t('Public API')?></strong></div>
-
-                <div class="kiss-color-muted kiss-size-small">
-                    <?=t('Configure public API access permissions for unauthenticated requests.')?>
+            <kiss-card class="kiss-padding kiss-flex kiss-flex-middle" theme="bordered contrast">
+                <div></div><icon class="kiss-size-large">public</icon></div>
+                <div class="kiss-flex-1 kiss-margin-small-left kiss-margin-small-right">
+                    <div class="kiss-color-muted kiss-size-small">
+                        <?=t('Public API access permissions for unauthenticated requests.')?>
+                    </div>
                 </div>
-
-                <a class="kiss-cover" :href="$route('/system/api/public')"></a>
+                <div class="kiss-margin-small-left kiss-width-1-5"><a class="kiss-button kiss-button-small kiss-width-1-1" :href="$route('/system/api/public')"><?=t('Configure')?></a></div>
             </kiss-card>
 
             <app-loader class="kiss-margin-large" v-if="loading"></app-loader>
@@ -71,8 +70,8 @@
                                 <a class="kiss-cover" :href="$route('/system/api/key/'+key._id)"></a>
                             </div>
                             <div class="kiss-margin-left kiss-align-right kiss-text-monospace kiss-color-muted">*****{{ key.key.substr(-5, 5)}}</div>
-                            <a class="kiss-margin-left" href="#" @click="copyApiKey(key.key)"><icon>content_copy</icon></a>
-                            <a class="kiss-margin-small-left kiss-color-danger" @click="remove(key)"><icon>delete</icon></a>
+                            <a class="kiss-margin-left" href="#" @click="copyApiKey(key.key)"><icon class="kiss-size-large">content_copy</icon></a>
+                            <a class="kiss-margin-small-left kiss-color-danger" @click="remove(key)"><icon class="kiss-size-large">delete</icon></a>
                         </div>
                     </li>
 

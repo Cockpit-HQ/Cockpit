@@ -40,13 +40,13 @@
 
                         <div class="kiss-flex kiss-flex-middle">
                             <div class="kiss-overlay-input">
-                                <div class="kiss-text-caption kiss-size-small" :class="{'kiss-color-muted': !key.role}">{{ key.role || t('No role set') }}</div>
+                                <div class="kiss-text-capitalize kiss-text-bold" :class="{'kiss-color-muted': !key.role}">{{ key.role || t('No role set') }}</div>
                                 <select class="kiss-input kiss-select" v-model="key.role">
                                     <option value="">No role</option>
                                     <option v-for="role in roles" :value="role.appid">{{ role.name }}</option>
                                 </select>
                             </div>
-                            <div class="kiss-margin-left kiss-flex-1 kiss-align-right"><a href="<?=$this->route('/system/users/roles')?>"><icon>tune</icon></a></div>
+                            <div class="kiss-margin-left kiss-flex-1 kiss-align-right"><a href="<?=$this->route('/system/users/roles')?>"><icon class="kiss-size-large">tune</icon></a></div>
                         </div>
 
                     </div>
@@ -55,14 +55,14 @@
 
                     <div class="kiss-margin" v-if="key.key != 'public'">
 
-                        <label><?=t('API Key')?></label>
+                        <label><icon>vpn_key</icon> <?=t('API Key')?></label>
                         <div class="kiss-flex kiss-flex-middle">
                             <div class="kiss-flex-1 kiss-margin-small-right kiss-text-truncate kiss-disabled">
                                 <span class="kiss-text-caption" v-if="!key.key"><?=t('No api key created yet')?></span>
                                 <span class="kiss-text-monospace kiss-text-bold" v-if="key.key">{{ key.key }}</span>
                             </div>
-                            <a @click="generateToken"><icon>refresh</icon></a>
-                            <a class="kiss-margin-small-left" v-if="key.key" @click="copyToken"><icon>content_copy</icon></a>
+                            <a @click="generateToken"><icon class="kiss-size-large">refresh</icon></a>
+                            <a class="kiss-margin-small-left" v-if="key.key" @click="copyToken"><icon class="kiss-size-large">content_copy</icon></a>
                         </div>
 
                     </div>
