@@ -48,7 +48,7 @@
                     </table>
 
                     <?php if (count($addons)): asort($addons); ?>
-                    <div class="kiss-text-caption kiss-text-bold kiss-size-bold kiss-margin">
+                    <div class="kiss-text-caption kiss-text-bold kiss-size-bold kiss-margin kiss-margin-large-top">
                         <?=('Loaded Addons')?>
                     </div>
 
@@ -57,7 +57,7 @@
 
                         foreach($addons as $name): $icon = $this->path("{$name}:icon.svg"); ?>
                         <kiss-card class="kiss-padding kiss-size-small kiss-text-capitalize kiss-flex kiss-flex-middle" theme="shadowed contrast">
-                            <div class="kiss-margin-small-right"><kiss-svg src="<?=$this->base($icon ? "{$name}:icon.svg" : 'system:assets/icons/module.svg')?>" width="20" height="20"></kiss-svg></div>
+                            <div class="kiss-margin-small-right"><kiss-svg src="<?=$this->base($icon ? "{$name}:icon.svg" : 'system:assets/icons/module.svg')?>" width="30" height="30"></kiss-svg></div>
                             <div><?=$name?></div>
                         </kiss-card>
                         <?php endforeach ?>
