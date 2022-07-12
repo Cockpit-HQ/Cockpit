@@ -16,6 +16,8 @@ class Settings extends App {
             return $this->stop(401);
         }
 
-        return $this->render('system:views/info.php');
+        $addons = array_filter(array_keys($this->app['modules']->getArrayCopy()), fn($name) => !in_array($name, ['app', 'assets', 'content','system']));
+
+        return $this->render('system:views/info.php', compact('addons'));
     }
 }

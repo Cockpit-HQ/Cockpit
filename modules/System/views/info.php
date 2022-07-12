@@ -1,4 +1,3 @@
-
 <kiss-container class="kiss-margin" size="medium">
 
     <ul class="kiss-breadcrumbs">
@@ -48,17 +47,22 @@
                         </tbody>
                     </table>
 
+                    <?php if (count($addons)): asort($addons); ?>
                     <div class="kiss-text-caption kiss-text-bold kiss-size-bold kiss-margin">
                         <?=('Loaded Addons')?>
                     </div>
 
                     <kiss-grid cols="4@m 6@xl" gap="small">
-                        <?php foreach($this['modules'] as $name => $module): if (in_array($name, ['app', 'assets', 'content','system'])) continue; ?>
-                        <kiss-card class="kiss-padding kiss-size-small kiss-text-capitalize" theme="shadowed contrast">
-                            <?=$name?>
+                        <?php
+
+                        foreach($addons as $name): $icon = $this->path("{$name}:icon.svg"); ?>
+                        <kiss-card class="kiss-padding kiss-size-small kiss-text-capitalize kiss-flex kiss-flex-middle" theme="shadowed contrast">
+                            <div class="kiss-margin-small-right"><kiss-svg src="<?=$this->base($icon ? "{$name}:icon.svg" : 'system:assets/icons/module.svg')?>" width="20" height="20"></kiss-svg></div>
+                            <div><?=$name?></div>
                         </kiss-card>
                         <?php endforeach ?>
                     </kiss-grid>
+                    <?php endif ?>
 
                 </tab>
 
