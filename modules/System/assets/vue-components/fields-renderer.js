@@ -362,16 +362,19 @@ export default {
     template: /*html*/`
         <div class="fields-renderer" :nested="nested">
 
-            <kiss-tabs class="kiss-margin-large-bottom" static="true" v-if="groups.length">
-                <ul class="kiss-tabs-nav">
-                    <li :active="group === null">
-                        <a class="kiss-tabs-nav-link" @click="group = null">{{t('All')}}</a>
-                    </li>
-                    <li :active="group == name" v-for="name in groups">
-                        <a class="kiss-tabs-nav-link" @click="group = name">{{ name }}</a>
-                    </li>
-                </ul>
-            </kiss-tabs>
+            <kiss-card class="kiss-padding-small kiss-overlay-input kiss-flex kiss-flex-middle kiss-width-1-3@m kiss-margin" theme="bordered contrast" v-if="groups.length">
+                <div class="kiss-margin-small-right">
+                    <icon class="kiss-size-1" :class="{'kiss-color-muted': !group, 'kiss-color-primary': group}">{{ !group ? 'dialpad' : 'workspaces' }}</icon>
+                </div>
+                <div>
+                    <span class="kiss-text-caption kiss-color-muted">{{ t('Group') }}</span>
+                    <div :class="{'kiss-color-muted': !group, 'kiss-text-bold': group}">{{ group || t('All fields') }}</div>
+                </div>
+                <select v-model="group">
+                    <option :value="null">{{t('All')}}</option>
+                    <option :selected="group == name" v-for="name in groups">{{ name }}</option>
+                </select>
+            </kiss-card>
 
             <app-fieldcontainer class="kiss-margin" v-for="field in visibleFields">
                 <div>
