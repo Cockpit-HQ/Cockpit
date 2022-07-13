@@ -30,11 +30,11 @@ export default {
                 </div>
             </div>
 
-            <kiss-card class="kiss-margin-small" theme="bordered contrast" hover="shadow" v-for="(model, name) in models">
+            <app-fieldcontainer class="kiss-margin-small" v-for="(model, name) in models">
 
-                <div class="kiss-margin-small kiss-bgcolor-contrast kiss-color-muted kiss-padding-small">
-                    <span class="kiss-badge kiss-badge-outline" :style="{color: (model.color || 'inherit')+' !important' }">{{model.label || name}}</span>
-                    <span class="kiss-badge kiss-badge-outline kiss-margin-small-left">{{model.type}}</span>
+                <div class="kiss-margin-small kiss-bgcolor-contrast kiss-padding-small kiss-flex kiss-flex-middle">
+                    <span class="kiss-text-bold kiss-size-small kiss-flex-1" :style="{color: (model.color || 'inherit')+' !important' }">{{model.label || name}}</span>
+                    <span class="kiss-text-caption kiss-color-muted kiss-margin-small-left">{{model.type}}</span>
                 </div>
                 <div class="kiss-padding-small">
                     <kiss-row gap="large">
@@ -66,7 +66,7 @@ export default {
                         </div>
                     </kiss-row>
                 </div>
-            </kiss-card>
+            </app-fieldcontainer>
         </div>
     `
 }
