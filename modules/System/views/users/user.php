@@ -54,20 +54,19 @@ if (!isset($user['twofa'])) {
                 </div>
 
                 <div class="kiss-margin">
-                    <label><?=t('User')?></label>
+                    <label><?=t('User')?> <icon class="kiss-size-5 kiss-color-danger kiss-margin-xsmall-left" title="Required">trip_origin</icon></label>
                     <input class="kiss-input" type="text" v-model="user.user" autocomplete="off" required>
                 </div>
 
-                <kiss-grid class="kiss-margin" cols="2@m">
-                    <div>
-                        <label><?=t('Email')?></label>
-                        <input class="kiss-input" type="email" v-model="user.email" autocomplete="off" required>
-                    </div>
-                    <div>
-                        <label><?=t('Password')?></label>
-                        <input class="kiss-input" type="password" v-model="user.password" :placeholder="user._id ? '<?=t('Keep current password')?>':''" :required="!user._id" autocomplete="off">
-                    </div>
-                </kiss-grid>
+                <div class="kiss-margin">
+                    <label><?=t('Email')?> <icon class="kiss-size-5 kiss-color-danger kiss-margin-xsmall-left" title="Required">trip_origin</icon></label>
+                    <input class="kiss-input" type="email" v-model="user.email" autocomplete="off" required>
+                </div>
+
+                <div class="kiss-margin">
+                    <label><?=t('Password')?> <icon class="kiss-size-5 kiss-color-danger kiss-margin-xsmall-left" title="Required" v-if="!user._id">trip_origin</icon></label>
+                    <input class="kiss-input" type="password" v-model="user.password" :placeholder="user._id ? '<?=t('Keep current password')?>':''" :required="!user._id" autocomplete="off">
+                </div>
 
                 <?php if (!isset($user['_id']) || $user['_id'] != $this['user/_id']):?>
                 <div class="kiss-margin-large">

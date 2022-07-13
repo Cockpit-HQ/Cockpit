@@ -259,7 +259,7 @@
                                     var q = JSON.parse(atob(searchParams.get('state')));
                                     if (q.sort) this.sort = q.sort;
                                     if (q.page) this.page = q.page;
-                                    if (q.limit) this.limit = (parseInt(q.limit) || 20);
+                                    if (q.limit) this.limit = (parseInt(q.limit) || this.limit);
                                     if (q.filter) {
                                         this.filter = q.filter;
                                         this.txtFilter = q.filter;

@@ -49,7 +49,8 @@ class Users extends App {
             'active' => true,
             'user'   => '',
             'email'  => '',
-            'role'  => 'admin',
+            'role'   => 'admin',
+            'theme'  => 'auto',
             'i18n'   => $this->app->helper('i18n')->locale
         ];
 
@@ -160,10 +161,11 @@ class Users extends App {
         $this->helper('session')->close();
 
         $options = array_merge([
-            'sort'   => ['user' => 1]
+            'sort'   => ['user' => 1],
+            'limit'  => 1
         ], $this->param('options', []));
 
-        if (isset($options['filter']) && is_string($options['filter'])) {
+        if (isset($options['filter']) && $options['filter'] && is_string($options['filter'])) {
 
             $filter = null;
 
