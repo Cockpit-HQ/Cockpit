@@ -18,17 +18,6 @@
 
             <div class="kiss-margin-large" v-if="!loading && models.length">
 
-                <kiss-tabs class="kiss-margin-large-bottom" static="true" v-if="groups.length">
-                    <ul class="kiss-tabs-nav">
-                        <li :active="group === null">
-                            <a class="kiss-tabs-nav-link" @click="group = null">{{t('All')}}</a>
-                        </li>
-                        <li :active="group == name" v-for="name in groups">
-                            <a class="kiss-tabs-nav-link" @click="group = name">{{ name }}</a>
-                        </li>
-                    </ul>
-                </kiss-tabs>
-
                 <div class="kiss-margin">
                     <input type="text" class="kiss-input" :placeholder="t('Filter models...')" v-model="filter">
                 </div>
@@ -97,18 +86,28 @@
 
             </div>
 
-            <?php if ($this->helper('acl')->isAllowed("content/models/manage")): ?>
             <app-actionbar>
 
                 <kiss-container size="medium">
                     <div class="kiss-flex kiss-flex-middle">
+                        <div v-if="groups.length">
+                            <span class="kiss-text-caption kiss-color-muted"><?=t('group')?></span>
+                            <div class="kiss-margin-xsmall-top kiss-display-block kiss-overlay-input">
+                                <div class="kiss-size-4" :class="{'kiss-color-muted': !group, 'kiss-text-bold': group}">{{ group || t('All groups') }}</div>
+                                <select v-model="group">
+                                    <option :value="null">{{t('All')}}</option>
+                                    <option :selected="group == name" v-for="name in groups">{{ name }}</option>
+                                </select>
+                            </div>
+                        </div>
                         <div class="kiss-flex-1"></div>
+                        <?php if ($this->helper('acl')->isAllowed("content/models/manage")): ?>
                         <a class="kiss-button kiss-button-primary" href="<?=$this->route('/content/models/create')?>"><?=t('Create model')?></a>
+                        <?php endif ?>
                     </div>
                 </kiss-container>
 
             </app-actionbar>
-            <?php endif ?>
 
             <kiss-popoutmenu :open="actionModel && 'true'" @popoutmenuclose="toggleModelActions(null)">
                 <kiss-content>
