@@ -79,7 +79,7 @@ if (!isset($user['twofa'])) {
                 <?php endif ?>
 
                 <div class="kiss-margin" v-if="languages.length > 1">
-                    <label><?=t('Backend language')?></label>
+                    <label><?=t('Admin UI language')?></label>
                     <select class="kiss-input" type="password" v-model="user.i18n">
                         <?php foreach($languages as $lang): ?>
                         <option value="<?=$lang['i18n']?>"><?=$lang['language']?></option>

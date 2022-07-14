@@ -222,7 +222,7 @@ class Users extends App {
 
         $languages = [['i18n' => 'en', 'language' => 'English']];
 
-        foreach ($this->app->helper('fs')->ls('*.php', '#config:app/i18n') as $file) {
+        foreach ($this->app->helper('fs')->ls('*.php', '#config:i18n/App') as $file) {
 
             $lang     = include($file->getRealPath());
             $i18n     = $file->getBasename('.php');

@@ -96,17 +96,26 @@ $this->on('app.admin.request', function(Lime\Request $request) {
     }
 
     // load i18n translation
-    $this->helper('i18n')->locale = $this->retrieve('i18n', 'en');
+    $i18n = $this->helper('i18n');
+    $i18n->locale = $this->retrieve('i18n', 'en');
 
-    $locale = $user && isset($user['i18n']) && $user['i18n'] ? $user['i18n'] : $this->helper('i18n')->locale;
+    $locale = $user && isset($user['i18n']) && $user['i18n'] ? $user['i18n'] : $i18n->locale;
 
-    if ($translationspath = $this->path("#config:app/i18n/{$locale}.php")) {
+    if ($translationspath = $this->path("#config:i18n/App/{$locale}.php")) {
 
-        $this->helper('i18n')->locale = $locale;
-        $this->helper('i18n')->load($translationspath, $locale);
+        $i18n->locale = $locale;
+
+        foreach ($this->retrieve('modules')->getArrayCopy() as $m) {
+
+            $name = basename($m->_dir);
+
+            if ($translationspath = $this->path("#config:i18n/{$name}/{$locale}.php")) {
+                $i18n->load($translationspath, $locale);
+            }
+        }
     }
 
-    $this->trigger('app.admin.i18n.load', [$locale, $this->helper('i18n')]);
+    $this->trigger('app.admin.i18n.load', [$locale, $i18n]);
 
     $this->bind('/app.i18n.data.js', function() use($locale) {
         $this->helper('session')->close();
@@ -123,7 +132,7 @@ $this->on('app.admin.request', function(Lime\Request $request) {
 
     // update session time
     $this->helper('session')->write('app.session.start', time());
-});
+}, 1000);
 
 
 /**

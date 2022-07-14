@@ -20,72 +20,79 @@ class CreateTranslation extends Command {
     protected function configure(): void {
         $this
             ->setHelp('This command creates a language file')
-            ->addArgument('lang', InputArgument::REQUIRED, 'What is the target language (e.g. de or fr?')
+            ->addArgument('locale', InputArgument::REQUIRED, 'What is the target language (e.g. de or fr?')
             ->addArgument('module', InputArgument::OPTIONAL, 'Create a language file for a module');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int {
 
-        $lang = $input->getArgument('lang');
+        $locale = $input->getArgument('locale');
         $module = $input->getArgument('module');
 
         $extensions = ['php', 'js'];
-        $strings    = [];
 
-        if ($module) {
-
-            $path = $this->app->path("#addons:{$module}");
-
-            if (!$path) {
-                $output->writeln("<error>[x] Module <<{$module}>> does not exists!</error>");
-                return Command::FAILURE;
-            }
-
-            $dirs = [$path];
-
-        } else {
-            $dirs = [$this->app->path('#modules:')];
+        if ($module && $module == 'System') {
+            $module = 'App';
         }
 
-        foreach ($dirs as $dir) {
+        if ($module && !($this->app->path("#addons:{$module}") || $this->app->path("#addons:{$module}"))) {
+            $output->writeln("<error>[x] Module <<{$module}>> does not exists!</error>");
+            return Command::FAILURE;
+        }
 
+        $modules = array_filter($this->app['modules']->getArrayCopy(), function($m) use($module) {
+
+            $name = basename($m->_dir);
+
+            if ($module && $module == 'App' && $name == 'System') {
+                return true;
+            }
+
+            return !$module || $name == $module;
+        });
+
+        foreach ($modules as $m) {
+
+            $dir= $m->_dir;
+            $name = basename($m->_dir);
+
+            $strings = ['@meta' => ['language' => \App\Helper\i18n::$locales[$locale] ?? strtoupper($locale)]];
             $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir), \RecursiveIteratorIterator::SELF_FIRST);
 
             foreach ($iterator as $file) {
 
-                if (in_array($file->getExtension(), $extensions)) {
+                if (!$file->isFile() || !in_array($file->getExtension(), $extensions)) continue;
 
-                    $contents = file_get_contents($file->getRealPath());
+                $contents = file_get_contents($file->getRealPath());
 
-                    preg_match_all('/(?:{{ t|\<\?=t|App\.i18n\.get|App\.ui\.notify)\((["\'])((?:[^\1]|\\.)*?)\1(,\s*(["\'])((?:[^\4]|\\.)*?)\4)?\)/', $contents, $matches);
+                preg_match_all('/(?:{{ t|\<\?=t|App\.i18n\.get|App\.ui\.notify)\((["\'])((?:[^\1]|\\.)*?)\1(,\s*(["\'])((?:[^\4]|\\.)*?)\4)?\)/', $contents, $matches);
 
-                    if (!isset($matches[2])) continue;
+                if (!isset($matches[2])) continue;
 
-                    foreach ($matches[2] as &$string) {
-                        $strings[$string] = $string;
-                    }
-
+                foreach ($matches[2] as &$string) {
+                    $strings[$string] = $string;
                 }
             }
-        }
 
-        if (count($strings)) {
+            if (count($strings)) {
 
-            if ($this->app->path("#config:app/i18n/{$lang}.php")) {
-                $langfile = include($this->app->path("#config:cockpit/i18n/{$lang}.php"));
-                $strings  = array_merge($strings, $langfile);
+                if ($name == 'System') {
+                    $name = 'App';
+                }
+
+                if ($this->app->path("#config:i18n/{$name}/{$locale}.php")) {
+                    $langfile = include($this->app->path("#config:i18n/{$name}/{$locale}.php"));
+                    $strings  = array_merge($strings, $langfile);
+                }
+
+                ksort($strings);
+
+                $this->app->helper('fs')->write("#config:i18n/{$name}/{$locale}.php", '<?php return '.$this->app->helper('utils')->var_export($strings, true).';');
             }
 
-            ksort($strings);
-
-            if ($module) {
-                $this->app->helper('fs')->write("#config:app/i18n/{$module}/{$lang}.php", '<?php return '.$this->app->helper('utils')->var_export($strings, true).';');
-            } else {
-                $this->app->helper('fs')->write("#config:app/i18n/{$lang}.php", '<?php return '.$this->app->helper('utils')->var_export($strings, true).';');
-            }
         }
 
-        $output->writeln('<info>[✓]</info> Lang file created!');
+        $output->writeln('<info>[✓]</info> Lang file(s) created!');
         return Command::SUCCESS;
     }
 }
