@@ -1,5 +1,8 @@
 # Cockpit - Content Platform
 
+![Cockpit](https://repository-images.githubusercontent.com/331007481/d9f6bebb-865d-4982-a12e-ef618f8ed1f3)
+
+
 * Homepage: [http://getcockpit.com](https://getcockpit.com)
 * Twitter: [@getcockpit](http://twitter.com/getcockpit)
 * Support Forum: [https://discourse.getcockpit.com](https://discourse.getcockpit.com)
