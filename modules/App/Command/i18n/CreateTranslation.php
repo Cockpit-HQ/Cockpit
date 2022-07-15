@@ -26,6 +26,7 @@ class CreateTranslation extends Command {
 
     protected function execute(InputInterface $input, OutputInterface $output): int {
 
+        $translator = null;
         $locale = $input->getArgument('locale');
         $module = $input->getArgument('module');
 
@@ -51,6 +52,10 @@ class CreateTranslation extends Command {
             return !$module || $name == $module;
         });
 
+        if ($this->app->module('lokalize')) {
+            $translator = $this->app->module('lokalize');
+        }
+
         foreach ($modules as $m) {
 
             $dir= $m->_dir;
@@ -58,6 +63,8 @@ class CreateTranslation extends Command {
 
             $strings = ['@meta' => ['language' => \App\Helper\i18n::$locales[$locale] ?? strtoupper($locale)]];
             $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir), \RecursiveIteratorIterator::SELF_FIRST);
+
+            $output->writeln("<info>-></info> {$name}");
 
             foreach ($iterator as $file) {
 
@@ -70,7 +77,15 @@ class CreateTranslation extends Command {
                 if (!isset($matches[2])) continue;
 
                 foreach ($matches[2] as &$string) {
+
                     $strings[$string] = $string;
+
+                    if ($translator) {
+                        $ret = $translator->translate($string, $locale);
+                        if ($ret && !isset($ret['error'])) {
+                            $strings[$string] = $ret;
+                        }
+                    }
                 }
             }
 
@@ -92,7 +107,7 @@ class CreateTranslation extends Command {
 
         }
 
-        $output->writeln('<info>[✓]</info> Lang file(s) created!');
+        $output->writeln('<info>[✓]</info> Lang file(s) created in <info>#config:i18n</info>!');
         return Command::SUCCESS;
     }
 }
