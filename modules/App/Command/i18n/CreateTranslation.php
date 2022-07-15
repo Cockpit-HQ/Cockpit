@@ -36,7 +36,7 @@ class CreateTranslation extends Command {
             $module = 'App';
         }
 
-        if ($module && !($this->app->path("#addons:{$module}") || $this->app->path("#addons:{$module}"))) {
+        if ($module && !($this->app->path("#modules:{$module}") || $this->app->path("#addons:{$module}"))) {
             $output->writeln("<error>[x] Module <<{$module}>> does not exists!</error>");
             return Command::FAILURE;
         }
