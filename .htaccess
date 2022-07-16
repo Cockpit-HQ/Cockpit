@@ -11,6 +11,17 @@
   Require all denied
 </Files>
 
+<Files *.php>
+    Order Deny,Allow
+    Deny from all
+    Allow from 127.0.0.1
+</Files>
+
+<Files index.php>
+    Order Allow,Deny
+    Allow from all
+</Files>
+
 # Don't show directory listings
 Options -Indexes
 
