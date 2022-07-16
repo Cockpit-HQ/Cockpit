@@ -33,13 +33,13 @@ kiss-tabs tab[active="true"] {
     opacity: .5;
 }
 
-[active="true"] .kiss-tabs-nav-link {
+[active="true"] > .kiss-tabs-nav-link {
     opacity: 1;
     color: var(--kiss-tabs-active-color, inherit);
     font-weight: bold;
 }
 
-[active="true"] .kiss-tabs-nav-link:after {
+[active="true"] > .kiss-tabs-nav-link:after {
     content: "";
     position: absolute;
     left: 0;

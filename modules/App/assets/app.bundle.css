@@ -2956,12 +2956,12 @@ kiss-tabs tab[active="true"] {
     padding: 8px 12px;
     opacity: .5;
 }
-[active="true"] .kiss-tabs-nav-link {
+[active="true"] > .kiss-tabs-nav-link {
     opacity: 1;
     color: var(--kiss-tabs-active-color, inherit);
     font-weight: bold;
 }
-[active="true"] .kiss-tabs-nav-link:after {
+[active="true"] > .kiss-tabs-nav-link:after {
     content: "";
     position: absolute;
     left: 0;
@@ -4088,7 +4088,7 @@ kiss-card[hover*="contrast"]:hover {
     margin-right: 25px;
     text-transform: uppercase;
 }
-[active="true"] .kiss-tabs-nav-link:after {
+[active="true"] > .kiss-tabs-nav-link:after {
     bottom: -0.5px;
 }
 .kiss-table {

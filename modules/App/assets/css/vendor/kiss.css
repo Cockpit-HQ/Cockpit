@@ -282,7 +282,7 @@ kiss-card[hover*="contrast"]:hover {
     text-transform: uppercase;
 }
 
-[active="true"] .kiss-tabs-nav-link:after {
+[active="true"] > .kiss-tabs-nav-link:after {
     bottom: -0.5px;
 }
 
