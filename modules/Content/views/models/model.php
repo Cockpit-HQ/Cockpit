@@ -86,10 +86,10 @@
                         <tab :caption="t('Fields')">
                             <fields-manager class="kiss-margin" v-model="model.fields"></fields-manager>
                         </tab>
-                        <tab :caption="t('Content preview')">
+                        <tab :caption="t('Preview')">
 
                             <kiss-card class="animated fadeIn kiss-padding kiss-align-center kiss-text-caption" theme="bordered contrast" v-if="!model.preview.length">
-                                <div class="kiss-text-bold"><?=t('No preview urls defined')?></div>
+                                <div class="kiss-text-bold"><?=t('No content preview urls defined')?></div>
                             </kiss-card>
 
                             <vue-draggable v-model="model.preview" v-if="model.preview.length" handle=".fm-handle">
@@ -111,7 +111,7 @@
                             </div>
 
                         </tab>
-                        <tab :caption="'Misc'">
+                        <tab :caption="'Other'">
 
                             <div class="kiss-flex">
                                 <div class="kiss-flex-1">

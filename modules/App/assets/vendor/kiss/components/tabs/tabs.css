@@ -14,7 +14,6 @@ kiss-tabs tab[active="true"] {
     display: flex;
     list-style: none;
     padding: 0;
-    justify-content: center;
     margin: 0 0 20px 0;
 }
 
@@ -29,7 +28,6 @@ kiss-tabs tab[active="true"] {
     line-height: inherit;
     letter-spacing: .015em;
     text-decoration: none;
-    text-transform: uppercase;
     color: inherit;
     padding: 8px 12px;
     opacity: .5;

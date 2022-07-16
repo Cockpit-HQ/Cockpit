@@ -2940,7 +2940,6 @@ kiss-tabs tab[active="true"] {
     display: flex;
     list-style: none;
     padding: 0;
-    justify-content: center;
     margin: 0 0 20px 0;
 }
 .kiss-tabs-nav-link:hover {
@@ -2953,7 +2952,6 @@ kiss-tabs tab[active="true"] {
     line-height: inherit;
     letter-spacing: .015em;
     text-decoration: none;
-    text-transform: uppercase;
     color: inherit;
     padding: 8px 12px;
     opacity: .5;
@@ -4080,6 +4078,18 @@ kiss-card[hover*="contrast"]:hover {
 }
 .kiss-breadcrumbs > .active > *  {
     font-weight: bold;
+}
+.kiss-tabs-nav {
+    border-bottom: 1px var(--kiss-hr-color) solid;
+}
+.kiss-tabs-nav-link {
+    padding-left: 0;
+    padding-right: 0;
+    margin-right: 25px;
+    text-transform: uppercase;
+}
+[active="true"] .kiss-tabs-nav-link:after {
+    bottom: -0.5px;
 }
 .kiss-table {
     width: 100%;
