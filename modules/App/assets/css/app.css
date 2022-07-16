@@ -62,6 +62,7 @@ html[data-theme='light'] {
 
     --kiss-input-background-active: #fff;
     --kiss-table-heading-background-color: #fff;
+    --kiss-table-row-hover-color: #efefef;
 
     --app-shadow-color: rgba(0,0,0,0.12);
     --app-header-background: #eff7f7f0;

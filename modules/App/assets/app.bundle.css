@@ -3906,6 +3906,7 @@ td.kiss-text-truncate { max-width: 0; }
 
     --kiss-breadcrumbs-size: 11px;
     --kiss-table-heading-background-color: #171b24;
+    --kiss-table-row-hover-color: #222;
 }
 [kiss-container="medium"],
 kiss-container[size="medium"] {
@@ -4109,6 +4110,9 @@ kiss-card[hover*="contrast"]:hover {
     text-align: left;
     vertical-align: middle;
 }
+.kiss-table tbody tr:hover td {
+    background-color: var(--kiss-table-row-hover-color);
+}
 .kiss-checkbox {
     -moz-appearance: none;
     -webkit-appearance: none;
@@ -4208,6 +4212,7 @@ html[data-theme='light'] {
 
     --kiss-input-background-active: #fff;
     --kiss-table-heading-background-color: #fff;
+    --kiss-table-row-hover-color: #efefef;
 
     --app-shadow-color: rgba(0,0,0,0.12);
     --app-header-background: #eff7f7f0;

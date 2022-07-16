@@ -57,6 +57,7 @@
 
     --kiss-breadcrumbs-size: 11px;
     --kiss-table-heading-background-color: #171b24;
+    --kiss-table-row-hover-color: #222;
 }
 
 [kiss-container="medium"],
@@ -303,6 +304,10 @@ kiss-card[hover*="contrast"]:hover {
 .kiss-table td {
     text-align: left;
     vertical-align: middle;
+}
+
+.kiss-table tbody tr:hover td {
+    background-color: var(--kiss-table-row-hover-color);
 }
 
 .kiss-checkbox {
