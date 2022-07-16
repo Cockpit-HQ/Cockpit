@@ -61,7 +61,7 @@ class CreateTranslation extends Command {
             $dir= $m->_dir;
             $name = basename($m->_dir);
 
-            $strings = ['@meta' => ['language' => \App\Helper\i18n::$locales[$locale] ?? strtoupper($locale)]];
+            $strings = [];
             $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir), \RecursiveIteratorIterator::SELF_FIRST);
 
             $output->writeln("<info>-></info> {$name}");
@@ -77,23 +77,39 @@ class CreateTranslation extends Command {
                 if (!isset($matches[2])) continue;
 
                 foreach ($matches[2] as &$string) {
-
                     $strings[$string] = $string;
-
-                    if ($translator) {
-                        $ret = $translator->translate($string, $locale);
-                        if ($ret && !isset($ret['error'])) {
-                            $strings[$string] = $ret;
-                        }
-                    }
                 }
             }
 
             if (count($strings)) {
 
+                // try to auto-translate
+                if ($translator) {
+
+                    $keys = array_keys($strings);
+                    $values = array_values($strings);
+
+                    $ret = $translator->translate(implode("\n@\n", $values), $locale);
+
+                    if ($ret && !isset($ret['error'])) {
+
+                        $values = explode("\n@\n", $ret);
+
+                        foreach ($keys as $idx => $key) {
+
+                            if (!$idx || !isset($values[$idx])) continue;
+                            $strings[$key] = $values[$idx];
+                        }
+                    }
+                }
+
                 if ($name == 'System') {
                     $name = 'App';
                 }
+
+                $strings = array_merge([
+                    '@meta' => ['language' => \App\Helper\i18n::$locales[$locale] ?? strtoupper($locale)]
+                ], $strings);
 
                 if ($this->app->path("#config:i18n/{$name}/{$locale}.php")) {
                     $langfile = include($this->app->path("#config:i18n/{$name}/{$locale}.php"));
