@@ -1,6 +1,6 @@
 # Release Notes
 
-## WIP
+## 2.0.1 (2022-07-17)
 
 - Refactor admin ui localization
 - Object.freeze App._vars + App._paths
