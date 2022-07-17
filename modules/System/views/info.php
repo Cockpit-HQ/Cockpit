@@ -64,6 +64,16 @@
                     </kiss-grid>
                     <?php endif ?>
 
+                    <div class="kiss-text-caption kiss-text-bold kiss-size-bold kiss-margin">
+                        <?=('License')?>
+                    </div>
+
+                    <kiss-card class="kiss-padding kiss-bgcolor-contrast">
+                        <div class="kiss-text-monospace kiss-size-small kiss-color-muted" style="max-height:200px;overflow:auto;">
+                            <?=($this->path('#root:LICENSE') ? nl2br($this->helper('fs')->read('#root:LICENSE')) : '!!! LICENSE IS MISSING !!!')?>
+                        </div>
+                    </kiss-card>
+
                 </tab>
 
                 <tab class="kiss-margin animated fadeIn" caption="PHP">
@@ -78,7 +88,7 @@
                             <tr><td>Memory limit</td><td class="kiss-color-muted"><?=ini_get("memory_limit")?></td></tr>
                             <tr><td>Upload file size limit</td><td class="kiss-color-muted"><?=ini_get("upload_max_filesize")?></td></tr>
                             <tr><td>Realpath Cache</td><td class="kiss-color-muted"><?=ini_get("realpath_cache_size")?> / <?=ini_get("realpath_cache_ttl")?> (ttl)</td></tr>
-                            <tr><td>System temporary dir</td><td class="kiss-color-muted"><?=sys_get_temp_dir()?></td></tr>
+                            <tr><td>System temporary directory</td><td class="kiss-color-muted"><?=sys_get_temp_dir()?></td></tr>
                             <tr>
                                 <td>OPCache</td>
                                 <td><span class="kiss-badge kiss-badge-outline kiss-color-<?=(ini_get("opcache.enable") ? 'success':'danger')?>"><?=(ini_get("opcache.enable") ? 'Enabled':'Disabled')?></span></td>
