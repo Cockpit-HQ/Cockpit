@@ -31,7 +31,7 @@ export default {
                 </div>
 
                 <div class="kiss-margin">
-                    <button class="kiss-button kiss-button-primary kiss-width-1-1">{{ t('Login') }}</button>
+                    <button class="kiss-button kiss-button-primary kiss-width-1-1">{{ t('Log in') }}</button>
                 </div>
 
             </form>
