@@ -129,6 +129,11 @@ kiss-popoutmenu kiss-navlist > ul > li > a > icon {
     line-height: 2;
 }
 
+select.kiss-input optgroup,
+select.kiss-input option {
+    background: var(--kiss-base-background-color);
+}
+
 .kiss-input[type="text"],
 .kiss-input[type="password"] {
     width: 100%;

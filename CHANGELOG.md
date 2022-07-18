@@ -1,5 +1,9 @@
 # Release Notes
 
+## WIP
+
+- Fix select boxes in dark theme (chrome on windows) #8
+
 ## 2.0.1 (2022-07-17)
 
 - Refactor admin ui localization
