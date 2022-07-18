@@ -1,5 +1,7 @@
 import { FieldTypes } from "../js/settings.js"
 
+let fuid = 0;
+
 let FieldRenderer = {
 
     data() {
@@ -24,6 +26,7 @@ let FieldRenderer = {
             val: this.modelValue,
             fieldItem: null,
             fieldTypes: null,
+            uid: `field-render-uid-${++fuid}`
         }
     },
 
@@ -93,6 +96,16 @@ let FieldRenderer = {
 
         saveFieldItem() {
 
+            let validate = {root: document.querySelector(`[data-field-render-uid="${this.uid}"]`)};
+
+            if (validate.root) {
+                App.trigger('fields-renderer-validate', validate);
+            }
+
+            if (validate.errors) {
+                return;
+            }
+
             if (this.fieldItem.field.required) {
 
                 let field = this.fieldItem.field,
@@ -138,7 +151,7 @@ let FieldRenderer = {
     template: /*html*/`
         <div v-if="fieldTypes">
 
-            <component :is="getFieldType()" v-model="val" v-bind="field.opts" v-if="!field.multiple"></component>
+            <component :is="getFieldType()" v-model="val" v-bind="field.opts" :data-field-render-uid="uid" v-if="!field.multiple"></component>
 
             <div v-if="field.multiple">
                 <kiss-card class="kiss-padding-small kiss-size-small kiss-color-muted" theme="bordered contrast" v-show="!val || !Array.isArray(val) || !val.length">{{ t('No items') }}</kiss-card>
@@ -169,7 +182,7 @@ let FieldRenderer = {
         </div>
 
         <teleport to="body">
-            <kiss-dialog open="true" size="large" v-if="fieldItem">
+            <kiss-dialog open="true" size="large" :data-field-render-uid="uid" v-if="fieldItem">
                 <kiss-content class="animated fadeInUp faster">
 
                     <div class="kiss-flex kiss-flex-middle">
