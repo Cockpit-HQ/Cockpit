@@ -397,7 +397,7 @@ export default {
                             <icon class="kiss-size-5 kiss-color-muted kiss-margin-xsmall-left" v-if="field.i18n && locales.length" :title="t('Localized')">language</icon>
                             <icon class="kiss-size-5 kiss-color-danger kiss-margin-xsmall-left" v-if="field.required" :title="t('Required')">trip_origin</icon>
                         </label>
-                        <a class="app-fieldcontainer-visible-hover kiss-size-xsmall kiss-margin-left" @click="clear(field, val)" v-if="!nested">{{ t('Clear') }}</a>
+                        <a class="app-fieldcontainer-visible-hover kiss-margin-left" :class="{'kiss-color-muted': nested}" @click="clear(field, val)" :title="t('Clear') + ': ' + (field.label || field.name)"><icon>backspace</icon></a>
                     </div>
                 </div>
                 <div class="kiss-color-muted kiss-size-xsmall" v-if="field.info">{{ field.info }}</div>
