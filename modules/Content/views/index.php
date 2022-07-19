@@ -39,7 +39,7 @@
                                     <a class="kiss-flex-1 kiss-margin-right kiss-text-bold kiss-link-muted" :href="$route(`/content/singleton/item/${model.name}`)">{{ model.label || model.name }}</a>
                                     <a @click="toggleModelActions(model)"><icon>more_horiz</icon></a>
                                 </div>
-                                <div class="kiss-margin-xsmall-top kiss-color-muted kiss-size-xsmall">{{model.info || 'Singleton'}}</div>
+                                <div class="kiss-margin-xsmall-top kiss-color-muted kiss-size-xsmall">{{model.info || t('Singleton')}}</div>
                             </div>
                         </kiss-card>
 

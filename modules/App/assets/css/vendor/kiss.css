@@ -129,6 +129,9 @@ kiss-popoutmenu kiss-navlist > ul > li > a > icon {
     line-height: 2;
 }
 
+/*
+ * Fix select boxes in dark theme (chrome on windows)
+ */
 select.kiss-input optgroup,
 select.kiss-input option {
     background: var(--kiss-base-background-color);

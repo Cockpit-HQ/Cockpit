@@ -78,9 +78,10 @@ export default {
     template: /*html*/`
         <div field="asset">
 
-            <div class="kiss-bgcolor-contrast kiss-padding-large kiss-margin-small kiss-align-center kiss-color-muted" v-if="!val">
+            <div class="kiss-bgcolor-contrast kiss-padding-large kiss-margin-small kiss-align-center kiss-color-muted kiss-position-relative" v-if="!val">
                 <kiss-svg :src="$base('assets:icon.svg')" width="30" height="30"><canvas width="30" height="30"></canvas></kiss-svg>
                 <div class="kiss-margin-small kiss-size-small">{{ t('No asset selected') }}</div>
+                <a class="kiss-cover" @click="pickAsset()"></a>
             </div>
 
             <div class="kiss-margin-small" v-if="val">

@@ -80,7 +80,13 @@ export default {
                 placeholder: this.placeholder ? true : false,
                 placeholderValue: this.placeholder || '',
                 removeItemButton: true,
-                choices: this.options
+                searchResultLimit: 8,
+                choices: this.options,
+
+                loadingText: App.i18n.get('Loading...'),
+                noResultsText: App.i18n.get('No results found'),
+                noChoicesText: App.i18n.get('No choices to choose from'),
+                itemSelectText: App.i18n.get('Press to select'),
             })
 
             this.updateChoices();
