@@ -10,19 +10,23 @@ export default {
     props: {
         openApiUrl: {
             type: String
+        },
+        apiKey: {
+            type: String
         }
     },
 
     computed: {
         iframeSrc() {
 
+            let apiKey = this.apiKey || '';
             let computedStyle = getComputedStyle(document.documentElement);
 
             let bgColor = computedStyle.getPropertyValue('--kiss-base-background-color').trim().replace('#', '%23');
             let primaryColor = computedStyle.getPropertyValue('--kiss-color-primary').trim().replace('#', '%23');
             let textColor = computedStyle.getPropertyValue('--kiss-base-text-color').trim().replace('#', '%23');
 
-            return this.$route(`/system/api/restApiViewer?specUrl=${this.openApiUrl}&bgColor=${bgColor}&primaryColor=${primaryColor}&textColor=${textColor}`)
+            return this.$route(`/system/api/restApiViewer?specUrl=${this.openApiUrl}&bgColor=${bgColor}&primaryColor=${primaryColor}&textColor=${textColor}&apiKey=${apiKey}`);
         }
     },
 

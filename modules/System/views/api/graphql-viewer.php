@@ -82,7 +82,7 @@
             headers: {
               'Accept': 'application/json',
               'Content-Type': 'application/json',
-              'API-TOKEN': (window.apiToken && apiToken.value) || ''
+              'API-KEY': (window.apiKey && apiKey.value) || ''
             },
             body: JSON.stringify(graphQLParams),
           }).then(function (response) {
@@ -112,7 +112,7 @@
 
   </script>
 
-  <input id="apiToken" type="text" placeholder="API Token">
+  <input id="apiKey" type="text" placeholder="API Key" value="<?=($apiKey ? $apiKey : '')?>">
 
 <style>
 
@@ -292,7 +292,7 @@ a {
   color: #7b9ad4;
 }
 
-#apiToken {
+#apiKey {
   position: absolute;
   z-index: 2;
   top: 12px;

@@ -176,6 +176,7 @@ class Api extends App {
 
         $this->helper('session')->close();
 
+        $apiKey = $this->param('apiKey');
         $bgColor = $this->param('bgColor');
         $primaryColor = $this->param('primaryColor');
         $textColor = $this->param('textColor');
@@ -184,20 +185,21 @@ class Api extends App {
 
         $openApiUrl = $this->param('specUrl', $this->app->routeUrl('/system/api/openapi'));
 
-        return $this->render('system:views/api/rest-api-viewer.php', compact('openApiUrl', 'bgColor', 'primaryColor', 'textColor'));
+        return $this->render('system:views/api/rest-api-viewer.php', compact('openApiUrl', 'apiKey', 'bgColor', 'primaryColor', 'textColor'));
     }
 
     public function graphqlViewer() {
 
         $this->helper('session')->close();
 
+        $apiKey = $this->param('apiKey');
         $bgColor = $this->param('bgColor');
         $primaryColor = $this->param('primaryColor');
         $textColor = $this->param('textColor');
 
         $this->layout = 'app:layouts/raw.php';
 
-        return $this->render('system:views/api/graphql-viewer.php', compact('bgColor', 'primaryColor', 'textColor'));
+        return $this->render('system:views/api/graphql-viewer.php', compact('apiKey', 'bgColor', 'primaryColor', 'textColor'));
     }
 
     protected function cache() {
