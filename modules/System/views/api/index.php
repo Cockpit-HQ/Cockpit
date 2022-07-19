@@ -37,7 +37,11 @@
                 </div>
             </kiss-card>
 
-            <kiss-card class="kiss-padding kiss-flex kiss-flex-middle" theme="bordered contrast">
+            <div class="kiss-text-caption kiss-text-bold kiss-margin-large-top">
+                <?=t('Access')?>
+            </div>
+
+            <kiss-card class="kiss-padding kiss-flex kiss-flex-middle kiss-margin-small" theme="bordered contrast">
                 <div></div><icon>public</icon></div>
                 <div class="kiss-flex-1 kiss-margin-small-left kiss-margin-small-right">
                     <div class="kiss-color-muted kiss-size-small">
@@ -70,12 +74,12 @@
                                 <a class="kiss-cover" :href="$route('/system/api/key/'+key._id)"></a>
                             </div>
                             <div class="kiss-flex-1 kiss-margin-left kiss-align-right kiss-text-monospace kiss-color-muted">*****{{ key.key.substr(-5, 5)}}</div>
+                            <a class="kiss-margin-left" href="#" @click="copyApiKey(key.key)"><icon>content_copy</icon></a>
+                            <a class="kiss-margin-small-left kiss-color-danger" @click="remove(key)"><icon>delete</icon></a>
                             <div class="kiss-margin-left kiss-width-1-5 kiss-button-group kiss-visible@m" :class="{'kiss-disabled': !key.key}">
                                 <a class="kiss-button kiss-button-small kiss-flex-1" href="#" @click="showApiViewer(key.key)">REST</a>
                                 <a class="kiss-button kiss-button-small kiss-flex-1" href="#" @click="showGraphQLViewer(key.key)">GraphQL</a>
                             </div>
-                            <a class="kiss-margin-left" href="#" @click="copyApiKey(key.key)"><icon>content_copy</icon></a>
-                            <a class="kiss-margin-small-left kiss-color-danger" @click="remove(key)"><icon>delete</icon></a>
                         </div>
                     </li>
 
