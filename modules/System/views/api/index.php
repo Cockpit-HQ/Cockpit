@@ -21,7 +21,7 @@
                             <?=$this->getSiteUrl(true)?>/api
                         </div>
                         <div class="kiss-margin-left"><a href="#" @click.prevent="copyEndpoint('<?=$this->getSiteUrl(true)?>/api', 'REST-Api endpoint copied!')"><icon>content_copy</icon></a></div>
-                        <div class="kiss-margin-small-left kiss-width-1-5"><a class="kiss-button kiss-button-small kiss-width-1-1" href="#" @click="showApiViewer()">{{ t('Playground') }}</a></div>
+                        <div class="kiss-margin-small-left kiss-width-1-5 kiss-visible@m"><a class="kiss-button kiss-button-small kiss-width-1-1" href="#" @click="showApiViewer()">{{ t('Playground') }}</a></div>
                     </div>
                 </div>
                 <hr class="kiss-margin-remove">
@@ -32,7 +32,7 @@
                             <?=$this->getSiteUrl(true)?>/api/gql
                         </div>
                         <div class="kiss-margin-left"><a href="#" @click.prevent="copyEndpoint('<?=$this->getSiteUrl(true)?>/api/gql', 'GraphQL endpoint copied!')"><icon>content_copy</icon></a></div>
-                        <div class="kiss-margin-small-left kiss-width-1-5"><a class="kiss-button kiss-button-small kiss-width-1-1" href="#" @click="showGraphQLViewer()">{{ t('Playground') }}</a></div>
+                        <div class="kiss-margin-small-left kiss-width-1-5 kiss-visible@m"><a class="kiss-button kiss-button-small kiss-width-1-1" href="#" @click="showGraphQLViewer()">{{ t('Playground') }}</a></div>
                     </div>
                 </div>
             </kiss-card>
@@ -70,9 +70,9 @@
                                 <a class="kiss-cover" :href="$route('/system/api/key/'+key._id)"></a>
                             </div>
                             <div class="kiss-flex-1 kiss-margin-left kiss-align-right kiss-text-monospace kiss-color-muted">*****{{ key.key.substr(-5, 5)}}</div>
-                            <div class="kiss-margin-left kiss-button-group" :class="{'kiss-disabled': !key.key}">
-                                <a class="kiss-button kiss-button-small kiss-width-1-1" href="#" @click="showApiViewer(key.key)">REST</a>
-                                <a class="kiss-button kiss-button-small kiss-width-1-1" href="#" @click="showGraphQLViewer(key.key)">GraphQL</a>
+                            <div class="kiss-margin-left kiss-width-1-5 kiss-button-group kiss-visible@m" :class="{'kiss-disabled': !key.key}">
+                                <a class="kiss-button kiss-button-small kiss-flex-1" href="#" @click="showApiViewer(key.key)">REST</a>
+                                <a class="kiss-button kiss-button-small kiss-flex-1" href="#" @click="showGraphQLViewer(key.key)">GraphQL</a>
                             </div>
                             <a class="kiss-margin-left" href="#" @click="copyApiKey(key.key)"><icon>content_copy</icon></a>
                             <a class="kiss-margin-small-left kiss-color-danger" @click="remove(key)"><icon>delete</icon></a>
