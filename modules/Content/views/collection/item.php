@@ -243,10 +243,6 @@
                 }
             },
 
-            components: {
-                'fields-renderer': 'system:assets/vue-components/fields-renderer.js',
-            },
-
             computed: {
 
                 isModified() {

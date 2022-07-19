@@ -8,6 +8,7 @@
 - Enable picking item by clicking on empty placeholder area (Asset + Content Link field)
 - Open api playground with preselected api key
 - Enable clear field function also in nested fields
+- Make fields-manger + fields-renderer component available by default
 
 ## 2.0.1 (2022-07-17)
 

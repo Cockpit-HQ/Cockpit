@@ -16,10 +16,6 @@ export default {
         }
     },
 
-    components: {
-        'fields-renderer': Vue.defineAsyncComponent(() => App.utils.import('system:assets/vue-components/fields-renderer.js'))
-    },
-
     mounted() {
 
         this.loading = true;

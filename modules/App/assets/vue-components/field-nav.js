@@ -33,10 +33,6 @@ let editItem = {
         }
     },
 
-    components: {
-        'fields-renderer': Vue.defineAsyncComponent(() => App.utils.import('system:assets/vue-components/fields-renderer.js'))
-    },
-
     methods: {
         save() {
             Object.assign(this.item, this.data);
@@ -93,7 +89,7 @@ export default {
         info: 'Nested navigation tree',
         icon: 'system:assets/icons/list.svg',
         settings: [
-            {name: 'fields', type: 'fields-manager'},
+            {name: 'fields', type: 'fields-manager', opts: {i18n: false}},
         ],
     },
 

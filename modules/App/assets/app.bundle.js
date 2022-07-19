@@ -2526,6 +2526,10 @@
       }
   });
 
+  // this file gets auto imported in app:assets/js/components.js
+  VueView.component('fields-manager', 'system:assets/vue-components/fields-manager.js');
+  VueView.component('fields-renderer', 'system:assets/vue-components/fields-renderer.js');
+
   // General
   VueView.component('vue-draggable', Vue.defineAsyncComponent(() => {
       return new Promise(resolve => {

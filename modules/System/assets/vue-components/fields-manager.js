@@ -22,10 +22,6 @@ let FieldsManager = {
         }
     },
 
-    components: {
-        'fields-renderer': Vue.defineAsyncComponent(() => App.utils.import('system:assets/vue-components/fields-renderer.js')),
-    },
-
     mounted() {
         FieldTypes.get().then(fieldTypes => {
 
@@ -41,6 +37,10 @@ let FieldsManager = {
         modelValue: {
             type: Array,
             default: []
+        },
+        i18n: {
+            type: Boolean,
+            default: true
         }
     },
 
@@ -246,7 +246,7 @@ let FieldsManager = {
 
                                 <div class="kiss-margin">
                                     <field-boolean class="kiss-margin-small" v-model="field.required" :label="t('Required')"></field-boolean>
-                                    <field-boolean class="kiss-margin-small" v-model="field.i18n" :label="t('Localize field')"></field-boolean>
+                                    <field-boolean class="kiss-margin-small" v-model="field.i18n" :label="t('Localize field')" v-if="i18n"></field-boolean>
                                     <field-boolean class="kiss-margin-small" v-model="field.multiple" :label="t('Allow multiple values')"></field-boolean>
                                 </div>
 

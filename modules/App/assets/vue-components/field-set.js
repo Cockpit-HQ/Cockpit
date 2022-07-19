@@ -5,7 +5,7 @@ export default {
         info: 'Set of fields',
         icon: 'system:assets/icons/object.svg',
         settings: [
-            {name: 'fields', type: 'fields-manager'},
+            {name: 'fields', type: 'fields-manager', opts: {i18n: false}},
             {name: 'display', type: 'text'},
         ],
         render(value, field, context) {
@@ -45,10 +45,6 @@ export default {
             type: Array,
             default: []
         },
-    },
-
-    components: {
-        'fields-renderer': Vue.defineAsyncComponent(() => App.utils.import('system:assets/vue-components/fields-renderer.js'))
     },
 
     watch: {

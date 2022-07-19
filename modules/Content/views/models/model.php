@@ -127,6 +127,18 @@
 
                             <div class="kiss-flex">
                                 <div class="kiss-flex-1">
+                                    <label><?=t('Icon')?></label>
+                                    <div class="kiss-size-xsmall kiss-color-muted kiss-margin-xsmall-top">
+                                        <?=t('Model icon')?>
+                                    </div>
+                                </div>
+                                <div><field-text class="kiss-size-large" v-model="model.icon"></field-text></div>
+                            </div>
+
+                            <hr>
+
+                            <div class="kiss-flex">
+                                <div class="kiss-flex-1">
                                     <label><?=t('Enable revisions')?></label>
                                     <div class="kiss-size-xsmall kiss-color-muted kiss-margin-xsmall-top">
                                         <?=t('Store every content update as version')?>
@@ -181,10 +193,6 @@
                         isUpdate: <?=json_encode($isUpdate)?>,
                         saving: false
                     }
-                },
-
-                components: {
-                    'fields-manager': 'system:assets/vue-components/fields-manager.js'
                 },
 
                 methods: {

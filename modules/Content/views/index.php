@@ -30,7 +30,7 @@
                             <div class="kiss-position-relative kiss-padding-small kiss-bgcolor-contrast kiss-width-1-6">
                                 <canvas width="600" height="200"></canvas>
                                 <div class="kiss-cover kiss-flex kiss-flex-middle kiss-flex-center">
-                                    <div :style="{color: model.color || 'inherit' }"><kiss-svg src="<?=$this->base('content:assets/icons/singleton.svg')?>" width="30" height="30"></kiss-svg></div>
+                                    <div :style="{color: model.color || 'inherit' }"><kiss-svg :src="$base(model.icon || 'content:assets/icons/singleton.svg')" width="30" height="30"></kiss-svg></div>
                                 </div>
                                 <a class="kiss-cover" :href="$route(`/content/singleton/item/${model.name}`)"></a>
                             </div>
@@ -60,7 +60,7 @@
                         <kiss-card class="animated fadeIn" theme="shadowed contrast" hover="shadow">
                             <div class="kiss-padding kiss-flex kiss-flex-middle">
                                 <div class="kiss-margin-small-right" :style="{color: model.color || 'inherit' }">
-                                    <kiss-svg class="kiss-margin-auto" src="<?=$this->base('content:assets/icons/collection.svg')?>" width="30" height="30"></kiss-svg>
+                                    <kiss-svg class="kiss-margin-auto" :src="$base(model.icon || 'content:assets/icons/collection.svg')" width="30" height="30"></kiss-svg>
                                 </div>
                                 <div class="kiss-flex-1 kiss-position-relative kiss-margin-right kiss-text-bold kiss-link-muted">
                                     {{ model.label || model.name }}
