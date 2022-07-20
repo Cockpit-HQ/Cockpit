@@ -50,23 +50,37 @@ class Utils extends App {
 
     public function icons() {
 
-        $path = $this->app->path('system:assets/icons');
-        $dir = new \RecursiveDirectoryIterator($path);
-        $iterator = new \RecursiveIteratorIterator($dir);
-        $icons = [];
+        $icons = new \ArrayObject([]);
+        $dirs  = [
+            '#config:icons',
+        ];
 
-        foreach ($iterator as $f) {
+        foreach ($dirs as $p) {
 
-            if ($f->isDir()) continue;
-            if ($f->getExtension() != 'svg') continue;
+            $path = $this->app->path($p);
 
-            $icons[] = [
-                'name' => $f->getBasename('.svg'),
-                'path' => 'system:assets/icons'.str_replace($path, '', $f->getRealPath()),
-            ];
+            if (!$path) continue;
+
+            $dir = new \RecursiveDirectoryIterator($path);
+            $iterator = new \RecursiveIteratorIterator($dir);
+
+
+            foreach ($iterator as $f) {
+
+                if ($f->isDir()) continue;
+                if ($f->getExtension() != 'svg') continue;
+
+                $icons[] = [
+                    'name' => $f->getBasename('.svg'),
+                    'path' => $p.str_replace($path, '', $f->getRealPath()),
+                ];
+            }
+
         }
 
-        return $icons;
+        $this->app->trigger('system.icons.collect', [$icons]);
+
+        return $icons->getArrayCopy();
     }
 
 }
