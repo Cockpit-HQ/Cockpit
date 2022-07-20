@@ -1,6 +1,6 @@
 # Release Notes
 
-## WIP
+## 2.0.1 (2022-07-20)
 
 - Fix select boxes in dark theme (chrome on windows) #8
 - Change login (noun) to log in (verb)
