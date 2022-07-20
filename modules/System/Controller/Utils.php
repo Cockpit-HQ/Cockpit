@@ -48,4 +48,25 @@ class Utils extends App {
 
     }
 
+    public function icons() {
+
+        $path = $this->app->path('system:assets/icons');
+        $dir = new \RecursiveDirectoryIterator($path);
+        $iterator = new \RecursiveIteratorIterator($dir);
+        $icons = [];
+
+        foreach ($iterator as $f) {
+
+            if ($f->isDir()) continue;
+            if ($f->getExtension() != 'svg') continue;
+
+            $icons[] = [
+                'name' => $f->getBasename('.svg'),
+                'path' => 'system:assets/icons'.str_replace($path, '', $f->getRealPath()),
+            ];
+        }
+
+        return $icons;
+    }
+
 }

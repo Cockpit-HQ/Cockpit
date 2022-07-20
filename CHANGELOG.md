@@ -9,6 +9,7 @@
 - Open api playground with preselected api key
 - Enable clear field function also in nested fields
 - Make fields-manger + fields-renderer component available by default
+- Set content model icon
 
 ## 2.0.1 (2022-07-17)
 

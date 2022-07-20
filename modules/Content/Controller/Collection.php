@@ -34,7 +34,7 @@ class Collection extends App {
             $locales[0]['visible'] = true;
         }
 
-        $this->helper('theme')->favicon('content:assets/icons/collection.svg', $model['color'] ?? '#000');
+        $this->helper('theme')->favicon(isset($model['icon']) && $model['icon'] ? $model['icon'] : 'content:assets/icons/collection.svg', $model['color'] ?? '#000');
 
         return $this->render('content:views/collection/items.php', compact('model', 'fields', 'locales'));
 
@@ -79,7 +79,7 @@ class Collection extends App {
             $locales[0]['visible'] = true;
         }
 
-        $this->helper('theme')->favicon('content:assets/icons/collection.svg', $model['color'] ?? '#000');
+        $this->helper('theme')->favicon(isset($model['icon']) && $model['icon'] ? $model['icon'] : 'content:assets/icons/collection.svg', $model['color'] ?? '#000');
 
         return $this->render('content:views/collection/item.php', compact('model', 'fields', 'locales', 'item'));
     }

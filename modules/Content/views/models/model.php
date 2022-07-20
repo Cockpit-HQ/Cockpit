@@ -132,7 +132,7 @@
                                         <?=t('Model icon')?>
                                     </div>
                                 </div>
-                                <div><field-text class="kiss-size-large" v-model="model.icon"></field-text></div>
+                                <div><icon-picker v-model="model.icon" size="30"></icon-picker></div>
                             </div>
 
                             <hr>

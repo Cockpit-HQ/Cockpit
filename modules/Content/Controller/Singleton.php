@@ -38,7 +38,7 @@ class Singleton extends App {
             $locales[0]['visible'] = true;
         }
 
-        $this->helper('theme')->favicon('content:assets/icons/singleton.svg', $model['color'] ?? '#000');
+        $this->helper('theme')->favicon(isset($model['icon']) && $model['icon'] ? $model['icon'] : 'content:assets/icons/singleton.svg', $model['color'] ?? '#000');
 
         return $this->render('content:views/singleton/item.php', compact('model', 'fields', 'locales', 'item'));
     }

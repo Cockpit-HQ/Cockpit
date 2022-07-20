@@ -40,6 +40,8 @@ kiss-grid[cols="3"] { grid-template-columns: repeat(3, 1fr); }
 kiss-grid[cols="4"] { grid-template-columns: repeat(4, 1fr); }
 kiss-grid[cols="5"] { grid-template-columns: repeat(5, 1fr); }
 kiss-grid[cols="6"] { grid-template-columns: repeat(6, 1fr); }
+kiss-grid[cols="8"] { grid-template-columns: repeat(8, 1fr); }
+kiss-grid[cols="10"] { grid-template-columns: repeat(10, 1fr); }
 
 
 /* Phone landscape and bigger */
@@ -50,6 +52,8 @@ kiss-grid[cols="6"] { grid-template-columns: repeat(6, 1fr); }
     kiss-grid[cols*="4@s"] { grid-template-columns: repeat(4, 1fr); }
     kiss-grid[cols*="5@s"] { grid-template-columns: repeat(5, 1fr); }
     kiss-grid[cols*="6@s"] { grid-template-columns: repeat(6, 1fr); }
+    kiss-grid[cols*="8@s"] { grid-template-columns: repeat(8, 1fr); }
+    kiss-grid[cols*="10@s"] { grid-template-columns: repeat(10, 1fr); }
 
 }
 
@@ -60,6 +64,8 @@ kiss-grid[cols="6"] { grid-template-columns: repeat(6, 1fr); }
     kiss-grid[cols*="4@m"] { grid-template-columns: repeat(4, 1fr); }
     kiss-grid[cols*="5@m"] { grid-template-columns: repeat(5, 1fr); }
     kiss-grid[cols*="6@m"] { grid-template-columns: repeat(6, 1fr); }
+    kiss-grid[cols*="8@m"] { grid-template-columns: repeat(8, 1fr); }
+    kiss-grid[cols*="10@m"] { grid-template-columns: repeat(10, 1fr); }
 }
 
 /* Desktop and bigger */
@@ -69,6 +75,8 @@ kiss-grid[cols="6"] { grid-template-columns: repeat(6, 1fr); }
     kiss-grid[cols*="4@l"] { grid-template-columns: repeat(4, 1fr); }
     kiss-grid[cols*="5@l"] { grid-template-columns: repeat(5, 1fr); }
     kiss-grid[cols*="6@l"] { grid-template-columns: repeat(6, 1fr); }
+    kiss-grid[cols*="8@l"] { grid-template-columns: repeat(8, 1fr); }
+    kiss-grid[cols*="10@l"] { grid-template-columns: repeat(10, 1fr); }
 }
 
 /* Large screen and bigger */
@@ -78,5 +86,7 @@ kiss-grid[cols="6"] { grid-template-columns: repeat(6, 1fr); }
     kiss-grid[cols*="4@xl"] { grid-template-columns: repeat(4, 1fr); }
     kiss-grid[cols*="5@xl"] { grid-template-columns: repeat(5, 1fr); }
     kiss-grid[cols*="6@xl"] { grid-template-columns: repeat(6, 1fr); }
+    kiss-grid[cols*="8@xl"] { grid-template-columns: repeat(8, 1fr); }
+    kiss-grid[cols*="10@xl"] { grid-template-columns: repeat(10, 1fr); }
 }
 
