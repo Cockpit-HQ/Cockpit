@@ -91,6 +91,11 @@ export default {
 
                     this.findings = findings;
                     this.loading = false;
+
+                    if (findings.length) {
+                        this.selected = 0;
+                    }
+
                     setTimeout(() => {
                         this.$refs.searchInput.focus();
                     }, 50);
@@ -110,20 +115,20 @@ export default {
                 </div>
             </div>
 
-            <kiss-card class="kiss-color-muted kiss-size-large kiss-align-center kiss-padding" theme="contrast" v-if="loading">
+            <kiss-card class="kiss-color-muted kiss-size-large kiss-align-center kiss-padding" v-if="loading">
                 <app-loader size="small" mode="dots"></app-loader>
             </kiss-card>
 
-            <kiss-card class="kiss-color-muted kiss-size-large kiss-align-center kiss-padding-large" theme="contrast" v-if="Array.isArray(findings) && !findings.length">
+            <kiss-card class="kiss-color-muted kiss-size-large kiss-align-center kiss-padding-large" v-if="Array.isArray(findings) && !findings.length">
                 {{ t('Nothing found') }}
             </kiss-card>
 
-            <kiss-card class="kiss-padding" theme="contrast" v-if="Array.isArray(findings) && findings.length">
+            <div v-if="Array.isArray(findings) && findings.length">
 
                 <div class="kiss-text-caption kiss-color-muted kiss-margin-small">{{ t('Findings') }}</div>
 
                 <div style="max-height:50vh;overflow:auto;">
-                    <kiss-card class="kiss-padding-small kiss-flex kiss-flex-middle" :class="{'kiss-bgcolor-contrast kiss-color-primary': idx == this.selected, 'kiss-color-muted': idx != this.selected}" v-for="finding, idx in findings" @click="goto(finding)">
+                    <kiss-card class="kiss-padding-small kiss-flex kiss-flex-middle" :class="{'kiss-color-primary': idx == this.selected, 'kiss-color-muted': idx != this.selected}" :theme="idx == this.selected && 'contrast'" v-for="finding, idx in findings" @click="goto(finding)">
                         <div class="kiss-margin-small-right">
                             <kiss-svg :src="$base(finding.icon || 'system:assets/icons/link.svg')" width="20" height="20"></kiss-svg>
                         </div>
@@ -134,7 +139,7 @@ export default {
                 </div>
 
 
-            </kiss-card>
+            </div>
         </div>
     `
 }
