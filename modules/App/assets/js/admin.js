@@ -97,11 +97,16 @@ document.addEventListener('DOMContentLoaded', e => {
     // bind global command for app search
     Mousetrap.bind(['alt+f'], function(e) {
         e.preventDefault();
-        if (!document.getElementById('app-search')) {
+
+        let isActive = document.getElementById('app-search'),
+            isLoggedOut = document.getElementById('app-session-login');
+
+        if (!isActive && !isLoggedOut) {
             VueView.ui.modal('app:assets/dialog/app-search.js', {}, {}, {size:'large'});
-        } else {
+        } else if (isActive && !isLoggedOut){
             document.getElementById('app-search').querySelector('input').focus();
         }
+
         return false;
     });
 

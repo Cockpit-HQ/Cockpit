@@ -89,6 +89,10 @@ export default {
 
                 setTimeout(() => {
 
+                    if (!Array.isArray(findings)) {
+                        findings = [];
+                    }
+
                     this.findings = findings;
                     this.loading = false;
 
