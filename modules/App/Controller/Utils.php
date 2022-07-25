@@ -20,4 +20,18 @@ class Utils extends App {
         return ['token' => $this->helper('csrf')->token($name, $generate, $expire)];
     }
 
+    public function search() {
+
+        $this->helper('session')->close();
+
+        $findings = new \ArrayObject([]);
+        $search = $this->param('search');
+
+        if ($search) {
+            $this->app->trigger('app.search', [$search, $findings]);
+        }
+
+        return $findings->getArrayCopy();
+    }
+
 }

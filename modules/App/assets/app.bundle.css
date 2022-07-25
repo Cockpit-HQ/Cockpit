@@ -3048,9 +3048,9 @@ kiss-tooltip[show="true"] {
     padding: 0;
 }
 .kiss-input-blank {
-    background: none;
-    border: none;
-    color: inherit;
+    background: none !important;
+    border: none !important;
+    color: inherit !important;
 }
 .kiss-input,
 .kiss-textarea { -webkit-appearance: none; }

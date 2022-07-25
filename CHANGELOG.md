@@ -1,5 +1,9 @@
 # Release Notes
 
+## WIP
+
+- Add initial global app search implementation
+
 ## 2.0.2 (2022-07-20)
 
 - Fix select boxes in dark theme (chrome on windows) #8

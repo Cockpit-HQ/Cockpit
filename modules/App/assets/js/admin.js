@@ -93,4 +93,16 @@ window.AppEventStream =  {
 document.addEventListener('DOMContentLoaded', e => {
     checkSessionTimeout();
     AppEventStream.start();
+
+    // bind global command for app search
+    Mousetrap.bind(['alt+f'], function(e) {
+        e.preventDefault();
+        if (!document.getElementById('app-search')) {
+            VueView.ui.modal('app:assets/dialog/app-search.js', {}, {}, {size:'large'});
+        } else {
+            document.getElementById('app-search').querySelector('input').focus();
+        }
+        return false;
+    });
+
 }, false);

@@ -19,6 +19,7 @@ $this->helper('menus')->addLink('modules', [
     'active' => false
 ]);
 
+// events
 
 $this->on('app.permissions.collect', function (ArrayObject $permissions) {
 
@@ -45,4 +46,33 @@ $this->on('app.user.login', function($user) {
         'email' => $user['email'],
         'ip' => $this->getClientIp()
     ]);
+});
+
+
+$this->on('app.search', function($search, $findings) {
+
+    if (!$this->helper('acl')->isAllowed('app/users/manage')) {
+        return;
+    }
+
+    $users = $this->dataStorage->find('system/users', [
+        'filter' => [
+            '$or' => [
+                ['name' => ['$regex' => $search, '$options' => 'i']],
+                ['label' => ['$regex' => $search, '$options' => 'i']],
+            ]
+        ],
+        'limit' => 5
+    ])->toArray();
+
+    foreach ($users as $user) {
+
+        $findings[] = [
+            'title' => isset($user['name']) && $user['name'] ? "{$user['name']} ({$user['user']})" : $user['user'],
+            'route' => $this->routeUrl("/system/users/user/{$user['_id']}"),
+            'group' => 'Users',
+            'icon' => 'system:assets/icons/users.svg'
+        ];
+    }
+
 });
