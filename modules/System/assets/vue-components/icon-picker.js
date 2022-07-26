@@ -42,7 +42,11 @@ let IconPicker = {
         size: {
             type: Number,
             default: 40
-        }
+        },
+        placeholder: {
+            type: String,
+            default: null
+        },
     },
 
     watch: {
@@ -99,11 +103,11 @@ let IconPicker = {
     template: /*html*/`
         <div>
 
-            <kiss-card class="kiss-position-relative">
+            <kiss-card class="kiss-display-inline-block kiss-position-relative">
                 <canvas :width="size" :height="size" :class="{'kiss-bgcolor-transparentimage': !icon}"></canvas>
                 <div class="kiss-cover kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center">
-                    <div v-if="icon">
-                        <kiss-svg :src="$base(icon)" width="100%"></kiss-svg>
+                    <div v-if="icon || placeholder">
+                        <kiss-svg :src="$base(icon || placeholder)" width="100%"></kiss-svg>
                     </div>
                 </div>
                 <a class="kiss-cover" @click="select = true"></a>
