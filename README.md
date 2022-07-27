@@ -1,6 +1,7 @@
 # Cockpit - Content Platform
 
-![Cockpit](https://repository-images.githubusercontent.com/331007481/d9f6bebb-865d-4982-a12e-ef618f8ed1f3)
+
+![cockpit banner](https://user-images.githubusercontent.com/321047/181301003-18b6987a-4d09-419a-8043-c6374c9d0208.png)
 
 
 * Homepage: [http://getcockpit.com](https://getcockpit.com)
