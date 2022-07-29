@@ -2,7 +2,8 @@
 
 ## WIP
 
-- Add initial global app search implementation
+- Add initial global app search implementation (alt|option + f)
+- Update lib/vendor
 
 ## 2.0.2 (2022-07-20)
 
