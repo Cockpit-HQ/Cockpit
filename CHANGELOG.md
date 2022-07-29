@@ -3,6 +3,7 @@
 ## WIP
 
 - Add initial global app search implementation (alt|option + f)
+- Minor fixes on closing html tag + uninitialized variable #11 @remluben
 - Update lib/vendor
 
 ## 2.0.2 (2022-07-20)
