@@ -92,8 +92,8 @@
                             <icon class="kiss-margin-small-left kiss-hidden@m">more_horiz</icon>
                         </a>
                     </div>
-                    <?php if($this->path('#app:') != $this->path('#root:')): ?>
-                    <div class="kiss-margin-small-left"><span class="kiss-badge kiss-color-primary kiss-badge-outline kiss-text-upper"><?=str_replace(['-', '_'], ' ', basename($this->path('#root:')))?></span></div>
+                    <?php if($this->retrieve('app_space')): ?>
+                    <div class="kiss-margin-small-left"><span class="kiss-badge kiss-color-primary kiss-badge-outline kiss-text-upper"><?=str_replace(['-', '_'], ' ', $this->retrieve('app_space'))?></span></div>
                     <?php endif ?>
                     <div class="kiss-flex-1 kiss-margin-left">
 

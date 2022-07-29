@@ -18,9 +18,9 @@
                     <label><?=('REST-API endpoint')?></label>
                     <div class="kiss-flex kiss-flex-middle">
                         <div class="kiss-text-truncate kiss-text-monospace kiss-flex-1">
-                            <?=$this->getSiteUrl(true)?>/api
+                        <?=$this->module('system')->spaceUrl('/api')?>
                         </div>
-                        <div class="kiss-margin-left"><a href="#" @click.prevent="copyEndpoint('<?=$this->getSiteUrl(true)?>/api', 'REST-Api endpoint copied!')"><icon>content_copy</icon></a></div>
+                        <div class="kiss-margin-left"><a href="#" @click.prevent="copyEndpoint('<?=$this->module('system')->spaceUrl('/api')?>', 'REST-Api endpoint copied!')"><icon>content_copy</icon></a></div>
                         <div class="kiss-margin-small-left kiss-width-1-5 kiss-visible@m"><a class="kiss-button kiss-button-small kiss-width-1-1" href="#" @click="showApiViewer()">{{ t('Playground') }}</a></div>
                     </div>
                 </div>
@@ -29,7 +29,7 @@
                     <label><?=('GraphQL endpoint')?></label>
                     <div class="kiss-flex kiss-flex-middle">
                         <div class="kiss-text-truncate kiss-text-monospace kiss-flex-1">
-                            <?=$this->getSiteUrl(true)?>/api/gql
+                        <?=$this->module('system')->spaceUrl('/api/gql')?>
                         </div>
                         <div class="kiss-margin-left"><a href="#" @click.prevent="copyEndpoint('<?=$this->getSiteUrl(true)?>/api/gql', 'GraphQL endpoint copied!')"><icon>content_copy</icon></a></div>
                         <div class="kiss-margin-small-left kiss-width-1-5 kiss-visible@m"><a class="kiss-button kiss-button-small kiss-width-1-1" href="#" @click="showGraphQLViewer()">{{ t('Playground') }}</a></div>

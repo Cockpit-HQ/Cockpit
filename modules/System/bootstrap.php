@@ -21,6 +21,22 @@ $app->on('error', function($error, $exception) {
 // system api
 $this->module('system')->extend([
 
+    'spaceUrl' => function(?string $path = null): string {
+
+        $url = $this->app->getSiteUrl(true);
+        $space = $this->app->retrieve('app_space');
+
+        if ($space) {
+            $url .= "/:{$space}";
+        }
+
+        if ($path) {
+            $url .= $path;
+        }
+
+        return $url;
+    },
+
     'log' => function(string $message, string $channel = 'system', string $type = 'info', ?array $context = null) {
 
         $logger = $this->app->helper('log')->channel($channel);

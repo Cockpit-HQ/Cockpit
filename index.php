@@ -55,6 +55,8 @@ if (PHP_SAPI == 'cli-server') {
     $APP_ROUTE       = preg_replace('#'.preg_quote($APP_BASE_URL, '#').'#', '', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), 1);
 }
 
+$APP_SPACE = null;
+
 // support /:myenv/* to load custom cockpit instance from /.envs/*
 if ($APP_ROUTE && substr($APP_ROUTE, 0, 2) == '/:') {
 
@@ -67,8 +69,11 @@ if ($APP_ROUTE && substr($APP_ROUTE, 0, 2) == '/:') {
         $APP_BASE_URL .= "/.spaces/{$env}";
         $APP_BASE_ROUTE .= "/:{$env}";
         $APP_SPACE_DIR = $spaceDir;
+        $APP_SPACE = $env;
     }
 }
+
+define('APP_SPACE', $APP_SPACE ?? false);
 
 if ($APP_ROUTE == '') {
     $APP_ROUTE = '/';
@@ -79,6 +84,7 @@ define('APP_BASE_URL', $APP_BASE_URL);
 define('APP_API_REQUEST', strpos($APP_ROUTE, '/api/') === 0 ? 1:0);
 
 $app = Cockpit::instance($APP_SPACE_DIR, [
+    'app_space' => $APP_SPACE,
     'base_route' => $APP_BASE_ROUTE,
     'base_url' => $APP_BASE_URL
 ]);

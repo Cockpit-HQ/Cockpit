@@ -70,7 +70,7 @@
 
                     <kiss-card class="kiss-padding kiss-bgcolor-contrast">
                         <div class="kiss-text-monospace kiss-size-small kiss-color-muted" style="max-height:200px;overflow:auto;">
-                            <?=($this->path('#root:LICENSE') ? nl2br($this->helper('fs')->read('#root:LICENSE')) : '!!! LICENSE IS MISSING !!!')?>
+                            <?=($this->path('#app:LICENSE') ? nl2br($this->helper('fs')->read('#app:LICENSE')) : '!!! LICENSE IS MISSING !!!')?>
                         </div>
                     </kiss-card>
 

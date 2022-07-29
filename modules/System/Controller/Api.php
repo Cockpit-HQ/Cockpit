@@ -162,7 +162,7 @@ class Api extends App {
             '{{ app.name }}',
             '{{ app.version }}',
         ], [
-            $this->app->getSiteUrl(true).'/api',
+            $this->app->module('system')->spaceUrl('/api'),
             $this->app->retrieve('app.name'),
             $this->app->retrieve('app.version'),
         ], $yaml);
