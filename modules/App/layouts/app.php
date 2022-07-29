@@ -120,7 +120,7 @@
                     <li class="kiss-nav-divider"></li>
                     <li><a class="kiss-flex kiss-flex-middle kiss-color-danger" href="<?=$this->route('/auth/logout')?>"><icon class="kiss-margin-small-right">power_settings_new</icon> <?=t('Logout')?></a></li>
                 </ul>
-            </navlist>
+            </kiss-navlist>
         </kiss-content>
     </kiss-popoutmenu>
 
