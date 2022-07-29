@@ -107,6 +107,7 @@ unlink(__FILE__);
             $url   = $this->app->pathToUrl($scriptfile, true).'?async=true';
             $parts = \parse_url($url);
             $fp    = \fsockopen($parts['host'], isset($parts['port']) ? $parts['port']:80, $errno, $errstr, 30);
+            $out   = '';
 
             if ($fp) {
                 $out = "POST ".$parts['path']." HTTP/1.1\r\n";
