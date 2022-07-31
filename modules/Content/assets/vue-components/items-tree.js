@@ -38,13 +38,18 @@ export default {
     },
 
     computed: {
+
+        meta() {
+            return (this.model.meta || {}).tree || {};
+        },
+
         isMaxLevel() {
 
-            if (this.model.maxlevel === undefined || this.model.maxlevel === null) {
+            if (this.meta.maxlevel === undefined || this.meta.maxlevel === null) {
                 return false;
             }
 
-            return (this.level + 1) > Number(this.model.maxlevel);
+            return (this.level + 1) > Number(this.meta.maxlevel);
         }
     },
 

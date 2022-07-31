@@ -27,7 +27,8 @@ class Models extends App {
             'color' => null,
             'revisions' => false,
             'fields' => [],
-            'preview' => []
+            'preview' => [],
+            'meta' => null
         ];
 
         $isUpdate = false;

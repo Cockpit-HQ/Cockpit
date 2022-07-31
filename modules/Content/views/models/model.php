@@ -98,7 +98,7 @@
 
                     <kiss-tabs class="kiss-margin-large">
                         <tab :caption="t('Fields')">
-                            <fields-manager class="kiss-margin" v-model="model.fields"></fields-manager>
+                            <fields-manager v-model="model.fields"></fields-manager>
                         </tab>
                         <tab :caption="t('Preview')">
 
@@ -160,6 +160,9 @@
                                 </div>
                                 <field-boolean class="kiss-size-large" v-model="model.revisions"></field-boolean>
                             </div>
+                        </tab>
+                        <tab :caption="t('Meta')">
+                            <field-object v-model="model.meta"></field-object>
                         </tab>
                     </kiss-tabs>
                 </div>

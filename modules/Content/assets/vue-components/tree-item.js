@@ -34,6 +34,10 @@ export default {
 
     computed: {
 
+        meta() {
+            return (this.model.meta || {}).tree || {};
+        },
+
         fields() {
             return (Array.isArray(this.model.fields) ? this.model.fields : []).slice(0, 3);
         }
