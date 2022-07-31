@@ -49,7 +49,7 @@ $this->module('content')->extend([
             'fields'    => [],
             'preview'   => [],
             'group'     => null,
-            'sortable'  => false,
+            'meta'      => null,
             '_created'  => $time,
             '_modified' => $time
         ], $data);
