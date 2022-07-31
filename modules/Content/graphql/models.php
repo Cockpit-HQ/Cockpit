@@ -6,8 +6,8 @@ use App\GraphQL\Types\JsonType;
 use App\GraphQL\Types\FieldTypes;
 
 $models      = $app->module('content')->models();
-$collections = array_filter($models, function($m) { return $m['type'] == 'collection';});
-$singletons  = array_filter($models, function($m) { return $m['type'] == 'singleton';});
+$collections = array_filter($models, fn($m) => in_array($m['type'], ['collection', 'tree']));
+$singletons  = array_filter($models, fn($m) => $m['type'] == 'singleton');
 
 // register collections
 foreach ($collections as $name => &$meta) {
