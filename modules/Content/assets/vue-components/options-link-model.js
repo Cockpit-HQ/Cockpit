@@ -34,7 +34,7 @@ export default {
 
     computed: {
         collections() {
-            return (this.models || []).filter(m => m.type == 'collection');
+            return (this.models || []).filter(m => ['collection', 'tree'].includes(m.type));
         }
     },
 

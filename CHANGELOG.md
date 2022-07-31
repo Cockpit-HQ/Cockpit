@@ -5,6 +5,8 @@
 - Add initial global app search implementation (alt|option + f)
 - Minor fixes on closing html tag + uninitialized variable #11 @remluben
 - Update lib/vendor
+- Update sortablejs v1.15
+- Add model type tree - organize content items as tree
 
 ## 2.0.2 (2022-07-20)
 

@@ -41,19 +41,33 @@
                             <a class="kiss-cover" @click="model.type = 'collection'"></a>
                         </kiss-card>
 
+                        <kiss-card class="kiss-flex kiss-padding kiss-position-relative kiss-padding" theme="bordered" :class="model.type == 'tree' ? '': 'kiss-color-muted'" :style="{borderColor:model.type == 'tree' ? 'var(--kiss-color-primary)': null}">
+                            <div class="kiss-margin-small-right"><kiss-svg src="<?=$this->base('content:assets/icons/tree.svg')?>" width="30" height="30"><canvas width="30" height="30"></canvas></kiss-svg></div>
+                            <div class="kiss-size-small">
+                                <strong>{{ t('Tree') }}</strong>
+                                <div class="kiss-size-xsmall kiss-color-muted kiss-margin-xsmall-top">
+                                    <?=t('Organize content items as tree')?>
+                                </div>
+                            </div>
+                            <a class="kiss-cover" @click="model.type = 'tree'"></a>
+                        </kiss-card>
+
                     </kiss-grid>
                 </div>
 
                 <div class="kiss-margin-large" v-if="isUpdate">
                     <kiss-card class="kiss-flex kiss-padding" theme="bordered">
-                        <div class="kiss-margin-small-right" v-if="model.type=='singleton'"><kiss-svg src="<?=$this->base('content:assets/icons/singleton.svg')?>" width="30" height="30"><canvas width="30" height="30"></canvas></kiss-svg></div>
-                        <div class="kiss-margin-small-right" v-if="model.type=='collection'"><kiss-svg src="<?=$this->base('content:assets/icons/collection.svg')?>" width="30" height="30"><canvas width="30" height="30"></canvas></kiss-svg></div>
+                        <div class="kiss-margin-small-right" v-if="model.type=='singleton'"><kiss-svg src="<?=$this->base('content:assets/icons/singleton.svg')?>" width="40" height="40"><canvas width="40" height="40"></canvas></kiss-svg></div>
+                        <div class="kiss-margin-small-right" v-if="model.type=='collection'"><kiss-svg src="<?=$this->base('content:assets/icons/collection.svg')?>" width="40" height="40"><canvas width="40" height="40"></canvas></kiss-svg></div>
+                        <div class="kiss-margin-small-right" v-if="model.type=='tree'"><kiss-svg src="<?=$this->base('content:assets/icons/tree.svg')?>" width="40" height="40"><canvas width="40" height="40"></canvas></kiss-svg></div>
                         <div class="kiss-size-small">
                             <strong v-if="model.type=='singleton'">{{ t('Singleton') }}</strong>
                             <strong v-if="model.type=='collection'">{{ t('Collection') }}</strong>
+                            <strong v-if="model.type=='tree'">{{ t('Tree') }}</strong>
                             <div class="kiss-size-xsmall kiss-color-muted kiss-margin-xsmall-top">
                                 <span v-if="model.type=='collection'"><?=t('Model can have multiple items')?></span>
                                 <span v-if="model.type=='singleton'"><?=t('Model has one single item')?></span>
+                                <span v-if="model.type=='tree'"><?=t('Organize content items as tree')?></span>
                             </div>
                         </div>
                     </kiss-card>

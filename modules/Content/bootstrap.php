@@ -116,7 +116,7 @@ $this->module('content')->extend([
 
         if ($model['type'] == 'singleton') {
             $this->app->dataStorage->remove('content/singletons', ['_model' => $name]);
-        } elseif ($model['type'] == 'collection') {
+        } elseif (in_array($model['type'], ['collection', 'tree'])) {
             $this->app->dataStorage->dropCollection("content/collections/{$name}");
         }
 
@@ -195,6 +195,11 @@ $this->module('content')->extend([
             }
         }
 
+        if ($model['type'] == 'tree') {
+            $item['_pid'] = null;
+            $item['_o'] = 0;
+        }
+
         return $item;
     },
 
@@ -234,7 +239,7 @@ $this->module('content')->extend([
 
             $item = array_merge($current, $item);
 
-        } elseif ($model['type'] == 'collection') {
+        } elseif (in_array($model['type'], ['collection', 'tree'])) {
 
             $collection = "content/collections/{$modelName}";
             $item = array_merge($default, $item);
@@ -242,7 +247,6 @@ $this->module('content')->extend([
             if (isset($item['_id'])) {
                 $isUpdate = true;
             }
-
         }
 
         $item['_modified'] = $time;
@@ -283,7 +287,7 @@ $this->module('content')->extend([
 
             $item['_model'] = $modelName;
 
-        } elseif ($model['type'] == 'collection') {
+        } elseif (in_array($model['type'], ['collection', 'tree'])) {
 
             $collection = "content/collections/{$modelName}";
             $item = $this->app->dataStorage->findOne($collection, $filter, $fields);
@@ -308,7 +312,7 @@ $this->module('content')->extend([
             throw new Exception('Try to access unknown model "'.$modelName.'"');
         }
 
-        if ($model['type'] != 'collection') {
+        if (!in_array($model['type'], ['collection', 'tree'])) {
             return [];
         }
 
@@ -358,7 +362,7 @@ $this->module('content')->extend([
             return 1;
         }
 
-        if ($model['type'] != 'collection') {
+        if (!in_array($model['type'], ['collection', 'tree'])) {
             return 1;
         }
 

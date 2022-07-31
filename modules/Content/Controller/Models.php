@@ -15,7 +15,7 @@ class Models extends App {
 
         $type = $this->param('type', 'collection');
 
-        if (!\in_array($type, ['collection', 'singleton'])) {
+        if (!\in_array($type, ['collection', 'tree', 'singleton'])) {
             $type = 'collection';
         }
 
