@@ -5,7 +5,8 @@ export default {
 
     data() {
         return {
-            loading: false
+            loading: false,
+            maxlevel: false
         }
     },
 
@@ -34,6 +35,17 @@ export default {
 
     components: {
         'tree-item': Vue.defineAsyncComponent(() => App.utils.import('content:assets/vue-components/tree-item.js')),
+    },
+
+    computed: {
+        isMaxLevel() {
+
+            if (this.model.maxlevel === undefined || this.model.maxlevel === null) {
+                return false;
+            }
+
+            return (this.level + 1) > Number(this.model.maxlevel);
+        }
     },
 
     mounted() {
@@ -150,7 +162,7 @@ export default {
                             <a class="kiss-margin-small-left" @click="createItem(element._id)"><icon>create_new_folder</icon></a>
                             <a class="kiss-margin-small-left kiss-color-danger" @click="remove(element)"><icon>delete</icon></a>
                         </kiss-card>
-                        <div v-if="element._showChildren || !element._children" :style="{paddingLeft: (((level+1)*23)+'px')}">
+                        <div v-if="!isMaxLevel && (element._showChildren || !element._children)" :style="{paddingLeft: (((level+1)*23)+'px')}">
                             <items-tree class="items-tree" :model="model" :items="element.children" :level="level+1" :p="element" :locale="locale"></items-tree>
                         </div>
                     </div>
