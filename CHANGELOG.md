@@ -1,5 +1,9 @@
 # Release Notes
 
+## WIP
+
+- Fix tree model route in app search results
+
 ## 2.1.0 (2022-08-01)
 
 - Add initial global app search implementation (alt|option + f)

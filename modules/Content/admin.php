@@ -45,13 +45,18 @@ $this->on('app.search', function($search, $findings) {
                 continue;
             }
 
-            $icon = $model['type'] == 'collection' ? 'content:assets/icons/collection.svg' : 'content:assets/icons/singleton.svg';
+            $icon  = "content:assets/icons/{$model['type']}.svg";
+            $route = match($model['type']) {
+                'singleton' => "/content/singleton/item/{$model['name']}",
+                'collection' => "/content/collection/items/{$model['name']}",
+                'tree' => "/content/tree/items/{$model['name']}",
+            };
 
             $findings[] = [
                 'title' => isset($model['label']) && $model['label'] ? "{$model['label']} ({$model['name']})" : $model['name'],
-                'route' => $this->routeUrl($model['type'] == 'collection' ? "/content/collection/items/{$model['name']}" : "/content/singleton/item/{$model['name']}"),
+                'route' => $this->routeUrl($route),
                 'group' => 'Content',
-                'icon' => $icon
+                'icon'  => $icon
             ];
         }
     }
