@@ -62,10 +62,10 @@ export default {
                 target: this.$el.querySelector('.wysiwyg-container'),
                 menubar: false,
                 plugins: [
-                    'advlist autolink lists link image imagetools preview anchor',
+                    'advlist autolink lists link image preview anchor',
                     'searchreplace visualblocks code fullscreen',
-                    'insertdatetime media table hr paste code wordcount'
-                ],
+                    'insertdatetime media table code wordcount'
+                ].join(' '),
                 toolbar: [
                     'undo redo | formatselect',
                     'bold italic | alignleft aligncenter',
@@ -79,7 +79,7 @@ export default {
 
                 skin_url: App.base('app:assets/css/vendor/tinymce'),
                 relative_urls : false,
-                paste_as_text: true
+                paste_as_text: true,
 
             }, this.tinymce || {});
 

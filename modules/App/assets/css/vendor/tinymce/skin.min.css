@@ -4,7 +4,8 @@
 .tox .tox-pop__dialog,
 .tox .tox-dialog,
 .tox.tox-tinymce-aux .tox-toolbar__overflow,
-.tox-tinymce {
+.tox-tinymce,
+.tox.tox-tinymce-inline .tox-editor-header {
     background: var(--kiss-base-background-color);
     color: var(--kiss-base-text-color);
     border-radius: var(--app-border-radius);
@@ -128,4 +129,54 @@
 }
 .tox .tox-collection--list .tox-collection__item--active:not(.tox-collection__item--state-disabled) {
     color: var(--kiss-base-text-color);
+}
+
+.tox .tox-listboxfield .tox-listbox--select, .tox .tox-textarea, .tox .tox-textfield, .tox .tox-toolbar-textfield {
+    border-radius: var(--app-border-radius);
+}
+
+.tox:not(.tox-tinymce-inline) .tox-editor-header {
+    box-shadow: none;
+    background: none;
+}
+
+.tox .tox-edit-area__iframe {
+    background: none;
+}
+
+.tox .tox-button,
+.tox .tox-button:hover:not(:disabled) {
+    border-radius: var(--app-border-radius);
+    background: var(--kiss-color-primary);
+}
+
+.tox .tox-button--naked,
+.tox .tox-button--naked:hover:not(:disabled) {
+    background:none;
+}
+
+.tox .tox-button--secondary,
+.tox .tox-button--secondary:hover:not(:disabled) {
+    background: none;
+    border-color: currentColor;
+    color: inherit;
+    border-radius: var(--app-border-radius);
+}
+
+.tox .tox-tbtn--enabled,
+.tox .tox-tbtn--enabled:hover {
+    background: var(--kiss-color-primary);
+}
+
+.tox .tox-dialog__header {
+    padding: var(--kiss-dialog-content-spacing) var(--kiss-dialog-content-spacing) 0 var(--kiss-dialog-content-spacing);
+}
+
+.tox .tox-dialog__body-content,
+.tox .tox-dialog__footer {
+    padding: var(--kiss-dialog-content-spacing);
+}
+
+.tox .tox-dialog-wrap__backdrop {
+    backdrop-filter: grayscale(1) blur(1.5px);
 }
