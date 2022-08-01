@@ -1,6 +1,6 @@
 # Release Notes
 
-## WIP
+## 2.1.0 (2022-08-01)
 
 - Add initial global app search implementation (alt|option + f)
 - Minor fixes on closing html tag + uninitialized variable #11 @remluben

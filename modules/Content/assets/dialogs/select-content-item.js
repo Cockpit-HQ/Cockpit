@@ -6,6 +6,8 @@ export default {
             items: [],
             loading: true,
             fieldTypes: null,
+            filter: '',
+            txtFilter: '',
             page: 1,
             pages: 1,
             limit: 10,
@@ -35,6 +37,19 @@ export default {
         });
     },
 
+    computed: {
+        fields() {
+            return this.model.fields.slice(0, 4);
+        }
+    },
+
+    watch: {
+        filter(val) {
+            this.txtFilter = val;
+            this.load();
+        },
+    },
+
     template: /*html*/`
         <div>
 
@@ -43,6 +58,16 @@ export default {
                 <div class="kiss-flex-1">{{ t('Select model item') }}</div>
                 <div class="kiss-badge kiss-badge-outline kiss-color-muted">{{ model.label || model.name }}</div>
             </div>
+
+            <form class="kiss-flex kiss-margin" :class="{'kiss-disabled': loading}" @submit.prevent="filter = txtFilter">
+
+                <input type="text" class="kiss-input kiss-flex-1 kiss-margin-xsmall-right" :placeholder="t('Filter items...')" v-model="txtFilter">
+
+                <div class="kiss-button-group kiss-margin-small-left">
+                    <button type="button" class="kiss-button" @click="filter = ''" v-if="filter">{{ t('Reset') }}</button>
+                    <button class="kiss-button kiss-flex">{{ t('Search') }}</button>
+                </div>
+            </form>
 
             <div class="kiss-dialog-overflow kiss-margin-large" expand="true">
 
@@ -61,7 +86,7 @@ export default {
                             <tr>
                                 <th fixed="left" width="50">ID</th>
                                 <th width="20">State</th>
-                                <th v-for="field in model.fields">{{ field.label || field.name}}</th>
+                                <th v-for="field in fields">{{ field.label || field.name}}</th>
                                 <th width="120"><?=t('Modified')?></th>
                                 <th fixed="right" width="20"></th>
                             </tr>
@@ -70,7 +95,7 @@ export default {
                             <tr v-for="item in items">
                                 <td fixed="left"><a class="kiss-badge kiss-link-muted" :title="item._id">...{{ item._id.substr(-5) }}</a></td>
                                 <td class="kiss-align-center"><icon :class="{'kiss-color-success': item._state === 1, 'kiss-color-danger': !item._state}">trip_origin</icon></td>
-                                <td v-for="field in model.fields">
+                                <td v-for="field in fields">
                                     <span class="kiss-badge kiss-badge-outline kiss-color-muted" v-if="item[field.name] == null">n/a</span>
                                     <div class="kiss-text-truncate" v-else-if="fieldTypes[field.type] && fieldTypes[field.type].render" v-html="fieldTypes[field.type].render(item[field.name], field, 'table-cell')"></div>
                                     <div class="kiss-text-truncate" v-else>
@@ -124,7 +149,7 @@ export default {
             this.loading = true;
             this.selected = [];
 
-            this.$request(`/content/collection/find/${this.model.name}`, {options}).then(rsp => {
+            this.$request(`/content/${this.model.type}/find/${this.model.name}`, {options}).then(rsp => {
                 this.items = rsp.items;
                 this.page = rsp.page;
                 this.pages = rsp.pages;
