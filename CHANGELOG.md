@@ -6,6 +6,7 @@
 - Minor fixes on closing html tag + uninitialized variable #11 @remluben
 - Update lib/vendor
 - Update sortablejs v1.15
+- Update uppy v2.13.1
 - Add model type tree - organize content items as tree
 
 ## 2.0.2 (2022-07-20)
