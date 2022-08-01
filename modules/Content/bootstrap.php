@@ -195,11 +195,6 @@ $this->module('content')->extend([
             }
         }
 
-        if ($model['type'] == 'tree') {
-            $item['_pid'] = null;
-            $item['_o'] = 0;
-        }
-
         return $item;
     },
 

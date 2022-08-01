@@ -70,6 +70,9 @@ class Tree extends App {
 
         } else {
 
+            $item['_pid'] = null;
+            $item['_o'] = 0;
+
             if ($this->param('pid') && $this->app->dataStorage->findOne("content/collections/{$model['name']}", ['_id' => $this->param('pid')], ['_id' => 1])) {
                 $item['_pid'] = $this->param('pid');
             }
@@ -251,7 +254,6 @@ class Tree extends App {
 
             if (\array_key_exists('_pid', $item)) {
                 $itm['_pid'] = $item['_pid'];
-                $updatePageRoute = $itm['_id'];
             }
 
             $this->app->dataStorage->save("content/collections/{$model['name']}", $itm);

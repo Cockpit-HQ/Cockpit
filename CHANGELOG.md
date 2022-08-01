@@ -1,8 +1,9 @@
 # Release Notes
 
-## WIP
+## 2.1.1 (2022-08-02)
 
 - Fix tree model route in app search results
+- Fix loosing nested level on saving tree item
 
 ## 2.1.0 (2022-08-01)
 
