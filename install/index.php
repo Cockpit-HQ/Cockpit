@@ -53,7 +53,7 @@ foreach ($checks as $info => $check) {
 
 if (!count($failed)) {
 
-    if (!class_exists('App')) {
+    if (!class_exists('Cockpit')) {
         include (__DIR__.'/../bootstrap.php');
     }
 

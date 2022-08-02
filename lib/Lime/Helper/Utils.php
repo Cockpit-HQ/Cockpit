@@ -506,7 +506,7 @@ class Utils extends \Lime\Helper {
      * @param boolean $return
      * @return void
      */
-    function var_export(mixed $expr, bool $return = false): mixed {
+    public function var_export(mixed $expr, bool $return = false): mixed {
 
         $export = var_export($expr, true);
         $array  = preg_split("/\r\n|\n|\r/", $export);
@@ -518,5 +518,16 @@ class Utils extends \Lime\Helper {
         }
 
         echo $export;
+    }
+
+    public function resolveEnvString(string $str) {
+
+        $envs = getenv();
+
+        foreach ($envs as $key => $value) {
+            $str = str_replace("\${$key}", $value, $str);
+        }
+
+        return $str;
     }
 }

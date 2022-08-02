@@ -1,5 +1,11 @@
 # Release Notes
 
+
+WIP
+
+- General cleanup + fiy typos
+- Fix typo field-contentItemtLink -> !!! Need to re-assign field type contentItemLink !!!
+
 ## 2.1.1 (2022-08-02)
 
 - Fix tree model route in app search results

@@ -4,7 +4,6 @@ export default {
         label: 'Boolean',
         info: 'True or False',
         icon: 'system:assets/icons/boolean.svg',
-        color: 'rgb(253, 229, 227)',
         settings: [
             {name: 'label', type: 'text'},
         ]

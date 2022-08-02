@@ -80,7 +80,7 @@ unlink(__FILE__);
     public function finished($processId, &$error = null) {
 
         $processId = \str_replace('..', '', $processId);
-        $file = $this->app->path("#storage:async/{$processId}.php");
+        $file = $this->app->path("#storage:tmp/async/{$processId}.php");
 
         if ($file) {
             $exit = \explode('-', basename($file, '.php'))[1];
