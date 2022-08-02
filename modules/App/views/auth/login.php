@@ -4,7 +4,7 @@
         <kiss-container class="login-wrapper animated pulse">
 
             <div class="kiss-flex kiss-flex-center kiss-margin">
-                <img class="app-logo" src="<?=$this->helper('theme')->logo()?>" style="height: 40px;" alt="Logo">
+                <img class="app-logo" src="<?=$this->helper('theme')->logo()?>" style="height:40px;width:auto;" alt="Logo">
             </div>
 
             <form class="animated" :class="{'kiss-disabled': loading}" @submit.prevent="login" v-if="view=='form'">

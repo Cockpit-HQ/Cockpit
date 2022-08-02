@@ -67,7 +67,6 @@
 
             <app-loader v-if="loading === null || loading === true"></app-loader>
 
-
             <teleport to="body">
 
                 <app-actionbar>
