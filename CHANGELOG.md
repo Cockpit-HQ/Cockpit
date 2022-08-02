@@ -7,6 +7,7 @@ WIP
 - General cleanup + fix typos
 - Add content tree items reorder permission
 - Refactor app layout header
+- Show more detailed error message if saving user settings fail
 
 ## 2.1.1 (2022-08-02)
 

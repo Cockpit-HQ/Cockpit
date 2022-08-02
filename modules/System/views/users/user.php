@@ -225,7 +225,7 @@ if (!isset($user['twofa'])) {
                             }
                         }).catch(res => {
                             this.saving = false;
-                            App.ui.notify('Saving failed!', 'error');
+                            App.ui.notify(res.error || 'Saving failed!', 'error');
                         })
 
                     }

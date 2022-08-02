@@ -86,7 +86,7 @@
 
             <app-header>
                 <kiss-container class="kiss-flex kiss-flex-middle">
-                    <a class="kiss-display-block kiss-margin-small-right" href="<?=$this->route('/')?>">
+                    <a class="kiss-display-block kiss-margin-small-right kiss-visible@m" href="<?=$this->route('/')?>">
                         <img class="app-logo kiss-margin-auto" src="<?=$this->helper('theme')->logo()?>" alt="Logo" style="height:30px;width:auto;">
                     </a>
                     <div>
