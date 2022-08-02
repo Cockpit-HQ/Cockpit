@@ -29,8 +29,8 @@
 
             <div class="app-container-aside-float">
 
-                <a class="kiss-display-block kiss-padding-small" href="<?=$this->route('/')?>">
-                    <img class="app-logo kiss-margin-auto" src="<?=$this->helper('theme')->logo()?>" alt="Logo">
+                <a class="kiss-display-block kiss-padding-small kiss-size-3 kiss-align-center kiss-color-muted" href="#app-offcanvas" kiss-offcanvas>
+                    <icon>more_horiz</icon>
                 </a>
 
                 <div class="kiss-flex-1 kiss-overflow-y-auto kiss-margin-top">
@@ -86,8 +86,11 @@
 
             <app-header>
                 <kiss-container class="kiss-flex kiss-flex-middle">
+                    <a class="kiss-display-block kiss-margin-small-right" href="<?=$this->route('/')?>">
+                        <img class="app-logo kiss-margin-auto" src="<?=$this->helper('theme')->logo()?>" alt="Logo" style="height:30px;width:auto;">
+                    </a>
                     <div>
-                        <a href="#app-offcanvas" class="kiss-link-muted kiss-flex kiss-flex-middle" kiss-offcanvas>
+                        <a href="<?=$this->route('/')?>" class="kiss-link-muted kiss-flex kiss-flex-middle">
                             <span class="kiss-text-bold"><?=$this['app.name']?></span>
                             <icon class="kiss-margin-small-left kiss-hidden@m">more_horiz</icon>
                         </a>

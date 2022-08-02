@@ -6,6 +6,7 @@ WIP
 - 🚨 Fix typo field-contentItemtLink -> Need to re-assign field type contentItemLink 🚨
 - General cleanup + fix typos
 - Add content tree items reorder permission
+- Refactor app layout header
 
 ## 2.1.1 (2022-08-02)
 
