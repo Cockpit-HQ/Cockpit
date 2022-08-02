@@ -23,8 +23,8 @@ class Tree extends App {
             return $this->stop(401);
         }
 
+        $allowMoving = $this->isAllowed("content/{$model['name']}/updateorder");
         $fields = $model['fields'];
-
         $locales = $this->helper('locales')->locales();
 
         if (count($locales) == 1) {
@@ -35,7 +35,7 @@ class Tree extends App {
 
         $this->helper('theme')->favicon(isset($model['icon']) && $model['icon'] ? $model['icon'] : 'content:assets/icons/tree.svg', $model['color'] ?? '#000');
 
-        return $this->render('content:views/tree/items.php', compact('model', 'fields', 'locales'));
+        return $this->render('content:views/tree/items.php', compact('model', 'fields', 'locales', 'allowMoving'));
     }
 
     public function item($model = null, $id = null) {
@@ -204,6 +204,10 @@ class Tree extends App {
             return $this->stop(404);
         }
 
+        if (!$this->isAllowed("content/{$model['name']}/read")) {
+            return $this->stop(401);
+        }
+
         $pId = $this->param('_pid', null);
 
         if (!$pId) {
@@ -235,6 +239,10 @@ class Tree extends App {
 
         if (!$model || $model['type'] != 'tree') {
             return $this->stop(404);
+        }
+
+        if (!$this->isAllowed("content/{$model['name']}/updateorder")) {
+            return $this->stop(401);
         }
 
         $items = $this->param('items', null);

@@ -30,6 +30,10 @@ export default {
         p: {
             type: Object,
             default: null
+        },
+        allowMoving: {
+            type: Boolean,
+            default: true
         }
     },
 
@@ -133,6 +137,16 @@ export default {
 
         createItem(pid = null) {
             location.href = this.$route(`/content/tree/item/${this.model.name}?pid=${pid}`);
+        },
+
+        onMove() {
+            return this.allowMoving;
+        },
+
+        onEnd() {
+            if (!this.allowMoving) {
+                App.ui.notify('You are not allowed to move content items', 'error');
+            }
         }
     },
 
@@ -149,6 +163,8 @@ export default {
                 :animation="100",
                 :fallbackOnBody="false"
                 @change="change"
+                @end="onEnd"
+                :move="onMove"
                 itemKey="_id"
 
                 v-if="!loading"
@@ -168,7 +184,7 @@ export default {
                             <a class="kiss-margin-small-left kiss-color-danger" @click="remove(element)"><icon>delete</icon></a>
                         </kiss-card>
                         <div v-if="!isMaxLevel && (element._showChildren || !element._children)" :style="{paddingLeft: (((level+1)*23)+'px')}">
-                            <items-tree class="items-tree" :model="model" :items="element.children" :level="level+1" :p="element" :locale="locale"></items-tree>
+                            <items-tree class="items-tree" :model="model" :items="element.children" :level="level+1" :p="element" :locale="locale" :allow-moving="allowMoving"></items-tree>
                         </div>
                     </div>
                 </template>

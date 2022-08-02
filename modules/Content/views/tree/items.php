@@ -62,7 +62,7 @@
             </div>
 
             <div v-if="loading !== true && (!filter) && Array.isArray(items) && items.length">
-                <items-tree :model="model" :items="items" :locale="locale"></items-tree>
+                <items-tree :model="model" :items="items" :locale="locale" :allow-moving="allowMoving"></items-tree>
             </div>
 
             <app-loader v-if="loading === null || loading === true"></app-loader>
@@ -91,6 +91,7 @@
                 data() {
                     return {
                         model: <?= json_encode($model) ?>,
+                        allowMoving: <?=($allowMoving ? 'true' : 'false')?>,
                         items: null,
                         loading: true,
                         filter: '',

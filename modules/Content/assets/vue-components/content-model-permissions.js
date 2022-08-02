@@ -53,6 +53,7 @@ export default {
                                 <div v-if="modelValue['content/'+name+'/read']"><input class="kiss-checkbox kiss-margin-xsmall-right" type="checkbox" v-model="modelValue['content/'+name+'/update']"> <span :class="{'kiss-color-muted':!modelValue['content/'+name+'/update']}">{{ t('Update') }}</span></div>
                                 <div v-if="modelValue['content/'+name+'/read']"><input class="kiss-checkbox kiss-margin-xsmall-right" type="checkbox" v-model="modelValue['content/'+name+'/delete']"> <span :class="{'kiss-color-muted':!modelValue['content/'+name+'/delete']}">{{ t('Delete') }}</span></div>
                                 <div v-if="modelValue['content/'+name+'/read']"><input class="kiss-checkbox kiss-margin-xsmall-right" type="checkbox" v-model="modelValue['content/'+name+'/publish']"> <span :class="{'kiss-color-muted':!modelValue['content/'+name+'/publish']}">{{ t('Publish') }}</span></div>
+                                <div v-if="model.type == 'tree' && modelValue['content/'+name+'/read']"><input class="kiss-checkbox kiss-margin-xsmall-right" type="checkbox" v-model="modelValue['content/'+name+'/updateorder']"> <span :class="{'kiss-color-muted':!modelValue['content/'+name+'/updateorder']}">{{ t('Reorder tree') }}</span></div>
                             </kiss-row>
                         </div>
 
