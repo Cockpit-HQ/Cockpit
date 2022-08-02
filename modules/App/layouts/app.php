@@ -92,9 +92,11 @@
                     <div>
                         <a href="<?=$this->route('/')?>" class="kiss-link-muted kiss-flex kiss-flex-middle">
                             <span class="kiss-text-bold"><?=$this['app.name']?></span>
-                            <icon class="kiss-margin-small-left kiss-hidden@m">more_horiz</icon>
                         </a>
                     </div>
+                    <a class="kiss-link-muted kiss-margin-small-left kiss-hidden@m" href="#app-offcanvas" kiss-offcanvas>
+                        <icon>more_horiz</icon>
+                    </a>
                     <?php if($this->retrieve('app_space')): ?>
                     <div class="kiss-margin-small-left"><span class="kiss-badge kiss-color-primary kiss-badge-outline kiss-text-upper"><?=str_replace(['-', '_'], ' ', $this->retrieve('app_space'))?></span></div>
                     <?php endif ?>
