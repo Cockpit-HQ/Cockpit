@@ -4362,9 +4362,9 @@ del { background: #c92a2a }
     content: "";
     position: absolute;
     width: 2px;
-    top: 0;
+    top: 8px;
     left: 0;
-    bottom: 0;
+    bottom: 8px;
     background: var(--kiss-color-primary);
 }
 .app-container-aside kiss-navlist ul > li > * {
