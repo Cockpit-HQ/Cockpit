@@ -8,6 +8,7 @@ WIP
 - Add content tree items reorder permission
 - Refactor app layout header
 - Show more detailed error message if saving user settings fail
+- Hide publish state configuration ui if missing permission to mange publish state
 
 ## 2.1.1 (2022-08-02)
 

@@ -71,6 +71,7 @@
                         </kiss-card>
                     </div>
 
+                    <?php if ($this->helper('acl')->isAllowed("content/{$model['name']}/publish")): ?>
                     <div class="kiss-margin">
 
                         <div class="kiss-text-caption kiss-size-xsmall kiss-text-bold">{{ t('State') }}</div>
@@ -85,6 +86,7 @@
                         </div>
 
                     </div>
+                    <?php endif ?>
 
                     <div class="kiss-margin" v-if="hasLocales">
 
@@ -151,6 +153,7 @@
 
         </app-actionbar>
 
+        <?php if ($this->helper('acl')->isAllowed("content/{$model['name']}/publish")): ?>
         <kiss-popoutmenu id="model-item-menu-state">
             <kiss-content>
 
@@ -181,6 +184,7 @@
                 </kiss-navlist>
             </kiss-content>
         </kiss-popoutmenu>
+        <?php endif ?>
 
         <kiss-popoutmenu id="model-item-menu-actions">
             <kiss-content>

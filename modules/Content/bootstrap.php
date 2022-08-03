@@ -257,8 +257,8 @@ $this->module('content')->extend([
             return null;
         }
 
+        $this->app->trigger('content.item.save.before', [$modelName, &$item, $isUpdate]);
         $this->app->dataStorage->save($collection, $item);
-
         $this->app->trigger('content.item.save', [$modelName, $item, $isUpdate]);
 
         return $item;
