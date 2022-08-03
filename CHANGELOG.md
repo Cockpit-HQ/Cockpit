@@ -1,7 +1,7 @@
 # Release Notes
 
 
-WIP
+## 2.1.2 (2022-08-04)
 
 - 🚨 Fix typo field-contentItemtLink -> Need to re-assign field type contentItemLink 🚨
 - General cleanup + fix typos
