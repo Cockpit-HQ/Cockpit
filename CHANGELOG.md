@@ -9,6 +9,7 @@ WIP
 - Refactor app layout header
 - Show more detailed error message if saving user settings fail
 - Hide publish state configuration ui if missing permission to mange publish state
+- Fix selected item link of tree model
 
 ## 2.1.1 (2022-08-02)
 

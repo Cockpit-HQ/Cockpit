@@ -175,7 +175,7 @@ export default {
                 {{ t('No model selected') }}
             </div>
 
-            <div class="kiss-size-small kiss-color-muted" v-if="model === false">
+            <div class="kiss-size-small kiss-color-muted" v-if="link && model === false">
                 {{ t('Unknown model') }}
             </div>
 
@@ -190,7 +190,7 @@ export default {
                 <div class="kiss-margin-small kiss-position-relative" v-if="val && val._id">
                     <div class="kiss-size-small" v-if="display" v-html="getDisplay()"></div>
                     <span class="kiss-badge kiss-badge-outline kiss-color-primary" v-else>{{ val._id}}</span>
-                    <a class="kiss-cover" :href="$route('/content/collection/item/'+model.name+'/'+val._id)" target="_blank" rel="noopener"></a>
+                    <a class="kiss-cover" :href="$route('/content/'+model.type+'/item/'+model.name+'/'+val._id)" target="_blank" rel="noopener"></a>
                 </div>
 
                 <a class="kiss-button kiss-button-small" @click="pickItem()">
