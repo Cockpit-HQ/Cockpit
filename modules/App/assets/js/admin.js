@@ -34,6 +34,18 @@ let checkSessionTimeout = function() {
 
 }
 
+let showAppSearch = function() {
+
+    let isActive = document.getElementById('app-search'),
+        isLoggedOut = document.getElementById('app-session-login');
+
+    if (!isActive && !isLoggedOut) {
+        VueView.ui.modal('app:assets/dialog/app-search.js', {}, {}, {size:'large'});
+    } else if (isActive && !isLoggedOut){
+        document.getElementById('app-search').querySelector('input').focus();
+    }
+}
+
 window.AppEventStream =  {
     _idle: null,
     _registry: {
@@ -91,23 +103,23 @@ window.AppEventStream =  {
 }
 
 document.addEventListener('DOMContentLoaded', e => {
+
     checkSessionTimeout();
+
     AppEventStream.start();
 
     // bind global command for app search
     Mousetrap.bind(['alt+f'], function(e) {
         e.preventDefault();
-
-        let isActive = document.getElementById('app-search'),
-            isLoggedOut = document.getElementById('app-session-login');
-
-        if (!isActive && !isLoggedOut) {
-            VueView.ui.modal('app:assets/dialog/app-search.js', {}, {}, {size:'large'});
-        } else if (isActive && !isLoggedOut){
-            document.getElementById('app-search').querySelector('input').focus();
-        }
-
+        showAppSearch();
         return false;
     });
+
+    document.querySelectorAll('[app-search]').forEach(ele => {
+        ele.addEventListener('click', e => {
+            e.preventDefault();
+            showAppSearch();
+        });
+    })
 
 }, false);

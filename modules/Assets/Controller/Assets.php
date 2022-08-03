@@ -216,6 +216,10 @@ class Assets extends App {
             '_by' => $this->helper('auth')->getUser('_id'),
         ]);
 
+        if (!$this->isAllowed(!isset($folder['_id']) ? 'assets/folders/create' : 'assets/folders/edit')) {
+            return $this->stop(['error' => 'Editing folder not allowed'], 401);
+        }
+
         $folder['name'] = $name;
 
         // does folder already exists?
