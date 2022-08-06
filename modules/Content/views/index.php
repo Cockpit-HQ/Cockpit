@@ -1,4 +1,4 @@
-<kiss-container class="kiss-margin-large" size="medium">
+<kiss-container class="kiss-margin-large">
 
     <ul class="kiss-breadcrumbs">
         <li><a href="<?=$this->route('/content')?>"><?=t('Content')?></a></li>
@@ -18,15 +18,15 @@
 
             <div class="kiss-margin-large" v-if="!loading && models.length">
 
-                <div class="kiss-margin">
+                <div class="kiss-margin-large-bottom">
                     <input type="text" class="kiss-input" :placeholder="t('Filter models...')" v-model="filter">
                 </div>
 
-                <div class="kiss-margin-large-top" v-if="singletons.length">
+                <div class="kiss-margin" v-if="singletons.length">
 
                     <div class="kiss-margin kiss-text-caption kiss-text-bold kiss-color-muted kiss-size-small"><?=t('Singletons')?></div>
 
-                    <kiss-grid cols="3@m" gap="small">
+                    <kiss-grid cols="4@m 5@xl" gap="small">
 
                         <kiss-card class="animated fadeIn kiss-flex" theme="shadowed contrast" hover="shadow" v-for="model in singletons">
                             <div class="kiss-position-relative kiss-padding-small kiss-bgcolor-contrast">
@@ -53,7 +53,7 @@
 
                 </div>
 
-                <div class="kiss-margin-large" v-if="trees.length">
+                <div class="kiss-margin" v-if="trees.length">
 
                     <div class="kiss-margin kiss-text-caption kiss-text-bold kiss-color-muted kiss-size-small"><?=t('Trees')?></div>
 
@@ -89,7 +89,7 @@
 
                 </div>
 
-                <div class="kiss-margin-large" v-if="collections.length">
+                <div class="kiss-margin" v-if="collections.length">
 
                     <div class="kiss-margin kiss-text-caption kiss-text-bold kiss-color-muted kiss-size-small"><?=t('Collections')?></div>
 
@@ -129,7 +129,7 @@
 
             <app-actionbar>
 
-                <kiss-container size="medium">
+                <kiss-container>
                     <div class="kiss-flex kiss-flex-middle">
                         <div v-if="groups.length">
                             <span class="kiss-text-caption kiss-color-muted"><?=t('group')?></span>

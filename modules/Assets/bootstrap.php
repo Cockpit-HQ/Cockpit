@@ -136,6 +136,7 @@ $this->module('assets')->extend([
                 'colors' => null,
                 'width' => null,
                 'height' => null,
+                '_hash' => hash_file('md5', $file),
                 '_created' => $created,
                 '_modified' => $created,
                 '_cby' => $by

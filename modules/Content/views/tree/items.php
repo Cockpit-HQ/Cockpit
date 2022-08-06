@@ -1,4 +1,4 @@
-<kiss-container class="kiss-margin-small" size="medium">
+<kiss-container class="kiss-margin-small">
 
     <ul class="kiss-breadcrumbs">
         <li><a href="<?= $this->route('/content') ?>"><?= t('Content') ?></a></li>
@@ -70,7 +70,7 @@
             <teleport to="body">
 
                 <app-actionbar>
-                    <kiss-container size="medium">
+                    <kiss-container>
                         <div class="kiss-flex kiss-flex-middle kiss-flex-right">
                             <div class="kiss-button-group">
                                 <a class="kiss-button" href="<?= $this->route('/content') ?>"><?=t('Close')?></a>
