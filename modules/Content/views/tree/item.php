@@ -14,6 +14,9 @@
                     <span class="kiss-badge" style="<?=($model['color'] ? "background:{$model['color']};border-color:{$model['color']}":"")?>"><?=$this->escape($model['label'] ? $model['label'] : $model['name'])?></span>
                     <a class="kiss-cover" href="<?=$this->route("/content/tree/items/{$model['name']}")?>"></a>
                 </div>
+                <a class="kiss-color-muted kiss-margin-small-left" href="javascript:VueView.ui.offcanvas('content:assets/dialogs/switch-model-view.js')">
+                    <icon>expand_circle_down</icon>
+                </a>
                 <div class="kiss-margin-small-left kiss-size-5 kiss-text-bold">
                     <span v-if="!item._id"><?=t('New Item')?></span>
                     <span v-if="item._id"><?=t('Edit Item')?></span>

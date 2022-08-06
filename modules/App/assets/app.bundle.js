@@ -3041,7 +3041,7 @@
           offcanvas.$view = offcanvas.querySelector('.vue-offcanvas');
 
           VueView.compile(offcanvas.$view, def);
-          setTimeout(() => offcanvas.show());
+          setTimeout(() => offcanvas.show(), 50);
 
           return offcanvas;
       },

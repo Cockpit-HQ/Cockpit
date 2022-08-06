@@ -10,8 +10,13 @@
 
             <div class="kiss-flex kiss-flex-middle kiss-margin-bottom">
                 <div class="kiss-margin-small-right">
-                    <kiss-svg class="kiss-margin-auto" src="<?= $this->base(isset($model['icon']) && $model['icon'] ? $model['icon'] : 'content:assets/icons/collection.svg') ?>" width="30" height="30" style="color:<?= ($this->escape($model['color'] ?? 'inherit')) ?>"><canvas width="35" height="35"></canvas></kiss-svg>
+                    <kiss-svg class="kiss-margin-auto" src="<?= $this->base(isset($model['icon']) && $model['icon'] ? $model['icon'] : 'content:assets/icons/collection.svg') ?>" width="30" height="30" style="color:<?= ($this->escape($model['color'] ?? 'inherit')) ?>"><canvas width="30" height="30"></canvas></kiss-svg>
                 </div>
+
+                <a class="kiss-color-muted kiss-margin-small-right" href="javascript:VueView.ui.offcanvas('content:assets/dialogs/switch-model-view.js')">
+                    <icon>expand_circle_down</icon>
+                </a>
+
                 <div class="kiss-margin-small-right">
                     <div class="kiss-size-5 kiss-text-bold"><?= $this->escape($model['label'] ? $model['label'] : $model['name']) ?></div>
                 </div>
