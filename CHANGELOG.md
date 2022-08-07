@@ -1,7 +1,7 @@
 # Release Notes
 
 
-## WIP
+## 2.2.0 (2022-08-08)
 
 - Add create|update|delete endpoints content item to REST API
 - Add GraphQL mutation saveContentItem to create|update content items
