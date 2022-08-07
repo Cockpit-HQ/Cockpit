@@ -3046,7 +3046,7 @@
           return offcanvas;
       },
 
-      modal(url, data, callbacks, options) {
+      modal(url, data, callbacks, options, modaltype) {
 
           data = data || {};
           callbacks = callbacks || {};
@@ -3090,7 +3090,7 @@
             <div class="vue-modal">
                 <vue-dialog-content v-bind="data"></vue-dialog-content>
             </div>
-        `, options || {});
+        `, options || {}, modaltype);
 
           dialog.$view = dialog.querySelector('.vue-modal');
 

@@ -401,6 +401,10 @@ app-fieldcontainer app-fieldcontainer {
 .table-scroll th[fixed] {background-color: var(--kiss-table-heading-background-color);}
 .table-scroll td[fixed] {background: var(--kiss-color-contrast);}
 
+kiss-dialog[type="app-search"] > kiss-content {
+    margin-top: 15vh;
+}
+
 @media (min-width: 768px) {
 
     app-header {
