@@ -4321,44 +4321,56 @@ del { background: #c92a2a }
     width: 50px;
     z-index: 5;
 }
-.app-container-aside-float {
+.has-side-panel .app-container-aside {
+    width: 350px;
+}
+.app-container-aside-menu {
     position: fixed;
     display: flex;
     top: 0;
     left: 0;
     width: 50px;
+    height: 100vh;
+    padding-top: 10px;
+    padding-bottom: 20px;
+    flex-direction: column;
+}
+.app-container-aside-panel {
+    position: fixed;
+    display: flex;
+    top: 0;
+    left: 50px;
     padding-top: 5px;
     padding-bottom: 20px;
     flex-direction: column;
+    width: 300px;
     height: 100vh;
-
-    animation-duration: 1s;
-    animation-fill-mode: both;
-    animation-name: fadeInLeft;
+    background: var(--kiss-card-theme-contrast-color, #171d28);
+    overflow: auto;
 }
-.app-container-aside kiss-navlist a {
+.app-container-aside-menu kiss-navlist a {
     text-align: center;
 }
-.app-container-aside kiss-navlist kiss-svg {
+.app-container-aside-menu kiss-navlist kiss-svg {
     margin-left: auto;
     margin-right: auto;
 }
-.app-container-aside kiss-navlist ul > li > a {
+.app-container-aside-menu kiss-navlist ul > li > a {
     color: inherit;
     opacity: .65;
     transition: all 250ms;
 }
-.app-container-aside kiss-navlist ul > li > a:hover{
+.app-container-aside-menu kiss-navlist ul > li > a:hover{
     color: inherit;
     opacity: 1;
 }
-.app-container-aside kiss-navlist ul > li.active > a {
+.app-container-aside-menu kiss-navlist ul > li.active > a {
     position: relative;
     color: var(--kiss-color-primary);
     font-weight: bold;
     opacity: 1;
 }
-.app-container-aside kiss-navlist ul > li.active > a:before {
+.app-container-aside-menu kiss-navlist ul > li.active > a:before {
     content: "";
     position: absolute;
     width: 2px;
@@ -4367,17 +4379,17 @@ del { background: #c92a2a }
     bottom: 8px;
     background: var(--kiss-color-primary);
 }
-.app-container-aside kiss-navlist ul > li > * {
+.app-container-aside-menu kiss-navlist ul > li > * {
     display: flex;
     align-items: center;
     padding: 8px 0;
     letter-spacing: 1.5px;
 }
-.app-container-aside kiss-navlist[space="small"] ul > li > * {
+.app-container-aside-menu kiss-navlist[space="small"] ul > li > * {
     padding: 6px 0;
     font-size: 18px;
 }
-.app-container-aside kiss-navlist .kiss-nav-divider {
+.app-container-aside-menu kiss-navlist .kiss-nav-divider {
     margin-top: 1.2rem;
     margin-bottom: 1.2rem;
     opacity: .8;
@@ -4521,6 +4533,10 @@ app-fieldcontainer app-fieldcontainer {
 
     app-actionbar {
         padding-left: 70px;
+    }
+
+    .has-side-panel app-actionbar {
+        padding-left: 370px;
     }
 
     .app-container-aside {

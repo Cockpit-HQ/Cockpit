@@ -1,4 +1,8 @@
-<!DOCTYPE html>
+<?php
+
+    $sidePanelContents = $this->block('app-side-panel', ['print' => false]);
+
+?><!DOCTYPE html>
 <html lang="en" class="<?=$this->helper('theme')->pageClass()?>" data-base="<?=$this->base('/')?>" data-route="<?=$this->route('/')?>" data-version="<?=$this->retrieve('app.version')?>" data-theme="<?=$this->helper('theme')->theme()?>">
 <head>
     <meta charset="UTF-8">
@@ -22,18 +26,14 @@
     <?php endif ?>
 
 </head>
-<body>
+<body class="<?=($sidePanelContents ? 'has-side-panel' : '')?>">
 
     <div class="app-container">
         <aside class="app-container-aside">
 
-            <div class="app-container-aside-float">
+            <div class="app-container-aside-menu">
 
-                <a class="kiss-display-block kiss-padding-small kiss-size-3 kiss-align-center kiss-color-muted" href="#app-offcanvas" kiss-offcanvas>
-                    <icon>more_horiz</icon>
-                </a>
-
-                <div class="kiss-flex-1 kiss-overflow-y-auto kiss-margin-top">
+                <div class="kiss-flex-1 kiss-overflow-y-auto">
                     <kiss-navlist>
                         <ul>
                             <li class="<?=($this->request->route == '/') ? 'active':''?>">
@@ -86,6 +86,12 @@
                 </kiss-navlist>
 
             </div>
+
+            <?php if ($sidePanelContents): ?>
+            <div class="app-container-aside-panel">
+                <?=$sidePanelContents?>
+            </div>
+            <?php endif ?>
 
         </aside>
         <main class="kiss-flex-1">
@@ -146,6 +152,9 @@
             </div>
             <?php $this->trigger('app.layout.offcanvas.header') ?>
             <div class="kiss-flex-1 app-offcanvas-content">
+                <?php if ($sidePanelContents): ?>
+                    <?=$sidePanelContents?>
+                <?php endif ?>
                 <div class="kiss-padding">
                     <kiss-navlist>
                         <ul>
