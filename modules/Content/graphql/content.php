@@ -94,7 +94,7 @@ $gql->mutations['fields']['saveContentItem'] = [
             return ['error' => 'Item data is missing'];
         }
 
-        $default = $app->module('content')->getDefaultModelItem($model['name']);
+        $default = array_merge($app->module('content')->getDefaultModelItem($model['name']), ['_state' => 1]);
 
         // create
         if (!isset($data['_id'])) {
@@ -113,10 +113,10 @@ $gql->mutations['fields']['saveContentItem'] = [
                 $app->response->status = 403;
                 return ['error' => 'Permission denied'];
             }
-        }
 
-        if (isset($data['_state']) && !$app->helper('acl')->isAllowed("content/{$model['name']}/publish", $app->helper('auth')->getUser('role'))) {
-            unset($item['_state']);
+            if (isset($data['_state']) && !$app->helper('acl')->isAllowed("content/{$model['name']}/publish", $app->helper('auth')->getUser('role'))) {
+                unset($item['_state']);
+            }
         }
 
         // remove properties not available in the field list
