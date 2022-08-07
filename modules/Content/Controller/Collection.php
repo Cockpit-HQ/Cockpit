@@ -62,7 +62,7 @@ class Collection extends App {
 
             $item = $this->module('content')->item($model['name'], ['_id' => $id]);
 
-            if (!$id) {
+            if (!$item) {
                 return false;
             }
 

@@ -10,57 +10,57 @@
 
 $this->on('restApi.config', function($restApi) {
 
-    /**
-     * @OA\Get(
-     *     path="/content/item/{model}",
-     *     tags={"content"},
-     *     @OA\Parameter(
-     *         description="Model name",
-     *         in="path",
-     *         name="model",
-     *         required=true,
-     *         @OA\Schema(type="string")
-     *     ),
-     *    @OA\Parameter(
-     *         description="Return content for specified locale",
-     *         in="query",
-     *         name="locale",
-     *         required=false,
-     *         @OA\Schema(type="String")
-     *     ),
-     *     @OA\Parameter(
-     *         description="Url encoded filter json",
-     *         in="query",
-     *         name="filter",
-     *         required=false,
-     *         @OA\Schema(type="json")
-     *     ),
-     *     @OA\Parameter(
-     *         description="Url encoded fields projection as json",
-     *         in="query",
-     *         name="fields",
-     *         required=false,
-     *         @OA\Schema(type="json")
-     *     ),
-     *     @OA\Parameter(
-     *         description="Populate item with linked content items.",
-     *         in="query",
-     *         name="populate",
-     *         required=false,
-     *         @OA\Schema(type="int")
-     *     ),
-     *     @OA\OpenApi(
-     *         security={
-     *             {"api_key": {}}
-     *         }
-     *     ),
-     *     @OA\Response(response="200", description="Get model item"),
-     *     @OA\Response(response="404", description="Model not found"),
-     *     @OA\Response(response="401", description="Unauthorized")
-     * )
-     */
-
     $restApi->addEndPoint('/content/item/{model}', [
+
+        /**
+         * @OA\Get(
+         *     path="/content/item/{model}",
+         *     tags={"content"},
+         *     @OA\Parameter(
+         *         description="Model name",
+         *         in="path",
+         *         name="model",
+         *         required=true,
+         *         @OA\Schema(type="string")
+         *     ),
+         *    @OA\Parameter(
+         *         description="Return content for specified locale",
+         *         in="query",
+         *         name="locale",
+         *         required=false,
+         *         @OA\Schema(type="String")
+         *     ),
+         *     @OA\Parameter(
+         *         description="Url encoded filter json",
+         *         in="query",
+         *         name="filter",
+         *         required=false,
+         *         @OA\Schema(type="json")
+         *     ),
+         *     @OA\Parameter(
+         *         description="Url encoded fields projection as json",
+         *         in="query",
+         *         name="fields",
+         *         required=false,
+         *         @OA\Schema(type="json")
+         *     ),
+         *     @OA\Parameter(
+         *         description="Populate item with linked content items.",
+         *         in="query",
+         *         name="populate",
+         *         required=false,
+         *         @OA\Schema(type="int")
+         *     ),
+         *     @OA\OpenApi(
+         *         security={
+         *             {"api_key": {}}
+         *         }
+         *     ),
+         *     @OA\Response(response="200", description="Get model item"),
+         *     @OA\Response(response="404", description="Model not found"),
+         *     @OA\Response(response="401", description="Unauthorized")
+         * )
+         */
 
         'GET' => function($params, $app) {
 
@@ -72,7 +72,7 @@ $this->on('restApi.config', function($restApi) {
             }
 
             if (!$app->helper('acl')->isAllowed("content/{$model}/read", $app->helper('auth')->getUser('role'))) {
-                $app->response->status = 412;
+                $app->response->status = 403;
                 return ['error' => 'Permission denied'];
             }
 
@@ -113,9 +113,242 @@ $this->on('restApi.config', function($restApi) {
             }
 
             return $item ?? false;
+        },
+
+        /**
+         * @OA\Post(
+         *     path="/content/item/{model}",
+         *     tags={"content"},
+         *     @OA\Parameter(
+         *         description="Model name",
+         *         in="path",
+         *         name="model",
+         *         required=true,
+         *         @OA\Schema(type="string")
+         *     ),
+         *     @OA\RequestBody(
+         *         description="Content item data",
+         *         required=true,
+         *         @OA\JsonContent(
+         *             type="object",
+         *             @OA\Property(property="data", type="object")
+         *         )
+         *     ),
+         *     @OA\OpenApi(
+         *         security={
+         *             {"api_key": {}}
+         *         }
+         *     ),
+         *     @OA\Response(response="200", description="Get model item"),
+         *     @OA\Response(response="404", description="Model not found"),
+         *     @OA\Response(response="401", description="Unauthorized")
+         * )
+         */
+
+        'POST' => function($params, $app) {
+
+            $model = $app->module('content')->model($params['model']);
+            $data  = $app->param('data');
+
+            if (!$model) {
+                $app->response->status = 404;
+                return ["error" => "Model <{$params['model']}> not found"];
+            }
+
+            if (!$data || !is_array($data)) {
+                $app->response->status = 412;
+                return ['error' => 'Item data is missing'];
+            }
+
+            $default = $app->module('content')->getDefaultModelItem($model['name']);
+
+            // create
+            if (!isset($data['_id'])) {
+
+                if (!$app->helper('acl')->isAllowed("content/{$model['name']}/create", $app->helper('auth')->getUser('role'))) {
+                    $app->response->status = 403;
+                    return ['error' => 'Permission denied'];
+                }
+
+                $data = array_merge($default, $data);
+
+            // update
+            } else {
+
+                if (!$app->helper('acl')->isAllowed("content/{$model['name']}/update", $app->helper('auth')->getUser('role'))) {
+                    $app->response->status = 403;
+                    return ['error' => 'Permission denied'];
+                }
+
+            }
+
+            if (isset($data['_state']) && !$app->helper('acl')->isAllowed("content/{$model['name']}/publish", $app->helper('auth')->getUser('role'))) {
+                unset($item['_state']);
+            }
+
+            // remove properties not available in the field list
+
+            $allowedKeys = array_keys($default);
+
+            foreach (array_keys($data) as $key) {
+                if (!in_array($key, $allowedKeys)) unset($data[$key]);
+            }
+
+            $item = $app->module('content')->saveItem($model['name'], $data, ['user' => $app->helper('auth')->getUser()]);
+
+            return $item;
         }
     ]);
 
+    $restApi->addEndPoint('/content/item/{model}/{id}', [
+
+        /**
+         * @OA\Get(
+         *     path="/content/item/{model}/{id}",
+         *     tags={"content"},
+         *     @OA\Parameter(
+         *         description="Model name",
+         *         in="path",
+         *         name="model",
+         *         required=true,
+         *         @OA\Schema(type="string")
+         *     ),
+         *     @OA\Parameter(
+         *         description="Conten item id",
+         *         in="path",
+         *         name="id",
+         *         required=true,
+         *         @OA\Schema(type="string")
+         *     ),
+         *    @OA\Parameter(
+         *         description="Return content for specified locale",
+         *         in="query",
+         *         name="locale",
+         *         required=false,
+         *         @OA\Schema(type="String")
+         *     ),
+         *     @OA\Parameter(
+         *         description="Url encoded fields projection as json",
+         *         in="query",
+         *         name="fields",
+         *         required=false,
+         *         @OA\Schema(type="json")
+         *     ),
+         *     @OA\Parameter(
+         *         description="Populate item with linked content items.",
+         *         in="query",
+         *         name="populate",
+         *         required=false,
+         *         @OA\Schema(type="int")
+         *     ),
+         *     @OA\OpenApi(
+         *         security={
+         *             {"api_key": {}}
+         *         }
+         *     ),
+         *     @OA\Response(response="200", description="Get model item"),
+         *     @OA\Response(response="404", description="Model not found"),
+         *     @OA\Response(response="401", description="Unauthorized")
+         * )
+         */
+
+        'GET' => function($params, $app) {
+
+            $model = $params['model'];
+
+            if (!$app->module('content')->model($model)) {
+                $app->response->status = 404;
+                return ["error" => "Model <{$model}> not found"];
+            }
+
+            if (!$app->helper('acl')->isAllowed("content/{$model}/read", $app->helper('auth')->getUser('role'))) {
+                $app->response->status = 403;
+                return ['error' => 'Permission denied'];
+            }
+
+            $process = [
+                'locale' => $app->param('locale:string', 'default')
+            ];
+
+            $filter = ['_id' => $params['id']];
+            $fields = $app->param('fields:string', null);
+            $populate = $app->param('populate:int', null);
+
+            if ($fields) {
+                try {
+                    $fields = json5_decode($fields, true);
+                } catch(\Throwable $e) {
+                    $app->response->status = 400;
+                    return ['error' => "<fields> is not valid json"];
+                }
+            }
+
+            if ($populate) {
+                $process['populate'] = $populate;
+            }
+
+            $item = $app->module('content')->item($model, $filter ? $filter : [], $fields, $process);
+
+            if ($item) {
+                $app->trigger('content.api.item', [&$item, $model]);
+            }
+
+            return $item ?? false;
+        },
+
+        /**
+         * @OA\Delete(
+         *     path="/content/item/{model}/{id}",
+         *     tags={"content"},
+         *     @OA\Parameter(
+         *         description="Model name",
+         *         in="path",
+         *         name="model",
+         *         required=true,
+         *         @OA\Schema(type="string")
+         *     ),
+         *     @OA\Parameter(
+         *         description="Content item id",
+         *         in="path",
+         *         name="id",
+         *         required=true,
+         *         @OA\Schema(type="string")
+         *     ),
+         *     @OA\OpenApi(
+         *         security={
+         *             {"api_key": {}}
+         *         }
+         *     ),
+         *     @OA\Response(response="200", description="Content item removed"),
+         *     @OA\Response(response="404", description="Model not found"),
+         *     @OA\Response(response="401", description="Unauthorized")
+         * )
+         */
+
+        'DELETE' => function($params, $app) {
+
+            $model = $app->module('content')->model($params['model']);
+
+            if (!$model) {
+                $app->response->status = 404;
+                return ["error" => "Model <{$params['model']}> not found"];
+            }
+
+            if (!in_array($model['type'], ['collection', 'tree'])) {
+                $app->response->status = 412;
+                return ['error' => "DELETE method not allowed for <{$model['name']}>"];
+            }
+
+            if (!$app->helper('acl')->isAllowed("content/{$model['name']}/delete", $app->helper('auth')->getUser('role'))) {
+                $app->response->status = 403;
+                return ['error' => 'Permission denied'];
+            }
+
+            $app->module('content')->remove($model['name'], ['_id' => $params['id']]);
+
+            return ['success' => true];
+        }
+    ]);
 
     /**
      * @OA\Get(
@@ -200,7 +433,7 @@ $this->on('restApi.config', function($restApi) {
             }
 
             if (!$app->helper('acl')->isAllowed("content/{$model}/read", $app->helper('auth')->getUser('role'))) {
-                $app->response->status = 412;
+                $app->response->status = 403;
                 return ['error' => 'Permission denied'];
             }
 
