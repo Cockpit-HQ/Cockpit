@@ -139,9 +139,10 @@ $this->on('restApi.config', function($restApi) {
          *             {"api_key": {}}
          *         }
          *     ),
-         *     @OA\Response(response="200", description="Get model item"),
+         *     @OA\Response(response="200", description="Saved model item"),
          *     @OA\Response(response="404", description="Model not found"),
          *     @OA\Response(response="401", description="Unauthorized")
+         *     @OA\Response(response="412", description="Item data is missing")
          * )
          */
 
@@ -245,7 +246,7 @@ $this->on('restApi.config', function($restApi) {
          *             {"api_key": {}}
          *         }
          *     ),
-         *     @OA\Response(response="200", description="Get model item"),
+         *     @OA\Response(response="200", description="Get content item"),
          *     @OA\Response(response="404", description="Model not found"),
          *     @OA\Response(response="401", description="Unauthorized")
          * )
