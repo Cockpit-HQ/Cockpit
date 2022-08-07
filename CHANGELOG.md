@@ -4,6 +4,8 @@
 ## WIP
 
 - Add create|update|delete endpoints content item to REST API
+- Add GraphQL mutation saveContentItem to create|update content items
+- Add GraphQL mutation deleteContentItem to delete content items
 - Add app side panel (admin layout)
 
 ## 2.1.2 (2022-08-04)
