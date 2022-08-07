@@ -234,6 +234,11 @@ class App implements \ArrayAccess {
         }
 
         $this->request->stopped = true;
+
+        $this->trigger('app:request:stop');
+        $this->trigger('after', [true]);
+
+        exit;
     }
 
     /**
@@ -855,6 +860,19 @@ class App implements \ArrayAccess {
 
         $this->response = new Response();
         $this->trigger('before');
+
+        if ($flush) {
+
+            $this->on('app:request:stop', function() {
+
+                if ($this->response->status === 307 && isset($this->response->headers['Location'])) {
+                    \header("Location: {$this->response->headers['Location']}");
+                    exit;
+                }
+
+                $this->response->flush();
+            });
+        }
 
         if (!$this->request->stopped) {
 
