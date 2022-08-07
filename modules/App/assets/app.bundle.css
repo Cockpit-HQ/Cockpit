@@ -4340,8 +4340,7 @@ del { background: #c92a2a }
     display: flex;
     top: 0;
     left: 50px;
-    padding-top: 5px;
-    padding-bottom: 20px;
+    padding: 20px 25px;
     flex-direction: column;
     width: 300px;
     height: 100vh;

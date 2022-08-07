@@ -153,7 +153,9 @@
             <?php $this->trigger('app.layout.offcanvas.header') ?>
             <div class="kiss-flex-1 app-offcanvas-content">
                 <?php if ($sidePanelContents): ?>
+                <div class="kiss-padding">
                     <?=$sidePanelContents?>
+                </div>
                 <?php endif ?>
                 <div class="kiss-padding">
                     <kiss-navlist>
