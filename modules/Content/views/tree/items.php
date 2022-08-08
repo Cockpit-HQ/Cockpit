@@ -170,7 +170,7 @@
 
                         this.loading = true;
 
-                        this.$request(`/content/tree/find/${this.model.name}`, {options}).then(res => {
+                        this.$request(`/content/collection/find/${this.model.name}`, {options}).then(res => {
                             this.items = res.items;
                             this.loading = false;
                         }).catch(res => {

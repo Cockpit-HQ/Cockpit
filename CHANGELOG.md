@@ -1,6 +1,10 @@
 # Release Notes
 
 
+## WIP
+
+- Fix linked tree content item display resolver
+
 ## 2.2.0 (2022-08-08)
 
 - Add create|update|delete endpoints content item to REST API

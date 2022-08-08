@@ -94,7 +94,7 @@ class Collection extends App {
 
         $model = $this->module('content')->model($model);
 
-        if (!$model || $model['type'] != 'collection') {
+        if (!$model || !in_array($model['type'], ['collection', 'tree'])) {
             return $this->stop(404);
         }
 

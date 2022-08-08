@@ -149,7 +149,7 @@ export default {
             this.loading = true;
             this.selected = [];
 
-            this.$request(`/content/${this.model.type}/find/${this.model.name}`, {options}).then(rsp => {
+            this.$request(`/content/collection/find/${this.model.name}`, {options}).then(rsp => {
                 this.items = rsp.items;
                 this.page = rsp.page;
                 this.pages = rsp.pages;
