@@ -1,9 +1,10 @@
 # Release Notes
 
 
-## WIP
+## 2.2.1 (2022-08-10)
 
 - Fix linked tree content item display resolver
+- Refactor content models index page
 
 ## 2.2.0 (2022-08-08)
 
