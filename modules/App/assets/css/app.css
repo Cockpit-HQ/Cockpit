@@ -19,7 +19,7 @@ vue-view:not([init="true"]) { display: none; }
 
 :root {
 
-    --app-header-background: #131720f0;
+    --app-header-background: var(--kiss-base-background-color);
     --app-border-radius: 3px;
     --app-shadow-color: rgba(0,0,0,0.12);
 
@@ -65,7 +65,6 @@ html[data-theme='light'] {
     --kiss-table-row-hover-color: #efefef;
 
     --app-shadow-color: rgba(0,0,0,0.12);
-    --app-header-background: #eff7f7f0;
     --app-actionbar-bgcolor: #eff7f7e8;
     --app-loader-color2: #333;
     --app-fieldcontainer-border-color-inactive: rgba(0,0,0, .1);
@@ -315,7 +314,7 @@ app-fieldcontainer label {
 app-header {
     display: block;
     position: relative;
-    padding: 15px 0;
+    padding: 20px 0;
     background: var(--app-header-background);
     z-index: 6;
 }
