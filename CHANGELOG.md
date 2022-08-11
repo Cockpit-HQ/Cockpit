@@ -1,7 +1,7 @@
 # Release Notes
 
 
-## 2.2.1 (2022-08-10)
+## WIP
 
 - Add `./tower app:update` cli command to update Cockpit to the latest or specific version
 
