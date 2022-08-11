@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Command\Spaces;
+namespace System\Command\Spaces;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;

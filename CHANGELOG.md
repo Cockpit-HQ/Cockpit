@@ -3,6 +3,10 @@
 
 ## 2.2.1 (2022-08-10)
 
+- Add `./tower app:update` cli command to update Cockpit to the latest or specific version
+
+## 2.2.1 (2022-08-10)
+
 - Fix linked tree content item display resolver
 - Refactor content models index page
 

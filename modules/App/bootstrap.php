@@ -32,8 +32,3 @@ $this->on('app.api.request', function($request) {
 $this->on('app.user.disguise', function(array &$user) {
     unset($user['password'], $user['apiKey'], $user['_reset_token']);
 });
-
-$this->on('app.cli.init', function($cli) {
-    $app = $this;
-    include(__DIR__.'/cli.php');
-});

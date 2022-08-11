@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Command\Cache;
+namespace System\Command\Cache;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;

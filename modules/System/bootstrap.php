@@ -18,6 +18,11 @@ $app->on('error', function($error, $exception) {
     } catch(Throwable $e) {}
 });
 
+$this->on('app.cli.init', function($cli) {
+    $app = $this;
+    include(__DIR__.'/cli.php');
+});
+
 // system api
 $this->module('system')->extend([
 

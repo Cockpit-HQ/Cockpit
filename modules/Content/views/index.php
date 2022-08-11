@@ -85,15 +85,15 @@
                         </div>
 
                         <kiss-grid cols="2" gap="small">
-                            <kiss-card class="kiss-padding-small kiss-bgcolor-contrast" theme="bordered">
+                            <kiss-card class="kiss-padding kiss-bgcolor-contrast" theme="bordered">
                                 <span class="kiss-size-xsmall"><?=t('Models')?></span>
                                 <div class="kiss-size-2 kiss-text-bold">{{ (singletons.length + lists.length) }}</div>
                             </kiss-card>
-                            <div class="kiss-padding-small" v-if="lists.length">
+                            <div class="kiss-padding" v-if="lists.length">
                                 <span class="kiss-size-xsmall kiss-color-muted"><?=t('Lists')?></span>
                                 <div class="kiss-size-2 kiss-color-muted">{{ lists.length }}</div>
                             </div>
-                            <div class="kiss-padding-small" v-if="singletons.length">
+                            <div class="kiss-padding" v-if="singletons.length">
                                 <span class="kiss-size-xsmall kiss-color-muted"><?=t('Singletons')?></span>
                                 <div class="kiss-size-2 kiss-color-muted">{{ singletons.length }}</div>
                             </div>
