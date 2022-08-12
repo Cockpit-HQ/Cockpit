@@ -7,16 +7,18 @@
                 <img class="app-logo" src="<?=$this->helper('theme')->logo()?>" style="height:40px;width:auto;" alt="Logo">
             </div>
 
-            <form class="animated" :class="{'kiss-disabled': loading}" @submit.prevent="login" v-if="view=='form'">
+            <form :class="{'kiss-disabled': loading}" @submit.prevent="login" v-if="view=='form'">
 
                 <div class="kiss-text-bold kiss-text-caption kiss-margin-bottom"><?=t('Welcome')?></div>
 
                 <div class="kiss-margin">
-                    <input class="kiss-input" type="text" placeholder="<?=t('Username or Email')?>" v-model="auth.user" autocomplete="off" autofocus required>
+                    <label for="auth_username"><?=t('Username or Email')?></label>
+                    <input id="auth_username" class="kiss-input" type="text" placeholder="<?=t('Username or Email')?>" v-model="auth.user" autocomplete="off" autofocus required>
                 </div>
 
                 <div class="kiss-margin">
-                    <input class="kiss-input" type="password" autocomplete="current-password" placeholder="<?=t('Password')?>" v-model="auth.password" required>
+                    <label for="auth_password"><?=t('Password')?></label>
+                    <input id="auth_password" class="kiss-input" type="password" autocomplete="current-password" placeholder="<?=t('Password')?>" v-model="auth.password" required>
                 </div>
 
                 <div class="kiss-margin">
@@ -53,8 +55,8 @@
 
                 <form class="kiss-margin-top" @submit.prevent="verify2FA" v-if="!loading">
                     <div>
-                        <label>2FA Code:</label>
-                        <input class="kiss-input" type="text" placeholder="Code" v-model="twofaCode" autofocus required>
+                        <label for="auth_2fa">2FA Code:</label>
+                        <input id="auth_2fa" class="kiss-input" type="text" placeholder="Code" v-model="twofaCode" autofocus required>
                     </div>
                     <div class="kiss-margin-top">
                         <button class="kiss-button kiss-button-outline kiss-button-primary kiss-width-1-1">{{ t('Verify code') }}</button>
