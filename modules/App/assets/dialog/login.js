@@ -23,11 +23,13 @@ export default {
             <form class="app-login-form animated" :class="{'kiss-disabled': loading}" @submit.prevent="login">
 
                 <div class="kiss-margin">
-                    <input class="kiss-input" type="text" :placeholder="t('Username or Email')" v-model="auth.user" :disabled="loading" autocomplete="off" required>
+                    <label for="auth_username">{{ t('Username or Email') }}</label>
+                    <input id="auth_username" class="kiss-input" type="text" :placeholder="t('Username or Email')" v-model="auth.user" :disabled="loading" autocomplete="off" required>
                 </div>
 
                 <div class="kiss-margin">
-                    <input class="kiss-input" type="password" autocomplete="current-password" :placeholder="t('Password')" :disabled="loading" v-model="auth.password" required>
+                    <label for="auth_password">{{ t('Password') }}</label>
+                    <input id="auth_password" class="kiss-input" type="password" autocomplete="current-password" :placeholder="t('Password')" :disabled="loading" v-model="auth.password" required>
                 </div>
 
                 <div class="kiss-margin">
