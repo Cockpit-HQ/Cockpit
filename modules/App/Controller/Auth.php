@@ -78,20 +78,28 @@ class Auth extends Base {
 
             if (isset($user['twofa']['enabled']) && $user['twofa']['enabled']) {
 
+                unset($user['twofa']);
+
                 return [
                     'success' => true,
                     'user' => [
                         'name' => $user['name'],
                         'user' => $user['user'],
                         'email' => $user['email'],
-                        'twofa' => $this->helper('jwt')->create($user)
+                        'twofa' => $this->helper('jwt')->create([
+                            '_id'   => $user['_id'],
+                            'user'  => $user['user'],
+                            'name'  => $user['name'],
+                            'email' => $user['email'],
+                            'role'  => $user['role'],
+                        ])
                     ]
                 ];
 
-            } else {
-                // remove twofa settings
-                unset($user['twofa']);
             }
+
+            // remove 2FA settings from user session
+            unset($user['twofa']);
 
             $this->app->trigger('app.user.disguise', [&$user]);
 
