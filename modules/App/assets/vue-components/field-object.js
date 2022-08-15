@@ -1,5 +1,3 @@
-import FieldCode from "./field-code.js"
-
 export default {
 
     _meta: {
@@ -40,7 +38,9 @@ export default {
     },
 
     components: {
-        'field-code': FieldCode
+        'field-code': Vue.defineAsyncComponent(() =>
+            App.utils.import('app:assets/vue-components/field-code.js')
+        )
     },
 
     watch: {
