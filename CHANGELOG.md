@@ -5,6 +5,8 @@
 
 - Add `./tower app:update` cli command to update Cockpit to the latest or specific version
 - Fix exposing 2FA secret in JWT token on login
+- Enable keyboard navigation in search modal #14 @raffaelj
+- Prevent double loading of field-code.js #15 @raffaelj
 
 ## 2.2.1 (2022-08-10)
 
