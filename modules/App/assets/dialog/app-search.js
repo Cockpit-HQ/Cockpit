@@ -70,7 +70,6 @@ export default {
         },
 
         goto(finding) {
-            console.log(finding.route)
             location.href = finding.route;
         },
 
@@ -109,17 +108,17 @@ export default {
     },
 
     template: /*html*/`
-        <div id="app-search">
+        <form id="app-search" role="search">
             <div class="kiss-flex kiss-flex-middle kiss-margin-small">
                 <div class="kiss-color-muted kiss-margin-small-right">
                     <kiss-svg :src="$base('system:assets/icons/search.svg')" width="30"><canvas width="30" height="30"></canvas></kiss-svg>
                 </div>
                 <div class="kiss-flex-1 kiss-margin-small-right">
-                    <input class="kiss-input kiss-input-blank kiss-form-large kiss-width-1-1" :class="{'kiss-disabled': loading}" type="text" v-model="search" :placeholder="t('Search...')" :disabled="loading" @keydown="keydown" @input="selected=null" ref="searchInput" style="font-size:30px;padding:0;">
+                    <input class="kiss-input kiss-input-blank kiss-form-large kiss-width-1-1" :class="{'kiss-disabled': loading}" type="search" v-model="search" :placeholder="t('Search...')" :aria-label="t('Search...')" :disabled="loading" @keydown="keydown" @input="selected=null" ref="searchInput" style="font-size:30px;padding:0;">
                 </div>
-                <a class="kiss-color-muted" kiss-dialog-close>
+                <button type="button" :aria-label="t('Close')" style="background:none;border:none;" class="kiss-color-muted" kiss-dialog-close>
                     <kiss-svg :src="$base('system:assets/icons/close.svg')" width="30"><canvas width="30" height="30"></canvas></kiss-svg>
-                </a>
+                </button>
             </div>
 
             <kiss-card class="kiss-color-muted kiss-size-large kiss-align-center kiss-padding" v-if="loading">
@@ -135,18 +134,20 @@ export default {
                 <div class="kiss-text-caption kiss-color-muted kiss-margin-small">{{ t('Findings') }}</div>
 
                 <div style="max-height:50vh;overflow:auto;">
-                    <kiss-card class="kiss-padding-small kiss-flex kiss-flex-middle" :class="{'kiss-color-primary': idx == this.selected, 'kiss-color-muted': idx != this.selected}" :theme="idx == this.selected && 'contrast'" v-for="finding, idx in findings" @click="goto(finding)">
-                        <div class="kiss-margin-small-right">
-                            <kiss-svg :src="$base(finding.icon || 'system:assets/icons/link.svg')" width="20" height="20"></kiss-svg>
-                        </div>
-                        <div class="kiss-flex-1">
-                            {{ finding.title }}
-                        </div>
+                    <kiss-card class="kiss-padding-small" :theme="idx == this.selected && 'contrast'" v-for="finding, idx in findings">
+                        <a :href="finding.route" class="kiss-flex kiss-flex-middle" :class="{'kiss-color-primary': idx == this.selected, 'kiss-color-muted': idx != this.selected}">
+                            <div class="kiss-margin-small-right">
+                                <kiss-svg :src="$base(finding.icon || 'system:assets/icons/link.svg')" width="20" height="20"></kiss-svg>
+                            </div>
+                            <div class="kiss-flex-1">
+                                {{ finding.title }}
+                            </div>
+                        </a>
                     </kiss-card>
                 </div>
 
 
             </div>
-        </div>
+        </form>
     `
 }
