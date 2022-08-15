@@ -78,8 +78,6 @@ class Auth extends Base {
 
             if (isset($user['twofa']['enabled']) && $user['twofa']['enabled']) {
 
-                unset($user['twofa']);
-
                 return [
                     'success' => true,
                     'user' => [
@@ -95,7 +93,6 @@ class Auth extends Base {
                         ])
                     ]
                 ];
-
             }
 
             // remove 2FA settings from user session
