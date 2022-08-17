@@ -71,3 +71,17 @@
 .uppy-DashboardTab-btn:hover {
   background-color: var(--kiss-color-contrast);
 }
+
+.uppy-Dashboard-close {
+    top: 5px;
+    width: 1em;
+    height: 1em;
+    text-align: center;
+    color: var(--kiss-base-text-color);
+}
+[dir="ltr"] .uppy-Dashboard-close {
+    right: 5px;
+}
+[dir="rtl"] .uppy-Dashboard-close {
+    left: 5px;
+}
