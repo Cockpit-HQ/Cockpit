@@ -4,29 +4,29 @@
 
 .uppy-Dashboard-AddFiles-title,
 .uppy-Root {
-  color: inherit;
+    color: inherit;
 }
 
 .uppy-StatusBar-actionBtn,
 .uppy-size--md .uppy-DashboardContent-bar button,
 .uppy-StatusBar.is-waiting .uppy-StatusBar-action button {
-  display: inline-flex;
-  align-items: center;
-  border: none;
-  overflow: visible;
-  font: inherit;
-  font-weight: bold;
-  color: inherit;
-  text-transform: none;
-  box-sizing: border-box;
-  padding: 0 var(--kiss-button-small-padding-horizontal, 2em);
-  line-height: var(--kiss-button-small-font-size, 2em);
-  font-size: .6em;
-  vertical-align: middle;
-  letter-spacing: .1em;
-  text-align: center;
-  text-decoration: none;
-  text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    border: none;
+    overflow: visible;
+    font: inherit;
+    font-weight: bold;
+    color: inherit;
+    text-transform: none;
+    box-sizing: border-box;
+    padding: 0 var(--kiss-button-small-padding-horizontal, 2em);
+    line-height: var(--kiss-button-small-font-size, 2em);
+    font-size: .6em;
+    vertical-align: middle;
+    letter-spacing: .1em;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
 }
 
 .uppy-StatusBar-actionBtn,
@@ -34,22 +34,21 @@
 .uppy-size--md .uppy-StatusBar-actionBtn--done,
 .uppy-DashboardTab-btn:active,
 .uppy-DashboardTab-btn:focus {
-  background-color: var(--kiss-color-primary);
-  color: #fff;
-  font-size: .9em;
+    background-color: var(--kiss-color-primary);
+    color: #fff;
+    font-size: .9em;
 }
 
 .uppy-DashboardTab-btn,
 .uppy-Dashboard-note,
 .uppy-StatusBar-content {
-  color: var(--kiss-color-muted);
+    color: var(--kiss-color-muted);
 }
 
 .uppy-DashboardContent-addMore:focus,
 .uppy-DashboardContent-back:focus {
-  background-color: transparent;
+    background-color: transparent;
 }
-
 
 .uppy-StatusBar,
 .uppy-DashboardContent-bar,
@@ -58,30 +57,20 @@
 .uppy-Dashboard-inner,
 .uppy-StatusBar.is-waiting .uppy-StatusBar-actions,
 .uppy-StatusBar:not([aria-hidden=true]).is-waiting {
-  background: var(--kiss-dialog-content-background);
-  background-color: var(--kiss-dialog-content-background);
-  border-color:  var(--kiss-dialog-content-background);
-  color: inherit;
+    background: var(--kiss-dialog-content-background);
+    background-color: var(--kiss-dialog-content-background);
+    border-color:   var(--kiss-dialog-content-background);
+    color: inherit;
 }
 
 .uppy-Dashboard--modal .uppy-Dashboard-AddFiles {
-  border-color: transparent;
+    border-color: transparent;
 }
 
 .uppy-DashboardTab-btn:hover {
-  background-color: var(--kiss-color-contrast);
+    background-color: var(--kiss-color-contrast);
 }
 
 .uppy-Dashboard-close {
-    top: 5px;
-    width: 1em;
-    height: 1em;
-    text-align: center;
     color: var(--kiss-base-text-color);
-}
-[dir="ltr"] .uppy-Dashboard-close {
-    right: 5px;
-}
-[dir="rtl"] .uppy-Dashboard-close {
-    left: 5px;
 }
