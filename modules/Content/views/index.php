@@ -34,7 +34,7 @@
 
                     <div class="kiss-flex-1">
 
-                        <kiss-grid cols="2@m 3@l" class="kiss-margin" gap="small" v-if="singletons.length">
+                        <kiss-grid cols="2@m 3@xl" class="kiss-margin" gap="small" v-if="singletons.length">
 
                             <kiss-card class="animated fadeIn kiss-flex" theme="shadowed contrast" hover="shadow" v-for="model in singletons">
                                 <div class="kiss-position-relative kiss-padding-small kiss-bgcolor-contrast">
