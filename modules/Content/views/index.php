@@ -81,7 +81,7 @@
 
                         <div class="kiss-margin" v-if="group">
                             <span class="kiss-size-xsmall kiss-color-muted"><?=t('Group')?></span>
-                            <div class="kiss-size-3 kiss-text-bold">{{ group }}</div>
+                            <div class="kiss-size-4 kiss-text-bold">{{ group }}</div>
                         </div>
 
                         <kiss-grid cols="2" gap="small">
