@@ -7,16 +7,16 @@
                 <img class="app-logo" src="<?=$this->helper('theme')->logo()?>" style="height:40px;width:auto;" alt="Logo">
             </div>
 
-            <form class="animated" :class="{'kiss-disabled': loading}" @submit.prevent="login" v-if="view=='form'">
+            <form :class="{'kiss-disabled': loading}" @submit.prevent="login" v-if="view=='form'">
 
                 <div class="kiss-text-bold kiss-text-caption kiss-margin-bottom"><?=t('Welcome')?></div>
 
                 <div class="kiss-margin">
-                    <input class="kiss-input" type="text" placeholder="<?=t('Username or Email')?>" v-model="auth.user" autocomplete="off" autofocus required>
+                    <input class="kiss-input" type="text" placeholder="<?=t('Username or Email')?>" aria-label="<?=t('Username or Email')?>" v-model="auth.user" autocomplete="off" autofocus required>
                 </div>
 
                 <div class="kiss-margin">
-                    <input class="kiss-input" type="password" autocomplete="current-password" placeholder="<?=t('Password')?>" v-model="auth.password" required>
+                    <input class="kiss-input" type="password" autocomplete="current-password" placeholder="<?=t('Password')?>" aria-label="<?=t('Password')?>" v-model="auth.password" required>
                 </div>
 
                 <div class="kiss-margin">
@@ -53,8 +53,7 @@
 
                 <form class="kiss-margin-top" @submit.prevent="verify2FA" v-if="!loading">
                     <div>
-                        <label>2FA Code:</label>
-                        <input class="kiss-input" type="text" placeholder="Code" v-model="twofaCode" autofocus required>
+                        <input class="kiss-input kiss-text-monospace" type="text" placeholder="2FA Code" aria-label="2FA Code" v-model="twofaCode" autofocus required>
                     </div>
                     <div class="kiss-margin-top">
                         <button class="kiss-button kiss-button-outline kiss-button-primary kiss-width-1-1">{{ t('Verify code') }}</button>
@@ -133,7 +132,7 @@
                         this.view = 'success';
 
                         // redirect if twofa is disabled for the user
-                        if (!rsp.user.twofa) {
+                        if (!this.user.twofa) {
                             setTimeout(() => window.location = '<?=$redirectTo?>', 1500);
                         }
 

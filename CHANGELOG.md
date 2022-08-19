@@ -7,6 +7,7 @@
 - Fix exposing 2FA secret in JWT token on login
 - Enable keyboard navigation in search modal #14 @raffaelj
 - Prevent double loading of field-code.js #15 @raffaelj
+- Fix 2fa for login modal #13 @raffaelj
 
 ## 2.2.1 (2022-08-10)
 
