@@ -1,9 +1,9 @@
 {
 
-    "name": "agentejo/cockpit",
+    "name": "cockpit-hq/cockpit",
     "type": "project",
-    "description": "Cockpit Headless CMS",
-    "keywords": ["cms", "headles", "api", "cockpit"],
+    "description": "Cockpit Content Platform",
+    "keywords": ["cms", "headless", "api", "cockpit"],
     "homepage": "https://getcockpit.com/",
     "license": "MIT",
     "authors": [
