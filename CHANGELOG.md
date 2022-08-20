@@ -1,7 +1,7 @@
 # Release Notes
 
 
-## WIP
+## 2.2.2 (2022-08-20)
 
 - Add `./tower app:update` cli command to update Cockpit to the latest or specific version
 - Fix exposing 2FA secret in JWT token on login
