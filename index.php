@@ -124,7 +124,7 @@ if (APP_API_REQUEST) {
         $this->response->headers['Access-Control-Allow-Origin']      = $cors['allowedOrigins'] ?? '*';
         $this->response->headers['Access-Control-Allow-Credentials'] = $cors['allowCredentials'] ?? 'true';
         $this->response->headers['Access-Control-Max-Age']           = $cors['maxAge'] ?? '1000';
-        $this->response->headers['Access-Control-Allow-Headers']     = $cors['allowedHeaders'] ?? 'X-Requested-With, Content-Type, Origin, Cache-Control, Pragma, Authorization, Accept, Accept-Encoding, API-TOKEN';
+        $this->response->headers['Access-Control-Allow-Headers']     = $cors['allowedHeaders'] ?? 'X-Requested-With, Content-Type, Origin, Cache-Control, Pragma, Authorization, Accept, Accept-Encoding, API-KEY';
         $this->response->headers['Access-Control-Allow-Methods']     = $cors['allowedMethods'] ?? 'PUT, POST, GET, OPTIONS, DELETE';
         $this->response->headers['Access-Control-Expose-Headers']    = $cors['exposedHeaders'] ?? ($this->retrieve('debug') ? '*' : 'false');
     });
