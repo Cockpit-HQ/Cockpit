@@ -3,6 +3,7 @@
 ## WIP
 
 - Update vendor libs
+- Fix field-object js error
 
 
 ## 2.2.2 (2022-08-20)

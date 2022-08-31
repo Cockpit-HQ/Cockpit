@@ -51,7 +51,7 @@ export default {
         modelValue: {
             handler(val) {
 
-                if (this.code.editor && !this.code.editor.hasFocus()) {
+                if (this.code && this.code.editor && !this.code.editor.hasFocus()) {
 
                     if (this.asString && typeof(val) == 'string') {
                         this.val = val;
