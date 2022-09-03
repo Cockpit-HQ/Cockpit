@@ -60,11 +60,13 @@ class Collection extends App {
 
         if ($id) {
 
-            $item = $this->module('content')->item($model['name'], ['_id' => $id]);
+            $current = $this->module('content')->item($model['name'], ['_id' => $id]);
 
-            if (!$item) {
+            if (!$current) {
                 return false;
             }
+
+            $item = array_merge($item, $current);
 
             $this->checkAndLockResource($id);
         }

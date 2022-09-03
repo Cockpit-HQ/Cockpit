@@ -4,6 +4,7 @@
 
 - Update vendor libs
 - Fix field-object js error
+- Don't apply default content fields on update (saveItem)
 
 
 ## 2.2.2 (2022-08-20)

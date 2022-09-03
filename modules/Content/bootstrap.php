@@ -237,10 +237,11 @@ $this->module('content')->extend([
         } elseif (in_array($model['type'], ['collection', 'tree'])) {
 
             $collection = "content/collections/{$modelName}";
-            $item = array_merge($default, $item);
 
             if (isset($item['_id'])) {
                 $isUpdate = true;
+            } else {
+                $item = array_merge($default, $item);
             }
         }
 
