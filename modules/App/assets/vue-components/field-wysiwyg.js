@@ -103,8 +103,14 @@ export default {
                         this.$emit('update:modelValue', editor.getContent())
                     });
 
-                    editor.on('focus blur', e => {
-                        editor.isFocused = !editor.isFocused;
+                    editor.on('focus blur input', e => {
+
+                        if (e.type == 'input') {
+                            editor.isFocused = true;
+                            return;
+                        }
+
+                        editor.isFocused = e.type == 'focus';
                         this.$el.dispatchEvent(new Event(editor.isFocused ? 'focusin':'focusout', { bubbles: true, cancelable: true }));
                     });
                 });
