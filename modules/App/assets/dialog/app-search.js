@@ -37,6 +37,7 @@ export default {
                 case 13:
 
                     if (this.selected !== null) {
+                        event.preventDefault();
                         this.goto(this.findings[this.selected]);
                         return;
                     }
