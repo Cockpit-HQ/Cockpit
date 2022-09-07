@@ -6,6 +6,7 @@
 - Fix field-object js error
 - Don't apply default content fields on update (saveItem)
 - Fix GraphQL error when numeric field names are used
+- Fix wysiwyg field (Safari) #24
 
 
 ## 2.2.2 (2022-08-20)
