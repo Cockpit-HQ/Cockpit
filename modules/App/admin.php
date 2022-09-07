@@ -82,8 +82,8 @@ $this->on('app.admin.request', function(Lime\Request $request) {
         $status = $user ? true : false;
         $start  = $this->helper('session')->read('app.session.start', 0);
 
-        // check for inactivity: 45min by default
-        if ($status && $start && ($start + $this->retrieve('session.lifetime', 2700) < time())) {
+        // check for inactivity: 90min by default
+        if ($status && $start && ($start + $this->retrieve('session.lifetime', 5400) < time())) {
             $this->helper('auth')->logout();
             $status = false;
         }
