@@ -55,8 +55,8 @@ $this->module('assets')->extend([
 
         $files = [];
 
-        if (is_string($param) && isset($_FILES[$param])) {
-            $files = $_FILES[$param];
+        if (is_string($param) && isset($this->app->request->files[$param])) {
+            $files = $this->app->request->files[$param];
         } elseif (is_array($param) && isset($param['name'], $param['error'], $param['tmp_name'])) {
             $files = $param;
         }

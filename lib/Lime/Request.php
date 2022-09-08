@@ -63,6 +63,7 @@ class Request {
         $this->query = $config['query'] ?? [];
         $this->server = $config['server'] ?? [];
         $this->body = $config['body'] ?? [];
+        $this->files = $config['files'] ?? [];
         $this->headers = $config['headers'] ?? [];
         $this->cookies = $config['cookies'] ?? [];
 

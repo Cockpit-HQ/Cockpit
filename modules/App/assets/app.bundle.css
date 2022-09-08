@@ -4344,6 +4344,7 @@ del { background: #c92a2a }
     width: 300px;
     height: 100vh;
     background: var(--kiss-card-theme-contrast-color, #171d28);
+    box-shadow: 0 0 5px rgb(0 0 0 / 30%);
     overflow: auto;
 }
 .app-container-aside-menu kiss-navlist a {
