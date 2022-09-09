@@ -8,6 +8,7 @@
 - Fix GraphQL error when numeric field names are used
 - Fix wysiwyg field (Safari) #24
 - Fix enter on selected result in app search
+- Update Vue to 3.2.39
 
 
 ## 2.2.2 (2022-08-20)
