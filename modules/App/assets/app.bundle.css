@@ -4517,6 +4517,10 @@ app-fieldcontainer app-fieldcontainer {
     position: -webkit-sticky;
     z-index: 1;
 }
+.table-scroll thead {
+    position: relative;
+    z-index: 2;
+}
 .table-scroll [fixed="top"] { top: 0; }
 .table-scroll [fixed="left"] { left: 0; }
 .table-scroll [fixed="right"] { right: 0; }
