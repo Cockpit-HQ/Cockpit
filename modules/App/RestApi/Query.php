@@ -46,10 +46,13 @@ class Query extends \Lime\AppAware {
             $path = implode('/', array_filter(explode('/', $path), fn($s) => trim($s, '.')));
         }
 
-        if ($file = $this->app->path('#config:api/'.trim($path, '/').'.php')) {
+        if ($custom = $this->resolveCustomApiRoute($path, $method)) {
 
-            $handler = (function() use($file) {
-                return include($file);
+            $API_FILE = $custom['file'];
+            $API_ARGS = $custom['args'];
+
+            $handler = (function() use($API_FILE, $API_ARGS) {
+                return include($API_FILE);
             })->bindTo($this->app, $this->app);
 
             return $handler();
@@ -113,5 +116,80 @@ class Query extends \Lime\AppAware {
         $patternAsRegex = "@^" . $pattern . "$@D";
 
         return $patternAsRegex;
+    }
+
+    protected function resolveCustomApiRoute(string $route, string $method) {
+
+        $root   = $this->app->path('#config:api');
+        $method = strtolower($method);
+        $route  = trim($route, '/');
+        $parts  = explode('/', $route);
+        $dir    = '';
+
+        if (!$root) {
+            return null;
+        }
+
+        if (strpos($route, '[...all]') !== false) {
+            return null;
+        }
+
+        if (file_exists("{$root}/{$route}.{$method}.php")) {
+
+            return [
+                'args' => [],
+                'file' => "{$root}/{$route}.{$method}.php"
+            ];
+        }
+
+        if (file_exists("{$root}/{$route}.php")) {
+
+            return [
+                'args' => [],
+                'file' => "{$root}/{$route}.php"
+            ];
+        }
+
+        foreach ($parts as $idx => $p) {
+
+            $path = trim("{$dir}/$p", '/');
+            $file = null;
+
+            if (file_exists("{$root}/{$path}")) {
+                $dir = $path;
+                continue;
+            }
+
+            // catch all route file
+            if (file_exists("{$root}/{$dir}/[...all].{$method}.php")) {
+                $file = "{$root}/{$dir}/[...all].{$method}.php";
+            } elseif (file_exists("{$root}/{$dir}/[...all].php")) {
+                $file = "{$root}/{$dir}/[...all].php";
+            }
+
+            // catch all route file
+            if ($file) {
+
+                $splat = [];
+
+                foreach (array_splice($parts, $idx) as $s) {
+
+                    $param = explode(':', $s, 2);
+
+                    if (isset($param[1])) {
+                        $splat[trim($param[0])] = trim($param[1]);
+                    } else {
+                        $splat[] = $s;
+                    }
+                }
+
+                return [
+                    'args' => $splat,
+                    'file' => $file
+                ];
+            }
+        }
+
+        return null;
     }
 }
