@@ -189,6 +189,7 @@ $this->on('restApi.config', function($restApi) {
             // remove properties not available in the field list
 
             $allowedKeys = array_keys($default);
+            $allowedKeys[] = '_id';
 
             foreach (array_keys($data) as $key) {
                 if (!in_array($key, $allowedKeys)) unset($data[$key]);
