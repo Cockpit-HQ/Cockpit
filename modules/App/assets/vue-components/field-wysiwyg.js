@@ -67,7 +67,7 @@ export default {
                     'insertdatetime media table code wordcount'
                 ].join(' '),
                 toolbar: [
-                    'undo redo | formatselect',
+                    'undo redo | blocks',
                     'bold italic | alignleft aligncenter',
                     'alignright alignjustify | bullist numlist outdent indent',
                     'removeformat | hr image link table'

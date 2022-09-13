@@ -10,6 +10,7 @@
 - Fix enter on selected result in app search
 - Update Vue to 3.2.39
 - Improve custom api endpoint resolving
+- Fix updating items via API #27 @o-
 
 
 ## 2.2.2 (2022-08-20)

@@ -120,8 +120,7 @@ $gql->mutations['fields']['saveContentItem'] = [
         }
 
         // remove properties not available in the field list
-
-        $allowedKeys = array_keys($default);
+        $allowedKeys = array_merge(['_id'], array_keys($default));
 
         foreach (array_keys($data) as $key) {
             if (!in_array($key, $allowedKeys)) unset($data[$key]);

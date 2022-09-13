@@ -87,6 +87,10 @@
     color: inherit;
 }
 
+.tox .tox-tbtn--bespoke {
+    background: none;
+}
+
 .tox .tox-tbtn--disabled svg,
 .tox .tox-tbtn--disabled:hover svg,
 .tox .tox-tbtn:disabled svg,
