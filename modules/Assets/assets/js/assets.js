@@ -25,7 +25,7 @@ App.on('field-wysiwyg-setup', evt => {
 
                     let content, url = App.base(`#uploads:${asset.path}`);
 
-                    if (asset.mime.match(/^image\//)) {
+                    if (/^image\//.test(asset.mime)) {
                         content = `<img src="${url}" alt="${asset.title}">`;
                     } else {
                         content = `<a href="${url}">${asset.title}</a>`;

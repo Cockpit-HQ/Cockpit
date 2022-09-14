@@ -39,7 +39,7 @@ let App = {
     },
 
     reroute: function (url) {
-        location.href = url.match(/^http/) ? url : this.route(url);
+        location.href = /^http/.test(url) ? url : this.route(url);
     },
 
     request: function (url, data, type) {
