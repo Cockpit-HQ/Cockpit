@@ -4,7 +4,7 @@ namespace JSONStream;
 
 class CollectionReader {
 
-    const CHUNK_SIZE = 8192;
+    protected const CHUNK_SIZE = 8192;
 
     protected $resource;
     protected bool $asArray = false;

@@ -54,7 +54,7 @@ export default {
 
                     event.preventDefault();
 
-                    if (this.selected == null) {
+                    if (this.selected === null) {
                         this.selected = event.keyCode == 38 ? this.findings.length - 1 : 0;
                     } else {
 
