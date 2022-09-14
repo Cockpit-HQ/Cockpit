@@ -2631,7 +2631,7 @@
   };
 
   let copyText = function (text, cb) {
-      var inp = document.createElement('textarea');
+      let inp = document.createElement('textarea');
       document.body.appendChild(inp);
       inp.value = text;
       inp.select();
@@ -2905,10 +2905,11 @@
           onSuccess = onSuccess || function () { };
           onError = onError || function () { };
 
-          var req = [],
-              ress = Array.isArray(ress) ? ress : [ress];
+          let req = [];
 
-          for (var i = 0, len = ress.length; i < len; i++) {
+          ress = Array.isArray(ress) ? ress : [ress];
+
+          for (let i = 0, len = ress.length; i < len; i++) {
 
               if (!ress[i]) continue;
 
@@ -2937,7 +2938,7 @@
 
           return new Promise(function (resolve, reject) {
 
-              var script = document.createElement('script');
+              let script = document.createElement('script');
 
               script.async = true;
 
@@ -2960,14 +2961,14 @@
 
           return new Promise(function (resolve, reject) {
 
-              var link = document.createElement('link');
+              let link = document.createElement('link');
               link.type = 'text/css';
               link.rel = 'stylesheet';
               link.href = (url.match(/^(\/\/|http)/) ? url : App.base(url)) + '?v=' + App.version;
 
               document.getElementsByTagName('head')[0].appendChild(link);
 
-              var img = document.createElement('img');
+              let img = document.createElement('img');
               img.onerror = function () {
                   resolve(url);
               };
@@ -2979,7 +2980,7 @@
 
           return new Promise(function (resolve, reject) {
 
-              var img = document.createElement('img');
+              let img = document.createElement('img');
 
               img.onload = function () { resolve(url); };
               img.onerror = function () { reject(url); };
@@ -3658,7 +3659,7 @@
       },
 
       reroute: function (url) {
-          location.href = url.match(/^http/) ? url : this.route(url);
+          location.href = /^http/.test(url) ? url : this.route(url);
       },
 
       request: function (url, data, type) {

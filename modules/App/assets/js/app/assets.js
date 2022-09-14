@@ -8,8 +8,9 @@ export default {
         onSuccess = onSuccess || function () { };
         onError = onError || function () { };
 
-        let req = [],
-            ress = Array.isArray(ress) ? ress : [ress];
+        let req = [];
+
+        ress = Array.isArray(ress) ? ress : [ress];
 
         for (let i = 0, len = ress.length; i < len; i++) {
 
