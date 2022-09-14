@@ -60,9 +60,9 @@ class ResponseCache extends \Lime\Helper {
                 $this->response->mime = $cache['mime'] ?? 'text/html';
                 $this->response->body = $cache['contents'];
 
-                $this->app->trigger('app.response.cache.after');
+                $this->trigger('app.response.cache.after');
 
-                return $this->app->stop();
+                $this->stop();
             });
 
             return true;
