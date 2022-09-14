@@ -8,10 +8,10 @@ export default {
         onSuccess = onSuccess || function () { };
         onError = onError || function () { };
 
-        var req = [],
+        let req = [],
             ress = Array.isArray(ress) ? ress : [ress];
 
-        for (var i = 0, len = ress.length; i < len; i++) {
+        for (let i = 0, len = ress.length; i < len; i++) {
 
             if (!ress[i]) continue;
 
@@ -40,7 +40,7 @@ export default {
 
         return new Promise(function (resolve, reject) {
 
-            var script = document.createElement('script');
+            let script = document.createElement('script');
 
             script.async = true;
 
@@ -63,14 +63,14 @@ export default {
 
         return new Promise(function (resolve, reject) {
 
-            var link = document.createElement('link');
+            let link = document.createElement('link');
             link.type = 'text/css';
             link.rel = 'stylesheet';
             link.href = (url.match(/^(\/\/|http)/) ? url : App.base(url)) + '?v=' + App.version;
 
             document.getElementsByTagName('head')[0].appendChild(link);
 
-            var img = document.createElement('img');
+            let img = document.createElement('img');
             img.onerror = function () {
                 resolve(url);
             };
@@ -82,7 +82,7 @@ export default {
 
         return new Promise(function (resolve, reject) {
 
-            var img = document.createElement('img');
+            let img = document.createElement('img');
 
             img.onload = function () { resolve(url); };
             img.onerror = function () { reject(url); };

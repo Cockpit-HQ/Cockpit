@@ -1,5 +1,5 @@
 function sortObject(object){
-    var sortedObj = {},
+    let sortedObj = {},
         keys = Object.keys(object);
 
     keys.sort(function(key1, key2){
@@ -9,8 +9,8 @@ function sortObject(object){
         return 0;
     });
 
-    for(var index in keys){
-        var key = keys[index];
+    for(let index in keys){
+        let key = keys[index];
         if(typeof object[key] == 'object' && !(object[key] instanceof Array)){
             sortedObj[key] = sortObject(object[key]);
         } else {

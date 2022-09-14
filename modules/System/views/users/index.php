@@ -104,7 +104,7 @@
 
                     if (searchParams.has('state')) {
                         try {
-                            var q = JSON.parse(atob(searchParams.get('state')));
+                            let q = JSON.parse(atob(searchParams.get('state')));
                             if (q.page) this.page = q.page;
                             if (q.limit) this.limit = (parseInt(q.limit) || this.limit);
                             if (q.filter) {

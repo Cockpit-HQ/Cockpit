@@ -58,7 +58,7 @@ let toKebabCase = function(str) {
 };
 
 let copyText = function (text, cb) {
-    var inp = document.createElement('textarea');
+    let inp = document.createElement('textarea');
     document.body.appendChild(inp)
     inp.value = text
     inp.select();
