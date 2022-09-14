@@ -136,7 +136,7 @@ class Client {
      * @return integer
      */
     public function decrKey(string $collection, string $key, int $by = 1): int {
-        return $this->incr($collection, $key, ($by * -1));
+        return $this->incrKey($collection, $key, ($by * -1));
     }
 
     /**
@@ -341,8 +341,9 @@ class Client {
 
         $fields  = func_get_args();
         $removed = 0;
+        $cnt     = count($fields);
 
-        for ($i=1; $i<count($fields); $i++){
+        for ($i=1; $i<$cnt; $i++){
 
             $field = $fields[$i];
 
@@ -387,8 +388,9 @@ class Client {
         $set     = $this->getKey($collection, $key, []);
         $fields  = func_get_args();
         $values  = [];
+        $cnt     = count($fields);
 
-        for ($i=1; $i<count($fields); $i++){
+        for ($i=1; $i<$cnt; $i++){
             $field = $fields[$i];
             $values[] = isset($set[$field]) ? $set[$field]:null;
         }
@@ -404,10 +406,11 @@ class Client {
      */
     public function hmset(string $collection, string $key): void {
 
-        $set     = $this->getKey($collection, $key, []);
-        $args    = func_get_args();
+        $set   = $this->getKey($collection, $key, []);
+        $args  = func_get_args();
+        $cnt   = count($args);
 
-        for ($i=1; $i<count($fields); $i++){
+        for ($i=1; $i<$cnt; $i++){
             $field = $args[$i];
             $value = isset($args[($i+1)]) ? $args[($i+1)] : null;
 

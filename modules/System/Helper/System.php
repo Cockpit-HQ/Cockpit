@@ -7,19 +7,19 @@ use ArrayObject;
 class System extends \Lime\Helper {
 
 
-    public function try(callable $callback, $rescue = null, $report = true) {
+    public function try(callable $callback, $rescue = null, bool $report = true) {
         try {
             return $callback();
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             if ($report) {
                 $this->report($e);
             }
 
-            return $rescue instanceof Closure ? $rescue($e) : $rescue;
+            return $rescue instanceof \Closure ? $rescue($e) : $rescue;
         }
     }
 
-    public function report() {
+    public function report(mixed $error) {
         // to be implemented
     }
 

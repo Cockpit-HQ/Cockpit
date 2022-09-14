@@ -72,7 +72,9 @@ $this->module('assets')->extend([
 
         if (isset($files['name']) && is_array($files['name'])) {
 
-            for ($i = 0; $i < count($files['name']); $i++) {
+            $cnt = count($files['name']);
+
+            for ($i = 0; $i < $cnt; $i++) {
 
                 $_file  = $this->app->path('#tmp:').'/'.$files['name'][$i];
                 $_isAllowed = $allowed === true ? true : preg_match("/\.({$allowed})$/i", $_file);

@@ -48,7 +48,7 @@ class FileStorage {
 
             if (!$path) {
                 $url = $this->config[$prefix]['url'];
-            } elseif ($this->fileExists($file)) {
+            } elseif ($this->manager->fileExists($file)) {
                 $url = rtrim($this->config[$prefix]['url'], '/').'/'.ltrim($path, '/');
             }
         }

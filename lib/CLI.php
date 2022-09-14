@@ -17,8 +17,9 @@ class CLI {
             $args = $argv;
             array_shift($args);
             $opts = [];
+            $cnt = count($args);
 
-            for ($i=0;$i<count($args);$i++){
+            for ($i=0;$i<$cnt;$i++){
 
                 $a = $args[$i];
                 $b = isset($args[$i+1]) ? $args[$i+1] : null;

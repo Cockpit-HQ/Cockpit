@@ -426,8 +426,9 @@ class RedisLite {
 
         $fields  = func_get_args();
         $removed = 0;
+        $cnt     = count($fields);
 
-        for ($i=1; $i<count($fields); $i++){
+        for ($i=1; $i<$cnt; $i++){
 
             $field = $fields[$i];
 
@@ -471,8 +472,9 @@ class RedisLite {
         $set     = $this->get($key, []);
         $fields  = func_get_args();
         $values  = [];
+        $cnt     = count($fields);
 
-        for ($i = 1; $i < count($fields); $i++){
+        for ($i = 1; $i < $cnt; $i++){
             $field = $fields[$i];
             $values[] = isset($set[$field]) ? $set[$field]:null;
         }
@@ -489,8 +491,9 @@ class RedisLite {
 
         $set  = $this->get($key, []);
         $args = func_get_args();
+        $cnt  = count($args);
 
-        for ($i=1; $i < count($args); $i++){
+        for ($i=1; $i < $cnt; $i++){
             $field = $args[$i];
             $value = isset($args[($i+1)]) ? $args[($i+1)] : null;
 

@@ -67,7 +67,7 @@ class Theme extends \Lime\Helper {
     public function logo(?string $url = null): ?string {
 
         if ($url) {
-            $this->logo = $this->pathToUrl($url);
+            $this->logo = $this->app->pathToUrl($url);
             return null;
         }
 
@@ -79,7 +79,7 @@ class Theme extends \Lime\Helper {
             return $this->app->pathToUrl('#config:logo.svg');
         }
 
-        return $this->baseUrl('app:assets/logo.svg');
+        return $this->app->baseUrl('app:assets/logo.svg');
     }
 
     public function theme() {

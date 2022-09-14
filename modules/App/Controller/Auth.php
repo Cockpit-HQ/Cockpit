@@ -24,7 +24,7 @@ class Auth extends Base {
             $redirectTo = '/';
         }
 
-        $redirectTo = htmlspecialchars($this->routeUrl($redirectTo), ENT_QUOTES, 'UTF-8');
+        $redirectTo = htmlspecialchars($this->app->routeUrl($redirectTo), ENT_QUOTES, 'UTF-8');
 
         $this->helper('theme')->pageClass('login-page');
 
@@ -137,7 +137,7 @@ class Auth extends Base {
             $this->helper('auth')->setUser($user);
             $this->helper('session')->write('app.session.start', time());
 
-            $this->trigger('app.user.login', [&$user]);
+            $this->app->trigger('app.user.login', [&$user]);
 
             return ['success' => true, 'user' => $user];
         }
