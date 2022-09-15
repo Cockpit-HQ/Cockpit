@@ -176,8 +176,6 @@ class Assets extends App {
 
         $asset = $result['assets'][0];
 
-        $this->app->trigger('assets.asset.update', [&$asset]);
-
         return $asset;
     }
 

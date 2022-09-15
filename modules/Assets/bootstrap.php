@@ -228,6 +228,8 @@ $this->module('assets')->extend([
             }
         }
 
+        $this->app->trigger('assets.uploaded', [$assets]);
+
         return $assets;
     },
 
