@@ -29,7 +29,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '8e39d8c7b9acbb266b08cbb2a9c87320daf6bc28',
+    'reference' => '15009b1afd18b261518bc8316c6cb8947d449886',
     'name' => 'cockpit-hq/cockpit',
   ),
   'versions' => 
@@ -59,7 +59,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '8e39d8c7b9acbb266b08cbb2a9c87320daf6bc28',
+      'reference' => '15009b1afd18b261518bc8316c6cb8947d449886',
     ),
     'colinodell/json5' => 
     array (
@@ -153,12 +153,12 @@ private static $installed = array (
     ),
     'league/flysystem' => 
     array (
-      'pretty_version' => '3.2.1',
-      'version' => '3.2.1.0',
+      'pretty_version' => '3.3.0',
+      'version' => '3.3.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '81aea9e5217084c7850cd36e1587ee4aad721c6b',
+      'reference' => 'd8295793b3e2f91aa39e1feb2d5bfce772891ae2',
     ),
     'league/mime-type-detection' => 
     array (
