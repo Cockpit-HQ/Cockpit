@@ -73,7 +73,7 @@ let App = {
 
                 let resdata = xhr.responseText;
 
-                if (type == 'json') {
+                if (type === 'json') {
                     try {
                         resdata = JSON.parse(xhr.responseText);
                     } catch (e) {

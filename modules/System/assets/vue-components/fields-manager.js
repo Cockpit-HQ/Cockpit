@@ -256,7 +256,7 @@ let FieldsManager = {
                                 <div class="kiss-margin-bottom kiss-flex kiss-flex-right" v-if="fieldTypes[field.type] && fieldTypes[field.type].settings">
                                     <div class="kiss-button-group">
                                         <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': state.optionsView != 'json'}" @click="state.optionsView = 'form'" type="button">Fields</button>
-                                        <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': state.optionsView == 'json'}" @click="state.optionsView = 'json'" type="button">JSON</button>
+                                        <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': state.optionsView === 'json'}" @click="state.optionsView = 'json'" type="button">JSON</button>
                                     </div>
                                 </div>
 
@@ -264,7 +264,7 @@ let FieldsManager = {
                                     <fields-renderer v-model="field.opts" :fields="fieldTypes[field.type].settings" v-if="fieldTypes[field.type] && fieldTypes[field.type].settings"></fields-renderer>
                                 </div>
 
-                                <div class="kiss-margin" v-if="!(fieldTypes[field.type] && fieldTypes[field.type].settings) || state.optionsView == 'json'">
+                                <div class="kiss-margin" v-if="!(fieldTypes[field.type] && fieldTypes[field.type].settings) || state.optionsView === 'json'">
                                     <field-object v-model="field.opts"></field-object>
                                 </div>
 

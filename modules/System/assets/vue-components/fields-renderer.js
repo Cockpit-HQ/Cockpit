@@ -164,7 +164,7 @@ let FieldRenderer = {
                                 <div class="kiss-text-truncate" v-else-if="fieldTypes[field.type] && fieldTypes[field.type].render" v-html="fieldTypes[field.type].render(val[index], field)"></div>
                                 <div v-else>
                                     <span class="kiss-badge kiss-badge-outline" v-if="Array.isArray(val[index])">{{ val[index].length }}</span>
-                                    <span class="kiss-badge kiss-badge-outline" v-else-if="typeof(val[index]) == 'object'">Object</span>
+                                    <span class="kiss-badge kiss-badge-outline" v-else-if="typeof(val[index]) === 'object'">Object</span>
                                     <div class="kiss-text-truncate" v-else>{{ val[index] }}</div>
                                 </div>
                                 <a class="kiss-cover" @click="editFieldItem(field, index)"></a>
@@ -343,8 +343,8 @@ export default {
         },
 
         copyLocaleValue(to, from, field) {
-            to = field+(to == 'default' ? '': '_'+to);
-            from = field+(from == 'default' ? '': '_'+from);
+            to = field+(to === 'default' ? '': '_'+to);
+            from = field+(from === 'default' ? '': '_'+from);
 
             this.val[to] = JSON.parse(JSON.stringify(this.val[from]));
         },
@@ -423,7 +423,7 @@ export default {
                                 </kiss-dropdownbox>
                             </kiss-dropdown>
                         </div>
-                        <field-renderer :field="field" :locale="locale.i18n" v-model="val[field.name+(locale.i18n == 'default' ? '': '_'+locale.i18n)]"></field-renderer>
+                        <field-renderer :field="field" :locale="locale.i18n" v-model="val[field.name+(locale.i18n === 'default' ? '': '_'+locale.i18n)]"></field-renderer>
                     </div>
                 </div>
 

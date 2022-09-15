@@ -54,7 +54,7 @@ let IconPicker = {
             this.update();
         },
         modelValue(val) {
-            this.icon = typeof(val) == 'string' ? val : null;
+            this.icon = typeof(val) === 'string' ? val : null;
         },
         select(val) {
 

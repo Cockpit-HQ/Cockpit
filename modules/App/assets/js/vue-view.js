@@ -46,7 +46,7 @@ import ui from "./vue-view/ui.js";
 
             Object.keys(def.components).forEach(name => {
 
-                if (typeof(def.components[name]) == 'string') {
+                if (typeof(def.components[name]) === 'string') {
                     def.components[name] = (function(url) {
                         return Vue.defineAsyncComponent(() => App.utils.import(url));
                     })(def.components[name]);
@@ -57,7 +57,7 @@ import ui from "./vue-view/ui.js";
 
             Object.keys(VueView.components).forEach(name => {
 
-                if (typeof(VueView.components[name]) == 'string') {
+                if (typeof(VueView.components[name]) === 'string') {
                     app.component(name, Vue.defineAsyncComponent(() => App.utils.import(VueView.components[name])));
                 } else {
                     app.component(name, VueView.components[name]);
@@ -100,7 +100,7 @@ import ui from "./vue-view/ui.js";
 
                 def.$router.routes.forEach(route => {
 
-                    if (typeof(route.component) == 'string') {
+                    if (typeof(route.component) === 'string') {
                         route.component = (function(url) {
                             return Vue.defineAsyncComponent(() => App.utils.import(url));
                         })(route.component);
