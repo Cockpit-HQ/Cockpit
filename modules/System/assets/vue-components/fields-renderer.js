@@ -343,8 +343,8 @@ export default {
         },
 
         copyLocaleValue(to, from, field) {
-            to = field+(to === 'default' ? '': '_'+to);
-            from = field+(from === 'default' ? '': '_'+from);
+            to = field + (to === 'default' ? '': `_${to}`);
+            from = field + (from === 'default' ? '': `_${from}`);
 
             this.val[to] = JSON.parse(JSON.stringify(this.val[from]));
         },
