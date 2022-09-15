@@ -1,27 +1,3 @@
-# Deny access to database + config files
-<Files ~ "\.(sqlite|sdb|s3db|db|yaml|yml|env)$">
-  Require all denied
-</Files>
-
-<Files ".*">
-  Require all denied
-</Files>
-
-<Files "tower">
-  Require all denied
-</Files>
-
-<Files *.php>
-    Order Deny,Allow
-    Deny from all
-    Allow from 127.0.0.1
-</Files>
-
-<Files index.php>
-    Order Allow,Deny
-    Allow from all
-</Files>
-
 # Don't show directory listings
 Options -Indexes
 
@@ -37,7 +13,9 @@ AddDefaultCharset UTF-8
     # RewriteBase /
 
     # Protect some contents
-    RewriteRule ^.*/?\.git+ - [F,L]
+    RewriteRule (^|/)\.(?!well-known\/) - [F,L]
+    RewriteRule \.(sqlite|sdb|s3db|db|yaml|yml|env)$ - [F,L]
+    RewriteRule (config|modules|addons|lib)\/(.*)\.php$ - [F,L]
 
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
