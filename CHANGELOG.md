@@ -1,6 +1,6 @@
 # Release Notes
 
-## WIP
+## 2.3.0 (2022-09-16)
 
 - Update vendor libs
 - Fix field-object js error
