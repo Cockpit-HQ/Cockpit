@@ -3108,6 +3108,9 @@ kiss-tooltip[show="true"] {
     color: var(--kiss-form-success-color, green);
 }
 .kiss-form-blank {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
     background: none;
     border: none;
 }
@@ -4344,7 +4347,7 @@ del { background: #c92a2a }
     width: 300px;
     height: 100vh;
     background: var(--kiss-card-theme-contrast-color, #171d28);
-    box-shadow: 0 0 5px rgb(0 0 0 / 30%);
+    box-shadow: 0 0 2px rgb(0 0 0 / 30%);
     overflow: auto;
 }
 .app-container-aside-menu kiss-navlist a {
