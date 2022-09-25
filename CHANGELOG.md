@@ -1,5 +1,9 @@
 # Release Notes
 
+## WIP
+
+- Fix return type for Utils::parseSize
+
 ## 2.3.0 (2022-09-16)
 
 - Update vendor libs
