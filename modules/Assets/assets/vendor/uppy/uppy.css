@@ -6,7 +6,7 @@
   position: relative;
   box-sizing: border-box;
   color: #333;
-  font-family: -apple-system, blinkmacsystemfont, "Segoe UI", helvetica, arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", "Segoe UI Symbol", "Segoe UI Emoji", "Apple Color Emoji", Roboto, Helvetica, Arial, sans-serif;
   line-height: 1;
   text-align: left;
   -webkit-font-smoothing: antialiased;
@@ -29,61 +29,10 @@
 }
 
 .uppy-u-reset {
-  top: auto;
-  left: auto;
-  z-index: auto;
-  display: inline;
-  float: none;
-  clear: none;
-  min-width: 0;
-  max-width: none;
-  min-height: 0;
-  max-height: none;
-  margin: 0;
-  padding: 0;
-  overflow: visible;
-  overflow-x: visible;
-  overflow-y: visible;
-  color: inherit;
-  font-weight: normal;
-  font-size: inherit;
-  font-family: inherit;
-  font-style: normal;
-  font-variant: normal;
-  font-stretch: normal;
-  line-height: 1;
-  letter-spacing: normal;
-  white-space: normal;
-  text-align: left;
-  text-transform: none;
-  text-decoration: none;
-  text-indent: 0;
-  text-shadow: none;
-  vertical-align: baseline;
-  -webkit-hyphens: none;
-          hyphens: none;
-  unicode-bidi: normal;
-  list-style: none;
-  empty-cells: show;
-  background: none;
-  border: 0;
-  border: medium none currentColor;
-  border-radius: 0;
-  border-image: none;
-  border-collapse: separate;
-  border-spacing: 0;
-  outline: medium none invert;
-  box-shadow: none;
-  transform: none;
-  transform-origin: 50% 50% 0;
-  transform-style: flat;
-  -webkit-backface-visibility: visible;
-          backface-visibility: visible;
-  visibility: visible;
-  cursor: auto;
-  opacity: 1;
-  transition: none 0s ease 0s;
+  all: initial;
+  box-sizing: border-box;
   -webkit-appearance: none;
+          appearance: none;
 }
 
 [dir=rtl] .uppy-u-reset {
@@ -125,14 +74,16 @@
 }
 
 .uppy-c-btn {
-  display: inline-block;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
   font-weight: 500;
-  font-size: 16px;
+  font-size: inherit;
   font-family: inherit;
+  color: inherit;
   line-height: 1;
   white-space: nowrap;
   text-align: center;
-  vertical-align: middle;
   transition-duration: 0.3s;
   transition-property: background-color, color;
   -webkit-user-select: none;
@@ -212,16 +163,6 @@
 }
 [data-uppy-theme=dark] .uppy-c-btn-link:hover {
   color: #939393;
-}
-
-.uppy-c-btn--small {
-  padding: 7px 16px;
-  font-size: 0.9em;
-  border-radius: 2px;
-}
-.uppy-size--md .uppy-c-btn--small {
-  padding: 8px 10px;
-  border-radius: 2px;
 }
 
 .uppy-Informer {
@@ -967,6 +908,9 @@
 [data-uppy-theme=dark] .uppy-StatusBar-actionBtn--uploadNewlyAdded:focus {
   box-shadow: 0 0 0 2px rgba(170, 225, 255, 0.85);
 }
+.uppy-StatusBar.is-preprocessing .uppy-StatusBar-actionBtn--uploadNewlyAdded, .uppy-StatusBar.is-postprocessing .uppy-StatusBar-actionBtn--uploadNewlyAdded {
+  display: none;
+}
 
 .uppy-StatusBar-actionBtn--done {
   padding: 7px 8px;
@@ -1669,7 +1613,7 @@
   height: 30px;
   margin: 0 8px;
   font-size: 12px;
-  font-family: -apple-system, blinkmacsystemfont, "Segoe UI", helvetica, arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", "Segoe UI Symbol", "Segoe UI Emoji", "Apple Color Emoji", Roboto, Helvetica, Arial, sans-serif;
   line-height: 1.4;
   background-color: transparent;
   border: 0;
@@ -1717,7 +1661,7 @@
   width: 100%;
   height: 30px;
   font-size: 13px;
-  font-family: -apple-system, blinkmacsystemfont, "Segoe UI", helvetica, arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", "Segoe UI Symbol", "Segoe UI Emoji", "Apple Color Emoji", Roboto, Helvetica, Arial, sans-serif;
   line-height: 1.4;
   background-color: #eaeaea;
   border: 0;
@@ -2682,8 +2626,8 @@ button.uppy-Dashboard-Item-progressIndicator:focus .uppy-Dashboard-Item-progress
 }
 @media only screen and (min-width: 820px) {
   .uppy-Dashboard-inner {
-    width: 750px;
-    height: 550px;
+    width: 650px;
+    height: 500px;
   }
 }
 .uppy-Dashboard--modal .uppy-Dashboard-inner {
@@ -2948,9 +2892,9 @@ button.uppy-Dashboard-Item-progressIndicator:focus .uppy-Dashboard-Item-progress
 }
 
 .uppy-DashboardTab-btn {
-  display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: left;
   width: 100%;
   height: 100%;
   padding: 12px 15px;
@@ -3032,7 +2976,7 @@ button.uppy-Dashboard-Item-progressIndicator:focus .uppy-Dashboard-Item-progress
 .uppy-size--md .uppy-DashboardTab-name {
   margin-top: 8px;
   margin-bottom: 0;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 15px;
 }
 
@@ -3370,6 +3314,7 @@ button.uppy-Dashboard-Item-progressIndicator:focus .uppy-Dashboard-Item-progress
 }
 .uppy-size--md .uppy-Dashboard-AddFiles-title {
   max-width: 480px;
+  padding: 0 35px;
   margin-top: 5px;
   font-weight: 400;
   font-size: 25px;
@@ -3503,7 +3448,7 @@ a.uppy-Dashboard-poweredBy {
   align-items: center;
   justify-content: center;
   max-width: 100%;
-  font-family: -apple-system, blinkmacsystemfont, "Segoe UI", helvetica, arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", "Segoe UI Symbol", "Segoe UI Emoji", "Apple Color Emoji", Roboto, Helvetica, Arial, sans-serif;
   background-color: #fff;
   border-radius: 7px;
   cursor: pointer;

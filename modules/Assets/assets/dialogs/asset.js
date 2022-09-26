@@ -195,7 +195,7 @@ export default {
 
             if (!window.Uppy) return;
 
-            this.uppy = new Uppy.Core({
+            this.uppy = new Uppy.Uppy({
                 meta: {
                     assetId: this.item._id
                 },

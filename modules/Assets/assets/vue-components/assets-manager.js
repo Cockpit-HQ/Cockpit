@@ -1,6 +1,6 @@
 function getUppy(meta = {}) {
 
-    return new Uppy.Core({
+    return new Uppy.Uppy({
         meta,
         autoProceed: false,
         restrictions: {
