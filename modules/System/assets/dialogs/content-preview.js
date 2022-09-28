@@ -135,12 +135,12 @@ export default {
 
             if (!this.iframe) return;
 
-            let evtData = {
+            let evtData = JSON.parse(JSON.stringify({
                 event: 'cockpit:content.preview',
-                data: JSON.parse(JSON.stringify(this.data)),
+                data: this.data,
                 context: this.context,
                 locale: (this.locale && this.locale.i18n) || 'default'
-            };
+            }));
 
             const update = (data) => {
                 this.iframe.postMessage(JSON.parse(JSON.stringify(data)), '*');
