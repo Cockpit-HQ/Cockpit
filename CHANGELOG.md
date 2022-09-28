@@ -4,6 +4,7 @@
 
 - Fix return type for Utils::parseSize
 - Update Uppy.js to v3.0.1
+- Resolve nested linked content items on content item population
 
 ## 2.3.0 (2022-09-16)
 

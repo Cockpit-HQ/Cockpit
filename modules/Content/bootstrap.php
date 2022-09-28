@@ -392,12 +392,13 @@ $this->module('content')->extend([
                 $array[$k] = $this->populate($array[$k], $maxlevel, ($level + 1), $process);
             }
 
-            if ($level > 0 && isset($v['_id'], $v['_model'])) {
+            if (isset($v['_id'], $v['_model'])) {
 
                 $model = $v['_model'];
                 $array[$k] = $this->_resolveContentRef($v['_model'], (string)$v['_id'], $process);
 
                 if ($array[$k]) {
+                    $array[$k] = $this->populate($array[$k], $maxlevel, ($level + 1), $process);
                     $array[$k]['_model'] = $model;
                 }
             }
