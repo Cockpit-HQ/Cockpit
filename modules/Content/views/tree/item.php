@@ -320,7 +320,16 @@
                         locales: this.hasLocales ? this.locales : [],
                         context: {
                             model: this.model.name
-                        }
+                        },
+                        resolver: _.debounce((data, update) => {
+
+                            this.$request(`/content/populate`, {data: data.data, locale: data.locale}).then(resolvedData => {
+                                update(Object.assign(data, {data: resolvedData}));
+                            }).catch(error => {
+
+                            });
+
+                        }, 350)
                     }, {
                         update: (item) => {
                             this.item = Object.assign(this.item, item);

@@ -37,6 +37,10 @@ export default {
         },
         context: {
             default: null
+        },
+        resolver: {
+            type: Function,
+            default: null
         }
     },
 
@@ -131,14 +135,22 @@ export default {
 
             if (!this.iframe) return;
 
-            let data = {
+            let evtData = {
                 event: 'cockpit:content.preview',
-                data: this.data,
+                data: JSON.parse(JSON.stringify(this.data)),
                 context: this.context,
-                locale: this.locale || 'default'
+                locale: (this.locale && this.locale.i18n) || 'default'
             };
 
-            this.iframe.postMessage(JSON.parse(JSON.stringify(data)), '*');
+            const update = (data) => {
+                this.iframe.postMessage(JSON.parse(JSON.stringify(data)), '*');
+            }
+
+            if (this.resolver) {
+                this.resolver(evtData, update);
+            } else {
+                update(evtData);
+            }
         },
 
         updateClose() {
