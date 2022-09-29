@@ -33,7 +33,7 @@ class ResponseCache extends \Lime\Helper {
 
         $cacheHandler = $this->cacheHandler;
 
-        $this->app->on('after', function() use($request, $cacheHandler) {
+        $this->app->on('shutdown', function() use($request, $cacheHandler) {
 
             if ($request->stopped || $this->response->status != 200) {
                 return;
@@ -61,6 +61,8 @@ class ResponseCache extends \Lime\Helper {
                 $this->response->body = $cache['contents'];
 
                 $this->trigger('app.response.cache.after');
+
+                $this->response->flush();
 
                 $this->stop();
             });
