@@ -6,6 +6,7 @@ $this->helpers['locales'] = 'System\\Helper\\Locales';
 $this->helpers['log']     = 'System\\Helper\\Log';
 $this->helpers['revisions'] = 'System\\Helper\\Revisions';
 $this->helpers['system']  = 'System\\Helper\\System';
+$this->helpers['spaces']  = 'System\\Helper\\Spaces';
 
 $this->on('app.admin.init', function() {
     include(__DIR__.'/admin.php');
