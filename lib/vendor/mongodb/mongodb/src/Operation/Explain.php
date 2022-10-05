@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -35,7 +35,7 @@ use function MongoDB\server_supports_feature;
  *
  * @api
  * @see \MongoDB\Collection::explain()
- * @see http://docs.mongodb.org/manual/reference/command/explain/
+ * @see https://mongodb.com/docs/manual/reference/command/explain/
  */
 class Explain implements Executable
 {
@@ -59,6 +59,10 @@ class Explain implements Executable
      * Constructs an explain command for explainable operations.
      *
      * Supported options:
+     *
+     *  * comment (mixed): BSON value to attach as a comment to this command.
+     *
+     *    This is not supported for servers versions < 4.4.
      *
      *  * readPreference (MongoDB\Driver\ReadPreference): Read preference.
      *
@@ -112,13 +116,7 @@ class Explain implements Executable
             throw UnsupportedException::explainNotSupported();
         }
 
-        $cmd = ['explain' => $this->explainable->getCommandDocument($server)];
-
-        if (isset($this->options['verbosity'])) {
-            $cmd['verbosity'] = $this->options['verbosity'];
-        }
-
-        $cursor = $server->executeCommand($this->databaseName, new Command($cmd), $this->createOptions());
+        $cursor = $server->executeCommand($this->databaseName, $this->createCommand($server), $this->createOptions());
 
         if (isset($this->options['typeMap'])) {
             $cursor->setTypeMap($this->options['typeMap']);
@@ -128,9 +126,28 @@ class Explain implements Executable
     }
 
     /**
+     * Create the explain command.
+     *
+     * @param Server $server
+     * @return Command
+     */
+    private function createCommand(Server $server)
+    {
+        $cmd = ['explain' => $this->explainable->getCommandDocument($server)];
+
+        foreach (['comment', 'verbosity'] as $option) {
+            if (isset($this->options[$option])) {
+                $cmd[$option] = $this->options[$option];
+            }
+        }
+
+        return new Command($cmd);
+    }
+
+    /**
      * Create options for executing the command.
      *
-     * @see http://php.net/manual/en/mongodb-driver-server.executecommand.php
+     * @see https://php.net/manual/en/mongodb-driver-server.executecommand.php
      * @return array
      */
     private function createOptions()

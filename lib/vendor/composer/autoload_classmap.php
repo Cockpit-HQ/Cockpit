@@ -431,6 +431,7 @@ return array(
     'League\\Flysystem\\UnableToCreateDirectory' => $vendorDir . '/league/flysystem/src/UnableToCreateDirectory.php',
     'League\\Flysystem\\UnableToDeleteDirectory' => $vendorDir . '/league/flysystem/src/UnableToDeleteDirectory.php',
     'League\\Flysystem\\UnableToDeleteFile' => $vendorDir . '/league/flysystem/src/UnableToDeleteFile.php',
+    'League\\Flysystem\\UnableToListContents' => $vendorDir . '/league/flysystem/src/UnableToListContents.php',
     'League\\Flysystem\\UnableToMountFilesystem' => $vendorDir . '/league/flysystem/src/UnableToMountFilesystem.php',
     'League\\Flysystem\\UnableToMoveFile' => $vendorDir . '/league/flysystem/src/UnableToMoveFile.php',
     'League\\Flysystem\\UnableToReadFile' => $vendorDir . '/league/flysystem/src/UnableToReadFile.php',

@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -33,6 +33,7 @@ use MongoDB\Model\BSONDocument;
 use MongoDB\Model\CollectionInfoIterator;
 use MongoDB\Operation\Aggregate;
 use MongoDB\Operation\CreateCollection;
+use MongoDB\Operation\CreateIndexes;
 use MongoDB\Operation\DatabaseCommand;
 use MongoDB\Operation\DropCollection;
 use MongoDB\Operation\DropDatabase;
@@ -136,7 +137,7 @@ class Database
     /**
      * Return internal properties for debugging purposes.
      *
-     * @see http://php.net/manual/en/language.oop5.magic.php#language.oop5.magic.debuginfo
+     * @see https://php.net/manual/en/language.oop5.magic.php#language.oop5.magic.debuginfo
      * @return array
      */
     public function __debugInfo()
@@ -158,8 +159,8 @@ class Database
      * be selected with complex syntax (e.g. $database->{"system.profile"}) or
      * {@link selectCollection()}.
      *
-     * @see http://php.net/oop5.overloading#object.get
-     * @see http://php.net/types.string#language.types.string.parsing.complex
+     * @see https://php.net/oop5.overloading#object.get
+     * @see https://php.net/types.string#language.types.string.parsing.complex
      * @param string $collectionName Name of the collection to select
      * @return Collection
      */
@@ -275,9 +276,30 @@ class Database
             $options['writeConcern'] = $this->writeConcern;
         }
 
+        $encryptedFields = $options['encryptedFields']
+            ?? get_encrypted_fields_from_driver($this->databaseName, $collectionName, $this->manager)
+            ?? null;
+
+        if ($encryptedFields !== null) {
+            // encryptedFields is passed to the create command
+            $options['encryptedFields'] = $encryptedFields;
+
+            $encryptedFields = (array) $encryptedFields;
+            $enxcolOptions = ['clusteredIndex' => ['key' => ['_id' => 1], 'unique' => true]];
+            (new CreateCollection($this->databaseName, $encryptedFields['escCollection'] ?? 'enxcol_.' . $collectionName . '.esc', $enxcolOptions))->execute($server);
+            (new CreateCollection($this->databaseName, $encryptedFields['eccCollection'] ?? 'enxcol_.' . $collectionName . '.ecc', $enxcolOptions))->execute($server);
+            (new CreateCollection($this->databaseName, $encryptedFields['ecocCollection'] ?? 'enxcol_.' . $collectionName . '.ecoc', $enxcolOptions))->execute($server);
+        }
+
         $operation = new CreateCollection($this->databaseName, $collectionName, $options);
 
-        return $operation->execute($server);
+        $result = $operation->execute($server);
+
+        if ($encryptedFields !== null) {
+            (new CreateIndexes($this->databaseName, $collectionName, [['key' => ['__safeContent__' => 1]]]))->execute($server);
+        }
+
+        return $result;
     }
 
     /**
@@ -330,6 +352,21 @@ class Database
             $options['writeConcern'] = $this->writeConcern;
         }
 
+        $encryptedFields = $options['encryptedFields']
+            ?? get_encrypted_fields_from_driver($this->databaseName, $collectionName, $this->manager)
+            ?? get_encrypted_fields_from_server($this->databaseName, $collectionName, $this->manager, $server)
+            ?? null;
+
+        if ($encryptedFields !== null) {
+            // encryptedFields is not passed to the drop command
+            unset($options['encryptedFields']);
+
+            $encryptedFields = (array) $encryptedFields;
+            (new DropCollection($this->databaseName, $encryptedFields['escCollection'] ?? 'enxcol_.' . $collectionName . '.esc'))->execute($server);
+            (new DropCollection($this->databaseName, $encryptedFields['eccCollection'] ?? 'enxcol_.' . $collectionName . '.ecc'))->execute($server);
+            (new DropCollection($this->databaseName, $encryptedFields['ecocCollection'] ?? 'enxcol_.' . $collectionName . '.ecoc'))->execute($server);
+        }
+
         $operation = new DropCollection($this->databaseName, $collectionName, $options);
 
         return $operation->execute($server);
@@ -358,7 +395,7 @@ class Database
     /**
      * Return the read concern for this database.
      *
-     * @see http://php.net/manual/en/mongodb-driver-readconcern.isdefault.php
+     * @see https://php.net/manual/en/mongodb-driver-readconcern.isdefault.php
      * @return ReadConcern
      */
     public function getReadConcern()
@@ -389,7 +426,7 @@ class Database
     /**
      * Return the write concern for this database.
      *
-     * @see http://php.net/manual/en/mongodb-driver-writeconcern.isdefault.php
+     * @see https://php.net/manual/en/mongodb-driver-writeconcern.isdefault.php
      * @return WriteConcern
      */
     public function getWriteConcern()

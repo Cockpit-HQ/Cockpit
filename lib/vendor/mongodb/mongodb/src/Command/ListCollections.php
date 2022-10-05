@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -34,7 +34,7 @@ use function is_object;
  * Wrapper for the listCollections command.
  *
  * @internal
- * @see http://docs.mongodb.org/manual/reference/command/listCollections/
+ * @see https://mongodb.com/docs/manual/reference/command/listCollections/
  */
 class ListCollections implements Executable
 {
@@ -53,6 +53,10 @@ class ListCollections implements Executable
      *    returned based on the user privileges.
      *
      *    For servers < 4.0, this option is ignored.
+     *
+     *  * comment (mixed): BSON value to attach as a comment to this command.
+     *
+     *    This is not supported for servers versions < 4.4.
      *
      *  * filter (document): Query by which to filter collections.
      *
@@ -105,22 +109,32 @@ class ListCollections implements Executable
      */
     public function execute(Server $server)
     {
+        $cursor = $server->executeReadCommand($this->databaseName, $this->createCommand(), $this->createOptions());
+        $cursor->setTypeMap(['root' => 'array', 'document' => 'array']);
+
+        return new CachingIterator($cursor);
+    }
+
+    /**
+     * Create the listCollections command.
+     *
+     * @return Command
+     */
+    private function createCommand()
+    {
         $cmd = ['listCollections' => 1];
 
         if (! empty($this->options['filter'])) {
             $cmd['filter'] = (object) $this->options['filter'];
         }
 
-        foreach (['authorizedCollections', 'maxTimeMS', 'nameOnly'] as $option) {
+        foreach (['authorizedCollections', 'comment', 'maxTimeMS', 'nameOnly'] as $option) {
             if (isset($this->options[$option])) {
                 $cmd[$option] = $this->options[$option];
             }
         }
 
-        $cursor = $server->executeReadCommand($this->databaseName, new Command($cmd), $this->createOptions());
-        $cursor->setTypeMap(['root' => 'array', 'document' => 'array']);
-
-        return new CachingIterator($cursor);
+        return new Command($cmd);
     }
 
     /**
@@ -129,7 +143,7 @@ class ListCollections implements Executable
      * Note: read preference is intentionally omitted, as the spec requires that
      * the command be executed on the primary.
      *
-     * @see http://php.net/manual/en/mongodb-driver-server.executecommand.php
+     * @see https://php.net/manual/en/mongodb-driver-server.executecommand.php
      * @return array
      */
     private function createOptions()

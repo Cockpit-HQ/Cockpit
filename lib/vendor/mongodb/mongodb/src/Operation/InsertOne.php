@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -35,7 +35,7 @@ use function is_object;
  *
  * @api
  * @see \MongoDB\Collection::insertOne()
- * @see http://docs.mongodb.org/manual/reference/command/insert/
+ * @see https://mongodb.com/docs/manual/reference/command/insert/
  */
 class InsertOne implements Executable
 {
@@ -58,6 +58,10 @@ class InsertOne implements Executable
      *
      *  * bypassDocumentValidation (boolean): If true, allows the write to
      *    circumvent document level validation.
+     *
+     *  * comment (mixed): BSON value to attach as a comment to this command.
+     *
+     *    This is not supported for servers versions < 4.4.
      *
      *  * session (MongoDB\Driver\Session): Client session.
      *
@@ -128,15 +132,17 @@ class InsertOne implements Executable
     /**
      * Create options for constructing the bulk write.
      *
-     * @see https://www.php.net/manual/en/mongodb-driver-bulkwrite.construct.php
+     * @see https://php.net/manual/en/mongodb-driver-bulkwrite.construct.php
      * @return array
      */
     private function createBulkWriteOptions()
     {
         $options = [];
 
-        if (isset($this->options['bypassDocumentValidation'])) {
-            $options['bypassDocumentValidation'] = $this->options['bypassDocumentValidation'];
+        foreach (['bypassDocumentValidation', 'comment'] as $option) {
+            if (isset($this->options[$option])) {
+                $options[$option] = $this->options[$option];
+            }
         }
 
         return $options;
@@ -145,7 +151,7 @@ class InsertOne implements Executable
     /**
      * Create options for executing the bulk write.
      *
-     * @see http://php.net/manual/en/mongodb-driver-server.executebulkwrite.php
+     * @see https://php.net/manual/en/mongodb-driver-server.executebulkwrite.php
      * @return array
      */
     private function createExecuteOptions()

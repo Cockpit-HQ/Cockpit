@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -164,7 +164,7 @@ class Collection
     /**
      * Return internal properties for debugging purposes.
      *
-     * @see http://php.net/manual/en/language.oop5.magic.php#language.oop5.magic.debuginfo
+     * @see https://php.net/manual/en/language.oop5.magic.php#language.oop5.magic.debuginfo
      * @return array
      */
     public function __debugInfo()
@@ -183,7 +183,7 @@ class Collection
     /**
      * Return the collection namespace (e.g. "db.collection").
      *
-     * @see https://docs.mongodb.org/manual/faq/developers/#faq-dev-namespace
+     * @see https://mongodb.com/docs/manual/core/databases-and-collections/
      * @return string
      */
     public function __toString()
@@ -368,8 +368,8 @@ class Collection
      * If the "name" option is unspecified, a name will be generated from the
      * "key" document.
      *
-     * @see http://docs.mongodb.org/manual/reference/command/createIndexes/
-     * @see http://docs.mongodb.org/manual/reference/method/db.collection.createIndex/
+     * @see https://mongodb.com/docs/manual/reference/command/createIndexes/
+     * @see https://mongodb.com/docs/manual/reference/method/db.collection.createIndex/
      * @see CreateIndexes::__construct() for supported command options
      * @param array[] $indexes List of index specifications
      * @param array   $options Command options
@@ -395,7 +395,7 @@ class Collection
      * Deletes all documents matching the filter.
      *
      * @see DeleteMany::__construct() for supported options
-     * @see http://docs.mongodb.org/manual/reference/command/delete/
+     * @see https://mongodb.com/docs/manual/reference/command/delete/
      * @param array|object $filter  Query by which to delete documents
      * @param array        $options Command options
      * @return DeleteResult
@@ -419,7 +419,7 @@ class Collection
      * Deletes at most one document matching the filter.
      *
      * @see DeleteOne::__construct() for supported options
-     * @see http://docs.mongodb.org/manual/reference/command/delete/
+     * @see https://mongodb.com/docs/manual/reference/command/delete/
      * @param array|object $filter  Query by which to delete documents
      * @param array        $options Command options
      * @return DeleteResult
@@ -493,6 +493,21 @@ class Collection
 
         if (! isset($options['writeConcern']) && ! is_in_transaction($options)) {
             $options['writeConcern'] = $this->writeConcern;
+        }
+
+        $encryptedFields = $options['encryptedFields']
+            ?? get_encrypted_fields_from_driver($this->databaseName, $this->collectionName, $this->manager)
+            ?? get_encrypted_fields_from_server($this->databaseName, $this->collectionName, $this->manager, $server)
+            ?? null;
+
+        if ($encryptedFields !== null) {
+            // encryptedFields is not passed to the drop command
+            unset($options['encryptedFields']);
+
+            $encryptedFields = (array) $encryptedFields;
+            (new DropCollection($this->databaseName, $encryptedFields['escCollection'] ?? 'enxcol_.' . $this->collectionName . '.esc'))->execute($server);
+            (new DropCollection($this->databaseName, $encryptedFields['eccCollection'] ?? 'enxcol_.' . $this->collectionName . '.ecc'))->execute($server);
+            (new DropCollection($this->databaseName, $encryptedFields['ecocCollection'] ?? 'enxcol_.' . $this->collectionName . '.ecoc'))->execute($server);
         }
 
         $operation = new DropCollection($this->databaseName, $this->collectionName, $options);
@@ -593,7 +608,7 @@ class Collection
      * Explains explainable commands.
      *
      * @see Explain::__construct() for supported options
-     * @see http://docs.mongodb.org/manual/reference/command/explain/
+     * @see https://mongodb.com/docs/manual/reference/command/explain/
      * @param Explainable $explainable Command on which to run explain
      * @param array       $options     Additional options
      * @return array|object
@@ -622,7 +637,7 @@ class Collection
      * Finds documents matching the query.
      *
      * @see Find::__construct() for supported options
-     * @see http://docs.mongodb.org/manual/core/read-operations-introduction/
+     * @see https://mongodb.com/docs/manual/crud/#read-operations
      * @param array|object $filter  Query by which to filter documents
      * @param array        $options Additional options
      * @return Cursor
@@ -655,7 +670,7 @@ class Collection
      * Finds a single document matching the query.
      *
      * @see FindOne::__construct() for supported options
-     * @see http://docs.mongodb.org/manual/core/read-operations-introduction/
+     * @see https://mongodb.com/docs/manual/crud/#read-operations
      * @param array|object $filter  Query by which to filter documents
      * @param array        $options Additional options
      * @return array|object|null
@@ -690,7 +705,7 @@ class Collection
      * The document to return may be null if no document matched the filter.
      *
      * @see FindOneAndDelete::__construct() for supported options
-     * @see http://docs.mongodb.org/manual/reference/command/findAndModify/
+     * @see https://mongodb.com/docs/manual/reference/command/findAndModify/
      * @param array|object $filter  Query by which to filter documents
      * @param array        $options Command options
      * @return array|object|null
@@ -726,7 +741,7 @@ class Collection
      * to return the updated document.
      *
      * @see FindOneAndReplace::__construct() for supported options
-     * @see http://docs.mongodb.org/manual/reference/command/findAndModify/
+     * @see https://mongodb.com/docs/manual/reference/command/findAndModify/
      * @param array|object $filter      Query by which to filter documents
      * @param array|object $replacement Replacement document
      * @param array        $options     Command options
@@ -763,7 +778,7 @@ class Collection
      * to return the updated document.
      *
      * @see FindOneAndReplace::__construct() for supported options
-     * @see http://docs.mongodb.org/manual/reference/command/findAndModify/
+     * @see https://mongodb.com/docs/manual/reference/command/findAndModify/
      * @param array|object $filter  Query by which to filter documents
      * @param array|object $update  Update to apply to the matched document
      * @param array        $options Command options
@@ -823,7 +838,7 @@ class Collection
     /**
      * Return the collection namespace.
      *
-     * @see https://docs.mongodb.org/manual/reference/glossary/#term-namespace
+     * @see https://mongodb.com/docs/manual/reference/glossary/#term-namespace
      * @return string
      */
     public function getNamespace()
@@ -834,7 +849,7 @@ class Collection
     /**
      * Return the read concern for this collection.
      *
-     * @see http://php.net/manual/en/mongodb-driver-readconcern.isdefault.php
+     * @see https://php.net/manual/en/mongodb-driver-readconcern.isdefault.php
      * @return ReadConcern
      */
     public function getReadConcern()
@@ -865,7 +880,7 @@ class Collection
     /**
      * Return the write concern for this collection.
      *
-     * @see http://php.net/manual/en/mongodb-driver-writeconcern.isdefault.php
+     * @see https://php.net/manual/en/mongodb-driver-writeconcern.isdefault.php
      * @return WriteConcern
      */
     public function getWriteConcern()
@@ -877,7 +892,7 @@ class Collection
      * Inserts multiple documents.
      *
      * @see InsertMany::__construct() for supported options
-     * @see http://docs.mongodb.org/manual/reference/command/insert/
+     * @see https://mongodb.com/docs/manual/reference/command/insert/
      * @param array[]|object[] $documents The documents to insert
      * @param array            $options   Command options
      * @return InsertManyResult
@@ -900,7 +915,7 @@ class Collection
      * Inserts one document.
      *
      * @see InsertOne::__construct() for supported options
-     * @see http://docs.mongodb.org/manual/reference/command/insert/
+     * @see https://mongodb.com/docs/manual/reference/command/insert/
      * @param array|object $document The document to insert
      * @param array        $options  Command options
      * @return InsertOneResult
@@ -940,7 +955,7 @@ class Collection
      * Executes a map-reduce aggregation on the collection.
      *
      * @see MapReduce::__construct() for supported options
-     * @see http://docs.mongodb.org/manual/reference/command/mapReduce/
+     * @see https://mongodb.com/docs/manual/reference/command/mapReduce/
      * @param JavascriptInterface $map     Map function
      * @param JavascriptInterface $reduce  Reduce function
      * @param string|array|object $out     Output specification
@@ -1025,7 +1040,7 @@ class Collection
      * Replaces at most one document matching the filter.
      *
      * @see ReplaceOne::__construct() for supported options
-     * @see http://docs.mongodb.org/manual/reference/command/update/
+     * @see https://mongodb.com/docs/manual/reference/command/update/
      * @param array|object $filter      Query by which to filter documents
      * @param array|object $replacement Replacement document
      * @param array        $options     Command options
@@ -1050,7 +1065,7 @@ class Collection
      * Updates all documents matching the filter.
      *
      * @see UpdateMany::__construct() for supported options
-     * @see http://docs.mongodb.org/manual/reference/command/update/
+     * @see https://mongodb.com/docs/manual/reference/command/update/
      * @param array|object $filter  Query by which to filter documents
      * @param array|object $update  Update to apply to the matched documents
      * @param array        $options Command options
@@ -1075,7 +1090,7 @@ class Collection
      * Updates at most one document matching the filter.
      *
      * @see UpdateOne::__construct() for supported options
-     * @see http://docs.mongodb.org/manual/reference/command/update/
+     * @see https://mongodb.com/docs/manual/reference/command/update/
      * @param array|object $filter  Query by which to filter documents
      * @param array|object $update  Update to apply to the matched document
      * @param array        $options Command options

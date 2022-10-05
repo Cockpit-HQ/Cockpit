@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -29,7 +29,7 @@ use MongoDB\Model\CallbackIterator;
  *
  * @api
  * @see \MongoDB\Database::listCollectionNames()
- * @see http://docs.mongodb.org/manual/reference/command/listCollections/
+ * @see https://mongodb.com/docs/manual/reference/command/listCollections/
  */
 class ListCollectionNames implements Executable
 {
@@ -45,6 +45,10 @@ class ListCollectionNames implements Executable
      *    returned based on the user privileges.
      *
      *    For servers < 4.0, this option is ignored.
+     *
+     *  * comment (mixed): BSON value to attach as a comment to this command.
+     *
+     *    This is not supported for servers versions < 4.4.
      *
      *  * filter (document): Query by which to filter collections.
      *

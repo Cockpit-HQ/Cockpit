@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -27,6 +27,7 @@ use MongoDB\Driver\Session;
 use MongoDB\Driver\WriteConcern;
 use MongoDB\Exception\InvalidArgumentException;
 use MongoDB\Exception\RuntimeException;
+use MongoDB\Operation\ListCollections;
 use MongoDB\Operation\WithTransaction;
 use ReflectionClass;
 use ReflectionException;
@@ -121,6 +122,53 @@ function generate_index_name($document): string
     }
 
     return $name;
+}
+
+/**
+ * Return a collection's encryptedFields from the encryptedFieldsMap
+ * autoEncryption driver option (if available).
+ *
+ * @internal
+ * @see https://github.com/mongodb/specifications/blob/master/source/client-side-encryption/client-side-encryption.rst#drop-collection-helper
+ * @see Collection::drop
+ * @see Database::createCollection
+ * @see Database::dropCollection
+ * @return array|object|null
+ */
+function get_encrypted_fields_from_driver(string $databaseName, string $collectionName, Manager $manager)
+{
+    $encryptedFieldsMap = (array) $manager->getEncryptedFieldsMap();
+
+    return $encryptedFieldsMap[$databaseName . '.' . $collectionName] ?? null;
+}
+
+/**
+ * Return a collection's encryptedFields option from the server (if any).
+ *
+ * @internal
+ * @see https://github.com/mongodb/specifications/blob/master/source/client-side-encryption/client-side-encryption.rst#drop-collection-helper
+ * @see Collection::drop
+ * @see Database::dropCollection
+ * @return array|object|null
+ */
+function get_encrypted_fields_from_server(string $databaseName, string $collectionName, Manager $manager, Server $server)
+{
+    // No-op if the encryptedFieldsMap autoEncryption driver option was omitted
+    if ($manager->getEncryptedFieldsMap() === null) {
+        return null;
+    }
+
+    $collectionInfoIterator = (new ListCollections($databaseName, ['filter' => ['name' => $collectionName]]))->execute($server);
+
+    foreach ($collectionInfoIterator as $collectionInfo) {
+        /* Note: ListCollections applies a typeMap that converts BSON documents
+         * to PHP arrays. This should not be problematic as encryptedFields here
+         * is only used by drop helpers to obtain names of supporting encryption
+         * collections. */
+        return $collectionInfo['options']['encryptedFields'] ?? null;
+    }
+
+    return null;
 }
 
 /**
@@ -239,7 +287,7 @@ function is_last_pipeline_operator_write(array $pipeline): bool
  * This is used to determine if a mapReduce command requires a primary.
  *
  * @internal
- * @see https://docs.mongodb.com/manual/reference/command/mapReduce/#output-inline
+ * @see https://mongodb.com/docs/manual/reference/command/mapReduce/#output-inline
  * @param string|array|object $out Output specification
  * @return boolean
  * @throws InvalidArgumentException
@@ -274,7 +322,7 @@ function is_mapreduce_output_inline($out): bool
  * check the fsync option since that was never supported in the PHP driver.
  *
  * @internal
- * @see https://docs.mongodb.com/manual/reference/write-concern/
+ * @see https://mongodb.com/docs/manual/reference/write-concern/
  * @param WriteConcern $writeConcern
  * @return boolean
  */

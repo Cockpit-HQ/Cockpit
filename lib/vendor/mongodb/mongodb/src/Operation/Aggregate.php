@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -47,7 +47,7 @@ use function sprintf;
  *
  * @api
  * @see \MongoDB\Collection::aggregate()
- * @see http://docs.mongodb.org/manual/reference/command/aggregate/
+ * @see https://mongodb.com/docs/manual/reference/command/aggregate/
  */
 class Aggregate implements Executable, Explainable
 {
@@ -86,8 +86,9 @@ class Aggregate implements Executable, Explainable
      *
      *  * collation (document): Collation specification.
      *
-     *  * comment (string): An arbitrary string to help trace the operation
-     *    through the database profiler, currentOp, and logs.
+     *  * comment (mixed): BSON value to attach as a comment to this command.
+     *
+     *    Only string values are supported for server versions < 4.4.
      *
      *  * explain (boolean): Specifies whether or not to return the information
      *    on the processing of the pipeline.
@@ -168,10 +169,6 @@ class Aggregate implements Executable, Explainable
 
         if (isset($options['collation']) && ! is_array($options['collation']) && ! is_object($options['collation'])) {
             throw InvalidArgumentException::invalidType('"collation" option', $options['collation'], 'array or object');
-        }
-
-        if (isset($options['comment']) && ! is_string($options['comment'])) {
-            throw InvalidArgumentException::invalidType('"comment" option', $options['comment'], 'string');
         }
 
         if (isset($options['explain']) && ! is_bool($options['explain'])) {
@@ -369,9 +366,9 @@ class Aggregate implements Executable, Explainable
     /**
      * Execute the aggregate command using the appropriate Server method.
      *
-     * @see http://php.net/manual/en/mongodb-driver-server.executecommand.php
-     * @see http://php.net/manual/en/mongodb-driver-server.executereadcommand.php
-     * @see http://php.net/manual/en/mongodb-driver-server.executereadwritecommand.php
+     * @see https://php.net/manual/en/mongodb-driver-server.executecommand.php
+     * @see https://php.net/manual/en/mongodb-driver-server.executereadcommand.php
+     * @see https://php.net/manual/en/mongodb-driver-server.executereadwritecommand.php
      */
     private function executeCommand(Server $server, Command $command): Cursor
     {

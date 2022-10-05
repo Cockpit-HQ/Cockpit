@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -39,7 +39,7 @@ use function sprintf;
  * @api
  * @see \MongoDB\Collection::createIndex()
  * @see \MongoDB\Collection::createIndexes()
- * @see http://docs.mongodb.org/manual/reference/command/createIndexes/
+ * @see https://mongodb.com/docs/manual/reference/command/createIndexes/
  */
 class CreateIndexes implements Executable
 {
@@ -62,6 +62,10 @@ class CreateIndexes implements Executable
      * Constructs a createIndexes command.
      *
      * Supported options:
+     *
+     *  * comment (mixed): BSON value to attach as a comment to this command.
+     *
+     *    This is not supported for servers versions < 4.4.
      *
      *  * commitQuorum (integer|string): Specifies how many data-bearing members
      *    of a replica set, including the primary, must complete the index
@@ -153,7 +157,7 @@ class CreateIndexes implements Executable
     /**
      * Create options for executing the command.
      *
-     * @see http://php.net/manual/en/mongodb-driver-server.executewritecommand.php
+     * @see https://php.net/manual/en/mongodb-driver-server.executewritecommand.php
      * @return array
      */
     private function createOptions()
@@ -195,8 +199,10 @@ class CreateIndexes implements Executable
             $cmd['commitQuorum'] = $this->options['commitQuorum'];
         }
 
-        if (isset($this->options['maxTimeMS'])) {
-            $cmd['maxTimeMS'] = $this->options['maxTimeMS'];
+        foreach (['comment', 'maxTimeMS'] as $option) {
+            if (isset($this->options[$option])) {
+                $cmd[$option] = $this->options[$option];
+            }
         }
 
         $server->executeWriteCommand($this->databaseName, new Command($cmd), $this->createOptions());
