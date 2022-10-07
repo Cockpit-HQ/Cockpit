@@ -13,7 +13,7 @@ AddDefaultCharset UTF-8
     # RewriteBase /
 
     # Protect some contents
-    RewriteRule (^|/)\.(?!well-known\/) - [F,L]
+    RewriteRule (^|/)\.(?!spaces|well-known\/) - [F,L]
     RewriteRule \.(sqlite|sdb|s3db|db|yaml|yml|env)$ - [F,L]
     RewriteRule (config|modules|addons|lib)\/(.*)\.php$ - [F,L]
 
