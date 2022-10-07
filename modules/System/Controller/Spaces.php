@@ -24,6 +24,24 @@ class Spaces extends App {
 
     public function create() {
 
+        $space = $this->param('space');
+
+        if ($space) {
+
+            if (!isset($space['name'])) {
+                return $this->stop(404);
+            }
+
+            if ($this->app->path("#app:.spaces/{$space['name']}")) {
+                return $this->stop(403);
+            }
+
+            $this->helper('spaces')->create($space['name']);
+
+            return ['success' => true];
+        }
+
+
         return $this->render('system:views/spaces/create.php');
     }
 

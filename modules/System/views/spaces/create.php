@@ -26,8 +26,6 @@
                     <div><input class="kiss-input" type="text" v-model="space.user.password" placeholder="<?=t('Password')?>" required></div>
                 </kiss-grid>
 
-
-
                 <app-actionbar>
 
                     <kiss-container size="small">

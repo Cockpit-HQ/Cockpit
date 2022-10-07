@@ -37,4 +37,42 @@ class Spaces extends \Lime\Helper {
 
         return $spaces;
     }
+
+    public function create(string $name) {
+
+        $fs = $this->app->helper('fs');
+        $name = $this->app->helper('utils')->sluggify(trim($name));
+
+        if ($this->app->path("#app:.spaces/{$name}")) {
+            return false;
+        }
+
+        // create env folders
+        $fs->mkdir("#app:.spaces/{$name}/config");
+        $fs->mkdir("#app:.spaces/{$name}/storage/cache");
+        $fs->mkdir("#app:.spaces/{$name}/storage/data");
+        $fs->mkdir("#app:.spaces/{$name}/storage/tmp");
+        $fs->mkdir("#app:.spaces/{$name}/storage/uploads");
+
+        $path = $this->app->path("#app:.spaces/{$name}");
+        $created = time();
+        $instance = \Cockpit::instance($path);
+
+        $user = [
+            'active' => true,
+            'user' => 'admin',
+            'name' => 'Admin',
+            'email' => 'admin@admin.com',
+            'password' => $instance->hash('admin'),
+            'i18n' => 'en',
+            'role' => 'admin',
+            'theme' => 'auto',
+            '_modified' => $created,
+            '_created' => $created
+        ];
+
+        $instance->dataStorage->save('system/users', $user);
+
+        return true;
+    }
 }
