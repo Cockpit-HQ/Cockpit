@@ -20,7 +20,7 @@ class Spaces extends \Lime\Helper {
         if ($folder) {
 
             $dir = new DirectoryIterator($folder);
-            $rootUrl = $this->app->pathToUrl(APP_DIR);
+            $rootUrl = rtrim($this->app->routeUrl('/'), '/');
 
             foreach ($dir as $f) {
 

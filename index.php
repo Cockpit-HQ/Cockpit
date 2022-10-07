@@ -57,19 +57,19 @@ if (PHP_SAPI == 'cli-server') {
 
 $APP_SPACE = null;
 
-// support /:myenv/* to load custom cockpit instance from /.envs/*
+// support /:space/* to load custom cockpit instance from /.spaces/*
 if ($APP_ROUTE && substr($APP_ROUTE, 0, 2) == '/:') {
 
-    $parts  = explode('/', $APP_ROUTE);
-    $env    = substr($parts[1], 1);
-    $spaceDir = __DIR__."/.spaces/{$env}";
+    $parts    = explode('/', $APP_ROUTE);
+    $space    = substr($parts[1], 1);
+    $spaceDir = __DIR__."/.spaces/{$space}";
 
     if (file_exists($spaceDir)) {
         $APP_ROUTE = '/'.trim(implode('/', array_slice($parts, 2)), '/');
-        $APP_BASE_URL .= "/.spaces/{$env}";
-        $APP_BASE_ROUTE .= "/:{$env}";
+        $APP_BASE_URL .= "/.spaces/{$space}";
+        $APP_BASE_ROUTE .= "/:{$space}";
         $APP_SPACE_DIR = $spaceDir;
-        $APP_SPACE = $env;
+        $APP_SPACE = $space;
     }
 }
 

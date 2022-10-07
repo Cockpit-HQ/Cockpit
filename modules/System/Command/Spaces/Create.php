@@ -34,11 +34,11 @@ class Create extends Command {
         }
 
         // create env folders
-        $fs->mkdir("#root:.spaces/{$name}/config");
-        $fs->mkdir("#root:.spaces/{$name}/storage/cache");
-        $fs->mkdir("#root:.spaces/{$name}/storage/data");
-        $fs->mkdir("#root:.spaces/{$name}/storage/tmp");
-        $fs->mkdir("#root:.spaces/{$name}/storage/uploads");
+        $fs->mkdir("#app:.spaces/{$name}/config");
+        $fs->mkdir("#app:.spaces/{$name}/storage/cache");
+        $fs->mkdir("#app:.spaces/{$name}/storage/data");
+        $fs->mkdir("#app:.spaces/{$name}/storage/tmp");
+        $fs->mkdir("#app:.spaces/{$name}/storage/uploads");
 
         $path = $this->app->path("#app:.spaces/{$name}");
         $created = time();

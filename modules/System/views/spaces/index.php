@@ -28,7 +28,7 @@
                 </div>
 
                 <kiss-grid cols="4@m">
-                    <kiss-card class="kiss-margin-small kiss-flex kiss-flex-middle animated fadeIn" theme="shadowed contrast" hover="shadow" v-for="space in filtered">
+                    <kiss-card class="kiss-flex kiss-flex-middle animated fadeIn" theme="shadowed contrast" hover="shadow" v-for="space in filtered">
                         <div class="kiss-position-relative kiss-padding-small kiss-bgcolor-contrast">
                             <canvas width="40" height="40"></canvas>
                             <div class="kiss-cover kiss-flex kiss-flex-middle kiss-flex-center">

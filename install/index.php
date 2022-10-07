@@ -52,20 +52,38 @@ foreach ($checks as $info => $check) {
     if (!$check) $failed[] = $info;
 }
 
+$APP_SPACE_DIR = dirname(__DIR__);
+$APP_SPACE = null;
+
+// support ?space=myenv to install custom cockpit instance from /.spaces/*
+if (isset($_GET['space']) && $_GET['space']) {
+
+    $APP_SPACE = $_GET['space'];
+    $spaceDir  = $APP_SPACE_DIR."/.spaces/{$APP_SPACE}";
+
+    if (!file_exists($spaceDir)) {
+        $failed[] = "Space :{$APP_SPACE}: does not exist!";
+    } else {
+        $APP_SPACE_DIR = $spaceDir;
+    }
+}
+
 if (!count($failed)) {
 
     if (!class_exists('Cockpit')) {
         include (__DIR__.'/../bootstrap.php');
     }
 
-    $app = Cockpit::instance();
+    $app = Cockpit::instance($APP_SPACE_DIR, [
+        'app_space' => $APP_SPACE
+    ]);
 
     // check whether cockpit is already installed
     try {
 
         if ($app->dataStorage->getCollection('system/users')->count()) {
 
-            header('Location: ../');
+            header('Location: ../'.($APP_SPACE ? ":{$APP_SPACE}" : ""));
             exit;
         }
 
@@ -87,6 +105,7 @@ if (!count($failed)) {
     ];
 
     $app->dataStorage->save('system/users', $user);
+
 }
 
 ?><!doctype html>
@@ -121,7 +140,7 @@ if (!count($failed)) {
                 <?php endforeach; ?>
 
                 <div class="kiss-margin-large">
-                    <a class="kiss-button kiss-width-1-1" href="?<?php echo time();?>">Retry installation</a>
+                    <a class="kiss-button kiss-width-1-1" href="?<?=implode('&', [time(), ($APP_SPACE ? "space={$APP_SPACE}" : "")])?>">Retry installation</a>
                 </div>
 
             <?php else: ?>
@@ -133,7 +152,7 @@ if (!count($failed)) {
                 </div>
 
                 <div class="kiss-margin-large">
-                    <a class="kiss-button kiss-button-primary kiss-width-1-1" href="../" class="uk-button uk-button-large uk-button-primary uk-button-outline uk-width-1-1">Login now</a>
+                    <a class="kiss-button kiss-button-primary kiss-width-1-1" href="../<?=($APP_SPACE ? ":{$APP_SPACE}" : "")?>" class="uk-button uk-button-large uk-button-primary uk-button-outline uk-width-1-1">Login now</a>
                 </div>
 
             <?php endif; ?>
