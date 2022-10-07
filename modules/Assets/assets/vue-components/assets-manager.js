@@ -260,7 +260,7 @@ export default {
         },
 
         copyAssetLinkID(asset) {
-            App.utils.copyText(location.origin + App.base(`/assets/link/${asset._id}`), () =>  App.ui.notify('Asset link copied!'));
+            App.utils.copyText(location.origin + App.route(`/assets/link/${asset._id}`), () =>  App.ui.notify('Asset link copied!'));
         },
     },
 
