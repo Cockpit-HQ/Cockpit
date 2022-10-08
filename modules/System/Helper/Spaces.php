@@ -38,7 +38,13 @@ class Spaces extends \Lime\Helper {
         return $spaces;
     }
 
-    public function create(string $name) {
+    public function create(string $name, array $options = []) {
+
+        $options = array_merge([
+            'user' => 'admin',
+            'password' => 'admin',
+            'email' => 'admin@admin.com',
+        ], $options);
 
         $fs = $this->app->helper('fs');
         $name = $this->app->helper('utils')->sluggify(trim($name));
@@ -60,12 +66,12 @@ class Spaces extends \Lime\Helper {
 
         $user = [
             'active' => true,
-            'user' => 'admin',
+            'user' => $options['user'],
             'name' => 'Admin',
-            'email' => 'admin@admin.com',
-            'password' => $instance->hash('admin'),
+            'email' => $options['email'],
+            'password' => $instance->hash($options['password']),
             'i18n' => 'en',
-            'role' => 'admin',
+            'role' => $options['user'],
             'theme' => 'auto',
             '_modified' => $created,
             '_created' => $created
@@ -73,6 +79,9 @@ class Spaces extends \Lime\Helper {
 
         $instance->dataStorage->save('system/users', $user);
 
-        return true;
+        return [
+            'name' => $name,
+            'url' => rtrim($this->app->routeUrl('/'), '/')."/:{$name}"
+        ];
     }
 }

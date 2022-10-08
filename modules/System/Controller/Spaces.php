@@ -36,9 +36,11 @@ class Spaces extends App {
                 return $this->stop(403);
             }
 
-            $this->helper('spaces')->create($space['name']);
+            $options = $space['options'] ?? [];
 
-            return ['success' => true];
+            $space = $this->helper('spaces')->create($space['name'], $options);
+
+            return ['success' => true, 'space' => $space];
         }
 
 

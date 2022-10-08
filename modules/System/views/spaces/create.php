@@ -12,7 +12,17 @@
                 <strong><?=t('Create space')?></strong>
             </div>
 
-            <form :class="{'kiss-disabled':saving}" @submit.prevent="save">
+            <div class="kiss-margin-large kiss-height-50vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center" v-if="created">
+                <div>
+                    <div class="animated fadeInUp kiss-size-2"><?=t('Space created')?></div>
+                    <div class="kiss-margin-large">
+                        <a class="kiss-button kiss-button-primary kiss-display-block kiss-margin-small" :href="space.url" target="_blank" rel="noopener noreferrer"><?=t('Open space')?></a>
+                        <a class="kiss-button kiss-display-block kiss-margin-small" href="<?=$this->route('/system/spaces')?>"><?=t('Close')?></a>
+                    </div>
+                </div>
+            </div>
+
+            <form :class="{'kiss-disabled':saving}" @submit.prevent="save" v-if="!created">
 
                 <div class="kiss-margin-large">
                     <label><?=t('Name')?></label>
@@ -22,8 +32,8 @@
                 <div class="kiss-text-caption kiss-text-bold"><?=t('Admin user')?></div>
 
                 <kiss-grid class="kiss-margin" cols="2@m">
-                    <div><input class="kiss-input" type="text" v-model="space.user.name" placeholder="<?=t('Username')?>" required></div>
-                    <div><input class="kiss-input" type="text" v-model="space.user.password" placeholder="<?=t('Password')?>" required></div>
+                    <div><input class="kiss-input" type="text" v-model="space.options.user" placeholder="<?=t('Username')?>" required></div>
+                    <div><input class="kiss-input" type="text" v-model="space.options.password" placeholder="<?=t('Password')?>" required></div>
                 </kiss-grid>
 
                 <app-actionbar>
@@ -53,10 +63,11 @@
                 data() {
 
                     return {
+                        created: false,
                         saving: false,
                         space: {
                             name: '',
-                            user: {}
+                            options: {}
                         }
                     };
                 },
@@ -67,11 +78,11 @@
 
                         this.saving = true;
 
-                        this.$request('/system/spaces/create', {space: this.space}).then(space => {
+                        this.$request('/system/spaces/create', {space: this.space}).then(ret => {
 
+                            this.space = ret.space;
+                            this.created = true;
                             this.saving = false;
-
-                            App.ui.notify('Space created!');
 
                         }).catch(res => {
                             this.saving = false;
