@@ -71,7 +71,7 @@ class Spaces extends \Lime\Helper {
             'email' => $options['email'],
             'password' => $instance->hash($options['password']),
             'i18n' => 'en',
-            'role' => $options['user'],
+            'role' => 'admin',
             'theme' => 'auto',
             '_modified' => $created,
             '_created' => $created
