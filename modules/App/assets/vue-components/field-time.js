@@ -66,7 +66,7 @@ export default {
     template: /*html*/`
         <div field="time">
             <input type="time" class="kiss-input kiss-width-1-1" v-model="val" @input="update" :max="max" :min="min" :list="uid+'-list'" :readonly="readonly">
-            <datalist :id="uid+'-list'" v-if="list.length">
+            <datalist :id="uid+'-list'" v-if="Array.isArray(list) && list.length">
                 <option v-for="option in list">{{ option }}</option>
             </datalist>
         </div>

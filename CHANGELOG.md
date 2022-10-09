@@ -7,6 +7,7 @@
 - Resolve nested linked content items on content item population
 - Auto-populate content item for content previews
 - Fix response cache
+- Fix time field error (list option)
 
 ## 2.3.0 (2022-09-16)
 
