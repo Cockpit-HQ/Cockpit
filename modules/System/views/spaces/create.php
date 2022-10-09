@@ -13,8 +13,11 @@
             </div>
 
             <div class="kiss-margin-large kiss-height-50vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center" v-if="created">
-                <div>
-                    <div class="animated fadeInUp kiss-size-2"><?=t('Space created')?></div>
+                <div class="animated fadeInUp kiss-width-1-2@m">
+                    <div class="kiss-margin kiss-color-success">
+                        <kiss-svg :src="$base('system:assets/icons/spaces.svg')" width="40" height="40"></kiss-svg>
+                    </div>
+                    <div class="kiss-size-2"><?=t('Space created')?></div>
                     <div class="kiss-margin-large">
                         <a class="kiss-button kiss-button-primary kiss-display-block kiss-margin-small" :href="space.url" target="_blank" rel="noopener noreferrer"><?=t('Open space')?></a>
                         <a class="kiss-button kiss-display-block kiss-margin-small" href="<?=$this->route('/system/spaces')?>"><?=t('Close')?></a>
