@@ -8,7 +8,7 @@
         <div class="kiss-margin-small-right">
             <kiss-svg class="kiss-margin-auto" src="<?=$this->base(isset($model['icon']) && $model['icon'] ? $model['icon'] : 'content:assets/icons/singleton.svg')?>" width="30" height="30" style="color:<?=($this->escape($model['color'] ?? 'inherit'))?>"><canvas width="35" height="35"></canvas></kiss-svg>
         </div>
-        <a class="kiss-color-muted kiss-margin-small-right" href="javascript:VueView.ui.offcanvas('content:assets/dialogs/switch-model-view.js')">
+        <a class="kiss-color-muted kiss-margin-small-right" onclick="VueView.ui.offcanvas('content:assets/dialogs/switch-model-view.js')">
             <icon>expand_circle_down</icon>
         </a>
         <div class="kiss-margin-small-right">
