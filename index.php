@@ -62,11 +62,11 @@ if ($APP_ROUTE && substr($APP_ROUTE, 0, 2) == '/:') {
 
     $parts    = explode('/', $APP_ROUTE);
     $space    = substr($parts[1], 1);
-    $spaceDir = __DIR__."/.spaces/{$space}";
+    $spaceDir = APP_SPACES_DIR."/{$space}";
 
     if (file_exists($spaceDir)) {
         $APP_ROUTE = '/'.trim(implode('/', array_slice($parts, 2)), '/');
-        $APP_BASE_URL .= "/.spaces/{$space}";
+        $APP_BASE_URL .= str_replace(__DIR__, '', APP_SPACES_DIR)."/{$space}";
         $APP_BASE_ROUTE .= "/:{$space}";
         $APP_SPACE_DIR = $spaceDir;
         $APP_SPACE = $space;

@@ -3,8 +3,9 @@
 define('APP_VERSION', '2.3.0');
 
 if (!defined('APP_START_TIME')) define('APP_START_TIME', microtime(true));
-if (!defined('APP_CLI')) define('APP_CLI', PHP_SAPI == 'cli');
 if (!defined('APP_ADMIN')) define('APP_ADMIN', false);
+if (!defined('APP_CLI')) define('APP_CLI', PHP_SAPI == 'cli');
+if (!defined('APP_SPACES_DIR')) define('APP_SPACES_DIR', __DIR__.'/.spaces');
 
 define('APP_DIR', str_replace(DIRECTORY_SEPARATOR, '/', __DIR__));
 

@@ -6,7 +6,7 @@ use ArrayObject, DirectoryIterator;
 
 class Spaces extends \Lime\Helper {
 
-    protected $spacesFolder = '#app:.spaces';
+    protected array $instances = [];
 
     public function isMaster() {
         return $this->app->path('#app:') === $this->app->path('#root:');
@@ -14,7 +14,7 @@ class Spaces extends \Lime\Helper {
 
     public function spaces() {
 
-        $folder = $this->app->path($this->spacesFolder);
+        $folder = APP_SPACES_DIR;
         $spaces = [];
 
         if ($folder) {
@@ -38,6 +38,25 @@ class Spaces extends \Lime\Helper {
         return $spaces;
     }
 
+    public function space(string $name) {
+
+        if (isset($this->instances[$name])) {
+            return $this->instances[$name];
+        }
+
+        $dir = APP_SPACES_DIR."/{$name}";
+
+        if (!file_exists($dir)) {
+            return null;
+        }
+
+        $this->instances[$name] = \Cockpit::instance($dir, [
+            'app_space' => $name,
+        ]);
+
+        return $this->instances[$name];
+    }
+
     public function create(string $name, array $options = []) {
 
         $options = array_merge([
@@ -49,18 +68,19 @@ class Spaces extends \Lime\Helper {
         $fs = $this->app->helper('fs');
         $name = $this->app->helper('utils')->sluggify(trim($name));
 
-        if ($this->app->path("#app:.spaces/{$name}")) {
+        $path = APP_SPACES_DIR."/{$name}";
+
+        if (file_exists($path)) {
             return false;
         }
 
         // create env folders
-        $fs->mkdir("#app:.spaces/{$name}/config");
-        $fs->mkdir("#app:.spaces/{$name}/storage/cache");
-        $fs->mkdir("#app:.spaces/{$name}/storage/data");
-        $fs->mkdir("#app:.spaces/{$name}/storage/tmp");
-        $fs->mkdir("#app:.spaces/{$name}/storage/uploads");
+        $fs->mkdir("{$path}/config");
+        $fs->mkdir("{$path}/storage/cache");
+        $fs->mkdir("{$path}/storage/data");
+        $fs->mkdir("{$path}/storage/tmp");
+        $fs->mkdir("{$path}/storage/uploads");
 
-        $path = $this->app->path("#app:.spaces/{$name}");
         $created = time();
         $instance = \Cockpit::instance($path);
 
