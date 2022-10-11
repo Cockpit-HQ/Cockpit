@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '0af68ca4b4c6a0fdb626a7af92c274e880cc51ec',
+    'reference' => '4463e6dfa3e77e95203ad61457ce6ab68d69ef56',
     'name' => 'cockpit-hq/cockpit',
   ),
   'versions' => 
@@ -36,7 +36,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '0af68ca4b4c6a0fdb626a7af92c274e880cc51ec',
+      'reference' => '4463e6dfa3e77e95203ad61457ce6ab68d69ef56',
     ),
     'colinodell/json5' => 
     array (
@@ -173,12 +173,12 @@
     ),
     'phpmailer/phpmailer' => 
     array (
-      'pretty_version' => 'v6.6.4',
-      'version' => '6.6.4.0',
+      'pretty_version' => 'v6.6.5',
+      'version' => '6.6.5.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'a94fdebaea6bd17f51be0c2373ab80d3d681269b',
+      'reference' => '8b6386d7417526d1ea4da9edb70b8352f7543627',
     ),
     'psr/cache' => 
     array (
