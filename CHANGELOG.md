@@ -8,6 +8,7 @@
 - Auto-populate content item for content previews
 - Fix response cache
 - Fix time field error (list option)
+- Refactor CORS preflight handling
 
 ## 2.3.0 (2022-09-16)
 

@@ -117,21 +117,33 @@ $request = Lime\Request::fromGlobalRequest([
 // CORS handling
 if (APP_API_REQUEST) {
 
-    $app->on('before', function() {
+    $CORS_DEFAULTS = [
+        'Access-Control-Allow-Origin' => '*',
+        'Access-Control-Allow-Credentials' => 'true',
+        'Access-Control-Max-Age' => '1000',
+        'Access-Control-Allow-Headers' => 'X-Requested-With, Content-Type, Origin, Cache-Control, Pragma, Authorization, Accept, Accept-Encoding, API-KEY',
+        'Access-Control-Allow-Methods' => 'PUT, POST, GET, OPTIONS, DELETE',
+        'Access-Control-Expose-Headers' => ($app->retrieve('debug') ? '*' : 'false'),
+    ];
 
-        $cors = $this->retrieve('cors', []);
+    $CORS_CONFIG = $app->retrieve('cors', []);
 
-        $this->response->headers['Access-Control-Allow-Origin']      = $cors['allowedOrigins'] ?? '*';
-        $this->response->headers['Access-Control-Allow-Credentials'] = $cors['allowCredentials'] ?? 'true';
-        $this->response->headers['Access-Control-Max-Age']           = $cors['maxAge'] ?? '1000';
-        $this->response->headers['Access-Control-Allow-Headers']     = $cors['allowedHeaders'] ?? 'X-Requested-With, Content-Type, Origin, Cache-Control, Pragma, Authorization, Accept, Accept-Encoding, API-KEY';
-        $this->response->headers['Access-Control-Allow-Methods']     = $cors['allowedMethods'] ?? 'PUT, POST, GET, OPTIONS, DELETE';
-        $this->response->headers['Access-Control-Expose-Headers']    = $cors['exposedHeaders'] ?? ($this->retrieve('debug') ? '*' : 'false');
+    $app->on('before', function() use($CORS_DEFAULTS, $CORS_CONFIG) {
+
+        foreach ($CORS_DEFAULTS as $key => $default) {
+            $this->response->headers[$key] = $CORS_CONFIG[$key] ?? $default;
+        }
     });
 
     if ($request->is('preflight')) {
+
         header('HTTP/1.1 200 OK CORS');
-        die();
+        header('Content-Type: application/json; charset=UTF-8');
+
+        foreach ($CORS_DEFAULTS as $key => $default) {
+            header("{$key}: ".($CORS_CONFIG[$key] ?? $default));
+        }
+        exit(0);
     }
 }
 
