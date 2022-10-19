@@ -81,6 +81,9 @@ class Spaces extends \Lime\Helper {
         $fs->mkdir("{$path}/storage/tmp");
         $fs->mkdir("{$path}/storage/uploads");
 
+        // space config file
+        $fs->write("{$path}/config/config.php", "<?php\n\nreturn [\n\n];");
+
         $created = time();
         $instance = \Cockpit::instance($path);
 
