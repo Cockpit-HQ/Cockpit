@@ -1,6 +1,6 @@
 # Release Notes
 
-## WIP
+## 2.3.1 (2022-10-21)
 
 - Fix return type for Utils::parseSize
 - Update Uppy.js to v3.0.1
@@ -9,6 +9,7 @@
 - Fix response cache
 - Fix time field error (list option)
 - Refactor CORS preflight handling
+- Add spaces feature (beta)
 
 ## 2.3.0 (2022-09-16)
 

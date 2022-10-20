@@ -8,8 +8,9 @@
 
         <template>
 
-            <div class="kiss-margin-large-bottom kiss-size-4 kiss-text-bold">
-                <?=t('Spaces')?>
+            <div class="kiss-margin-large-bottom kiss-flex kiss-flex-middle">
+                <span class="kiss-size-4 kiss-text-bold"><?=t('Spaces')?></span>
+                <span class="kiss-badge kiss-margin-small-left">BETA</span>
             </div>
 
             <app-loader v-if="loading"></app-loader>
