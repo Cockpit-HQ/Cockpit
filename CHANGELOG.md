@@ -1,5 +1,10 @@
 # Release Notes
 
+## WIP
+
+- Add clear cache action
+
+
 ## 2.3.1 (2022-10-21)
 
 - Fix return type for Utils::parseSize

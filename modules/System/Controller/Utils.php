@@ -83,4 +83,15 @@ class Utils extends App {
         return $icons->getArrayCopy();
     }
 
+    public function flushCache() {
+
+        if (!$this->helper('acl')->isSuperAdmin()) {
+            return $this->stop(401);
+        }
+
+        $this->app->helper('system')->flushCache();
+
+        return ['success' => true];
+    }
+
 }

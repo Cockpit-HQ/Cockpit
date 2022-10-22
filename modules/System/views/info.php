@@ -47,6 +47,16 @@
                         </tbody>
                     </table>
 
+                    <?php if ($this->helper('acl')->isSuperAdmin()): ?>
+                    <div class="kiss-text-caption kiss-text-bold kiss-size-bold kiss-margin">
+                        <?=('Cache')?>
+                    </div>
+
+                    <div>
+                        <button type="button" class="kiss-button" @click="clearCache()"><?=t('Clear cache')?></button>
+                    </div>
+                    <?php endif ?>
+
                     <?php if (count($addons)): asort($addons); ?>
                     <div class="kiss-text-caption kiss-text-bold kiss-size-bold kiss-margin kiss-margin-large-top">
                         <?=('Loaded Addons')?>
@@ -124,6 +134,20 @@
 
             export default {
 
+                methods: {
+                    clearCache() {
+
+                        App.ui.confirm('Are you sure?', () => {
+
+                            App.ui.block();
+
+                            this.$request('/system/utils/flushCache', {}).then(res => {
+                                App.ui.unblock();
+                                App.ui.notify('Cache cleared!');
+                            });
+                        });
+                    }
+                }
             }
         </script>
     </vue-view>
