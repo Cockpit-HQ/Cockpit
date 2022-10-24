@@ -1,5 +1,9 @@
 # Release Notes
 
+## WIP
+
+- Add ESC + auto focus support for dialogs
+
 ## 2.3.2 (2022-10-24)
 
 - Add clear cache action

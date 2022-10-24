@@ -403,6 +403,21 @@
       }
   });
 
+  on$1(document.documentElement, 'keyup', function (e) {
+
+      if (!['Esc', 'Escape'].includes(e.key)) {
+          return;
+      }
+
+      let last = null;
+
+      document.querySelectorAll('kiss-dialog[open="true"][esc="true"]').forEach(dialog => {
+          last = dialog;
+      });
+
+      if (last) last.close();
+  });
+
   customElements.define('kiss-dialog', class extends HTMLElement {
 
       connectedCallback() {
@@ -414,7 +429,18 @@
       }
 
       show() {
+
           this.setAttribute('open', 'true');
+
+          setTimeout(() => {
+
+              const focusElement = this.querySelector('[autofocus]') || this.querySelector('a[href],button');
+
+              if (focusElement) {
+                  focusElement.focus();
+              }
+
+          }, 100);
       }
 
       close() {
@@ -2787,7 +2813,7 @@
           let id = Math.random().toString(36).substring(2) + Date.now().toString(36);
 
           document.body.insertAdjacentHTML('beforeend', `
-            <kiss-dialog id="dialog-${id}" size="${(options && options.size) || ''}" type="${dialogtype}">
+            <kiss-dialog id="dialog-${id}" size="${(options && options.size) || ''}" type="${dialogtype}" esc="${(options && options.escape) ? 'true':'false'}">
                 <kiss-content class="animated fadeInUp faster">
                     ${content}
                 </kiss-content>
@@ -2825,6 +2851,8 @@
 
       alert: function (content, options) {
 
+          options = Object.assign({escape:true}, options || {});
+
           let dialog = this.dialog(/*html*/`
             <div class="kiss-margin">
                 ${content}
@@ -2838,6 +2866,8 @@
       },
 
       confirm: function (text, onconfirm, oncancel, options) {
+
+          options = Object.assign({escape:true}, options || {});
 
           let dialog = this.dialog(/*html*/`
             <div class="kiss-margin-bottom">

@@ -96,7 +96,7 @@ export default {
         let id = Math.random().toString(36).substring(2) + Date.now().toString(36);
 
         document.body.insertAdjacentHTML('beforeend', `
-            <kiss-dialog id="dialog-${id}" size="${(options && options.size) || ''}" type="${dialogtype}">
+            <kiss-dialog id="dialog-${id}" size="${(options && options.size) || ''}" type="${dialogtype}" esc="${(options && options.escape) ? 'true':'false'}">
                 <kiss-content class="animated fadeInUp faster">
                     ${content}
                 </kiss-content>
@@ -134,6 +134,8 @@ export default {
 
     alert: function (content, options) {
 
+        options = Object.assign({escape:true}, options || {});
+
         let dialog = this.dialog(/*html*/`
             <div class="kiss-margin">
                 ${content}
@@ -147,6 +149,8 @@ export default {
     },
 
     confirm: function (text, onconfirm, oncancel, options) {
+
+        options = Object.assign({escape:true}, options || {});
 
         let dialog = this.dialog(/*html*/`
             <div class="kiss-margin-bottom">
