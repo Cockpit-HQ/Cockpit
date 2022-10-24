@@ -17,7 +17,7 @@ class Spaces extends \Lime\Helper {
         $folder = APP_SPACES_DIR;
         $spaces = [];
 
-        if ($folder) {
+        if ($folder && file_exists($folder)) {
 
             $dir = new DirectoryIterator($folder);
             $rootUrl = rtrim($this->app->routeUrl('/'), '/');

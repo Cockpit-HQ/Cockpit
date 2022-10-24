@@ -3,6 +3,7 @@
 ## WIP
 
 - Add clear cache action
+- Fix spaces load error if spaces folder does not exists
 
 
 ## 2.3.1 (2022-10-21)
