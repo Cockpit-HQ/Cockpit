@@ -1,6 +1,6 @@
 # Release Notes
 
-## WIP
+## 2.3.2 (2022-10-24)
 
 - Add clear cache action
 - Fix spaces load error if spaces folder does not exists
