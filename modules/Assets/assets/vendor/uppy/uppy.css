@@ -33,6 +33,8 @@
   box-sizing: border-box;
   -webkit-appearance: none;
           appearance: none;
+  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", "Segoe UI Symbol", "Segoe UI Emoji", "Apple Color Emoji", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1;
 }
 
 [dir=rtl] .uppy-u-reset {
@@ -4583,10 +4585,8 @@ a.uppy-Dashboard-poweredBy {
   background-color: rgba(0, 0, 0, 0.6);
   transform: translateX(-50%);
 }
-@media screen and (min-width: 768px) {
-  .uppy-ImageCropper-controls {
-    padding-top: 0;
-  }
+.uppy-size--md .uppy-ImageCropper-controls {
+  padding-top: 0;
 }
 
 .uppy-ImageCropper-controls button {
@@ -4618,19 +4618,15 @@ a.uppy-Dashboard-poweredBy {
   left: 10px;
   height: 38px;
 }
-@media screen and (min-width: 768px) {
-  .uppy-ImageCropper-rangeWrapper {
-    position: static !important;
-    height: auto;
-  }
+.uppy-size--md .uppy-ImageCropper-rangeWrapper {
+  position: static !important;
+  height: auto;
 }
 
-@media screen and (min-width: 768px) {
-  .uppy-ImageCropper-range {
-    width: 180px;
-    margin-right: 15px;
-    margin-left: 5px;
-  }
+.uppy-size--md .uppy-ImageCropper-range {
+  width: 180px;
+  margin-right: 15px;
+  margin-left: 5px;
 }
 
 .uppy-ImageCropper .cropper-point {
