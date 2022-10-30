@@ -3,6 +3,7 @@
 ## WIP
 
 - Add ESC + auto focus support for dialogs
+- Update Vue to 3.2.41
 
 ## 2.3.2 (2022-10-24)
 
