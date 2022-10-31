@@ -10,6 +10,6 @@ $this->on('app.settings.collect', function($settings) {
         'icon' => 'finder:icon.svg',
         'route' => '/finder',
         'label' => 'Finder',
-        'permission' => 'finder'
+        'permission' => 'app/finder'
     ];
 });

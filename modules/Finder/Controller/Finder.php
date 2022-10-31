@@ -9,6 +9,13 @@ class Finder extends App {
 
     protected $root;
 
+    protected function before() {
+
+        if (!$this->isAllowed('app/finder')) {
+            return $this->stop(401);
+        }
+    }
+
     public function index() {
 
         $this->helper('theme')->favicon('finder:icon.svg');
