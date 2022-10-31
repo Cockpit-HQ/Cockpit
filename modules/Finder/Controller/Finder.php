@@ -42,6 +42,7 @@ class Finder extends App {
 
             $dir = $this->root.'/'.trim($path, '/');
             $data['path'] = $dir;
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
 
             if (file_exists($dir)){
 
@@ -62,11 +63,12 @@ class Finder extends App {
                         'name' => $filename,
                         'path' => trim($path.'/'.$file->getFilename(), '/'),
                         'url'  => $this->app->pathToUrl($file->getPathname()),
-                        'size' => $isDir ? '' : $this->app->helper('utils')->formatSize($file->getSize()),
-                        'filesize' => $isDir ? '' : $file->getSize(),
-                        'ext'  => $isDir ? '' : strtolower($file->getExtension()),
-                        'lastmodified' => $file->isDir() ? '' : date('d.m.y H:i', $file->getMTime()),
-                        'modified' => $file->isDir() ? '' : $file->getMTime(),
+                        'size' => $isDir ? null : $this->app->helper('utils')->formatSize($file->getSize()),
+                        'filesize' => $isDir ? null : $file->getSize(),
+                        'mime' => $isDir ? null : finfo_file($finfo, $file->getPathname()),
+                        'ext'  => $isDir ? null : strtolower($file->getExtension()),
+                        'lastmodified' => $file->isDir() ? null : date('d.m.y H:i', $file->getMTime()),
+                        'modified' => $file->isDir() ? null : $file->getMTime(),
                     ];
                 }
             }

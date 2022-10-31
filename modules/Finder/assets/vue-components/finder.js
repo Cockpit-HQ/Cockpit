@@ -26,6 +26,11 @@ export default {
 
     mounted() {
         this.loadpath();
+
+        App.assets.require([
+            'assets:assets/vendor/spotlight/spotlight.bundle.js',
+            'assets:assets/vendor/spotlight/css/spotlight.min.css',
+        ]);
     },
 
     computed: {
@@ -240,6 +245,17 @@ export default {
             });
 
             xhr.send(formData);
+        },
+
+        open(file) {
+
+            if (file.mime.indexOf('text') > -1 || ['json', 'svg'].includes(file.ext)) {
+                return this.edit(file);
+            }
+
+            if (file.mime.match('(image|video|audio)') && window.Spotlight) {
+                Spotlight.show([{ src: file.url }]);
+            }
         }
     },
 
@@ -260,42 +276,52 @@ export default {
             </div>
         </div>
 
-        <div class="kiss-margin" v-if="!loading">
-            <input type="text" class="kiss-input" :placeholder="t('Filter...')" v-model="filter">
+        <div v-if="!loading && (folders.length || files.length)">
+
+            <div class="kiss-margin">
+                <input type="text" class="kiss-input" :placeholder="t('Filter...')" v-model="filter">
+            </div>
+
+            <kiss-grid cols="4@m 5@xl" class="kiss-margin-bottom" gap="small" v-if="folders.length">
+
+                <kiss-card class="kiss-flex kiss-flex-middle" theme="shadowed contrast" v-for="folder in filteredFolders">
+                    <div class="kiss-padding kiss-bgcolor-contrast"><icon size="larger">folder</icon></div>
+                    <div class="kiss-padding kiss-text-truncate kiss-flex-1 kiss-text-bold kiss-size-small">
+                        <a class="kiss-link-muted" @click="loadpath(currentpath+'/'+folder.name)">{{ folder.name }}</a>
+                    </div>
+                    <a class="kiss-padding" @click="toggleFolderActions(folder)"><icon>more_horiz</icon></a>
+                </kiss-card>
+
+            </kiss-grid>
+
+            <table class="kiss-table animated fadeIn" v-if="files.length">
+                <thead>
+                    <tr>
+                        <th width="30"><input class="kiss-checkbox" type="checkbox" @click="toggleAllSelect"></th>
+                        <th width="10"></th>
+                        <th>{{ t('Name') }}</th>
+                        <th class="kiss-align-right" width="10%">{{ t('Size') }}</th>
+                        <th class="kiss-align-right" width="100">{{ t('Updated') }}</th>
+                        <th width="30"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="file in filteredFiles">
+                        <td><input class="kiss-checkbox" type="checkbox" v-model="selected" :value="file.path"></td>
+                        <td class="kiss-align-center"><a @click="download(file)"><icon size="larger">cloud_download</icon></a></td>
+                        <td class="kiss-position-relative">
+                            {{ file.name }}
+                            <a class="kiss-cover" @click="open(file)"></a>
+                        </td>
+                        <td class="kiss-align-right kiss-text-monospace kiss-color-muted">{{ file.size }}</td>
+                        <td class="kiss-align-right kiss-color-muted"><span class="kiss-display-block kiss-align-center kiss-badge kiss-badge-outline kiss-color-muted">{{ file.lastmodified }}</span></td>
+                        <td class="kiss-align-right"><a class="kiss-padding" @click="toggleFileActions(file)"><icon>more_horiz</icon></a></td>
+                    </tr>
+                </tbody>
+            </table>
+
         </div>
 
-        <kiss-grid cols="4@m 5@xl" class="kiss-margin-bottom" gap="small" v-if="!loading && folders.length">
-
-            <kiss-card class="kiss-flex kiss-flex-middle" theme="shadowed contrast" v-for="folder in filteredFolders">
-                <div class="kiss-padding kiss-bgcolor-contrast"><icon size="larger">folder</icon></div>
-                <div class="kiss-padding kiss-text-truncate kiss-flex-1 kiss-text-bold">
-                    <a class="kiss-link-muted" @click="loadpath(currentpath+'/'+folder.name)">{{ folder.name }}</a>
-                </div>
-                <a class="kiss-padding" @click="toggleFolderActions(folder)"><icon>more_horiz</icon></a>
-            </kiss-card>
-
-        </kiss-grid>
-
-        <table class="kiss-table animated fadeIn" v-if="!loading && files.length">
-            <thead>
-                <tr>
-                    <th width="30"><input class="kiss-checkbox" type="checkbox" @click="toggleAllSelect"></th>
-                    <th>{{ t('Name') }}</th>
-                    <th class="kiss-align-right" width="10%">{{ t('Size') }}</th>
-                    <th class="kiss-align-right" width="100">{{ t('Updated') }}</th>
-                    <th width="30"></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="file in filteredFiles">
-                    <td><input class="kiss-checkbox" type="checkbox" v-model="selected" :value="file.path"></td>
-                    <td>{{ file.name }}</td>
-                    <td class="kiss-align-right kiss-text-monospace kiss-color-muted">{{ file.size }}</td>
-                    <td class="kiss-align-right kiss-color-muted"><span class="kiss-display-block kiss-align-center kiss-badge kiss-badge-outline kiss-color-muted">{{ file.lastmodified }}</span></td>
-                    <td class="kiss-align-right"><a class="kiss-padding" @click="toggleFileActions(file)"><icon>more_horiz</icon></a></td>
-                </tr>
-            </tbody>
-        </table>
 
         <app-actionbar :class="{'kiss-disabled':loading}">
             <kiss-container>
@@ -325,7 +351,7 @@ export default {
                             <li v-if="actionFile">
                                 <div class="kiss-color-muted kiss-text-truncate kiss-margin-small-bottom">{{ App.utils.truncate(actionFile.name, 30) }}</div>
                             </li>
-                            <li>
+                            <li v-if="actionFile && (actionFile.mime.indexOf('text') > -1 || ['json', 'svg'].includes(actionFile.ext))">
                                 <a class="kiss-flex kiss-flex-middle" @click="edit(actionFile)">
                                     <icon class="kiss-margin-small-right" size="larger">create</icon>
                                     {{ t('Edit') }}
