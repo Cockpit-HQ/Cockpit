@@ -176,7 +176,7 @@ export default {
 
             App.ui.prompt('Please enter a name:', item.name, name => {
 
-                if (name!=item.name && name.trim()) {
+                if (name !== item.name && name.trim()) {
 
                     this.$request('/finder/api', {cmd: 'rename', path: item.path, name}).then(() => {
 
@@ -233,7 +233,7 @@ export default {
 
             xhr.upload.addEventListener('progress', ({loaded, total}) => {
 
-                if (loaded == total) {
+                if (loaded === total) {
                     this.uploading = false;
                     this.loadpath();
                 }

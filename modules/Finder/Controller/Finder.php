@@ -94,7 +94,9 @@ class Finder extends App {
 
         if (isset($files['name']) && $path && file_exists($targetpath)) {
 
-            for ($i = 0; $i < count($files['name']); $i++) {
+            $count = count($files['name']);
+
+            for ($i = 0; $i < $count; $i++) {
 
                 // clean filename
                 $clean = preg_replace('/[^a-zA-Z0-9-_\.]/','', str_replace(' ', '-', $files['name'][$i]));
@@ -383,20 +385,6 @@ class Finder extends App {
         }
 
         return json_encode($list);
-    }
-
-    public function savebookmarks() {
-
-        if ($bookmarks = $this->param('bookmarks', false)) {
-            $this->memory->set('mediamanager.bookmarks.'.$this->user['_id'], $bookmarks);
-        }
-
-        return json_encode($bookmarks);
-    }
-
-    public function loadbookmarks() {
-
-        return json_encode($this->app->memory->get('mediamanager.bookmarks.'.$this->user['_id'], ['folders'=>[], 'files'=>[]]));
     }
 
     protected function _getPathParameter() {

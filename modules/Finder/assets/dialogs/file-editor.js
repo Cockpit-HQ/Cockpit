@@ -42,7 +42,7 @@ export default {
 
         save() {
 
-            this.$request('/finder/api', {cmd: 'writefile', path: this.file.path, contents: this.contents}).then(rsp => {
+            this.$request('/finder/api', {cmd: 'writefile', path: this.file.path, contents: this.contents}).then(() => {
                 App.ui.notify('File updated!', 'success');
             });
         },
