@@ -7,6 +7,10 @@
     border-radius: var(--app-border-radius);
     border: 1px var(--kiss-hr-color) solid;
 }
+
+.CodeMirror[style*='height: auto']{
+    border: none;
+}
 .CodeMirror div.CodeMirror-selected { background: #e9f7a1d4; }
 .CodeMirror .CodeMirror-line::selection,
 .CodeMirror .CodeMirror-line > span::selection,
