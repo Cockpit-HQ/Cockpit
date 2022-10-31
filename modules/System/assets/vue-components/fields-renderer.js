@@ -8,7 +8,7 @@ let FieldRenderer = {
 
         if (this.modelValue === undefined) {
 
-            let val =  null;
+            let val = null;
 
             if (this.field.opts) {
 
@@ -17,6 +17,10 @@ let FieldRenderer = {
                 if (this.locale && this.field.opts[`default_${this.locale}`]) {
                     val = this.field.opts[`default_${this.locale}`];
                 }
+            }
+
+            if (!this.locale && this.field.type == 'boolean' && val === null) {
+                val = false;
             }
 
             this.$emit('update:modelValue', val);
@@ -339,6 +343,10 @@ export default {
                 this.locales.forEach(l => {
                     val[`${field.name}_${l.i18n}`] = ((field.opts && field.opts[`default_${l.i18n}`]) || null)
                 });
+            }
+
+            if (field.type == 'boolean' && val[field.name] === null) {
+                val[field.name] = false;
             }
         },
 
