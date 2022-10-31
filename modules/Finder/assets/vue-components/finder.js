@@ -279,7 +279,7 @@ export default {
         <div v-if="!loading && (folders.length || files.length)">
 
             <div class="kiss-margin">
-                <input type="text" class="kiss-input" :placeholder="t('Filter...')" v-model="filter">
+                <input type="text" class="kiss-input" :placeholder="t('Filter files & folders...')" v-model="filter">
             </div>
 
             <kiss-grid cols="4@m 5@xl" class="kiss-margin-bottom" gap="small" v-if="folders.length">
