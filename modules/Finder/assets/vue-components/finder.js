@@ -236,9 +236,11 @@ export default {
 
             xhr.open('POST', App.route('/finder/api'));
 
-            this.uploading = true;
+            this.uploading = 0;
 
             xhr.upload.addEventListener('progress', ({loaded, total}) => {
+
+                this.uploading = Math.round((loaded/total) * 100);
 
                 if (loaded === total) {
                     this.uploading = false;
@@ -415,6 +417,8 @@ export default {
                     </kiss-navlist>
                 </kiss-content>
             </kiss-popoutmenu>
+
+            <app-loader-cover v-if="uploading !== false" :label="uploading+'%'"></app-loader-cover>
 
         </teleport>
     `
