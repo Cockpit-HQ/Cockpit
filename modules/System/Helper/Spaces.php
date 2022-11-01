@@ -81,8 +81,14 @@ class Spaces extends \Lime\Helper {
         $fs->mkdir("{$path}/storage/tmp");
         $fs->mkdir("{$path}/storage/uploads");
 
+        $spaceConfig = new ArrayObject([]);
+
+        $this->app->trigger('spaces.config.create', [$spaceConfig]);
+
+        $export = $this->app->helper('utils')->var_export($spaceConfig->getArrayCopy(), true);
+
         // space config file
-        $fs->write("{$path}/config/config.php", "<?php\n\nreturn [\n\n];");
+        $fs->write("{$path}/config/config.php", "<?php\n\nreturn {$export};");
 
         $created = time();
         $instance = \Cockpit::instance($path);

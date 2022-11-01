@@ -33,7 +33,7 @@ class Spaces extends App {
             }
 
             if ($this->app->path("#app:.spaces/{$space['name']}")) {
-                return $this->stop(403);
+                return $this->stop(['error' => "{$space['name']} already exists"], 403);
             }
 
             $options = $space['options'] ?? [];
