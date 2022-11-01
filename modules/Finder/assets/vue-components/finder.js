@@ -249,16 +249,16 @@ export default {
                 this.uploading = Math.round((loaded/total) * 100);
             });
 
-            xhr.addEventListener('loadend', (evt) => {
+            xhr.addEventListener('loadend', () => {
 
                 this.uploading = false;
 
-                if (xhr.status == 200) {
+                if (xhr.status === 200) {
                     this.loadpath();
                 }
             });
 
-            xhr.addEventListener('error', (evt) => {
+            xhr.addEventListener('error', () => {
                 App.ui.notify('Upload failed!', 'error');
             });
 
