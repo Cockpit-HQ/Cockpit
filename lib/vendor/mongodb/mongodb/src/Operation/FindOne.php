@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -29,8 +29,8 @@ use function current;
  *
  * @api
  * @see \MongoDB\Collection::findOne()
- * @see https://mongodb.com/docs/manual/tutorial/query-documents/
- * @see https://mongodb.com/docs/manual/reference/operator/query-modifier/
+ * @see http://docs.mongodb.org/manual/tutorial/query-documents/
+ * @see http://docs.mongodb.org/manual/reference/operator/query-modifier/
  */
 class FindOne implements Executable, Explainable
 {
@@ -44,9 +44,8 @@ class FindOne implements Executable, Explainable
      *
      *  * collation (document): Collation specification.
      *
-     *  * comment (mixed): BSON value to attach as a comment to this command.
-     *
-     *    Only string values are supported for server versions < 4.4.
+     *  * comment (string): Attaches a comment to the query. If "$comment" also
+     *    exists in the modifiers document, this option will take precedence.
      *
      *  * hint (string|document): The index to use. Specify either the index
      *    name as a string or the index key pattern as a document. If specified,
@@ -89,11 +88,6 @@ class FindOne implements Executable, Explainable
      *  * sort (document): The order in which to return matching documents. If
      *    "$orderby" also exists in the modifiers document, this option will
      *    take precedence.
-     *
-     *  * let (document): Map of parameter names and values. Values must be
-     *    constant or closed expressions that do not reference document fields.
-     *    Parameters can then be accessed as variables in an aggregate
-     *    expression context (e.g. "$$var").
      *
      *  * typeMap (array): Type map for BSON deserialization.
      *

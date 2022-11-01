@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '4463e6dfa3e77e95203ad61457ce6ab68d69ef56',
+    'reference' => '01da5f6d352f62fc2264b4cf479e970479e699fa',
     'name' => 'cockpit-hq/cockpit',
   ),
   'versions' => 
@@ -36,7 +36,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '4463e6dfa3e77e95203ad61457ce6ab68d69ef56',
+      'reference' => '01da5f6d352f62fc2264b4cf479e970479e699fa',
     ),
     'colinodell/json5' => 
     array (
@@ -103,12 +103,12 @@
     ),
     'guzzlehttp/psr7' => 
     array (
-      'pretty_version' => '2.4.1',
-      'version' => '2.4.1.0',
+      'pretty_version' => '2.4.3',
+      'version' => '2.4.3.0',
       'aliases' => 
       array (
       ),
-      'reference' => '69568e4293f4fa993f3b0e51c9723e1e17c41379',
+      'reference' => '67c26b443f348a51926030c83481b85718457d3d',
     ),
     'jean85/pretty-package-versions' => 
     array (
@@ -130,12 +130,12 @@
     ),
     'league/flysystem' => 
     array (
-      'pretty_version' => '3.5.2',
-      'version' => '3.5.2.0',
+      'pretty_version' => '3.10.2',
+      'version' => '3.10.2.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'c73c4eb31f2e883b3897ab5591aa2dbc48112433',
+      'reference' => 'b9bd194b016114d6ff6765c09d40c7d427e4e3f6',
     ),
     'league/mime-type-detection' => 
     array (
@@ -164,12 +164,12 @@
     ),
     'mongodb/mongodb' => 
     array (
-      'pretty_version' => '1.13.1',
-      'version' => '1.13.1.0',
+      'pretty_version' => '1.12.0',
+      'version' => '1.12.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '0b8555705d2f9c12ab2e5cebee6b594cdfe6b4e0',
+      'reference' => 'e4a7594ac4b31635fa77455c4038a7013024ba28',
     ),
     'phpmailer/phpmailer' => 
     array (
@@ -282,30 +282,30 @@
     ),
     'symfony/console' => 
     array (
-      'pretty_version' => 'v5.4.13',
-      'version' => '5.4.13.0',
+      'pretty_version' => 'v5.4.15',
+      'version' => '5.4.15.0',
       'aliases' => 
       array (
       ),
-      'reference' => '3f97f6c7b7e26848a90c0c0cfb91eeb2bb8618be',
+      'reference' => 'ea59bb0edfaf9f28d18d8791410ee0355f317669',
     ),
     'symfony/deprecation-contracts' => 
     array (
-      'pretty_version' => 'v3.0.2',
-      'version' => '3.0.2.0',
+      'pretty_version' => 'v3.1.1',
+      'version' => '3.1.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => '26954b3d62a6c5fd0ea8a2a00c0353a14978d05c',
+      'reference' => '07f1b9cc2ffee6aaafcf4b710fbc38ff736bd918',
     ),
     'symfony/finder' => 
     array (
-      'pretty_version' => 'v6.0.11',
-      'version' => '6.0.11.0',
+      'pretty_version' => 'v6.1.3',
+      'version' => '6.1.3.0',
       'aliases' => 
       array (
       ),
-      'reference' => '09cb683ba5720385ea6966e5e06be2a34f2568b1',
+      'reference' => '39696bff2c2970b3779a5cac7bf9f0b88fc2b709',
     ),
     'symfony/polyfill-ctype' => 
     array (
@@ -372,30 +372,30 @@
     ),
     'symfony/service-contracts' => 
     array (
-      'pretty_version' => 'v3.0.2',
-      'version' => '3.0.2.0',
+      'pretty_version' => 'v3.1.1',
+      'version' => '3.1.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'd78d39c1599bd1188b8e26bb341da52c3c6d8a66',
+      'reference' => '925e713fe8fcacf6bc05e936edd8dd5441a21239',
     ),
     'symfony/string' => 
     array (
-      'pretty_version' => 'v6.0.13',
-      'version' => '6.0.13.0',
+      'pretty_version' => 'v6.1.7',
+      'version' => '6.1.7.0',
       'aliases' => 
       array (
       ),
-      'reference' => '65e99fb179e7241606377e4042cd2161f3dd1c05',
+      'reference' => '823f143370880efcbdfa2dbca946b3358c4707e5',
     ),
     'symfony/yaml' => 
     array (
-      'pretty_version' => 'v6.0.12',
-      'version' => '6.0.12.0',
+      'pretty_version' => 'v6.1.6',
+      'version' => '6.1.6.0',
       'aliases' => 
       array (
       ),
-      'reference' => '8c68efb08b038ec02753da6f16e1601a6ed4ef17',
+      'reference' => '66c6b0cf52b00f74614a2cf7ae7db08ea1095931',
     ),
     'webonyx/graphql-php' => 
     array (

@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -35,7 +35,7 @@ use function is_integer;
  *
  * @api
  * @see \MongoDB\Collection::listIndexes()
- * @see https://mongodb.com/docs/manual/reference/command/listIndexes/
+ * @see http://docs.mongodb.org/manual/reference/command/listIndexes/
  */
 class ListIndexes implements Executable
 {
@@ -58,10 +58,6 @@ class ListIndexes implements Executable
      * Constructs a listIndexes command.
      *
      * Supported options:
-     *
-     *  * comment (mixed): BSON value to attach as a comment to this command.
-     *
-     *    This is not supported for servers versions < 4.4.
      *
      *  * maxTimeMS (integer): The maximum amount of time to allow the query to
      *    run.
@@ -107,7 +103,7 @@ class ListIndexes implements Executable
      * Note: read preference is intentionally omitted, as the spec requires that
      * the command be executed on the primary.
      *
-     * @see https://php.net/manual/en/mongodb-driver-server.executecommand.php
+     * @see http://php.net/manual/en/mongodb-driver-server.executecommand.php
      * @return array
      */
     private function createOptions()
@@ -133,10 +129,8 @@ class ListIndexes implements Executable
     {
         $cmd = ['listIndexes' => $this->collectionName];
 
-        foreach (['comment', 'maxTimeMS'] as $option) {
-            if (isset($this->options[$option])) {
-                $cmd[$option] = $this->options[$option];
-            }
+        if (isset($this->options['maxTimeMS'])) {
+            $cmd['maxTimeMS'] = $this->options['maxTimeMS'];
         }
 
         try {

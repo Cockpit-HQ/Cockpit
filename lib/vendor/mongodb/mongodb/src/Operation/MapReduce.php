@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -49,7 +49,7 @@ use const E_USER_DEPRECATED;
  *
  * @api
  * @see \MongoDB\Collection::mapReduce()
- * @see https://mongodb.com/docs/manual/reference/command/mapReduce/
+ * @see https://docs.mongodb.com/manual/reference/command/mapReduce/
  */
 class MapReduce implements Executable
 {
@@ -101,10 +101,6 @@ class MapReduce implements Executable
      *    are output to a collection.
      *
      *  * collation (document): Collation specification.
-     *
-     *  * comment (mixed): BSON value to attach as a comment to this command.
-     *
-     *    This is not supported for servers versions < 4.4.
      *
      *  * finalize (MongoDB\BSON\JavascriptInterface): Follows the reduce method
      *    and modifies the output.
@@ -343,7 +339,7 @@ class MapReduce implements Executable
             'out' => $this->out,
         ];
 
-        foreach (['bypassDocumentValidation', 'comment', 'finalize', 'jsMode', 'limit', 'maxTimeMS', 'verbose'] as $option) {
+        foreach (['bypassDocumentValidation', 'finalize', 'jsMode', 'limit', 'maxTimeMS', 'verbose'] as $option) {
             if (isset($this->options[$option])) {
                 $cmd[$option] = $this->options[$option];
             }
@@ -395,8 +391,8 @@ class MapReduce implements Executable
     /**
      * Create options for executing the command.
      *
-     * @see https://php.net/manual/en/mongodb-driver-server.executereadcommand.php
-     * @see https://php.net/manual/en/mongodb-driver-server.executereadwritecommand.php
+     * @see http://php.net/manual/en/mongodb-driver-server.executereadcommand.php
+     * @see http://php.net/manual/en/mongodb-driver-server.executereadwritecommand.php
      * @param boolean $hasOutputCollection
      * @return array
      */

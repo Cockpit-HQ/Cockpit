@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -39,7 +39,7 @@ use function is_string;
  *
  * @api
  * @see \MongoDB\Collection::count()
- * @see https://mongodb.com/docs/manual/reference/command/count/
+ * @see http://docs.mongodb.org/manual/reference/command/count/
  */
 class Count implements Executable, Explainable
 {
@@ -61,10 +61,6 @@ class Count implements Executable, Explainable
      * Supported options:
      *
      *  * collation (document): Collation specification.
-     *
-     *  * comment (mixed): BSON value to attach as a comment to this command.
-     *
-     *    This is not supported for servers versions < 4.4.
      *
      *  * hint (string|document): The index to use. Specify either the index
      *    name as a string or the index key pattern as a document. If specified,
@@ -199,7 +195,7 @@ class Count implements Executable, Explainable
             $cmd['hint'] = is_array($this->options['hint']) ? (object) $this->options['hint'] : $this->options['hint'];
         }
 
-        foreach (['comment', 'limit', 'maxTimeMS', 'skip'] as $option) {
+        foreach (['limit', 'maxTimeMS', 'skip'] as $option) {
             if (isset($this->options[$option])) {
                 $cmd[$option] = $this->options[$option];
             }
@@ -211,7 +207,7 @@ class Count implements Executable, Explainable
     /**
      * Create options for executing the command.
      *
-     * @see https://php.net/manual/en/mongodb-driver-server.executereadcommand.php
+     * @see http://php.net/manual/en/mongodb-driver-server.executereadcommand.php
      * @return array
      */
     private function createOptions()

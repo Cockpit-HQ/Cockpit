@@ -4,13 +4,10 @@ declare(strict_types=1);
 
 namespace League\Flysystem\Local;
 
-use League\Flysystem\FilesystemException;
-use Throwable;
-use const DIRECTORY_SEPARATOR;
-use const LOCK_EX;
 use DirectoryIterator;
 use FilesystemIterator;
 use Generator;
+use League\Flysystem\ChecksumProvider;
 use League\Flysystem\Config;
 use League\Flysystem\DirectoryAttributes;
 use League\Flysystem\FileAttributes;
@@ -22,6 +19,7 @@ use League\Flysystem\UnableToCreateDirectory;
 use League\Flysystem\UnableToDeleteDirectory;
 use League\Flysystem\UnableToDeleteFile;
 use League\Flysystem\UnableToMoveFile;
+use League\Flysystem\UnableToProvideChecksum;
 use League\Flysystem\UnableToReadFile;
 use League\Flysystem\UnableToRetrieveMetadata;
 use League\Flysystem\UnableToSetVisibility;
@@ -40,12 +38,15 @@ use function error_clear_last;
 use function error_get_last;
 use function file_exists;
 use function file_put_contents;
+use function hash_file;
 use function is_dir;
 use function is_file;
 use function mkdir;
 use function rename;
+use const DIRECTORY_SEPARATOR;
+use const LOCK_EX;
 
-class LocalFilesystemAdapter implements FilesystemAdapter
+class LocalFilesystemAdapter implements FilesystemAdapter, ChecksumProvider
 {
     /**
      * @var int
@@ -439,6 +440,20 @@ class LocalFilesystemAdapter implements FilesystemAdapter
         }
 
         throw UnableToRetrieveMetadata::fileSize($path, error_get_last()['message'] ?? '');
+    }
+
+    public function checksum(string $path, Config $config): string
+    {
+        $algo = $config->get('checksum_algo', 'md5');
+        $location = $this->prefixer->prefixPath($path);
+        error_clear_last();
+        $checksum = @hash_file($algo, $location);
+
+        if ($checksum === false) {
+            throw new UnableToProvideChecksum(error_get_last()['message'], $path);
+        }
+
+        return $checksum;
     }
 
     private function listDirectory(string $location): Generator

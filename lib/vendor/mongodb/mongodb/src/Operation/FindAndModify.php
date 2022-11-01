@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -26,7 +26,6 @@ use MongoDB\Exception\InvalidArgumentException;
 use MongoDB\Exception\UnexpectedValueException;
 use MongoDB\Exception\UnsupportedException;
 
-use function array_key_exists;
 use function current;
 use function is_array;
 use function is_bool;
@@ -45,7 +44,7 @@ use function MongoDB\server_supports_feature;
  * FindOneAndUpdate operation classes.
  *
  * @internal
- * @see https://mongodb.com/docs/manual/reference/command/findAndModify/
+ * @see http://docs.mongodb.org/manual/reference/command/findAndModify/
  */
 class FindAndModify implements Executable, Explainable
 {
@@ -73,10 +72,6 @@ class FindAndModify implements Executable, Explainable
      *    array elements an update should apply.
      *
      *  * collation (document): Collation specification.
-     *
-     *  * comment (mixed): BSON value to attach as a comment to this command.
-     *
-     *    This is not supported for servers versions < 4.4.
      *
      *  * bypassDocumentValidation (boolean): If true, allows the write to
      *    circumvent document level validation.
@@ -117,11 +112,6 @@ class FindAndModify implements Executable, Explainable
      *    matches the query. This option is ignored for remove operations. The
      *    default is false.
      *
-     *  * let (document): Map of parameter names and values. Values must be
-     *    constant or closed expressions that do not reference document fields.
-     *    Parameters can then be accessed as variables in an aggregate
-     *    expression context (e.g. "$$var").
-     *
      *  * writeConcern (MongoDB\Driver\WriteConcern): Write concern.
      *
      * @param string $databaseName   Database name
@@ -131,7 +121,11 @@ class FindAndModify implements Executable, Explainable
      */
     public function __construct($databaseName, $collectionName, array $options)
     {
-        $options += ['remove' => false];
+        $options += [
+            'new' => false,
+            'remove' => false,
+            'upsert' => false,
+        ];
 
         if (isset($options['arrayFilters']) && ! is_array($options['arrayFilters'])) {
             throw InvalidArgumentException::invalidType('"arrayFilters" option', $options['arrayFilters'], 'array');
@@ -157,7 +151,7 @@ class FindAndModify implements Executable, Explainable
             throw InvalidArgumentException::invalidType('"maxTimeMS" option', $options['maxTimeMS'], 'integer');
         }
 
-        if (array_key_exists('new', $options) && ! is_bool($options['new'])) {
+        if (! is_bool($options['new'])) {
             throw InvalidArgumentException::invalidType('"new" option', $options['new'], 'boolean');
         }
 
@@ -189,12 +183,8 @@ class FindAndModify implements Executable, Explainable
             throw InvalidArgumentException::invalidType('"writeConcern" option', $options['writeConcern'], WriteConcern::class);
         }
 
-        if (array_key_exists('upsert', $options) && ! is_bool($options['upsert'])) {
+        if (! is_bool($options['upsert'])) {
             throw InvalidArgumentException::invalidType('"upsert" option', $options['upsert'], 'boolean');
-        }
-
-        if (isset($options['let']) && ! is_array($options['let']) && ! is_object($options['let'])) {
-            throw InvalidArgumentException::invalidType('"let" option', $options['let'], 'array or object');
         }
 
         if (isset($options['bypassDocumentValidation']) && ! $options['bypassDocumentValidation']) {
@@ -281,16 +271,11 @@ class FindAndModify implements Executable, Explainable
         if ($this->options['remove']) {
             $cmd['remove'] = true;
         } else {
-            if (isset($this->options['new'])) {
-                $cmd['new'] = $this->options['new'];
-            }
-
-            if (isset($this->options['upsert'])) {
-                $cmd['upsert'] = $this->options['upsert'];
-            }
+            $cmd['new'] = $this->options['new'];
+            $cmd['upsert'] = $this->options['upsert'];
         }
 
-        foreach (['collation', 'fields', 'let', 'query', 'sort'] as $option) {
+        foreach (['collation', 'fields', 'query', 'sort'] as $option) {
             if (isset($this->options[$option])) {
                 $cmd[$option] = (object) $this->options[$option];
             }
@@ -302,7 +287,7 @@ class FindAndModify implements Executable, Explainable
                 : (object) $this->options['update'];
         }
 
-        foreach (['arrayFilters', 'bypassDocumentValidation', 'comment', 'hint', 'maxTimeMS'] as $option) {
+        foreach (['arrayFilters', 'bypassDocumentValidation', 'hint', 'maxTimeMS'] as $option) {
             if (isset($this->options[$option])) {
                 $cmd[$option] = $this->options[$option];
             }
@@ -314,7 +299,7 @@ class FindAndModify implements Executable, Explainable
     /**
      * Create options for executing the command.
      *
-     * @see https://php.net/manual/en/mongodb-driver-server.executewritecommand.php
+     * @see http://php.net/manual/en/mongodb-driver-server.executewritecommand.php
      * @return array
      */
     private function createOptions()

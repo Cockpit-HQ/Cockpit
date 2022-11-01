@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -38,7 +38,7 @@ use function MongoDB\create_field_path_type_map;
  *
  * @api
  * @see \MongoDB\Collection::distinct()
- * @see https://mongodb.com/docs/manual/reference/command/distinct/
+ * @see http://docs.mongodb.org/manual/reference/command/distinct/
  */
 class Distinct implements Executable, Explainable
 {
@@ -63,10 +63,6 @@ class Distinct implements Executable, Explainable
      * Supported options:
      *
      *  * collation (document): Collation specification.
-     *
-     *  * comment (mixed): BSON value to attach as a comment to this command.
-     *
-     *    This is not supported for servers versions < 4.4.
      *
      *  * maxTimeMS (integer): The maximum amount of time to allow the query to
      *    run.
@@ -191,10 +187,8 @@ class Distinct implements Executable, Explainable
             $cmd['collation'] = (object) $this->options['collation'];
         }
 
-        foreach (['comment', 'maxTimeMS'] as $option) {
-            if (isset($this->options[$option])) {
-                $cmd[$option] = $this->options[$option];
-            }
+        if (isset($this->options['maxTimeMS'])) {
+            $cmd['maxTimeMS'] = $this->options['maxTimeMS'];
         }
 
         return $cmd;
@@ -203,7 +197,7 @@ class Distinct implements Executable, Explainable
     /**
      * Create options for executing the command.
      *
-     * @see https://php.net/manual/en/mongodb-driver-server.executereadcommand.php
+     * @see http://php.net/manual/en/mongodb-driver-server.executereadcommand.php
      * @return array
      */
     private function createOptions()

@@ -158,7 +158,7 @@ class Inline
                         $repr = str_ireplace('INF', '.Inf', $repr);
                     } elseif (floor($value) == $value && $repr == $value) {
                         // Preserve float data type since storing a whole number will result in integer value.
-                        if (false === strpos($repr, 'E')) {
+                        if (!str_contains($repr, 'E')) {
                             $repr = $repr.'.0';
                         }
                     }
@@ -177,6 +177,14 @@ class Inline
             case Escaper::requiresDoubleQuoting($value):
                 return Escaper::escapeWithDoubleQuotes($value);
             case Escaper::requiresSingleQuoting($value):
+                $singleQuoted = Escaper::escapeWithSingleQuotes($value);
+                if (!str_contains($value, "'")) {
+                    return $singleQuoted;
+                }
+                // Attempt double-quoting the string instead to see if it's more efficient.
+                $doubleQuoted = Escaper::escapeWithDoubleQuotes($value);
+
+                return \strlen($doubleQuoted) < \strlen($singleQuoted) ? $doubleQuoted : $singleQuoted;
             case Parser::preg_match('{^[0-9]+[_0-9]*$}', $value):
             case Parser::preg_match(self::getHexRegex(), $value):
             case Parser::preg_match(self::getTimestampRegex(), $value):
@@ -357,12 +365,12 @@ class Inline
                     $value = self::parseScalar($sequence, $flags, [',', ']'], $i, null === $tag, $references, $isQuoted);
 
                     // the value can be an array if a reference has been resolved to an array var
-                    if (\is_string($value) && !$isQuoted && false !== strpos($value, ': ')) {
+                    if (\is_string($value) && !$isQuoted && str_contains($value, ': ')) {
                         // embedded mapping?
                         try {
                             $pos = 0;
                             $value = self::parseMapping('{'.$value.'}', $flags, $pos, $references);
-                        } catch (\InvalidArgumentException $e) {
+                        } catch (\InvalidArgumentException) {
                             // no, it's not
                         }
                     }
@@ -541,7 +549,7 @@ class Inline
         $isQuotedString = false;
         $scalar = trim($scalar);
 
-        if (0 === strpos($scalar, '*')) {
+        if (str_starts_with($scalar, '*')) {
             if (false !== $pos = strpos($scalar, '#')) {
                 $value = substr($scalar, 1, $pos - 2);
             } else {
@@ -573,7 +581,7 @@ class Inline
                 return false;
             case '!' === $scalar[0]:
                 switch (true) {
-                    case 0 === strpos($scalar, '!!str '):
+                    case str_starts_with($scalar, '!!str '):
                         $s = (string) substr($scalar, 6);
 
                         if (\in_array($s[0] ?? '', ['"', "'"], true)) {
@@ -582,9 +590,9 @@ class Inline
                         }
 
                         return $s;
-                    case 0 === strpos($scalar, '! '):
+                    case str_starts_with($scalar, '! '):
                         return substr($scalar, 2);
-                    case 0 === strpos($scalar, '!php/object'):
+                    case str_starts_with($scalar, '!php/object'):
                         if (self::$objectSupport) {
                             if (!isset($scalar[12])) {
                                 throw new ParseException('Missing value for tag "!php/object".', self::$parsedLineNumber + 1, $scalar, self::$parsedFilename);
@@ -598,7 +606,7 @@ class Inline
                         }
 
                         return null;
-                    case 0 === strpos($scalar, '!php/const'):
+                    case str_starts_with($scalar, '!php/const'):
                         if (self::$constantSupport) {
                             if (!isset($scalar[11])) {
                                 throw new ParseException('Missing value for tag "!php/const".', self::$parsedLineNumber + 1, $scalar, self::$parsedFilename);
@@ -616,9 +624,9 @@ class Inline
                         }
 
                         return null;
-                    case 0 === strpos($scalar, '!!float '):
+                    case str_starts_with($scalar, '!!float '):
                         return (float) substr($scalar, 8);
-                    case 0 === strpos($scalar, '!!binary '):
+                    case str_starts_with($scalar, '!!binary '):
                         return self::evaluateBinaryScalar(substr($scalar, 9));
                 }
 
@@ -667,7 +675,7 @@ class Inline
                             if (false !== $scalar = $time->getTimestamp()) {
                                 return $scalar;
                             }
-                        } catch (\ValueError $e) {
+                        } catch (\ValueError) {
                             // no-op
                         }
 

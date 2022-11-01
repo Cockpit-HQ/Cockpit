@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -42,7 +42,7 @@ use function MongoDB\server_supports_feature;
  * operation classes.
  *
  * @internal
- * @see https://mongodb.com/docs/manual/reference/command/update/
+ * @see http://docs.mongodb.org/manual/reference/command/update/
  */
 class Update implements Executable, Explainable
 {
@@ -77,10 +77,6 @@ class Update implements Executable, Explainable
      *
      *  * collation (document): Collation specification.
      *
-     *  * comment (mixed): BSON value to attach as a comment to this command.
-     *
-     *    This is not supported for servers versions < 4.4.
-     *
      *  * hint (string|document): The index to use. Specify either the index
      *    name as a string or the index key pattern as a document. If specified,
      *    then the query system will only consider plans using the hinted index.
@@ -96,11 +92,6 @@ class Update implements Executable, Explainable
      *
      *  * upsert (boolean): When true, a new document is created if no document
      *    matches the query. The default is false.
-     *
-     *  * let (document): Map of parameter names and values. Values must be
-     *    constant or closed expressions that do not reference document fields.
-     *    Parameters can then be accessed as variables in an aggregate
-     *    expression context (e.g. "$$var").
      *
      *  * writeConcern (MongoDB\Driver\WriteConcern): Write concern.
      *
@@ -161,10 +152,6 @@ class Update implements Executable, Explainable
 
         if (isset($options['writeConcern']) && ! $options['writeConcern'] instanceof WriteConcern) {
             throw InvalidArgumentException::invalidType('"writeConcern" option', $options['writeConcern'], WriteConcern::class);
-        }
-
-        if (isset($options['let']) && ! is_array($options['let']) && ! is_object($options['let'])) {
-            throw InvalidArgumentException::invalidType('"let" option', $options['let'], 'array or object');
         }
 
         if (isset($options['bypassDocumentValidation']) && ! $options['bypassDocumentValidation']) {
@@ -240,21 +227,15 @@ class Update implements Executable, Explainable
     /**
      * Create options for constructing the bulk write.
      *
-     * @see https://php.net/manual/en/mongodb-driver-bulkwrite.construct.php
+     * @see https://www.php.net/manual/en/mongodb-driver-bulkwrite.construct.php
      * @return array
      */
     private function createBulkWriteOptions()
     {
         $options = [];
 
-        foreach (['bypassDocumentValidation', 'comment'] as $option) {
-            if (isset($this->options[$option])) {
-                $options[$option] = $this->options[$option];
-            }
-        }
-
-        if (isset($this->options['let'])) {
-            $options['let'] = (object) $this->options['let'];
+        if (isset($this->options['bypassDocumentValidation'])) {
+            $options['bypassDocumentValidation'] = $this->options['bypassDocumentValidation'];
         }
 
         return $options;
@@ -263,7 +244,7 @@ class Update implements Executable, Explainable
     /**
      * Create options for executing the bulk write.
      *
-     * @see https://php.net/manual/en/mongodb-driver-server.executebulkwrite.php
+     * @see http://php.net/manual/en/mongodb-driver-server.executebulkwrite.php
      * @return array
      */
     private function createExecuteOptions()

@@ -36,7 +36,7 @@ use Symfony\Component\Yaml\Yaml;
 #[AsCommand(name: 'lint:yaml', description: 'Lint a YAML file and outputs encountered errors')]
 class LintCommand extends Command
 {
-    private $parser;
+    private Parser $parser;
     private ?string $format = null;
     private bool $displayCorrectFiles;
     private ?\Closure $directoryIteratorProvider;
@@ -46,8 +46,8 @@ class LintCommand extends Command
     {
         parent::__construct($name);
 
-        $this->directoryIteratorProvider = null === $directoryIteratorProvider || $directoryIteratorProvider instanceof \Closure ? $directoryIteratorProvider : \Closure::fromCallable($directoryIteratorProvider);
-        $this->isReadableProvider = null === $isReadableProvider || $isReadableProvider instanceof \Closure ? $isReadableProvider : \Closure::fromCallable($isReadableProvider);
+        $this->directoryIteratorProvider = null === $directoryIteratorProvider ? null : $directoryIteratorProvider(...);
+        $this->isReadableProvider = null === $isReadableProvider ? null : $isReadableProvider(...);
     }
 
     /**
@@ -154,16 +154,12 @@ EOF
 
     private function display(SymfonyStyle $io, array $files): int
     {
-        switch ($this->format) {
-            case 'txt':
-                return $this->displayTxt($io, $files);
-            case 'json':
-                return $this->displayJson($io, $files);
-            case 'github':
-                return $this->displayTxt($io, $files, true);
-            default:
-                throw new InvalidArgumentException(sprintf('The format "%s" is not supported.', $this->format));
-        }
+        return match ($this->format) {
+            'txt' => $this->displayTxt($io, $files),
+            'json' => $this->displayJson($io, $files),
+            'github' => $this->displayTxt($io, $files, true),
+            default => throw new InvalidArgumentException(sprintf('The format "%s" is not supported.', $this->format)),
+        };
     }
 
     private function displayTxt(SymfonyStyle $io, array $filesInfo, bool $errorAsGithubAnnotations = false): int
@@ -184,7 +180,7 @@ EOF
                 $io->text('<error> ERROR </error>'.($info['file'] ? sprintf(' in %s', $info['file']) : ''));
                 $io->text(sprintf('<error> >> %s</error>', $info['message']));
 
-                if (false !== strpos($info['message'], 'PARSE_CUSTOM_TAGS')) {
+                if (str_contains($info['message'], 'PARSE_CUSTOM_TAGS')) {
                     $suggestTagOption = true;
                 }
 
@@ -213,7 +209,7 @@ EOF
                 ++$errors;
             }
 
-            if (isset($v['message']) && false !== strpos($v['message'], 'PARSE_CUSTOM_TAGS')) {
+            if (isset($v['message']) && str_contains($v['message'], 'PARSE_CUSTOM_TAGS')) {
                 $v['message'] .= ' Use the --parse-tags option if you want parse custom tags.';
             }
         });

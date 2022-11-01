@@ -161,7 +161,7 @@ class Parser
                 }
 
                 // array
-                if (isset($values['value']) && 0 === strpos(ltrim($values['value'], ' '), '-')) {
+                if (isset($values['value']) && str_starts_with(ltrim($values['value'], ' '), '-')) {
                     // Inline first child
                     $currentLineNumber = $this->getRealCurrentLineNb();
 
@@ -170,7 +170,7 @@ class Parser
                     $sequenceYaml .= "\n".$this->getNextEmbedBlock($sequenceIndentation, true);
 
                     $data[] = $this->parseBlock($currentLineNumber, rtrim($sequenceYaml), $flags);
-                } elseif (!isset($values['value']) || '' == trim($values['value'], ' ') || 0 === strpos(ltrim($values['value'], ' '), '#')) {
+                } elseif (!isset($values['value']) || '' == trim($values['value'], ' ') || str_starts_with(ltrim($values['value'], ' '), '#')) {
                     $data[] = $this->parseBlock($this->getRealCurrentLineNb() + 1, $this->getNextEmbedBlock(null, true) ?? '', $flags);
                 } elseif (null !== $subTag = $this->getLineTag(ltrim($values['value'], ' '), $flags)) {
                     $data[] = new TaggedValue(
@@ -202,7 +202,7 @@ class Parser
                 }
             } elseif (
                 self::preg_match('#^(?P<key>(?:![^\s]++\s++)?(?:'.Inline::REGEX_QUOTED_STRING.'|(?:!?!php/const:)?[^ \'"\[\{!].*?)) *\:(( |\t)++(?P<value>.+))?$#u', rtrim($this->currentLine), $values)
-                && (false === strpos($values['key'], ' #') || \in_array($values['key'][0], ['"', "'"]))
+                && (!str_contains($values['key'], ' #') || \in_array($values['key'][0], ['"', "'"]))
             ) {
                 if ($context && 'sequence' == $context) {
                     throw new ParseException('You cannot define a mapping item when in a sequence.', $this->currentLineNb + 1, $this->currentLine, $this->filename);
@@ -297,7 +297,7 @@ class Parser
                 $subTag = null;
                 if ($mergeNode) {
                     // Merge keys
-                } elseif (!isset($values['value']) || '' === $values['value'] || 0 === strpos($values['value'], '#') || (null !== $subTag = $this->getLineTag($values['value'], $flags)) || '<<' === $key) {
+                } elseif (!isset($values['value']) || '' === $values['value'] || str_starts_with($values['value'], '#') || (null !== $subTag = $this->getLineTag($values['value'], $flags)) || '<<' === $key) {
                     // hash
                     // if next line is less indented or equal, then it means that the current value is null
                     if (!$this->isNextLineIndented() && !$this->isNextLineUnIndentedCollection()) {
@@ -445,7 +445,7 @@ class Parser
                             throw new ParseException('Unable to parse.', $this->getRealCurrentLineNb() + 1, $this->currentLine, $this->filename);
                         }
 
-                        if (false !== strpos($line, ': ')) {
+                        if (str_contains($line, ': ')) {
                             throw new ParseException('Mapping values are not allowed in multi-line blocks.', $this->getRealCurrentLineNb() + 1, $this->currentLine, $this->filename);
                         }
 
@@ -455,7 +455,7 @@ class Parser
                             $value .= ' ';
                         }
 
-                        if ('' !== $trimmedLine && '\\' === substr($line, -1)) {
+                        if ('' !== $trimmedLine && str_ends_with($line, '\\')) {
                             $value .= ltrim(substr($line, 0, -1));
                         } elseif ('' !== $trimmedLine) {
                             $value .= $trimmedLine;
@@ -464,7 +464,7 @@ class Parser
                         if ('' === $trimmedLine) {
                             $previousLineWasNewline = true;
                             $previousLineWasTerminatedWithBackslash = false;
-                        } elseif ('\\' === substr($line, -1)) {
+                        } elseif (str_ends_with($line, '\\')) {
                             $previousLineWasNewline = false;
                             $previousLineWasTerminatedWithBackslash = true;
                         } else {
@@ -475,7 +475,7 @@ class Parser
 
                     try {
                         return Inline::parse(trim($value));
-                    } catch (ParseException $e) {
+                    } catch (ParseException) {
                         // fall-through to the ParseException thrown below
                     }
                 }
@@ -701,7 +701,7 @@ class Parser
      */
     private function parseValue(string $value, int $flags, string $context): mixed
     {
-        if (0 === strpos($value, '*')) {
+        if (str_starts_with($value, '*')) {
             if (false !== $pos = strpos($value, '#')) {
                 $value = substr($value, 1, $pos - 2);
             } else {
@@ -788,7 +788,7 @@ class Parser
 
                     $parsedValue = Inline::parse($value, $flags, $this->refs);
 
-                    if ('mapping' === $context && \is_string($parsedValue) && '"' !== $value[0] && "'" !== $value[0] && '[' !== $value[0] && '{' !== $value[0] && '!' !== $value[0] && false !== strpos($parsedValue, ': ')) {
+                    if ('mapping' === $context && \is_string($parsedValue) && '"' !== $value[0] && "'" !== $value[0] && '[' !== $value[0] && '{' !== $value[0] && '!' !== $value[0] && str_contains($parsedValue, ': ')) {
                         throw new ParseException('A colon cannot be used in an unquoted mapping value.', $this->getRealCurrentLineNb() + 1, $value, $this->filename);
                     }
 
@@ -1024,7 +1024,7 @@ class Parser
 
     private function isStringUnIndentedCollectionItem(): bool
     {
-        return '-' === rtrim($this->currentLine) || 0 === strpos($this->currentLine, '- ');
+        return '-' === rtrim($this->currentLine) || str_starts_with($this->currentLine, '- ');
     }
 
     /**
@@ -1043,25 +1043,14 @@ class Parser
     public static function preg_match(string $pattern, string $subject, array &$matches = null, int $flags = 0, int $offset = 0): int
     {
         if (false === $ret = preg_match($pattern, $subject, $matches, $flags, $offset)) {
-            switch (preg_last_error()) {
-                case \PREG_INTERNAL_ERROR:
-                    $error = 'Internal PCRE error.';
-                    break;
-                case \PREG_BACKTRACK_LIMIT_ERROR:
-                    $error = 'pcre.backtrack_limit reached.';
-                    break;
-                case \PREG_RECURSION_LIMIT_ERROR:
-                    $error = 'pcre.recursion_limit reached.';
-                    break;
-                case \PREG_BAD_UTF8_ERROR:
-                    $error = 'Malformed UTF-8 data.';
-                    break;
-                case \PREG_BAD_UTF8_OFFSET_ERROR:
-                    $error = 'Offset doesn\'t correspond to the begin of a valid UTF-8 code point.';
-                    break;
-                default:
-                    $error = 'Error.';
-            }
+            $error = match (preg_last_error()) {
+                \PREG_INTERNAL_ERROR => 'Internal PCRE error.',
+                \PREG_BACKTRACK_LIMIT_ERROR => 'pcre.backtrack_limit reached.',
+                \PREG_RECURSION_LIMIT_ERROR => 'pcre.recursion_limit reached.',
+                \PREG_BAD_UTF8_ERROR => 'Malformed UTF-8 data.',
+                \PREG_BAD_UTF8_OFFSET_ERROR => 'Offset doesn\'t correspond to the begin of a valid UTF-8 code point.',
+                default => 'Error.',
+            };
 
             throw new ParseException($error);
         }

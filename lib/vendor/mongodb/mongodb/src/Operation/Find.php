@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -41,8 +41,8 @@ use const E_USER_DEPRECATED;
  *
  * @api
  * @see \MongoDB\Collection::find()
- * @see https://mongodb.com/docs/manual/tutorial/query-documents/
- * @see https://mongodb.com/docs/manual/reference/operator/query-modifier/
+ * @see http://docs.mongodb.org/manual/tutorial/query-documents/
+ * @see http://docs.mongodb.org/manual/reference/operator/query-modifier/
  */
 class Find implements Executable, Explainable
 {
@@ -78,9 +78,8 @@ class Find implements Executable, Explainable
      *
      *  * collation (document): Collation specification.
      *
-     *  * comment (mixed): BSON value to attach as a comment to this command.
-     *
-     *    Only string values are supported for server versions < 4.4.
+     *  * comment (string): Attaches a comment to the query. If "$comment" also
+     *    exists in the modifiers document, this option will take precedence.
      *
      *  * cursorType (enum): Indicates the type of cursor to use. Must be either
      *    NON_TAILABLE, TAILABLE, or TAILABLE_AWAIT. The default is
@@ -146,11 +145,6 @@ class Find implements Executable, Explainable
      *    "$orderby" also exists in the modifiers document, this option will
      *    take precedence.
      *
-     *  * let (document): Map of parameter names and values. Values must be
-     *    constant or closed expressions that do not reference document fields.
-     *    Parameters can then be accessed as variables in an aggregate
-     *    expression context (e.g. "$$var").
-     *
      *  * typeMap (array): Type map for BSON deserialization. This will be
      *    applied to the returned Cursor (it is not sent to the server).
      *
@@ -180,6 +174,10 @@ class Find implements Executable, Explainable
 
         if (isset($options['collation']) && ! is_array($options['collation']) && ! is_object($options['collation'])) {
             throw InvalidArgumentException::invalidType('"collation" option', $options['collation'], 'array or object');
+        }
+
+        if (isset($options['comment']) && ! is_string($options['comment'])) {
+            throw InvalidArgumentException::invalidType('"comment" option', $options['comment'], 'comment');
         }
 
         if (isset($options['cursorType'])) {
@@ -274,10 +272,6 @@ class Find implements Executable, Explainable
 
         if (isset($options['typeMap']) && ! is_array($options['typeMap'])) {
             throw InvalidArgumentException::invalidType('"typeMap" option', $options['typeMap'], 'array');
-        }
-
-        if (isset($options['let']) && ! is_array($options['let']) && ! is_object($options['let'])) {
-            throw InvalidArgumentException::invalidType('"let" option', $options['let'], 'array or object');
         }
 
         if (isset($options['readConcern']) && $options['readConcern']->isDefault()) {
@@ -379,7 +373,7 @@ class Find implements Executable, Explainable
     /**
      * Create options for executing the command.
      *
-     * @see https://php.net/manual/en/mongodb-driver-server.executequery.php
+     * @see http://php.net/manual/en/mongodb-driver-server.executequery.php
      * @return array
      */
     private function createExecuteOptions()
@@ -426,7 +420,7 @@ class Find implements Executable, Explainable
             }
         }
 
-        foreach (['collation', 'let', 'max', 'min'] as $option) {
+        foreach (['collation', 'max', 'min'] as $option) {
             if (isset($this->options[$option])) {
                 $options[$option] = (object) $this->options[$option];
             }

@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -103,19 +103,9 @@ class BulkWrite implements Executable
      *  * bypassDocumentValidation (boolean): If true, allows the write to
      *    circumvent document level validation. The default is false.
      *
-     *  * comment (mixed): BSON value to attach as a comment to this command(s)
-     *    associated with this bulk write.
-     *
-     *    This is not supported for servers versions < 4.4.
-     *
      *  * ordered (boolean): If true, when an insert fails, return without
      *    performing the remaining writes. If false, when a write fails,
      *    continue with the remaining writes, if any. The default is true.
-     *
-     *  * let (document): Map of parameter names and values. Values must be
-     *    constant or closed expressions that do not reference document fields.
-     *    Parameters can then be accessed as variables in an aggregate
-     *    expression context (e.g. "$$var").
      *
      *  * session (MongoDB\Driver\Session): Client session.
      *
@@ -285,10 +275,6 @@ class BulkWrite implements Executable
             throw InvalidArgumentException::invalidType('"writeConcern" option', $options['writeConcern'], WriteConcern::class);
         }
 
-        if (isset($options['let']) && ! is_array($options['let']) && ! is_object($options['let'])) {
-            throw InvalidArgumentException::invalidType('"let" option', $options['let'], 'array or object');
-        }
-
         if (isset($options['bypassDocumentValidation']) && ! $options['bypassDocumentValidation']) {
             unset($options['bypassDocumentValidation']);
         }
@@ -351,21 +337,15 @@ class BulkWrite implements Executable
     /**
      * Create options for constructing the bulk write.
      *
-     * @see https://php.net/manual/en/mongodb-driver-bulkwrite.construct.php
+     * @see https://www.php.net/manual/en/mongodb-driver-bulkwrite.construct.php
      * @return array
      */
     private function createBulkWriteOptions()
     {
         $options = ['ordered' => $this->options['ordered']];
 
-        foreach (['bypassDocumentValidation', 'comment'] as $option) {
-            if (isset($this->options[$option])) {
-                $options[$option] = $this->options[$option];
-            }
-        }
-
-        if (isset($this->options['let'])) {
-            $options['let'] = (object) $this->options['let'];
+        if (isset($this->options['bypassDocumentValidation'])) {
+            $options['bypassDocumentValidation'] = $this->options['bypassDocumentValidation'];
         }
 
         return $options;
@@ -374,7 +354,7 @@ class BulkWrite implements Executable
     /**
      * Create options for executing the bulk write.
      *
-     * @see https://php.net/manual/en/mongodb-driver-server.executebulkwrite.php
+     * @see http://php.net/manual/en/mongodb-driver-server.executebulkwrite.php
      * @return array
      */
     private function createExecuteOptions()
