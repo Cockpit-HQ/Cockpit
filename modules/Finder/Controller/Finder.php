@@ -81,6 +81,9 @@ class Finder extends App {
             }
         }
 
+        usort($data['folders'], fn($a, $b) => strcasecmp($a['name'], $b['name']));
+        usort($data['files'], fn($a, $b) => strcasecmp($a['name'], $b['name']));
+
         return $data;
     }
 

@@ -5,7 +5,7 @@ export default {
         return {
             loading: true,
             uploading: false,
-            currentpath: this.root,
+            currentpath: App.session.get(`finder.persist.${this.root}`, this.root),
             files: [],
             folders: [],
             selected: [],
@@ -106,6 +106,8 @@ export default {
                 this.filter = '';
 
                 this.loading = false;
+
+                App.session.set(`finder.persist.${this.root}`, path);
             });
         },
 
@@ -322,14 +324,13 @@ export default {
 
         </div>
 
-
         <app-actionbar :class="{'kiss-disabled':loading}">
             <kiss-container>
                 <div class="kiss-flex kiss-flex-middle">
-                    <div class="kiss-flex-1 kiss-margin-right"></div>
                     <div class="kiss-margin-right" v-if="selected.length">
                         <button class="kiss-button kiss-button-danger" @click="removeSelected()">{{ t('Delete') }} -{{ selected.length }}-</button>
                     </div>
+                    <div class="kiss-flex-1 kiss-margin-right"></div>
                     <div class="kiss-button-group">
                         <button class="kiss-button" @click="createFolder()">{{ t('Create folder') }}</button>
                         <button class="kiss-button" @click="createFile()">{{ t('Create file') }}</button>
