@@ -227,9 +227,16 @@ export default {
             let formData = new FormData();
             let xhr = new XMLHttpRequest();
 
+            let size = 0;
+
             [...files].forEach((file, i) => {
+                size += file.size;
                 formData.append('files[]', files[i]);
             });
+
+            if (size >= App._vars.maxUploadSize) {
+                return App.ui.notify('File(s) size exceeds max upload size limit!', 'error');
+            }
 
             formData.append('cmd', 'upload');
             formData.append('path', this.currentpath);
@@ -239,13 +246,20 @@ export default {
             this.uploading = 0;
 
             xhr.upload.addEventListener('progress', ({loaded, total}) => {
-
                 this.uploading = Math.round((loaded/total) * 100);
+            });
 
-                if (loaded === total) {
-                    this.uploading = false;
+            xhr.addEventListener('loadend', (evt) => {
+
+                this.uploading = false;
+
+                if (xhr.status == 200) {
                     this.loadpath();
                 }
+            });
+
+            xhr.addEventListener('error', (evt) => {
+                App.ui.notify('Upload failed!', 'error');
             });
 
             xhr.send(formData);
