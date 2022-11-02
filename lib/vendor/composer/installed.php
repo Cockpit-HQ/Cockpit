@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '01da5f6d352f62fc2264b4cf479e970479e699fa',
+    'reference' => 'c33451b0cf220ae2cc83bc00c7b3599f457224bc',
     'name' => 'cockpit-hq/cockpit',
   ),
   'versions' => 
@@ -36,7 +36,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '01da5f6d352f62fc2264b4cf479e970479e699fa',
+      'reference' => 'c33451b0cf220ae2cc83bc00c7b3599f457224bc',
     ),
     'colinodell/json5' => 
     array (
@@ -76,12 +76,12 @@
     ),
     'firebase/php-jwt' => 
     array (
-      'pretty_version' => 'v6.3.0',
-      'version' => '6.3.0.0',
+      'pretty_version' => 'v6.3.1',
+      'version' => '6.3.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => '018dfc4e1da92ad8a1b90adc4893f476a3b41cb8',
+      'reference' => 'ddfaddcb520488b42bca3a75e17e9dd53c3667da',
     ),
     'guzzlehttp/guzzle' => 
     array (
