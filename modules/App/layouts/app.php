@@ -1,5 +1,7 @@
 <?php
 
+    $this->trigger('app.layout.init');
+
     $sidePanelContents = $this->block('app-side-panel', ['print' => false]);
 
 ?><!DOCTYPE html>

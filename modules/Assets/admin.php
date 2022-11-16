@@ -23,15 +23,20 @@ $this->bind('/assets/link/:id', function($params) {
 
 $this->bindClass('Assets\\Controller\\Assets', '/assets');
 
-$this->helper('menus')->addLink('modules', [
-    'label'  => 'Assets',
-    'icon'   => 'assets:icon.svg',
-    'route'  => '/assets',
-    'active' => false,
-    'prio'   => 1
-]);
 
 // events
+
+$this->on('app.layout.init', function() {
+
+    $this->helper('menus')->addLink('modules', [
+        'label'  => 'Assets',
+        'icon'   => 'assets:icon.svg',
+        'route'  => '/assets',
+        'active' => false,
+        'prio'   => 1
+    ]);
+});
+
 $this->on('app.layout.assets', function(array &$assets) {
     $assets[] = ['src' => 'assets:assets/js/assets.js', 'type' => 'module'];
 });

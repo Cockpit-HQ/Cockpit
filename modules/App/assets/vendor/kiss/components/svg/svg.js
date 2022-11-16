@@ -19,7 +19,7 @@ customElements.define('kiss-svg', class extends HTMLElement {
         let width = this.getAttribute('width');
         let height = this.getAttribute('height');
 
-        if (!url.trim()) {
+        if (!url || !url.trim()) {
             this.innerHTML = '';
             return;
         }

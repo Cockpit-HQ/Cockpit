@@ -98,7 +98,7 @@ export default {
                     <div v-if="!previewLoaded">
                         <app-loader></app-loader>
                     </div>
-                    <iframe id="content-preview-iframe" :src="url" style="position:absolute;top:50%;left:50%;may-width:100%;max-height:100%;transform:translate3d(-50%, -50%, 0);width:100%;height:100%;background-color:#fff;transition:all 300ms;opacity:0;" @load="iframeReady()" :style="Object.assign({opacity: (previewLoaded ? 1:0)}, modes[device])"></iframe>
+                    <iframe id="content-preview-iframe" :src="url" style="position:absolute;top:50%;left:50%;max-width:100%;max-height:100%;transform:translate3d(-50%, -50%, 0);width:100%;height:100%;background-color:#fff;transition:all 300ms;opacity:0;" @load="iframeReady()" :style="Object.assign({opacity: (previewLoaded ? 1:0)}, modes[device])"></iframe>
                 </div>
 
             </div>
