@@ -25,33 +25,33 @@ class InstalledVersions
 private static $installed = array (
   'root' => 
   array (
-    'pretty_version' => 'dev-master',
-    'version' => 'dev-master',
+    'pretty_version' => 'dev-develop',
+    'version' => 'dev-develop',
     'aliases' => 
     array (
     ),
-    'reference' => '6a427f25a73848bb92ba1b3ff438ba20f5e82f5d',
+    'reference' => '3a59ff4c9ace9f610b6d3fa7ea7f4c7343ce45ff',
     'name' => '__root__',
   ),
   'versions' => 
   array (
     '__root__' => 
     array (
-      'pretty_version' => 'dev-master',
-      'version' => 'dev-master',
+      'pretty_version' => 'dev-develop',
+      'version' => 'dev-develop',
       'aliases' => 
       array (
       ),
-      'reference' => '6a427f25a73848bb92ba1b3ff438ba20f5e82f5d',
+      'reference' => '3a59ff4c9ace9f610b6d3fa7ea7f4c7343ce45ff',
     ),
     'ksubileau/color-thief-php' => 
     array (
-      'pretty_version' => 'v2.0.0',
-      'version' => '2.0.0.0',
+      'pretty_version' => 'v2.0.1',
+      'version' => '2.0.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'f905264d26c468f41989bb269546de6076aa7961',
+      'reference' => 'a1378533433dae824c2e5b70359f8b6ae16b1deb',
     ),
   ),
 );

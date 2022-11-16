@@ -452,6 +452,11 @@ class ColorThief
                 return;
             }
 
+            if ($nIterations++ > self::MAX_ITERATIONS) {
+                // echo "infinite loop; perhaps too few pixels!"."\n";
+                return;
+            }
+
             $vBox = $priorityQueue->pop();
             if (null === $vBox) {
                 // Logic error: should not happen!
