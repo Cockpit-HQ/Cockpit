@@ -3,6 +3,7 @@
 ## WIP
 
 - Fix user settings updating for users without admin role
+- Update vendor libs
 
 ## 2.3.3 (2022-11-02)
 
