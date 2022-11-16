@@ -4,6 +4,7 @@
 
 - Fix user settings updating for users without admin role
 - Update vendor libs
+- Update Vue to 3.2.45
 
 ## 2.3.3 (2022-11-02)
 
