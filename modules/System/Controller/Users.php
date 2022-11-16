@@ -8,9 +8,23 @@ class Users extends App {
 
     protected function before() {
 
-        $isAccountView = $this->context['action'] == 'user' && !count($this->context['params']);
+        // is account view
+        if ($this->context['action'] == 'user' && !count($this->context['params'])) {
+            return true;
+        }
 
-        if (!$isAccountView && !$this->isAllowed('app/users/manage')) {
+        // update current user profile
+        if ($this->context['action'] == 'save') {
+
+            $user = $this->param('user');
+
+            if (isset($user['_id']) && $user['_id'] === $this->user['_id']) {
+                return true;
+            }
+        }
+
+        // check general permission to manage users
+        if (!$this->isAllowed('app/users/manage')) {
             return $this->stop(401);
         }
     }

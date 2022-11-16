@@ -1,5 +1,9 @@
 # Release Notes
 
+## WIP
+
+- Fix user settings updating for users without admin role
+
 ## 2.3.3 (2022-11-02)
 
 - Add ESC + auto focus support for dialogs
