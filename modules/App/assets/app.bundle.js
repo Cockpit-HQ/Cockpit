@@ -683,6 +683,8 @@
       }
   });
 
+  let svgCache = {};
+
   customElements.define('kiss-svg', class extends HTMLElement {
 
       static get observedAttributes() {
@@ -712,9 +714,7 @@
               this.innerHTML = `<canvas width="${width}" height="${height}"></canvas>`;
           }
 
-          fetch(url).then(response => response.text()).then(content => {
-
-              content = content.trim();
+          const mutate = (content) => {
 
               let attrs = {
                   width: this.getAttribute('width') || '',
@@ -731,6 +731,14 @@
               let svg = this.children[0];
 
               Object.keys(attrs).forEach(attr => attrs[attr] && svg.setAttribute(attr, attrs[attr]));
+          };
+
+          if (!svgCache[url]) {
+              svgCache[url] = fetch(url).then(response => response.text());
+          }
+
+          svgCache[url].then(content => {
+              mutate(content.trim());
           }).catch(() => {
               this.innerHTML = '';
           });
