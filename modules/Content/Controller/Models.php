@@ -9,7 +9,7 @@ class Models extends App {
 
     public function create() {
 
-        if (!$this->isAllowed("content/models/manage")) {
+        if (!$this->isAllowed('content/models/manage')) {
             return $this->stop(401);
         }
 
@@ -113,9 +113,23 @@ class Models extends App {
 
     public function load() {
 
-        $models = array_values($this->module('content')->models());
+        $models = $this->module('content')->models();
 
-        return $models;
+        if (!$this->helper('acl')->isSuperAdmin()) {
+
+            $acl = $this->helper('acl');
+
+            $models = array_filter($models, function($model) use($acl) {
+
+                if ($acl->isAllowed('content/models/manage')) {
+                    return true;
+                }
+
+                return $acl->isAllowed("content/{$model['name']}/read");
+            });
+        }
+
+        return array_values($models);
     }
 
     public function saveItem($model = null) {
