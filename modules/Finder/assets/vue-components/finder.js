@@ -22,15 +22,36 @@ export default {
             type: String,
             default: '/'
         },
+
+        modal: {
+            type: Boolean,
+            default: false
+        }
     },
 
     mounted() {
+
         this.loadpath();
 
         App.assets.require([
             'assets:assets/vendor/spotlight/spotlight.bundle.js',
             'assets:assets/vendor/spotlight/css/spotlight.min.css',
         ]);
+
+        if (!this.modal) {
+
+            document.body.addEventListener('dragover', e => e.preventDefault());
+            document.body.addEventListener('drop', e => {
+
+                if (!e.dataTransfer.files) {
+                    return;
+                }
+
+                e.preventDefault();
+                e.stopPropagation();
+                this.uploadFiles(e.dataTransfer.files);
+            });
+        }
     },
 
     computed: {
@@ -221,9 +242,19 @@ export default {
             });
         },
 
-        upload(e) {
+        open(file) {
 
-            let files = e.target.files;
+            if (file.mime.indexOf('text') > -1 || ['json', 'svg'].includes(file.ext)) {
+                return this.edit(file);
+            }
+
+            if (file.mime.match('(image|video|audio)') && window.Spotlight) {
+                Spotlight.show([{ src: file.url }]);
+            }
+        },
+
+        uploadFiles(files) {
+
             let formData = new FormData();
             let xhr = new XMLHttpRequest();
 
@@ -263,17 +294,6 @@ export default {
             });
 
             xhr.send(formData);
-        },
-
-        open(file) {
-
-            if (file.mime.indexOf('text') > -1 || ['json', 'svg'].includes(file.ext)) {
-                return this.edit(file);
-            }
-
-            if (file.mime.match('(image|video|audio)') && window.Spotlight) {
-                Spotlight.show([{ src: file.url }]);
-            }
         }
     },
 
@@ -352,7 +372,7 @@ export default {
                         <button class="kiss-button" @click="createFile()">{{ t('Create file') }}</button>
                         <button class="kiss-button kiss-button-primary kiss-overlay-input" :disabled="uploading">
                             {{ t('Upload file') }}
-                            <input type="file" name="files[]" @change="upload" multiple v-if="!uploading" />
+                            <input type="file" name="files[]" @change="(e) => {uploadFiles(e.target.files)}" multiple v-if="!uploading" />
                         </button>
                     </div>
                 </div>

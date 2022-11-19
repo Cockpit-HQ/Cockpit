@@ -6,6 +6,7 @@
 - Update vendor libs
 - Update Vue to 3.2.45
 - Cache loaded icons in admin view
+- Add drag'n drop upload of files support (finder module)
 
 ## 2.3.3 (2022-11-02)
 
