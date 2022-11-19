@@ -235,8 +235,8 @@ class App implements \ArrayAccess {
 
         $this->request->stopped = true;
 
-        $this->trigger('app:request:stop');
         $this->trigger('after', [true]);
+        $this->trigger('app:request:stop');
 
         exit;
     }
