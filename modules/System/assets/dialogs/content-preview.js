@@ -8,7 +8,6 @@ export default {
             data: JSON.parse(JSON.stringify(this.item)),
             locale: this.locales.length ? this.locales[0] : null,
             previewLoaded: false,
-            iframe: null,
             device: 'computer',
             modes: {
                 phone: {width: '360px', height: '640px'},
@@ -98,7 +97,7 @@ export default {
                     <div v-if="!previewLoaded">
                         <app-loader></app-loader>
                     </div>
-                    <iframe id="content-preview-iframe" :src="url" style="position:absolute;top:50%;left:50%;max-width:100%;max-height:100%;transform:translate3d(-50%, -50%, 0);width:100%;height:100%;background-color:#fff;transition:all 300ms;opacity:0;" @load="iframeReady()" :style="Object.assign({opacity: (previewLoaded ? 1:0)}, modes[device])"></iframe>
+                    <iframe id="content-preview-iframe" ref="iframe" :src="url" style="position:absolute;top:50%;left:50%;max-width:100%;max-height:100%;transform:translate3d(-50%, -50%, 0);width:100%;height:100%;background-color:#fff;transition:all 300ms;opacity:0;" @load="iframeReady()" :style="Object.assign({opacity: (previewLoaded ? 1:0)}, modes[device])"></iframe>
                 </div>
 
             </div>
@@ -127,13 +126,12 @@ export default {
 
         iframeReady() {
             this.previewLoaded = true;
-            this.iframe = document.querySelector('#content-preview-iframe').contentWindow;
             this.updateIframe();
         },
 
         updateIframe() {
 
-            if (!this.iframe) return;
+            if (!this.$refs.iframe) return;
 
             let evtData = JSON.parse(JSON.stringify({
                 event: 'cockpit:content.preview',
@@ -143,7 +141,7 @@ export default {
             }));
 
             const update = (data) => {
-                this.iframe.postMessage(JSON.parse(JSON.stringify(data)), '*');
+                this.$refs.contentWindow.postMessage(JSON.parse(JSON.stringify(data)), '*');
             }
 
             if (this.resolver) {
