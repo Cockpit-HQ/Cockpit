@@ -141,7 +141,7 @@ export default {
             }));
 
             const update = (data) => {
-                this.$refs.contentWindow.postMessage(JSON.parse(JSON.stringify(data)), '*');
+                this.$refs.iframe.contentWindow.postMessage(JSON.parse(JSON.stringify(data)), '*');
             }
 
             if (this.resolver) {
