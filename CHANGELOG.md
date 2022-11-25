@@ -1,6 +1,6 @@
 # Release Notes
 
-## WIP
+## 2.3.4 (2022-11-25)
 
 - Fix user settings updating for users without admin role
 - Update vendor libs
