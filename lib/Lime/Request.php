@@ -36,7 +36,7 @@ class Request {
             'query' => $_GET,
             'files' => $_FILES,
             'server' => $_SERVER,
-            'headers' => function_exists('getallheaders') ? \getallheaders() : self::getAllHeaders($_SERVER)
+            'headers' => self::getAllHeaders($_SERVER)
         ], $config);
 
         // check for php://input and merge with $_REQUEST
