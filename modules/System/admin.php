@@ -58,28 +58,42 @@ $this->on('app.user.login', function($user) {
 
 $this->on('app.search', function($search, $findings) {
 
-    if (!$this->helper('acl')->isAllowed('app/users/manage')) {
-        return;
+    if ($this->helper('acl')->isAllowed('app/users/manage')) {
+
+        $users = $this->dataStorage->find('system/users', [
+            'filter' => [
+                '$or' => [
+                    ['name' => ['$regex' => $search, '$options' => 'i']],
+                    ['label' => ['$regex' => $search, '$options' => 'i']],
+                ]
+            ],
+            'limit' => 5
+        ])->toArray();
+
+        foreach ($users as $user) {
+
+            $findings[] = [
+                'title' => isset($user['name']) && $user['name'] ? "{$user['name']} ({$user['user']})" : $user['user'],
+                'route' => $this->routeUrl("/system/users/user/{$user['_id']}"),
+                'group' => 'Users',
+                'icon' => 'system:assets/icons/users.svg'
+            ];
+        }
     }
 
-    $users = $this->dataStorage->find('system/users', [
-        'filter' => [
-            '$or' => [
-                ['name' => ['$regex' => $search, '$options' => 'i']],
-                ['label' => ['$regex' => $search, '$options' => 'i']],
-            ]
-        ],
-        'limit' => 5
-    ])->toArray();
+    if ($this->helper('acl')->isAllowed('app/spaces') && $this->helper('spaces')->isMaster()) {
 
-    foreach ($users as $user) {
+        foreach ($this->helper('spaces')->spaces() as $space) {
 
-        $findings[] = [
-            'title' => isset($user['name']) && $user['name'] ? "{$user['name']} ({$user['user']})" : $user['user'],
-            'route' => $this->routeUrl("/system/users/user/{$user['_id']}"),
-            'group' => 'Users',
-            'icon' => 'system:assets/icons/users.svg'
-        ];
+            if (strpos($space['name'], $search) !== false) {
+                $findings[] = [
+                    'title' => $space['name'],
+                    'route' => $space['url'],
+                    'group' => 'Spaces',
+                    'icon' => 'system:assets/icons/spaces.svg'
+                ];
+            }
+        }
     }
 
 });

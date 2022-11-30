@@ -121,8 +121,13 @@ $this->on('restApi.config', function($restApi) {
 
             $imgPath = $app->helper('asset')->image($options, true);
 
-            if (!$imgPath || isset($imgPath['error'])) {
+            if (!$imgPath) {
                 return false;
+            }
+
+            if (isset($imgPath['error'])) {
+                $app->response->status = 400;
+                return ['error' => $imgPath['error']];
             }
 
             if ($options['base64']) {

@@ -115,7 +115,7 @@ export default {
                     <kiss-svg :src="$base('system:assets/icons/search.svg')" width="30"><canvas width="30" height="30"></canvas></kiss-svg>
                 </div>
                 <div class="kiss-flex-1 kiss-margin-small-right">
-                    <input class="kiss-input kiss-input-blank kiss-form-large kiss-width-1-1" :class="{'kiss-disabled': loading}" type="search" v-model="search" :placeholder="t('Search...')" :aria-label="t('Search...')" :disabled="loading" @keydown="keydown" @input="selected=null" ref="searchInput" style="font-size:30px;padding:0;">
+                    <input autofocus class="kiss-input kiss-input-blank kiss-form-large kiss-width-1-1" :class="{'kiss-disabled': loading}" type="search" v-model="search" :placeholder="t('Search...')" :aria-label="t('Search...')" :disabled="loading" @keydown="keydown" @input="selected=null" ref="searchInput" style="font-size:30px;padding:0;">
                 </div>
                 <button type="button" :aria-label="t('Close')" class="kiss-input-blank" kiss-dialog-close>
                     <kiss-svg class="kiss-color-muted" :src="$base('system:assets/icons/close.svg')" width="30"><canvas width="30" height="30"></canvas></kiss-svg>
