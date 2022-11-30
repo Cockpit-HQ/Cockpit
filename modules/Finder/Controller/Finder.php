@@ -244,7 +244,7 @@ class Finder extends App {
 
     protected function writefile() {
 
-        $path    = $this->_getPathParameter();
+        $path = $this->_getPathParameter();
 
         if (!$path) return false;
 
@@ -253,7 +253,12 @@ class Finder extends App {
         $ret      = false;
 
         if ($path && file_exists($file) && $contents!==false) {
+
             $ret = file_put_contents($file, $contents);
+
+            if ($ret && function_exists('opcache_invalidate') && preg_match('/\.php$/', $file)) {
+                opcache_invalidate($file, true);
+            }
         }
 
         return json_encode(['success' => $ret]);

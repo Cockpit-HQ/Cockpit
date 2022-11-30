@@ -101,6 +101,10 @@ class Update extends Command {
         $fs->delete("{$tmppath}/{$zipname}");
         $fs->delete("{$tmppath}/update-{$zipname}");
 
+        if (function_exists('opcache_reset')) {
+            \opcache_reset();
+        }
+
         return true;
     }
 }

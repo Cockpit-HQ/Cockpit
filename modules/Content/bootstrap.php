@@ -90,7 +90,7 @@ $this->module('content')->extend([
         $this->app->trigger('content.update.model', [$model]);
         $this->app->trigger("content.update.model.{$name}", [$model]);
 
-        if (function_exists('opcache_reset')) opcache_reset();
+        if (function_exists('opcache_invalidate')) opcache_invalidate($metapath, true);
 
         return $model;
     },
