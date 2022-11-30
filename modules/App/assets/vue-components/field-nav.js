@@ -30,6 +30,10 @@ let editItem = {
                     placeholder: 'https://...'
                 }
             }
+        },
+        locale: {
+            type: String,
+            default: null
         }
     },
 
@@ -55,7 +59,7 @@ let editItem = {
                     </div>
                     <div class="kiss-margin">
                         <label class="kiss-size-small kiss-text-caption">{{ t('Url') }}</label>
-                        <component :is="url.type" v-model="data.url" v-bind="url.opts"></component>
+                        <component :is="url.type" v-model="data.url" v-bind="url.opts" :locale="locale"></component>
                     </div>
                     <div class="kiss-margin">
                         <label class="kiss-size-small kiss-text-caption">{{ t('Target') }}</label>
@@ -125,6 +129,10 @@ export default {
                     placeholder: 'https://...'
                 }
             }
+        },
+        locale: {
+            type: String,
+            default: null
         }
     },
 
@@ -162,7 +170,7 @@ export default {
 
         edit(item) {
 
-            VueView.ui.modal(editItem, {item, fields: this.fields, url: this.url}, {
+            VueView.ui.modal(editItem, {item, fields: this.fields, url: this.url, locale: this.locale}, {
 
             }, {size: 'large'})
         },
@@ -189,7 +197,7 @@ export default {
                 :group="group || uid"
                 :swapThreshold="0.65"
                 :animation="150",
-		        :fallbackOnBody="true"
+                :fallbackOnBody="true"
                 @change="change"
                 handle=".lm-handle"
                 class="field-nav-dragarea"

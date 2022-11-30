@@ -155,7 +155,7 @@ let FieldRenderer = {
     template: /*html*/`
         <div v-if="fieldTypes">
 
-            <component :is="getFieldType()" v-model="val" v-bind="field.opts" :data-field-render-uid="uid" v-if="!field.multiple"></component>
+            <component :is="getFieldType()" v-model="val" v-bind="field.opts" :locale="locale" :data-field-render-uid="uid" v-if="!field.multiple"></component>
 
             <div v-if="field.multiple">
                 <kiss-card class="kiss-padding-small kiss-size-small kiss-color-muted" theme="bordered contrast" v-show="!val || !Array.isArray(val) || !val.length">{{ t('No items') }}</kiss-card>
@@ -202,7 +202,7 @@ let FieldRenderer = {
                     </div>
 
                     <div class="kiss-margin">
-                        <component :is="getFieldType()" v-model="fieldItem.value" v-bind="field.opts"></component>
+                        <component :is="getFieldType()" v-model="fieldItem.value" v-bind="field.opts" :locale="locale"></component>
                     </div>
 
                     <div class="kiss-button-group kiss-child-width-1-2 kiss-flex kiss-margin">
