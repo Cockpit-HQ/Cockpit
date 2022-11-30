@@ -1,5 +1,13 @@
 # Release Notes
 
+## WIP
+
+- Fix getallheaders keys
+- Improve assets api error message on missing parameters
+- Add placeholder container if empty nav field
+- Add autofocus to app search field on show
+- Add current locale context to fields in fields renderer component
+
 ## 2.3.4 (2022-11-25)
 
 - Fix user settings updating for users without admin role
