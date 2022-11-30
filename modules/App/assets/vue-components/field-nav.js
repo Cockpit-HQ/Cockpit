@@ -192,6 +192,10 @@ export default {
     template: /*html*/`
         <div field="nav">
 
+            <kiss-card class="kiss-margin-small kiss-text-caption kiss-color-muted kiss-align-center" v-if="level === 0 && !val.length">
+                {{ t('No items') }}
+            </kiss-card>
+
             <vue-draggable
                 :list="val"
                 :group="group || uid"
