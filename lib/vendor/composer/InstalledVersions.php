@@ -29,7 +29,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => 'c57f0a491bbd22983f9ad71b9f63f2a9cbba7bc8',
+    'reference' => '6f98fbf172272ca691ca36413aaa069bf01b7444',
     'name' => 'cockpit-hq/cockpit',
   ),
   'versions' => 
@@ -59,7 +59,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => 'c57f0a491bbd22983f9ad71b9f63f2a9cbba7bc8',
+      'reference' => '6f98fbf172272ca691ca36413aaa069bf01b7444',
     ),
     'colinodell/json5' => 
     array (
@@ -153,12 +153,12 @@ private static $installed = array (
     ),
     'league/flysystem' => 
     array (
-      'pretty_version' => '3.10.3',
-      'version' => '3.10.3.0',
+      'pretty_version' => '3.11.0',
+      'version' => '3.11.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '8013fb046c6a244b2b1b75cc95d732ed6bcdeb8a',
+      'reference' => '7e423e5dd240a60adfab9bde058d7668863b7731',
     ),
     'league/mime-type-detection' => 
     array (
@@ -305,12 +305,12 @@ private static $installed = array (
     ),
     'symfony/console' => 
     array (
-      'pretty_version' => 'v5.4.15',
-      'version' => '5.4.15.0',
+      'pretty_version' => 'v5.4.16',
+      'version' => '5.4.16.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'ea59bb0edfaf9f28d18d8791410ee0355f317669',
+      'reference' => '8e9b9c8dfb33af6057c94e1b44846bee700dc5ef',
     ),
     'symfony/deprecation-contracts' => 
     array (
@@ -323,12 +323,12 @@ private static $installed = array (
     ),
     'symfony/finder' => 
     array (
-      'pretty_version' => 'v6.1.3',
-      'version' => '6.1.3.0',
+      'pretty_version' => 'v6.2.0',
+      'version' => '6.2.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '39696bff2c2970b3779a5cac7bf9f0b88fc2b709',
+      'reference' => 'eb2355f69519e4ef33f1835bca4c935f5d42e570',
     ),
     'symfony/polyfill-ctype' => 
     array (
@@ -404,21 +404,21 @@ private static $installed = array (
     ),
     'symfony/string' => 
     array (
-      'pretty_version' => 'v6.1.7',
-      'version' => '6.1.7.0',
+      'pretty_version' => 'v6.2.0',
+      'version' => '6.2.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '823f143370880efcbdfa2dbca946b3358c4707e5',
+      'reference' => '145702685e0d12f81d755c71127bfff7582fdd36',
     ),
     'symfony/yaml' => 
     array (
-      'pretty_version' => 'v6.1.6',
-      'version' => '6.1.6.0',
+      'pretty_version' => 'v6.2.0',
+      'version' => '6.2.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '66c6b0cf52b00f74614a2cf7ae7db08ea1095931',
+      'reference' => 'f2570f21bd4adc3589aa3133323273995109bae0',
     ),
     'webonyx/graphql-php' => 
     array (
