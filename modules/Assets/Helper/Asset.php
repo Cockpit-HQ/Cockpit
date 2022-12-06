@@ -58,7 +58,7 @@ class Asset extends \Lime\Helper {
 
         if (\strpos($src, 'assets://') === 0) {
             $asset = ['path' => \str_replace('assets://', '', $src)];
-        } elseif (!preg_match('/\.(png|jpg|jpeg|gif|svg|webp|avif)$/i', $src)) {
+        } elseif (!preg_match('/\.(png|jpg|jpeg|gif|svg|webp)$/i', $src)) {
             $asset = $this->app->dataStorage->findOne('assets', ['_id' => $src]);
         } else {
             $asset = $this->app->dataStorage->findOne('assets', ['path' => $src]);
@@ -103,7 +103,7 @@ class Asset extends \Lime\Helper {
         }
 
         // check if image
-        if (!in_array($ext, ['png', 'jpg', 'jpeg', 'gif', 'webp', 'avif'])) {
+        if (!in_array($ext, ['png', 'jpg', 'jpeg', 'gif', 'webp'])) {
             return $srcUrl;
         }
 
@@ -130,7 +130,7 @@ class Asset extends \Lime\Helper {
             $mode = 'thumbnail';
         }
 
-        if ($mime && in_array($mime, ['avif', 'gif', 'jpeg', 'png', 'webp', 'bmp'])) {
+        if ($mime && in_array($mime, ['gif', 'jpeg', 'png', 'webp', 'bmp'])) {
             $ext = $mime;
             $mime = "image/{$ext}";
         } else {

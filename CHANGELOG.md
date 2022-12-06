@@ -8,6 +8,7 @@
 - Add autofocus to app search field on show
 - Add current locale context to fields in fields renderer component
 - Invalidate opcache for edited php files via finder
+- Remove avif support due to unpredictable server configurations
 
 ## 2.3.4 (2022-11-25)
 
