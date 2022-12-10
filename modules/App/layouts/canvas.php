@@ -10,8 +10,6 @@
 
     <?=$this->helper('theme')->assets([], 'canvas')?>
 
-    <?=$this->helper('theme')->assets([['src' => 'app:assets/js/admin.js', 'type' => 'module']], 'app')?>
-
     <script src="<?=$this->route('/app.i18n.data.js')?>" type="module"></script>
 
     <?php $this->block('app.layout.header') ?>
