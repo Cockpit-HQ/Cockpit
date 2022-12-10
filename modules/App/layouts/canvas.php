@@ -10,6 +10,8 @@
 
     <?=$this->helper('theme')->assets([], 'canvas')?>
 
+    <?=$this->helper('theme')->assets([['src' => 'app:assets/js/admin.js', 'type' => 'module']], 'app')?>
+
     <script src="<?=$this->route('/app.i18n.data.js')?>" type="module"></script>
 
     <?php $this->block('app.layout.header') ?>
@@ -17,7 +19,7 @@
     <?php if ($this->helper('theme')->theme() == 'auto'): ?>
     <script>
         // set client preferred color scheme
-        document.documentElement.setAttribute('data-theme', getComputedStyle(document.documentElement).getPropertyValue("--app-auto-theme").trim());
+        document.documentElement.setAttribute('data-theme', getComputedStyle(document.documentElement).getPropertyValue('--app-auto-theme').trim());
     </script>
     <?php endif ?>
 
