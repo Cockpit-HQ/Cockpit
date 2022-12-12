@@ -7,6 +7,7 @@ use MongoLite\Client as MongoLiteClient;
 class MongoLite {
 
     protected MongoLiteClient $client;
+    protected string $db;
 
     public function __construct(string $server, array $options = []) {
 
