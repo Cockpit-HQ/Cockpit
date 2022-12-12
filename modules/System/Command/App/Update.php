@@ -40,7 +40,7 @@ class Update extends Command {
 
         $zipUrl = "https://files.getcockpit.com/releases/{$version}/cockpit-{$target}.zip";
 
-        $output->writeln("Download Cockpit release from ${zipUrl}...");
+        $output->writeln("Download Cockpit release from {$zipUrl}...");
 
         try {
             $this->update($zipUrl, "cockpit-{$target}");

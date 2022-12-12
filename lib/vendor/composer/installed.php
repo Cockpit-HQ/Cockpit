@@ -6,24 +6,24 @@
     'aliases' => 
     array (
     ),
-    'reference' => '6f98fbf172272ca691ca36413aaa069bf01b7444',
+    'reference' => 'cb8a03d2d96438c7fdf62ee1cdbc41858f0d3505',
     'name' => 'cockpit-hq/cockpit',
   ),
   'versions' => 
   array (
     'bacon/bacon-qr-code' => 
     array (
-      'pretty_version' => '2.0.7',
-      'version' => '2.0.7.0',
+      'pretty_version' => '2.0.8',
+      'version' => '2.0.8.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'd70c840f68657ce49094b8d91f9ee0cc07fbf66c',
+      'reference' => '8674e51bb65af933a5ffaf1c308a660387c35c22',
     ),
     'claviska/simpleimage' => 
     array (
-      'pretty_version' => '3.7.0',
-      'version' => '3.7.0.0',
+      'pretty_version' => '3.7.1',
+      'version' => '3.7.1.0',
       'aliases' => 
       array (
       ),
@@ -36,7 +36,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '6f98fbf172272ca691ca36413aaa069bf01b7444',
+      'reference' => 'cb8a03d2d96438c7fdf62ee1cdbc41858f0d3505',
     ),
     'colinodell/json5' => 
     array (
@@ -58,21 +58,30 @@
     ),
     'doctrine/annotations' => 
     array (
-      'pretty_version' => '1.13.3',
-      'version' => '1.13.3.0',
+      'pretty_version' => '1.14.0',
+      'version' => '1.14.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '648b0343343565c4a056bfc8392201385e8d89f0',
+      'reference' => '3587ab58646bc515b2e03bbd3cfcd3682e8df5bf',
+    ),
+    'doctrine/deprecations' => 
+    array (
+      'pretty_version' => 'v1.0.0',
+      'version' => '1.0.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '0e2a4f1f8cdfc7a92ec3b01c9334898c806b30de',
     ),
     'doctrine/lexer' => 
     array (
-      'pretty_version' => '1.2.3',
-      'version' => '1.2.3.0',
+      'pretty_version' => '2.0.0',
+      'version' => '2.0.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'c268e882d4dbdd85e36e4ad69e02dc284f89d229',
+      'reference' => '3cf140b81e55d5d640f73367d829db7e3023ef69',
     ),
     'firebase/php-jwt' => 
     array (
@@ -173,12 +182,12 @@
     ),
     'phpmailer/phpmailer' => 
     array (
-      'pretty_version' => 'v6.6.5',
-      'version' => '6.6.5.0',
+      'pretty_version' => 'v6.7.1',
+      'version' => '6.7.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => '8b6386d7417526d1ea4da9edb70b8352f7543627',
+      'reference' => '49cd7ea3d2563f028d7811f06864a53b1f15ff55',
     ),
     'psr/cache' => 
     array (
@@ -291,12 +300,12 @@
     ),
     'symfony/deprecation-contracts' => 
     array (
-      'pretty_version' => 'v3.1.1',
-      'version' => '3.1.1.0',
+      'pretty_version' => 'v3.2.0',
+      'version' => '3.2.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '07f1b9cc2ffee6aaafcf4b710fbc38ff736bd918',
+      'reference' => '1ee04c65529dea5d8744774d474e7cbd2f1206d3',
     ),
     'symfony/finder' => 
     array (
@@ -408,12 +417,12 @@
     ),
     'zircote/swagger-php' => 
     array (
-      'pretty_version' => '3.3.6',
-      'version' => '3.3.6.0',
+      'pretty_version' => '4.5.1',
+      'version' => '4.5.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => '5016342f966fca29dda84455de066c5c90d37941',
+      'reference' => 'eb84fb4d65a327e604812fbddc6c27f69b9ed6e2',
     ),
   ),
 );

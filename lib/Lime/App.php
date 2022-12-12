@@ -1296,7 +1296,8 @@ class AppAware {
 
 class Module extends AppAware {
 
-    protected $apis = [];
+    protected array $methods = [];
+    public array $props = [];
 
     public ?string $_dir = null;
     public ?string $_bootfile = null;
@@ -1307,9 +1308,9 @@ class Module extends AppAware {
 
             if ($value instanceof \Closure) {
                 $value = $value->bindTo($this, $this);
-                $this->apis[$name] = $value;
+                $this->methods[$name] = $value;
             } else {
-                $this->{$name} = $value;
+                $this->props[$name] = $value;
             }
         }
     }
@@ -1318,13 +1319,13 @@ class Module extends AppAware {
 
         $this->app = $app;
 
-        foreach ($this->apis as $name => $value) {
+        foreach ($this->methods as $name => $value) {
 
             if ($value instanceof \Closure) {
                 $value = $value->bindTo($this, $this);
             }
 
-            $this->apis[$name] = $value;
+            $this->methods[$name] = $value;
         }
     }
 
@@ -1332,22 +1333,22 @@ class Module extends AppAware {
         $this->extend([$name => $value]);
     }
     public function __get($name) {
-        return isset($this->apis[$name]) ? $this->apis[$name] : null;
+        return $this->props[$name] ?? null;
     }
     public function __isset($name) {
-        return isset($this->apis[$name]);
+        return isset($this->props[$name]);
     }
     public function __unset($name) {
-        unset($this->apis[$name]);
+        unset($this->props[$name]);
     }
     public function __call($name, $arguments) {
 
-        if (isset($this->apis[$name]) && \is_callable($this->apis[$name])) {
-            return \call_user_func_array($this->apis[$name], $arguments);
+        if (isset($this->methods[$name]) && \is_callable($this->methods[$name])) {
+            return \call_user_func_array($this->methods[$name], $arguments);
         }
 
-        if (isset($this->apis['__call']) && \is_callable($this->apis['__call'])) {
-            return \call_user_func_array($this->apis['__call'], [$name, $arguments]);
+        if (isset($this->methods['__call']) && \is_callable($this->methods['__call'])) {
+            return \call_user_func_array($this->methods['__call'], [$name, $arguments]);
         }
 
         return null;

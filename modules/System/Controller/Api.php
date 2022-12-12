@@ -158,7 +158,7 @@ class Api extends App {
             $paths[] = (new \Symfony\Component\Finder\Finder())->files()->in($this->app->path('#root:config/api'))->notPath('#vendor#');
         }
 
-        $yaml = \OpenApi\Generator::scan($paths)->toYaml();
+        $yaml = \OpenApi\Generator::scan($paths, ['analyser' => new \OpenApi\Analysers\TokenAnalyser()])->toYaml();
 
         // replace placeholders
         $yaml = \str_replace([

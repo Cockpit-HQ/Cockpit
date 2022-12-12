@@ -9,6 +9,7 @@
 - Add current locale context to fields in fields renderer component
 - Invalidate opcache for edited php files via finder
 - Remove avif support due to unpredictable server configurations
+- Fix PHP 8.2 related issues
 
 ## 2.3.4 (2022-11-25)
 

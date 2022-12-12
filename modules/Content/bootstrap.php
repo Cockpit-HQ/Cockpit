@@ -151,16 +151,16 @@ $this->module('content')->extend([
 
     'model' => function(string $name): mixed {
 
-        if (!isset($this->_models[$name])) {
+        if (!isset($this->props['_models'][$name])) {
 
-            $this->_models[$name] = false;
+            $this->props['_models'][$name] = false;
 
             if ($path = $this->exists($name)) {
-                $this->_models[$name] = include($path);
+                $this->props['_models'][$name] = include($path);
             }
         }
 
-        return $this->_models[$name];
+        return $this->props['_models'][$name];
     },
 
     'getDefaultModelItem' => function(string $model): array {
@@ -409,19 +409,19 @@ $this->module('content')->extend([
 
     '_resolveContentRef' => function ($model, $_id, $process = []) {
 
-        if (!isset($this->_refs[$model])) {
-            $this->_refs[$model] = [];
+        if (!isset($this->props['_refs'][$model])) {
+            $this->props['_refs'][$model] = [];
         }
 
-        if (!isset($this->_refs[$model][$_id])) {
-            $this->_refs[$model][$_id] = $this->item($model, ['_id' => $_id], null, $process);
+        if (!isset($this->props['_refs'][$model][$_id])) {
+            $this->props['_refs'][$model][$_id] = $this->item($model, ['_id' => $_id], null, $process);
 
-            if (is_null($this->_refs[$model][$_id])) {
-                $this->_refs[$model][$_id] = false;
+            if (is_null($this->props['_refs'][$model][$_id])) {
+                $this->props['_refs'][$model][$_id] = false;
             }
         }
 
-        return $this->_refs[$model][$_id] ? $this->_refs[$model][$_id] : null;
+        return $this->props['_refs'][$model][$_id] ?? null;
     },
 
     'updateRefs' => function(string $refId, mixed $value = null) {
