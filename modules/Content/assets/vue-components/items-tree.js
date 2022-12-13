@@ -98,7 +98,7 @@ export default {
 
                     let item = {_id: p._id, _o: idx}
 
-                    if (item._id == element._id) {
+                    if (item._id === element._id) {
                         item._pid = pId;
                     }
 
