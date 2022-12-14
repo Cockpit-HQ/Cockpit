@@ -240,6 +240,8 @@ class Mongo {
         $opts = ['$unset' => []];
         $opts['$unset'][$field] = 1;
 
+        $filter = $this->_fixForMongo($filter);
+
         return $this->getCollection($collection)->updateMany($filter, $opts);
     }
 
@@ -247,6 +249,8 @@ class Mongo {
 
         $opts = ['$rename' => []];
         $opts['$rename'][$field] = $newfield;
+
+        $filter = $this->_fixForMongo($filter);
 
         return $this->getCollection($collection)->updateMany($filter, $opts);
     }
@@ -309,6 +313,11 @@ class Mongo {
             // eg ArrayObject
             if (\is_object($v) && \is_iterable($v)) {
                 $v = \json_decode(\json_encode($v), true);
+            }
+
+            if (is_string($v) && strpos($v, '$DATE(') === 0) {
+                $format = trim(substr($v, 6, -1));
+                $v = date($format ? $format : 'Y-m-d');
             }
         }
 

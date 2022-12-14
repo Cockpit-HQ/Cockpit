@@ -12,6 +12,7 @@
 - Fix PHP 8.2 related issues
 - Fix `maxlevel` meta property if value is 0
 - Define default sorting of items in collection model meta settings
+- Auto-resolve $DATE() values in db queries
 
 ## 2.3.4 (2022-11-25)
 

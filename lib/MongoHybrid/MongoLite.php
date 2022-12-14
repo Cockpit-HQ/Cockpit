@@ -90,6 +90,9 @@ class MongoLite {
 
     public function findOne(string $collection, ?array $filter = null, ?array $projection = null): ?array {
         if (!$filter) $filter = [];
+
+        $filter = $this->_fixForMongo($filter, true);
+
         return $this->getCollection($collection)->findOne($filter, $projection);
     }
 
@@ -99,12 +102,13 @@ class MongoLite {
 
     public function find(string $collection, array $options = []): ResultSet {
 
-        $filter = isset($options['filter']) ? $options['filter'] : null;
+        $filter = isset($options['filter']) ? $options['filter'] : [];
         $fields = isset($options['fields']) && $options['fields'] ? $options['fields'] : null;
         $limit  = isset($options['limit'])  ? $options['limit'] : null;
         $sort   = isset($options['sort'])   ? $options['sort'] : null;
         $skip   = isset($options['skip'])   ? $options['skip'] : null;
 
+        $filter = $this->_fixForMongo($filter, true);
         $cursor = $this->getCollection($collection)->find($filter, $fields);
 
         if ($limit) $cursor->limit($limit);
@@ -150,24 +154,32 @@ class MongoLite {
     }
 
     public function insert(string $collection, array &$doc) {
+        $doc = $this->_fixForMongo($doc, true);
         return $this->getCollection($collection)->insert($doc);
     }
 
     public function save(string $collection, array &$data, bool $create = false) {
+        $data = $this->_fixForMongo($data);
         return $this->getCollection($collection)->save($data, $create);
     }
 
     public function update(string $collection, mixed $criteria, array $data) {
+        $criteria = $this->_fixForMongo($criteria);
+        $data     = $this->_fixForMongo($data);
         return $this->getCollection($collection)->update($criteria, $data);
     }
 
     public function remove(string $collection, array $filter = []) {
+
+        $filter = $this->_fixForMongo($filter);
+
         return $this->getCollection($collection)->remove($filter);
     }
 
     public function removeField(string $collection, string $field, array $filter = []): bool {
 
         $collection = $this->getCollection($collection);
+        $filter = $this->_fixForMongo($filter);
 
         foreach ($collection->find($filter) as $doc) {
 
@@ -183,6 +195,7 @@ class MongoLite {
     public function renameField(string $collection, string $field, string $newfield, array $filter = []): bool {
 
         $collection = $this->getCollection($collection);
+        $filter = $this->_fixForMongo($filter);
 
         foreach ($collection->find($filter) as $doc) {
 
@@ -197,6 +210,43 @@ class MongoLite {
     }
 
     public function count(string $collection, mixed $filter = null): int {
+        $filter = $this->_fixForMongo($filter, true);
         return $this->getCollection($collection)->count($filter);
     }
+
+    protected function _fixForMongo(mixed &$data, bool $infinite = false, int $_level = 0): mixed {
+
+        if (!is_array($data)) {
+            return $data;
+        }
+
+        if ($_level == 0 && isset($data[0])) {
+            foreach ($data as $i => $doc) {
+                $data[$i] = $this->_fixForMongo($doc, $infinite);
+            }
+            return $data;
+        }
+
+        foreach ($data as $k => &$v) {
+
+            if (is_array($data[$k]) && $infinite) {
+                $data[$k] = $this->_fixForMongo($data[$k], $infinite, $_level + 1);
+            }
+
+            if ($k === '_id') {
+
+                if (is_string($v) && $v[0] === '@') {
+                    $v = \substr($v, 1);
+                }
+            }
+
+            if (is_string($v) && strpos($v, '$DATE(') === 0) {
+                $format = trim(substr($v, 6, -1));
+                $v = date($format ? $format : 'Y-m-d');
+            }
+        }
+
+        return $data;
+    }
+
 }
