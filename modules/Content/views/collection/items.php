@@ -236,7 +236,7 @@
                         selected: [],
                         fieldTypes: null,
                         filter: '',
-                        sort: {
+                        sort: (model.meta && model.meta.sort) || {
                             _created: -1
                         },
                         txtFilter: '',
