@@ -1,6 +1,6 @@
 # Release Notes
 
-## WIP
+## 2.3.5 (2022-12-15)
 
 - Fix getallheaders keys
 - Improve assets api error message on missing parameters
