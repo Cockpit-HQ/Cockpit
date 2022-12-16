@@ -108,6 +108,8 @@
 .tabulator.tabulator-rtl .tabulator-row .tabulator-cell,
 .tabulator.tabulator-rtl .tabulator-row .tabulator-cell .tabulator-data-tree-branch,
 .tabulator-print-table .tabulator-data-tree-branch,
-.tabulator-print-table .tabulator-print-table-group {
+.tabulator-print-table .tabulator-print-table-group,
+.tabulator-row .tabulator-cell.tabulator-frozen.tabulator-frozen-left,
+.tabulator-row .tabulator-cell.tabulator-frozen.tabulator-frozen-right {
     border-color: var(--kiss-hr-color);
 }

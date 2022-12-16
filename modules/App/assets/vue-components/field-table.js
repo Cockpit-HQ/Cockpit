@@ -64,7 +64,7 @@ export default {
         cols() {
 
             let cols = [
-                {rowHandle:true, formatter:"handle", headerSort:false, frozen:true, width:30, minWidth:30}
+                {rowHandle:true, formatter:'handle', headerSort:false, frozen:true, width:30, minWidth:30}
             ];
 
             this.columns.forEach(col => {
