@@ -180,10 +180,10 @@ export default {
                                 <tree-item :model="model" :item="element"></tree-item>
                                 <a class="kiss-cover" :href="$route('/content/tree/item/'+model.name+'/'+element._id)"></a>
                             </div>
-                            <a class="kiss-margin-small-left" @click="createItem(element._id)"><icon>create_new_folder</icon></a>
+                            <a class="kiss-margin-small-left" @click="createItem(element._id)" v-if="!isMaxLevel"><icon>create_new_folder</icon></a>
                             <a class="kiss-margin-small-left kiss-color-danger" @click="remove(element)"><icon>delete</icon></a>
                         </kiss-card>
-                        <div v-if="isMaxLevel !== false && (element._showChildren || !element._children)" :style="{paddingLeft: (((level+1)*23)+'px')}">
+                        <div v-if="!isMaxLevel && (element._showChildren || !element._children)" :style="{paddingLeft: (((level+1)*23)+'px')}">
                             <items-tree class="items-tree" :model="model" :items="element.children" :level="level+1" :p="element" :locale="locale" :allow-moving="allowMoving"></items-tree>
                         </div>
                     </div>

@@ -1,5 +1,9 @@
 # Release Notes
 
+## WIP
+
+- Fix tree model nesting items
+
 ## 2.3.5 (2022-12-15)
 
 - Fix getallheaders keys
