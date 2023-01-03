@@ -1,6 +1,6 @@
 # Release Notes
 
-## WIP
+## 2.3.6 (2023-01-03)
 
 - Fix tree model nesting items
 - Fix table preview for repeatable wysiwyg fields
