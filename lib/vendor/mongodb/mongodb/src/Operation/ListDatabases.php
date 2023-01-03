@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -30,7 +30,7 @@ use MongoDB\Model\DatabaseInfoLegacyIterator;
  *
  * @api
  * @see \MongoDB\Client::listDatabases()
- * @see http://docs.mongodb.org/manual/reference/command/ListDatabases/
+ * @see https://mongodb.com/docs/manual/reference/command/listDatabases/#mongodb-dbcommand-dbcmd.listDatabases`
  */
 class ListDatabases implements Executable
 {
@@ -46,6 +46,10 @@ class ListDatabases implements Executable
      *    based on the user privileges.
      *
      *    For servers < 4.0.5, this option is ignored.
+     *
+     *  * comment (mixed): BSON value to attach as a comment to this command.
+     *
+     *    This is not supported for servers versions < 4.4.
      *
      *  * filter (document): Query by which to filter databases.
      *
@@ -66,7 +70,6 @@ class ListDatabases implements Executable
      * Execute the operation.
      *
      * @see Executable::execute()
-     * @param Server $server
      * @return DatabaseInfoIterator
      * @throws UnexpectedValueException if the command response was malformed
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)

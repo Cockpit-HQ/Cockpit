@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -39,7 +39,7 @@ use function MongoDB\server_supports_feature;
  * classes.
  *
  * @internal
- * @see http://docs.mongodb.org/manual/reference/command/delete/
+ * @see https://mongodb.com/docs/manual/reference/command/delete/
  */
 class Delete implements Executable, Explainable
 {
@@ -68,12 +68,21 @@ class Delete implements Executable, Explainable
      *
      *  * collation (document): Collation specification.
      *
+     *  * comment (mixed): BSON value to attach as a comment to this command.
+     *
+     *    This is not supported for servers versions < 4.4.
+     *
      *  * hint (string|document): The index to use. Specify either the index
      *    name as a string or the index key pattern as a document. If specified,
      *    then the query system will only consider plans using the hinted index.
      *
      *    This is not supported for server versions < 4.4 and will result in an
      *    exception at execution time if used.
+     *
+     *  * let (document): Map of parameter names and values. Values must be
+     *    constant or closed expressions that do not reference document fields.
+     *    Parameters can then be accessed as variables in an aggregate
+     *    expression context (e.g. "$$var").
      *
      *  * session (MongoDB\Driver\Session): Client session.
      *
@@ -88,7 +97,7 @@ class Delete implements Executable, Explainable
      * @param array        $options        Command options
      * @throws InvalidArgumentException for parameter/option parsing errors
      */
-    public function __construct($databaseName, $collectionName, $filter, $limit, array $options = [])
+    public function __construct(string $databaseName, string $collectionName, $filter, int $limit, array $options = [])
     {
         if (! is_array($filter) && ! is_object($filter)) {
             throw InvalidArgumentException::invalidType('$filter', $filter, 'array or object');
@@ -114,12 +123,16 @@ class Delete implements Executable, Explainable
             throw InvalidArgumentException::invalidType('"writeConcern" option', $options['writeConcern'], WriteConcern::class);
         }
 
+        if (isset($options['let']) && ! is_array($options['let']) && ! is_object($options['let'])) {
+            throw InvalidArgumentException::invalidType('"let" option', $options['let'], 'array or object');
+        }
+
         if (isset($options['writeConcern']) && $options['writeConcern']->isDefault()) {
             unset($options['writeConcern']);
         }
 
-        $this->databaseName = (string) $databaseName;
-        $this->collectionName = (string) $collectionName;
+        $this->databaseName = $databaseName;
+        $this->collectionName = $collectionName;
         $this->filter = $filter;
         $this->limit = $limit;
         $this->options = $options;
@@ -129,7 +142,6 @@ class Delete implements Executable, Explainable
      * Execute the operation.
      *
      * @see Executable::execute()
-     * @param Server $server
      * @return DeleteResult
      * @throws UnsupportedException if hint or write concern is used and unsupported
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
@@ -150,7 +162,7 @@ class Delete implements Executable, Explainable
             throw UnsupportedException::writeConcernNotSupportedInTransaction();
         }
 
-        $bulk = new Bulk();
+        $bulk = new Bulk($this->createBulkWriteOptions());
         $bulk->delete($this->filter, $this->createDeleteOptions());
 
         $writeResult = $server->executeBulkWrite($this->databaseName . '.' . $this->collectionName, $bulk, $this->createExecuteOptions());
@@ -162,7 +174,6 @@ class Delete implements Executable, Explainable
      * Returns the command document for this operation.
      *
      * @see Explainable::getCommandDocument()
-     * @param Server $server
      * @return array
      */
     public function getCommandDocument(Server $server)
@@ -177,14 +188,32 @@ class Delete implements Executable, Explainable
     }
 
     /**
+     * Create options for constructing the bulk write.
+     *
+     * @see https://php.net/manual/en/mongodb-driver-bulkwrite.construct.php
+     */
+    private function createBulkWriteOptions(): array
+    {
+        $options = [];
+
+        if (isset($this->options['comment'])) {
+            $options['comment'] = $this->options['comment'];
+        }
+
+        if (isset($this->options['let'])) {
+            $options['let'] = (object) $this->options['let'];
+        }
+
+        return $options;
+    }
+
+    /**
      * Create options for the delete command.
      *
      * Note that these options are different from the bulk write options, which
      * are created in createExecuteOptions().
-     *
-     * @return array
      */
-    private function createDeleteOptions()
+    private function createDeleteOptions(): array
     {
         $deleteOptions = ['limit' => $this->limit];
 
@@ -202,10 +231,9 @@ class Delete implements Executable, Explainable
     /**
      * Create options for executing the bulk write.
      *
-     * @see http://php.net/manual/en/mongodb-driver-server.executebulkwrite.php
-     * @return array
+     * @see https://php.net/manual/en/mongodb-driver-server.executebulkwrite.php
      */
-    private function createExecuteOptions()
+    private function createExecuteOptions(): array
     {
         $options = [];
 

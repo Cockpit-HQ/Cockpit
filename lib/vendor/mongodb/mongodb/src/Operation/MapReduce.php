@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -32,6 +32,7 @@ use MongoDB\Exception\UnsupportedException;
 use MongoDB\MapReduceResult;
 use stdClass;
 
+use function assert;
 use function current;
 use function is_array;
 use function is_bool;
@@ -49,7 +50,7 @@ use const E_USER_DEPRECATED;
  *
  * @api
  * @see \MongoDB\Collection::mapReduce()
- * @see https://docs.mongodb.com/manual/reference/command/mapReduce/
+ * @see https://mongodb.com/docs/manual/reference/command/mapReduce/
  */
 class MapReduce implements Executable
 {
@@ -101,6 +102,10 @@ class MapReduce implements Executable
      *    are output to a collection.
      *
      *  * collation (document): Collation specification.
+     *
+     *  * comment (mixed): BSON value to attach as a comment to this command.
+     *
+     *    This is not supported for servers versions < 4.4.
      *
      *  * finalize (MongoDB\BSON\JavascriptInterface): Follows the reduce method
      *    and modifies the output.
@@ -154,7 +159,7 @@ class MapReduce implements Executable
      * @param array               $options        Command options
      * @throws InvalidArgumentException for parameter/option parsing errors
      */
-    public function __construct($databaseName, $collectionName, JavascriptInterface $map, JavascriptInterface $reduce, $out, array $options = [])
+    public function __construct(string $databaseName, string $collectionName, JavascriptInterface $map, JavascriptInterface $reduce, $out, array $options = [])
     {
         if (! is_string($out) && ! is_array($out) && ! is_object($out)) {
             throw InvalidArgumentException::invalidType('$out', $out, 'string or array or object');
@@ -247,8 +252,8 @@ class MapReduce implements Executable
 
         $this->checkOutDeprecations($out);
 
-        $this->databaseName = (string) $databaseName;
-        $this->collectionName = (string) $collectionName;
+        $this->databaseName = $databaseName;
+        $this->collectionName = $collectionName;
         $this->map = $map;
         $this->reduce = $reduce;
         $this->out = $out;
@@ -259,7 +264,6 @@ class MapReduce implements Executable
      * Execute the operation.
      *
      * @see Executable::execute()
-     * @param Server $server
      * @return MapReduceResult
      * @throws UnexpectedValueException if the command response was malformed
      * @throws UnsupportedException if read concern or write concern is used and unsupported
@@ -298,6 +302,7 @@ class MapReduce implements Executable
         }
 
         $result = current($cursor->toArray());
+        assert($result instanceof stdClass);
 
         $getIterator = $this->createGetIteratorCallable($result, $server);
 
@@ -306,9 +311,8 @@ class MapReduce implements Executable
 
     /**
      * @param string|array|object $out
-     * @return void
      */
-    private function checkOutDeprecations($out)
+    private function checkOutDeprecations($out): void
     {
         if (is_string($out)) {
             return;
@@ -327,10 +331,8 @@ class MapReduce implements Executable
 
     /**
      * Create the mapReduce command.
-     *
-     * @return Command
      */
-    private function createCommand()
+    private function createCommand(): Command
     {
         $cmd = [
             'mapReduce' => $this->collectionName,
@@ -339,7 +341,7 @@ class MapReduce implements Executable
             'out' => $this->out,
         ];
 
-        foreach (['bypassDocumentValidation', 'finalize', 'jsMode', 'limit', 'maxTimeMS', 'verbose'] as $option) {
+        foreach (['bypassDocumentValidation', 'comment', 'finalize', 'jsMode', 'limit', 'maxTimeMS', 'verbose'] as $option) {
             if (isset($this->options[$option])) {
                 $cmd[$option] = $this->options[$option];
             }
@@ -357,12 +359,9 @@ class MapReduce implements Executable
     /**
      * Creates a callable for MapReduceResult::getIterator().
      *
-     * @param stdClass $result
-     * @param Server   $server
-     * @return callable
      * @throws UnexpectedValueException if the command response was malformed
      */
-    private function createGetIteratorCallable(stdClass $result, Server $server)
+    private function createGetIteratorCallable(stdClass $result, Server $server): callable
     {
         // Inline results can be wrapped with an ArrayIterator
         if (isset($result->results) && is_array($result->results)) {
@@ -391,12 +390,10 @@ class MapReduce implements Executable
     /**
      * Create options for executing the command.
      *
-     * @see http://php.net/manual/en/mongodb-driver-server.executereadcommand.php
-     * @see http://php.net/manual/en/mongodb-driver-server.executereadwritecommand.php
-     * @param boolean $hasOutputCollection
-     * @return array
+     * @see https://php.net/manual/en/mongodb-driver-server.executereadcommand.php
+     * @see https://php.net/manual/en/mongodb-driver-server.executereadwritecommand.php
      */
-    private function createOptions($hasOutputCollection)
+    private function createOptions(bool $hasOutputCollection): array
     {
         $options = [];
 

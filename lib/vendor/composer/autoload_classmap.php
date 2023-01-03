@@ -451,6 +451,7 @@ return array(
     'League\\Flysystem\\UnixVisibility\\PortableVisibilityConverter' => $vendorDir . '/league/flysystem/src/UnixVisibility/PortableVisibilityConverter.php',
     'League\\Flysystem\\UnixVisibility\\VisibilityConverter' => $vendorDir . '/league/flysystem/src/UnixVisibility/VisibilityConverter.php',
     'League\\Flysystem\\UnreadableFileEncountered' => $vendorDir . '/league/flysystem/src/UnreadableFileEncountered.php',
+    'League\\Flysystem\\UrlGeneration\\ChainedPublicUrlGenerator' => $vendorDir . '/league/flysystem/src/UrlGeneration/ChainedPublicUrlGenerator.php',
     'League\\Flysystem\\UrlGeneration\\PrefixPublicUrlGenerator' => $vendorDir . '/league/flysystem/src/UrlGeneration/PrefixPublicUrlGenerator.php',
     'League\\Flysystem\\UrlGeneration\\PublicUrlGenerator' => $vendorDir . '/league/flysystem/src/UrlGeneration/PublicUrlGenerator.php',
     'League\\Flysystem\\UrlGeneration\\ShardedPrefixPublicUrlGenerator' => $vendorDir . '/league/flysystem/src/UrlGeneration/ShardedPrefixPublicUrlGenerator.php',

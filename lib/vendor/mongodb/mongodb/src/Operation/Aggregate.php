@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -30,7 +30,6 @@ use MongoDB\Exception\InvalidArgumentException;
 use MongoDB\Exception\UnexpectedValueException;
 use MongoDB\Exception\UnsupportedException;
 use stdClass;
-use Traversable;
 
 use function current;
 use function is_array;
@@ -47,7 +46,7 @@ use function sprintf;
  *
  * @api
  * @see \MongoDB\Collection::aggregate()
- * @see http://docs.mongodb.org/manual/reference/command/aggregate/
+ * @see https://mongodb.com/docs/manual/reference/command/aggregate/
  */
 class Aggregate implements Executable, Explainable
 {
@@ -86,8 +85,9 @@ class Aggregate implements Executable, Explainable
      *
      *  * collation (document): Collation specification.
      *
-     *  * comment (string): An arbitrary string to help trace the operation
-     *    through the database profiler, currentOp, and logs.
+     *  * comment (mixed): BSON value to attach as a comment to this command.
+     *
+     *    Only string values are supported for server versions < 4.4.
      *
      *  * explain (boolean): Specifies whether or not to return the information
      *    on the processing of the pipeline.
@@ -136,7 +136,7 @@ class Aggregate implements Executable, Explainable
      * @param array       $options        Command options
      * @throws InvalidArgumentException for parameter/option parsing errors
      */
-    public function __construct($databaseName, $collectionName, array $pipeline, array $options = [])
+    public function __construct(string $databaseName, ?string $collectionName, array $pipeline, array $options = [])
     {
         $expectedIndex = 0;
 
@@ -168,10 +168,6 @@ class Aggregate implements Executable, Explainable
 
         if (isset($options['collation']) && ! is_array($options['collation']) && ! is_object($options['collation'])) {
             throw InvalidArgumentException::invalidType('"collation" option', $options['collation'], 'array or object');
-        }
-
-        if (isset($options['comment']) && ! is_string($options['comment'])) {
-            throw InvalidArgumentException::invalidType('"comment" option', $options['comment'], 'string');
         }
 
         if (isset($options['explain']) && ! is_bool($options['explain'])) {
@@ -249,8 +245,8 @@ class Aggregate implements Executable, Explainable
             unset($options['batchSize']);
         }
 
-        $this->databaseName = (string) $databaseName;
-        $this->collectionName = isset($collectionName) ? (string) $collectionName : null;
+        $this->databaseName = $databaseName;
+        $this->collectionName = $collectionName;
         $this->pipeline = $pipeline;
         $this->options = $options;
     }
@@ -259,8 +255,7 @@ class Aggregate implements Executable, Explainable
      * Execute the operation.
      *
      * @see Executable::execute()
-     * @param Server $server
-     * @return Traversable
+     * @return ArrayIterator|Cursor
      * @throws UnexpectedValueException if the command response was malformed
      * @throws UnsupportedException if read concern or write concern is used and unsupported
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
@@ -299,7 +294,7 @@ class Aggregate implements Executable, Explainable
 
         $result = current($cursor->toArray());
 
-        if (! isset($result->result) || ! is_array($result->result)) {
+        if (! is_object($result) || ! isset($result->result) || ! is_array($result->result)) {
             throw new UnexpectedValueException('aggregate command did not return a "result" array');
         }
 
@@ -310,7 +305,6 @@ class Aggregate implements Executable, Explainable
      * Returns the command document for this operation.
      *
      * @see Explainable::getCommandDocument()
-     * @param Server $server
      * @return array
      */
     public function getCommandDocument(Server $server)
@@ -320,10 +314,8 @@ class Aggregate implements Executable, Explainable
 
     /**
      * Create the aggregate command document.
-     *
-     * @return array
      */
-    private function createCommandDocument()
+    private function createCommandDocument(): array
     {
         $cmd = [
             'aggregate' => $this->collectionName ?? 1,
@@ -369,9 +361,9 @@ class Aggregate implements Executable, Explainable
     /**
      * Execute the aggregate command using the appropriate Server method.
      *
-     * @see http://php.net/manual/en/mongodb-driver-server.executecommand.php
-     * @see http://php.net/manual/en/mongodb-driver-server.executereadcommand.php
-     * @see http://php.net/manual/en/mongodb-driver-server.executereadwritecommand.php
+     * @see https://php.net/manual/en/mongodb-driver-server.executecommand.php
+     * @see https://php.net/manual/en/mongodb-driver-server.executereadcommand.php
+     * @see https://php.net/manual/en/mongodb-driver-server.executereadwritecommand.php
      */
     private function executeCommand(Server $server, Command $command): Cursor
     {

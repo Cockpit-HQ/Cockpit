@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -34,7 +34,7 @@ use function is_object;
  * Wrapper for the listCollections command.
  *
  * @internal
- * @see http://docs.mongodb.org/manual/reference/command/listCollections/
+ * @see https://mongodb.com/docs/manual/reference/command/listCollections/
  */
 class ListCollections implements Executable
 {
@@ -54,6 +54,10 @@ class ListCollections implements Executable
      *
      *    For servers < 4.0, this option is ignored.
      *
+     *  * comment (mixed): BSON value to attach as a comment to this command.
+     *
+     *    This is not supported for servers versions < 4.4.
+     *
      *  * filter (document): Query by which to filter collections.
      *
      *  * maxTimeMS (integer): The maximum amount of time to allow the query to
@@ -69,7 +73,7 @@ class ListCollections implements Executable
      * @param array  $options      Command options
      * @throws InvalidArgumentException for parameter/option parsing errors
      */
-    public function __construct($databaseName, array $options = [])
+    public function __construct(string $databaseName, array $options = [])
     {
         if (isset($options['authorizedCollections']) && ! is_bool($options['authorizedCollections'])) {
             throw InvalidArgumentException::invalidType('"authorizedCollections" option', $options['authorizedCollections'], 'boolean');
@@ -91,7 +95,7 @@ class ListCollections implements Executable
             throw InvalidArgumentException::invalidType('"session" option', $options['session'], Session::class);
         }
 
-        $this->databaseName = (string) $databaseName;
+        $this->databaseName = $databaseName;
         $this->options = $options;
     }
 
@@ -99,11 +103,20 @@ class ListCollections implements Executable
      * Execute the operation.
      *
      * @see Executable::execute()
-     * @param Server $server
-     * @return CachingIterator
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function execute(Server $server)
+    public function execute(Server $server): CachingIterator
+    {
+        $cursor = $server->executeReadCommand($this->databaseName, $this->createCommand(), $this->createOptions());
+        $cursor->setTypeMap(['root' => 'array', 'document' => 'array']);
+
+        return new CachingIterator($cursor);
+    }
+
+    /**
+     * Create the listCollections command.
+     */
+    private function createCommand(): Command
     {
         $cmd = ['listCollections' => 1];
 
@@ -111,16 +124,13 @@ class ListCollections implements Executable
             $cmd['filter'] = (object) $this->options['filter'];
         }
 
-        foreach (['authorizedCollections', 'maxTimeMS', 'nameOnly'] as $option) {
+        foreach (['authorizedCollections', 'comment', 'maxTimeMS', 'nameOnly'] as $option) {
             if (isset($this->options[$option])) {
                 $cmd[$option] = $this->options[$option];
             }
         }
 
-        $cursor = $server->executeReadCommand($this->databaseName, new Command($cmd), $this->createOptions());
-        $cursor->setTypeMap(['root' => 'array', 'document' => 'array']);
-
-        return new CachingIterator($cursor);
+        return new Command($cmd);
     }
 
     /**
@@ -129,10 +139,9 @@ class ListCollections implements Executable
      * Note: read preference is intentionally omitted, as the spec requires that
      * the command be executed on the primary.
      *
-     * @see http://php.net/manual/en/mongodb-driver-server.executecommand.php
-     * @return array
+     * @see https://php.net/manual/en/mongodb-driver-server.executecommand.php
      */
-    private function createOptions()
+    private function createOptions(): array
     {
         $options = [];
 

@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -33,7 +33,7 @@ use function call_user_func;
  *
  * @api
  * @see \MongoDB\Collection::mapReduce()
- * @see https://docs.mongodb.com/manual/reference/command/mapReduce/
+ * @see https://mongodb.com/docs/manual/reference/command/mapReduce/
  */
 class MapReduceResult implements IteratorAggregate
 {
@@ -79,13 +79,13 @@ class MapReduceResult implements IteratorAggregate
      */
     public function getExecutionTimeMS()
     {
-        return (integer) $this->executionTimeMS;
+        return $this->executionTimeMS;
     }
 
     /**
      * Return the mapReduce results as a Traversable.
      *
-     * @see http://php.net/iteratoraggregate.getiterator
+     * @see https://php.net/iteratoraggregate.getiterator
      * @return Traversable
      */
     #[ReturnTypeWillChange]

@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -34,7 +34,7 @@ use function is_integer;
  *
  * @api
  * @see \MongoDB\Collection::dropIndexes()
- * @see http://docs.mongodb.org/manual/reference/command/dropIndexes/
+ * @see https://mongodb.com/docs/manual/reference/command/dropIndexes/
  */
 class DropIndexes implements Executable
 {
@@ -55,6 +55,10 @@ class DropIndexes implements Executable
      *
      * Supported options:
      *
+     *  * comment (mixed): BSON value to attach as a comment to this command.
+     *
+     *    This is not supported for servers versions < 4.4.
+     *
      *  * maxTimeMS (integer): The maximum amount of time to allow the query to
      *    run.
      *
@@ -71,9 +75,9 @@ class DropIndexes implements Executable
      * @param array  $options        Command options
      * @throws InvalidArgumentException for parameter/option parsing errors
      */
-    public function __construct($databaseName, $collectionName, $indexName, array $options = [])
+    public function __construct(string $databaseName, string $collectionName, string $indexName, array $options = [])
     {
-        $indexName = (string) $indexName;
+        $indexName = $indexName;
 
         if ($indexName === '') {
             throw new InvalidArgumentException('$indexName cannot be empty');
@@ -99,8 +103,8 @@ class DropIndexes implements Executable
             unset($options['writeConcern']);
         }
 
-        $this->databaseName = (string) $databaseName;
-        $this->collectionName = (string) $collectionName;
+        $this->databaseName = $databaseName;
+        $this->collectionName = $collectionName;
         $this->indexName = $indexName;
         $this->options = $options;
     }
@@ -109,7 +113,6 @@ class DropIndexes implements Executable
      * Execute the operation.
      *
      * @see Executable::execute()
-     * @param Server $server
      * @return array|object Command result document
      * @throws UnsupportedException if write concern is used and unsupported
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
@@ -132,18 +135,18 @@ class DropIndexes implements Executable
 
     /**
      * Create the dropIndexes command.
-     *
-     * @return Command
      */
-    private function createCommand()
+    private function createCommand(): Command
     {
         $cmd = [
             'dropIndexes' => $this->collectionName,
             'index' => $this->indexName,
         ];
 
-        if (isset($this->options['maxTimeMS'])) {
-            $cmd['maxTimeMS'] = $this->options['maxTimeMS'];
+        foreach (['comment', 'maxTimeMS'] as $option) {
+            if (isset($this->options[$option])) {
+                $cmd[$option] = $this->options[$option];
+            }
         }
 
         return new Command($cmd);
@@ -152,10 +155,9 @@ class DropIndexes implements Executable
     /**
      * Create options for executing the command.
      *
-     * @see http://php.net/manual/en/mongodb-driver-server.executewritecommand.php
-     * @return array
+     * @see https://php.net/manual/en/mongodb-driver-server.executewritecommand.php
      */
-    private function createOptions()
+    private function createOptions(): array
     {
         $options = [];
 

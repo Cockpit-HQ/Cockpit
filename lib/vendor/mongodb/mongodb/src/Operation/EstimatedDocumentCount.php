@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,7 +17,6 @@
 
 namespace MongoDB\Operation;
 
-use MongoDB\Driver\Exception\CommandException;
 use MongoDB\Driver\Exception\RuntimeException as DriverRuntimeException;
 use MongoDB\Driver\ReadConcern;
 use MongoDB\Driver\ReadPreference;
@@ -29,14 +28,13 @@ use MongoDB\Exception\UnsupportedException;
 
 use function array_intersect_key;
 use function is_integer;
-use function MongoDB\server_supports_feature;
 
 /**
  * Operation for obtaining an estimated count of documents in a collection
  *
  * @api
  * @see \MongoDB\Collection::estimatedDocumentCount()
- * @see http://docs.mongodb.org/manual/reference/command/count/
+ * @see https://mongodb.com/docs/manual/reference/command/count/
  */
 class EstimatedDocumentCount implements Executable, Explainable
 {
@@ -61,6 +59,10 @@ class EstimatedDocumentCount implements Executable, Explainable
      *
      * Supported options:
      *
+     *  * comment (mixed): BSON value to attach as a comment to this command.
+     *
+     *    This is not supported for servers versions < 4.4.
+     *
      *  * maxTimeMS (integer): The maximum amount of time to allow the query to
      *    run.
      *
@@ -75,10 +77,10 @@ class EstimatedDocumentCount implements Executable, Explainable
      * @param array  $options        Command options
      * @throws InvalidArgumentException for parameter/option parsing errors
      */
-    public function __construct($databaseName, $collectionName, array $options = [])
+    public function __construct(string $databaseName, string $collectionName, array $options = [])
     {
-        $this->databaseName = (string) $databaseName;
-        $this->collectionName = (string) $collectionName;
+        $this->databaseName = $databaseName;
+        $this->collectionName = $collectionName;
 
         if (isset($options['maxTimeMS']) && ! is_integer($options['maxTimeMS'])) {
             throw InvalidArgumentException::invalidType('"maxTimeMS" option', $options['maxTimeMS'], 'integer');
@@ -96,14 +98,13 @@ class EstimatedDocumentCount implements Executable, Explainable
             throw InvalidArgumentException::invalidType('"session" option', $options['session'], Session::class);
         }
 
-        $this->options = array_intersect_key($options, ['maxTimeMS' => 1, 'readConcern' => 1, 'readPreference' => 1, 'session' => 1]);
+        $this->options = array_intersect_key($options, ['comment' => 1, 'maxTimeMS' => 1, 'readConcern' => 1, 'readPreference' => 1, 'session' => 1]);
     }
 
     /**
      * Execute the operation.
      *
      * @see Executable::execute()
-     * @param Server $server
      * @return integer
      * @throws UnexpectedValueException if the command response was malformed
      * @throws UnsupportedException if collation or read concern is used and unsupported
@@ -111,58 +112,18 @@ class EstimatedDocumentCount implements Executable, Explainable
      */
     public function execute(Server $server)
     {
-        $command = $this->createCommand($server);
-
-        if ($command instanceof Aggregate) {
-            try {
-                $cursor = $command->execute($server);
-            } catch (CommandException $e) {
-                if ($e->getCode() == self::$errorCodeCollectionNotFound) {
-                    return 0;
-                }
-
-                throw $e;
-            }
-
-            $cursor->rewind();
-
-            return $cursor->current()->n;
-        }
-
-        return $command->execute($server);
+        return $this->createCount()->execute($server);
     }
 
     /**
      * Returns the command document for this operation.
      *
      * @see Explainable::getCommandDocument()
-     * @param Server $server
      * @return array
      */
     public function getCommandDocument(Server $server)
     {
-        return $this->createCommand($server)->getCommandDocument($server);
-    }
-
-    private function createAggregate(): Aggregate
-    {
-        return new Aggregate(
-            $this->databaseName,
-            $this->collectionName,
-            [
-                ['$collStats' => ['count' => (object) []]],
-                ['$group' => ['_id' => 1, 'n' => ['$sum' => '$count']]],
-            ],
-            $this->options
-        );
-    }
-
-    /** @return Aggregate|Count */
-    private function createCommand(Server $server)
-    {
-        return server_supports_feature($server, self::$wireVersionForCollStats)
-            ? $this->createAggregate()
-            : $this->createCount();
+        return $this->createCount()->getCommandDocument($server);
     }
 
     private function createCount(): Count

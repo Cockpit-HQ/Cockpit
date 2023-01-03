@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -41,8 +41,8 @@ use const E_USER_DEPRECATED;
  *
  * @api
  * @see \MongoDB\Collection::find()
- * @see http://docs.mongodb.org/manual/tutorial/query-documents/
- * @see http://docs.mongodb.org/manual/reference/operator/query-modifier/
+ * @see https://mongodb.com/docs/manual/tutorial/query-documents/
+ * @see https://mongodb.com/docs/manual/reference/operator/query-modifier/
  */
 class Find implements Executable, Explainable
 {
@@ -78,8 +78,9 @@ class Find implements Executable, Explainable
      *
      *  * collation (document): Collation specification.
      *
-     *  * comment (string): Attaches a comment to the query. If "$comment" also
-     *    exists in the modifiers document, this option will take precedence.
+     *  * comment (mixed): BSON value to attach as a comment to this command.
+     *
+     *    Only string values are supported for server versions < 4.4.
      *
      *  * cursorType (enum): Indicates the type of cursor to use. Must be either
      *    NON_TAILABLE, TAILABLE, or TAILABLE_AWAIT. The default is
@@ -145,6 +146,11 @@ class Find implements Executable, Explainable
      *    "$orderby" also exists in the modifiers document, this option will
      *    take precedence.
      *
+     *  * let (document): Map of parameter names and values. Values must be
+     *    constant or closed expressions that do not reference document fields.
+     *    Parameters can then be accessed as variables in an aggregate
+     *    expression context (e.g. "$$var").
+     *
      *  * typeMap (array): Type map for BSON deserialization. This will be
      *    applied to the returned Cursor (it is not sent to the server).
      *
@@ -154,7 +160,7 @@ class Find implements Executable, Explainable
      * @param array        $options        Command options
      * @throws InvalidArgumentException for parameter/option parsing errors
      */
-    public function __construct($databaseName, $collectionName, $filter, array $options = [])
+    public function __construct(string $databaseName, string $collectionName, $filter, array $options = [])
     {
         if (! is_array($filter) && ! is_object($filter)) {
             throw InvalidArgumentException::invalidType('$filter', $filter, 'array or object');
@@ -174,10 +180,6 @@ class Find implements Executable, Explainable
 
         if (isset($options['collation']) && ! is_array($options['collation']) && ! is_object($options['collation'])) {
             throw InvalidArgumentException::invalidType('"collation" option', $options['collation'], 'array or object');
-        }
-
-        if (isset($options['comment']) && ! is_string($options['comment'])) {
-            throw InvalidArgumentException::invalidType('"comment" option', $options['comment'], 'comment');
         }
 
         if (isset($options['cursorType'])) {
@@ -274,6 +276,10 @@ class Find implements Executable, Explainable
             throw InvalidArgumentException::invalidType('"typeMap" option', $options['typeMap'], 'array');
         }
 
+        if (isset($options['let']) && ! is_array($options['let']) && ! is_object($options['let'])) {
+            throw InvalidArgumentException::invalidType('"let" option', $options['let'], 'array or object');
+        }
+
         if (isset($options['readConcern']) && $options['readConcern']->isDefault()) {
             unset($options['readConcern']);
         }
@@ -286,8 +292,8 @@ class Find implements Executable, Explainable
             trigger_error('The "maxScan" option is deprecated and will be removed in a future release', E_USER_DEPRECATED);
         }
 
-        $this->databaseName = (string) $databaseName;
-        $this->collectionName = (string) $collectionName;
+        $this->databaseName = $databaseName;
+        $this->collectionName = $collectionName;
         $this->filter = $filter;
         $this->options = $options;
     }
@@ -296,7 +302,6 @@ class Find implements Executable, Explainable
      * Execute the operation.
      *
      * @see Executable::execute()
-     * @param Server $server
      * @return Cursor
      * @throws UnsupportedException if read concern is used and unsupported
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
@@ -321,7 +326,6 @@ class Find implements Executable, Explainable
      * Returns the command document for this operation.
      *
      * @see Explainable::getCommandDocument()
-     * @param Server $server
      * @return array
      */
     public function getCommandDocument(Server $server)
@@ -373,10 +377,9 @@ class Find implements Executable, Explainable
     /**
      * Create options for executing the command.
      *
-     * @see http://php.net/manual/en/mongodb-driver-server.executequery.php
-     * @return array
+     * @see https://php.net/manual/en/mongodb-driver-server.executequery.php
      */
-    private function createExecuteOptions()
+    private function createExecuteOptions(): array
     {
         $options = [];
 
@@ -396,10 +399,8 @@ class Find implements Executable, Explainable
      *
      * Note that these are separate from the options for executing the command,
      * which are created in createExecuteOptions().
-     *
-     * @return array
      */
-    private function createQueryOptions()
+    private function createQueryOptions(): array
     {
         $options = [];
 
@@ -420,7 +421,7 @@ class Find implements Executable, Explainable
             }
         }
 
-        foreach (['collation', 'max', 'min'] as $option) {
+        foreach (['collation', 'let', 'max', 'min'] as $option) {
             if (isset($this->options[$option])) {
                 $options[$option] = (object) $this->options[$option];
             }

@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -36,7 +36,7 @@ class InvalidArgumentException extends DriverInvalidArgumentException implements
      * @param string|string[] $expectedType Expected type
      * @return self
      */
-    public static function invalidType($name, $value, $expectedType)
+    public static function invalidType(string $name, $value, $expectedType)
     {
         if (is_array($expectedType)) {
             switch (count($expectedType)) {

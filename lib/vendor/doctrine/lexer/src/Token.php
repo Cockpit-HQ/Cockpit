@@ -13,6 +13,7 @@ use function in_array;
 
 /**
  * @template T of UnitEnum|string|int
+ * @template V of string|int
  * @implements ArrayAccess<string,mixed>
  */
 final class Token implements ArrayAccess
@@ -21,7 +22,7 @@ final class Token implements ArrayAccess
      * The string value of the token in the input string
      *
      * @readonly
-     * @var string|int
+     * @var V
      */
     public $value;
 
@@ -42,8 +43,8 @@ final class Token implements ArrayAccess
     public $position;
 
     /**
-     * @param string|int $value
-     * @param T|null     $type
+     * @param V      $value
+     * @param T|null $type
      */
     public function __construct($value, $type, int $position)
     {
@@ -78,9 +79,24 @@ final class Token implements ArrayAccess
      * @deprecated Use the value, type or position property instead
      * {@inheritDoc}
      *
-     * @param array-key $offset
+     * @param O $offset
      *
      * @return mixed
+     * @psalm-return (
+     *     O is 'value'
+     *     ? V
+     *     : (
+     *         O is 'type'
+     *         ? T|null
+     *         : (
+     *             O is 'position'
+     *             ? int
+     *             : mixed
+     *         )
+     *     )
+     * )
+     *
+     * @template O of array-key
      */
     #[ReturnTypeWillChange]
     public function offsetGet($offset)

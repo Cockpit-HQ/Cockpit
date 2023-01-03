@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -22,6 +22,7 @@ use MongoDB\Driver\Server;
 use MongoDB\Exception\InvalidArgumentException;
 use MongoDB\Exception\UnsupportedException;
 
+use function array_key_exists;
 use function is_array;
 use function is_integer;
 use function is_object;
@@ -33,7 +34,7 @@ use function MongoDB\is_pipeline;
  *
  * @api
  * @see \MongoDB\Collection::findOneAndUpdate()
- * @see http://docs.mongodb.org/manual/reference/command/findAndModify/
+ * @see https://mongodb.com/docs/manual/reference/command/findAndModify/
  */
 class FindOneAndUpdate implements Executable, Explainable
 {
@@ -55,6 +56,10 @@ class FindOneAndUpdate implements Executable, Explainable
      *    circumvent document level validation.
      *
      *  * collation (document): Collation specification.
+     *
+     *  * comment (mixed): BSON value to attach as a comment to this command.
+     *
+     *    This is not supported for servers versions < 4.4.
      *
      *  * hint (string|document): The index to use. Specify either the index
      *    name as a string or the index key pattern as a document. If specified,
@@ -85,6 +90,11 @@ class FindOneAndUpdate implements Executable, Explainable
      *  * upsert (boolean): When true, a new document is created if no document
      *    matches the query. The default is false.
      *
+     *  * let (document): Map of parameter names and values. Values must be
+     *    constant or closed expressions that do not reference document fields.
+     *    Parameters can then be accessed as variables in an aggregate
+     *    expression context (e.g. "$$var").
+     *
      *  * writeConcern (MongoDB\Driver\WriteConcern): Write concern.
      *
      * @param string       $databaseName   Database name
@@ -94,7 +104,7 @@ class FindOneAndUpdate implements Executable, Explainable
      * @param array        $options        Command options
      * @throws InvalidArgumentException for parameter/option parsing errors
      */
-    public function __construct($databaseName, $collectionName, $filter, $update, array $options = [])
+    public function __construct(string $databaseName, string $collectionName, $filter, $update, array $options = [])
     {
         if (! is_array($filter) && ! is_object($filter)) {
             throw InvalidArgumentException::invalidType('$filter', $filter, 'array or object');
@@ -108,20 +118,16 @@ class FindOneAndUpdate implements Executable, Explainable
             throw new InvalidArgumentException('Expected an update document with operator as first key or a pipeline');
         }
 
-        $options += [
-            'returnDocument' => self::RETURN_DOCUMENT_BEFORE,
-            'upsert' => false,
-        ];
-
         if (isset($options['projection']) && ! is_array($options['projection']) && ! is_object($options['projection'])) {
             throw InvalidArgumentException::invalidType('"projection" option', $options['projection'], 'array or object');
         }
 
-        if (! is_integer($options['returnDocument'])) {
+        if (array_key_exists('returnDocument', $options) && ! is_integer($options['returnDocument'])) {
             throw InvalidArgumentException::invalidType('"returnDocument" option', $options['returnDocument'], 'integer');
         }
 
         if (
+            isset($options['returnDocument']) &&
             $options['returnDocument'] !== self::RETURN_DOCUMENT_AFTER &&
             $options['returnDocument'] !== self::RETURN_DOCUMENT_BEFORE
         ) {
@@ -132,7 +138,9 @@ class FindOneAndUpdate implements Executable, Explainable
             $options['fields'] = $options['projection'];
         }
 
-        $options['new'] = $options['returnDocument'] === self::RETURN_DOCUMENT_AFTER;
+        if (isset($options['returnDocument'])) {
+            $options['new'] = $options['returnDocument'] === self::RETURN_DOCUMENT_AFTER;
+        }
 
         unset($options['projection'], $options['returnDocument']);
 
@@ -147,7 +155,6 @@ class FindOneAndUpdate implements Executable, Explainable
      * Execute the operation.
      *
      * @see Executable::execute()
-     * @param Server $server
      * @return array|object|null
      * @throws UnsupportedException if collation or write concern is used and unsupported
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
@@ -161,7 +168,6 @@ class FindOneAndUpdate implements Executable, Explainable
      * Returns the command document for this operation.
      *
      * @see Explainable::getCommandDocument()
-     * @param Server $server
      * @return array
      */
     public function getCommandDocument(Server $server)

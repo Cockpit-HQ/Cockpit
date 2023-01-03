@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -35,7 +35,7 @@ use function is_object;
  * Wrapper for the ListDatabases command.
  *
  * @internal
- * @see http://docs.mongodb.org/manual/reference/command/listDatabases/
+ * @see https://mongodb.com/docs/manual/reference/command/listDatabases/
  */
 class ListDatabases implements Executable
 {
@@ -51,6 +51,10 @@ class ListDatabases implements Executable
      *    based on the user privileges.
      *
      *    For servers < 4.0.5, this option is ignored.
+     *
+     *  * comment (mixed): BSON value to attach as a comment to this command.
+     *
+     *    This is not supported for servers versions < 4.4.
      *
      *  * filter (document): Query by which to filter databases.
      *
@@ -95,26 +99,13 @@ class ListDatabases implements Executable
      * Execute the operation.
      *
      * @see Executable::execute()
-     * @param Server $server
      * @return array An array of database info structures
      * @throws UnexpectedValueException if the command response was malformed
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function execute(Server $server)
+    public function execute(Server $server): array
     {
-        $cmd = ['listDatabases' => 1];
-
-        if (! empty($this->options['filter'])) {
-            $cmd['filter'] = (object) $this->options['filter'];
-        }
-
-        foreach (['authorizedDatabases', 'maxTimeMS', 'nameOnly'] as $option) {
-            if (isset($this->options[$option])) {
-                $cmd[$option] = $this->options[$option];
-            }
-        }
-
-        $cursor = $server->executeReadCommand('admin', new Command($cmd), $this->createOptions());
+        $cursor = $server->executeReadCommand('admin', $this->createCommand(), $this->createOptions());
         $cursor->setTypeMap(['root' => 'array', 'document' => 'array']);
         $result = current($cursor->toArray());
 
@@ -126,15 +117,34 @@ class ListDatabases implements Executable
     }
 
     /**
+     * Create the listDatabases command.
+     */
+    private function createCommand(): Command
+    {
+        $cmd = ['listDatabases' => 1];
+
+        if (! empty($this->options['filter'])) {
+            $cmd['filter'] = (object) $this->options['filter'];
+        }
+
+        foreach (['authorizedDatabases', 'comment', 'maxTimeMS', 'nameOnly'] as $option) {
+            if (isset($this->options[$option])) {
+                $cmd[$option] = $this->options[$option];
+            }
+        }
+
+        return new Command($cmd);
+    }
+
+    /**
      * Create options for executing the command.
      *
      * Note: read preference is intentionally omitted, as the spec requires that
      * the command be executed on the primary.
      *
-     * @see http://php.net/manual/en/mongodb-driver-server.executecommand.php
-     * @return array
+     * @see https://php.net/manual/en/mongodb-driver-server.executecommand.php
      */
-    private function createOptions()
+    private function createOptions(): array
     {
         $options = [];
 

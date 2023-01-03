@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -38,7 +38,7 @@ class DatabaseCommand implements Executable
     /** @var string */
     private $databaseName;
 
-    /** @var array|Command|object */
+    /** @var Command */
     private $command;
 
     /** @var array */
@@ -65,7 +65,7 @@ class DatabaseCommand implements Executable
      * @param array        $options      Options for command execution
      * @throws InvalidArgumentException for parameter/option parsing errors
      */
-    public function __construct($databaseName, $command, array $options = [])
+    public function __construct(string $databaseName, $command, array $options = [])
     {
         if (! is_array($command) && ! is_object($command)) {
             throw InvalidArgumentException::invalidType('$command', $command, 'array or object');
@@ -83,7 +83,7 @@ class DatabaseCommand implements Executable
             throw InvalidArgumentException::invalidType('"typeMap" option', $options['typeMap'], 'array');
         }
 
-        $this->databaseName = (string) $databaseName;
+        $this->databaseName = $databaseName;
         $this->command = $command instanceof Command ? $command : new Command($command);
         $this->options = $options;
     }
@@ -92,7 +92,6 @@ class DatabaseCommand implements Executable
      * Execute the operation.
      *
      * @see Executable::execute()
-     * @param Server $server
      * @return Cursor
      */
     public function execute(Server $server)
@@ -109,10 +108,9 @@ class DatabaseCommand implements Executable
     /**
      * Create options for executing the command.
      *
-     * @see http://php.net/manual/en/mongodb-driver-server.executecommand.php
-     * @return array
+     * @see https://php.net/manual/en/mongodb-driver-server.executecommand.php
      */
-    private function createOptions()
+    private function createOptions(): array
     {
         $options = [];
 

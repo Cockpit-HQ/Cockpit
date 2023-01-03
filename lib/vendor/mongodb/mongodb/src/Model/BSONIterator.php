@@ -6,7 +6,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -63,12 +63,12 @@ class BSONIterator implements Iterator
      *  * typeMap (array): Type map for BSON deserialization.
      *
      * @internal
-     * @see http://php.net/manual/en/function.mongodb.bson-tophp.php
+     * @see https://php.net/manual/en/function.mongodb.bson-tophp.php
      * @param string $data    Concatenated, valid, BSON-encoded documents
      * @param array  $options Iterator options
      * @throws InvalidArgumentException for parameter/option parsing errors
      */
-    public function __construct($data, array $options = [])
+    public function __construct(string $data, array $options = [])
     {
         if (isset($options['typeMap']) && ! is_array($options['typeMap'])) {
             throw InvalidArgumentException::invalidType('"typeMap" option', $options['typeMap'], 'array');
@@ -84,7 +84,7 @@ class BSONIterator implements Iterator
     }
 
     /**
-     * @see http://php.net/iterator.current
+     * @see https://php.net/iterator.current
      * @return mixed
      */
     #[ReturnTypeWillChange]
@@ -94,7 +94,7 @@ class BSONIterator implements Iterator
     }
 
     /**
-     * @see http://php.net/iterator.key
+     * @see https://php.net/iterator.key
      * @return mixed
      */
     #[ReturnTypeWillChange]
@@ -104,7 +104,7 @@ class BSONIterator implements Iterator
     }
 
     /**
-     * @see http://php.net/iterator.next
+     * @see https://php.net/iterator.next
      * @return void
      */
     #[ReturnTypeWillChange]
@@ -116,7 +116,7 @@ class BSONIterator implements Iterator
     }
 
     /**
-     * @see http://php.net/iterator.rewind
+     * @see https://php.net/iterator.rewind
      * @return void
      */
     #[ReturnTypeWillChange]
@@ -129,16 +129,15 @@ class BSONIterator implements Iterator
     }
 
     /**
-     * @see http://php.net/iterator.valid
-     * @return boolean
+     * @see https://php.net/iterator.valid
      */
     #[ReturnTypeWillChange]
-    public function valid()
+    public function valid(): bool
     {
         return $this->current !== null;
     }
 
-    private function advance()
+    private function advance(): void
     {
         if ($this->position === $this->bufferLength) {
             return;

@@ -16,7 +16,7 @@ use function substr;
 /**
  * Simple lexer for docblock annotations.
  *
- * @template-extends AbstractLexer<DocLexer::T_*>
+ * @template-extends AbstractLexer<DocLexer::T_*, string>
  */
 final class DocLexer extends AbstractLexer
 {
@@ -130,9 +130,13 @@ final class DocLexer extends AbstractLexer
     }
 
     /** @return array{value: int|string, type:self::T_*|null, position:int} */
-    public function peek(): array
+    public function peek(): ?array
     {
         $token = parent::peek();
+
+        if ($token === null) {
+            return null;
+        }
 
         return (array) $token;
     }
