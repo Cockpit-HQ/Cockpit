@@ -1,6 +1,6 @@
 <?php
 
-define('APP_VERSION', '2.3.5');
+define('APP_VERSION', '2.3.6');
 
 if (!defined('APP_START_TIME')) define('APP_START_TIME', microtime(true));
 if (!defined('APP_ADMIN')) define('APP_ADMIN', false);
