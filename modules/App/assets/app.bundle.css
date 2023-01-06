@@ -3113,6 +3113,7 @@ kiss-tooltip[show="true"] {
     appearance: none;
     background: none;
     border: none;
+    color: inherit;
 }
 .kiss-legend {
     width: 100%;

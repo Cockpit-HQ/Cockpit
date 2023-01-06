@@ -181,6 +181,39 @@
                     </kiss-content>
                 </kiss-popoutmenu>
 
+                <?php if ($this->helper('acl')->isAllowed("content/{$model['name']}/publish")): ?>
+                <kiss-popoutmenu id="model-items-menu-state" ref="stateChooser">
+                    <kiss-content>
+
+                        <kiss-navlist class="kiss-margin-small">
+
+                            <strong class="kiss-text-bold kiss-text-caption"><?=t('Set state')?></strong>
+
+                            <ul class="app-list-items kiss-margin-small-top">
+                                <li>
+                                    <a class="kiss-flex kiss-flex-middle" @click="updateStateSelected(1)">
+                                        <icon class="kiss-margin-small-right kiss-color-success">trip_origin</icon>
+                                        <?=t('Published')?>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="kiss-flex kiss-flex-middle" @click="updateStateSelected(0)">
+                                        <icon class="kiss-margin-small-right kiss-color-danger">trip_origin</icon>
+                                        <?=t('Unpublished')?>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="kiss-flex kiss-flex-middle" @click="updateStateSelected(-1)">
+                                        <icon class="kiss-margin-small-right kiss-color-muted">trip_origin</icon>
+                                        <?=t('Archive')?>
+                                    </a>
+                                </li>
+                            </ul>
+                        </kiss-navlist>
+                    </kiss-content>
+                </kiss-popoutmenu>
+                <?php endif ?>
+
             </teleport>
 
             <app-actionbar>
@@ -200,10 +233,11 @@
                                 <a v-if="(page + 1) <= pages" @click="load(page + 1)"><?= t('Next') ?></a>
                             </div>
                         </div>
-                        <div class="kiss-flex-1"></div>
-                        <div class="kiss-margin-right" v-if="selected.length">
-                            <button class="kiss-button kiss-button-danger" @click="removeSelected()">{{ t('Delete') }} -{{ selected.length }}-</button>
+                        <div class="kiss-button-group kiss-margin-large-left" v-if="selected.length">
+                            <button class="kiss-button" @click="updateStateSelected()" v-if="acl.canPublish">{{ t('Update state') }} <span class="kiss-color-muted">{{ selected.length }}</span></button>
+                            <button class="kiss-button kiss-button-danger" @click="removeSelected()">{{ t('Delete') }} <span class="kiss-color-muted">{{ selected.length }}</span></button>
                         </div>
+                        <div class="kiss-flex-1"></div>
                         <div class="kiss-button-group">
                             <a class="kiss-button" href="<?= $this->route("/content") ?>"><?= t('Close') ?></a>
                             <?php if ($this->helper('acl')->isAllowed("content/{$model['name']}/create")) : ?>
@@ -246,7 +280,12 @@
                         limit: 25,
                         count: 0,
                         loading: false,
-                        locale: 'default'
+                        locale: 'default',
+
+                        acl: {
+                            canCreate: <?=($this->helper('acl')->isAllowed("content/{$model['name']}/create") ? 'true' : 'false')?>,
+                            canPublish: <?=($this->helper('acl')->isAllowed("content/{$model['name']}/publish") ? 'true' : 'false')?>
+                        }
                     }
                 },
 
@@ -396,6 +435,23 @@
                                 App.ui.notify('Items removed!');
                             });
                         });
+                    },
+
+                    updateStateSelected(state) {
+
+                        if (state === undefined) {
+                            this.$refs.stateChooser.show();
+                            return;
+                        }
+
+                        this.$request(`/content/collection/updateState/${this.model.name}`, {
+                            ids: this.selected,
+                            state
+                        }).then(res => {
+                            this.load(this.page == 1 ? 1 : (this.items.length - this.selected.length ? this.page : this.page - 1));
+                            App.ui.notify('State updated!');
+                        });
+
                     },
 
                     toggleAllSelect(e) {

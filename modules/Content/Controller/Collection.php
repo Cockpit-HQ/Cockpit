@@ -176,4 +176,35 @@ class Collection extends App {
         return ['success' => true];
     }
 
+    public function updateState($model = null) {
+
+        $this->helper('session')->close();
+
+        $model = $this->module('content')->model($model);
+        $ids = $this->param('ids');
+        $state = $this->param('state', null);
+
+        if (!$model || $model['type'] != 'collection' || !is_array($ids) || is_null($state)) {
+            return $this->stop(404);
+        }
+
+        if (!$ids) {
+            return $this->stop(['error' => 'Item ids are missing'], 412);
+        }
+
+        if (!$this->isAllowed("content/{$model['name']}/publish")) {
+            return $this->stop(401);
+        }
+
+        $data = [
+            '_state' => intval($state),
+            '_mby' => $this->user['_id'],
+            '_modified' => time(),
+        ];
+
+        $this->app->dataStorage->update("content/collections/{$model['name']}", ['_id' => ['$in' => $ids]], $data);
+
+        return ['success' => true];
+    }
+
 }

@@ -119,6 +119,7 @@
     appearance: none;
     background: none;
     border: none;
+    color: inherit;
 }
 
 .kiss-legend {

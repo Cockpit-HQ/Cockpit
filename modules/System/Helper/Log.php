@@ -42,8 +42,9 @@ class LogChannel {
             'datetime' => date('Y-m-d G:i:s T', $time)
         ];
 
-        $this->app->dataStorage->save('system/log', $record);
-
+        try {
+            $this->app->dataStorage->save('system/log', $record);
+        } catch(\Throwable $e) {}
     }
 
     public function info(string $message, ?array $context = null): void {
