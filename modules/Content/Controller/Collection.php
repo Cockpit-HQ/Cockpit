@@ -102,6 +102,7 @@ class Collection extends App {
 
         $options = $this->app->param('options');
         $process = $this->app->param('process', []);
+        $state = $this->app->param('state', null);
 
         if (isset($options['filter']) && is_string($options['filter'])) {
 
@@ -138,6 +139,11 @@ class Collection extends App {
             }
 
             $options['filter'] = $filter;
+        }
+
+        if (!is_null($state)) {
+            if (!isset($options['filter'])) $options['filter'] = [];
+            $options['filter']['_state'] = intval($state);
         }
 
         $items = $this->app->module('content')->items($model['name'], $options, $process);

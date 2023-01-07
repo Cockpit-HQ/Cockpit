@@ -34,15 +34,25 @@
                 </div>
             </div>
 
-            <form class="kiss-flex kiss-flex-middle" v-if="fieldTypes && ((!loading && items.length) || filter)" @submit.prevent="filter = txtFilter">
+            <div v-if="fieldTypes && ((!loading && items.length) || filter || state !== false)">
+                <form class="kiss-flex kiss-flex-middle" @submit.prevent="filter = txtFilter">
 
-                <input type="text" class="kiss-input kiss-flex-1 kiss-margin-xsmall-right" :placeholder="t('Filter items...')" v-model="txtFilter">
+                    <input type="text" class="kiss-input kiss-flex-1 kiss-margin-xsmall-right" :placeholder="t('Filter items...')" v-model="txtFilter">
 
-                <div class="kiss-button-group kiss-margin-small-left">
-                    <button type="button" class="kiss-button" @click="filter = ''" v-if="filter"><?= t('Reset') ?></button>
-                    <button class="kiss-button kiss-flex"><?= t('Search') ?></button>
+                    <div class="kiss-button-group kiss-margin-small-left">
+                        <button type="button" class="kiss-button" @click="filter = ''" v-if="filter"><?= t('Reset') ?></button>
+                        <button class="kiss-button kiss-flex"><?= t('Search') ?></button>
+                    </div>
+
+                </form>
+
+                <div class="kiss-margin kiss-button-group">
+                    <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-button-primary': state === false}" @click="state = false">{{ t('All') }}</button>
+                    <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-button-primary': state === 1}" @click="state = 1">{{ t('Published') }}</button>
+                    <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-button-primary': state === 0}" @click="state = 0">{{ t('Unpublished') }}</button>
+                    <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-button-primary': state === -1}" @click="state = -1">{{ t('Archive') }}</button>
                 </div>
-            </form>
+            </div>
 
             <app-loader class="kiss-margin" v-if="!fieldTypes || loading"></app-loader>
 
@@ -275,6 +285,7 @@
                             _created: -1
                         },
                         txtFilter: '',
+                        state: false,
                         page: 1,
                         pages: 1,
                         limit: 25,
@@ -301,10 +312,11 @@
 
                             if (searchParams.has('state')) {
                                 try {
-                                    var q = JSON.parse(atob(searchParams.get('state')));
+                                    const q = JSON.parse(atob(searchParams.get('state')));
                                     if (q.sort) this.sort = q.sort;
                                     if (q.page) this.page = q.page;
                                     if (q.limit) this.limit = (parseInt(q.limit) || this.limit);
+                                    if (q.state !== undefined && q.state !== null) this.state = q.state;
                                     if (q.filter) {
                                         this.filter = q.filter;
                                         this.txtFilter = q.filter;
@@ -320,8 +332,13 @@
                 },
 
                 watch: {
+
                     filter(val) {
                         this.txtFilter = val;
+                        this.load();
+                    },
+
+                    state() {
                         this.load();
                     },
 
@@ -364,12 +381,17 @@
                         };
 
                         let process = {};
+                        let state = null;
 
                         this.loading = true;
                         this.selected = [];
 
                         if (this.filter) {
                             options.filter = this.filter;
+                        }
+
+                        if (this.state !== false) {
+                            state = this.state;
                         }
 
                         if (this.locale != 'default') {
@@ -384,13 +406,14 @@
                                     page: this.page || null,
                                     filter: this.filter || null,
                                     sort: this.sort || null,
+                                    state: this.state || null,
                                     limit: this.limit
                                 }))].join(''))
                             );
                         }
 
                         this.$request(`/content/collection/find/${this.model.name}`, {
-                            options, process
+                            options, process, state
                         }).then(rsp => {
                             this.items = rsp.items;
                             this.page = rsp.page;

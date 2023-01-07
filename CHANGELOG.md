@@ -3,6 +3,7 @@
 ## WIP
 
 - Batch update collection items state
+- Add state filter to collection items view
 
 ## 2.3.6 (2023-01-03)
 
