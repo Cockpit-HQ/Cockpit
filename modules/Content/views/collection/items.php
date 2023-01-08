@@ -232,6 +232,35 @@
                 </kiss-popoutmenu>
                 <?php endif ?>
 
+                <kiss-popoutmenu id="model-menu-actions">
+                    <kiss-content>
+                        <kiss-navlist class="kiss-margin">
+                            <ul>
+                                <li class="kiss-nav-header"><?= t('Collection actions') ?></li>
+                                <li>
+                                    <a class="kiss-flex kiss-flex-middle" @click="load(page)">
+                                        <icon class="kiss-margin-small-right">refresh</icon>
+                                        {{ t('Reload content') }}
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="kiss-flex kiss-flex-middle" href="<?= $this->route("/content/collection/item/{$model['name']}") ?>">
+                                        <icon class="kiss-margin-small-right">add_circle_outline</icon>
+                                        <?= t('Create item') ?>
+                                    </a>
+                                </li>
+                                <li class="kiss-nav-divider"></li>
+                                <li>
+                                    <a class="kiss-flex kiss-flex-middle" href="<?= $this->route("/content/models/edit/{$model['name']}") ?>">
+                                        <icon class="kiss-margin-small-right">create</icon>
+                                        <?= t('Edit model') ?>
+                                    </a>
+                                </li>
+                            </ul>
+                        </kiss-navlist>
+                    </kiss-content>
+                </kiss-popoutmenu>
+
             </teleport>
 
             <app-actionbar>
@@ -539,26 +568,3 @@
     </vue-view>
 
 </kiss-container>
-
-<kiss-popoutmenu id="model-menu-actions">
-    <kiss-content>
-        <kiss-navlist class="kiss-margin">
-            <ul>
-                <li class="kiss-nav-header"><?= t('Model actions') ?></li>
-                <li>
-                    <a class="kiss-flex kiss-flex-middle" href="<?= $this->route("/content/models/edit/{$model['name']}") ?>">
-                        <icon class="kiss-margin-small-right">create</icon>
-                        <?= t('Edit') ?>
-                    </a>
-                </li>
-                <li class="kiss-nav-divider"></li>
-                <li>
-                    <a class="kiss-flex kiss-flex-middle" href="<?= $this->route("/content/collection/item/{$model['name']}") ?>">
-                        <icon class="kiss-margin-small-right">add_circle_outline</icon>
-                        <?= t('Create item') ?>
-                    </a>
-                </li>
-            </ul>
-        </kiss-navlist>
-    </kiss-content>
-</kiss-popoutmenu>
