@@ -46,11 +46,19 @@
 
                 </form>
 
-                <div class="kiss-margin kiss-button-group">
-                    <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-button-primary': state === false}" @click="state = false">{{ t('All') }}</button>
-                    <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-button-primary': state === 1}" @click="state = 1">{{ t('Published') }}</button>
-                    <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-button-primary': state === 0}" @click="state = 0">{{ t('Unpublished') }}</button>
-                    <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-button-primary': state === -1}" @click="state = -1">{{ t('Archive') }}</button>
+                <div class="kiss-margin">
+
+                    <button class="kiss-button kiss-button-small kiss-overlay-input kiss-margin-small-right" :class="{'kiss-button-primary': state !== false}" type="button">
+                        <span class="kiss-margin-small-right">{{ selectedState }}</span>
+                        <icon>expand_more</icon>
+                        <select v-model="state">
+                            <option :value="false">{{ t('All') }}</option>
+                            <option :value="1">{{ t('Published') }}</option>
+                            <option :value="0">{{ t('Unpublished') }}</option>
+                            <option :value="-1">{{ t('Archive') }}</option>
+                        </select>
+                    </button>
+
                 </div>
             </div>
 
@@ -367,6 +375,25 @@
                         return this.model.fields.filter(field => {
                             return field.__visible !== false;
                         });
+                    },
+
+                    selectedState() {
+
+                        let label = 'All';
+
+                        switch(this.state) {
+                            case -1:
+                                label = 'Archive';
+                                break;
+                            case 0:
+                                label = 'Unpublished';
+                                break;
+                            case 1:
+                                label = 'Published';
+                                break;
+                        }
+
+                        return this.t(label);
                     }
                 },
 
