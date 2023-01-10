@@ -475,6 +475,10 @@ $this->on('restApi.config', function($restApi) {
             {
                 $options['filter']['_state'] = 1;
             }
+            else if($options['filter']['_state'] < 0)
+            {
+                unset($options['filter']['_state']);
+            }
 
             $items = $app->module('content')->items($model, $options, $process);
 
