@@ -471,7 +471,10 @@ $this->on('restApi.config', function($restApi) {
                 $options['filter'] = [];
             }
 
-            $options['filter']['_state'] = 1;
+            if (!isset($options['filter']['_state']))
+            {
+                $options['filter']['_state'] = 1;
+            }
 
             $items = $app->module('content')->items($model, $options, $process);
 
