@@ -17,7 +17,7 @@
 
                 <div class="kiss-margin" :class="{'kiss-disabled': locale._id}">
                     <label><?=t('i18n')?></label>
-                    <input class="kiss-input" type="text" pattern="[a-zA-Z0-9_]+" v-model="locale.i18n" :disabled="locale._id" required>
+                    <input class="kiss-input" type="text" pattern="[a-zA-Z0-9_-]+" v-model="locale.i18n" :disabled="locale._id" required>
                 </div>
 
                 <div class="kiss-margin">
