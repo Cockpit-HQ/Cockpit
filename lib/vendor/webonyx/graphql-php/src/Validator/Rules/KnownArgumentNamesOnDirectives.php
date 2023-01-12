@@ -1,111 +1,103 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace GraphQL\Validator\Rules;
 
 use GraphQL\Error\Error;
 use GraphQL\Language\AST\DirectiveDefinitionNode;
 use GraphQL\Language\AST\DirectiveNode;
-use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\NodeKind;
 use GraphQL\Language\Visitor;
 use GraphQL\Language\VisitorOperation;
+use GraphQL\Type\Definition\Argument;
 use GraphQL\Type\Definition\Directive;
-use GraphQL\Type\Definition\FieldArgument;
 use GraphQL\Utils\Utils;
-use GraphQL\Validator\ASTValidationContext;
+use GraphQL\Validator\QueryValidationContext;
 use GraphQL\Validator\SDLValidationContext;
 use GraphQL\Validator\ValidationContext;
-use function array_map;
-use function in_array;
-use function sprintf;
 
 /**
- * Known argument names on directives
+ * Known argument names on directives.
  *
  * A GraphQL directive is only valid if all supplied arguments are defined by
  * that field.
+ *
+ * @phpstan-import-type VisitorArray from Visitor
  */
 class KnownArgumentNamesOnDirectives extends ValidationRule
 {
     /**
-     * @param string[] $suggestedArgs
+     * @param array<string> $suggestedArgs
      */
-    public static function unknownDirectiveArgMessage($argName, $directiveName, array $suggestedArgs)
+    public static function unknownDirectiveArgMessage(string $argName, string $directiveName, array $suggestedArgs): string
     {
-        $message = sprintf('Unknown argument "%s" on directive "@%s".', $argName, $directiveName);
+        $message = "Unknown argument \"{$argName}\" on directive \"@{$directiveName}\".";
+
         if (isset($suggestedArgs[0])) {
-            $message .= sprintf(' Did you mean %s?', Utils::quotedOrList($suggestedArgs));
+            $suggestions = Utils::quotedOrList($suggestedArgs);
+            $message .= " Did you mean {$suggestions}?";
         }
 
         return $message;
     }
 
-    public function getSDLVisitor(SDLValidationContext $context)
+    public function getSDLVisitor(SDLValidationContext $context): array
     {
         return $this->getASTVisitor($context);
     }
 
-    public function getVisitor(ValidationContext $context)
+    public function getVisitor(QueryValidationContext $context): array
     {
         return $this->getASTVisitor($context);
     }
 
-    public function getASTVisitor(ASTValidationContext $context)
+    /**
+     * @phpstan-return VisitorArray
+     */
+    public function getASTVisitor(ValidationContext $context): array
     {
-        $directiveArgs     = [];
-        $schema            = $context->getSchema();
-        $definedDirectives = $schema !== null ? $schema->getDirectives() : Directive::getInternalDirectives();
+        $directiveArgs = [];
+        $schema = $context->getSchema();
+        $definedDirectives = $schema !== null
+            ? $schema->getDirectives()
+            : Directive::getInternalDirectives();
 
         foreach ($definedDirectives as $directive) {
-            $directiveArgs[$directive->name] = array_map(
-                static function (FieldArgument $arg) : string {
-                    return $arg->name;
-                },
+            $directiveArgs[$directive->name] = \array_map(
+                static fn (Argument $arg): string => $arg->name,
                 $directive->args
             );
         }
 
         $astDefinitions = $context->getDocument()->definitions;
         foreach ($astDefinitions as $def) {
-            if (! ($def instanceof DirectiveDefinitionNode)) {
-                continue;
-            }
+            if ($def instanceof DirectiveDefinitionNode) {
+                $argNames = [];
+                foreach ($def->arguments as $arg) {
+                    $argNames[] = $arg->name->value;
+                }
 
-            $name = $def->name->value;
-            if ($def->arguments !== null) {
-                $directiveArgs[$name] = Utils::map(
-                    $def->arguments ?? [],
-                    static function (InputValueDefinitionNode $arg) : string {
-                        return $arg->name->value;
-                    }
-                );
-            } else {
-                $directiveArgs[$name] = [];
+                $directiveArgs[$def->name->value] = $argNames;
             }
         }
 
         return [
-            NodeKind::DIRECTIVE => static function (DirectiveNode $directiveNode) use ($directiveArgs, $context) : VisitorOperation {
+            NodeKind::DIRECTIVE => static function (DirectiveNode $directiveNode) use ($directiveArgs, $context): VisitorOperation {
                 $directiveName = $directiveNode->name->value;
-                $knownArgs     = $directiveArgs[$directiveName] ?? null;
 
-                if ($directiveNode->arguments === null || $knownArgs === null) {
+                if (! isset($directiveArgs[$directiveName])) {
                     return Visitor::skipNode();
                 }
+                $knownArgs = $directiveArgs[$directiveName];
 
                 foreach ($directiveNode->arguments as $argNode) {
                     $argName = $argNode->name->value;
-                    if (in_array($argName, $knownArgs, true)) {
-                        continue;
+                    if (! \in_array($argName, $knownArgs, true)) {
+                        $suggestions = Utils::suggestionList($argName, $knownArgs);
+                        $context->reportError(new Error(
+                            static::unknownDirectiveArgMessage($argName, $directiveName, $suggestions),
+                            [$argNode]
+                        ));
                     }
-
-                    $suggestions = Utils::suggestionList($argName, $knownArgs);
-                    $context->reportError(new Error(
-                        self::unknownDirectiveArgMessage($argName, $directiveName, $suggestions),
-                        [$argNode]
-                    ));
                 }
 
                 return Visitor::skipNode();

@@ -1,20 +1,15 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace GraphQL\Language\AST;
 
 class EnumValueDefinitionNode extends Node
 {
-    /** @var string */
-    public $kind = NodeKind::ENUM_VALUE_DEFINITION;
+    public string $kind = NodeKind::ENUM_VALUE_DEFINITION;
 
-    /** @var NameNode */
-    public $name;
+    public NameNode $name;
 
     /** @var NodeList<DirectiveNode> */
-    public $directives;
+    public NodeList $directives;
 
-    /** @var StringValueNode|null */
-    public $description;
+    public ?StringValueNode $description = null;
 }

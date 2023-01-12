@@ -1,23 +1,24 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace GraphQL\Type\Definition;
 
+use GraphQL\Deferred;
+
 /**
-export type AbstractType =
-InterfaceType |
-UnionType;
+ * @phpstan-type ResolveTypeReturn ObjectType|string|callable(): (ObjectType|string|null)|Deferred|null
+ * @phpstan-type ResolveType callable(mixed $objectValue, mixed $context, ResolveInfo $resolveInfo): ResolveTypeReturn
  */
 interface AbstractType
 {
     /**
-     * Resolves concrete ObjectType for given object value
+     * Resolves the concrete ObjectType for the given value.
      *
-     * @param object  $objectValue
-     * @param mixed[] $context
+     * @param mixed $objectValue The resolved value for the object type
+     * @param mixed $context The context that was passed to GraphQL::execute()
      *
-     * @return mixed
+     * @return ObjectType|string|callable|Deferred|null
+     *
+     * @phpstan-return ResolveTypeReturn
      */
     public function resolveType($objectValue, $context, ResolveInfo $info);
 }

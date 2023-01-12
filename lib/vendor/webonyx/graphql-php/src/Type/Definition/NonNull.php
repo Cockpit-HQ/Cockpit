@@ -1,45 +1,53 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace GraphQL\Type\Definition;
 
 use GraphQL\Type\Schema;
 
+/**
+ * @phpstan-type WrappedType (NullableType&Type)|callable():(NullableType&Type)
+ */
 class NonNull extends Type implements WrappingType, OutputType, InputType
 {
-    /** @var callable():(NullableType&Type)|(NullableType&Type) */
-    private $ofType;
+    /**
+     * @var Type|callable
+     *
+     * @phpstan-var WrappedType
+     */
+    private $wrappedType;
 
     /**
-     * code sniffer doesn't understand this syntax. Pr with a fix here: waiting on https://github.com/squizlabs/PHP_CodeSniffer/pull/2919
-     * phpcs:disable Squiz.Commenting.FunctionComment.SpacingAfterParamType
-     * @param callable():(NullableType&Type)|(NullableType&Type) $type
+     * @param Type|callable $type
+     *
+     * @phpstan-param WrappedType $type
      */
     public function __construct($type)
     {
-        $this->ofType = $type;
+        $this->wrappedType = $type;
     }
 
-    public function toString() : string
+    public function toString(): string
     {
         return $this->getWrappedType()->toString() . '!';
     }
 
-    public function getOfType()
+    /**
+     * @return NullableType&Type
+     */
+    public function getWrappedType(): Type
     {
-        return Schema::resolveType($this->ofType);
+        return Schema::resolveType($this->wrappedType);
     }
 
-    /**
-     * @return (NullableType&Type)
-     */
-    public function getWrappedType(bool $recurse = false) : Type
+    public function getInnermostType(): NamedType
     {
-        $type = $this->getOfType();
+        $type = $this->getWrappedType();
+        while ($type instanceof WrappingType) {
+            $type = $type->getWrappedType();
+        }
 
-        return $recurse && $type instanceof WrappingType
-            ? $type->getWrappedType($recurse)
-            : $type;
+        assert($type instanceof NamedType, 'known because we unwrapped all the way down');
+
+        return $type;
     }
 }

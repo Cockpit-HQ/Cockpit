@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace GraphQL\Utils;
 
@@ -10,28 +8,17 @@ namespace GraphQL\Utils;
  */
 class PairSet
 {
-    /** @var bool[][] */
-    private $data;
+    /** @var array<string, array<string, bool>> */
+    private array $data = [];
 
-    public function __construct()
+    public function has(string $a, string $b, bool $areMutuallyExclusive): bool
     {
-        $this->data = [];
-    }
-
-    /**
-     * @param string $a
-     * @param string $b
-     * @param bool   $areMutuallyExclusive
-     *
-     * @return bool
-     */
-    public function has($a, $b, $areMutuallyExclusive)
-    {
-        $first  = $this->data[$a] ?? null;
-        $result = $first && isset($first[$b]) ? $first[$b] : null;
+        $first = $this->data[$a] ?? null;
+        $result = $first !== null && isset($first[$b]) ? $first[$b] : null;
         if ($result === null) {
             return false;
         }
+
         // areMutuallyExclusive being false is a superset of being true,
         // hence if we want to know if this PairSet "has" these two with no
         // exclusivity, we have to ensure it was added as such.
@@ -42,25 +29,15 @@ class PairSet
         return true;
     }
 
-    /**
-     * @param string $a
-     * @param string $b
-     * @param bool   $areMutuallyExclusive
-     */
-    public function add($a, $b, $areMutuallyExclusive)
+    public function add(string $a, string $b, bool $areMutuallyExclusive): void
     {
         $this->pairSetAdd($a, $b, $areMutuallyExclusive);
         $this->pairSetAdd($b, $a, $areMutuallyExclusive);
     }
 
-    /**
-     * @param string $a
-     * @param string $b
-     * @param bool   $areMutuallyExclusive
-     */
-    private function pairSetAdd($a, $b, $areMutuallyExclusive)
+    private function pairSetAdd(string $a, string $b, bool $areMutuallyExclusive): void
     {
-        $this->data[$a]     = $this->data[$a] ?? [];
+        $this->data[$a] ??= [];
         $this->data[$a][$b] = $areMutuallyExclusive;
     }
 }

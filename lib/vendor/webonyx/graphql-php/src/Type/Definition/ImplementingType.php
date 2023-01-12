@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace GraphQL\Type\Definition;
 
@@ -11,10 +9,10 @@ GraphQLInterfaceType;
  */
 interface ImplementingType
 {
-    public function implementsInterface(InterfaceType $interfaceType) : bool;
+    public function implementsInterface(InterfaceType $interfaceType): bool;
 
     /**
      * @return array<int, InterfaceType>
      */
-    public function getInterfaces() : array;
+    public function getInterfaces(): array;
 }

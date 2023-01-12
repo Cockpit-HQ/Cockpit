@@ -1,44 +1,33 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace GraphQL\Executor\Promise\Adapter;
 
 use Amp\Deferred;
 use Amp\Failure;
+
+use function Amp\Promise\all;
+
 use Amp\Promise as AmpPromise;
 use Amp\Success;
 use GraphQL\Executor\Promise\Promise;
 use GraphQL\Executor\Promise\PromiseAdapter;
-use Throwable;
-use function Amp\Promise\all;
-use function array_replace;
 
 class AmpPromiseAdapter implements PromiseAdapter
 {
-    /**
-     * @inheritdoc
-     */
-    public function isThenable($value) : bool
+    public function isThenable($value): bool
     {
         return $value instanceof AmpPromise;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function convertThenable($thenable) : Promise
+    public function convertThenable($thenable): Promise
     {
         return new Promise($thenable, $this);
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function then(Promise $promise, ?callable $onFulfilled = null, ?callable $onRejected = null) : Promise
+    public function then(Promise $promise, ?callable $onFulfilled = null, ?callable $onRejected = null): Promise
     {
-        $deferred  = new Deferred();
-        $onResolve = static function (?Throwable $reason, $value) use ($onFulfilled, $onRejected, $deferred) : void {
+        $deferred = new Deferred();
+        $onResolve = static function (?\Throwable $reason, $value) use ($onFulfilled, $onRejected, $deferred): void {
             if ($reason === null && $onFulfilled !== null) {
                 self::resolveWithCallable($deferred, $onFulfilled, $value);
             } elseif ($reason === null) {
@@ -50,25 +39,23 @@ class AmpPromiseAdapter implements PromiseAdapter
             }
         };
 
-        /** @var AmpPromise $adoptedPromise */
         $adoptedPromise = $promise->adoptedPromise;
+        \assert($adoptedPromise instanceof AmpPromise);
+
         $adoptedPromise->onResolve($onResolve);
 
         return new Promise($deferred->promise(), $this);
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function create(callable $resolver) : Promise
+    public function create(callable $resolver): Promise
     {
         $deferred = new Deferred();
 
         $resolver(
-            static function ($value) use ($deferred) : void {
+            static function ($value) use ($deferred): void {
                 $deferred->resolve($value);
             },
-            static function (Throwable $exception) use ($deferred) : void {
+            static function (\Throwable $exception) use ($deferred): void {
                 $deferred->fail($exception);
             }
         );
@@ -76,36 +63,29 @@ class AmpPromiseAdapter implements PromiseAdapter
         return new Promise($deferred->promise(), $this);
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function createFulfilled($value = null) : Promise
+    public function createFulfilled($value = null): Promise
     {
         $promise = new Success($value);
 
         return new Promise($promise, $this);
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function createRejected($reason) : Promise
+    public function createRejected(\Throwable $reason): Promise
     {
         $promise = new Failure($reason);
 
         return new Promise($promise, $this);
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function all(array $promisesOrValues) : Promise
+    public function all(iterable $promisesOrValues): Promise
     {
-        /** @var AmpPromise[] $promises */
+        /** @var array<AmpPromise<mixed>> $promises */
         $promises = [];
         foreach ($promisesOrValues as $key => $item) {
             if ($item instanceof Promise) {
-                $promises[$key] = $item->adoptedPromise;
+                $ampPromise = $item->adoptedPromise;
+                \assert($ampPromise instanceof AmpPromise);
+                $promises[$key] = $ampPromise;
             } elseif ($item instanceof AmpPromise) {
                 $promises[$key] = $item;
             }
@@ -113,32 +93,45 @@ class AmpPromiseAdapter implements PromiseAdapter
 
         $deferred = new Deferred();
 
-        $onResolve = static function (?Throwable $reason, ?array $values) use ($promisesOrValues, $deferred) : void {
+        all($promises)->onResolve(static function (?\Throwable $reason, ?array $values) use ($promisesOrValues, $deferred): void {
             if ($reason === null) {
-                $deferred->resolve(array_replace($promisesOrValues, $values));
+                \assert(\is_array($values), 'Either $reason or $values must be passed');
+
+                $promisesOrValuesArray = is_array($promisesOrValues)
+                    ? $promisesOrValues
+                    : iterator_to_array($promisesOrValues);
+                $resolvedValues = \array_replace($promisesOrValuesArray, $values);
+                $deferred->resolve($resolvedValues);
 
                 return;
             }
 
             $deferred->fail($reason);
-        };
-
-        all($promises)->onResolve($onResolve);
+        });
 
         return new Promise($deferred->promise(), $this);
     }
 
-    private static function resolveWithCallable(Deferred $deferred, callable $callback, $argument) : void
+    /**
+     * @template TArgument
+     * @template TResult
+     *
+     * @param Deferred<TResult> $deferred
+     * @param callable(TArgument): TResult $callback
+     * @param TArgument $argument
+     */
+    private static function resolveWithCallable(Deferred $deferred, callable $callback, $argument): void
     {
         try {
             $result = $callback($argument);
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
             $deferred->fail($exception);
 
             return;
         }
 
         if ($result instanceof Promise) {
+            /** @var TResult $result */
             $result = $result->adoptedPromise;
         }
 

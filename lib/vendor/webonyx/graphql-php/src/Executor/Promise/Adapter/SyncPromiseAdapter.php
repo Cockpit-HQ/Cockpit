@@ -1,157 +1,132 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace GraphQL\Executor\Promise\Adapter;
 
+use GraphQL\Deferred;
 use GraphQL\Error\InvariantViolation;
-use GraphQL\Executor\ExecutionResult;
 use GraphQL\Executor\Promise\Promise;
 use GraphQL\Executor\Promise\PromiseAdapter;
 use GraphQL\Utils\Utils;
-use Throwable;
-use function count;
 
 /**
  * Allows changing order of field resolution even in sync environments
- * (by leveraging queue of deferreds and promises)
+ * (by leveraging queue of deferreds and promises).
  */
 class SyncPromiseAdapter implements PromiseAdapter
 {
-    /**
-     * @inheritdoc
-     */
-    public function isThenable($value)
+    public function isThenable($value): bool
     {
         return $value instanceof SyncPromise;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function convertThenable($thenable)
+    public function convertThenable($thenable): Promise
     {
         if (! $thenable instanceof SyncPromise) {
             // End-users should always use Deferred (and don't use SyncPromise directly)
-            throw new InvariantViolation('Expected instance of GraphQL\Deferred, got ' . Utils::printSafe($thenable));
+            $deferred = Deferred::class;
+            $safeThenable = Utils::printSafe($thenable);
+            throw new InvariantViolation("Expected instance of {$deferred}, got {$safeThenable}");
         }
 
         return new Promise($thenable, $this);
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function then(Promise $promise, ?callable $onFulfilled = null, ?callable $onRejected = null)
+    public function then(Promise $promise, ?callable $onFulfilled = null, ?callable $onRejected = null): Promise
     {
-        /** @var SyncPromise $adoptedPromise */
         $adoptedPromise = $promise->adoptedPromise;
+        \assert($adoptedPromise instanceof SyncPromise);
 
         return new Promise($adoptedPromise->then($onFulfilled, $onRejected), $this);
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function create(callable $resolver)
+    public function create(callable $resolver): Promise
     {
         $promise = new SyncPromise();
 
         try {
             $resolver(
-                [
-                    $promise,
-                    'resolve',
-                ],
-                [
-                    $promise,
-                    'reject',
-                ]
+                [$promise, 'resolve'],
+                [$promise, 'reject']
             );
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             $promise->reject($e);
         }
 
         return new Promise($promise, $this);
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function createFulfilled($value = null)
+    public function createFulfilled($value = null): Promise
     {
         $promise = new SyncPromise();
 
         return new Promise($promise->resolve($value), $this);
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function createRejected($reason)
+    public function createRejected(\Throwable $reason): Promise
     {
         $promise = new SyncPromise();
 
         return new Promise($promise->reject($reason), $this);
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function all(array $promisesOrValues)
+    public function all(iterable $promisesOrValues): Promise
     {
         $all = new SyncPromise();
 
-        $total  = count($promisesOrValues);
-        $count  = 0;
+        $total = \is_array($promisesOrValues)
+            ? \count($promisesOrValues)
+            : \iterator_count($promisesOrValues);
+        $count = 0;
         $result = [];
+
+        $resolveAllWhenFinished = function () use (&$count, &$total, $all, &$result): void {
+            if ($count === $total) {
+                $all->resolve($result);
+            }
+        };
 
         foreach ($promisesOrValues as $index => $promiseOrValue) {
             if ($promiseOrValue instanceof Promise) {
                 $result[$index] = null;
                 $promiseOrValue->then(
-                    static function ($value) use ($index, &$count, $total, &$result, $all) : void {
+                    static function ($value) use (&$result, $index, &$count, &$resolveAllWhenFinished): void {
                         $result[$index] = $value;
-                        $count++;
-                        if ($count < $total) {
-                            return;
-                        }
-
-                        $all->resolve($result);
+                        ++$count;
+                        $resolveAllWhenFinished();
                     },
                     [$all, 'reject']
                 );
             } else {
                 $result[$index] = $promiseOrValue;
-                $count++;
+                ++$count;
             }
         }
-        if ($count === $total) {
-            $all->resolve($result);
-        }
+
+        $resolveAllWhenFinished();
 
         return new Promise($all, $this);
     }
 
     /**
-     * Synchronously wait when promise completes
+     * Synchronously wait when promise completes.
      *
-     * @return ExecutionResult
+     * @return mixed
      */
     public function wait(Promise $promise)
     {
         $this->beforeWait($promise);
         $taskQueue = SyncPromise::getQueue();
 
-        while ($promise->adoptedPromise->state === SyncPromise::PENDING &&
-            ! $taskQueue->isEmpty()
+        $syncPromise = $promise->adoptedPromise;
+        \assert($syncPromise instanceof SyncPromise);
+
+        while (
+            $syncPromise->state === SyncPromise::PENDING
+            && ! $taskQueue->isEmpty()
         ) {
             SyncPromise::runQueue();
             $this->onWait($promise);
         }
-
-        /** @var SyncPromise $syncPromise */
-        $syncPromise = $promise->adoptedPromise;
 
         if ($syncPromise->state === SyncPromise::FULFILLED) {
             return $syncPromise->result;
@@ -165,16 +140,16 @@ class SyncPromiseAdapter implements PromiseAdapter
     }
 
     /**
-     * Execute just before starting to run promise completion
+     * Execute just before starting to run promise completion.
      */
-    protected function beforeWait(Promise $promise)
+    protected function beforeWait(Promise $promise): void
     {
     }
 
     /**
-     * Execute while running promise completion
+     * Execute while running promise completion.
      */
-    protected function onWait(Promise $promise)
+    protected function onWait(Promise $promise): void
     {
     }
 }

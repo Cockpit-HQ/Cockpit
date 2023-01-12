@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace GraphQL\Validator\Rules;
 
@@ -10,35 +8,34 @@ use GraphQL\Language\AST\NodeKind;
 use GraphQL\Language\AST\OperationDefinitionNode;
 use GraphQL\Language\Visitor;
 use GraphQL\Language\VisitorOperation;
-use GraphQL\Validator\ValidationContext;
-use function sprintf;
+use GraphQL\Validator\QueryValidationContext;
 
 class NoUnusedFragments extends ValidationRule
 {
-    /** @var OperationDefinitionNode[] */
-    public $operationDefs;
+    /** @var array<int, OperationDefinitionNode> */
+    protected array $operationDefs;
 
-    /** @var FragmentDefinitionNode[] */
-    public $fragmentDefs;
+    /** @var array<int, FragmentDefinitionNode> */
+    protected array $fragmentDefs;
 
-    public function getVisitor(ValidationContext $context)
+    public function getVisitor(QueryValidationContext $context): array
     {
         $this->operationDefs = [];
-        $this->fragmentDefs  = [];
+        $this->fragmentDefs = [];
 
         return [
-            NodeKind::OPERATION_DEFINITION => function ($node) : VisitorOperation {
+            NodeKind::OPERATION_DEFINITION => function ($node): VisitorOperation {
                 $this->operationDefs[] = $node;
 
                 return Visitor::skipNode();
             },
-            NodeKind::FRAGMENT_DEFINITION  => function (FragmentDefinitionNode $def) : VisitorOperation {
+            NodeKind::FRAGMENT_DEFINITION => function (FragmentDefinitionNode $def): VisitorOperation {
                 $this->fragmentDefs[] = $def;
 
                 return Visitor::skipNode();
             },
-            NodeKind::DOCUMENT             => [
-                'leave' => function () use ($context) : void {
+            NodeKind::DOCUMENT => [
+                'leave' => function () use ($context): void {
                     $fragmentNameUsed = [];
 
                     foreach ($this->operationDefs as $operation) {
@@ -49,22 +46,21 @@ class NoUnusedFragments extends ValidationRule
 
                     foreach ($this->fragmentDefs as $fragmentDef) {
                         $fragName = $fragmentDef->name->value;
-                        if ($fragmentNameUsed[$fragName] ?? false) {
-                            continue;
-                        }
 
-                        $context->reportError(new Error(
-                            self::unusedFragMessage($fragName),
-                            [$fragmentDef]
-                        ));
+                        if (! isset($fragmentNameUsed[$fragName])) {
+                            $context->reportError(new Error(
+                                static::unusedFragMessage($fragName),
+                                [$fragmentDef]
+                            ));
+                        }
                     }
                 },
             ],
         ];
     }
 
-    public static function unusedFragMessage($fragName)
+    public static function unusedFragMessage(string $fragName): string
     {
-        return sprintf('Fragment "%s" is never used.', $fragName);
+        return "Fragment \"{$fragName}\" is never used.";
     }
 }

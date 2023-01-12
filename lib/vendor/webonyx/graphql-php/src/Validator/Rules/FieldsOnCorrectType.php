@@ -1,57 +1,42 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace GraphQL\Validator\Rules;
 
 use GraphQL\Error\Error;
 use GraphQL\Language\AST\FieldNode;
 use GraphQL\Language\AST\NodeKind;
-use GraphQL\Type\Definition\InterfaceType;
-use GraphQL\Type\Definition\ObjectType;
+use GraphQL\Type\Definition\HasFieldsType;
+use GraphQL\Type\Definition\NamedType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\Utils;
-use GraphQL\Validator\ValidationContext;
-use function array_keys;
-use function array_merge;
-use function arsort;
-use function count;
-use function sprintf;
+use GraphQL\Validator\QueryValidationContext;
 
 class FieldsOnCorrectType extends ValidationRule
 {
-    public function getVisitor(ValidationContext $context)
+    public function getVisitor(QueryValidationContext $context): array
     {
         return [
-            NodeKind::FIELD => function (FieldNode $node) use ($context) : void {
-                $type = $context->getParentType();
-                if (! $type) {
+            NodeKind::FIELD => function (FieldNode $node) use ($context): void {
+                $fieldDef = $context->getFieldDef();
+                if ($fieldDef !== null) {
                     return;
                 }
 
-                $fieldDef = $context->getFieldDef();
-                if ($fieldDef) {
+                $type = $context->getParentType();
+                if (! $type instanceof NamedType) {
                     return;
                 }
 
                 // This isn't valid. Let's find suggestions, if any.
-                $schema    = $context->getSchema();
+                $schema = $context->getSchema();
                 $fieldName = $node->name->value;
                 // First determine if there are any suggested types to condition on.
-                $suggestedTypeNames = $this->getSuggestedTypeNames(
-                    $schema,
-                    $type,
-                    $fieldName
-                );
+                $suggestedTypeNames = $this->getSuggestedTypeNames($schema, $type, $fieldName);
                 // If there are no suggested types, then perhaps this was a typo?
-                $suggestedFieldNames = $suggestedTypeNames
-                    ? []
-                    : $this->getSuggestedFieldNames(
-                        $schema,
-                        $type,
-                        $fieldName
-                    );
+                $suggestedFieldNames = $suggestedTypeNames === []
+                    ? $this->getSuggestedFieldNames($type, $fieldName)
+                    : [];
 
                 // Report an error, including helpful suggestions.
                 $context->reportError(new Error(
@@ -68,49 +53,48 @@ class FieldsOnCorrectType extends ValidationRule
     }
 
     /**
-     * Go through all of the implementations of type, as well as the interfaces
-     * that they implement. If any of those types include the provided field,
+     * Go through all implementations of a type, as well as the interfaces
+     * that it implements. If any of those types include the provided field,
      * suggest them, sorted by how often the type is referenced, starting
-     * with Interfaces.
+     * with interfaces.
      *
-     * @param ObjectType|InterfaceType $type
-     * @param string                   $fieldName
-     *
-     * @return string[]
+     * @return array<int, string>
      */
-    private function getSuggestedTypeNames(Schema $schema, $type, $fieldName)
+    protected function getSuggestedTypeNames(Schema $schema, Type $type, string $fieldName): array
     {
         if (Type::isAbstractType($type)) {
             $suggestedObjectTypes = [];
-            $interfaceUsageCount  = [];
+            $interfaceUsageCount = [];
 
             foreach ($schema->getPossibleTypes($type) as $possibleType) {
                 if (! $possibleType->hasField($fieldName)) {
                     continue;
                 }
+
                 // This object type defines this field.
                 $suggestedObjectTypes[] = $possibleType->name;
                 foreach ($possibleType->getInterfaces() as $possibleInterface) {
                     if (! $possibleInterface->hasField($fieldName)) {
                         continue;
                     }
+
                     // This interface type defines this field.
-                    $interfaceUsageCount[$possibleInterface->name] =
-                        ! isset($interfaceUsageCount[$possibleInterface->name])
+                    $interfaceUsageCount[$possibleInterface->name]
+                        = ! isset($interfaceUsageCount[$possibleInterface->name])
                             ? 0
                             : $interfaceUsageCount[$possibleInterface->name] + 1;
                 }
             }
 
             // Suggest interface types based on how common they are.
-            arsort($interfaceUsageCount);
-            $suggestedInterfaceTypes = array_keys($interfaceUsageCount);
+            \arsort($interfaceUsageCount);
+            $suggestedInterfaceTypes = \array_keys($interfaceUsageCount);
 
             // Suggest both interface and object types.
-            return array_merge($suggestedInterfaceTypes, $suggestedObjectTypes);
+            return \array_merge($suggestedInterfaceTypes, $suggestedObjectTypes);
         }
 
-        // Otherwise, must be an Object type, which does not have possible fields.
+        // Otherwise, must be an Object type, which does not have suggested types.
         return [];
     }
 
@@ -118,17 +102,15 @@ class FieldsOnCorrectType extends ValidationRule
      * For the field name provided, determine if there are any similar field names
      * that may be the result of a typo.
      *
-     * @param ObjectType|InterfaceType $type
-     * @param string                   $fieldName
-     *
-     * @return array|string[]
+     * @return array<int, string>
      */
-    private function getSuggestedFieldNames(Schema $schema, $type, $fieldName)
+    protected function getSuggestedFieldNames(Type $type, string $fieldName): array
     {
-        if ($type instanceof ObjectType || $type instanceof InterfaceType) {
-            $possibleFieldNames = $type->getFieldNames();
-
-            return Utils::suggestionList($fieldName, $possibleFieldNames);
+        if ($type instanceof HasFieldsType) {
+            return Utils::suggestionList(
+                $fieldName,
+                $type->getFieldNames()
+            );
         }
 
         // Otherwise, must be a Union type, which does not define fields.
@@ -136,29 +118,25 @@ class FieldsOnCorrectType extends ValidationRule
     }
 
     /**
-     * @param string   $fieldName
-     * @param string   $type
-     * @param string[] $suggestedTypeNames
-     * @param string[] $suggestedFieldNames
-     *
-     * @return string
+     * @param array<string> $suggestedTypeNames
+     * @param array<string> $suggestedFieldNames
      */
     public static function undefinedFieldMessage(
-        $fieldName,
-        $type,
+        string $fieldName,
+        string $type,
         array $suggestedTypeNames,
         array $suggestedFieldNames
-    ) {
-        $message = sprintf('Cannot query field "%s" on type "%s".', $fieldName, $type);
+    ): string {
+        $message = "Cannot query field \"{$fieldName}\" on type \"{$type}\".";
 
-        if ($suggestedTypeNames) {
+        if ($suggestedTypeNames !== []) {
             $suggestions = Utils::quotedOrList($suggestedTypeNames);
 
-            $message .= sprintf(' Did you mean to use an inline fragment on %s?', $suggestions);
-        } elseif (count($suggestedFieldNames) > 0) {
+            $message .= " Did you mean to use an inline fragment on {$suggestions}?";
+        } elseif ($suggestedFieldNames !== []) {
             $suggestions = Utils::quotedOrList($suggestedFieldNames);
 
-            $message .= sprintf(' Did you mean %s?', $suggestions);
+            $message .= " Did you mean {$suggestions}?";
         }
 
         return $message;

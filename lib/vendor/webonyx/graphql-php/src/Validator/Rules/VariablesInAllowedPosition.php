@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace GraphQL\Validator\Rules;
 
@@ -13,37 +11,36 @@ use GraphQL\Language\AST\VariableDefinitionNode;
 use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
+use GraphQL\Utils\AST;
 use GraphQL\Utils\TypeComparators;
-use GraphQL\Utils\TypeInfo;
 use GraphQL\Utils\Utils;
-use GraphQL\Validator\ValidationContext;
-use function sprintf;
+use GraphQL\Validator\QueryValidationContext;
 
 class VariablesInAllowedPosition extends ValidationRule
 {
     /**
      * A map from variable names to their definition nodes.
      *
-     * @var VariableDefinitionNode[]
+     * @var array<string, VariableDefinitionNode>
      */
-    public $varDefMap;
+    protected array $varDefMap;
 
-    public function getVisitor(ValidationContext $context)
+    public function getVisitor(QueryValidationContext $context): array
     {
         return [
             NodeKind::OPERATION_DEFINITION => [
-                'enter' => function () : void {
+                'enter' => function (): void {
                     $this->varDefMap = [];
                 },
-                'leave' => function (OperationDefinitionNode $operation) use ($context) : void {
+                'leave' => function (OperationDefinitionNode $operation) use ($context): void {
                     $usages = $context->getRecursiveVariableUsages($operation);
 
                     foreach ($usages as $usage) {
-                        $node         = $usage['node'];
-                        $type         = $usage['type'];
+                        $node = $usage['node'];
+                        $type = $usage['type'];
                         $defaultValue = $usage['defaultValue'];
-                        $varName      = $node->name->value;
-                        $varDef       = $this->varDefMap[$varName] ?? null;
+                        $varName = $node->name->value;
+                        $varDef = $this->varDefMap[$varName] ?? null;
 
                         if ($varDef === null || $type === null) {
                             continue;
@@ -54,21 +51,19 @@ class VariablesInAllowedPosition extends ValidationRule
                         // the variable type is non-null when the expected type is nullable.
                         // If both are list types, the variable item type can be more strict
                         // than the expected item type (contravariant).
-                        $schema  = $context->getSchema();
-                        $varType = TypeInfo::typeFromAST($schema, $varDef->type);
+                        $schema = $context->getSchema();
+                        $varType = AST::typeFromAST([$schema, 'getType'], $varDef->type);
 
-                        if (! $varType || $this->allowedVariableUsage($schema, $varType, $varDef->defaultValue, $type, $defaultValue)) {
-                            continue;
+                        if ($varType !== null && ! $this->allowedVariableUsage($schema, $varType, $varDef->defaultValue, $type, $defaultValue)) {
+                            $context->reportError(new Error(
+                                static::badVarPosMessage($varName, $varType->toString(), $type->toString()),
+                                [$varDef, $node]
+                            ));
                         }
-
-                        $context->reportError(new Error(
-                            self::badVarPosMessage($varName, $varType, $type),
-                            [$varDef, $node]
-                        ));
                     }
                 },
             ],
-            NodeKind::VARIABLE_DEFINITION  => function (VariableDefinitionNode $varDefNode) : void {
+            NodeKind::VARIABLE_DEFINITION => function (VariableDefinitionNode $varDefNode): void {
                 $this->varDefMap[$varDefNode->variable->name->value] = $varDefNode;
             },
         ];
@@ -80,14 +75,9 @@ class VariablesInAllowedPosition extends ValidationRule
      * expected type is nullable. If both are list types, the variable item type can
      * be more strict than the expected item type.
      */
-    public static function badVarPosMessage($varName, $varType, $expectedType)
+    public static function badVarPosMessage(string $varName, string $varType, string $expectedType): string
     {
-        return sprintf(
-            'Variable "$%s" of type "%s" used in position expecting type "%s".',
-            $varName,
-            $varType,
-            $expectedType
-        );
+        return "Variable \"\${$varName}\" of type \"{$varType}\" used in position expecting type \"{$expectedType}\".";
     }
 
     /**
@@ -98,14 +88,15 @@ class VariablesInAllowedPosition extends ValidationRule
      * @param ValueNode|null $varDefaultValue
      * @param mixed          $locationDefaultValue
      */
-    private function allowedVariableUsage(Schema $schema, Type $varType, $varDefaultValue, Type $locationType, $locationDefaultValue) : bool
+    protected function allowedVariableUsage(Schema $schema, Type $varType, $varDefaultValue, Type $locationType, $locationDefaultValue): bool
     {
         if ($locationType instanceof NonNull && ! $varType instanceof NonNull) {
-            $hasNonNullVariableDefaultValue = $varDefaultValue && ! $varDefaultValue instanceof NullValueNode;
-            $hasLocationDefaultValue        = ! Utils::isInvalid($locationDefaultValue);
+            $hasNonNullVariableDefaultValue = $varDefaultValue !== null && ! $varDefaultValue instanceof NullValueNode;
+            $hasLocationDefaultValue = ! (Utils::undefined() === $locationDefaultValue);
             if (! $hasNonNullVariableDefaultValue && ! $hasLocationDefaultValue) {
                 return false;
             }
+
             $nullableLocationType = $locationType->getWrappedType();
 
             return TypeComparators::isTypeSubTypeOf($schema, $varType, $nullableLocationType);

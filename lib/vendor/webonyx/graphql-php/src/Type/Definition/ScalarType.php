@@ -1,16 +1,13 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace GraphQL\Type\Definition;
 
 use GraphQL\Language\AST\ScalarTypeDefinitionNode;
 use GraphQL\Language\AST\ScalarTypeExtensionNode;
 use GraphQL\Utils\Utils;
-use function is_string;
 
 /**
- * Scalar Type Definition
+ * Scalar Type Definition.
  *
  * The leaf values of any request and input values to arguments are
  * Scalars (or Enums) and are defined with a name and a series of coercion
@@ -26,26 +23,52 @@ use function is_string;
  *         return $value % 2 === 1 ? $value : null;
  *     }
  * }
+ *
+ * @phpstan-type ScalarConfig array{
+ *   name?: string|null,
+ *   description?: string|null,
+ *   astNode?: ScalarTypeDefinitionNode|null,
+ *   extensionASTNodes?: array<ScalarTypeExtensionNode>|null
+ * }
  */
 abstract class ScalarType extends Type implements OutputType, InputType, LeafType, NullableType, NamedType
 {
-    /** @var ScalarTypeDefinitionNode|null */
-    public $astNode;
+    use NamedTypeImplementation;
 
-    /** @var ScalarTypeExtensionNode[] */
-    public $extensionASTNodes;
+    public ?ScalarTypeDefinitionNode $astNode;
+
+    /** @var array<ScalarTypeExtensionNode> */
+    public array $extensionASTNodes;
+
+    /** @phpstan-var ScalarConfig */
+    public array $config;
 
     /**
-     * @param mixed[] $config
+     * @phpstan-param ScalarConfig $config
      */
     public function __construct(array $config = [])
     {
-        $this->name              = $config['name'] ?? $this->tryInferName();
-        $this->description       = $config['description'] ?? $this->description;
-        $this->astNode           = $config['astNode'] ?? null;
-        $this->extensionASTNodes = $config['extensionASTNodes'] ?? null;
-        $this->config            = $config;
+        $this->name = $config['name'] ?? $this->inferName();
+        $this->description = $config['description'] ?? $this->description ?? null;
+        $this->astNode = $config['astNode'] ?? null;
+        $this->extensionASTNodes = $config['extensionASTNodes'] ?? [];
 
-        Utils::invariant(is_string($this->name), 'Must provide name.');
+        $this->config = $config;
+    }
+
+    public function assertValid(): void
+    {
+        Utils::assertValidName($this->name);
+    }
+
+    public function astNode(): ?ScalarTypeDefinitionNode
+    {
+        return $this->astNode;
+    }
+
+    /** @return array<int, ScalarTypeExtensionNode> */
+    public function extensionASTNodes(): array
+    {
+        return $this->extensionASTNodes;
     }
 }

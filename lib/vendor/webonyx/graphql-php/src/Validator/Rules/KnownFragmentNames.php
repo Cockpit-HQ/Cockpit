@@ -1,40 +1,34 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace GraphQL\Validator\Rules;
 
 use GraphQL\Error\Error;
 use GraphQL\Language\AST\FragmentSpreadNode;
 use GraphQL\Language\AST\NodeKind;
-use GraphQL\Validator\ValidationContext;
-use function sprintf;
+use GraphQL\Validator\QueryValidationContext;
 
 class KnownFragmentNames extends ValidationRule
 {
-    public function getVisitor(ValidationContext $context)
+    public function getVisitor(QueryValidationContext $context): array
     {
         return [
-            NodeKind::FRAGMENT_SPREAD => static function (FragmentSpreadNode $node) use ($context) : void {
+            NodeKind::FRAGMENT_SPREAD => static function (FragmentSpreadNode $node) use ($context): void {
                 $fragmentName = $node->name->value;
-                $fragment     = $context->getFragment($fragmentName);
-                if ($fragment) {
+                $fragment = $context->getFragment($fragmentName);
+                if ($fragment !== null) {
                     return;
                 }
 
                 $context->reportError(new Error(
-                    self::unknownFragmentMessage($fragmentName),
+                    static::unknownFragmentMessage($fragmentName),
                     [$node->name]
                 ));
             },
         ];
     }
 
-    /**
-     * @param string $fragName
-     */
-    public static function unknownFragmentMessage($fragName)
+    public static function unknownFragmentMessage(string $fragName): string
     {
-        return sprintf('Unknown fragment "%s".', $fragName);
+        return "Unknown fragment \"{$fragName}\".";
     }
 }

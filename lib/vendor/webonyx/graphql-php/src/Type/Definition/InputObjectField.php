@@ -1,170 +1,105 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace GraphQL\Type\Definition;
 
-use GraphQL\Error\Error;
 use GraphQL\Error\InvariantViolation;
-use GraphQL\Error\Warning;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\Utils;
-use function array_key_exists;
-use function sprintf;
 
+/**
+ * @phpstan-type ArgumentType (Type&InputType)|callable(): (Type&InputType)
+ * @phpstan-type InputObjectFieldConfig array{
+ *   name: string,
+ *   type: ArgumentType,
+ *   defaultValue?: mixed,
+ *   description?: string|null,
+ *   astNode?: InputValueDefinitionNode|null
+ * }
+ * @phpstan-type UnnamedInputObjectFieldConfig array{
+ *   name?: string,
+ *   type: ArgumentType,
+ *   defaultValue?: mixed,
+ *   description?: string|null,
+ *   astNode?: InputValueDefinitionNode|null
+ * }
+ */
 class InputObjectField
 {
-    /** @var string */
-    public $name;
+    public string $name;
 
-    /** @var mixed|null */
+    /** @var mixed */
     public $defaultValue;
 
-    /** @var string|null */
-    public $description;
+    public ?string $description;
 
     /** @var Type&InputType */
-    private $type;
+    private Type $type;
 
-    /** @var InputValueDefinitionNode|null */
-    public $astNode;
+    public ?InputValueDefinitionNode $astNode;
 
-    /** @var mixed[] */
-    public $config;
+    /** @phpstan-var InputObjectFieldConfig */
+    public array $config;
 
     /**
-     * @param mixed[] $opts
+     * @phpstan-param InputObjectFieldConfig $config
      */
-    public function __construct(array $opts)
+    public function __construct(array $config)
     {
-        foreach ($opts as $k => $v) {
-            switch ($k) {
-                case 'defaultValue':
-                    $this->defaultValue = $v;
-                    break;
-                case 'defaultValueExists':
-                    break;
-                case 'type':
-                    // do nothing; type is lazy loaded in getType
-                    break;
-                default:
-                    $this->{$k} = $v;
-            }
-        }
-        $this->config = $opts;
-    }
+        $this->name = $config['name'];
+        $this->defaultValue = $config['defaultValue'] ?? null;
+        $this->description = $config['description'] ?? null;
+        // Do nothing for type, it is lazy loaded in getType()
+        $this->astNode = $config['astNode'] ?? null;
 
-    public function __isset(string $name) : bool
-    {
-        switch ($name) {
-            case 'type':
-                Warning::warnOnce(
-                    "The public getter for 'type' on InputObjectField has been deprecated and will be removed" .
-                    " in the next major version. Please update your code to use the 'getType' method.",
-                    Warning::WARNING_CONFIG_DEPRECATION
-                );
-
-                return isset($this->type);
-        }
-
-        return isset($this->$name);
-    }
-
-    public function __get(string $name)
-    {
-        switch ($name) {
-            case 'type':
-                Warning::warnOnce(
-                    "The public getter for 'type' on InputObjectField has been deprecated and will be removed" .
-                    " in the next major version. Please update your code to use the 'getType' method.",
-                    Warning::WARNING_CONFIG_DEPRECATION
-                );
-
-                return $this->getType();
-            default:
-                return $this->$name;
-        }
-
-        return null;
-    }
-
-    public function __set(string $name, $value)
-    {
-        switch ($name) {
-            case 'type':
-                Warning::warnOnce(
-                    "The public setter for 'type' on InputObjectField has been deprecated and will be removed" .
-                    ' in the next major version.',
-                    Warning::WARNING_CONFIG_DEPRECATION
-                );
-                $this->type = $value;
-                break;
-
-            default:
-                $this->$name = $value;
-                break;
-        }
+        $this->config = $config;
     }
 
     /**
      * @return Type&InputType
      */
-    public function getType() : Type
+    public function getType(): Type
     {
         if (! isset($this->type)) {
-            /**
-             * TODO: replace this phpstan cast with native assert
-             *
-             * @var Type&InputType
-             */
-            $type       = Schema::resolveType($this->config['type']);
-            $this->type = $type;
+            $this->type = Schema::resolveType($this->config['type']);
         }
 
         return $this->type;
     }
 
-    public function defaultValueExists() : bool
+    public function defaultValueExists(): bool
     {
-        return array_key_exists('defaultValue', $this->config);
+        return \array_key_exists('defaultValue', $this->config);
     }
 
-    public function isRequired() : bool
+    public function isRequired(): bool
     {
-        return $this->getType() instanceof NonNull && ! $this->defaultValueExists();
+        return $this->getType() instanceof NonNull
+            && ! $this->defaultValueExists();
     }
 
     /**
+     * @param Type&NamedType $parentType
+     *
      * @throws InvariantViolation
      */
-    public function assertValid(Type $parentType)
+    public function assertValid(Type $parentType): void
     {
-        try {
-            Utils::assertValidName($this->name);
-        } catch (Error $e) {
-            throw new InvariantViolation(sprintf('%s.%s: %s', $parentType->name, $this->name, $e->getMessage()));
+        $error = Utils::isValidNameError($this->name);
+        if ($error !== null) {
+            throw new InvariantViolation("{$parentType->name}.{$this->name}: {$error->getMessage()}");
         }
-        $type = $this->getType();
-        if ($type instanceof WrappingType) {
-            $type = $type->getWrappedType(true);
+
+        $type = Type::getNamedType($this->getType());
+
+        if (! $type instanceof InputType) {
+            $notInputType = Utils::printSafe($this->type);
+            throw new InvariantViolation("{$parentType->name}.{$this->name} field type must be Input Type but got: {$notInputType}");
         }
-        Utils::invariant(
-            $type instanceof InputType,
-            sprintf(
-                '%s.%s field type must be Input Type but got: %s',
-                $parentType->name,
-                $this->name,
-                Utils::printSafe($this->type)
-            )
-        );
-        Utils::invariant(
-            ! array_key_exists('resolve', $this->config),
-            sprintf(
-                '%s.%s field has a resolve property, but Input Types cannot define resolvers.',
-                $parentType->name,
-                $this->name
-            )
-        );
+
+        // @phpstan-ignore-next-line should not happen if used properly
+        if (\array_key_exists('resolve', $this->config)) {
+            throw new InvariantViolation("{$parentType->name}.{$this->name} field has a resolve property, but Input Types cannot define resolvers.");
+        }
     }
 }

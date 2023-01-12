@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace GraphQL\Executor;
 
@@ -11,5 +9,5 @@ interface ExecutorImplementation
     /**
      * Returns promise of {@link ExecutionResult}. Promise should always resolve, never reject.
      */
-    public function doExecute() : Promise;
+    public function doExecute(): Promise;
 }

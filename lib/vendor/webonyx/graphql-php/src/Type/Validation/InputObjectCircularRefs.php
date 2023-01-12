@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace GraphQL\Type\Validation;
 
@@ -9,16 +7,10 @@ use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\SchemaValidationContext;
-use function array_map;
-use function array_pop;
-use function array_slice;
-use function count;
-use function implode;
 
 class InputObjectCircularRefs
 {
-    /** @var SchemaValidationContext */
-    private $schemaValidationContext;
+    private SchemaValidationContext $schemaValidationContext;
 
     /**
      * Tracks already visited types to maintain O(N) and to ensure that cycles
@@ -26,19 +18,17 @@ class InputObjectCircularRefs
      *
      * @var array<string, bool>
      */
-    private $visitedTypes = [];
+    private array $visitedTypes = [];
 
-    /** @var InputObjectField[] */
-    private $fieldPath = [];
+    /** @var array<int, InputObjectField> */
+    private array $fieldPath = [];
 
     /**
      * Position in the type path.
      *
-     * [string $typeName => int $index]
-     *
-     * @var int[]
+     * @var array<string, int>
      */
-    private $fieldPathIndexByTypeName = [];
+    private array $fieldPathIndexByTypeName = [];
 
     public function __construct(SchemaValidationContext $schemaValidationContext)
     {
@@ -50,17 +40,17 @@ class InputObjectCircularRefs
      * It does not terminate when a cycle was found but continues to explore
      * the graph to find all possible cycles.
      */
-    public function validate(InputObjectType $inputObj) : void
+    public function validate(InputObjectType $inputObj): void
     {
         if (isset($this->visitedTypes[$inputObj->name])) {
             return;
         }
 
-        $this->visitedTypes[$inputObj->name]             = true;
-        $this->fieldPathIndexByTypeName[$inputObj->name] = count($this->fieldPath);
+        $this->visitedTypes[$inputObj->name] = true;
+        $this->fieldPathIndexByTypeName[$inputObj->name] = \count($this->fieldPath);
 
         $fieldMap = $inputObj->getFields();
-        foreach ($fieldMap as $fieldName => $field) {
+        foreach ($fieldMap as $field) {
             $type = $field->getType();
 
             if ($type instanceof NonNull) {
@@ -75,29 +65,28 @@ class InputObjectCircularRefs
                         $this->validate($fieldType);
                     } else {
                         $cycleIndex = $this->fieldPathIndexByTypeName[$fieldType->name];
-                        $cyclePath  = array_slice($this->fieldPath, $cycleIndex);
-                        $fieldNames = array_map(
-                            static function (InputObjectField $field) : string {
-                                return $field->name;
-                            },
+                        $cyclePath = \array_slice($this->fieldPath, $cycleIndex);
+                        $fieldNames = implode(
+                            '.',
+                            \array_map(
+                                static fn (InputObjectField $field): string => $field->name,
+                                $cyclePath
+                            )
+                        );
+                        $fieldNodes = \array_map(
+                            static fn (InputObjectField $field): ?InputValueDefinitionNode => $field->astNode,
                             $cyclePath
                         );
 
                         $this->schemaValidationContext->reportError(
-                            'Cannot reference Input Object "' . $fieldType->name . '" within itself '
-                            . 'through a series of non-null fields: "' . implode('.', $fieldNames) . '".',
-                            array_map(
-                                static function (InputObjectField $field) : ?InputValueDefinitionNode {
-                                    return $field->astNode;
-                                },
-                                $cyclePath
-                            )
+                            "Cannot reference Input Object \"{$fieldType->name}\" within itself through a series of non-null fields: \"{$fieldNames}\".",
+                            $fieldNodes
                         );
                     }
                 }
             }
 
-            array_pop($this->fieldPath);
+            \array_pop($this->fieldPath);
         }
 
         unset($this->fieldPathIndexByTypeName[$inputObj->name]);

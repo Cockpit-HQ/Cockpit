@@ -4,6 +4,7 @@
 
 - Batch update collection items state
 - Add state filter to collection items view
+- Update vendor libs
 
 ## 2.3.6 (2023-01-03)
 

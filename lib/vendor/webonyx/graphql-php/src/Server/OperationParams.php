@@ -1,24 +1,18 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace GraphQL\Server;
 
-use function array_change_key_case;
-use function is_string;
-use function json_decode;
-use function json_last_error;
-use function strlen;
-use const CASE_LOWER;
-use const JSON_ERROR_NONE;
-
 /**
- * Structure representing parsed HTTP parameters for GraphQL operation
+ * Structure representing parsed HTTP parameters for GraphQL operation.
+ *
+ * The properties in this class are not strictly typed, as this class
+ * is only meant to serve as an intermediary representation which is
+ * not yet validated.
  */
 class OperationParams
 {
     /**
-     * Id of the query (when using persistent queries).
+     * Id of the query (when using persisted queries).
      *
      * Valid aliases (case-insensitive):
      * - id
@@ -26,52 +20,75 @@ class OperationParams
      * - documentId
      *
      * @api
-     * @var string
+     *
+     * @var mixed should be string|null
      */
     public $queryId;
 
     /**
+     * A document containing GraphQL operations and fragments to execute.
+     *
      * @api
-     * @var string
+     *
+     * @var mixed should be string|null
      */
     public $query;
 
     /**
+     * The name of the operation in the document to execute.
+     *
      * @api
-     * @var string
+     *
+     * @var mixed should be string|null
      */
     public $operation;
 
     /**
+     * Values for any variables defined by the operation.
+     *
      * @api
-     * @var mixed[]|null
+     *
+     * @var mixed should be array<string, mixed>
      */
     public $variables;
 
     /**
+     * Reserved for implementors to extend the protocol however they see fit.
+     *
      * @api
-     * @var mixed[]|null
+     *
+     * @var mixed should be array<string, mixed>
      */
     public $extensions;
 
-    /** @var mixed[] */
-    private $originalInput;
-
-    /** @var bool */
-    private $readOnly;
-
     /**
-     * Creates an instance from given array
-     *
-     * @param mixed[] $params
+     * Executed in read-only context (e.g. via HTTP GET request)?
      *
      * @api
      */
-    public static function create(array $params, bool $readonly = false) : OperationParams
+    public bool $readOnly;
+
+    /**
+     * The raw params used to construct this instance.
+     *
+     * @api
+     *
+     * @var array<string, mixed>
+     */
+    public array $originalInput;
+
+    /**
+     * Creates an instance from given array.
+     *
+     * @param array<string, mixed> $params
+     *
+     * @api
+     */
+    public static function create(array $params, bool $readonly = false): OperationParams
     {
         $instance = new static();
 
-        $params                  = array_change_key_case($params, CASE_LOWER);
+        $params = \array_change_key_case($params, \CASE_LOWER);
         $instance->originalInput = $params;
 
         $params += [
@@ -84,33 +101,25 @@ class OperationParams
             'extensions' => null,
         ];
 
-        if ($params['variables'] === '') {
-            $params['variables'] = null;
+        foreach ($params as &$value) {
+            if ($value === '') {
+                $value = null;
+            }
         }
 
-        // Some parameters could be provided as serialized JSON.
-        foreach (['extensions', 'variables'] as $param) {
-            if (! is_string($params[$param])) {
-                continue;
-            }
+        $instance->query = $params['query'];
+        $instance->queryId = $params['queryid'] ?? $params['documentid'] ?? $params['id'];
+        $instance->operation = $params['operationname'];
+        $instance->variables = static::decodeIfJSON($params['variables']);
+        $instance->extensions = static::decodeIfJSON($params['extensions']);
+        $instance->readOnly = $readonly;
 
-            $tmp = json_decode($params[$param], true);
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                continue;
-            }
-
-            $params[$param] = $tmp;
-        }
-
-        $instance->query      = $params['query'];
-        $instance->queryId    = $params['queryid'] ?? $params['documentid'] ?? $params['id'];
-        $instance->operation  = $params['operationname'];
-        $instance->variables  = $params['variables'];
-        $instance->extensions = $params['extensions'];
-        $instance->readOnly   = $readonly;
-
-        // Apollo server/client compatibility: look for the queryid in extensions
-        if (isset($instance->extensions['persistedQuery']['sha256Hash']) && strlen($instance->query ?? '') === 0 && strlen($instance->queryId ?? '') === 0) {
+        // Apollo server/client compatibility
+        if (
+            isset($instance->extensions['persistedQuery']['sha256Hash'])
+            && $instance->query === null
+            && $instance->queryId === null
+        ) {
             $instance->queryId = $instance->extensions['persistedQuery']['sha256Hash'];
         }
 
@@ -118,27 +127,23 @@ class OperationParams
     }
 
     /**
-     * @param string $key
+     * Decodes the value if it is JSON, otherwise returns it unchanged.
+     *
+     * @param mixed $value
      *
      * @return mixed
-     *
-     * @api
      */
-    public function getOriginalInput($key)
+    protected static function decodeIfJSON($value)
     {
-        return $this->originalInput[$key] ?? null;
-    }
+        if (! \is_string($value)) {
+            return $value;
+        }
 
-    /**
-     * Indicates that operation is executed in read-only context
-     * (e.g. via HTTP GET request)
-     *
-     * @return bool
-     *
-     * @api
-     */
-    public function isReadOnly()
-    {
-        return $this->readOnly;
+        $decoded = \json_decode($value, true);
+        if (\json_last_error() === \JSON_ERROR_NONE) {
+            return $decoded;
+        }
+
+        return $value;
     }
 }

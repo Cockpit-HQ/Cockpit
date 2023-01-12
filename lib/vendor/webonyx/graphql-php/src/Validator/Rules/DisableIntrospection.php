@@ -1,37 +1,34 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace GraphQL\Validator\Rules;
 
 use GraphQL\Error\Error;
 use GraphQL\Language\AST\FieldNode;
 use GraphQL\Language\AST\NodeKind;
-use GraphQL\Validator\ValidationContext;
+use GraphQL\Validator\QueryValidationContext;
 
 class DisableIntrospection extends QuerySecurityRule
 {
     public const ENABLED = 1;
 
-    /** @var bool */
-    private $isEnabled;
+    protected int $isEnabled;
 
-    public function __construct($enabled = self::ENABLED)
+    public function __construct(int $enabled)
     {
         $this->setEnabled($enabled);
     }
 
-    public function setEnabled($enabled)
+    public function setEnabled(int $enabled): void
     {
         $this->isEnabled = $enabled;
     }
 
-    public function getVisitor(ValidationContext $context)
+    public function getVisitor(QueryValidationContext $context): array
     {
         return $this->invokeIfNeeded(
             $context,
             [
-                NodeKind::FIELD => static function (FieldNode $node) use ($context) : void {
+                NodeKind::FIELD => static function (FieldNode $node) use ($context): void {
                     if ($node->name->value !== '__type' && $node->name->value !== '__schema') {
                         return;
                     }
@@ -45,12 +42,12 @@ class DisableIntrospection extends QuerySecurityRule
         );
     }
 
-    public static function introspectionDisabledMessage()
+    public static function introspectionDisabledMessage(): string
     {
         return 'GraphQL introspection is not allowed, but the query contained __schema or __type';
     }
 
-    protected function isEnabled()
+    protected function isEnabled(): bool
     {
         return $this->isEnabled !== self::DISABLED;
     }

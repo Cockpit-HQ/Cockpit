@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace GraphQL\Validator\Rules;
 
@@ -10,46 +8,46 @@ use GraphQL\Language\AST\SchemaDefinitionNode;
 use GraphQL\Validator\SDLValidationContext;
 
 /**
- * Lone Schema definition
+ * Lone schema definition.
  *
  * A GraphQL document is only valid if it contains only one schema definition.
  */
 class LoneSchemaDefinition extends ValidationRule
 {
-    public static function schemaDefinitionNotAloneMessage()
+    public static function schemaDefinitionNotAloneMessage(): string
     {
         return 'Must provide only one schema definition.';
     }
 
-    public static function canNotDefineSchemaWithinExtensionMessage()
+    public static function canNotDefineSchemaWithinExtensionMessage(): string
     {
         return 'Cannot define a new schema within a schema extension.';
     }
 
-    public function getSDLVisitor(SDLValidationContext $context)
+    public function getSDLVisitor(SDLValidationContext $context): array
     {
-        $oldSchema      = $context->getSchema();
-        $alreadyDefined = $oldSchema !== null
-            ? (
-                $oldSchema->getAstNode() !== null ||
-                $oldSchema->getQueryType() !== null ||
-                $oldSchema->getMutationType() !== null ||
-                $oldSchema->getSubscriptionType() !== null
-            )
-            : false;
+        $oldSchema = $context->getSchema();
+        $alreadyDefined = $oldSchema === null
+            ? false
+            : (
+                $oldSchema->astNode !== null
+                || $oldSchema->getQueryType() !== null
+                || $oldSchema->getMutationType() !== null
+                || $oldSchema->getSubscriptionType() !== null
+            );
 
         $schemaDefinitionsCount = 0;
 
         return [
-            NodeKind::SCHEMA_DEFINITION => static function (SchemaDefinitionNode $node) use ($alreadyDefined, $context, &$schemaDefinitionsCount) : void {
-                if ($alreadyDefined !== false) {
-                    $context->reportError(new Error(self::canNotDefineSchemaWithinExtensionMessage(), $node));
+            NodeKind::SCHEMA_DEFINITION => static function (SchemaDefinitionNode $node) use ($alreadyDefined, $context, &$schemaDefinitionsCount): void {
+                if ($alreadyDefined) {
+                    $context->reportError(new Error(static::canNotDefineSchemaWithinExtensionMessage(), $node));
 
                     return;
                 }
 
                 if ($schemaDefinitionsCount > 0) {
-                    $context->reportError(new Error(self::schemaDefinitionNotAloneMessage(), $node));
+                    $context->reportError(new Error(static::schemaDefinitionNotAloneMessage(), $node));
                 }
 
                 ++$schemaDefinitionsCount;

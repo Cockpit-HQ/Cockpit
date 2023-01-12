@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace GraphQL\Validator\Rules;
 
@@ -9,39 +7,38 @@ use GraphQL\Language\AST\FieldNode;
 use GraphQL\Language\AST\NodeKind;
 use GraphQL\Language\Visitor;
 use GraphQL\Language\VisitorOperation;
-use GraphQL\Validator\ValidationContext;
-use function sprintf;
+use GraphQL\Validator\QueryValidationContext;
 
 class ProvidedRequiredArguments extends ValidationRule
 {
-    public function getVisitor(ValidationContext $context)
+    public function getVisitor(QueryValidationContext $context): array
     {
         $providedRequiredArgumentsOnDirectives = new ProvidedRequiredArgumentsOnDirectives();
 
         return $providedRequiredArgumentsOnDirectives->getVisitor($context) + [
             NodeKind::FIELD => [
-                'leave' => static function (FieldNode $fieldNode) use ($context) : ?VisitorOperation {
+                'leave' => static function (FieldNode $fieldNode) use ($context): ?VisitorOperation {
                     $fieldDef = $context->getFieldDef();
 
-                    if (! $fieldDef) {
+                    if ($fieldDef === null) {
                         return Visitor::skipNode();
                     }
-                    $argNodes = $fieldNode->arguments ?? [];
+
+                    $argNodes = $fieldNode->arguments;
 
                     $argNodeMap = [];
                     foreach ($argNodes as $argNode) {
                         $argNodeMap[$argNode->name->value] = $argNode;
                     }
+
                     foreach ($fieldDef->args as $argDef) {
                         $argNode = $argNodeMap[$argDef->name] ?? null;
-                        if ($argNode || ! $argDef->isRequired()) {
-                            continue;
+                        if ($argNode === null && $argDef->isRequired()) {
+                            $context->reportError(new Error(
+                                static::missingFieldArgMessage($fieldNode->name->value, $argDef->name, $argDef->getType()->toString()),
+                                [$fieldNode]
+                            ));
                         }
-
-                        $context->reportError(new Error(
-                            self::missingFieldArgMessage($fieldNode->name->value, $argDef->name, $argDef->getType()),
-                            [$fieldNode]
-                        ));
                     }
 
                     return null;
@@ -50,13 +47,8 @@ class ProvidedRequiredArguments extends ValidationRule
         ];
     }
 
-    public static function missingFieldArgMessage($fieldName, $argName, $type)
+    public static function missingFieldArgMessage(string $fieldName, string $argName, string $type): string
     {
-        return sprintf(
-            'Field "%s" argument "%s" of type "%s" is required but not provided.',
-            $fieldName,
-            $argName,
-            $type
-        );
+        return "Field \"{$fieldName}\" argument \"{$argName}\" of type \"{$type}\" is required but not provided.";
     }
 }

@@ -1,17 +1,16 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace GraphQL\Language\AST;
 
+/**
+ * @phpstan-type ArgumentNodeValue VariableNode|NullValueNode|IntValueNode|FloatValueNode|StringValueNode|BooleanValueNode|EnumValueNode|ListValueNode|ObjectValueNode
+ */
 class ArgumentNode extends Node
 {
-    /** @var string */
-    public $kind = NodeKind::ARGUMENT;
+    public string $kind = NodeKind::ARGUMENT;
 
-    /** @var VariableNode|NullValueNode|IntValueNode|FloatValueNode|StringValueNode|BooleanValueNode|EnumValueNode|ListValueNode|ObjectValueNode */
-    public $value;
+    /** @phpstan-var ArgumentNodeValue */
+    public ValueNode $value;
 
-    /** @var NameNode */
-    public $name;
+    public NameNode $name;
 }

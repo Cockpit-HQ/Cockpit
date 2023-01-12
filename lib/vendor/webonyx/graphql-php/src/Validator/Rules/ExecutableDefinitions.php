@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace GraphQL\Validator\Rules;
 
@@ -8,34 +6,43 @@ use GraphQL\Error\Error;
 use GraphQL\Language\AST\DocumentNode;
 use GraphQL\Language\AST\ExecutableDefinitionNode;
 use GraphQL\Language\AST\NodeKind;
-use GraphQL\Language\AST\TypeSystemDefinitionNode;
+use GraphQL\Language\AST\SchemaDefinitionNode;
+use GraphQL\Language\AST\SchemaExtensionNode;
+use GraphQL\Language\AST\TypeDefinitionNode;
+use GraphQL\Language\AST\TypeExtensionNode;
 use GraphQL\Language\Visitor;
 use GraphQL\Language\VisitorOperation;
-use GraphQL\Validator\ValidationContext;
-use function sprintf;
+use GraphQL\Validator\QueryValidationContext;
 
 /**
- * Executable definitions
+ * Executable definitions.
  *
  * A GraphQL document is only valid for execution if all definitions are either
  * operation or fragment definitions.
  */
 class ExecutableDefinitions extends ValidationRule
 {
-    public function getVisitor(ValidationContext $context)
+    public function getVisitor(QueryValidationContext $context): array
     {
         return [
-            NodeKind::DOCUMENT => static function (DocumentNode $node) use ($context) : VisitorOperation {
-                /** @var ExecutableDefinitionNode|TypeSystemDefinitionNode $definition */
+            NodeKind::DOCUMENT => static function (DocumentNode $node) use ($context): VisitorOperation {
                 foreach ($node->definitions as $definition) {
-                    if ($definition instanceof ExecutableDefinitionNode) {
-                        continue;
-                    }
+                    if (! $definition instanceof ExecutableDefinitionNode) {
+                        if ($definition instanceof SchemaDefinitionNode || $definition instanceof SchemaExtensionNode) {
+                            $defName = 'schema';
+                        } else {
+                            assert(
+                                $definition instanceof TypeDefinitionNode || $definition instanceof TypeExtensionNode,
+                                'only other option'
+                            );
+                            $defName = "\"{$definition->getName()->value}\"";
+                        }
 
-                    $context->reportError(new Error(
-                        self::nonExecutableDefinitionMessage($definition->name->value),
-                        [$definition->name]
-                    ));
+                        $context->reportError(new Error(
+                            static::nonExecutableDefinitionMessage($defName),
+                            [$definition]
+                        ));
+                    }
                 }
 
                 return Visitor::skipNode();
@@ -43,8 +50,8 @@ class ExecutableDefinitions extends ValidationRule
         ];
     }
 
-    public static function nonExecutableDefinitionMessage($defName)
+    public static function nonExecutableDefinitionMessage(string $defName): string
     {
-        return sprintf('The "%s" definition is not executable.', $defName);
+        return "The {$defName} definition is not executable.";
     }
 }

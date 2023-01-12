@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '3bfbb2f583e5470061476bfbde9b12ac1e420116',
+    'reference' => '11345acea886828ff11bd93f67a7f33c7c38b1ea',
     'name' => 'cockpit-hq/cockpit',
   ),
   'versions' => 
@@ -36,7 +36,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '3bfbb2f583e5470061476bfbde9b12ac1e420116',
+      'reference' => '11345acea886828ff11bd93f67a7f33c7c38b1ea',
     ),
     'colinodell/json5' => 
     array (
@@ -58,30 +58,21 @@
     ),
     'doctrine/annotations' => 
     array (
-      'pretty_version' => '1.14.2',
-      'version' => '1.14.2.0',
+      'pretty_version' => '2.0.0',
+      'version' => '2.0.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'ad785217c1e9555a7d6c6c8c9f406395a5e2882b',
-    ),
-    'doctrine/deprecations' => 
-    array (
-      'pretty_version' => 'v1.0.0',
-      'version' => '1.0.0.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => '0e2a4f1f8cdfc7a92ec3b01c9334898c806b30de',
+      'reference' => 'd02c9f3742044e17d5fa8d28d8402a2d95c33302',
     ),
     'doctrine/lexer' => 
     array (
-      'pretty_version' => '2.1.0',
-      'version' => '2.1.0.0',
+      'pretty_version' => '3.0.0',
+      'version' => '3.0.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '39ab8fcf5a51ce4b85ca97c7a7d033eb12831124',
+      'reference' => '84a527db05647743d50373e0ec53a152f2cde568',
     ),
     'firebase/php-jwt' => 
     array (
@@ -139,12 +130,12 @@
     ),
     'league/flysystem' => 
     array (
-      'pretty_version' => '3.12.0',
-      'version' => '3.12.0.0',
+      'pretty_version' => '3.12.1',
+      'version' => '3.12.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => '2aef65a47e44f2d6f9938f720f6dd697e7ba7b76',
+      'reference' => 'b934123c1f11ada6363d057d691e3065fa6d6d49',
     ),
     'league/mime-type-detection' => 
     array (
@@ -408,21 +399,21 @@
     ),
     'webonyx/graphql-php' => 
     array (
-      'pretty_version' => 'v14.11.8',
-      'version' => '14.11.8.0',
+      'pretty_version' => 'v15.0.1',
+      'version' => '15.0.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => '04a48693acd785330eefd3b0e4fa67df8dfee7c3',
+      'reference' => '15fb39ba17faa332a2001aed5c1472117ec5abc3',
     ),
     'zircote/swagger-php' => 
     array (
-      'pretty_version' => '4.5.3',
-      'version' => '4.5.3.0',
+      'pretty_version' => '4.5.4',
+      'version' => '4.5.4.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'e505bce612a86fe90f8fd50917e0848afc5d2ba8',
+      'reference' => '09356f4d68d29bdf3254811fb2602a5d5d1788ea',
     ),
   ),
 );

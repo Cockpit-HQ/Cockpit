@@ -1,21 +1,13 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace GraphQL\Type\Definition;
 
-use Exception;
 use GraphQL\Error\Error;
+use GraphQL\Error\SerializationError;
 use GraphQL\Language\AST\IntValueNode;
 use GraphQL\Language\AST\Node;
+use GraphQL\Language\Printer;
 use GraphQL\Utils\Utils;
-use function floatval;
-use function floor;
-use function intval;
-use function is_bool;
-use function is_float;
-use function is_int;
-use function is_numeric;
 
 class IntType extends ScalarType
 {
@@ -27,92 +19,64 @@ class IntType extends ScalarType
     public const MAX_INT = 2147483647;
     public const MIN_INT = -2147483648;
 
-    /** @var string */
-    public $name = Type::INT;
+    public string $name = Type::INT;
 
-    /** @var string */
-    public $description =
-        'The `Int` scalar type represents non-fractional signed whole numeric
+    public ?string $description
+        = 'The `Int` scalar type represents non-fractional signed whole numeric
 values. Int can represent values between -(2^31) and 2^31 - 1. ';
 
-    /**
-     * @param mixed $value
-     *
-     * @return int|null
-     *
-     * @throws Error
-     */
-    public function serialize($value)
+    public function serialize($value): int
     {
         // Fast path for 90+% of cases:
-        if (is_int($value) && $value <= self::MAX_INT && $value >= self::MIN_INT) {
+        if (\is_int($value) && $value <= self::MAX_INT && $value >= self::MIN_INT) {
             return $value;
         }
 
-        $float = is_numeric($value) || is_bool($value)
+        $float = \is_numeric($value) || \is_bool($value)
             ? (float) $value
             : null;
 
-        if ($float === null || floor($float) !== $float) {
-            throw new Error(
-                'Int cannot represent non-integer value: ' .
-                Utils::printSafe($value)
-            );
+        if ($float === null || \floor($float) !== $float) {
+            $notInt = Utils::printSafe($value);
+            throw new SerializationError("Int cannot represent non-integer value: {$notInt}");
         }
 
         if ($float > self::MAX_INT || $float < self::MIN_INT) {
-            throw new Error(
-                'Int cannot represent non 32-bit signed integer value: ' .
-                Utils::printSafe($value)
-            );
+            $outOfRangeInt = Utils::printSafe($value);
+            throw new SerializationError("Int cannot represent non 32-bit signed integer value: {$outOfRangeInt}");
         }
 
         return (int) $float;
     }
 
-    /**
-     * @param mixed $value
-     *
-     * @throws Error
-     */
-    public function parseValue($value) : int
+    public function parseValue($value): int
     {
-        $isInt = is_int($value) || (is_float($value) && floor($value) === $value);
+        $isInt = \is_int($value)
+            || (\is_float($value) && \floor($value) === $value);
 
         if (! $isInt) {
-            throw new Error(
-                'Int cannot represent non-integer value: ' .
-                Utils::printSafe($value)
-            );
+            $notInt = Utils::printSafeJson($value);
+            throw new Error("Int cannot represent non-integer value: {$notInt}");
         }
 
         if ($value > self::MAX_INT || $value < self::MIN_INT) {
-            throw new Error(
-                'Int cannot represent non 32-bit signed integer value: ' .
-                Utils::printSafe($value)
-            );
+            $outOfRangeInt = Utils::printSafeJson($value);
+            throw new Error("Int cannot represent non 32-bit signed integer value: {$outOfRangeInt}");
         }
 
         return (int) $value;
     }
 
-    /**
-     * @param mixed[]|null $variables
-     *
-     * @return int
-     *
-     * @throws Exception
-     */
-    public function parseLiteral(Node $valueNode, ?array $variables = null)
+    public function parseLiteral(Node $valueNode, ?array $variables = null): int
     {
         if ($valueNode instanceof IntValueNode) {
             $val = (int) $valueNode->value;
-            if ($valueNode->value === (string) $val && self::MIN_INT <= $val && $val <= self::MAX_INT) {
+            if ($valueNode->value === (string) $val && $val >= self::MIN_INT && $val <= self::MAX_INT) {
                 return $val;
             }
         }
 
-        // Intentionally without message, as all information already in wrapped Exception
-        throw new Error();
+        $notInt = Printer::doPrint($valueNode);
+        throw new Error("Int cannot represent non-integer value: {$notInt}", $valueNode);
     }
 }

@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace GraphQL\Validator\Rules;
 
@@ -8,8 +6,7 @@ use GraphQL\Error\Error;
 use GraphQL\Language\AST\NodeKind;
 use GraphQL\Language\AST\OperationDefinitionNode;
 use GraphQL\Language\AST\VariableDefinitionNode;
-use GraphQL\Validator\ValidationContext;
-use function sprintf;
+use GraphQL\Validator\QueryValidationContext;
 
 /**
  * A GraphQL operation is only valid if all variables encountered, both directly
@@ -17,48 +14,47 @@ use function sprintf;
  */
 class NoUndefinedVariables extends ValidationRule
 {
-    public function getVisitor(ValidationContext $context)
+    public function getVisitor(QueryValidationContext $context): array
     {
+        /** @var array<string, true> $variableNameDefined */
         $variableNameDefined = [];
 
         return [
             NodeKind::OPERATION_DEFINITION => [
-                'enter' => static function () use (&$variableNameDefined) : void {
+                'enter' => static function () use (&$variableNameDefined): void {
                     $variableNameDefined = [];
                 },
-                'leave' => static function (OperationDefinitionNode $operation) use (&$variableNameDefined, $context) : void {
+                'leave' => static function (OperationDefinitionNode $operation) use (&$variableNameDefined, $context): void {
                     $usages = $context->getRecursiveVariableUsages($operation);
 
                     foreach ($usages as $usage) {
-                        $node    = $usage['node'];
+                        $node = $usage['node'];
                         $varName = $node->name->value;
 
-                        if ($variableNameDefined[$varName] ?? false) {
-                            continue;
+                        if (! isset($variableNameDefined[$varName])) {
+                            $context->reportError(new Error(
+                                static::undefinedVarMessage(
+                                    $varName,
+                                    $operation->name !== null
+                                        ? $operation->name->value
+                                        : null
+                                ),
+                                [$node, $operation]
+                            ));
                         }
-
-                        $context->reportError(new Error(
-                            self::undefinedVarMessage(
-                                $varName,
-                                $operation->name !== null
-                                    ? $operation->name->value
-                                    : null
-                            ),
-                            [$node, $operation]
-                        ));
                     }
                 },
             ],
-            NodeKind::VARIABLE_DEFINITION  => static function (VariableDefinitionNode $def) use (&$variableNameDefined) : void {
+            NodeKind::VARIABLE_DEFINITION => static function (VariableDefinitionNode $def) use (&$variableNameDefined): void {
                 $variableNameDefined[$def->variable->name->value] = true;
             },
         ];
     }
 
-    public static function undefinedVarMessage($varName, $opName = null)
+    public static function undefinedVarMessage(string $varName, ?string $opName): string
     {
-        return $opName
-            ? sprintf('Variable "$%s" is not defined by operation "%s".', $varName, $opName)
-            : sprintf('Variable "$%s" is not defined.', $varName);
+        return $opName === null
+            ? "Variable \"\${$varName}\" is not defined by operation \"{$opName}\"."
+            : "Variable \"\${$varName}\" is not defined.";
     }
 }

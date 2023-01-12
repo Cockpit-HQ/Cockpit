@@ -1,20 +1,15 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace GraphQL\Language\AST;
 
 class InlineFragmentNode extends Node implements SelectionNode
 {
-    /** @var string */
-    public $kind = NodeKind::INLINE_FRAGMENT;
+    public string $kind = NodeKind::INLINE_FRAGMENT;
 
-    /** @var NamedTypeNode */
-    public $typeCondition;
+    public ?NamedTypeNode $typeCondition = null;
 
     /** @var NodeList<DirectiveNode> */
-    public $directives;
+    public NodeList $directives;
 
-    /** @var SelectionSetNode */
-    public $selectionSet;
+    public SelectionSetNode $selectionSet;
 }

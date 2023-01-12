@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace GraphQL\Language\AST;
 
@@ -11,8 +9,9 @@ namespace GraphQL\Language\AST;
  * | InterfaceTypeExtensionNode
  * | UnionTypeExtensionNode
  * | EnumTypeExtensionNode
- * | InputObjectTypeExtensionNode;
+ * | InputObjectTypeExtensionNode;.
  */
-interface TypeExtensionNode extends TypeSystemDefinitionNode
+interface TypeExtensionNode extends TypeSystemExtensionNode
 {
+    public function getName(): NameNode;
 }

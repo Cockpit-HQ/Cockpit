@@ -1,20 +1,12 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace GraphQL\Error;
-
-use LogicException;
 
 /**
  * Note:
  * This exception should not inherit base Error exception as it is raised when there is an error somewhere in
- * user-land code
+ * user-land code.
  */
-class InvariantViolation extends LogicException
+class InvariantViolation extends \LogicException
 {
-    public static function shouldNotHappen() : self
-    {
-        return new self('This should not have happened');
-    }
 }
