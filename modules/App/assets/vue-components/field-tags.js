@@ -121,8 +121,7 @@ export default {
 
             this.choices.removeActiveItems();
 
-            if (this.list.length) {
-
+            if (Array.isArray(this.list) && this.list.length) {
 
                 if (Array.isArray(this.val)) {
                     this.val.forEach(val => this.choices.setChoiceByValue(val))
