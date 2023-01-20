@@ -373,7 +373,7 @@ export default {
             }
 
             try {
-                return field.condition(this.val);
+                return field.condition(JSON.parse(JSON.stringify(this.val)));
             } catch(e) {}
 
             return true;
