@@ -414,6 +414,12 @@ $this->module('content')->extend([
         }
 
         if (!isset($this->props['_refs'][$model][$_id])) {
+
+            // prevent infinite loop (a -> b -> a -> b -> ...) + respect initial maxlevel
+            if (isset($process['populate']) && $process['populate'] > 0) {
+                $process['populate'] -= 1;
+            }
+
             $this->props['_refs'][$model][$_id] = $this->item($model, ['_id' => $_id], null, $process);
 
             if (is_null($this->props['_refs'][$model][$_id])) {
