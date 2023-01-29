@@ -34,6 +34,10 @@ kiss-dialog > kiss-content {
     box-sizing: border-box;
 }
 
+kiss-dialog[size="medium"] > kiss-content {
+    width: var(--kiss-dialog-medium-width, 500px);
+}
+
 kiss-dialog[size="large"] > kiss-content {
     width: var(--kiss-dialog-large-width, 600px);
 }

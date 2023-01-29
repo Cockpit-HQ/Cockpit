@@ -126,6 +126,8 @@
 
                     </kiss-card>
 
+                    <?=$this->trigger('content.tree.item.aside', [$model])?>
+
                 </div>
             </kiss-row>
         </kiss-container>

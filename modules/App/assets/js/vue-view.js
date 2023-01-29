@@ -86,7 +86,10 @@ import ui from "./vue-view/ui.js";
 
                     $request(url, data) {
                         return App.request(url, data);
-                    }
+                    },
+
+                    $dialog: VueView.ui.modal,
+                    $offcanvas: VueView.ui.offcanvas,
                 }
             });
 

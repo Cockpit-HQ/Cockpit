@@ -120,6 +120,8 @@
 
                     </kiss-card>
 
+                    <?php $this->trigger('content.singleton.item.aside', [$model]) ?>
+
                 </div>
             </kiss-row>
 

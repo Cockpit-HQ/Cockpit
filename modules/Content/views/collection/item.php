@@ -127,6 +127,8 @@
 
                     </kiss-card>
 
+                    <?php $this->trigger('content.collection.item.aside', [$model]) ?>
+
                 </div>
             </kiss-row>
         </kiss-container>
