@@ -104,41 +104,57 @@ class Collection extends App {
         $process = $this->app->param('process', []);
         $state = $this->app->param('state', null);
 
-        if (isset($options['filter']) && is_string($options['filter'])) {
+        if (isset($options['filter'])) {
 
-            $filter = null;
-
-            if (\preg_match('/^\{(.*)\}$/', $options['filter'])) {
-
-                try {
-                    $filter = json5_decode($options['filter'], true);
-                } catch (\Exception $e) {}
+            if (is_string($options['filter']) || !is_countable($options['filter'])) {
+                $options['filter'] = [$options['filter']];
             }
 
-            if (!$filter) {
+            $filter = [];
 
-                $filter = null;
-                $fields = $model['fields'];
+            foreach ($options['filter'] as $f) {
 
-                if (count($fields)) {
+                $_filter = null;
 
-                    $terms  = str_getcsv(trim($options['filter']), ' ');
-                    $filter = ['$or' => []];
+                if (is_string($f)) {
+                    if (\preg_match('/^\{(.*)\}$/', $f)) {
 
-                    foreach ($fields as $field) {
+                        try {
+                            $_filter = json5_decode($f, true);
+                        } catch (\Exception $e) {}
+                    }
 
-                        if (!\in_array($field['type'], ['code', 'color', 'text', 'wysiwyg'])) continue;
+                    if (!$_filter) {
 
-                        foreach ($terms as $term) {
-                            $f = [];
-                            $f[$field['name']] = ['$regex' => $term, '$options' => 'i'];
-                            $filter['$or'][] = $f;
+                        $_filter = null;
+                        $fields = $model['fields'];
+
+                        if (count($fields)) {
+
+                            $terms  = str_getcsv(trim($f), ' ');
+                            $_filter = ['$or' => []];
+
+                            foreach ($fields as $field) {
+
+                                if (!\in_array($field['type'], ['code', 'color', 'text', 'wysiwyg'])) continue;
+
+                                foreach ($terms as $term) {
+                                    $_f = [];
+                                    $_f[$field['name']] = ['$regex' => $term, '$options' => 'i'];
+                                    $_filter['$or'][] = $_f;
+                                }
+                            }
                         }
                     }
+
+                } else {
+                    $_filter = $f;
                 }
+
+                if ($_filter) $filter[] = $_filter;
             }
 
-            $options['filter'] = $filter;
+            $options['filter'] = count($filter) ? ['$and' => $filter] : null;
         }
 
         if (!is_null($state)) {

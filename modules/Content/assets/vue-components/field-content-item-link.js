@@ -9,6 +9,7 @@ export default {
         icon: 'content:assets/icons/reference.svg',
         settings: [
             {name: 'link', type: 'options-linkModel'},
+            {name: 'filter', type: 'object', opts:{height: 120}},
             {name: 'display', type: 'text'},
         ],
         render(value, field, context) {

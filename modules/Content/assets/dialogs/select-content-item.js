@@ -6,7 +6,7 @@ export default {
             items: [],
             loading: true,
             fieldTypes: null,
-            filter: '',
+            fltr: '',
             txtFilter: '',
             page: 1,
             pages: 1,
@@ -44,7 +44,7 @@ export default {
     },
 
     watch: {
-        filter(val) {
+        fltr(val) {
             this.txtFilter = val;
             this.load();
         },
@@ -59,12 +59,12 @@ export default {
                 <div class="kiss-badge kiss-badge-outline kiss-color-muted">{{ model.label || model.name }}</div>
             </div>
 
-            <form class="kiss-flex kiss-margin" :class="{'kiss-disabled': loading}" @submit.prevent="filter = txtFilter">
+            <form class="kiss-flex kiss-margin" :class="{'kiss-disabled': loading}" @submit.prevent="fltr = txtFilter">
 
                 <input type="text" class="kiss-input kiss-flex-1 kiss-margin-xsmall-right" :placeholder="t('Filter items...')" v-model="txtFilter">
 
                 <div class="kiss-button-group kiss-margin-small-left">
-                    <button type="button" class="kiss-button" @click="filter = ''" v-if="filter">{{ t('Reset') }}</button>
+                    <button type="button" class="kiss-button" @click="fltr = ''" v-if="fltr">{{ t('Reset') }}</button>
                     <button class="kiss-button kiss-flex">{{ t('Search') }}</button>
                 </div>
             </form>
@@ -142,8 +142,13 @@ export default {
                 skip: (page - 1) * this.limit,
             };
 
-            if (this.filter) {
-                options.filter = this.filter;
+            let filter = [];
+
+            if (this.filter) filter.push(this.filter);
+            if (this.fltr) filter.push(this.fltr);
+
+            if (filter.length) {
+                options.filter = filter;
             }
 
             this.loading = true;

@@ -12,6 +12,7 @@
 - Fix tree model nesting items
 - Fix table preview for repeatable wysiwyg fields
 - Fix clearing readonly fields
+- Fix filter option for collection link field
 - Update vendor libs
 
 ## 2.3.5 (2022-12-15)
