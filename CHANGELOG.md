@@ -1,10 +1,13 @@
 # Release Notes
 
-## WIP
+## 2.3.7 (2023-01-31)
 
 - Batch update collection items state
 - Add state filter to collection items view
 - Fix possible infinite content population loop
+- Fix filter option for collection link field
+- Add content view aside event triggers
+- Deep clone data object for preview interpolation
 - Update vendor libs
 
 ## 2.3.6 (2023-01-03)
