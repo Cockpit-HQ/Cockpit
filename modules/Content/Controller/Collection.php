@@ -106,7 +106,7 @@ class Collection extends App {
 
         if (isset($options['filter'])) {
 
-            if (is_string($options['filter']) || !is_countable($options['filter'])) {
+            if (is_string($options['filter']) || !isset($options['filter'][0])) {
                 $options['filter'] = [$options['filter']];
             }
 

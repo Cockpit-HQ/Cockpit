@@ -50,13 +50,51 @@ export default {
         },
     },
 
+    methods: {
+
+        load(page = 1) {
+
+            let options = {
+                limit: this.limit,
+                skip: (page - 1) * this.limit,
+            };
+
+            let filter = [];
+
+            if (this.filter) filter.push(this.filter);
+            if (this.fltr) filter.push(this.fltr);
+
+            if (filter.length) {
+                options.filter = filter;
+            }
+
+            this.loading = true;
+            this.selected = [];
+
+            this.$request(`/content/collection/find/${this.model.name}`, {options}).then(rsp => {
+                this.items = rsp.items;
+                this.page = rsp.page;
+                this.pages = rsp.pages;
+                this.count = rsp.count;
+
+                this.loading = false;
+            })
+        },
+
+        pick(item) {
+            this.$call('pickItem', item);
+            this.$close();
+        }
+    },
+
     template: /*html*/`
         <div>
 
-            <div class="kiss-size-4 kiss-text-bold kiss-margin kiss-flex kiss-flex-middle">
-                <icon class="kiss-margin-small-right kiss-size-3" size="larger">link</icon>
-                <div class="kiss-flex-1">{{ t('Select model item') }}</div>
-                <div class="kiss-badge kiss-badge-outline kiss-color-muted">{{ model.label || model.name }}</div>
+            <div class="kiss-margin kiss-flex kiss-flex-middle">
+                <div class="kiss-flex-1">
+                    <div class="kiss-color-muted kiss-size-small">{{ model.label || model.name }}</div>
+                    <div class="kiss-size-4 kiss-text-bold">{{ t('Select model item') }}</div>
+                </div>
             </div>
 
             <form class="kiss-flex kiss-margin" :class="{'kiss-disabled': loading}" @submit.prevent="fltr = txtFilter">
@@ -131,42 +169,5 @@ export default {
                 </button>
             </div>
         </div>
-    `,
-
-    methods: {
-
-        load(page = 1) {
-
-            let options = {
-                limit: this.limit,
-                skip: (page - 1) * this.limit,
-            };
-
-            let filter = [];
-
-            if (this.filter) filter.push(this.filter);
-            if (this.fltr) filter.push(this.fltr);
-
-            if (filter.length) {
-                options.filter = filter;
-            }
-
-            this.loading = true;
-            this.selected = [];
-
-            this.$request(`/content/collection/find/${this.model.name}`, {options}).then(rsp => {
-                this.items = rsp.items;
-                this.page = rsp.page;
-                this.pages = rsp.pages;
-                this.count = rsp.count;
-
-                this.loading = false;
-            })
-        },
-
-        pick(item) {
-            this.$call('pickItem', item);
-            this.$close();
-        }
-    }
+    `
 }
