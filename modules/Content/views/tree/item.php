@@ -126,7 +126,7 @@
 
                     </kiss-card>
 
-                    <?=$this->trigger('content.tree.item.aside', [$model])?>
+                    <?php $this->trigger('content.tree.item.aside', [$model]) ?>
 
                 </div>
             </kiss-row>
