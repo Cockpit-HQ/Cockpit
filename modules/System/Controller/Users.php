@@ -82,6 +82,11 @@ class Users extends App {
             return $this->stop(['error' => 'User data is missing'], 412);
         }
 
+        // don't allow to change role if not allowed
+        if (isset($user['role']) && !$this->isAllowed('app/users/manage')) {
+            unset($user['role']);
+        }
+
         $user['_modified'] = time();
         $isUpdate = isset($user['_id']);
 

@@ -1,5 +1,9 @@
 # Release Notes
 
+## WIP
+
+- Fix not allowed user role modification by intercepting request
+
 ## 2.3.7 (2023-01-31)
 
 - Batch update collection items state
