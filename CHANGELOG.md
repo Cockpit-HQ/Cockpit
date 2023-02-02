@@ -4,6 +4,7 @@
 
 - Fix not allowed user role modification by intercepting request
 - Fix tree item view #72
+- Update Vue to v3.2.47
 
 ## 2.3.7 (2023-01-31)
 
