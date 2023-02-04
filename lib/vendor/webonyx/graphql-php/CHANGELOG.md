@@ -9,6 +9,22 @@ You can find and compare releases at the [GitHub release page](https://github.co
 
 ## Unreleased
 
+## v15.0.3
+
+### Fixed
+
+- Fix `QueryPlan` for `union` types
+
+### Changed
+
+- Improve `QueryPlan` performance
+
+## v15.0.2
+
+### Fixed
+
+- Fix `QueryPlan` when querying `__typename` on a `union` type
+
 ## v15.0.1
 
 ### Fixed

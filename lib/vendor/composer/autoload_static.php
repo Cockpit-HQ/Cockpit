@@ -930,6 +930,7 @@ class ComposerStaticInit00d1f9b6bf944011268c41c2b4662055
         'OpenApi\\Processors\\MergeJsonContent' => __DIR__ . '/..' . '/zircote/swagger-php/src/Processors/MergeJsonContent.php',
         'OpenApi\\Processors\\MergeXmlContent' => __DIR__ . '/..' . '/zircote/swagger-php/src/Processors/MergeXmlContent.php',
         'OpenApi\\Processors\\OperationId' => __DIR__ . '/..' . '/zircote/swagger-php/src/Processors/OperationId.php',
+        'OpenApi\\Processors\\ProcessorInterface' => __DIR__ . '/..' . '/zircote/swagger-php/src/Processors/ProcessorInterface.php',
         'OpenApi\\Serializer' => __DIR__ . '/..' . '/zircote/swagger-php/src/Serializer.php',
         'OpenApi\\Util' => __DIR__ . '/..' . '/zircote/swagger-php/src/Util.php',
         'PHPMailer\\PHPMailer\\Exception' => __DIR__ . '/..' . '/phpmailer/phpmailer/src/Exception.php',

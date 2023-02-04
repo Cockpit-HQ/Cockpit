@@ -677,6 +677,7 @@ return array(
     'OpenApi\\Processors\\MergeJsonContent' => $vendorDir . '/zircote/swagger-php/src/Processors/MergeJsonContent.php',
     'OpenApi\\Processors\\MergeXmlContent' => $vendorDir . '/zircote/swagger-php/src/Processors/MergeXmlContent.php',
     'OpenApi\\Processors\\OperationId' => $vendorDir . '/zircote/swagger-php/src/Processors/OperationId.php',
+    'OpenApi\\Processors\\ProcessorInterface' => $vendorDir . '/zircote/swagger-php/src/Processors/ProcessorInterface.php',
     'OpenApi\\Serializer' => $vendorDir . '/zircote/swagger-php/src/Serializer.php',
     'OpenApi\\Util' => $vendorDir . '/zircote/swagger-php/src/Util.php',
     'PHPMailer\\PHPMailer\\Exception' => $vendorDir . '/phpmailer/phpmailer/src/Exception.php',

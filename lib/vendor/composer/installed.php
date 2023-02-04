@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '57f56865b5b2ea8637ef43fbfe61828dcbe522f0',
+    'reference' => '6342fd3a7fce734a66a29fe3f205f3bcc38c8fc3',
     'name' => 'cockpit-hq/cockpit',
   ),
   'versions' => 
@@ -36,7 +36,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '57f56865b5b2ea8637ef43fbfe61828dcbe522f0',
+      'reference' => '6342fd3a7fce734a66a29fe3f205f3bcc38c8fc3',
     ),
     'colinodell/json5' => 
     array (
@@ -58,12 +58,12 @@
     ),
     'doctrine/annotations' => 
     array (
-      'pretty_version' => '2.0.0',
-      'version' => '2.0.0.0',
+      'pretty_version' => '2.0.1',
+      'version' => '2.0.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'd02c9f3742044e17d5fa8d28d8402a2d95c33302',
+      'reference' => 'e157ef3f3124bbf6fe7ce0ffd109e8a8ef284e7f',
     ),
     'doctrine/lexer' => 
     array (
@@ -399,21 +399,21 @@
     ),
     'webonyx/graphql-php' => 
     array (
-      'pretty_version' => 'v15.0.1',
-      'version' => '15.0.1.0',
+      'pretty_version' => 'v15.0.3',
+      'version' => '15.0.3.0',
       'aliases' => 
       array (
       ),
-      'reference' => '15fb39ba17faa332a2001aed5c1472117ec5abc3',
+      'reference' => 'bfa78b44a93c00ebc9a1bc92497bc170a0e3b656',
     ),
     'zircote/swagger-php' => 
     array (
-      'pretty_version' => '4.6.0',
-      'version' => '4.6.0.0',
+      'pretty_version' => '4.6.1',
+      'version' => '4.6.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'ee8147745c92dd4404adb531751ce32676b888d4',
+      'reference' => 'e449670473d7ecaff75dff744e8e9be68a79a44c',
     ),
   ),
 );

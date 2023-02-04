@@ -6,6 +6,7 @@
 - Fix tree item view #72
 - Update Vue to v3.2.47
 - Improve svg loading for <kiss-svg /> elements
+- Update vendor libs
 
 ## 2.3.7 (2023-01-31)
 
