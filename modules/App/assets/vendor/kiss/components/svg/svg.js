@@ -36,12 +36,14 @@ customElements.define('kiss-svg', class extends HTMLElement {
                 height: this.getAttribute('height') || ''
             };
 
-            if (!content.match(/^<svg/)) {
+            let svgStart = content.indexOf('<svg');
+
+            if (svgStart === -1) {
                 this.innerHTML = '';
                 return;
             }
 
-            this.innerHTML = content;
+            this.innerHTML = content.substr(svgStart);
 
             let svg = this.children[0];
 
