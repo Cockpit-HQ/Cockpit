@@ -1,6 +1,6 @@
 # Release Notes
 
-## WIP
+## 2.3.8 (2023-02-04)
 
 - Fix not allowed user role modification by intercepting request
 - Fix tree item view #72
