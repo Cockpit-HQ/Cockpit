@@ -46,6 +46,7 @@ class Theme extends \Lime\Helper {
             if ($ext == 'svg' && $color) {
                 $path = $this->app->path($url);
                 $svg = file_get_contents($path);
+                $svg = substr($svg, strpos($svg, '<svg'));
                 $svg = preg_replace('/fill="(.*?)"/', 'fill="'.$color.'"', $svg);
                 $this->favicon = 'data:image/svg+xml;base64,'.base64_encode($svg);
             }
