@@ -166,7 +166,7 @@ class MongoLite {
     public function update(string $collection, mixed $criteria, array $data) {
         $criteria = $this->_fixForMongo($criteria);
         $data     = $this->_fixForMongo($data);
-        return $this->getCollection($collection)->update($criteria, $data);
+        return $this->getCollection($collection)->update($criteria, ['$set' => $data]);
     }
 
     public function remove(string $collection, array $filter = []) {

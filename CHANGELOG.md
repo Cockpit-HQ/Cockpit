@@ -1,5 +1,9 @@
 # Release Notes
 
+## WIP
+
+- Fix batch state update (when using MongoLite) #75
+
 ## 2.3.8 (2023-02-04)
 
 - Fix not allowed user role modification by intercepting request
