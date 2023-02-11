@@ -3,6 +3,8 @@
 ## WIP
 
 - Fix batch state update (when using MongoLite) #75
+- Fix min/max settings for number fields #76
+- Set X-Frame-Options to prevent possible clickjacking via iframe layer
 
 ## 2.3.8 (2023-02-04)
 
