@@ -2695,9 +2695,15 @@
 
   let stripTags = function(input, allowed) {
 
+      if (Array.isArray(allowed)) {
+          let tags = '';
+          allowed.forEach(tag => tags += `<${tag}>`);
+          allowed = tags;
+      }
+
       // making sure the allowed arg is a string containing only tags in lowercase (<a><b><c>)
-      allowed = (((allowed || '') + '').toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join('');
-      const tags = /<\/?([a-z0-9]*)\b[^>]*>?/gi;
+      allowed = (((allowed || '') + '').toLowerCase().match(/<[a-z][a-z0-9\-]*>/g) || []).join('');
+      const tags = /<\/?([a-z0-9\-]*)\b[^>]*>?/gi;
       const commentsAndPhpTags = /<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi;
       let after = input;
 
@@ -3820,6 +3826,15 @@
   App$1.utils.import = function(uri) {
       return import(App$1.base(uri)+'?v='+App$1.version);
   };
+
+  App$1.utils.$interpolate = function (str, data) {
+
+      data = Object.assign({}, App$1.utils.$interpolate.fns, data);
+
+      return utils.interpolate(str, data);
+  };
+
+  App$1.utils.$interpolate.fns = {};
 
   window.App = App$1;
 

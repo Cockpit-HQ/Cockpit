@@ -160,4 +160,13 @@ App.utils.import = function(uri) {
     return import(App.base(uri)+'?v='+App.version);
 };
 
+App.utils.$interpolate = function (str, data) {
+
+    data = Object.assign({}, App.utils.$interpolate.fns, data);
+
+    return utils.interpolate(str, data);
+};
+
+App.utils.$interpolate.fns = {};
+
 window.App = App;

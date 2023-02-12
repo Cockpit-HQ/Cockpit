@@ -18,15 +18,13 @@ export default {
                 return `<span class="kiss-badge kiss-badge-outline">Object</span>`
             }
 
-            let html = 'n/a', span = document.createElement('span');
+            let output = 'n/a';
 
             try {
-                html = App.utils.interpolate(field.opts.display, { /* deprecated */ value, data:value});
+                output = App.utils.$interpolate(field.opts.display, { /* deprecated */ value, data:value});
             } catch(e) {}
 
-            span.innerText = html;
-
-            return span.outerHTML;
+            return output;
         }
     },
 

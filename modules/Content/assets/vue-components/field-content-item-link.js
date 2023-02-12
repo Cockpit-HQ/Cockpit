@@ -26,36 +26,7 @@ export default {
                 return `<span class="kiss-badge kiss-badge-outline">${value._id.substr(-5)}</span>`
             }
 
-            let id = `cil-${App.utils.uuid()}`;
-
-            let getItem = new Promise((resolve => {
-
-                App.request(`/content/collection/find/${field.opts.link}`, {
-                    options: {
-                        filter:{_id:value._id},
-                        limit:1
-                    }
-                }).then(resp => resolve(resp.items[0] || null));
-            }))
-
-            getItem.then(item => {
-
-                let html = 'n/a', ele;
-
-                if (item) {
-                    try {
-                        html = App.utils.interpolate(field.opts.display, {item, data:item});
-                    } catch(e) {}
-                }
-
-                ele = document.querySelector(`#${id}`);
-
-                if (ele) {
-                    ele.innerText = html;
-                }
-            })
-
-            return `<span id="${id}"><app-loader class="kiss-margin-remove-horizontal" size="small"></app-loader></span>`;
+            return `<display-content class="kiss-display-inline-block" model="${field.opts.link}" id="${value._id}" display="${field.opts.display}"><app-loader class="kiss-display-inline-block" size="small" mode="dots"></app-loader></display-content>`;
         }
     },
 
@@ -124,44 +95,7 @@ export default {
         },
 
         getDisplay() {
-
-            let getItem = new Promise((resolve => {
-
-                if (this.item) {
-                    resolve(this.item)
-                } else {
-
-                    this.$request(`/content/collection/find/${this.model.name}`, {
-                        options: {
-                            filter:{_id:this.val._id},
-                            limit:1
-                        }
-                    }).then(resp => {
-                        this.item = resp.items[0] || null;
-                        resolve(this.item);
-                    })
-                }
-            }))
-
-            getItem.then(item => {
-
-                let html = '';
-
-                    if (item) {
-                    try {
-                        html = App.utils.interpolate(this.display, { /* deprecated */ item, data:item});
-                    } catch(e) {
-                        html = 'ERROR';
-                    }
-
-                } else {
-                    html = '';
-                }
-
-                this.$el.querySelector('.content-link-item-display').innerText = html;
-            })
-
-            return '<span class="content-link-item-display"><app-loader class="kiss-margin-remove-horizontal" size="small"></app-loader></span>'
+            return `<display-content class="kiss-display-inline-block" model="${this.model.name}" id="${this.val._id}" display="${this.display}"><app-loader class="kiss-display-inline-block" size="small" mode="dots"></app-loader></display-content>`;
         },
 
         update() {

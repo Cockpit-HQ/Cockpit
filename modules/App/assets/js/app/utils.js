@@ -86,9 +86,15 @@ let truncate = function(text, length, clamp = '...') {
 
 let stripTags = function(input, allowed) {
 
+    if (Array.isArray(allowed)) {
+        let tags = '';
+        allowed.forEach(tag => tags += `<${tag}>`);
+        allowed = tags;
+    }
+
     // making sure the allowed arg is a string containing only tags in lowercase (<a><b><c>)
-    allowed = (((allowed || '') + '').toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join('');
-    const tags = /<\/?([a-z0-9]*)\b[^>]*>?/gi;
+    allowed = (((allowed || '') + '').toLowerCase().match(/<[a-z][a-z0-9\-]*>/g) || []).join('');
+    const tags = /<\/?([a-z0-9\-]*)\b[^>]*>?/gi;
     const commentsAndPhpTags = /<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi;
     let after = input;
 
