@@ -196,7 +196,7 @@ let FieldRenderer = {
                         <div class="kiss-flex-1 kiss-margin-left">
                             <span class="kiss-size-xsmall kiss-color-muted kiss-text-upper">{{ fieldItem.field.type }}</span>
                             <kiss-row class="kiss-margin-xsmall-top kiss-flex-middle">
-                                <div class="kiss-size-4 kiss-text-bold kiss-flex-1">{{ fieldItem.create ? t('Add item'):t('Edit item') }}</div>
+                                <div class="kiss-size-4 kiss-text-bold kiss-flex-1">{{ fieldItem.create ? t('Add item'):t('Update item') }}</div>
                             </kiss-row>
                         </div>
                     </div>
@@ -210,7 +210,7 @@ let FieldRenderer = {
                             {{ t('Cancel') }}
                         </a>
                         <button class="kiss-button kiss-button-primary" @click="saveFieldItem">
-                            <span v-if="!fieldItem.create">{{ t('Edit item') }}</span>
+                            <span v-if="!fieldItem.create">{{ t('Update item') }}</span>
                             <span v-if="fieldItem.create">{{ t('Add item') }}</span>
                         </button>
                     </div>

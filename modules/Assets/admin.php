@@ -39,6 +39,7 @@ $this->on('app.layout.init', function() {
 
 $this->on('app.layout.assets', function(array &$assets) {
     $assets[] = ['src' => 'assets:assets/js/assets.js', 'type' => 'module'];
+    $assets[] = ['src' => 'assets:assets/components/display-image.js', 'type' => 'module'];
 });
 
 $this->on('app.permissions.collect', function($permissions) {

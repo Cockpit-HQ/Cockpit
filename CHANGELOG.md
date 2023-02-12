@@ -6,6 +6,7 @@
 - Fix min/max settings for number fields #76
 - Set X-Frame-Options to prevent possible clickjacking via iframe layer
 - Allow to load linked content items in display previews #78
+- Allow to load thumbnails from linked assets in display previews
 
 ## 2.3.8 (2023-02-04)
 

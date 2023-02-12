@@ -38,3 +38,11 @@ App.on('field-wysiwyg-setup', evt => {
         }
     });
 });
+
+App.utils.$interpolate.fns.$image = function(asset, w = 25, h = 25, mode = 'bestFit', q = 80) {
+
+    if (!asset || !asset.type || asset.type !== 'image') return '';
+
+    return `<display-image class="kiss-display-inline-block" id="${asset._id}" w="${w}" h="${h}" mode="${mode}" q="${q}" style="vertical-align: middle;"></display-image>`;
+};
+
