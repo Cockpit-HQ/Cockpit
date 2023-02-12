@@ -15,6 +15,10 @@ customElements.define('display-content', class extends HTMLElement {
         this.render();
     }
 
+    attributeChangedCallback(oldvalue, newvalue) {
+        if (oldvalue != newvalue) this.render();
+    }
+
     render() {
 
         this.innerHTML = '<app-loader class="kiss-display-inline-block" size="small" mode="dots"></app-loader>';

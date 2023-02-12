@@ -12,6 +12,10 @@ customElements.define('display-image', class extends HTMLElement {
         this.render();
     }
 
+    attributeChangedCallback(oldvalue, newvalue) {
+        if (oldvalue != newvalue) this.render();
+    }
+
     render() {
 
         const id = this.getAttribute('id');
@@ -23,19 +27,16 @@ customElements.define('display-image', class extends HTMLElement {
             return;
         }
 
-        this.innerHTML = `<canvas width="${w}" height="${h}" style="vertical-align: middle;"></canvas>`;
+        this.innerHTML = `<canvas width="${w}" height="${h}" style="vertical-align: middle;background-repeat: no-repeat;background-position: 50% 50%; background-size: contain"></canvas>`;
 
-        let img = new Image();
+        let img = new Image(),
+            uri = App.route(`/assets/thumbnail/${id}?m=${mode}&mime=auto&w=h=${w}&h=${h}&t=${id}`);
 
         img.onload = () => {
+            this.querySelector('canvas').style.backgroundImage = `url(${uri})`;
+        };
 
-            let canvas = this.querySelector('canvas');
-            let ctx = canvas.getContext('2d');
-
-            ctx.drawImage(img, 0, 0, w, h);
-        }
-
-        img.src = App.route(`/assets/thumbnail/${id}?m=${mode}&mime=auto&w=h=${w}&h=${h}&t=${id}`);
+        img.src = uri;
     }
 
 });
