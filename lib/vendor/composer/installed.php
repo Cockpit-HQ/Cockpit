@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '6342fd3a7fce734a66a29fe3f205f3bcc38c8fc3',
+    'reference' => '08c9fa4b32e0071aaa3a41a0b48ad733e6bc91bd',
     'name' => 'cockpit-hq/cockpit',
   ),
   'versions' => 
@@ -36,7 +36,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '6342fd3a7fce734a66a29fe3f205f3bcc38c8fc3',
+      'reference' => '08c9fa4b32e0071aaa3a41a0b48ad733e6bc91bd',
     ),
     'colinodell/json5' => 
     array (
@@ -76,12 +76,12 @@
     ),
     'firebase/php-jwt' => 
     array (
-      'pretty_version' => 'v6.3.2',
-      'version' => '6.3.2.0',
+      'pretty_version' => 'v6.4.0',
+      'version' => '6.4.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'ea7dda77098b96e666c5ef382452f94841e439cd',
+      'reference' => '4dd1e007f22a927ac77da5a3fbb067b42d3bc224',
     ),
     'guzzlehttp/guzzle' => 
     array (
@@ -399,12 +399,12 @@
     ),
     'webonyx/graphql-php' => 
     array (
-      'pretty_version' => 'v15.0.3',
-      'version' => '15.0.3.0',
+      'pretty_version' => 'v15.1.0',
+      'version' => '15.1.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'bfa78b44a93c00ebc9a1bc92497bc170a0e3b656',
+      'reference' => 'c58c08f3e2d6c43a8e0bb4bcc61ecb2a3e4f85df',
     ),
     'zircote/swagger-php' => 
     array (
