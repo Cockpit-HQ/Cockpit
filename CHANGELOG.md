@@ -1,6 +1,6 @@
 # Release Notes
 
-## WIP
+## 2.3.9 (2023-02-13)
 
 - Fix batch state update (when using MongoLite) #75
 - Fix min/max settings for number fields #76
