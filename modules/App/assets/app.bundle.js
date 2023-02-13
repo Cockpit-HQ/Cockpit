@@ -3506,7 +3506,7 @@
       }
 
       attributeChangedCallback(oldvalue, newvalue) {
-          if (oldvalue != newvalue)this.render();
+          if (oldvalue != newvalue) this.render();
       }
 
       render() {

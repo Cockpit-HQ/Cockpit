@@ -378,6 +378,15 @@ app-fieldcontainer app-fieldcontainer {
     display: block;
 }
 
+app-pagination {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--kiss-padding-small, .6rem);
+    background-color: var(--kiss-color-contrast);
+    font-size: var(--kiss-font-size-small, var(--kiss-font-size-6, 0.875rem));
+    border-radius: var(--app-border-radius);
+}
+
 .table-scroll {
     overflow-x: auto;
     white-space: nowrap;

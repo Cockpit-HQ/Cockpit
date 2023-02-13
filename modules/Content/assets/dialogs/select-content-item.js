@@ -153,15 +153,17 @@ export default {
             <div class="kiss-flex kiss-flex-right kiss-margin-top">
 
                 <div class="kiss-flex kiss-flex-middle kiss-flex-1" v-if="!loading && count">
-                    <div class="kiss-size-small">{{ count }} {{count == 1 ? t('Item') : t('Items') }}</div>
-                    <div class="kiss-margin-small-left kiss-overlay-input">
-                        <span class="kiss-badge kiss-badge-outline kiss-color-muted">{{ page }} / {{pages}}</span>
-                        <select v-model="page" @change="load(page)" v-if="pages > 1"><option v-for="p in pages" :value="p">{{ p }}</option></select>
-                    </div>
-                    <div class="kiss-margin-small-left kiss-size-small">
-                        <a class="kiss-margin-small-right" v-if="(page - 1) >= 1" @click="load(page - 1)">{{ t('Previous') }}</a>
-                        <a v-if="(page + 1) <= pages" @click="load(page + 1)">{{ t('Next') }}</a>
-                    </div>
+                    <app-pagination>
+                        <div class="kiss-color-muted">{{ count }} {{ count == 1 ? t('Item') : t('Items') }}</div>
+                        <a class="kiss-margin-small-left" v-if="(page - 1) >= 1" @click="load(page - 1)">{{ t('Previous') }}</a>
+                        <div class="kiss-margin-small-left kiss-overlay-input" v-if="count > limit">
+                            <strong>{{ page }} &mdash; {{pages}}</strong>
+                            <select v-model="page" @change="load(page)" v-if="pages > 1">
+                                <option v-for="p in pages" :value="p">{{ p }}</option>
+                            </select>
+                        </div>
+                        <a class="kiss-margin-small-left" v-if="(page + 1) <= pages" @click="load(page + 1)">{{ t('Next') }}</a>
+                    </app-pagination>
                 </div>
 
                 <button class="kiss-button kiss-button-primary" @click="$close()">

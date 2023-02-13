@@ -3328,7 +3328,7 @@ small,
   font-size: var(--kiss-font-size-small, var(--kiss-font-size-6, 0.875rem));
 }
 .kiss-size-xsmall {
-  font-size: var(--kiss-font-size-small, 11px);
+  font-size: var(--kiss-font-size-xsmall, 11px);
 }
 /**
  * margins
@@ -4512,6 +4512,14 @@ app-actionbar kiss-container {
 app-fieldcontainer app-fieldcontainer {
     all: unset;
     display: block;
+}
+app-pagination {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--kiss-padding-small, .6rem);
+    background-color: var(--kiss-color-contrast);
+    font-size: var(--kiss-font-size-small, var(--kiss-font-size-6, 0.875rem));
+    border-radius: var(--app-border-radius);
 }
 .table-scroll {
     overflow-x: auto;

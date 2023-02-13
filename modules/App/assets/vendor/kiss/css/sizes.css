@@ -48,5 +48,5 @@ small,
 }
 
 .kiss-size-xsmall {
-  font-size: var(--kiss-font-size-small, 11px);
+  font-size: var(--kiss-font-size-xsmall, 11px);
 }
