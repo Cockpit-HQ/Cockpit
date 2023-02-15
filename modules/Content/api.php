@@ -444,13 +444,15 @@ $this->on('restApi.config', function($restApi) {
             $populate = $app->param('populate:int', null);
             $filter = $app->param('filter:string', null);
             $sort = $app->param('sort:string', null);
-            $fields = $app->param('fields:string', null);
+	    $fields = $app->param('fields:string', null);
+	    $total = $app->param('total:string', null);
 
             if (!is_null($filter)) $options['filter'] = $filter;
             if (!is_null($sort)) $options['sort'] = $sort;
             if (!is_null($fields)) $options['fields'] = $fields;
             if (!is_null($limit)) $options['limit'] = $limit;
-            if (!is_null($skip)) $options['skip'] = $skip;
+	    if (!is_null($skip)) $options['skip'] = $skip;
+	    if (!is_null($total)) $options['total'] = filter_var($total, FILTER_VALIDATE_BOOL);	  
 
             foreach (['filter', 'fields', 'sort'] as $prop) {
                 if (isset($options[$prop])) {
@@ -475,14 +477,22 @@ $this->on('restApi.config', function($restApi) {
 
             $items = $app->module('content')->items($model, $options, $process);
 
-            if (isset($options['skip'], $options['limit'])) {
-                return [
-                    'data' => $items,
-                    'meta' => [
-                        'total' => $app->module('content')->count($model, $options['filter'] ?? [])
-                    ]
-                ];
+	    if (isset($options['skip'], $options['limit'])) {
+		if ($options['total']) {
+		    return $app->module('content')->count($model, $options['filter'] ?? []);
+		} else {
+                    return [
+                        'data' => $items,
+                        'meta' => [
+                            'total' => $app->module('content')->count($model, $options['filter'] ?? [])
+                        ]
+                    ];
+		}
             }
+
+	    if ($options['total']) {
+		return count($items);
+	    }
 
             if (count($items)) {
                 $app->trigger('content.api.items', [&$items, $model]);
