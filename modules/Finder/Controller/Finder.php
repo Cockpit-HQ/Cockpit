@@ -254,9 +254,15 @@ class Finder extends App {
 
         if ($path && file_exists($file) && $contents!==false) {
 
+            $isPHPfile = preg_match('/\.php$/', $file);
+
+            if ($isPHPfile && !$this->helper('acl')->isSuperAdmin()) {
+                return ['success' => false, 'error' => 'Access denied.'];
+            }
+
             $ret = file_put_contents($file, $contents);
 
-            if ($ret && function_exists('opcache_invalidate') && preg_match('/\.php$/', $file)) {
+            if ($ret && $isPHPfile && function_exists('opcache_invalidate')) {
                 opcache_invalidate($file, true);
             }
         }

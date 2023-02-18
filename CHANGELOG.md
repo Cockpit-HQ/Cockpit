@@ -1,5 +1,9 @@
 # Release Notes
 
+## WIP
+
+- Add additional security check editing php files in finder
+
 ## 2.3.9 (2023-02-13)
 
 - Fix batch state update (when using MongoLite) #75

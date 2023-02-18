@@ -42,7 +42,13 @@ export default {
 
         save() {
 
-            this.$request('/finder/api', {cmd: 'writefile', path: this.file.path, contents: this.contents}).then(() => {
+            this.$request('/finder/api', {cmd: 'writefile', path: this.file.path, contents: this.contents}).then(ret => {
+
+                if (ret.success === false) {
+                    App.ui.notify(ret.error || 'Saving contents failed', 'error');
+                    return;
+                }
+
                 App.ui.notify('File updated!', 'success');
             });
         },
