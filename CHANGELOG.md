@@ -3,6 +3,7 @@
 ## WIP
 
 - Add additional security check editing php files in finder
+- Fix base64 encoding data not in latin char range
 
 ## 2.3.9 (2023-02-13)
 
