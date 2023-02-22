@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '08c9fa4b32e0071aaa3a41a0b48ad733e6bc91bd',
+    'reference' => '22290b5db4763f53019046ae79b49974c8769dd5',
     'name' => 'cockpit-hq/cockpit',
   ),
   'versions' => 
@@ -36,7 +36,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '08c9fa4b32e0071aaa3a41a0b48ad733e6bc91bd',
+      'reference' => '22290b5db4763f53019046ae79b49974c8769dd5',
     ),
     'colinodell/json5' => 
     array (
@@ -130,12 +130,12 @@
     ),
     'league/flysystem' => 
     array (
-      'pretty_version' => '3.12.2',
-      'version' => '3.12.2.0',
+      'pretty_version' => '3.12.3',
+      'version' => '3.12.3.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'f6377c709d2275ed6feaf63e44be7a7162b0e77f',
+      'reference' => '81e87e74dd5213795c7846d65089712d2dda90ce',
     ),
     'league/mime-type-detection' => 
     array (
@@ -408,12 +408,12 @@
     ),
     'zircote/swagger-php' => 
     array (
-      'pretty_version' => '4.6.1',
-      'version' => '4.6.1.0',
+      'pretty_version' => '4.7.0',
+      'version' => '4.7.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'e449670473d7ecaff75dff744e8e9be68a79a44c',
+      'reference' => 'f2bcbd5aa9d838d28bf5665c70f88eda6adc22cb',
     ),
   ),
 );
