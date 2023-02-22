@@ -15,14 +15,14 @@ let formatDuration = function (time) {
     let secs = ~~time % 60;
 
     // Output like "1:01" or "4:03:59" or "123:03:59"
-    let ret = "";
+    let ret = '';
 
     if (hrs > 0) {
-        ret += "" + hrs + ":" + (mins < 10 ? "0" : "");
+        ret += `${hrs}:${(mins < 10 ? '0' : '')}`;
     }
 
-    ret += "" + mins + ":" + (secs < 10 ? "0" : "");
-    ret += "" + secs;
+    ret += `${mins}:${(secs < 10 ? '0' : '')}`;
+    ret += `${secs}`;
     return ret;
 }
 
@@ -74,9 +74,7 @@ let interpolate = function (str, params) {
 }
 
 let uuid = function() {
-    return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
-        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-    );
+    return crypto.randomUUID();
 }
 
 let truncate = function(text, length, clamp = '...') {
