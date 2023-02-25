@@ -37,6 +37,7 @@
     --kiss-dialog-background: var(--kiss-color-overlay);
     --kiss-dialog-content-background: var(--kiss-color-contrast);
     --kiss-dialog-content-spacing: 20px;
+    --kiss-dialog-width: 500px;
     --kiss-dialog-large-width: 840px;
     --kiss-dialog-xlarge-width: var(--kiss-container-max-width);
 
@@ -96,7 +97,7 @@ kiss-tooltip {
 kiss-dialog,
 kiss-offcanvas,
 kiss-popoutmenu {
-    backdrop-filter: grayscale(1) blur(1.5px);
+    backdrop-filter: grayscale(1) blur(4.5px);
 }
 
 kiss-offcanvas kiss-content,

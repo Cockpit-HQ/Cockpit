@@ -2880,11 +2880,11 @@
           options = Object.assign({escape:true}, options || {});
 
           let dialog = this.dialog(/*html*/`
-            <div class="kiss-margin">
+            <div class="kiss-margin kiss-dialog-alert-message">
                 ${content}
             </div>
             <div class="kiss-margin-top kiss-flex kiss-flex-middle">
-                <button type="button" class="kiss-button kiss-button-primary kiss-flex-1" kiss-dialog-close>${App.i18n.get('Ok')}</button>
+                <button type="button" class="kiss-button kiss-button-large kiss-button-primary kiss-flex-1" kiss-dialog-close>${App.i18n.get('Ok')}</button>
             </div>
         `, options, 'alert');
 
@@ -2896,12 +2896,12 @@
           options = Object.assign({escape:true}, options || {});
 
           let dialog = this.dialog(/*html*/`
-            <div class="kiss-margin-bottom">
+            <div class="kiss-margin-bottom kiss-dialog-confirm-message">
                 ${text}
             </div>
             <div class="kiss-margin-top kiss-flex kiss-flex-middle kiss-button-group">
-                <button type="button" class="kiss-button-cancel kiss-button kiss-flex-1">${App.i18n.get('Cancel')}</button>
-                <button type="button" class="kiss-button-confirm kiss-button kiss-button-primary kiss-flex-1">${App.i18n.get('Ok')}</button>
+                <button type="button" class="kiss-button-cancel kiss-button kiss-button-large kiss-flex-1">${App.i18n.get('Cancel')}</button>
+                <button type="button" class="kiss-button-confirm kiss-button kiss-button-large kiss-button-primary kiss-flex-1">${App.i18n.get('Ok')}</button>
             </div>
         `, options, 'confirm');
 
@@ -2921,7 +2921,7 @@
       prompt: function (text, value = '', clb, options) {
           let dialog = this.dialog(/*html*/`
             <form>
-                <div class="kiss-margin kiss-text-bold">${text}</div>
+                <div class="kiss-margin kiss-text-bold kiss-dialog-prompt-message">${text}</div>
                 <div class="kiss-margin-bottom">
                     <input class="kiss-width-1-1 kiss-input" type="text" required>
                 </div>
@@ -2930,7 +2930,7 @@
                     <button type="submit" class="kiss-button-confirm kiss-button kiss-button-primary kiss-flex-1">${App.i18n.get('Ok')}</button>
                 </div>
             </form>
-        `, options, 'confirm');
+        `, options, 'prompt');
 
           let input = dialog.querySelector('.kiss-input');
 
