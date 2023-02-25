@@ -6,6 +6,7 @@ use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\NodeKind;
 use GraphQL\Language\AST\NodeList;
 use GraphQL\Utils\TypeInfo;
+use GraphQL\Utils\Utils;
 
 /**
  * Utility for efficient AST traversal and modification.
@@ -14,34 +15,28 @@ use GraphQL\Utils\TypeInfo;
  * the visitor's enter function at each node in the traversal, and calling the
  * leave function after visiting that node and all of its child nodes.
  *
- * By returning different values from the enter and leave functions, the
- * behavior of the visitor can be altered, including skipping over a sub-tree of
- * the AST (by returning false), editing the AST by returning a value or null
- * to remove the value, or to stop the whole traversal by returning BREAK.
+ * By returning different values from the `enter` and `leave` functions, the
+ * behavior of the visitor can be altered.
+ * - no return (`void`) or return `null`: no action
+ * - `Visitor::skipNode()`: skips over the subtree at the current node of the AST
+ * - `Visitor::stop()`: stop the Visitor completely
+ * - `Visitor::removeNode()`: remove the current node
+ * - return any other value: replace this node with the returned value
  *
  * When using `visit()` to edit an AST, the original AST will not be modified, and
  * a new version of the AST with the changes applied will be returned from the
  * visit function.
  *
- *     $editedAST = Visitor::visit($ast, [
+ *   $editedAST = Visitor::visit($ast, [
  *       'enter' => function ($node, $key, $parent, $path, $ancestors) {
- *         // return
- *         //   null: no action
- *         //   Visitor::skipNode(): skip visiting this node
- *         //   Visitor::stop(): stop visiting altogether
- *         //   Visitor::removeNode(): delete this node
- *         //   any value: replace this node with the returned value
+ *           // ...
  *       },
  *       'leave' => function ($node, $key, $parent, $path, $ancestors) {
- *         // return
- *         //   null: no action
- *         //   Visitor::stop(): stop visiting altogether
- *         //   Visitor::removeNode(): delete this node
- *         //   any value: replace this node with the returned value
+ *           // ...
  *       }
- *     ]);
+ *   ]);
  *
- * Alternatively to providing enter() and leave() functions, a visitor can
+ * Alternatively to providing `enter` and `leave` functions, a visitor can
  * instead provide functions named the same as the [kinds of AST nodes](class-reference.md#graphqllanguageastnodekind),
  * or enter/leave visitors at a named key, leading to four permutations of
  * visitor API:
@@ -94,7 +89,8 @@ use GraphQL\Utils\TypeInfo;
  *       ]
  *     ]);
  *
- * @phpstan-type VisitorArray array<string, callable(Node): VisitorOperation|mixed|null>|array<string, array<string, callable(Node): VisitorOperation|mixed|null>>
+ * @phpstan-type NodeVisitor callable(Node): (VisitorOperation|null|false|void)
+ * @phpstan-type VisitorArray array<string, NodeVisitor>|array<string, array<string, NodeVisitor>>
  */
 class Visitor
 {
@@ -178,13 +174,13 @@ class Visitor
 
         /**
          * @var list<array{
-         *   inArray: bool,
+         *   inList: bool,
          *   index: int,
          *   keys: Node|NodeList|mixed,
          *   edits: array<int, array{mixed, mixed}>,
          * }> $stack */
         $stack = [];
-        $inArray = $root instanceof NodeList;
+        $inList = $root instanceof NodeList;
         $keys = [$root];
         $index = -1;
         $edits = [];
@@ -214,20 +210,23 @@ class Visitor
 
                     $editOffset = 0;
                     foreach ($edits as [$editKey, $editValue]) {
-                        if ($inArray) {
+                        if ($inList) {
                             $editKey -= $editOffset;
                         }
 
-                        if ($inArray && $editValue === null) {
-                            assert($node instanceof NodeList, 'Follows from $inArray');
+                        if ($inList && $editValue === null) {
+                            assert($node instanceof NodeList, 'Follows from $inList');
                             $node->splice($editKey, 1);
                             ++$editOffset;
-                        } else {
-                            if ($node instanceof NodeList || \is_array($node)) {
-                                $node[$editKey] = $editValue;
-                            } else {
-                                $node->{$editKey} = $editValue;
+                        } elseif ($node instanceof NodeList) {
+                            if (! $editValue instanceof Node) {
+                                $notNode = Utils::printSafe($editValue);
+                                throw new \Exception("Can only add Node to NodeList, got: {$notNode}.");
                             }
+
+                            $node[$editKey] = $editValue;
+                        } else {
+                            $node->{$editKey} = $editValue;
                         }
                     }
                 }
@@ -237,23 +236,19 @@ class Visitor
                     'index' => $index,
                     'keys' => $keys,
                     'edits' => $edits,
-                    'inArray' => $inArray,
+                    'inList' => $inList,
                 ] = \array_pop($stack);
             } else {
-                $key = $parent !== null
-                    ? (
-                        $inArray
-                            ? $index
-                            : $keys[$index]
-                    )
-                    : null;
-                $node = $parent !== null
-                    ? (
-                        $parent instanceof NodeList || \is_array($parent)
-                            ? $parent[$key]
-                            : $parent->{$key}
-                    )
-                    : $newRoot;
+                if ($parent === null) {
+                    $node = $newRoot;
+                } else {
+                    $key = $inList
+                        ? $index
+                        : $keys[$index];
+                    $node = $parent instanceof NodeList
+                        ? $parent[$key]
+                        : $parent->{$key};
+                }
                 if ($node === null) {
                     continue;
                 }
@@ -264,7 +259,7 @@ class Visitor
             }
 
             $result = null;
-            if (! $node instanceof NodeList && ! \is_array($node)) {
+            if (! $node instanceof NodeList) {
                 if (! ($node instanceof Node)) {
                     throw new \Exception('Invalid AST Node: ' . \json_encode($node));
                 }
@@ -273,25 +268,22 @@ class Visitor
 
                 if ($visitFn !== null) {
                     $result = $visitFn($node, $key, $parent, $path, $ancestors);
-                    $editValue = null;
 
                     if ($result !== null) {
-                        if ($result instanceof VisitorOperation) {
-                            if ($result instanceof VisitorStop) {
-                                break;
-                            }
-
-                            if (! $isLeaving && $result instanceof VisitorSkipNode) {
-                                \array_pop($path);
-                                continue;
-                            }
-
-                            if ($result instanceof VisitorRemoveNode) {
-                                $editValue = null;
-                            }
-                        } else {
-                            $editValue = $result;
+                        if ($result instanceof VisitorStop) {
+                            break;
                         }
+
+                        if ($result instanceof VisitorSkipNode) {
+                            if (! $isLeaving) {
+                                \array_pop($path);
+                            }
+                            continue;
+                        }
+
+                        $editValue = $result instanceof VisitorRemoveNode
+                            ? null
+                            : $result;
 
                         $edits[] = [$key, $editValue];
                         if (! $isLeaving) {
@@ -314,14 +306,14 @@ class Visitor
                 \array_pop($path);
             } else {
                 $stack[] = [
-                    'inArray' => $inArray,
+                    'inList' => $inList,
                     'index' => $index,
                     'keys' => $keys,
                     'edits' => $edits,
                 ];
-                $inArray = $node instanceof NodeList || \is_array($node);
+                $inList = $node instanceof NodeList;
 
-                $keys = ($inArray ? $node : $visitorKeys[$node->kind]) ?? [];
+                $keys = ($inList ? $node : $visitorKeys[$node->kind]) ?? [];
                 $index = -1;
                 $edits = [];
                 if ($parent !== null) {
@@ -352,7 +344,7 @@ class Visitor
     }
 
     /**
-     * Returns marker for skipping the current node.
+     * Returns marker for skipping the subtree at the current node.
      *
      * @api
      */
