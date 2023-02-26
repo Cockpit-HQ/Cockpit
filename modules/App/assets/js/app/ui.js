@@ -178,7 +178,7 @@ export default {
     prompt: function (text, value = '', clb, options) {
         let dialog = this.dialog(/*html*/`
             <form>
-                <div class="kiss-margin kiss-text-bold kiss-dialog-prompt-message">${text}</div>
+                <div class="kiss-margin kiss-dialog-prompt-message">${text}</div>
                 <div class="kiss-margin-bottom">
                     <input class="kiss-width-1-1 kiss-input" type="text" required>
                 </div>
