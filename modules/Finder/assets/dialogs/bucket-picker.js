@@ -3,9 +3,10 @@ export default {
     data() {
 
         return {
+            uuid: App.utils.uuid(),
             loading: true,
             uploading: false,
-            currentpath: App.session.get(`finder.persist.${this.root}`, this.root),
+            currentpath: '/',
             files: [],
             folders: [],
             selected: [],
@@ -13,45 +14,41 @@ export default {
             actionFolder: null,
             actionFile: null,
 
+            selectedFile: null,
+
             filter: ''
         }
     },
 
     props: {
-        root: {
-            type: String,
-            default: '/'
-        },
 
-        modal: {
-            type: Boolean,
-            default: false
+        bucket: {
+            type: String,
+            default: null
         }
     },
 
     mounted() {
 
+        if (!this.bucket) {
+            return;
+        }
+
         this.loadpath();
 
-        App.assets.require([
-            'assets:assets/vendor/spotlight/spotlight.bundle.js',
-            'assets:assets/vendor/spotlight/css/spotlight.min.css',
-        ]);
+        const el = document.getElementById(this.uuid);
 
-        if (!this.modal) {
+        el.addEventListener('dragover', e => e.preventDefault());
+        el.addEventListener('drop', e => {
 
-            document.body.addEventListener('dragover', e => e.preventDefault());
-            document.body.addEventListener('drop', e => {
+            if (!e.dataTransfer.files) {
+                return;
+            }
 
-                if (!e.dataTransfer.files) {
-                    return;
-                }
-
-                e.preventDefault();
-                e.stopPropagation();
-                this.uploadFiles(e.dataTransfer.files);
-            });
-        }
+            e.preventDefault();
+            e.stopPropagation();
+            this.uploadFiles(e.dataTransfer.files);
+        });
     },
 
     computed: {
@@ -116,8 +113,9 @@ export default {
             path = path || this.currentpath;
 
             this.loading = true;
+            this.selectedFile = null;
 
-            this.$request('/finder/api', {cmd: 'ls', path}).then(rsp => {
+            this.$request(`/finder/buckets/api/${this.bucket}`, {cmd: 'ls', path}).then(rsp => {
 
                 this.currentpath = path;
                 this.files = rsp.files || [];
@@ -126,8 +124,6 @@ export default {
                 this.filter = '';
 
                 this.loading = false;
-
-                App.session.set(`finder.persist.${this.root}`, path);
             });
         },
 
@@ -162,7 +158,7 @@ export default {
         },
 
         download(file) {
-            window.open(this.$route(`/finder/api?cmd=download&path=${file.path}`));
+            window.open(this.$route(`/finder/uploads/api?cmd=download&path=${file.path}`));
         },
 
         createFolder() {
@@ -171,32 +167,11 @@ export default {
 
                 if (name.trim()) {
 
-                    this.$request('/finder/api', {cmd: 'createfolder', path: this.currentpath, name}).then(() => {
+                    this.$request(`/finder/buckets/api/${this.bucket}`, {cmd: 'createfolder', path: this.currentpath, name}).then(() => {
                         this.loadpath();
                     });
                 }
             });
-        },
-
-        createFile() {
-
-            App.ui.prompt('Please enter a file name:', '', name => {
-
-                if (name.trim()) {
-
-                    this.$request('/finder/api', {cmd: 'createfile', path: this.currentpath, name}).then(() => {
-                        this.loadpath();
-                    });
-                }
-            });
-        },
-
-        edit(file) {
-
-            VueView.ui.offcanvas('finder:assets/dialogs/file-editor.js', {file}, {
-
-
-            }, {flip: true, size: 'xxlarge'})
         },
 
         rename(item) {
@@ -205,7 +180,9 @@ export default {
 
                 if (name !== item.name && name.trim()) {
 
-                    this.$request('/finder/api', {cmd: 'rename', path: item.path, name}).then(() => {
+                    this.selectedFile = null;
+
+                    this.$request(`/finder/buckets/api/${this.bucket}`, {cmd: 'rename', path: item.path, name}).then(() => {
 
                         item.path = item.path.replace(item.name, name);
                         item.name = name;
@@ -218,12 +195,14 @@ export default {
 
             App.ui.confirm('Are you sure?', () => {
 
-                this.$request('/finder/api', {cmd: 'removefiles', paths: [item.path]}).then(() => {
+                this.$request(`/finder/buckets/api/${this.bucket}`, {cmd: 'removefiles', paths: [item.path]}).then(() => {
 
                     const index = this[item.is_file ? 'files':'folders'].indexOf(item);
 
                     this[item.is_file ? 'files':'folders'].splice(index, 1);
                     this.selected = [];
+
+                    this.selectedFile = null;
 
                     App.ui.notify('Item(s) deleted', 'success');
                 });
@@ -234,22 +213,11 @@ export default {
 
             App.ui.confirm('Are you sure?', () => {
 
-                this.$request('/finder/api', {cmd:'removefiles', paths: this.selected}).then(() => {
+                this.$request(`/finder/buckets/api/${this.bucket}`, {cmd:'removefiles', paths: this.selected}).then(() => {
                     this.loadpath();
                     App.ui.notify('File(s) deleted', 'success');
                 });
             });
-        },
-
-        open(file) {
-
-            if (file.mime.indexOf('text') > -1 || ['json', 'svg'].includes(file.ext)) {
-                return this.edit(file);
-            }
-
-            if (file.mime.match('(image|video|audio)') && window.Spotlight) {
-                Spotlight.show([{ src: file.url }]);
-            }
         },
 
         uploadFiles(files) {
@@ -271,7 +239,7 @@ export default {
             formData.append('cmd', 'upload');
             formData.append('path', this.currentpath);
 
-            xhr.open('POST', App.route('/finder/api'));
+            xhr.open('POST', App.route(`/finder/buckets/api/${this.bucket}`));
 
             this.uploading = 0;
 
@@ -297,9 +265,15 @@ export default {
     },
 
     template: /*html*/`
+    <div :id="uuid">
+
+        <div class="kiss-size-4">
+            <span class="kiss-color-muted">Bucket:</span> {{ bucket }}
+        </div>
+
         <div :class="{'kiss-disabled':loading}">
             <ul class="kiss-breadcrumbs">
-                <li><a @click="loadpath(root)"><icon size="larger">home</icon></a></li>
+                <li><a @click="loadpath('/')"><icon size="larger">home</icon></a></li>
                 <li v-for="f in breadcrumbs"><a @click="loadpath(f.path)">{{ f.name }}</a></li>
             </ul>
         </div>
@@ -308,7 +282,7 @@ export default {
 
         <div class="animated fadeIn kiss-height-30vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted kiss-margin-large" v-if="!loading && !folders.length && !files.length">
             <div>
-                <kiss-svg class="kiss-margin-auto" src="<?= $this->base('finder:icon.svg') ?>" width="40" height="40"><canvas width="40" height="40"></canvas></kiss-svg>
+                <kiss-svg class="kiss-margin-auto" :src="$base('finder:icon.svg')" width="40" height="40"><canvas width="40" height="40"></canvas></kiss-svg>
                 <p class="kiss-size-large kiss-text-bold kiss-margin-small-top">{{ t('Empty') }}</p>
             </div>
         </div>
@@ -319,64 +293,62 @@ export default {
                 <input type="text" class="kiss-input" :placeholder="t('Filter files & folders...')" v-model="filter">
             </div>
 
-            <kiss-grid cols="4@m 5@xl" class="kiss-margin-bottom" gap="small" v-if="folders.length">
+            <div class="kiss-dialog-overflow" :expand="true">
 
-                <kiss-card class="kiss-flex kiss-flex-middle" theme="shadowed contrast" v-for="folder in filteredFolders">
-                    <div class="kiss-padding kiss-bgcolor-contrast"><icon size="larger">folder</icon></div>
-                    <div class="kiss-padding kiss-text-truncate kiss-flex-1 kiss-text-bold kiss-size-small">
-                        <a class="kiss-link-muted" @click="loadpath(currentpath+'/'+folder.name)">{{ folder.name }}</a>
-                    </div>
-                    <a class="kiss-padding" @click="toggleFolderActions(folder)"><icon>more_horiz</icon></a>
-                </kiss-card>
+                <kiss-grid cols="2@m 3@xl" class="kiss-margin-bottom" gap="small" v-if="folders.length">
 
-            </kiss-grid>
+                    <kiss-card class="kiss-flex kiss-flex-middle" theme="shadowed contrast" v-for="folder in filteredFolders">
+                        <div class="kiss-padding kiss-bgcolor-contrast"><icon size="larger">folder</icon></div>
+                        <div class="kiss-padding kiss-text-truncate kiss-flex-1 kiss-text-bold kiss-size-small">
+                            <a class="kiss-link-muted" @click="loadpath(currentpath+'/'+folder.name)">{{ folder.name }}</a>
+                        </div>
+                        <a class="kiss-padding" @click="toggleFolderActions(folder)"><icon>more_horiz</icon></a>
+                    </kiss-card>
 
-            <table class="kiss-table animated fadeIn" v-if="files.length">
-                <thead>
-                    <tr>
-                        <th width="30"><input class="kiss-checkbox" type="checkbox" @click="toggleAllSelect"></th>
-                        <th width="10"></th>
-                        <th>{{ t('Name') }}</th>
-                        <th class="kiss-align-right" width="10%">{{ t('Size') }}</th>
-                        <th class="kiss-align-right" width="100">{{ t('Updated') }}</th>
-                        <th width="30"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="file in filteredFiles">
-                        <td><input class="kiss-checkbox" type="checkbox" v-model="selected" :value="file.path"></td>
-                        <td class="kiss-align-center"><a @click="download(file)"><icon size="larger">cloud_download</icon></a></td>
-                        <td class="kiss-position-relative">
-                            {{ file.name }}
-                            <a class="kiss-cover" @click="open(file)"></a>
-                        </td>
-                        <td class="kiss-align-right kiss-text-monospace kiss-color-muted">{{ file.size }}</td>
-                        <td class="kiss-align-right kiss-color-muted"><span class="kiss-display-block kiss-align-center kiss-badge kiss-badge-outline kiss-color-muted">{{ file.lastmodified }}</span></td>
-                        <td class="kiss-align-right"><a class="kiss-padding" @click="toggleFileActions(file)"><icon>more_horiz</icon></a></td>
-                    </tr>
-                </tbody>
-            </table>
+                </kiss-grid>
+
+                <kiss-grid cols="2@s 3@m" class="spotlight-group" gap="small" v-if="!loading && files.length" match="true" hover="shadow">
+
+                    <kiss-card class="kiss-position-relative kiss-bgcolor-contrast" theme="bordered" :style="{borderColor: (selectedFile && selectedFile.path === file.path && 'var(--kiss-color-primary)') || null}" v-for="file in files">
+                        <div class="kiss-position-relative" :class="{'kiss-bgcolor-transparentimage': file.type === 'image'}">
+                            <canvas width="400" height="300" style="background-repeat: no-repeat;background-size:contain;background-position:50% 50%;" :style="{backgroundImage: file.type === 'image' ? 'url('+encodeURI(file.url)+')' : 'none'}"></canvas>
+                            <div class="kiss-cover kiss-padding kiss-flex kiss-flex-middle kiss-flex-center" v-if="file.type !== 'image'">
+                                <span class="kiss-color-muted kiss-size-large kiss-text-upper">{{ file.ext }}</span>
+                            </div>
+                            <a class="kiss-cover" @click="selectedFile=file"></a>
+                        </div>
+                        <div class="kiss-padding kiss-flex kiss-flex-middle">
+                            <div><input class="kiss-checkbox" type="checkbox" v-model="selected" :value="file.path"></div>
+                            <div class="kiss-margin-small-left kiss-text-truncate kiss-size-xsmall kiss-flex-1">{{ App.utils.truncate(file.name, 25) }}</div>
+                            <a class="kiss-margin-small-left" @click="toggleFileActions(file)"><icon>more_horiz</icon></a>
+                        </div>
+                    </kiss-card>
+
+                </kiss-grid>
+
+            </div>
 
         </div>
 
-        <app-actionbar :class="{'kiss-disabled':loading}">
-            <kiss-container>
-                <div class="kiss-flex kiss-flex-middle">
-                    <div class="kiss-margin-right" v-if="selected.length">
-                        <button class="kiss-button kiss-button-danger" @click="removeSelected()">{{ t('Delete') }} -{{ selected.length }}-</button>
-                    </div>
-                    <div class="kiss-flex-1 kiss-margin-right"></div>
-                    <div class="kiss-button-group">
-                        <button class="kiss-button" @click="createFolder()">{{ t('Create folder') }}</button>
-                        <button class="kiss-button" @click="createFile()">{{ t('Create file') }}</button>
-                        <button class="kiss-button kiss-button-primary kiss-overlay-input" :disabled="uploading">
-                            {{ t('Upload file') }}
-                            <input type="file" name="files[]" @change="(e) => {uploadFiles(e.target.files)}" multiple v-if="!uploading" />
-                        </button>
-                    </div>
+        <div :class="{'kiss-disabled':loading}">
+            <div class="kiss-flex kiss-flex-middle">
+                <div class="kiss-margin-right" v-if="selected.length">
+                    <button class="kiss-button kiss-button-danger" @click="removeSelected()">{{ t('Delete') }} -{{ selected.length }}-</button>
                 </div>
-            </kiss-container>
-        </app-actionbar>
+                <div class="kiss-button-group kiss-margin-right">
+                    <button class="kiss-button" @click="createFolder()">{{ t('Create folder') }}</button>
+                    <button class="kiss-button kiss-overlay-input" :disabled="uploading">
+                        {{ t('Upload file') }}
+                        <input type="file" name="files[]" @change="(e) => {uploadFiles(e.target.files)}" multiple v-if="!uploading" />
+                    </button>
+                </div>
+                <div class="kiss-flex-1 kiss-margin-right"></div>
+                <div class="kiss-button-group">
+                    <button class="kiss-button" autofocus kiss-dialog-close>{{ t('Cancel') }}</button>
+                    <button class="kiss-button kiss-button-primary" v-if="selectedFile" @click="selectAsset && selectFile(selectedFile)">{{ t('Select file') }}</button>
+                </div>
+            </div>
+        </div>
 
         <teleport to="body">
             <kiss-popoutmenu :open="actionFile && 'true'" @popoutmenuclose="toggleFileActions(null)">
@@ -386,12 +358,6 @@ export default {
                             <li class="kiss-nav-header">{{ t('File actions') }}</li>
                             <li v-if="actionFile">
                                 <div class="kiss-color-muted kiss-text-truncate kiss-margin-small-bottom">{{ App.utils.truncate(actionFile.name, 30) }}</div>
-                            </li>
-                            <li v-if="actionFile && (actionFile.mime.indexOf('text') > -1 || ['json', 'svg'].includes(actionFile.ext))">
-                                <a class="kiss-flex kiss-flex-middle" @click="edit(actionFile)">
-                                    <icon class="kiss-margin-small-right" size="larger">create</icon>
-                                    {{ t('Edit') }}
-                                </a>
                             </li>
                             <li>
                                 <a class="kiss-flex kiss-flex-middle" @click="rename(actionFile)">
@@ -434,13 +400,6 @@ export default {
                             </li>
                             <li class="kiss-nav-divider"></li>
                             <li>
-                                <a class="kiss-flex kiss-flex-middle" @click="download(actionFolder)">
-                                    <icon class="kiss-margin-small-right" size="larger">cloud_download</icon>
-                                    {{ t('Download') }}
-                                </a>
-                            </li>
-                            <li class="kiss-nav-divider"></li>
-                            <li>
                                 <a class="kiss-color-danger kiss-flex kiss-flex-middle" @click="remove(actionFolder)">
                                     <icon class="kiss-margin-small-right" size="larger">delete</icon>
                                     {{ t('Delete') }}
@@ -454,6 +413,7 @@ export default {
             <app-loader-cover v-if="uploading !== false" :label="uploading+'%'"></app-loader-cover>
 
         </teleport>
+    </div>
     `
 
 }

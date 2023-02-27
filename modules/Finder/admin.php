@@ -1,6 +1,7 @@
 <?php
 
 // Register routes
+$this->bindClass('Finder\\Controller\\Buckets', '/finder/buckets');
 $this->bindClass('Finder\\Controller\\Finder', '/finder');
 
 

@@ -189,7 +189,7 @@ class Finder extends App {
 
         $this->app->trigger('cockpit.media.removefiles', [$deletions]);
 
-        return json_encode(["success"=>true]);
+        return json_encode(['success' => true]);
     }
 
     protected function _rrmdir($dir) {
@@ -223,7 +223,7 @@ class Finder extends App {
             $this->app->trigger('cockpit.media.rename', [$source, $target]);
         }
 
-        return json_encode(["success"=>true]);
+        return json_encode(['success' => true]);
     }
 
     protected function readfile() {
