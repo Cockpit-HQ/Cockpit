@@ -2,15 +2,19 @@
 
 // Register routes
 $this->bindClass('Finder\\Controller\\Buckets', '/finder/buckets');
-$this->bindClass('Finder\\Controller\\Finder', '/finder');
 
+// load only on master instance + only for super admins
+if (!$this->helper('acl')->isSuperAdmin() || !$this->helper('spaces')->isMaster()) {
 
-$this->on('app.settings.collect', function($settings) {
+    $this->bindClass('Finder\\Controller\\Finder', '/finder');
 
-    $settings['System'][] = [
-        'icon' => 'finder:icon.svg',
-        'route' => '/finder',
-        'label' => 'Finder',
-        'permission' => 'app/finder'
-    ];
-});
+    $this->on('app.settings.collect', function($settings) {
+
+        $settings['System'][] = [
+            'icon' => 'finder:icon.svg',
+            'route' => '/finder',
+            'label' => 'Finder',
+            'permission' => 'app/finder'
+        ];
+    });
+}

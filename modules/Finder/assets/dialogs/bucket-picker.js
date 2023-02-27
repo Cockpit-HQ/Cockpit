@@ -354,9 +354,9 @@ export default {
             <kiss-popoutmenu :open="actionFile && 'true'" @popoutmenuclose="toggleFileActions(null)">
                 <kiss-content>
                     <kiss-navlist class="kiss-margin">
-                        <ul>
+                        <ul v-if="actionFile">
                             <li class="kiss-nav-header">{{ t('File actions') }}</li>
-                            <li v-if="actionFile">
+                            <li>
                                 <div class="kiss-color-muted kiss-text-truncate kiss-margin-small-bottom">{{ App.utils.truncate(actionFile.name, 30) }}</div>
                             </li>
                             <li>
@@ -367,7 +367,7 @@ export default {
                             </li>
                             <li class="kiss-nav-divider"></li>
                             <li>
-                                <a class="kiss-flex kiss-flex-middle" @click="download(actionFile)">
+                                <a class="kiss-flex kiss-flex-middle" :href="actionFile.url" target="_blank" :download="actionFile.name">
                                     <icon class="kiss-margin-small-right" size="larger">cloud_download</icon>
                                     {{ t('Download') }}
                                 </a>
