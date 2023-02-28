@@ -28,7 +28,7 @@ export default {
 
         fileUrl() {
             if (!this.val || !this.val.file) {
-                null;
+                return null;
             }
 
             return App._vars.bucketsUrl + '/' + this.val.bucket + '/' + this.val.file.path;
