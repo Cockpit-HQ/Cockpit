@@ -18,3 +18,8 @@ if ($this->helper('acl')->isSuperAdmin() && $this->helper('spaces')->isMaster())
         ];
     });
 }
+
+
+$this->on('app.layout.init', function() {
+    $this->helper('theme')->vars('bucketsUrl', rtrim($this->fileStorage->getURL('uploads://'), '/').'/buckets');
+});

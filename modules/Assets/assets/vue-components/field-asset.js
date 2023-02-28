@@ -25,7 +25,7 @@ export default {
 
     props: {
         modelValue: {
-            type: String,
+            type: Object,
             default: null
         },
 

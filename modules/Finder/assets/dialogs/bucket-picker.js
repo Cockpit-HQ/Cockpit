@@ -25,7 +25,11 @@ export default {
         bucket: {
             type: String,
             default: null
-        }
+        },
+
+        selectFile: {
+            default: null
+        },
     },
 
     mounted() {
@@ -307,7 +311,7 @@ export default {
 
                 </kiss-grid>
 
-                <kiss-grid cols="2@s 3@m" class="spotlight-group" gap="small" v-if="!loading && files.length" match="true" hover="shadow">
+                <kiss-grid cols="2@s 3@m 4@xl" class="spotlight-group" gap="small" v-if="!loading && files.length" match="true" hover="shadow">
 
                     <kiss-card class="kiss-position-relative kiss-bgcolor-contrast" theme="bordered" :style="{borderColor: (selectedFile && selectedFile.path === file.path && 'var(--kiss-color-primary)') || null}" v-for="file in files">
                         <div class="kiss-position-relative" :class="{'kiss-bgcolor-transparentimage': file.type === 'image'}">
@@ -319,7 +323,7 @@ export default {
                         </div>
                         <div class="kiss-padding kiss-flex kiss-flex-middle">
                             <div><input class="kiss-checkbox" type="checkbox" v-model="selected" :value="file.path"></div>
-                            <div class="kiss-margin-small-left kiss-text-truncate kiss-size-xsmall kiss-flex-1">{{ App.utils.truncate(file.name, 25) }}</div>
+                            <div class="kiss-margin-small-left kiss-text-truncate kiss-size-xsmall kiss-flex-1">{{ App.utils.truncate(file.name, 15) }}</div>
                             <a class="kiss-margin-small-left" @click="toggleFileActions(file)"><icon>more_horiz</icon></a>
                         </div>
                     </kiss-card>
@@ -345,7 +349,7 @@ export default {
                 <div class="kiss-flex-1 kiss-margin-right"></div>
                 <div class="kiss-button-group">
                     <button class="kiss-button" autofocus kiss-dialog-close>{{ t('Cancel') }}</button>
-                    <button class="kiss-button kiss-button-primary" v-if="selectedFile" @click="selectAsset && selectFile(selectedFile)">{{ t('Select file') }}</button>
+                    <button class="kiss-button kiss-button-primary" v-if="selectedFile" @click="selectFile && selectFile(selectedFile)" kiss-dialog-close>{{ t('Select file') }}</button>
                 </div>
             </div>
         </div>
