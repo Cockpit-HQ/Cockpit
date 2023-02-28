@@ -25,6 +25,8 @@ class Finder extends App {
 
     public function api() {
 
+        $this->helper('session')->close();
+
         $this->root = $this->app->path('#root:');
         $cmd = $this->param('cmd', false);
 
@@ -272,7 +274,6 @@ class Finder extends App {
 
     protected function unzip() {
 
-        $this->helper('session')->close(); // improve concurrency loading
 
         $path    = $this->_getPathParameter();
 
@@ -343,7 +344,6 @@ class Finder extends App {
 
     protected function downloadfolder() {
 
-        $this->helper('session')->close(); // improve concurrency loading
 
         $path   = $this->_getPathParameter();
 
@@ -377,7 +377,6 @@ class Finder extends App {
 
     protected function getfilelist() {
 
-        $this->helper('session')->close(); // improve concurrency loading
 
         $list = [];
         $toignore = [
