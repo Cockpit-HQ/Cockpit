@@ -30,6 +30,10 @@ export default {
         selectFile: {
             default: null
         },
+
+        type: {
+            default: null
+        }
     },
 
     mounted() {
@@ -79,13 +83,17 @@ export default {
 
         filteredFiles() {
 
-            if (!this.filter.trim()) {
+            if (!this.filter.trim() && !this.type) {
                 return this.files;
             }
 
             return this.files.filter(file => {
 
-                if (!file.name.toLocaleLowerCase().includes(this.filter.toLocaleLowerCase())) {
+                if (this.filter && !file.name.toLocaleLowerCase().includes(this.filter.toLocaleLowerCase())) {
+                    return false;
+                }
+
+                if (this.type && file.type !== this.type) {
                     return false;
                 }
 
@@ -313,7 +321,7 @@ export default {
 
                 <kiss-grid cols="2@s 3@m 4@xl" class="spotlight-group" gap="small" v-if="!loading && files.length" match="true" hover="shadow">
 
-                    <kiss-card class="kiss-position-relative kiss-bgcolor-contrast" theme="bordered" :style="{borderColor: (selectedFile && selectedFile.path === file.path && 'var(--kiss-color-primary)') || null}" v-for="file in files">
+                    <kiss-card class="kiss-position-relative kiss-bgcolor-contrast" theme="bordered" :style="{borderColor: (selectedFile && selectedFile.path === file.path && 'var(--kiss-color-primary)') || null}" v-for="file in filteredFiles">
                         <div class="kiss-position-relative" :class="{'kiss-bgcolor-transparentimage': file.type === 'image'}">
                             <canvas width="400" height="300" style="background-repeat: no-repeat;background-size:contain;background-position:50% 50%;" :style="{backgroundImage: file.type === 'image' ? 'url('+encodeURI(file.url)+')' : 'none'}"></canvas>
                             <div class="kiss-cover kiss-padding kiss-flex kiss-flex-middle kiss-flex-center" v-if="file.type !== 'image'">

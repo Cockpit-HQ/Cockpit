@@ -17,6 +17,10 @@ export default {
         bucket: {
             type: String,
             default: null
+        },
+
+        type: {
+            default: null
         }
     },
 
@@ -51,7 +55,7 @@ export default {
 
         pickFile() {
 
-            VueView.ui.modal('finder:assets/dialogs/bucket-picker.js', {bucket: this.bucket, selectFile: (file) => {
+            VueView.ui.modal('finder:assets/dialogs/bucket-picker.js', {bucket: this.bucket, type: this.type, selectFile: (file) => {
 
                 this.val = {
                     bucket: this.bucket,
