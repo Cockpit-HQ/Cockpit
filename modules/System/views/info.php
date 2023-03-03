@@ -112,12 +112,12 @@
                 <?php if ($this->helper('acl')->isSuperAdmin()): ?>
                 <tab class="kiss-margin animated fadeIn" caption="<?=t('Env')?>">
 
-                    <table class="kiss-table">
+                    <table class="kiss-table" style="word-break: break-all;">
                         <tbody>
                             <?php foreach(getenv() as $key => $value): ?>
                             <tr>
                                 <td width="30%" class="kiss-size-small"><div class="kiss-size-xsmall"><?=$key?></div></td>
-                                <td class="kiss-color-muted"><div class="kiss-size-xsmall"><?=$value?></div></td>
+                                <td width="70%" class="kiss-color-muted"><div class="kiss-size-xsmall" style="overflow-x:auto;"><?=$value?></div></td>
                             </tr>
                             <?php endforeach ?>
                         </tbody>

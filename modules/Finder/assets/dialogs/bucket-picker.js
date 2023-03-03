@@ -331,7 +331,7 @@ export default {
                         </div>
                         <div class="kiss-padding kiss-flex kiss-flex-middle">
                             <div><input class="kiss-checkbox" type="checkbox" v-model="selected" :value="file.path"></div>
-                            <div class="kiss-margin-small-left kiss-text-truncate kiss-size-xsmall kiss-flex-1">{{ App.utils.truncate(file.name, 15) }}</div>
+                            <div class="kiss-margin-small-left kiss-text-truncate kiss-size-xsmall kiss-flex-1" :title="file.name">{{ App.utils.truncate(file.name, 15) }}</div>
                             <a class="kiss-margin-small-left" @click="toggleFileActions(file)"><icon>more_horiz</icon></a>
                         </div>
                     </kiss-card>
