@@ -117,7 +117,7 @@
                             <?php foreach(getenv() as $key => $value): ?>
                             <tr>
                                 <td width="30%" class="kiss-size-small"><div class="kiss-size-xsmall"><?=$key?></div></td>
-                                <td width="70%" class="kiss-color-muted"><div class="kiss-size-xsmall" style="overflow-x:auto;"><?=$value?></div></td>
+                                <td width="70%" class="kiss-color-muted"><div class="kiss-size-xsmall"><?=$value?></div></td>
                             </tr>
                             <?php endforeach ?>
                         </tbody>
