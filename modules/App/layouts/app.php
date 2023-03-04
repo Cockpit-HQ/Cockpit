@@ -119,7 +119,7 @@
 
                     </div>
                     <?php if ($this->helper('license')->unregistered()): ?>
-                    <a class="kiss-button kiss-button-small kiss-button-danger kiss-margin-left animated fadeInDown">
+                    <a class="kiss-button kiss-button-small kiss-button-danger kiss-margin-left animated fadeInDown" href="https://getcockpit.com" target="_blank">
                         <?=t('Unregistered trial version')?>
                     </a>
                     <?php endif ?>

@@ -8,7 +8,6 @@ class License extends \Lime\Helper {
     protected $unregistered = false;
 
     protected function initialize() {
-
         $this->load();
     }
 
@@ -33,18 +32,34 @@ class License extends \Lime\Helper {
             if (!isset(
                 $license['domain'],
                 $license['email'],
+                $license['order'],
+                $license['model'],
                 $license['key'],
-                $license['model']
+                $license['signature'],
             )) {
                 return false;
             }
 
-            $this->license = array_merge([
-                'domain' => null,
-                'email' => null,
-                'key' => null,
-                'model' => null,
-            ], $license);
+            $data = [
+                'name'    => $license['name'],
+                'company' => $license['company'] ?? '',
+                'domain'  => $license['domain'],
+                'email'   => $license['email'],
+                'order'   => $license['order'],
+                'model'   => $license['model'],
+                'key'     => $license['key'],
+            ];
+
+            // @todo: come up with something more sophisticated 😄
+            // md5 is used only due to performance reasons.
+            // Key checking against license server will be implemented later.
+            $hash = hash('md5', json_encode($data));
+
+            if ($hash !== $license['signature']) {
+                return false;
+            }
+
+            $this->license = $data;
 
         } catch (\Exception $e) {
             // Handle the JSON Exception

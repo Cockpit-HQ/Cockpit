@@ -80,15 +80,14 @@
 
                     <?php if ($license): ?>
                     <kiss-card class="kiss-padding kiss-margin kiss-text-monospace" theme="contrast shadowed">
-                        <kiss-row class="kiss-flex-middle">
-                            <div>
-                                <kiss-svg class="kiss-color-primary" src="<?=$this->baseUrl('system:assets/icons/license.svg')?>" width="50" height="50"><canvas width="50" height="50"></canvas></kiss-svg>
-                            </div>
-                            <div class="kiss-flex-1 kiss-size-small">
-                                <div class="kiss-text-bold"><?=$license['name']?></div>
-                                <div class="kiss-color-muted"><?=$license['domain']?></div>
-                            </div>
-                        </kiss-row>
+
+                        <div class="kiss-text-bold"><?=($license['company'] ? $license['company'] : $license['name'])?></div>
+
+                        <div class="kiss-color-muted kiss-size-small kiss-margin-small-top">
+                            <div class="kiss-text-caption"><?=t('Licensed domain')?></div>
+                            <div><?=$license['domain']?></div>
+                        </div>
+
                     </kiss-card>
                     <?php endif ?>
 
