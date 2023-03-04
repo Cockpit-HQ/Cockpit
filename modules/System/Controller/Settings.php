@@ -17,7 +17,8 @@ class Settings extends App {
         }
 
         $addons = array_filter(array_keys($this->app['modules']->getArrayCopy()), fn($name) => !in_array($name, ['app', 'assets', 'content','system']));
+        $license = $this->app->helper('license')->license();
 
-        return $this->render('system:views/info.php', compact('addons'));
+        return $this->render('system:views/info.php', compact('addons', 'license'));
     }
 }

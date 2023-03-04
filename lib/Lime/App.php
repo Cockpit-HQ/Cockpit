@@ -1124,6 +1124,7 @@ class App implements \ArrayAccess {
     }
 
     public function helper(string $helper): Helper {
+
         if (isset($this->helpers[$helper]) && !\is_object($this->helpers[$helper])) {
             $this->helpers[$helper] = new $this->helpers[$helper]($this);
         }

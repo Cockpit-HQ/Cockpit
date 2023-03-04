@@ -78,6 +78,20 @@
                         <?=('License')?>
                     </div>
 
+                    <?php if ($license): ?>
+                    <kiss-card class="kiss-padding kiss-margin kiss-text-monospace" theme="contrast shadowed">
+                        <kiss-row class="kiss-flex-middle">
+                            <div>
+                                <kiss-svg class="kiss-color-primary" src="<?=$this->baseUrl('system:assets/icons/license.svg')?>" width="50" height="50"><canvas width="50" height="50"></canvas></kiss-svg>
+                            </div>
+                            <div class="kiss-flex-1 kiss-size-small">
+                                <div class="kiss-text-bold"><?=$license['name']?></div>
+                                <div class="kiss-color-muted"><?=$license['domain']?></div>
+                            </div>
+                        </kiss-row>
+                    </kiss-card>
+                    <?php endif ?>
+
                     <kiss-card class="kiss-padding kiss-bgcolor-contrast">
                         <div class="kiss-text-monospace kiss-size-small kiss-color-muted" style="max-height:200px;overflow:auto;">
                             <?=($this->path('#app:LICENSE') ? nl2br($this->helper('fs')->read('#app:LICENSE')) : '!!! LICENSE IS MISSING !!!')?>

@@ -118,6 +118,11 @@
                     <div class="kiss-flex-1 kiss-margin-left">
 
                     </div>
+                    <?php if ($this->helper('license')->unregistered()): ?>
+                    <a class="kiss-button kiss-button-small kiss-button-danger kiss-margin-left animated fadeInDown">
+                        <?=t('Unregistered trial version')?>
+                    </a>
+                    <?php endif ?>
                     <div class="kiss-margin-left">
                         <a kiss-popoutmenu="#app-account-menu">
                             <app-avatar size="30" name="<?=$this['user/name']?>"></app-avatar>
