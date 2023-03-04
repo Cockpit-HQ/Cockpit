@@ -4,20 +4,21 @@ namespace System\Helper;
 
 class License extends \Lime\Helper {
 
-    protected ?array $license = null;
-    protected $required = false;
-
-    protected function initialize() {
-        $this->load();
-    }
+    protected mixed $license = null;
+    protected bool $required = false;
 
     public function license(?string $key = null) {
+
+        if (is_null($this->license)) {
+            $this->load();
+        }
+
         return $key ? ($this->license[$key] ?? null) : $this->license;
     }
 
     protected function load() {
 
-        $this->license = null;
+        $this->license = false;
 
         $file = $this->app->path('#app:license.lic');
 
@@ -75,6 +76,6 @@ class License extends \Lime\Helper {
     }
 
     public function isTrial() {
-        return $this->required && !$this->license;
+        return $this->required && !$this->license();
     }
 }

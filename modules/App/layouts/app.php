@@ -120,7 +120,7 @@
                     </div>
                     <?php if ($this->helper('license')->isTrial()): ?>
                     <a class="kiss-button kiss-button-small kiss-button-danger kiss-margin-left animated fadeInDown" href="https://getcockpit.com" target="_blank">
-                        <?=t('Unregistered trial version')?>
+                        <?=t('Pro trial version')?>
                     </a>
                     <?php endif ?>
                     <div class="kiss-margin-left">
