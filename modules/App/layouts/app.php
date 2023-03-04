@@ -118,7 +118,7 @@
                     <div class="kiss-flex-1 kiss-margin-left">
 
                     </div>
-                    <?php if ($this->helper('license')->unregistered()): ?>
+                    <?php if ($this->helper('license')->isTrial()): ?>
                     <a class="kiss-button kiss-button-small kiss-button-danger kiss-margin-left animated fadeInDown" href="https://getcockpit.com" target="_blank">
                         <?=t('Unregistered trial version')?>
                     </a>

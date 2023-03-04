@@ -5,7 +5,7 @@ namespace System\Helper;
 class License extends \Lime\Helper {
 
     protected ?array $license = null;
-    protected $unregistered = false;
+    protected $required = false;
 
     protected function initialize() {
         $this->load();
@@ -66,12 +66,15 @@ class License extends \Lime\Helper {
         }
     }
 
-    public function unregistered(?bool $true = null) {
+    public function require() {
+        $this->required = true;
+    }
 
-        if ($true === true) {
-            $this->unregistered = true;
-        }
+    public function required() {
+        return $this->required;
+    }
 
-        return $this->unregistered;
+    public function isTrial() {
+        return $this->required && !$this->license;
     }
 }
