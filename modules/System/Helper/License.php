@@ -30,7 +30,12 @@ class License extends \Lime\Helper {
 
             $license = json_decode(file_get_contents($file), $assoc = true, JSON_THROW_ON_ERROR);
 
-            if (!isset($license['domain']) || !isset($license['email']) || !isset($license['key']) || !isset($license['model'])) {
+            if (!isset(
+                $license['domain'],
+                $license['email'],
+                $license['key'],
+                $license['model']
+            )) {
                 return false;
             }
 
