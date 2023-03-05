@@ -14,7 +14,7 @@ AddDefaultCharset UTF-8
 
     # Protect some contents
     RewriteRule (^|/)\.(?!spaces|well-known\/) - [F,L]
-    RewriteRule \.(sqlite|sdb|s3db|db|yaml|yml|env)$ - [F,L]
+    RewriteRule \.(sqlite|sdb|s3db|db|yaml|yml|env|lic)$ - [F,L]
     RewriteRule (config|modules|addons|lib)\/(.*)\.php$ - [F,L]
 
     RewriteCond %{REQUEST_FILENAME} !-f

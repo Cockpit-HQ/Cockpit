@@ -112,17 +112,15 @@
                     <a class="kiss-link-muted kiss-margin-small-left kiss-hidden@m" href="#app-offcanvas" kiss-offcanvas>
                         <icon>more_horiz</icon>
                     </a>
-                    <?php if($this->retrieve('app_space')): ?>
+                    <?php if ($this->retrieve('app_space')): ?>
                     <div class="kiss-margin-small-left"><span class="kiss-badge kiss-color-primary kiss-badge-outline kiss-text-upper"><?=str_replace(['-', '_'], ' ', $this->retrieve('app_space'))?></span></div>
                     <?php endif ?>
                     <div class="kiss-flex-1 kiss-margin-left">
 
                     </div>
-                    <?php if ($this->helper('license')->isTrial()): ?>
-                    <a class="kiss-button kiss-button-small kiss-button-danger kiss-margin-left animated fadeInDown" href="https://getcockpit.com" target="_blank">
-                        <?=t('Pro trial version')?>
-                    </a>
-                    <?php endif ?>
+
+                    <app-license></app-license>
+
                     <div class="kiss-margin-left">
                         <a kiss-popoutmenu="#app-account-menu">
                             <app-avatar size="30" name="<?=$this['user/name']?>"></app-avatar>

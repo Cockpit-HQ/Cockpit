@@ -17,15 +17,24 @@ $this->bindClass('System\\Controller\\Settings', '/system');
 
 $this->on('app.layout.init', function() {
 
-    if ($this->helper('acl')->isAllowed('app/api/manage')) {
-
-        $this->helper('menus')->addLink('modules', [
-            'label'  => 'Api',
-            'icon'   => 'system:assets/icons/api.svg',
-            'route'  => '/system/api',
-            'active' => false
-        ]);
+    if (!$this->helper('acl')->isAllowed('app/api/manage')) {
+        return;
     }
+
+    $this->helper('menus')->addLink('modules', [
+        'label'  => 'Api',
+        'icon'   => 'system:assets/icons/api.svg',
+        'route'  => '/system/api',
+        'active' => false
+    ]);
+});
+
+$this->on('app.layout.assets', function(&$assets, $version, $context) {
+
+    // include app license component
+    $assets[] = 'system:assets/components/app-license/app-license.js';
+    $assets[] = 'system:assets/components/app-license/app-license.css';
+
 });
 
 $this->on('app.permissions.collect', function (ArrayObject $permissions) {

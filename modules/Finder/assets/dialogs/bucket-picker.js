@@ -67,7 +67,7 @@ export default {
             let parts   = this.currentpath.split('/');
             let tmppath = [];
 
-            for(let i=0;i<parts.length;i++){
+            for (let i=0; i<parts.length; i++) {
 
                 if (!parts[i]) continue;
 
@@ -152,8 +152,7 @@ export default {
         toggleFileActions(file) {
 
             if (!file) {
-                setTimeout(() => this.actionFile = null, 300);
-                return;
+                return setTimeout(() => this.actionFile = null, 300);
             }
 
             this.actionFile = file;
@@ -162,8 +161,7 @@ export default {
         toggleFolderActions(folder) {
 
             if (!folder) {
-                setTimeout(() => this.actionFolder = null, 300);
-                return;
+                return setTimeout(() => this.actionFolder = null, 300);
             }
 
             this.actionFolder = folder;

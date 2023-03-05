@@ -6,10 +6,11 @@ use App\Controller\App;
 
 class Utils extends App {
 
+    protected function before() {
+        $this->helper('session')->close();
+    }
 
     public function user($id) {
-
-        $this->helper('session')->close();
 
         $user = $this->app->dataStorage->findOne('system/users', ['_id' => $id]);
 
@@ -17,8 +18,6 @@ class Utils extends App {
     }
 
     public function revisions($oid) {
-
-        $this->helper('session')->close();
 
         $users = [];
         $limit = $this->param('limit:int', 50);
@@ -92,6 +91,17 @@ class Utils extends App {
         $this->app->helper('system')->flushCache();
 
         return ['success' => true];
+    }
+
+    public function license() {
+
+        $helper = $this->helper('license');
+
+        return [
+            'model' => $helper->license('model'),
+            'isTrial' => $helper->isTrial(),
+            'isValidDomain' => $helper->isValidDomain(),
+        ];
     }
 
 }

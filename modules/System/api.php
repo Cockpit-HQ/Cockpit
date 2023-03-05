@@ -21,7 +21,7 @@ $this->on('restApi.config', function($restApi) {
      */
         'GET' => function($params, $app) {
 
-            return ['status' => '👍'];
+            return ['status' => 'ok'];
         }
     ]);
 });

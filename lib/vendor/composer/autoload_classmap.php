@@ -666,6 +666,7 @@ return array(
     'OpenApi\\Processors\\Concerns\\CollectorTrait' => $vendorDir . '/zircote/swagger-php/src/Processors/Concerns/CollectorTrait.php',
     'OpenApi\\Processors\\Concerns\\DocblockTrait' => $vendorDir . '/zircote/swagger-php/src/Processors/Concerns/DocblockTrait.php',
     'OpenApi\\Processors\\Concerns\\MergePropertiesTrait' => $vendorDir . '/zircote/swagger-php/src/Processors/Concerns/MergePropertiesTrait.php',
+    'OpenApi\\Processors\\Concerns\\RefTrait' => $vendorDir . '/zircote/swagger-php/src/Processors/Concerns/RefTrait.php',
     'OpenApi\\Processors\\Concerns\\TypesTrait' => $vendorDir . '/zircote/swagger-php/src/Processors/Concerns/TypesTrait.php',
     'OpenApi\\Processors\\DocBlockDescriptions' => $vendorDir . '/zircote/swagger-php/src/Processors/DocBlockDescriptions.php',
     'OpenApi\\Processors\\ExpandClasses' => $vendorDir . '/zircote/swagger-php/src/Processors/ExpandClasses.php',

@@ -29,7 +29,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '1b5ac8f3d5143028f1a4577541b84db1286820aa',
+    'reference' => '529d2e3833a56db465cc194713e1b59e49c4229e',
     'name' => 'cockpit-hq/cockpit',
   ),
   'versions' => 
@@ -59,7 +59,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '1b5ac8f3d5143028f1a4577541b84db1286820aa',
+      'reference' => '529d2e3833a56db465cc194713e1b59e49c4229e',
     ),
     'colinodell/json5' => 
     array (
@@ -72,12 +72,12 @@ private static $installed = array (
     ),
     'dasprid/enum' => 
     array (
-      'pretty_version' => '1.0.3',
-      'version' => '1.0.3.0',
+      'pretty_version' => '1.0.4',
+      'version' => '1.0.4.0',
       'aliases' => 
       array (
       ),
-      'reference' => '5abf82f213618696dda8e3bf6f64dd042d8542b2',
+      'reference' => '8e6b6ea76eabbf19ea2bf5b67b98e1860474012f',
     ),
     'doctrine/annotations' => 
     array (
@@ -305,30 +305,30 @@ private static $installed = array (
     ),
     'symfony/console' => 
     array (
-      'pretty_version' => 'v5.4.19',
-      'version' => '5.4.19.0',
+      'pretty_version' => 'v5.4.21',
+      'version' => '5.4.21.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'dccb8d251a9017d5994c988b034d3e18aaabf740',
+      'reference' => 'c77433ddc6cdc689caf48065d9ea22ca0853fbd9',
     ),
     'symfony/deprecation-contracts' => 
     array (
-      'pretty_version' => 'v3.2.0',
-      'version' => '3.2.0.0',
+      'pretty_version' => 'v3.2.1',
+      'version' => '3.2.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => '1ee04c65529dea5d8744774d474e7cbd2f1206d3',
+      'reference' => 'e2d1534420bd723d0ef5aec58a22c5fe60ce6f5e',
     ),
     'symfony/finder' => 
     array (
-      'pretty_version' => 'v6.2.5',
-      'version' => '6.2.5.0',
+      'pretty_version' => 'v6.2.7',
+      'version' => '6.2.7.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'c90dc446976a612e3312a97a6ec0069ab0c2099c',
+      'reference' => '20808dc6631aecafbe67c186af5dcb370be3a0eb',
     ),
     'symfony/polyfill-ctype' => 
     array (
@@ -395,48 +395,48 @@ private static $installed = array (
     ),
     'symfony/service-contracts' => 
     array (
-      'pretty_version' => 'v3.2.0',
-      'version' => '3.2.0.0',
+      'pretty_version' => 'v3.2.1',
+      'version' => '3.2.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'aac98028c69df04ee77eb69b96b86ee51fbf4b75',
+      'reference' => 'a8c9cedf55f314f3a186041d19537303766df09a',
     ),
     'symfony/string' => 
     array (
-      'pretty_version' => 'v6.2.5',
-      'version' => '6.2.5.0',
+      'pretty_version' => 'v6.2.7',
+      'version' => '6.2.7.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'b2dac0fa27b1ac0f9c0c0b23b43977f12308d0b0',
+      'reference' => '67b8c1eec78296b85dc1c7d9743830160218993d',
     ),
     'symfony/yaml' => 
     array (
-      'pretty_version' => 'v6.2.5',
-      'version' => '6.2.5.0',
+      'pretty_version' => 'v6.2.7',
+      'version' => '6.2.7.0',
       'aliases' => 
       array (
       ),
-      'reference' => '2bbfbdacc8a15574f8440c4838ce0d7bb6c86b19',
+      'reference' => 'e8e6a1d59e050525f27a1f530aa9703423cb7f57',
     ),
     'webonyx/graphql-php' => 
     array (
-      'pretty_version' => 'v15.2.0',
-      'version' => '15.2.0.0',
+      'pretty_version' => 'v15.2.1',
+      'version' => '15.2.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'b9cfc95ca5119bc8021ec1cd52899b66f9c20f5f',
+      'reference' => '6b02da9313065889eb783d623567476500a572ef',
     ),
     'zircote/swagger-php' => 
     array (
-      'pretty_version' => '4.7.0',
-      'version' => '4.7.0.0',
+      'pretty_version' => '4.7.1',
+      'version' => '4.7.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'f2bcbd5aa9d838d28bf5665c70f88eda6adc22cb',
+      'reference' => 'de32660ba43f7dd5f47a7a38d33d5d2c1c367d65',
     ),
   ),
 );
