@@ -372,6 +372,32 @@ $this->module('content')->extend([
 
     },
 
+    'tree' => function(string $modelName, $parentId = null, ?array $filter = null, ?array $fields = null, $process = []) {
+
+        $filter = is_array($filter) ? $filter : [];
+        $filter['_pid'] = $parentId;
+
+        $items = $this->app->dataStorage->find("content/collections/{$modelName}", [
+            'filter' => $filter,
+            'fields' => $fields,
+            'sort' => ['_o' => 1]
+        ])->toArray();
+
+        foreach ($items as &$item) {
+            $item['_children'] = $this->tree($modelName, $item['_id'], $filter, $fields);
+        }
+
+        if (isset($process['locale'])) {
+            $items = $this->app->helper('locales')->applyLocales($items, $process['locale']);
+        }
+
+        if (isset($process['populate']) && $process['populate']) {
+            $items = $this->populate($items, $process['populate'], 0, $process);
+        }
+
+        return $items;
+    },
+
     'populate' => function(array $array, $maxlevel = -1, $level = 0, $process = []) {
 
         if (!is_array($array)) {
