@@ -43,6 +43,10 @@ export default {
 
         update() {
 
+            if (!this.filter) {
+                this.filter = {};
+            }
+
             let validate = {root: this.$el}, data = {};
 
             App.trigger('fields-renderer-validate', validate);
@@ -75,12 +79,21 @@ export default {
                 if (allowedFields.indexOf(field) !== -1) data[field] = this.data[field];
             });
 
-            this.$request(`/content/collection/batchUpdate/${this.model.name}`, {filter: this.filter, data}).then(() => {
-                App.ui.notify('Items updated!');
-                this.$call('update');
-            }).catch(rsp => {
-                App.ui.notify(rsp.error || 'Updating failed!', 'error');
-            });
+            const update = () => {
+
+                this.$request(`/content/collection/batchUpdate/${this.model.name}`, {filter: this.filter, data}).then(() => {
+                    App.ui.notify('Items updated!');
+                    this.$call('update');
+                }).catch(rsp => {
+                    App.ui.notify(rsp.error || 'Updating failed!', 'error');
+                });
+            };
+
+            if (!Object.keys(this.filter).length) {
+                App.ui.confirm('Are you sure you want to update all content items?', update);
+            } else {
+                update();
+            }
         },
     },
 
