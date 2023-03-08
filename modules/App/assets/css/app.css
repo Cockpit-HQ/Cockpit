@@ -54,7 +54,7 @@ html[data-theme='light'] {
     --kiss-input-background: rgba(255,255,255,.5);
     --kiss-input-placeholder-color: rgba(0,0,0,.3);
 
-    --kiss-dropdown-background: rgba(255,255,255,.95);
+    --kiss-dropdown-background: rgba(255,255,255,1);
 
     --kiss-card-theme-contrast-color: #fff;
     --kiss-card-shadowed-color: rgba(0, 0, 0, 0.15);

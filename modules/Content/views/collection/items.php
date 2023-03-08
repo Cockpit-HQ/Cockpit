@@ -251,6 +251,13 @@
                                 </li>
                                 <li class="kiss-nav-divider"></li>
                                 <li>
+                                    <a class="kiss-flex kiss-flex-middle" @click="batchEdit()">
+                                        <icon class="kiss-margin-small-right">edit_note</icon>
+                                        {{ t('Batch edit') }}
+                                    </a>
+                                </li>
+                                <li class="kiss-nav-divider"></li>
+                                <li>
                                     <a class="kiss-flex kiss-flex-middle" href="<?= $this->route("/content/models/edit/{$model['name']}") ?>">
                                         <icon class="kiss-margin-small-right">create</icon>
                                         <?= t('Edit model') ?>
@@ -282,6 +289,7 @@
                         </div>
                         <div class="kiss-button-group kiss-margin-large-left" v-if="selected.length">
                             <button class="kiss-button" @click="updateStateSelected()" v-if="acl.canPublish">{{ t('Update state') }} <span class="kiss-color-muted">{{ selected.length }}</span></button>
+                            <button  class="kiss-button" @click="batchEdit(selected)">{{ t('Batch edit') }} <span class="kiss-color-muted">{{ selected.length }}</span></button>
                             <button class="kiss-button kiss-button-danger" @click="removeSelected()">{{ t('Delete') }} <span class="kiss-color-muted">{{ selected.length }}</span></button>
                         </div>
                         <div class="kiss-flex-1"></div>
@@ -502,6 +510,14 @@
                                 App.ui.notify('Item removed!');
                             });
                         });
+                    },
+
+                    batchEdit(ids) {
+
+                        this.$offcanvas('content:assets/dialogs/batch-edit.js', {
+                            ids,
+                            model: this.model
+                        }, {}, {size: 'xxlarge', flip: true});
                     },
 
                     removeSelected() {
