@@ -39,6 +39,51 @@ export default {
         }
     },
 
+    methods: {
+
+        update() {
+
+            let validate = {root: this.$el}, data = {};
+
+            App.trigger('fields-renderer-validate', validate);
+
+            if (validate.errors) {
+                return;
+            }
+
+            let allowedFields = [];
+            let locales = {};
+            const keys = Object.keys(this.data);
+
+            this.locales.forEach(loc => {
+                if (loc.visible) locales[loc.i18n] = loc.i18n;
+            });
+
+            this.fields.forEach(field => {
+
+                allowedFields.push(field.name);
+
+                if (field.i18n) {
+
+                    Object.keys(locales).forEach(i18n => {
+                        allowedFields.push(`${field.name}_${i18n}`);
+                    });
+                }
+            });
+
+            keys.forEach(field => {
+                if (allowedFields.indexOf(field) !== -1) data[field] = this.data[field];
+            });
+
+            this.$request(`/content/collection/batchUpdate/${this.model.name}`, {filter: this.filter, data}).then(() => {
+                App.ui.notify('Items updated!');
+                this.$call('update');
+            }).catch(rsp => {
+                App.ui.notify(rsp.error || 'Updating failed!', 'error');
+            });
+        },
+    },
+
     template: /*html*/`
 
         <div class="app-offcanvas-container">
@@ -123,29 +168,4 @@ export default {
             </div>
         </div>
     `,
-
-    methods: {
-
-        update() {
-
-            let validate = {root: this.$el}, data = {};
-
-            App.trigger('fields-renderer-validate', validate);
-
-            if (validate.errors) {
-                return;
-            }
-
-            this.fields.forEach(field => {
-                data[field.name] = this.data[field.name];
-            });
-
-            this.$request(`/content/collection/batchUpdate/${this.model.name}`, {filter: this.filter, data}).then(() => {
-                App.ui.notify('Items updated!');
-                this.$call('update');
-            }).catch(rsp => {
-                App.ui.notify(rsp.error || 'Updating failed!', 'error');
-            });
-        },
-    }
 }
