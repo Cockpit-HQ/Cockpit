@@ -118,7 +118,7 @@ export default {
             <div class="kiss-padding">
                 <div class="kiss-button-group kiss-flex">
                     <button class="kiss-button kiss-flex-1" kiss-offcanvas-close>{{ t('Close') }}</button>
-                    <button class="kiss-button kiss-button-primary kiss-flex-1" v-if="fields.length">{{ t('Update') }}</button>
+                    <button class="kiss-button kiss-button-primary kiss-flex-1" @click="update" v-if="fields.length">{{ t('Update') }}</button>
                 </div>
             </div>
         </div>
@@ -126,9 +126,26 @@ export default {
 
     methods: {
 
-        load() {
+        update() {
 
+            let validate = {root: this.$el}, data = {};
 
+            App.trigger('fields-renderer-validate', validate);
+
+            if (validate.errors) {
+                return;
+            }
+
+            this.fields.forEach(field => {
+                data[field.name] = this.data[field.name];
+            });
+
+            this.$request(`/content/collection/batchUpdate/${this.model.name}`, {filter: this.filter, data}).then(() => {
+                App.ui.notify('Items updated!');
+                this.$call('update');
+            }).catch(rsp => {
+                App.ui.notify(rsp.error || 'Updating failed!', 'error');
+            });
         },
     }
 }

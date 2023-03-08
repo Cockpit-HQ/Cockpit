@@ -229,4 +229,32 @@ class Collection extends App {
         return ['success' => true];
     }
 
+    public function batchUpdate($model = null) {
+
+        $model = $this->module('content')->model($model);
+        $data = $this->param('data');
+        $filter = $this->param('filter');
+
+        if (!$model || $model['type'] != 'collection' || !$data) {
+            return $this->stop(404);
+        }
+
+        if (!$this->isAllowed("content/{$model['name']}/update")) {
+            return $this->stop(401);
+        }
+
+        $keys = array_keys($data);
+
+        foreach ($keys as $key) {
+            if ($key[0] === '_') unset($data[$key]);
+        }
+
+        $data['_mby'] = $this->user['_id'];
+        $data['_modified'] = time();
+
+        $this->app->dataStorage->update("content/collections/{$model['name']}", $filter, $data);
+
+        return ['success' => true];
+    }
+
 }

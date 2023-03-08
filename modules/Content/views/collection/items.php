@@ -249,6 +249,7 @@
                                         <?= t('Create item') ?>
                                     </a>
                                 </li>
+                                <?php if ($this->helper('acl')->isAllowed("content/{$model['name']}/update")): ?>
                                 <li class="kiss-nav-divider"></li>
                                 <li>
                                     <a class="kiss-flex kiss-flex-middle" @click="batchEdit()">
@@ -256,6 +257,7 @@
                                         {{ t('Batch edit') }}
                                     </a>
                                 </li>
+                                <?php endif ?>
                                 <li class="kiss-nav-divider"></li>
                                 <li>
                                     <a class="kiss-flex kiss-flex-middle" href="<?= $this->route("/content/models/edit/{$model['name']}") ?>">
@@ -289,7 +291,9 @@
                         </div>
                         <div class="kiss-button-group kiss-margin-large-left" v-if="selected.length">
                             <button class="kiss-button" @click="updateStateSelected()" v-if="acl.canPublish">{{ t('Update state') }} <span class="kiss-color-muted">{{ selected.length }}</span></button>
+                            <?php if ($this->helper('acl')->isAllowed("content/{$model['name']}/update")): ?>
                             <button  class="kiss-button" @click="batchEdit(selected)">{{ t('Batch edit') }} <span class="kiss-color-muted">{{ selected.length }}</span></button>
+                            <?php endif ?>
                             <button class="kiss-button kiss-button-danger" @click="removeSelected()">{{ t('Delete') }} <span class="kiss-color-muted">{{ selected.length }}</span></button>
                         </div>
                         <div class="kiss-flex-1"></div>
@@ -517,7 +521,11 @@
                         this.$offcanvas('content:assets/dialogs/batch-edit.js', {
                             ids,
                             model: this.model
-                        }, {}, {size: 'xxlarge', flip: true});
+                        }, {
+                            update: () => {
+                                this.load(this.page, false);
+                            }
+                        }, {size: 'xxlarge', flip: true});
                     },
 
                     removeSelected() {

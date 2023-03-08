@@ -6,6 +6,7 @@
 - Fix base64 encoding data not in latin char range
 - Add internal bucket storage container feature
 - Add /content/tree/{model} api endpoint
+- Batch edit content items
 - Update vendor libs
 
 ## 2.3.9 (2023-02-13)
