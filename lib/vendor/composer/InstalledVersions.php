@@ -29,7 +29,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '529d2e3833a56db465cc194713e1b59e49c4229e',
+    'reference' => '96dd192608a044da5d7a6a80568dc5b8e5ac7d24',
     'name' => 'cockpit-hq/cockpit',
   ),
   'versions' => 
@@ -59,7 +59,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '529d2e3833a56db465cc194713e1b59e49c4229e',
+      'reference' => '96dd192608a044da5d7a6a80568dc5b8e5ac7d24',
     ),
     'colinodell/json5' => 
     array (
@@ -196,12 +196,12 @@ private static $installed = array (
     ),
     'phpmailer/phpmailer' => 
     array (
-      'pretty_version' => 'v6.7.1',
-      'version' => '6.7.1.0',
+      'pretty_version' => 'v6.8.0',
+      'version' => '6.8.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '49cd7ea3d2563f028d7811f06864a53b1f15ff55',
+      'reference' => 'df16b615e371d81fb79e506277faea67a1be18f1',
     ),
     'psr/cache' => 
     array (
@@ -422,21 +422,21 @@ private static $installed = array (
     ),
     'webonyx/graphql-php' => 
     array (
-      'pretty_version' => 'v15.2.1',
-      'version' => '15.2.1.0',
+      'pretty_version' => 'v15.2.3',
+      'version' => '15.2.3.0',
       'aliases' => 
       array (
       ),
-      'reference' => '6b02da9313065889eb783d623567476500a572ef',
+      'reference' => '5ec0b8fbdcdb6b1be9345a43f927af0ecc9bd3b0',
     ),
     'zircote/swagger-php' => 
     array (
-      'pretty_version' => '4.7.1',
-      'version' => '4.7.1.0',
+      'pretty_version' => '4.7.3',
+      'version' => '4.7.3.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'de32660ba43f7dd5f47a7a38d33d5d2c1c367d65',
+      'reference' => '0299edc47eb4813a2c598a0348eaf205704adc92',
     ),
   ),
 );

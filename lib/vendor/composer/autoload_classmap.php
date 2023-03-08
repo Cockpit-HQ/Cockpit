@@ -681,6 +681,7 @@ return array(
     'OpenApi\\Processors\\ProcessorInterface' => $vendorDir . '/zircote/swagger-php/src/Processors/ProcessorInterface.php',
     'OpenApi\\Serializer' => $vendorDir . '/zircote/swagger-php/src/Serializer.php',
     'OpenApi\\Util' => $vendorDir . '/zircote/swagger-php/src/Util.php',
+    'PHPMailer\\PHPMailer\\DSNConfigurator' => $vendorDir . '/phpmailer/phpmailer/src/DSNConfigurator.php',
     'PHPMailer\\PHPMailer\\Exception' => $vendorDir . '/phpmailer/phpmailer/src/Exception.php',
     'PHPMailer\\PHPMailer\\OAuth' => $vendorDir . '/phpmailer/phpmailer/src/OAuth.php',
     'PHPMailer\\PHPMailer\\OAuthTokenProvider' => $vendorDir . '/phpmailer/phpmailer/src/OAuthTokenProvider.php',

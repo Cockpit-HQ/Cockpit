@@ -52,25 +52,25 @@ class Lexer
     /**
      * The (1-indexed) line containing the current token.
      */
-    public int $line;
+    public int $line = 1;
 
     /**
      * The character offset at which the current line begins.
      */
-    public int $lineStart;
+    public int $lineStart = 0;
 
     /**
      * Current cursor position for UTF8 encoding of the source.
      */
-    private int $position;
+    private int $position = 0;
 
     /**
      * Current cursor position for ASCII representation of the source.
      */
-    private int $byteStreamPosition;
+    private int $byteStreamPosition = 0;
 
     /**
-     * @phpstan-param ParserOptions        $options
+     * @phpstan-param ParserOptions $options
      */
     public function __construct(Source $source, array $options = [])
     {
@@ -80,11 +80,12 @@ class Lexer
         $this->options = $options;
         $this->lastToken = $startOfFileToken;
         $this->token = $startOfFileToken;
-        $this->line = 1;
-        $this->lineStart = 0;
-        $this->position = $this->byteStreamPosition = 0;
     }
 
+    /**
+     * @throws \JsonException
+     * @throws SyntaxError
+     */
     public function advance(): Token
     {
         $this->lastToken = $this->token;
@@ -92,6 +93,10 @@ class Lexer
         return $this->token = $this->lookahead();
     }
 
+    /**
+     * @throws \JsonException
+     * @throws SyntaxError
+     */
     public function lookahead(): Token
     {
         $token = $this->token;
@@ -105,6 +110,7 @@ class Lexer
     }
 
     /**
+     * @throws \JsonException
      * @throws SyntaxError
      */
     private function readToken(Token $prev): Token
@@ -259,6 +265,9 @@ class Lexer
         );
     }
 
+    /**
+     * @throws \JsonException
+     */
     private function unexpectedCharacterMessage(?int $code): string
     {
         // SourceCharacter
@@ -314,6 +323,7 @@ class Lexer
      * Int:   -?(0|[1-9][0-9]*)
      * Float: -?(0|[1-9][0-9]*)(\.[0-9]+)?((E|e)(+|-)?[0-9]+)?
      *
+     * @throws \JsonException
      * @throws SyntaxError
      */
     private function readNumber(int $line, int $col, Token $prev): Token
@@ -381,6 +391,9 @@ class Lexer
 
     /**
      * Returns string with all digits + changes current string cursor position to point to the first char after digits.
+     *
+     * @throws \JsonException
+     * @throws SyntaxError
      */
     private function readDigits(): string
     {
@@ -409,6 +422,7 @@ class Lexer
     }
 
     /**
+     * @throws \JsonException
      * @throws SyntaxError
      */
     private function readString(int $line, int $col, Token $prev): Token
@@ -542,6 +556,9 @@ class Lexer
      * Reads a block string token from the source file.
      *
      * """("?"?(\\"""|\\(?!=""")|[^"\\]))*"""
+     *
+     * @throws \JsonException
+     * @throws SyntaxError
      */
     private function readBlockString(int $line, int $col, Token $prev): Token
     {
@@ -612,6 +629,10 @@ class Lexer
         );
     }
 
+    /**
+     * @throws \JsonException
+     * @throws SyntaxError
+     */
     private function assertValidStringCharacterCode(int $code, int $position): void
     {
         // SourceCharacter
@@ -624,6 +645,10 @@ class Lexer
         }
     }
 
+    /**
+     * @throws \JsonException
+     * @throws SyntaxError
+     */
     private function assertValidBlockStringCharacterCode(int $code, int $position): void
     {
         // SourceCharacter

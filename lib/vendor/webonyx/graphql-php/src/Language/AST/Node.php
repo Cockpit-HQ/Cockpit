@@ -2,6 +2,7 @@
 
 namespace GraphQL\Language\AST;
 
+use GraphQL\Error\InvariantViolation;
 use GraphQL\Utils\Utils;
 
 /**
@@ -39,15 +40,14 @@ abstract class Node implements \JsonSerializable
      */
     public function __construct(array $vars)
     {
-        if (\count($vars) === 0) {
-            return;
-        }
-
         Utils::assign($this, $vars);
     }
 
     /**
      * Returns a clone of this instance and all its children, except Location $loc.
+     *
+     * @throws \JsonException
+     * @throws InvariantViolation
      *
      * @return static
      */
@@ -63,6 +63,9 @@ abstract class Node implements \JsonSerializable
      * @phpstan-param TCloneable $value
      *
      * @phpstan-return TCloneable
+     *
+     * @throws \JsonException
+     * @throws InvariantViolation
      */
     protected static function cloneValue($value)
     {
@@ -82,6 +85,9 @@ abstract class Node implements \JsonSerializable
         return $value;
     }
 
+    /**
+     * @throws \JsonException
+     */
     public function __toString(): string
     {
         return \json_encode($this, JSON_THROW_ON_ERROR);

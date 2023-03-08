@@ -88,6 +88,8 @@ class DocumentValidator
      *
      * @param array<ValidationRule>|null $rules
      *
+     * @throws \Exception
+     *
      * @return array<int, Error>
      *
      * @api
@@ -100,7 +102,7 @@ class DocumentValidator
     ): array {
         $rules ??= static::allRules();
 
-        if (\count($rules) === 0) {
+        if ($rules === []) {
             return [];
         }
 
@@ -126,6 +128,8 @@ class DocumentValidator
 
     /**
      * Returns all global validation rules.
+     *
+     * @throws \InvalidArgumentException
      *
      * @return array<string, ValidationRule>
      *
@@ -183,6 +187,8 @@ class DocumentValidator
     /**
      * @deprecated just add rules via @see DocumentValidator::addRule()
      *
+     * @throws \InvalidArgumentException
+     *
      * @return array<class-string<QuerySecurityRule>, QuerySecurityRule>
      */
     public static function securityRules(): array
@@ -226,6 +232,8 @@ class DocumentValidator
      * @example DocumentValidator::getRule(GraphQL\Validator\Rules\QueryComplexity::class);
      *
      * @api
+     *
+     * @throws \InvalidArgumentException
      */
     public static function getRule(string $name): ?ValidationRule
     {
@@ -257,6 +265,8 @@ class DocumentValidator
      *
      * @param array<ValidationRule>|null $rules
      *
+     * @throws \Exception
+     *
      * @return array<int, Error>
      */
     public static function validateSDL(
@@ -266,7 +276,7 @@ class DocumentValidator
     ): array {
         $rules ??= self::sdlRules();
 
-        if (\count($rules) === 0) {
+        if ($rules === []) {
             return [];
         }
 
@@ -285,18 +295,26 @@ class DocumentValidator
         return $context->getErrors();
     }
 
+    /**
+     * @throws \Exception
+     * @throws Error
+     */
     public static function assertValidSDL(DocumentNode $documentAST): void
     {
         $errors = self::validateSDL($documentAST);
-        if (\count($errors) > 0) {
+        if ($errors !== []) {
             throw new Error(self::combineErrorMessages($errors));
         }
     }
 
+    /**
+     * @throws \Exception
+     * @throws Error
+     */
     public static function assertValidSDLExtension(DocumentNode $documentAST, Schema $schema): void
     {
         $errors = self::validateSDL($documentAST, $schema);
-        if (\count($errors) > 0) {
+        if ($errors !== []) {
             throw new Error(self::combineErrorMessages($errors));
         }
     }

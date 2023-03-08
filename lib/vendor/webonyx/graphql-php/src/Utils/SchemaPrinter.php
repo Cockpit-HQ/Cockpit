@@ -4,6 +4,7 @@ namespace GraphQL\Utils;
 
 use GraphQL\Error\Error;
 use GraphQL\Error\InvariantViolation;
+use GraphQL\Error\SerializationError;
 use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\BlockString;
 use GraphQL\Language\Printer;
@@ -45,6 +46,11 @@ class SchemaPrinter
      * @phpstan-param Options $options
      *
      * @api
+     *
+     * @throws \JsonException
+     * @throws Error
+     * @throws InvariantViolation
+     * @throws SerializationError
      */
     public static function doPrint(Schema $schema, array $options = []): string
     {
@@ -62,6 +68,11 @@ class SchemaPrinter
      * @phpstan-param Options $options
      *
      * @api
+     *
+     * @throws \JsonException
+     * @throws Error
+     * @throws InvariantViolation
+     * @throws SerializationError
      */
     public static function printIntrospectionSchema(Schema $schema, array $options = []): string
     {
@@ -77,6 +88,11 @@ class SchemaPrinter
      * @param array<string, bool> $options
      *
      * @phpstan-param Options $options
+     *
+     * @throws \JsonException
+     * @throws Error
+     * @throws InvariantViolation
+     * @throws SerializationError
      */
     public static function printType(Type $type, array $options = []): string
     {
@@ -110,17 +126,22 @@ class SchemaPrinter
 
     /**
      * @param callable(Directive  $directive): bool $directiveFilter
-     * @param callable(Type       &NamedType   $type):      bool $typeFilter
+     * @param callable(Type&NamedType $type): bool $typeFilter
      * @param array<string, bool> $options
      *
      * @phpstan-param Options $options
+     *
+     * @throws \JsonException
+     * @throws Error
+     * @throws InvariantViolation
+     * @throws SerializationError
      */
     protected static function printFilteredSchema(Schema $schema, callable $directiveFilter, callable $typeFilter, array $options): string
     {
         $directives = \array_filter($schema->getDirectives(), $directiveFilter);
         $types = \array_filter($schema->getTypeMap(), $typeFilter);
 
-        if (isset($options['sortTypes']) && $options['sortTypes'] === true) {
+        if (isset($options['sortTypes']) && $options['sortTypes']) {
             ksort($types);
         }
 
@@ -137,6 +158,9 @@ class SchemaPrinter
         return \implode("\n\n", \array_filter($elements)) . "\n";
     }
 
+    /**
+     * @throws InvariantViolation
+     */
     protected static function printSchemaDefinition(Schema $schema): ?string
     {
         $queryType = $schema->getQueryType();
@@ -183,6 +207,8 @@ class SchemaPrinter
      * Note however that if any of these default names are used elsewhere in the
      * schema but not as a root operation type, the schema definition must still
      * be printed to avoid ambiguity.
+     *
+     * @throws InvariantViolation
      */
     protected static function hasDefaultRootOperationTypes(Schema $schema): bool
     {
@@ -195,6 +221,10 @@ class SchemaPrinter
      * @param array<string, bool> $options
      *
      * @phpstan-param Options $options
+     *
+     * @throws \JsonException
+     * @throws InvariantViolation
+     * @throws SerializationError
      */
     protected static function printDirective(Directive $directive, array $options): string
     {
@@ -208,6 +238,8 @@ class SchemaPrinter
     /**
      * @param array<string, bool>                                                          $options
      * @param (Type&NamedType)|Directive|EnumValueDefinition|Argument|FieldDefinition|InputObjectField $def
+     *
+     * @throws \JsonException
      */
     protected static function printDescription(array $options, $def, string $indentation = '', bool $firstInBlock = true): string
     {
@@ -237,14 +269,18 @@ class SchemaPrinter
      * @param array<int, Argument> $args
      *
      * @phpstan-param Options $options
+     *
+     * @throws \JsonException
+     * @throws InvariantViolation
+     * @throws SerializationError
      */
     protected static function printArgs(array $options, array $args, string $indentation = ''): string
     {
-        if (\count($args) === 0) {
+        if ($args === []) {
             return '';
         }
 
-        if (isset($options['sortArguments']) && $options['sortArguments'] === true) {
+        if (isset($options['sortArguments']) && $options['sortArguments']) {
             usort($args, static fn (Argument $left, Argument $right): int => $left->name <=> $right->name);
         }
 
@@ -295,6 +331,10 @@ class SchemaPrinter
 
     /**
      * @param InputObjectField|Argument $arg
+     *
+     * @throws \JsonException
+     * @throws InvariantViolation
+     * @throws SerializationError
      */
     protected static function printInputValue($arg): string
     {
@@ -318,6 +358,8 @@ class SchemaPrinter
      * @param array<string, bool> $options
      *
      * @phpstan-param Options $options
+     *
+     * @throws \JsonException
      */
     protected static function printScalar(ScalarType $type, array $options): string
     {
@@ -329,6 +371,10 @@ class SchemaPrinter
      * @param array<string, bool> $options
      *
      * @phpstan-param Options $options
+     *
+     * @throws \JsonException
+     * @throws InvariantViolation
+     * @throws SerializationError
      */
     protected static function printObject(ObjectType $type, array $options): string
     {
@@ -343,6 +389,10 @@ class SchemaPrinter
      * @param ObjectType|InterfaceType $type
      *
      * @phpstan-param Options $options
+     *
+     * @throws \JsonException
+     * @throws InvariantViolation
+     * @throws SerializationError
      */
     protected static function printFields(array $options, $type): string
     {
@@ -351,7 +401,7 @@ class SchemaPrinter
         $previousHasDescription = false;
         $fieldDefinitions = $type->getFields();
 
-        if (isset($options['sortFields']) && $options['sortFields'] === true) {
+        if (isset($options['sortFields']) && $options['sortFields']) {
             ksort($fieldDefinitions);
         }
 
@@ -377,6 +427,10 @@ class SchemaPrinter
 
     /**
      * @param FieldDefinition|EnumValueDefinition $fieldOrEnumVal
+     *
+     * @throws \JsonException
+     * @throws InvariantViolation
+     * @throws SerializationError
      */
     protected static function printDeprecated($fieldOrEnumVal): string
     {
@@ -401,21 +455,25 @@ class SchemaPrinter
     {
         $interfaces = $type->getInterfaces();
 
-        return \count($interfaces) > 0
-        ? ' implements ' . \implode(
-            ' & ',
-            \array_map(
-                static fn (InterfaceType $interface): string => $interface->name,
-                $interfaces
-            )
-        )
-        : '';
+        return $interfaces === []
+            ? ''
+            : ' implements ' . \implode(
+                ' & ',
+                \array_map(
+                    static fn (InterfaceType $interface): string => $interface->name,
+                    $interfaces
+                )
+            );
     }
 
     /**
      * @param array<string, bool> $options
      *
      * @phpstan-param Options $options
+     *
+     * @throws \JsonException
+     * @throws InvariantViolation
+     * @throws SerializationError
      */
     protected static function printInterface(InterfaceType $type, array $options): string
     {
@@ -429,13 +487,16 @@ class SchemaPrinter
      * @param array<string, bool> $options
      *
      * @phpstan-param Options $options
+     *
+     * @throws \JsonException
+     * @throws InvariantViolation
      */
     protected static function printUnion(UnionType $type, array $options): string
     {
         $types = $type->getTypes();
-        $types = \count($types) > 0
-            ? ' = ' . \implode(' | ', $types)
-            : '';
+        $types = $types === []
+            ? ''
+            : ' = ' . \implode(' | ', $types);
 
         return static::printDescription($options, $type) . 'union ' . $type->name . $types;
     }
@@ -444,6 +505,10 @@ class SchemaPrinter
      * @param array<string, bool> $options
      *
      * @phpstan-param Options $options
+     *
+     * @throws \JsonException
+     * @throws InvariantViolation
+     * @throws SerializationError
      */
     protected static function printEnum(EnumType $type, array $options): string
     {
@@ -451,7 +516,7 @@ class SchemaPrinter
         $firstInBlock = true;
         $valueDefinitions = $type->getValues();
 
-        if (isset($options['sortEnumValues']) && $options['sortEnumValues'] === true) {
+        if (isset($options['sortEnumValues']) && $options['sortEnumValues']) {
             usort($valueDefinitions, static fn (EnumValueDefinition $left, EnumValueDefinition $right): int => $left->name <=> $right->name);
         }
 
@@ -472,6 +537,10 @@ class SchemaPrinter
      * @param array<string, bool> $options
      *
      * @phpstan-param Options $options
+     *
+     * @throws \JsonException
+     * @throws InvariantViolation
+     * @throws SerializationError
      */
     protected static function printInputObject(InputObjectType $type, array $options): string
     {
@@ -479,7 +548,7 @@ class SchemaPrinter
         $firstInBlock = true;
         $fieldDefinitions = $type->getFields();
 
-        if (isset($options['sortInputFields']) && $options['sortInputFields'] === true) {
+        if (isset($options['sortInputFields']) && $options['sortInputFields']) {
             ksort($fieldDefinitions);
         }
 
@@ -500,8 +569,8 @@ class SchemaPrinter
      */
     protected static function printBlock(array $items): string
     {
-        return \count($items) > 0
-            ? " {\n" . \implode("\n", $items) . "\n}"
-            : '';
+        return $items === []
+            ? ''
+            : " {\n" . \implode("\n", $items) . "\n}";
     }
 }

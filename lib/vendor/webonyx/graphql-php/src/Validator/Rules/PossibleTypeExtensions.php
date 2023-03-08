@@ -73,9 +73,9 @@ class PossibleTypeExtensions extends ValidationRule
                     ...array_keys($existingTypesMap),
                 ];
                 $suggestedTypes = Utils::suggestionList($typeName, $allTypeNames);
-                $didYouMean = \count($suggestedTypes) > 0
-                    ? ' Did you mean ' . Utils::quotedOrList($suggestedTypes) . '?'
-                    : '';
+                $didYouMean = $suggestedTypes === []
+                    ? ''
+                    : ' Did you mean ' . Utils::quotedOrList($suggestedTypes) . '?';
                 $context->reportError(
                     new Error(
                         "Cannot extend type \"{$typeName}\" because it is not defined.{$didYouMean}",
@@ -97,6 +97,9 @@ class PossibleTypeExtensions extends ValidationRule
         ];
     }
 
+    /**
+     * @throws InvariantViolation
+     */
     private static function defKindToExtKind(string $kind): string
     {
         switch ($kind) {
@@ -117,6 +120,9 @@ class PossibleTypeExtensions extends ValidationRule
         }
     }
 
+    /**
+     * @throws InvariantViolation
+     */
     private static function typeToExtKind(NamedType $type): string
     {
         switch (true) {
@@ -138,6 +144,9 @@ class PossibleTypeExtensions extends ValidationRule
         }
     }
 
+    /**
+     * @throws InvariantViolation
+     */
     private static function extensionKindToTypeName(string $kind): string
     {
         switch ($kind) {
