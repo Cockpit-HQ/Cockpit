@@ -111,7 +111,7 @@ export default {
                 </kiss-row>
 
             </div>
-            <div class="kiss-padding kiss-padding-remove-bottom">
+            <div class="kiss-padding kiss-padding-remove-bottom" v-if="!Array.isArray(ids) || !ids.length">
                 <div class="kiss-text-caption kiss-text-bold kiss-margin-small">{{ t('Matching filter') }}</div>
                 <field-object embed="true" v-model="filter" height="150"></field-object>
             </div>
