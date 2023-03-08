@@ -1,6 +1,6 @@
 # Release Notes
 
-## WIP
+## 2.4.0 (2023-03-08)
 
 - Add additional security check editing php files in finder
 - Fix base64 encoding data not in latin char range
