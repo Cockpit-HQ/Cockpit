@@ -1,5 +1,9 @@
 # Release Notes
 
+## WIP
+
+- Prevent uploading php files in assets manager
+
 ## 2.4.0 (2023-03-08)
 
 - Add additional security check editing php files in finder

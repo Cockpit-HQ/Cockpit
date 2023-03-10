@@ -80,6 +80,11 @@ $this->module('assets')->extend([
                 $_isAllowed = $allowed === true ? true : preg_match("/\.({$allowed})$/i", $_file);
                 $_sizeAllowed = $max_size ? filesize($files['tmp_name'][$i]) < $max_size : true;
 
+                // prevent uploading php files
+                if ($_isAllowed && pathinfo($_file, PATHINFO_EXTENSION) === 'php') {
+                    $_isAllowed = false;
+                }
+
                 if (!$files['error'][$i] && $_isAllowed && $_sizeAllowed && move_uploaded_file($files['tmp_name'][$i], $_file)) {
 
                     $_files[]   = $_file;
