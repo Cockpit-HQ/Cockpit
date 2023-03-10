@@ -91,13 +91,11 @@ class Finder extends App {
 
     protected function upload() {
 
-        $this->helper('session')->close();
-
         $path       = $this->_getPathParameter();
 
         if (!$path) return false;
 
-        $files      = $_FILES['files'] ?? [];
+        $files      = $this->app->request->files['files'] ?? [];
         $targetpath = $this->root.'/'.trim($path, '/');
         $uploaded   = [];
         $failed     = [];
