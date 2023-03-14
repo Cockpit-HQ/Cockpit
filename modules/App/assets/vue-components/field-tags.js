@@ -25,7 +25,7 @@ export default {
         render(value, field, context) {
 
             if (typeof(value) === 'object') {
-                value = JSON.stringify(value);
+                value = JSON.stringify(value).replace(/("|\[|\])/g, '');
             } else {
                 value = '';
             }
@@ -142,8 +142,8 @@ export default {
 
     template: /*html*/`
         <div field="tags">
-            <input type="text" hidden v-if="!list.length" />
-            <select multiple v-if="list.length" hidden></select>
+            <input type="text" hidden v-if="!Array.isArray(list) || !list.length" />
+            <select multiple v-if="Array.isArray(list) && list.length" hidden></select>
         </div>
     `
 }

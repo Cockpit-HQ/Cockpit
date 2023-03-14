@@ -136,7 +136,11 @@ class Collection extends App {
 
                             foreach ($fields as $field) {
 
-                                if (!\in_array($field['type'], ['code', 'color', 'text', 'wysiwyg'])) continue;
+                                if (!\in_array($field['type'], ['code', 'color', 'text', 'wysiwyg', 'select'])) continue;
+
+                                if ($field['type'] == 'select' && ($field['opts']['multiple'] ?? false)) {
+                                    continue;
+                                }
 
                                 foreach ($terms as $term) {
                                     $_f = [];

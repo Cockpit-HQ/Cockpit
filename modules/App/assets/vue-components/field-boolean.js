@@ -6,7 +6,15 @@ export default {
         icon: 'system:assets/icons/boolean.svg',
         settings: [
             {name: 'label', type: 'text'},
-        ]
+        ],
+        render(value, field, context) {
+
+            if (typeof(value) === 'boolean') {
+                return `<icon class="kiss-color-${value ? 'success' : 'danger'}">trip_origin</icon>`;
+            }
+
+            return '<icon class="kiss-color-muted">trip_origin</icon>';
+        }
     },
 
     data() {

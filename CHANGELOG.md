@@ -3,6 +3,9 @@
 ## WIP
 
 - Prevent uploading php files in assets manager
+- Add field preview renderer for boolen field
+- Fix tag field
+- Add display meta property support for tree content models
 
 ## 2.4.0 (2023-03-08)
 

@@ -64,12 +64,6 @@ class Spaces extends App {
             return false;
         }
 
-        $folder = $this->app->path("#app:.spaces/{$space['name']}");
-
-        if ($folder) {
-            $this->helper('fs')->delete($folder);
-        }
-
-        return ['success' => true];
+        return ['success' => $this->helper('spaces')->remove($space['name'])];
     }
 }

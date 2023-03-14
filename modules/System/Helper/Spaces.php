@@ -113,4 +113,25 @@ class Spaces extends \Lime\Helper {
             'url' => rtrim($this->app->routeUrl('/'), '/')."/:{$name}"
         ];
     }
+
+    public  function remove(string $name) {
+
+            $path = APP_SPACES_DIR."/{$name}";
+
+            if (!file_exists($path)) {
+                return false;
+            }
+
+            $folder = $this->app->path($path);
+
+            if ($folder) {
+
+                $this->app->trigger('spaces.remove', [$name]);
+                $this->app->helper('fs')->delete($folder);
+
+                return true;
+            }
+
+            return false;
+    }
 }
