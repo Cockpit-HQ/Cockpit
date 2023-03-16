@@ -6,6 +6,7 @@
 - Add field preview renderer for boolen field
 - Fix tag field
 - Add display meta property support for tree content models
+- add active property to field-nav items
 
 ## 2.4.0 (2023-03-08)
 

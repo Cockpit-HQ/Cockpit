@@ -47,7 +47,18 @@ let editItem = {
     template: /*html*/`
         <div>
 
-            <div class="kiss-size-4 kiss-text-bold kiss-margin-bottom">{{ t('Edit item') }}</div>
+            <div class="kiss-flex kiss-flex-middle kiss-margin-bottom">
+                <div>
+                    <kiss-svg :class="{'kiss-color-primary':data.active, 'kiss-color-danger':!data.active}" :src="$base('system:assets/icons/link.svg')" width="45" height="45"></kiss-svg>
+                </div>
+                <div class="kiss-flex-1 kiss-margin-left">
+                    <span class="kiss-size-xsmall kiss-color-muted kiss-text-upper">{{ t('Navlink') }}</span>
+                    <kiss-row class="kiss-flex-middle">
+                        <div class="kiss-size-4 kiss-text-bold kiss-flex-1">{{ t('Edit link') }}</div>
+                        <div><field-boolean v-model="data.active" :label="t('Active')"></field-boolean></div>
+                    </kiss-row>
+                </div>
+            </div>
 
             <kiss-tabs class="kiss-margin-large">
 
@@ -160,6 +171,7 @@ export default {
             });
 
             collection.push({
+                active: false,
                 title: '',
                 url: '',
                 target: '',
@@ -212,7 +224,7 @@ export default {
                             <div class="kiss-flex kiss-flex-middle">
                                 <a class="lm-handle kiss-margin-small-right kiss-color-muted"><icon>drag_handle</icon></a>
                                 <div class="kiss-flex-1 kiss-size-xsmall kiss-text-bold" :class="{'kiss-color-muted': !element.title}">
-                                    <a class="kiss-link-muted" @click="edit(element)">{{ element.title || t('Title...') }}</a>
+                                    <a class="kiss-link-muted" @click="edit(element)">{{ element.title || t('Title...') }}<icon class="kiss-color-danger kiss-margin-small-left" size="larger" v-if="!element.active">link_off</icon></a>
                                 </div>
                                 <a class="kiss-margin-small-left" @click="edit(element)"><icon>tune</icon></a>
                                 <a class="kiss-margin-small-left" @click="addItem(element.children)"><icon>create_new_folder</icon></a>
