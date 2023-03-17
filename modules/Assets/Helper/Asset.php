@@ -48,12 +48,30 @@ class Asset extends \Lime\Helper {
             }
         }
 
+        $src = rawurldecode($src);
+
         // normalize path
         if (strpos($src, '../') !== false) {
             $src = implode('/', array_filter(explode('/', $src), fn ($s) => trim($s, '.')));
         }
 
-        $src   = rawurldecode($src);
+        $options['src'] = $src;
+
+        if (\strpos($src, 'uploads://') === 0) {
+
+            $options['src'] = \str_replace('uploads://', '', $src);
+
+            return $this->imageByPath($options, $asPath);
+        }
+
+        return $this->imageByAsset($options, $asPath);
+
+    }
+
+    protected function imageByAsset(array $options = [], bool $asPath = false) {
+
+        extract($options);
+
         $asset = null;
 
         if (\strpos($src, 'assets://') === 0) {
@@ -68,7 +86,20 @@ class Asset extends \Lime\Helper {
             return ['error' => 'Asset not found'];
         }
 
-        $path = trim($asset['path'], '/');
+        $options['src'] = $asset['path'];
+
+        if (!$fp && isset($asset['fp']['x'], $asset['fp']['y'])) {
+            $options['fp'] = "{$asset['fp']['x']} {$asset['fp']['y']}";
+        }
+
+        return $this->imageByPath($options, $asPath);
+    }
+
+    protected function imageByPath(array $options = [], bool $asPath = false) {
+
+        extract($options);
+
+        $path = trim($src, '/');
         $srcUrl = $this->app->fileStorage->getURL("uploads://{$path}");
         $src = $this->app->path("#uploads:{$path}");
 
@@ -84,10 +115,6 @@ class Asset extends \Lime\Helper {
 
         if (!$src) {
             return false;
-        }
-
-        if (isset($asset['fp']) && !$fp) {
-            $fp = $asset['fp']['x'].' '.$asset['fp']['y'];
         }
 
         $ext = strtolower(pathinfo($src, PATHINFO_EXTENSION));
@@ -122,10 +149,6 @@ class Asset extends \Lime\Helper {
             return $srcUrl;
         }
 
-        if (!$fp) {
-            $fp = 'center';
-        }
-
         if (!in_array($mode, ['thumbnail', 'bestFit', 'resize', 'fitToWidth', 'fitToHeight'])) {
             $mode = 'thumbnail';
         }
@@ -135,6 +158,10 @@ class Asset extends \Lime\Helper {
             $mime = "image/{$ext}";
         } else {
             $mime = null;
+        }
+
+        if (!$fp) {
+            $fp = 'center';
         }
 
         $method = $mode;
