@@ -81,7 +81,7 @@ $this->module('assets')->extend([
                 $_sizeAllowed = $max_size ? filesize($files['tmp_name'][$i]) < $max_size : true;
 
                 // prevent uploading php files
-                if ($_isAllowed && pathinfo($_file, PATHINFO_EXTENSION) === 'php') {
+                if ($_isAllowed && in_array(strtolower(pathinfo($_file, PATHINFO_EXTENSION)), ['php', 'phar', 'phtml'])) {
                     $_isAllowed = false;
                 }
 

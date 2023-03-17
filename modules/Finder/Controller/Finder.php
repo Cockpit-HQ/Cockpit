@@ -427,7 +427,7 @@ class Finder extends App {
 
         $allowed = trim($this->app->retrieve('finder.allowed_uploads', '*'));
 
-        if (strtolower(pathinfo($file, PATHINFO_EXTENSION)) == 'php' && !$this->helper('acl')->isSuperAdmin()) {
+        if (in_array(strtolower(pathinfo($file, PATHINFO_EXTENSION)), ['php', 'phar', 'phtml']) && !$this->helper('acl')->isSuperAdmin()) {
             return false;
         }
 
