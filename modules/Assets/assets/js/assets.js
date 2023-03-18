@@ -43,6 +43,6 @@ App.utils.$interpolate.fns.$image = function(asset, w = 25, h = 25, mode = 'best
 
     if (!asset || !asset.type || asset.type !== 'image') return '';
 
-    return `<display-image class="kiss-display-inline-block" id="${asset._id}" w="${w}" h="${h}" mode="${mode}" q="${q}" style="vertical-align: middle;"></display-image>`;
+    return `<display-image class="kiss-display-inline-block" src="${asset._id}" w="${w}" h="${h}" mode="${mode}" q="${q}" style="vertical-align: middle;"></display-image>`;
 };
 
