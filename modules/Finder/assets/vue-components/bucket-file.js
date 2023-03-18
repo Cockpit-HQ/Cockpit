@@ -31,11 +31,21 @@ export default {
         },
 
         fileUrl() {
+
             if (!this.val || !this.val.file) {
                 return null;
             }
 
             return App._vars.bucketsUrl + '/' + this.val.bucket + '/' + this.val.file.path;
+        },
+
+        thumbUrl() {
+
+            if (!this.val || !this.val.file) {
+                return null;
+            }
+
+            return `uploads://buckets/${this.val.bucket}/${this.val.file.path}`;
         }
     },
 
@@ -81,9 +91,12 @@ export default {
 
             <kiss-card class="kiss-margin-small kiss-position-relative kiss-bgcolor-contrast" theme="bordered" v-if="file">
                 <div class="kiss-position-relative" :class="{'kiss-bgcolor-transparentimage': file.type === 'image'}">
-                    <canvas class="kiss-display-block kiss-margin-auto" width="400" height="200" style="background-repeat: no-repeat;background-size:contain;background-position:50% 50%;" :style="{backgroundImage: file.type === 'image' ? 'url('+encodeURI(fileUrl)+')' : 'none'}"></canvas>
-                    <div class="kiss-cover kiss-padding kiss-flex kiss-flex-middle kiss-flex-center" v-if="file.type !== 'image'">
-                        <div class="kiss-align-center">
+                    <canvas class="kiss-display-block kiss-margin-auto" width="400" height="200"></canvas>
+                    <div class="kiss-cover kiss-padding kiss-flex kiss-flex-middle kiss-flex-center">
+                        <div v-if="file.type === 'image'">
+                            <display-image class="kiss-display-block" :src="thumbUrl" w="400" h="200"></display-image>
+                        </div>
+                        <div class="kiss-align-center" v-if="file.type !== 'image'">
                             <icon class="kiss-size-xlarge">file_present</icon>
                             <div class="kiss-color-muted kiss-size-small kiss-margin-small">{{ file.name }}</div>
                         </div>

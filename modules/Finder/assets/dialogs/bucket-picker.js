@@ -321,9 +321,12 @@ export default {
 
                     <kiss-card class="kiss-position-relative kiss-bgcolor-contrast" theme="bordered" :style="{borderColor: (selectedFile && selectedFile.path === file.path && 'var(--kiss-color-primary)') || null}" v-for="file in filteredFiles">
                         <div class="kiss-position-relative" :class="{'kiss-bgcolor-transparentimage': file.type === 'image'}">
-                            <canvas width="400" height="300" style="background-repeat: no-repeat;background-size:contain;background-position:50% 50%;" :style="{backgroundImage: file.type === 'image' ? 'url('+encodeURI(file.url)+')' : 'none'}"></canvas>
-                            <div class="kiss-cover kiss-padding kiss-flex kiss-flex-middle kiss-flex-center" v-if="file.type !== 'image'">
-                                <span class="kiss-color-muted kiss-size-large kiss-text-upper">{{ file.ext }}</span>
+                            <canvas width="400" height="300"></canvas>
+                            <div class="kiss-cover kiss-padding kiss-flex kiss-flex-middle kiss-flex-center">
+                                <div v-if="file.type === 'image'">
+                                    <display-image class="kiss-display-block" :src="'uploads://buckets/'+bucket+'/'+file.path" w="400" h="300"></display-image>
+                                </div>
+                                <span class="kiss-color-muted kiss-size-large kiss-text-upper" v-if="file.type !== 'image'">{{ file.ext }}</span>
                             </div>
                             <a class="kiss-cover" @click="selectedFile=file"></a>
                         </div>

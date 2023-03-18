@@ -270,8 +270,10 @@ class Assets extends App {
             }
         }
 
+        $src = $this->param('src', $id);
+
         $options = [
-            'src' => $id,
+            'src' => $src,
             'fp' => $this->param('fp', null),
             'mode' => $this->param('m', 'thumbnail'),
             'mime' => $mime,
