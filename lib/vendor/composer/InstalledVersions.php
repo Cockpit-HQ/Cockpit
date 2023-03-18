@@ -29,7 +29,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '96dd192608a044da5d7a6a80568dc5b8e5ac7d24',
+    'reference' => '1becf2f20b501ad466429c3cfb19b7131926a0d4',
     'name' => 'cockpit-hq/cockpit',
   ),
   'versions' => 
@@ -59,7 +59,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '96dd192608a044da5d7a6a80568dc5b8e5ac7d24',
+      'reference' => '1becf2f20b501ad466429c3cfb19b7131926a0d4',
     ),
     'colinodell/json5' => 
     array (
@@ -126,12 +126,12 @@ private static $installed = array (
     ),
     'guzzlehttp/psr7' => 
     array (
-      'pretty_version' => '2.4.3',
-      'version' => '2.4.3.0',
+      'pretty_version' => '2.4.4',
+      'version' => '2.4.4.0',
       'aliases' => 
       array (
       ),
-      'reference' => '67c26b443f348a51926030c83481b85718457d3d',
+      'reference' => '3cf1b6d4f0c820a2cf8bcaec39fc698f3443b5cf',
     ),
     'jean85/pretty-package-versions' => 
     array (
@@ -431,12 +431,12 @@ private static $installed = array (
     ),
     'zircote/swagger-php' => 
     array (
-      'pretty_version' => '4.7.3',
-      'version' => '4.7.3.0',
+      'pretty_version' => '4.7.4',
+      'version' => '4.7.4.0',
       'aliases' => 
       array (
       ),
-      'reference' => '0299edc47eb4813a2c598a0348eaf205704adc92',
+      'reference' => '1661f99005655b77d0b9c4d93dba12ed9352e3be',
     ),
   ),
 );
