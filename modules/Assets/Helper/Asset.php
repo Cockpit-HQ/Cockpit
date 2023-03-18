@@ -33,9 +33,10 @@ class Asset extends \Lime\Helper {
             return ['error' => 'Missing src parameter'];
         }
 
+        $hash = $mime ? md5(json_encode($options))."_{$quality}_{$mode}.{$mime}" : null;
+
         if (!$rebuild && $mime) {
 
-            $hash = md5(json_encode($options))."_{$quality}_{$mode}.{$mime}";
             $thumbpath = $cachefolder."/{$hash}";
 
             if ($this->app->fileStorage->fileExists($thumbpath)) {
@@ -61,14 +62,14 @@ class Asset extends \Lime\Helper {
 
             $options['src'] = \str_replace('uploads://', '', $src);
 
-            return $this->imageByPath($options, $asPath);
+            return $this->imageByPath($options, $asPath, $hash);
         }
 
-        return $this->imageByAsset($options, $asPath);
+        return $this->imageByAsset($options, $asPath, $hash);
 
     }
 
-    protected function imageByAsset(array $options = [], bool $asPath = false) {
+    protected function imageByAsset(array $options = [], bool $asPath = false, ?string $hash = null) {
 
         extract($options);
 
@@ -92,10 +93,10 @@ class Asset extends \Lime\Helper {
             $options['fp'] = "{$asset['fp']['x']} {$asset['fp']['y']}";
         }
 
-        return $this->imageByPath($options, $asPath);
+        return $this->imageByPath($options, $asPath, $hash);
     }
 
-    protected function imageByPath(array $options = [], bool $asPath = false) {
+    protected function imageByPath(array $options = [], bool $asPath = false, ?string $hash = null) {
 
         extract($options);
 
@@ -166,7 +167,7 @@ class Asset extends \Lime\Helper {
 
         $method = $mode;
 
-        $hash = md5(json_encode($options))."_{$quality}_{$mode}.{$ext}";
+        $hash = $hash ?? md5(json_encode($options))."_{$quality}_{$mode}.{$ext}";
         $thumbpath = $cachefolder."/{$hash}";
 
         if ($rebuild || !$this->app->fileStorage->fileExists($thumbpath)) {
