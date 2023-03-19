@@ -8,6 +8,7 @@
 - Add active property to field-nav items
 - Add additional security check when uploading files
 - Fix assets image cache check
+- Add thumbnail api usage to internal bucket storage file previews
 - Improve revisions display performance
 
 ## 2.4.0 (2023-03-08)
