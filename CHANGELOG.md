@@ -8,7 +8,7 @@
 - Add active property to field-nav items
 - Add additional security check when uploading files
 - Fix assets image cache check
-
+- Improve revisions display performance
 
 ## 2.4.0 (2023-03-08)
 
