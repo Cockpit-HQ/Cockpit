@@ -191,7 +191,7 @@ let FieldsManager = {
                             <a class="kiss-margin-left kiss-color-danger" @click="remove(element)"><icon>delete</icon></a>
                         </kiss-card>
 
-                        <div class="kiss-position-absolute kiss-width-1-3 kiss-align-center kiss-visible-toggle" style="bottom:0;height:20px;left:50%;transform:translateX(-50%) translateY(50%);z-index:5;" v-if="fields.length > 1 && index !== (fields.length - 1)">
+                        <div class="kiss-position-absolute kiss-width-1-3 kiss-align-center kiss-visible-toggle" style="bottom:0;height:20px;left:50%;transform:translateX(-50%) translateY(15%);z-index:5;" v-if="fields.length > 1 && index !== (fields.length - 1)">
                             <a class="kiss-button kiss-button-small kiss-hidden-hover animated fadeIn faster" :title="t('Add field')" @click="add(element)"><span class="kiss-size-6">+</span></a>
                         </div>
                     </div>
