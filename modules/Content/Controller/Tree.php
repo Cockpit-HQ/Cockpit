@@ -71,15 +71,15 @@ class Tree extends App {
         } else {
 
             $item['_pid'] = null;
-            $item['_o'] = 0;
 
             if ($this->param('pid') && $this->app->dataStorage->findOne("content/collections/{$model['name']}", ['_id' => $this->param('pid')], ['_id' => 1])) {
                 $item['_pid'] = $this->param('pid');
             }
+
+            $item['_o'] = $this->app->dataStorage->count("content/collections/{$model['name']}", ['_pid' => $item['_pid']]);
         }
 
         $fields = $model['fields'];
-
         $locales = $this->helper('locales')->locales();
 
         if (count($locales) == 1) {

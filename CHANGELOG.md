@@ -1,5 +1,9 @@
 # Release Notes
 
+## WIP
+
+- Fix initial item position on tree item creation
+
 ## 2.4.1 (2023-03-20)
 
 - Add field preview renderer for boolen field
