@@ -68,6 +68,7 @@ class ComposerStaticInit00d1f9b6bf944011268c41c2b4662055
         array (
             'League\\MimeTypeDetection\\' => 25,
             'League\\Flysystem\\' => 17,
+            'League\\ColorExtractor\\' => 22,
         ),
         'J' => 
         array (
@@ -198,6 +199,10 @@ class ComposerStaticInit00d1f9b6bf944011268c41c2b4662055
         array (
             0 => __DIR__ . '/..' . '/league/flysystem/src',
         ),
+        'League\\ColorExtractor\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/league/color-extractor/src',
+        ),
         'Jean85\\' => 
         array (
             0 => __DIR__ . '/..' . '/jean85/pretty-package-versions/src',
@@ -242,10 +247,6 @@ class ComposerStaticInit00d1f9b6bf944011268c41c2b4662055
         array (
             0 => __DIR__ . '/..' . '/bacon/bacon-qr-code/src',
         ),
-    );
-
-    public static $fallbackDirsPsr4 = array (
-        0 => __DIR__ . '/..' . '/league/color-extractor/src',
     );
 
     public static $prefixesPsr0 = array (
@@ -662,9 +663,9 @@ class ComposerStaticInit00d1f9b6bf944011268c41c2b4662055
         'Jean85\\PrettyVersions' => __DIR__ . '/..' . '/jean85/pretty-package-versions/src/PrettyVersions.php',
         'Jean85\\Version' => __DIR__ . '/..' . '/jean85/pretty-package-versions/src/Version.php',
         'JsonException' => __DIR__ . '/..' . '/symfony/polyfill-php73/Resources/stubs/JsonException.php',
-        'League\\ColorExtractor\\Color' => __DIR__ . '/..' . '/league/color-extractor/src/League/ColorExtractor/Color.php',
-        'League\\ColorExtractor\\ColorExtractor' => __DIR__ . '/..' . '/league/color-extractor/src/League/ColorExtractor/ColorExtractor.php',
-        'League\\ColorExtractor\\Palette' => __DIR__ . '/..' . '/league/color-extractor/src/League/ColorExtractor/Palette.php',
+        'League\\ColorExtractor\\Color' => __DIR__ . '/..' . '/league/color-extractor/src/Color.php',
+        'League\\ColorExtractor\\ColorExtractor' => __DIR__ . '/..' . '/league/color-extractor/src/ColorExtractor.php',
+        'League\\ColorExtractor\\Palette' => __DIR__ . '/..' . '/league/color-extractor/src/Palette.php',
         'League\\Flysystem\\CalculateChecksumFromStream' => __DIR__ . '/..' . '/league/flysystem/src/CalculateChecksumFromStream.php',
         'League\\Flysystem\\ChecksumAlgoIsNotSupported' => __DIR__ . '/..' . '/league/flysystem/src/ChecksumAlgoIsNotSupported.php',
         'League\\Flysystem\\ChecksumProvider' => __DIR__ . '/..' . '/league/flysystem/src/ChecksumProvider.php',
@@ -1185,7 +1186,6 @@ class ComposerStaticInit00d1f9b6bf944011268c41c2b4662055
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInit00d1f9b6bf944011268c41c2b4662055::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInit00d1f9b6bf944011268c41c2b4662055::$prefixDirsPsr4;
-            $loader->fallbackDirsPsr4 = ComposerStaticInit00d1f9b6bf944011268c41c2b4662055::$fallbackDirsPsr4;
             $loader->prefixesPsr0 = ComposerStaticInit00d1f9b6bf944011268c41c2b4662055::$prefixesPsr0;
             $loader->classMap = ComposerStaticInit00d1f9b6bf944011268c41c2b4662055::$classMap;
 

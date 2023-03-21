@@ -59,25 +59,29 @@
         },
         {
             "name": "claviska/simpleimage",
-            "version": "3.7.2",
-            "version_normalized": "3.7.2.0",
+            "version": "4.0.2",
+            "version_normalized": "4.0.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/claviska/SimpleImage.git",
-                "reference": "82dbef988e356baa5d73993a1351bcb6c0959269"
+                "reference": "226d507cca0c8400d69bee7eb324158e3cbe246e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/claviska/SimpleImage/zipball/82dbef988e356baa5d73993a1351bcb6c0959269",
-                "reference": "82dbef988e356baa5d73993a1351bcb6c0959269",
+                "url": "https://api.github.com/repos/claviska/SimpleImage/zipball/226d507cca0c8400d69bee7eb324158e3cbe246e",
+                "reference": "226d507cca0c8400d69bee7eb324158e3cbe246e",
                 "shasum": ""
             },
             "require": {
                 "ext-gd": "*",
-                "league/color-extractor": "0.3.*",
-                "php": ">=5.6.0"
+                "league/color-extractor": "0.4.*",
+                "php": ">=8.0"
             },
-            "time": "2022-12-12T14:31:53+00:00",
+            "require-dev": {
+                "laravel/pint": "^1.5",
+                "phpstan/phpstan": "^1.10"
+            },
+            "time": "2023-03-20T15:27:20+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -99,7 +103,7 @@
             "description": "A PHP class that makes working with images as simple as possible.",
             "support": {
                 "issues": "https://github.com/claviska/SimpleImage/issues",
-                "source": "https://github.com/claviska/SimpleImage/tree/3.7.2"
+                "source": "https://github.com/claviska/SimpleImage/tree/4.0.2"
             },
             "funding": [
                 {
@@ -885,36 +889,39 @@
         },
         {
             "name": "league/color-extractor",
-            "version": "0.3.2",
-            "version_normalized": "0.3.2.0",
+            "version": "0.4.0",
+            "version_normalized": "0.4.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/color-extractor.git",
-                "reference": "837086ec60f50c84c611c613963e4ad2e2aec806"
+                "reference": "21fcac6249c5ef7d00eb83e128743ee6678fe505"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/color-extractor/zipball/837086ec60f50c84c611c613963e4ad2e2aec806",
-                "reference": "837086ec60f50c84c611c613963e4ad2e2aec806",
+                "url": "https://api.github.com/repos/thephpleague/color-extractor/zipball/21fcac6249c5ef7d00eb83e128743ee6678fe505",
+                "reference": "21fcac6249c5ef7d00eb83e128743ee6678fe505",
                 "shasum": ""
             },
             "require": {
                 "ext-gd": "*",
-                "php": ">=5.4.0"
+                "php": "^7.3 || ^8.0"
             },
             "replace": {
                 "matthecat/colorextractor": "*"
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "~2",
-                "phpunit/phpunit": "~5"
+                "phpunit/phpunit": "^9.5"
             },
-            "time": "2016-12-15T09:30:02+00:00",
+            "suggest": {
+                "ext-curl": "To download images from remote URLs if allow_url_fopen is disabled for security reasons"
+            },
+            "time": "2022-09-24T15:57:16+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "": "src"
+                    "League\\ColorExtractor\\": "src"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -940,7 +947,7 @@
             ],
             "support": {
                 "issues": "https://github.com/thephpleague/color-extractor/issues",
-                "source": "https://github.com/thephpleague/color-extractor/tree/master"
+                "source": "https://github.com/thephpleague/color-extractor/tree/0.4.0"
             },
             "install-path": "../league/color-extractor"
         },
@@ -2849,17 +2856,17 @@
         },
         {
             "name": "webonyx/graphql-php",
-            "version": "v15.2.3",
-            "version_normalized": "15.2.3.0",
+            "version": "v15.2.4",
+            "version_normalized": "15.2.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webonyx/graphql-php.git",
-                "reference": "5ec0b8fbdcdb6b1be9345a43f927af0ecc9bd3b0"
+                "reference": "ac27a8692622ac13e72a6fe354027cc81ef31a6e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webonyx/graphql-php/zipball/5ec0b8fbdcdb6b1be9345a43f927af0ecc9bd3b0",
-                "reference": "5ec0b8fbdcdb6b1be9345a43f927af0ecc9bd3b0",
+                "url": "https://api.github.com/repos/webonyx/graphql-php/zipball/ac27a8692622ac13e72a6fe354027cc81ef31a6e",
+                "reference": "ac27a8692622ac13e72a6fe354027cc81ef31a6e",
                 "shasum": ""
             },
             "require": {
@@ -2869,13 +2876,14 @@
             },
             "require-dev": {
                 "amphp/amp": "^2.6",
+                "amphp/http-server": "^2.1",
                 "dms/phpunit-arraysubset-asserts": "^0.4",
                 "ergebnis/composer-normalize": "^2.28",
                 "mll-lab/php-cs-fixer-config": "^5.0",
                 "nyholm/psr7": "^1.5",
                 "phpbench/phpbench": "^1.2",
                 "phpstan/extension-installer": "^1.1",
-                "phpstan/phpstan": "1.10.5",
+                "phpstan/phpstan": "1.10.6",
                 "phpstan/phpstan-phpunit": "1.3.10",
                 "phpstan/phpstan-strict-rules": "1.5.0",
                 "phpunit/phpunit": "^9.5",
@@ -2888,10 +2896,11 @@
                 "thecodingmachine/safe": "^1.3 || ^2"
             },
             "suggest": {
+                "amphp/http-server": "To leverage async resolving with webserver on AMPHP platform",
                 "psr/http-message": "To use standard GraphQL server",
                 "react/promise": "To leverage async resolving on React PHP platform"
             },
-            "time": "2023-03-08T11:44:02+00:00",
+            "time": "2023-03-20T18:50:41+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -2911,7 +2920,7 @@
             ],
             "support": {
                 "issues": "https://github.com/webonyx/graphql-php/issues",
-                "source": "https://github.com/webonyx/graphql-php/tree/v15.2.3"
+                "source": "https://github.com/webonyx/graphql-php/tree/v15.2.4"
             },
             "funding": [
                 {
@@ -2923,17 +2932,17 @@
         },
         {
             "name": "zircote/swagger-php",
-            "version": "4.7.4",
-            "version_normalized": "4.7.4.0",
+            "version": "4.7.8",
+            "version_normalized": "4.7.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zircote/swagger-php.git",
-                "reference": "1661f99005655b77d0b9c4d93dba12ed9352e3be"
+                "reference": "4a1d1272c2dd3afd8d96e92f02dc3565d5cc3c18"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zircote/swagger-php/zipball/1661f99005655b77d0b9c4d93dba12ed9352e3be",
-                "reference": "1661f99005655b77d0b9c4d93dba12ed9352e3be",
+                "url": "https://api.github.com/repos/zircote/swagger-php/zipball/4a1d1272c2dd3afd8d96e92f02dc3565d5cc3c18",
+                "reference": "4a1d1272c2dd3afd8d96e92f02dc3565d5cc3c18",
                 "shasum": ""
             },
             "require": {
@@ -2952,7 +2961,7 @@
                 "phpunit/phpunit": ">=8",
                 "vimeo/psalm": "^4.23"
             },
-            "time": "2023-03-17T19:58:25+00:00",
+            "time": "2023-03-19T21:25:02+00:00",
             "bin": [
                 "bin/openapi"
             ],
@@ -2998,7 +3007,7 @@
             ],
             "support": {
                 "issues": "https://github.com/zircote/swagger-php/issues",
-                "source": "https://github.com/zircote/swagger-php/tree/4.7.4"
+                "source": "https://github.com/zircote/swagger-php/tree/4.7.8"
             },
             "install-path": "../zircote/swagger-php"
         }

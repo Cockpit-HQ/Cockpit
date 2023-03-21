@@ -30,6 +30,7 @@ return array(
     'MongoDB\\' => array($vendorDir . '/mongodb/mongodb/src'),
     'League\\MimeTypeDetection\\' => array($vendorDir . '/league/mime-type-detection/src'),
     'League\\Flysystem\\' => array($vendorDir . '/league/flysystem/src'),
+    'League\\ColorExtractor\\' => array($vendorDir . '/league/color-extractor/src'),
     'Jean85\\' => array($vendorDir . '/jean85/pretty-package-versions/src'),
     'GuzzleHttp\\Psr7\\' => array($vendorDir . '/guzzlehttp/psr7/src'),
     'GuzzleHttp\\Promise\\' => array($vendorDir . '/guzzlehttp/promises/src'),
@@ -41,5 +42,4 @@ return array(
     'DASPRiD\\Enum\\' => array($vendorDir . '/dasprid/enum/src'),
     'ColinODell\\Json5\\' => array($vendorDir . '/colinodell/json5/src'),
     'BaconQrCode\\' => array($vendorDir . '/bacon/bacon-qr-code/src'),
-    '' => array($vendorDir . '/league/color-extractor/src'),
 );

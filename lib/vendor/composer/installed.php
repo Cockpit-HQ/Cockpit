@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '1becf2f20b501ad466429c3cfb19b7131926a0d4',
+    'reference' => 'c9acd582c977e35309b901fc561639225bf4ca5f',
     'name' => 'cockpit-hq/cockpit',
   ),
   'versions' => 
@@ -22,12 +22,12 @@
     ),
     'claviska/simpleimage' => 
     array (
-      'pretty_version' => '3.7.2',
-      'version' => '3.7.2.0',
+      'pretty_version' => '4.0.2',
+      'version' => '4.0.2.0',
       'aliases' => 
       array (
       ),
-      'reference' => '82dbef988e356baa5d73993a1351bcb6c0959269',
+      'reference' => '226d507cca0c8400d69bee7eb324158e3cbe246e',
     ),
     'cockpit-hq/cockpit' => 
     array (
@@ -36,7 +36,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '1becf2f20b501ad466429c3cfb19b7131926a0d4',
+      'reference' => 'c9acd582c977e35309b901fc561639225bf4ca5f',
     ),
     'colinodell/json5' => 
     array (
@@ -121,12 +121,12 @@
     ),
     'league/color-extractor' => 
     array (
-      'pretty_version' => '0.3.2',
-      'version' => '0.3.2.0',
+      'pretty_version' => '0.4.0',
+      'version' => '0.4.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '837086ec60f50c84c611c613963e4ad2e2aec806',
+      'reference' => '21fcac6249c5ef7d00eb83e128743ee6678fe505',
     ),
     'league/flysystem' => 
     array (
@@ -399,21 +399,21 @@
     ),
     'webonyx/graphql-php' => 
     array (
-      'pretty_version' => 'v15.2.3',
-      'version' => '15.2.3.0',
+      'pretty_version' => 'v15.2.4',
+      'version' => '15.2.4.0',
       'aliases' => 
       array (
       ),
-      'reference' => '5ec0b8fbdcdb6b1be9345a43f927af0ecc9bd3b0',
+      'reference' => 'ac27a8692622ac13e72a6fe354027cc81ef31a6e',
     ),
     'zircote/swagger-php' => 
     array (
-      'pretty_version' => '4.7.4',
-      'version' => '4.7.4.0',
+      'pretty_version' => '4.7.8',
+      'version' => '4.7.8.0',
       'aliases' => 
       array (
       ),
-      'reference' => '1661f99005655b77d0b9c4d93dba12ed9352e3be',
+      'reference' => '4a1d1272c2dd3afd8d96e92f02dc3565d5cc3c18',
     ),
   ),
 );

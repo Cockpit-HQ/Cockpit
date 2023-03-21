@@ -24,7 +24,7 @@
         "php": "^8.0.0",
         "ext-json": "*",
         "phpmailer/phpmailer": "^6.4",
-        "claviska/simpleimage": "^3.6",
+        "claviska/simpleimage": "^4.0",
         "league/flysystem": "^3.0",
         "firebase/php-jwt": "^6.0",
         "mongodb/mongodb": "^1.10",

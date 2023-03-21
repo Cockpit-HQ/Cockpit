@@ -131,7 +131,7 @@ class Asset extends \Lime\Helper {
         }
 
         // check if image
-        if (!in_array($ext, ['png', 'jpg', 'jpeg', 'gif', 'webp'])) {
+        if (!in_array($ext, ['avif', 'png', 'jpg', 'jpeg', 'gif', 'webp'])) {
             return $srcUrl;
         }
 
@@ -154,7 +154,7 @@ class Asset extends \Lime\Helper {
             $mode = 'thumbnail';
         }
 
-        if ($mime && in_array($mime, ['gif', 'jpeg', 'png', 'webp', 'bmp'])) {
+        if ($mime && in_array($mime, ['avif', 'gif', 'jpeg', 'png', 'webp', 'bmp'])) {
             $ext = $mime;
             $mime = "image/{$ext}";
         } else {

@@ -3,6 +3,7 @@
 ## WIP
 
 - Fix initial item position on tree item creation
+- Add avif image page type support (depending on used GD lib)
 
 ## 2.4.1 (2023-03-20)
 
