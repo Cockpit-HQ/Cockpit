@@ -4,6 +4,7 @@ namespace Content\Controller;
 
 use App\Controller\App;
 use ArrayObject;
+use MongoHybrid\NaturalLanguageToMongoQuery;
 
 class Collection extends App {
 
@@ -117,7 +118,10 @@ class Collection extends App {
                 $_filter = null;
 
                 if (is_string($f)) {
-                    if (\preg_match('/^\{(.*)\}$/', $f)) {
+
+                    if ($f && $f[0] === ':') {
+                        $_filter = NaturalLanguageToMongoQuery::translate(substr($f, 1));
+                    } elseif (\preg_match('/^\{(.*)\}$/', $f)) {
 
                         try {
                             $_filter = json5_decode($f, true);
@@ -166,13 +170,20 @@ class Collection extends App {
             $options['filter']['_state'] = intval($state);
         }
 
-        $items = $this->app->module('content')->items($model['name'], $options, $process);
-        $count = $this->app->module('content')->count($model['name'], $options['filter'] ?? []);
-        $pages = isset($options['limit']) ? ceil($count / $options['limit']) : 1;
-        $page  = 1;
+        try {
+            $items = $this->app->module('content')->items($model['name'], $options, $process);
+            $count = $this->app->module('content')->count($model['name'], $options['filter'] ?? []);
+            $pages = isset($options['limit']) ? ceil($count / $options['limit']) : 1;
+            $page  = 1;
 
-        if ($pages > 1 && isset($options['skip'])) {
-            $page = ceil($options['skip'] / $options['limit']) + 1;
+            if ($pages > 1 && isset($options['skip'])) {
+                $page = ceil($options['skip'] / $options['limit']) + 1;
+            }
+        } catch (\Exception $e) {
+            $items = [];
+            $count = 0;
+            $pages = 1;
+            $page  = 1;
         }
 
         return compact('items', 'count', 'pages', 'page');
