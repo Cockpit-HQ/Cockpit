@@ -78,6 +78,10 @@ class Cockpit {
                 'server' => "redislite://{$envDir}/storage/data/app.memory.sqlite",
                 'options' => []
             ],
+            'search' => [
+                'server' => "indexlite://{$envDir}/storage/data",
+                'options' => []
+            ],
 
             'paths' => [
                 '#app'     => __DIR__,
@@ -198,6 +202,12 @@ class Cockpit {
             ],$config['memory']['options']));
 
             return $client;
+        });
+
+        // full-text search
+        $app->service('search', function() use($config) {
+            $manager = new IndexHybrid\Manager($config['search']['server'], $config['search']['options']);
+            return $manager;
         });
 
         // mailer service

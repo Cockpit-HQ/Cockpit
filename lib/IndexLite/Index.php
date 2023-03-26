@@ -2,75 +2,221 @@
 
 namespace IndexLite;
 
-use SQLite3;
+use PDO;
 
 class Index {
 
-    protected string $path;
-    protected SQLite3 $db;
+    private PDO $db;
+    private array $fields;
 
-    public function __construct(string $path, array $options = []) {
+    public function __construct(string $path) {
+        $this->db = new PDO("sqlite:{$path}");
+        $this->fields = $this->getFieldsFromExistingTable();
 
-        $this->path = $path;
-
-        if (!\file_exists($this->path)) {
-            throw new \Exception("Index <{$path}> does not exist.");
-        }
-
-        // speed up adding documents
-        $this->db = new SQLite3($this->path);
         $this->db->exec('PRAGMA journal_mode = MEMORY');
         $this->db->exec('PRAGMA synchronous = OFF');
         $this->db->exec('PRAGMA PAGE_SIZE = 4096');
     }
 
-    public function add($id, array $document, $safe = true) {
+    public static function create(string $path, array $fields, array $options = []) {
 
-        if ($safe) {
-            $this->remove($id);
-        }
+        $db = new PDO("sqlite:{$path}");
 
-        $document['id'] = $id;
-        $fields = array_keys($document);
-
-        $stmt = $this->db->prepare("INSERT INTO documents (".implode(',', array_map(fn($f) => $this->db->escapeString($f), $fields)).") VALUES(".implode(',', array_map(fn($f) => ":{$f}", $fields)).")");
+        $ftsFields = ['id UNINDEXED'];
 
         foreach ($fields as $field) {
-            $document[$field] = $this->stringify($document[$field]);
-            $stmt->bindParam(":{$field}", $document[$field]);
+
+            if ($field == 'id') {
+                continue;
+            }
+
+            $ftsFields[] = $field;
         }
 
-        $stmt->execute();
+        $ftsFieldsString = implode(', ', $ftsFields);
+
+        $db->exec("CREATE VIRTUAL TABLE IF NOT EXISTS documents USING fts5({$ftsFieldsString})");
     }
 
-    public function remove($id) {
-        $stmt = $this->db->prepare("DELETE FROM documents WHERE id = :id");
-        $stmt->bindParam(':id', $id);
-        $stmt->execute();
-    }
-
-    public function search(string $query, ?array $fields = null): array {
-
-        if (!trim($query)) {
+    private function getFieldsFromExistingTable(): array {
+        $result = $this->db->query("PRAGMA table_info(documents)");
+        if ($result === false) {
             return [];
         }
 
-        $fields = $fields ?? ['*'];
-
-        $stmt = $this->db->prepare("SELECT ".implode(',', array_map(fn($f) => $this->db->escapeString($f), $fields))." FROM documents WHERE documents MATCH :query ORDER BY rank");
-        $stmt->bindParam(':query', $query);
-
-        $result = $stmt->execute();
-        $hits = [];
-
-        while ($hit = $result->fetchArray(\SQLITE3_ASSOC)){
-            $hits[] = $hit;
+        $fields = [];
+        while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+            $fields[] = $row['name'];
         }
 
-        return $hits;
+        return $fields;
     }
 
-    protected function stringify($value) {
+    public function addDocument(mixed $id, array $data, bool $safe = true) {
+
+        if ($safe) {
+            $this->removeDocument($id);
+        }
+
+        $data['id'] = $id;
+
+        $this->addDocuments([$data]);
+    }
+
+    public function addDocuments(array $documents) {
+
+        $this->db->beginTransaction();
+        $insertStmt = $this->db->prepare($this->buildInsertQuery());
+
+        foreach ($documents as $document) {
+
+            if (!isset($document['id'])) {
+                throw new \Exception('Document must have an id');
+            }
+
+            $data = [];
+
+            foreach ($this->fields as $field) {
+
+                if (!isset($document[$field])) {
+                    $document[$field] = null;
+                }
+
+                $value = $document[$field];
+
+                if (is_array($value) || is_object($value)) {
+                    $value = $this->stringify((array)$value);
+                }
+
+                $data[":{$field}"] = $value;
+            }
+
+            $insertStmt->execute($data);
+        }
+
+        $this->db->commit();
+    }
+
+    public function removeDocument(mixed $id) {
+        $sql = "DELETE FROM documents WHERE id = :id LIMIT 1";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':id', $id);
+        $stmt->execute();
+    }
+
+    public function updateDocument(mixed $id, array $data) {
+
+        $updateFields = [];
+
+        foreach ($this->fields as $field) {
+            if ($field === 'id' || !isset($data[$field])) continue;
+            $updateFields[] = "{$field} = :{$field}";
+        }
+
+        $updateFieldsStr = implode(', ', $updateFields);
+        $sql = "UPDATE documents SET {$updateFieldsStr} WHERE id = :id LIMIT 1";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':id', $id);
+
+        foreach ($this->fields as $field) {
+
+            if ($field === 'id' || !isset($data[$field])) continue;
+
+            $value = $data[$field];
+
+            if (is_array($value) || is_object($value)) {
+                $value = $this->stringify($value);
+            }
+            $stmt->bindValue(":{$field}", $value);
+        }
+
+        $stmt->execute();
+    }
+
+    public function search(string $query, array $options = []) {
+
+        $options = array_merge([
+            'fields' => '*',
+            'limit' => 50,
+            'offset' => 0,
+            'filter' => '',
+        ], $options);
+
+
+        $fields = is_array($options['fields']) ? implode(', ', $options['fields']) : $options['fields'];
+        $where = $this->buildMatchQuery($query);
+
+        if ($options['filter']) {
+            $where = "({$where}) AND {$options['filter']}";
+        }
+
+        $sql = "SELECT {$fields} FROM documents WHERE {$where} ORDER BY rank LIMIT :limit OFFSET :offset";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':limit', intval($options['limit']), PDO::PARAM_INT);
+        $stmt->bindValue(':offset', intval($options['offset']), PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function facetSearch($query, $facetField, $limit = 10, $offset = 0, $filter = '')
+    {
+        $where = $this->buildMatchQuery($query);
+
+        if ($filter) {
+            $where = "({$where}) AND {$filter}";
+        }
+
+        $sql = "SELECT {$facetField}, COUNT(*) as count FROM documents WHERE {$where} GROUP BY {$facetField} ORDER BY count DESC";
+        return $this->executeSearchQuery($sql, $limit, $offset);
+    }
+
+    private function buildMatchQuery(string $query, int $fuzzyDistance = null): string {
+        if (preg_match_all('/(\w+):/', $query, $matches)) {
+            $fieldsInQuery = array_intersect($matches[1], $this->fields);
+        } else {
+            $fieldsInQuery = $this->fields;
+        }
+
+        $searchQueries = [];
+
+        foreach ($fieldsInQuery as $field) {
+            $searchQuery = "{$field} MATCH '{$query}'";
+            if ($fuzzyDistance !== null) {
+                $searchQuery = "{$field} MATCH '\"{$query}\" NEAR/{$fuzzyDistance}'";
+            }
+            $searchQueries[] = $searchQuery;
+        }
+
+        return implode(' OR ', $searchQueries);
+    }
+
+    private function buildInsertQuery() {
+
+        $fields = $this->fields;
+
+        $placeholders = array_map(function ($field) {
+            return ":{$field}";
+        }, $fields);
+
+        $fieldsString = implode(', ', $fields);
+        $placeholdersString = implode(', ', $placeholders);
+
+        return "INSERT INTO documents ({$fieldsString}) VALUES ({$placeholdersString})";
+    }
+
+    private function executeSearchQuery(string $sql, int $limit, int $offset) {
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    protected function stringify(mixed $value): string {
 
         if (\is_string($value)) {
             return $value;

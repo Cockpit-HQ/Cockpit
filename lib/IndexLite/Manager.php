@@ -2,42 +2,48 @@
 
 namespace IndexLite;
 
-use SQLite3;
-
 class Manager {
 
     protected string $path;
+    protected array $indexes = [];
 
     public function __construct(string $path, array $options = []) {
         $this->path = rtrim($path, '/');
     }
 
     public function index(string $name): Index {
+
+        if (isset($this->indexes[$name])) {
+            return $this->indexes[$name];
+        }
+
+        if (!$this->exists($name)) {
+            throw new \Exception("Index <{$name}> does not exist.");
+        }
+
         $index = new Index("{$this->path}/$name.idx");
+
+        $this->indexes[$name] = $index;
+
         return $index;
     }
 
-    public function createIndex(string $name, array $options) {
+    public function createIndex(string $name, array $fields = [], array $options = []) {
 
         if ($this->exists($name)) {
             throw new \Exception("Index <{$name}> already exists.");
         }
 
         $options = array_merge([
-            'fields' => [],
+            'fields' => $fields,
             'tokenizer' => 'porter'
         ], $options);
 
-        $fields = [];
+        foreach ($options['fields'] as $field) {
+            $fields[] = "{$field} UNINDEXED";
+        }
 
-        $db = new SQLite3("{$this->path}/$name.idx");
-
-        $init = "
-            CREATE VIRTUAL TABLE documents
-                USING fts5(id,".implode(',', $options['fields']).", tokenize=\"{$options['tokenizer']}\");
-        ";
-
-        $db->exec($init);
+        Index::create("{$this->path}/$name.idx", $options['fields'], $options);
 
         return $this->index($name);
     }
