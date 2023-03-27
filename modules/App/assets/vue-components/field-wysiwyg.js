@@ -21,6 +21,10 @@ export default {
                 return value.length ? `${value.length}x...` : '';
             }
 
+            if (typeof(value) !== 'string') {
+                return 'n/a';
+            }
+
             return value ? App.utils.truncate(App.utils.stripTags(value), context == 'table-cell' ? 20 : 50) : '';
         }
     },

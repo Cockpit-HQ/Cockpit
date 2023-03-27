@@ -22,8 +22,6 @@ $this->bind('/app-event-stream', function() {
     $now = time();
     $lastCheck = $this->helper('session')->read('app.eventstream.lastcheck', $now);
 
-    $this->helper('session')->close();
-
     $user = $this->helper('auth')->getUser();
 
     if (!$user) {
@@ -31,6 +29,9 @@ $this->bind('/app-event-stream', function() {
     }
 
     $sessionId = md5(session_id());
+
+    $this->helper('session')->write('app.eventstream.lastcheck', $now);
+    $this->helper('session')->close();
 
     // auto-cleanup unrelevant events
     $this->helper('eventStream')->cleanup();
@@ -65,8 +66,6 @@ $this->bind('/app-event-stream', function() {
 
         return true;
     });
-
-    $this->helper('session')->write('app.eventstream.lastcheck', $now);
 
     return $events;
 });
