@@ -21,6 +21,7 @@ class Index {
     public static function create(string $path, array $fields, array $options = []) {
 
         $db = new PDO("sqlite:{$path}");
+        $tokenizer = $options['tokenizer'] ?? 'unicode61';
 
         $ftsFields = ['id UNINDEXED'];
 
@@ -35,7 +36,7 @@ class Index {
 
         $ftsFieldsString = implode(', ', $ftsFields);
 
-        $db->exec("CREATE VIRTUAL TABLE IF NOT EXISTS documents USING fts5({$ftsFieldsString})");
+        $db->exec("CREATE VIRTUAL TABLE IF NOT EXISTS documents USING fts5({$ftsFieldsString}, tokenize='{$tokenizer}')");
     }
 
     private function getFieldsFromExistingTable(): array {
@@ -160,16 +161,33 @@ class Index {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function facetSearch($query, $facetField, $limit = 10, $offset = 0, $filter = '')
-    {
+    public function facetSearch($query, $facetField, $options = []) {
+
+        $options = array_merge([
+            'limit' => 50,
+            'offset' => 0,
+            'filter' => '',
+        ], $options);
+
         $where = $this->buildMatchQuery($query);
 
-        if ($filter) {
-            $where = "({$where}) AND {$filter}";
+        if ($options['filter']) {
+            $where = "({$where}) AND {$options['filter']}";
         }
 
         $sql = "SELECT {$facetField}, COUNT(*) as count FROM documents WHERE {$where} GROUP BY {$facetField} ORDER BY count DESC";
-        return $this->executeSearchQuery($sql, $limit, $offset);
+
+        if ($options['limit']) {
+
+            $limit  = intval($options['limit']);
+            $offset = intval($options['offset']);
+            $sql   .= " LIMIT {$limit} OFFSET {$offset}";
+        }
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     private function buildMatchQuery(string $query, int $fuzzyDistance = null): string {
@@ -182,6 +200,11 @@ class Index {
         $searchQueries = [];
 
         foreach ($fieldsInQuery as $field) {
+
+            if ($field === 'id') {
+                continue;
+            }
+
             $searchQuery = "{$field} MATCH '{$query}'";
             if ($fuzzyDistance !== null) {
                 $searchQuery = "{$field} MATCH '\"{$query}\" NEAR/{$fuzzyDistance}'";
@@ -204,16 +227,6 @@ class Index {
         $placeholdersString = implode(', ', $placeholders);
 
         return "INSERT INTO documents ({$fieldsString}) VALUES ({$placeholdersString})";
-    }
-
-    private function executeSearchQuery(string $sql, int $limit, int $offset) {
-
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
-        $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
-        $stmt->execute();
-
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     protected function stringify(mixed $value): string {

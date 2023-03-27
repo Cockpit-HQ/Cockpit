@@ -36,7 +36,7 @@ class Manager {
 
         $options = array_merge([
             'fields' => $fields,
-            'tokenizer' => 'porter'
+            'tokenizer' => 'porter unicode61 remove_diacritics 1'
         ], $options);
 
         foreach ($options['fields'] as $field) {
