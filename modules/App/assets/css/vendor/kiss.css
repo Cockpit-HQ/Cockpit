@@ -51,7 +51,7 @@
     --kiss-popoutmenu-content-background: var(--kiss-color-contrast);
 
     --kiss-navlist-font-size: 14px;
-    --kiss-navlist-padding-vertical: 8px;
+    --kiss-navlist-padding-vertical: 10px;
 
     --kiss-card-shadowed-color: rgba(0, 0, 0, 0.85);
     --kiss-card-bordered-color: rgb(106, 85, 85, .15);

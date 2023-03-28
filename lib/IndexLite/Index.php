@@ -23,11 +23,11 @@ class Index {
         $db = new PDO("sqlite:{$path}");
         $tokenizer = $options['tokenizer'] ?? 'unicode61';
 
-        $ftsFields = ['id UNINDEXED'];
+        $ftsFields = ['id UNINDEXED', '__payload UNINDEXED'];
 
         foreach ($fields as $field) {
 
-            if ($field == 'id') {
+            if (in_array($field, ['id', '__payload'])) {
                 continue;
             }
 
@@ -92,6 +92,8 @@ class Index {
                 $data[":{$field}"] = $value;
             }
 
+            $data[":__payload"] = json_encode($document);
+
             $insertStmt->execute($data);
         }
 
@@ -134,6 +136,28 @@ class Index {
         $stmt->execute();
     }
 
+    public function countDocuments(string $query = '', string $filter = '') {
+
+        if ($query) {
+
+            $where = $this->buildMatchQuery($query);
+
+            if ($filter) {
+                $where = "({$where}) AND {$filter}";
+            }
+
+            $sql = "SELECT COUNT(*) FROM documents WHERE {$where}";
+
+        } else {
+            $sql = "SELECT COUNT(*) FROM documents";
+        }
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+
+        return $stmt->fetchColumn();
+    }
+
     public function search(string $query, array $options = []) {
 
         $options = array_merge([
@@ -141,24 +165,62 @@ class Index {
             'limit' => 50,
             'offset' => 0,
             'filter' => '',
+            'payload' => false
         ], $options);
 
-
+        $keepPayload = $options['payload'];
         $fields = is_array($options['fields']) ? implode(', ', $options['fields']) : $options['fields'];
-        $where = $this->buildMatchQuery($query);
 
-        if ($options['filter']) {
-            $where = "({$where}) AND {$options['filter']}";
+        if ($fields !== '*') {
+            $fields .= ', __payload';
         }
 
-        $sql = "SELECT {$fields} FROM documents WHERE {$where} ORDER BY rank LIMIT :limit OFFSET :offset";
+        if ($query) {
+
+            $where = $this->buildMatchQuery($query);
+
+            if ($options['filter']) {
+                $where = "({$where}) AND {$options['filter']}";
+            }
+
+            $sql = "SELECT {$fields} FROM documents WHERE {$where} ORDER BY rank LIMIT :limit OFFSET :offset";
+
+        } else {
+            $sql = "SELECT {$fields} FROM documents LIMIT :limit OFFSET :offset";
+        }
 
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':limit', intval($options['limit']), PDO::PARAM_INT);
         $stmt->bindValue(':offset', intval($options['offset']), PDO::PARAM_INT);
         $stmt->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $keys = array_filter(array_keys($items[0] ?? []), fn($key) => !in_array($key, ['id', '__payload']));
+
+        foreach ($items as &$item) {
+
+            $payload = json_decode($item['__payload'], true);
+
+            unset($item['__payload']);
+
+            if ($keepPayload) {
+
+                foreach ($payload as $key => $value) {
+                    $item[$key] = $value;
+                }
+
+            } else {
+
+                foreach ($keys as $key) {
+
+                    if (isset($payload[$key])) {
+                        $item[$key] = $payload[$key];
+                    }
+                }
+            }
+        }
+
+        return $items;
     }
 
     public function facetSearch($query, $facetField, $options = []) {
@@ -191,24 +253,44 @@ class Index {
     }
 
     private function buildMatchQuery(string $query, int $fuzzyDistance = null): string {
-        if (preg_match_all('/(\w+):/', $query, $matches)) {
-            $fieldsInQuery = array_intersect($matches[1], $this->fields);
+
+        $fields = [];
+        $_fields = $this->fields;
+
+        if (preg_match('/(\w+):/', $query)) {
+
+            preg_match_all('/(\w+):\s*([\'"][^\'"]+[\'"]|\S+)/', $query, $matches, PREG_SET_ORDER);
+
+            foreach ($matches as $match) {
+
+                if (!in_array($match[1], $_fields)) continue;
+
+                $field = $match[1];
+                $value = trim($match[2], '\'"');
+                $fields[$field] = $value;
+            }
+
         } else {
-            $fieldsInQuery = $this->fields;
+
+            foreach ($_fields as $field) {
+                $fields[$field] = $query;
+            }
         }
 
         $searchQueries = [];
 
-        foreach ($fieldsInQuery as $field) {
+        foreach ($fields as $field => $q) {
 
-            if ($field === 'id') {
+            if ($field === 'id' || $field === '__payload') {
                 continue;
             }
 
-            $searchQuery = "{$field} MATCH '{$query}'";
+            $searchQuery = "{$field} MATCH '{$q}'";
+
             if ($fuzzyDistance !== null) {
-                $searchQuery = "{$field} MATCH '\"{$query}\" NEAR/{$fuzzyDistance}'";
+                $searchQuery = "{$field} MATCH '\"{$q}\" NEAR/{$fuzzyDistance}'";
             }
+
             $searchQueries[] = $searchQuery;
         }
 
