@@ -72,7 +72,7 @@ class Index {
         foreach ($documents as $document) {
 
             if (!isset($document['id'])) {
-                throw new \Exception('Document must have an id');
+                $document['id'] = uuidv4();
             }
 
             $data = [];
@@ -341,4 +341,20 @@ class Index {
 
         return '';
     }
+}
+
+function uuidv4() {
+
+    if (function_exists('random_bytes')) {
+        $uuid = bin2hex(random_bytes(16));
+    } elseif (function_exists('openssl_random_pseudo_bytes')) {
+        $uuid = bin2hex(openssl_random_pseudo_bytes(16));
+    } else {
+        $uuid = md5(uniqid('', true));
+    }
+
+    $uuid[12] = '4';
+    $uuid[16] = dechex(hexdec($uuid[16]) & 3 | 8);
+
+    return substr($uuid, 0, 8) . '-' . substr($uuid, 8, 4) . '-' . substr($uuid, 12, 4) . '-' . substr($uuid, 16, 4) . '-' . substr($uuid, 20);
 }
