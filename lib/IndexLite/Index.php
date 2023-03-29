@@ -21,7 +21,7 @@ class Index {
     public static function create(string $path, array $fields, array $options = []) {
 
         $db = new PDO("sqlite:{$path}");
-        $tokenizer = $options['tokenizer'] ?? 'unicode61';
+        $tokenizer = $options['tokenizer'] ?? 'porter unicode61 remove_diacritics 1';
 
         $ftsFields = ['id UNINDEXED', '__payload UNINDEXED'];
 
@@ -62,6 +62,10 @@ class Index {
         $data['id'] = $id;
 
         $this->addDocuments([$data]);
+    }
+
+    public function replaceDocument(mixed $id, array $data) {
+        return $this->addDocument($id, $data, true);
     }
 
     public function addDocuments(array $documents) {
@@ -107,35 +111,6 @@ class Index {
         $stmt->execute();
     }
 
-    public function updateDocument(mixed $id, array $data) {
-
-        $updateFields = [];
-
-        foreach ($this->fields as $field) {
-            if ($field === 'id' || !isset($data[$field])) continue;
-            $updateFields[] = "{$field} = :{$field}";
-        }
-
-        $updateFieldsStr = implode(', ', $updateFields);
-        $sql = "UPDATE documents SET {$updateFieldsStr} WHERE id = :id LIMIT 1";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindValue(':id', $id);
-
-        foreach ($this->fields as $field) {
-
-            if ($field === 'id' || !isset($data[$field])) continue;
-
-            $value = $data[$field];
-
-            if (is_array($value) || is_object($value)) {
-                $value = $this->stringify($value);
-            }
-            $stmt->bindValue(":{$field}", $value);
-        }
-
-        $stmt->execute();
-    }
-
     public function countDocuments(string $query = '', string $filter = '') {
 
         if ($query) {
@@ -156,6 +131,10 @@ class Index {
         $stmt->execute();
 
         return $stmt->fetchColumn();
+    }
+
+    public function clear() {
+        $this->db->exec('DELETE FROM documents');
     }
 
     public function search(string $query, array $options = []) {
@@ -340,6 +319,43 @@ class Index {
         }
 
         return '';
+    }
+
+    public function updateIndexedFields($fields, ?string $tokenizer = null) {
+
+        $fields = array_filter($fields, fn($field) => $field !== 'id' && $field !== '__payload');
+        $currentFields = array_filter($this->fields, fn($field) => $field !== 'id' && $field !== '__payload');
+
+        if (!count(array_diff($fields, $currentFields))) {
+            return;
+        }
+
+        // Rename the current table
+        $this->db->exec('ALTER TABLE documents RENAME TO documents_old');
+
+        $fields = array_merge(['id', '__payload'], $fields);
+        $currentFields = array_merge(['id', '__payload'], $currentFields);
+        $columns = implode(', ', array_intersect($currentFields, $fields));
+
+        // Create a new table with updated fields
+        $tokenizer = $tokenizer ?? 'porter unicode61 remove_diacritics 1';
+        $ftsFields = ['id UNINDEXED', '__payload UNINDEXED'];
+
+        foreach ($fields as $field) {
+            if (in_array($field, ['id', '__payload'])) continue;
+            $ftsFields[] = $field;
+        }
+
+        $ftsFieldsString = implode(', ', $ftsFields);
+
+        $this->db->exec("CREATE VIRTUAL TABLE IF NOT EXISTS documents USING fts5({$ftsFieldsString}, tokenize='{$tokenizer}')");
+
+        // Copy data from the old table to the new table
+        $this->db->exec("INSERT INTO documents ({$columns}) SELECT {$columns} FROM documents_old");
+        // Drop the old table
+        $this->db->exec('DROP TABLE documents_old');
+        // Update the fields property
+        $this->fields = $fields;
     }
 }
 

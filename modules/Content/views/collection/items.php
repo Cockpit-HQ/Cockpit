@@ -515,6 +515,8 @@
                             }).then(res => {
                                 this.load(this.page == 1 ? 1 : (this.items.length - 1 ? this.page : this.page - 1));
                                 App.ui.notify('Item removed!');
+                            }).catch((res) => {
+                                App.ui.notify(res.error || 'Removing failed!', 'error');
                             });
                         });
                     },
