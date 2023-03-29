@@ -310,7 +310,7 @@ class Index {
 
             array_walk_recursive($value, function($val) use(&$str) {
 
-                if (is_string($val) && strlen($val) > 15) {
+                if (is_string($val) && strlen($val) >= 5) {
                     $str[] = $val;
                 }
             });
