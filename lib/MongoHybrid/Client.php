@@ -105,8 +105,8 @@ class Client {
      * @param  string $collection @param  string $collection
      * @param  string $key
      */
-    public function keyExists(string $collection, string $key): mixed {
-        return $this->driver->count($collection, ['key' => $key]);;
+    public function keyExists(string $collection, string $key): bool {
+        return $this->driver->count($collection, ['key' => $key]) > 0;
     }
 
     /**
