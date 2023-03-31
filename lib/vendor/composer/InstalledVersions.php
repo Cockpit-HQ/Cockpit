@@ -29,7 +29,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => 'c9acd582c977e35309b901fc561639225bf4ca5f',
+    'reference' => '5f4cf766b0214898d7246380f99f092474783865',
     'name' => 'cockpit-hq/cockpit',
   ),
   'versions' => 
@@ -59,7 +59,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => 'c9acd582c977e35309b901fc561639225bf4ca5f',
+      'reference' => '5f4cf766b0214898d7246380f99f092474783865',
     ),
     'colinodell/json5' => 
     array (
@@ -305,12 +305,12 @@ private static $installed = array (
     ),
     'symfony/console' => 
     array (
-      'pretty_version' => 'v5.4.21',
-      'version' => '5.4.21.0',
+      'pretty_version' => 'v5.4.22',
+      'version' => '5.4.22.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'c77433ddc6cdc689caf48065d9ea22ca0853fbd9',
+      'reference' => '3cd51fd2e6c461ca678f84d419461281bd87a0a8',
     ),
     'symfony/deprecation-contracts' => 
     array (
@@ -404,12 +404,12 @@ private static $installed = array (
     ),
     'symfony/string' => 
     array (
-      'pretty_version' => 'v6.2.7',
-      'version' => '6.2.7.0',
+      'pretty_version' => 'v6.2.8',
+      'version' => '6.2.8.0',
       'aliases' => 
       array (
       ),
-      'reference' => '67b8c1eec78296b85dc1c7d9743830160218993d',
+      'reference' => '193e83bbd6617d6b2151c37fff10fa7168ebddef',
     ),
     'symfony/yaml' => 
     array (

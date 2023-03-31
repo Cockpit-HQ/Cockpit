@@ -33,7 +33,7 @@ function ensureWritableStorageFolder($path) {
 
 // misc checks
 $checks = array(
-    'Php version >= 8.0.0'                              => (version_compare(PHP_VERSION, '8.0.0') >= 0),
+    'Php version >= 8.1.0'                              => (version_compare(PHP_VERSION, '8.1.0') >= 0),
     'Missing PDO extension with Sqlite support'         => hasSQLiteSupport(),
     'Curl extension not available'                      => extension_loaded('curl'),
     'Fileinfo extension not available'                  => extension_loaded('fileinfo'),
@@ -87,24 +87,28 @@ if (!count($failed)) {
             exit;
         }
 
-    } catch(Throwable $e) { }
+        $created = time();
 
-    $created = time();
+        $user = [
+            'active' => true,
+            'user' => 'admin',
+            'name' => 'Admin',
+            'email' => 'admin@admin.com',
+            'password' => $app->hash('admin'),
+            'i18n' => 'en',
+            'role' => 'admin',
+            'theme' => 'auto',
+            '_modified' => $created,
+            '_created' => $created
+        ];
 
-    $user = [
-        'active' => true,
-        'user' => 'admin',
-        'name' => 'Admin',
-        'email' => 'admin@admin.com',
-        'password' => $app->hash('admin'),
-        'i18n' => 'en',
-        'role' => 'admin',
-        'theme' => 'auto',
-        '_modified' => $created,
-        '_created' => $created
-    ];
+        $app->dataStorage->save('system/users', $user);
 
-    $app->dataStorage->save('system/users', $user);
+    } catch(Throwable $e) {
+
+        $failed[] = $e->getMessage();
+
+    }
 
 }
 
@@ -160,9 +164,9 @@ if (!count($failed)) {
 
                         <div class="kiss-text-caption kiss-text-bold kiss-color-muted kiss-margin-small">Reasons:</div>
 
-                        <?php foreach ($failed as &$info): ?>
+                        <?php foreach ($failed as $info): ?>
                         <div class="kiss-text-monospace kiss-margin-small kiss-flex">
-                            <span>🔥</span><div class="kiss-flex-1 kiss-size-small kiss-margin-small-left"><?php echo @$info;?></div>
+                            <span>🔥</span><div class="kiss-flex-1 kiss-size-small kiss-margin-small-left"><?=$info?></div>
                         </div>
                         <?php endforeach; ?>
 
