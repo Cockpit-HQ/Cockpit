@@ -1018,7 +1018,19 @@ class App implements \ArrayAccess {
         $context = compact('action', 'params');
         $controller = new $class($this, $context);
 
-        return \method_exists($controller, $action) && \is_callable([$controller, $action])
+        if (!\method_exists($controller, $action)) {
+
+            if (\method_exists($controller, '__catchall')) {
+
+                array_unshift($params, $action);
+                $action = '__catchall';
+
+            } else {
+                return false;
+            }
+        }
+
+        return \is_callable([$controller, $action])
                 ? \call_user_func_array([$controller,$action], $params)
                 : false;
     }
