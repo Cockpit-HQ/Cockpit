@@ -93,6 +93,15 @@ class Index {
                     $value = $this->stringify((array)$value);
                 }
 
+                if (!is_string($value)) {
+                    $value = (string)$value;
+                }
+
+                // does value contain html?
+                if (preg_match('/<[^>]+>/', $value)) {
+                    $value = strip_tags(preg_replace('/\<br(\s*)?\/?\>/i', "\n", $value));
+                }
+
                 $data[":{$field}"] = $value;
             }
 
@@ -290,35 +299,28 @@ class Index {
         return "INSERT INTO documents ({$fieldsString}) VALUES ({$placeholdersString})";
     }
 
-    protected function stringify(mixed $value): string {
+    protected function stringify(mixed $input): string {
 
-        if (\is_string($value)) {
-            return $value;
+        $str = [];
+
+        if (is_string($input)) {
+            return $input;
         }
 
-        if (!$value) {
+        if (!(is_array($input) || !is_object($input))) {
             return '';
         }
 
-        if (\is_numeric($value)) {
-            return $value.'';
+        foreach ($input as $value) {
+
+            if (is_string($value)) {
+                $str[] = $value;
+            } elseif (is_array($value) || is_object($value)) {
+                $str[] = $this->stringify($value);
+            }
         }
 
-        if (\is_array($value)) {
-
-            $str = [];
-
-            array_walk_recursive($value, function($val) use(&$str) {
-
-                if (is_string($val) && strlen($val) >= 5) {
-                    $str[] = $val;
-                }
-            });
-
-            return implode(' ', $str);
-        }
-
-        return '';
+        return implode(' ', $str);
     }
 
     public function updateIndexedFields($fields, ?string $tokenizer = null) {
