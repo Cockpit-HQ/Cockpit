@@ -434,7 +434,8 @@
 
           setTimeout(() => {
 
-              const focusElement = this.querySelector('[autofocus]') || this.querySelector('a[href],button');
+              const focusElement = this.querySelector('[autofocus]') ||
+                                   this.querySelector('a[href]:not(target="_blank"),button');
 
               if (focusElement) {
                   focusElement.focus();

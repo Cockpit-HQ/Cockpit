@@ -94,7 +94,7 @@ class Index {
                 }
 
                 if (!is_string($value)) {
-                    $value = (string)$value;
+                    $value = is_null($value) ? null : (string)$value;
                 }
 
                 // does value contain html?
@@ -147,6 +147,8 @@ class Index {
     }
 
     public function search(string $query, array $options = []) {
+
+        $start = microtime(true);
 
         $options = array_merge([
             'fields' => '*',
@@ -208,7 +210,24 @@ class Index {
             }
         }
 
-        return $items;
+        $count = count($items);
+
+        if ($options['offset'] || $count === $options['limit']) {
+            $count = $this->countDocuments($query);
+        }
+
+        $processingTimeMs = (microtime(true) - $start) * 1000;
+
+        $result = [
+            'hits' => $items,
+            'query' => $query,
+            'processingTimeMs' => $processingTimeMs,
+            'limit' => $options['limit'],
+            'offset' => $options['offset'],
+            'estimatedTotalHits' => $count,
+        ];
+
+        return $result;
     }
 
     public function facetSearch($query, $facetField, $options = []) {

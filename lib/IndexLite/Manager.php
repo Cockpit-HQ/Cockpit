@@ -40,7 +40,7 @@ class Manager {
         ], $options);
 
         foreach ($options['fields'] as $field) {
-            $fields[] = "{$field} UNINDEXED";
+            //$fields[] = "{$field} UNINDEXED";
         }
 
         Index::create("{$this->path}/$name.idx", $options['fields'], $options);
@@ -55,6 +55,7 @@ class Manager {
         }
 
         \unlink("{$this->path}/$name.idx");
+        unset($this->indexes[$name]);
     }
 
     public function exists(string $name): bool {
