@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '5f4cf766b0214898d7246380f99f092474783865',
+    'reference' => '514f17562d028931b6703a919f6acada6e4778f4',
     'name' => 'cockpit-hq/cockpit',
   ),
   'versions' => 
@@ -36,7 +36,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '5f4cf766b0214898d7246380f99f092474783865',
+      'reference' => '514f17562d028931b6703a919f6acada6e4778f4',
     ),
     'colinodell/json5' => 
     array (
@@ -118,6 +118,15 @@
       array (
       ),
       'reference' => 'ae547e455a3d8babd07b96966b17d7fd21d9c6af',
+    ),
+    'ksubileau/color-thief-php' => 
+    array (
+      'pretty_version' => 'v2.0.1',
+      'version' => '2.0.1.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'a1378533433dae824c2e5b70359f8b6ae16b1deb',
     ),
     'league/color-extractor' => 
     array (
