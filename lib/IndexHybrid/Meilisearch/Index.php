@@ -18,7 +18,18 @@ class Index {
         return $this->manager->sendRequest("/indexes/{$this->name}/documents", 'DELETE');
     }
 
-    public function addDocuments($documents) {
+    public function addDocument(mixed $id, array $data, bool $safe = true) {
+
+        if ($safe) {
+            $this->removeDocument($id);
+        }
+
+        $data['id'] = $id;
+
+        $this->addDocuments([$data]);
+    }
+
+    public function addDocuments(array $documents) {
 
         foreach ($documents as &$document) {
 
@@ -30,19 +41,40 @@ class Index {
         return $this->manager->sendRequest("/indexes/{$this->name}/documents", 'POST', $documents);
     }
 
-    public function replaceDocument($id, $document) {
+    public function replaceDocument(mixed $id, array $document) {
         $document['id'] = $id;
         return $this->manager->sendRequest("/indexes/{$this->name}/documents", 'POST', $document);
     }
 
-    public function removeDocument($id) {
+    public function removeDocument(mixed $id) {
         return $this->manager->sendRequest("/indexes/{$this->name}/documents/{$id}", 'DELETE');
     }
 
-    public function search($query, $params = []) {
-        $params['q'] = $query;
-        $queryString = http_build_query($params);
-        return $this->manager->sendRequest("/indexes/{$this->name}/search?{$queryString}", 'GET');
+    public function search(string $query, array $options = []) {
+
+        $options = array_merge([
+            'fields' => null,
+            'limit' => 50,
+            'offset' => 0,
+            'filter' => null,
+        ], $options);
+
+        $params = [
+            'q' => $query,
+            'limit' => $options['limit'],
+            'offset' => $options['offset'],
+        ];
+
+        if ($options['fields']) {
+            $params['attributesToRetrieve'] = is_string($options['fields']) ? explode(',' , $options['fields']) : $options['fields'];
+        }
+
+        if (!$options['filter']) {
+            $queryString = http_build_query($params);
+            return $this->manager->sendRequest("/indexes/{$this->name}/search?{$queryString}", 'GET');
+        }
+
+        return $this->manager->sendRequest("/indexes/{$this->name}/search", 'POST', $params);
     }
 
     public function countDocuments(string $query = '') {
@@ -52,7 +84,6 @@ class Index {
         }
 
         return $this->search($query, ['limit' => 1])['estimatedTotalHits'] ?? 0;
-
     }
 }
 
