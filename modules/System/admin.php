@@ -55,15 +55,31 @@ $this->on('app.permissions.collect', function (ArrayObject $permissions) {
 
 $this->on('app.user.login', function($user) {
 
-    if (!$this->retrieve('log/login', true)) return;
+    $config = $this->retrieve('log/login', true);
 
-    $this->module('system')->log("User Login: {$user['user']}", type: 'info', context: [
+    if ($config === false) {
+        return;
+    }
+
+    $log = [
         '_id' => $user['_id'],
         'user' => $user['user'],
         'name' => $user['name'],
         'email' => $user['email'],
         'ip' => $this->getClientIp()
-    ]);
+    ];
+
+    if (is_array($config)) {
+
+        foreach (array_keys($log) as $prop) {
+
+            if (!in_array($prop, ['_id', 'user']) && !in_array($prop, $config)) {
+                unset($log[$prop]);
+            }
+        }
+    }
+
+    $this->module('system')->log("User Login: {$user['user']}", type: 'info', context: $log);
 });
 
 
