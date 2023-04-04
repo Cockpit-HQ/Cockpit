@@ -65,7 +65,7 @@ export default {
 
                     <div class="kiss-bgcolor-contrast kiss-padding-small kiss-flex kiss-flex-middle">
                         <span class="kiss-text-bold kiss-size-small kiss-flex-1">
-                            <icon class="kiss-margin-xsmall-right" :style="{color: (model.color || 'inherit')+' !important' }" size="larger">layers</icon> {{model.label || name}}
+                            <icon class="kiss-margin-xsmall-right kiss-size-5" :style="{color: (model.color || 'inherit')+' !important' }" size="larger">subject</icon> {{model.label || name}}
                         </span>
                         <span class="kiss-text-caption kiss-color-muted kiss-margin-small-left">{{model.type}}</span>
                     </div>
