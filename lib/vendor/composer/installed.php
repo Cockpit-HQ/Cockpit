@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '514f17562d028931b6703a919f6acada6e4778f4',
+    'reference' => '5e45b807122be436732c1db080c3fcb96e29c452',
     'name' => 'cockpit-hq/cockpit',
   ),
   'versions' => 
@@ -36,7 +36,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '514f17562d028931b6703a919f6acada6e4778f4',
+      'reference' => '5e45b807122be436732c1db080c3fcb96e29c452',
     ),
     'colinodell/json5' => 
     array (
@@ -241,12 +241,12 @@
     ),
     'psr/http-message' => 
     array (
-      'pretty_version' => '1.0.1',
-      'version' => '1.0.1.0',
+      'pretty_version' => '1.1',
+      'version' => '1.1.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'f6561bf28d520154e4b0ec72be95418abe6d9363',
+      'reference' => 'cb6ce4845ce34a8ad9e68117c10ee90a29919eba',
     ),
     'psr/http-message-implementation' => 
     array (
