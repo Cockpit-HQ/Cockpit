@@ -23,6 +23,14 @@ export default {
         });
     },
 
+    watch: {
+        search: {
+            handler: _.debounce(function() {
+                this.query();
+            }, 350)
+        }
+    },
+
     methods: {
 
         keydown(event) {
@@ -41,7 +49,6 @@ export default {
                         this.goto(this.findings[this.selected]);
                         return;
                     }
-                    this.query();
                     break;
 
                 // up | down
