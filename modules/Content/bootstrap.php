@@ -320,11 +320,11 @@ $this->module('content')->extend([
 
         $items = (array) $this->app->dataStorage->find($collection, $options);
 
-        if (isset($process['locale'])) {
+        if ($process['locale'] ?? false) {
             $items = $this->app->helper('locales')->applyLocales($items, $process['locale']);
         }
 
-        if (isset($process['populate']) && $process['populate']) {
+        if ($process['populate'] ?? false) {
             $items = $this->populate($items, $process['populate'], 0, $process);
         }
 
