@@ -274,13 +274,13 @@ class Index {
 
                 $field = $match[1];
                 $value = trim($match[2], '\'"');
-                $fields[$field] = $value;
+                $fields[$field] = $this->escapeFts5SpecialChars($value);
             }
 
         } else {
 
             foreach ($_fields as $field) {
-                $fields[$field] = $query;
+                $fields[$field] = $this->escapeFts5SpecialChars($query);
             }
         }
 
@@ -302,6 +302,31 @@ class Index {
         }
 
         return implode(' OR ', $searchQueries);
+    }
+
+    private function escapeFts5SpecialChars($query) {
+        // Define the special characters that need to be escaped in FTS5 queries
+        $specialChars = '.-@';
+
+        // Split the query string into individual terms
+        $terms = preg_split('/\s+/', $query);
+
+        // Iterate through the terms and escape special characters and double quotes
+        $escapedTerms = array_map(function ($term) use ($specialChars) {
+            // Replace double quotes with two double quotes
+            $escapedTerm = str_replace('"', '""', $term);
+
+            // Escape special characters with double quotes
+            $pattern = '/([' . preg_quote($specialChars, '/') . '])/';
+            $escapedTerm = preg_replace($pattern, '"$1"', $escapedTerm);
+
+            return $escapedTerm;
+        }, $terms);
+
+        // Combine the escaped terms back into a single query string
+        $escapedQuery = implode(' ', $escapedTerms);
+
+        return $escapedQuery;
     }
 
     private function buildInsertQuery() {
