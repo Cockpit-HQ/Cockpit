@@ -2,7 +2,7 @@ FROM php:8.1-apache
 
 RUN apt-get update \
     && apt-get install -y \
-    cron wget zip unzip nano \
+    wget zip unzip nano \
     libfreetype6-dev \
     libjpeg62-turbo-dev \
     libpng-dev \
@@ -17,6 +17,8 @@ RUN apt-get update \
 
 RUN echo "extension=mongodb.so" > /usr/local/etc/php/conf.d/mongodb.ini
 RUN echo "extension=redis.so" > /usr/local/etc/php/conf.d/redis.ini
+
+COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
 
 # Give www-data UID=1000 and GID=1000 to be compatible with the docker host user on linux (often 1000:1000)
 RUN usermod --uid 1000 www-data && groupmod --gid 1000 www-data && chown -R www-data:www-data /var/www/html
