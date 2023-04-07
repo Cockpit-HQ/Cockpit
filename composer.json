@@ -23,7 +23,6 @@
     "require": {
         "php": "^8.1.0",
         "ext-json": "*",
-        "ext-mongodb": "*",
         "phpmailer/phpmailer": "^6.4",
         "claviska/simpleimage": "^4.0",
         "ksubileau/color-thief-php": "^2.0",

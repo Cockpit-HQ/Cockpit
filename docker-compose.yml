@@ -2,10 +2,9 @@ version: '3.8'
 
 services:
     cockpit:
-        image: cockpit-hq/cockpit:php-8.0
+        image: cockpit-hq/cockpit:php-8.1
         build:
             context: .
-            target: base
         user: www-data
         volumes:
             - ./:/var/www/html
