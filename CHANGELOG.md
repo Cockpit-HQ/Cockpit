@@ -9,6 +9,7 @@
 - Make logged login data configurable
 - Add filter models feature on role permission page
 - Fix populate option singleton data queries vi GraphQL
+- Clone / duplicate collection items
 
 ## 2.4.1 (2023-03-20)
 

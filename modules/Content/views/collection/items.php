@@ -204,6 +204,12 @@
                                         <?= t('Edit') ?>
                                     </a>
                                 </li>
+                                <li>
+                                    <a class="kiss-flex kiss-flex-middle" :href="$route(`/content/collection/clone/${model.name}/${actionItem._id}`)">
+                                        <icon class="kiss-margin-small-right">control_point_duplicate</icon>
+                                        <?=t('Clone')?>
+                                    </a>
+                                </li>
                                 <li class="kiss-nav-divider"></li>
                                 <li>
                                     <a class="kiss-color-danger kiss-flex kiss-flex-middle" @click="remove(actionItem)">
