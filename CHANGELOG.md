@@ -10,6 +10,8 @@
 - Add filter models feature on role permission page
 - Fix populate option singleton data queries vi GraphQL
 - Clone / duplicate collection items
+- Refactor admin ui language loading
+
 
 ## 2.4.1 (2023-03-20)
 
