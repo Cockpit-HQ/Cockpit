@@ -100,7 +100,7 @@ $this->on('app.admin.request', function(Lime\Request $request) {
 
     $locale = $user && isset($user['i18n']) && $user['i18n'] ? $user['i18n'] : $i18n->locale;
 
-    if ($locale !== 'en' && $translationspath = $this->path("#config:i18n/App/{$locale}.php")) {
+    if ($locale !== 'en' && $translationspath = $this->path("#config:i18n/{$locale}/App.php")) {
 
         $i18n->locale = $locale;
 
@@ -108,7 +108,9 @@ $this->on('app.admin.request', function(Lime\Request $request) {
 
             $name = basename($m->_dir);
 
-            if ($translationspath = $this->path("#config:i18n/{$name}/{$locale}.php")) {
+            if ($translationspath = $this->path("#config:i18n/{$locale}/{$name}.php")) {
+                $i18n->load($translationspath, $locale);
+            } elseif($translationspath = $this->path("{$name}:i18n/{$locale}.json")) {
                 $i18n->load($translationspath, $locale);
             }
         }
