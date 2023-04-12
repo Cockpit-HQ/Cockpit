@@ -11,6 +11,7 @@
 - Fix populate option singleton data queries vi GraphQL
 - Clone / duplicate collection items
 - Refactor admin ui language loading
+- Add `content:field:remove` and `content:field:rename` tower cli commands to cleanup content data after model changes
 
 
 ## 2.4.1 (2023-03-20)

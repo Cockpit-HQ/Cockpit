@@ -8,6 +8,12 @@ $this->on('app.admin.init', function() {
     include(__DIR__.'/admin.php');
 });
 
+// load cli related code
+$this->on('app.cli.init', function($cli) {
+    $app = $this;
+    include(__DIR__.'/cli.php');
+});
+
 // load api request related code
 $this->on('app.api.request', function() {
     include(__DIR__.'/api.php');

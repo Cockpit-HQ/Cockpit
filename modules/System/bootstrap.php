@@ -14,21 +14,20 @@ $this->on('app.admin.init', function() {
 }, 500);
 
 $this->on('app.api.request', function($request) {
-
     include(__DIR__.'/api.php');
-
 }, 1000);
 
-$app->on('error', function($error, $exception) {
+// load cli related code
+$this->on('app.cli.init', function($cli) {
+    $app = $this;
+    include(__DIR__.'/cli.php');
+});
+
+$this->on('error', function($error, $exception) {
 
     try {
         $this->module('system')->log("System error: {$error['message']}", type: 'error', context: $error);
     } catch(Throwable $e) {}
-});
-
-$this->on('app.cli.init', function($cli) {
-    $app = $this;
-    include(__DIR__.'/cli.php');
 });
 
 // system api

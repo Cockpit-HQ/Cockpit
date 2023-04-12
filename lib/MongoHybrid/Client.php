@@ -92,10 +92,10 @@ class Client {
      * Delete Key(s)
      *
      * @param  string $collection
-     * @param  string $key
+     * @param  string|array $key
      * @return integer
      */
-    public function removeKey(string $collection, string $key): mixed {
+    public function removeKey(string $collection, mixed $key): mixed {
         return $this->driver->remove($collection, ['key' => (is_array($key) ? ['$in' => $key] : $key)]);
     }
 

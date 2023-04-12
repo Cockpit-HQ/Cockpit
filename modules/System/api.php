@@ -11,7 +11,6 @@
 $this->on('restApi.config', function($restApi) {
 
 
-    $restApi->addEndPoint('/system/healthcheck', [
     /**
      * @OA\Get(
      *     path="/system/healthcheck",
@@ -19,6 +18,7 @@ $this->on('restApi.config', function($restApi) {
      *     @OA\Response(response="200", description="Get system status")
      * )
      */
+    $restApi->addEndPoint('/system/healthcheck', [
         'GET' => function($params, $app) {
 
             return ['status' => 'ok'];
