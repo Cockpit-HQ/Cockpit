@@ -243,7 +243,7 @@ class Users extends App {
 
         foreach ($this->app->helper('fs')->ls('#config:i18n') as $dir) {
 
-            if ($dir->isDot() || !$dir->isDir() || !file_exists($dir->getRealPath().'/App.php')) {
+            if (!$dir->isDir() || $dir->isDot() || !file_exists($dir->getRealPath().'/App.php')) {
                 continue;
             }
 
