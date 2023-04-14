@@ -29,7 +29,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '5e45b807122be436732c1db080c3fcb96e29c452',
+    'reference' => 'abd99a2168e4ac70e338abea5cabfa9419a87d09',
     'name' => 'cockpit-hq/cockpit',
   ),
   'versions' => 
@@ -59,7 +59,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '5e45b807122be436732c1db080c3fcb96e29c452',
+      'reference' => 'abd99a2168e4ac70e338abea5cabfa9419a87d09',
     ),
     'colinodell/json5' => 
     array (
@@ -162,12 +162,12 @@ private static $installed = array (
     ),
     'league/flysystem' => 
     array (
-      'pretty_version' => '3.12.3',
-      'version' => '3.12.3.0',
+      'pretty_version' => '3.14.0',
+      'version' => '3.14.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '81e87e74dd5213795c7846d65089712d2dda90ce',
+      'reference' => 'e2a279d7f47d9098e479e8b21f7fb8b8de230158',
     ),
     'league/mime-type-detection' => 
     array (
@@ -232,12 +232,12 @@ private static $installed = array (
     ),
     'psr/http-client' => 
     array (
-      'pretty_version' => '1.0.1',
-      'version' => '1.0.1.0',
+      'pretty_version' => '1.0.2',
+      'version' => '1.0.2.0',
       'aliases' => 
       array (
       ),
-      'reference' => '2dfb5f6c5eff0e91e20e913f8c5452ed95b86621',
+      'reference' => '0955afe48220520692d2d09f7ab7e0f93ffd6a31',
     ),
     'psr/http-client-implementation' => 
     array (
@@ -248,12 +248,12 @@ private static $installed = array (
     ),
     'psr/http-factory' => 
     array (
-      'pretty_version' => '1.0.1',
-      'version' => '1.0.1.0',
+      'pretty_version' => '1.0.2',
+      'version' => '1.0.2.0',
       'aliases' => 
       array (
       ),
-      'reference' => '12ac7fcd07e5b077433f5f2bee95b3a771bf61be',
+      'reference' => 'e616d01114759c4c489f93b099585439f795fe35',
     ),
     'psr/http-factory-implementation' => 
     array (
@@ -440,12 +440,12 @@ private static $installed = array (
     ),
     'zircote/swagger-php' => 
     array (
-      'pretty_version' => '4.7.8',
-      'version' => '4.7.8.0',
+      'pretty_version' => '4.7.9',
+      'version' => '4.7.9.0',
       'aliases' => 
       array (
       ),
-      'reference' => '4a1d1272c2dd3afd8d96e92f02dc3565d5cc3c18',
+      'reference' => '3727cd85f98039f4242f1be14a01d095069ce71f',
     ),
   ),
 );
