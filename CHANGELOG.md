@@ -1,6 +1,6 @@
 # Release Notes
 
-## WIP
+## 2.5.0 (2023-04-15)
 
 - Fix initial item position on tree item creation
 - Add avif image type support (depending on used GD lib)
