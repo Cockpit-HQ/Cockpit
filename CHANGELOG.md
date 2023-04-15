@@ -8,7 +8,7 @@
 - Add lightweight indexing library (for full-text search)
 - Make logged login data configurable
 - Add filter models feature on role permission page
-- Fix populate option singleton data queries vi GraphQL
+- Fix populate option singleton data queries via GraphQL
 - Clone / duplicate collection items
 - Refactor admin ui language loading
 - Add `content:field:remove` and `content:field:rename` tower cli commands to cleanup content data after model changes
