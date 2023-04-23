@@ -29,7 +29,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => 'abd99a2168e4ac70e338abea5cabfa9419a87d09',
+    'reference' => '63f74a121ac1912627eae6358e243cfa0ae72d87',
     'name' => 'cockpit-hq/cockpit',
   ),
   'versions' => 
@@ -59,7 +59,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => 'abd99a2168e4ac70e338abea5cabfa9419a87d09',
+      'reference' => '63f74a121ac1912627eae6358e243cfa0ae72d87',
     ),
     'colinodell/json5' => 
     array (
@@ -108,12 +108,12 @@ private static $installed = array (
     ),
     'guzzlehttp/guzzle' => 
     array (
-      'pretty_version' => '7.5.0',
-      'version' => '7.5.0.0',
+      'pretty_version' => '7.5.1',
+      'version' => '7.5.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'b50a2a1251152e43f6a37f0fa053e730a67d25ba',
+      'reference' => 'b964ca597e86b752cd994f27293e9fa6b6a95ed9',
     ),
     'guzzlehttp/promises' => 
     array (
@@ -126,12 +126,12 @@ private static $installed = array (
     ),
     'guzzlehttp/psr7' => 
     array (
-      'pretty_version' => '2.4.4',
-      'version' => '2.4.4.0',
+      'pretty_version' => '2.5.0',
+      'version' => '2.5.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '3cf1b6d4f0c820a2cf8bcaec39fc698f3443b5cf',
+      'reference' => 'b635f279edd83fc275f822a1188157ffea568ff6',
     ),
     'jean85/pretty-package-versions' => 
     array (
@@ -264,12 +264,12 @@ private static $installed = array (
     ),
     'psr/http-message' => 
     array (
-      'pretty_version' => '1.1',
-      'version' => '1.1.0.0',
+      'pretty_version' => '2.0',
+      'version' => '2.0.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'cb6ce4845ce34a8ad9e68117c10ee90a29919eba',
+      'reference' => '402d35bcb92c70c026d1a6a9883f06b2ead23d71',
     ),
     'psr/http-message-implementation' => 
     array (
@@ -431,12 +431,12 @@ private static $installed = array (
     ),
     'webonyx/graphql-php' => 
     array (
-      'pretty_version' => 'v15.2.4',
-      'version' => '15.2.4.0',
+      'pretty_version' => 'v15.3.0',
+      'version' => '15.3.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'ac27a8692622ac13e72a6fe354027cc81ef31a6e',
+      'reference' => '19a9c1cc97745bf72844f7701448e8615c57aa4b',
     ),
     'zircote/swagger-php' => 
     array (

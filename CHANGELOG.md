@@ -1,5 +1,10 @@
 # Release Notes
 
+## WIP
+
+- Fix js error thrown in dialog component
+- Update vendor libs
+
 ## 2.5.0 (2023-04-15)
 
 - Fix initial item position on tree item creation
