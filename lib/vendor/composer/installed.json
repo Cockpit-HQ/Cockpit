@@ -1837,17 +1837,17 @@
         },
         {
             "name": "symfony/console",
-            "version": "v5.4.22",
-            "version_normalized": "5.4.22.0",
+            "version": "v5.4.23",
+            "version_normalized": "5.4.23.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "3cd51fd2e6c461ca678f84d419461281bd87a0a8"
+                "reference": "90f21e27d0d88ce38720556dd164d4a1e4c3934c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/3cd51fd2e6c461ca678f84d419461281bd87a0a8",
-                "reference": "3cd51fd2e6c461ca678f84d419461281bd87a0a8",
+                "url": "https://api.github.com/repos/symfony/console/zipball/90f21e27d0d88ce38720556dd164d4a1e4c3934c",
+                "reference": "90f21e27d0d88ce38720556dd164d4a1e4c3934c",
                 "shasum": ""
             },
             "require": {
@@ -1885,7 +1885,7 @@
                 "symfony/lock": "",
                 "symfony/process": ""
             },
-            "time": "2023-03-25T09:27:28+00:00",
+            "time": "2023-04-24T18:47:29+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -1919,7 +1919,7 @@
                 "terminal"
             ],
             "support": {
-                "source": "https://github.com/symfony/console/tree/v5.4.22"
+                "source": "https://github.com/symfony/console/tree/v5.4.23"
             },
             "funding": [
                 {
@@ -2845,17 +2845,17 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v6.2.7",
-            "version_normalized": "6.2.7.0",
+            "version": "v6.2.10",
+            "version_normalized": "6.2.10.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "e8e6a1d59e050525f27a1f530aa9703423cb7f57"
+                "reference": "61916f3861b1e9705b18cfde723921a71dd1559d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/e8e6a1d59e050525f27a1f530aa9703423cb7f57",
-                "reference": "e8e6a1d59e050525f27a1f530aa9703423cb7f57",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/61916f3861b1e9705b18cfde723921a71dd1559d",
+                "reference": "61916f3861b1e9705b18cfde723921a71dd1559d",
                 "shasum": ""
             },
             "require": {
@@ -2871,7 +2871,7 @@
             "suggest": {
                 "symfony/console": "For validating YAML files using the lint command"
             },
-            "time": "2023-02-16T09:57:23+00:00",
+            "time": "2023-04-28T13:25:36+00:00",
             "bin": [
                 "Resources/bin/yaml-lint"
             ],
@@ -2902,7 +2902,7 @@
             "description": "Loads and dumps YAML files",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/yaml/tree/v6.2.7"
+                "source": "https://github.com/symfony/yaml/tree/v6.2.10"
             },
             "funding": [
                 {
@@ -2998,17 +2998,17 @@
         },
         {
             "name": "zircote/swagger-php",
-            "version": "4.7.9",
-            "version_normalized": "4.7.9.0",
+            "version": "4.7.10",
+            "version_normalized": "4.7.10.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zircote/swagger-php.git",
-                "reference": "3727cd85f98039f4242f1be14a01d095069ce71f"
+                "reference": "6d2f0fcc46bf9043877de8656a9ea95331155522"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zircote/swagger-php/zipball/3727cd85f98039f4242f1be14a01d095069ce71f",
-                "reference": "3727cd85f98039f4242f1be14a01d095069ce71f",
+                "url": "https://api.github.com/repos/zircote/swagger-php/zipball/6d2f0fcc46bf9043877de8656a9ea95331155522",
+                "reference": "6d2f0fcc46bf9043877de8656a9ea95331155522",
                 "shasum": ""
             },
             "require": {
@@ -3027,7 +3027,7 @@
                 "phpunit/phpunit": ">=8",
                 "vimeo/psalm": "^4.23"
             },
-            "time": "2023-04-12T23:40:55+00:00",
+            "time": "2023-04-28T00:56:39+00:00",
             "bin": [
                 "bin/openapi"
             ],
@@ -3073,7 +3073,7 @@
             ],
             "support": {
                 "issues": "https://github.com/zircote/swagger-php/issues",
-                "source": "https://github.com/zircote/swagger-php/tree/4.7.9"
+                "source": "https://github.com/zircote/swagger-php/tree/4.7.10"
             },
             "install-path": "../zircote/swagger-php"
         }

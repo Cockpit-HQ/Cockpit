@@ -29,7 +29,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '63f74a121ac1912627eae6358e243cfa0ae72d87',
+    'reference' => '16bb7ad12906e739a13a25e298dcdc2f51a5e4d3',
     'name' => 'cockpit-hq/cockpit',
   ),
   'versions' => 
@@ -59,7 +59,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '63f74a121ac1912627eae6358e243cfa0ae72d87',
+      'reference' => '16bb7ad12906e739a13a25e298dcdc2f51a5e4d3',
     ),
     'colinodell/json5' => 
     array (
@@ -314,12 +314,12 @@ private static $installed = array (
     ),
     'symfony/console' => 
     array (
-      'pretty_version' => 'v5.4.22',
-      'version' => '5.4.22.0',
+      'pretty_version' => 'v5.4.23',
+      'version' => '5.4.23.0',
       'aliases' => 
       array (
       ),
-      'reference' => '3cd51fd2e6c461ca678f84d419461281bd87a0a8',
+      'reference' => '90f21e27d0d88ce38720556dd164d4a1e4c3934c',
     ),
     'symfony/deprecation-contracts' => 
     array (
@@ -422,12 +422,12 @@ private static $installed = array (
     ),
     'symfony/yaml' => 
     array (
-      'pretty_version' => 'v6.2.7',
-      'version' => '6.2.7.0',
+      'pretty_version' => 'v6.2.10',
+      'version' => '6.2.10.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'e8e6a1d59e050525f27a1f530aa9703423cb7f57',
+      'reference' => '61916f3861b1e9705b18cfde723921a71dd1559d',
     ),
     'webonyx/graphql-php' => 
     array (
@@ -440,12 +440,12 @@ private static $installed = array (
     ),
     'zircote/swagger-php' => 
     array (
-      'pretty_version' => '4.7.9',
-      'version' => '4.7.9.0',
+      'pretty_version' => '4.7.10',
+      'version' => '4.7.10.0',
       'aliases' => 
       array (
       ),
-      'reference' => '3727cd85f98039f4242f1be14a01d095069ce71f',
+      'reference' => '6d2f0fcc46bf9043877de8656a9ea95331155522',
     ),
   ),
 );
