@@ -2922,17 +2922,17 @@
         },
         {
             "name": "webonyx/graphql-php",
-            "version": "v15.3.0",
-            "version_normalized": "15.3.0.0",
+            "version": "v15.3.1",
+            "version_normalized": "15.3.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webonyx/graphql-php.git",
-                "reference": "19a9c1cc97745bf72844f7701448e8615c57aa4b"
+                "reference": "876a851c67f213fe19626da0efc558ce7f63c537"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webonyx/graphql-php/zipball/19a9c1cc97745bf72844f7701448e8615c57aa4b",
-                "reference": "19a9c1cc97745bf72844f7701448e8615c57aa4b",
+                "url": "https://api.github.com/repos/webonyx/graphql-php/zipball/876a851c67f213fe19626da0efc558ce7f63c537",
+                "reference": "876a851c67f213fe19626da0efc558ce7f63c537",
                 "shasum": ""
             },
             "require": {
@@ -2949,7 +2949,7 @@
                 "nyholm/psr7": "^1.5",
                 "phpbench/phpbench": "^1.2",
                 "phpstan/extension-installer": "^1.1",
-                "phpstan/phpstan": "1.10.13",
+                "phpstan/phpstan": "1.10.14",
                 "phpstan/phpstan-phpunit": "1.3.11",
                 "phpstan/phpstan-strict-rules": "1.5.1",
                 "phpunit/phpunit": "^9.5",
@@ -2966,7 +2966,7 @@
                 "psr/http-message": "To use standard GraphQL server",
                 "react/promise": "To leverage async resolving on React PHP platform"
             },
-            "time": "2023-04-20T07:54:40+00:00",
+            "time": "2023-04-30T10:08:16+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -2986,7 +2986,7 @@
             ],
             "support": {
                 "issues": "https://github.com/webonyx/graphql-php/issues",
-                "source": "https://github.com/webonyx/graphql-php/tree/v15.3.0"
+                "source": "https://github.com/webonyx/graphql-php/tree/v15.3.1"
             },
             "funding": [
                 {

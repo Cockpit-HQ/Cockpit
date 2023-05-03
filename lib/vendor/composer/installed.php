@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '16bb7ad12906e739a13a25e298dcdc2f51a5e4d3',
+    'reference' => 'a9fdfbd360d7b3dfb7b2dd607740c203074f9360',
     'name' => 'cockpit-hq/cockpit',
   ),
   'versions' => 
@@ -36,7 +36,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '16bb7ad12906e739a13a25e298dcdc2f51a5e4d3',
+      'reference' => 'a9fdfbd360d7b3dfb7b2dd607740c203074f9360',
     ),
     'colinodell/json5' => 
     array (
@@ -408,12 +408,12 @@
     ),
     'webonyx/graphql-php' => 
     array (
-      'pretty_version' => 'v15.3.0',
-      'version' => '15.3.0.0',
+      'pretty_version' => 'v15.3.1',
+      'version' => '15.3.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => '19a9c1cc97745bf72844f7701448e8615c57aa4b',
+      'reference' => '876a851c67f213fe19626da0efc558ce7f63c537',
     ),
     'zircote/swagger-php' => 
     array (

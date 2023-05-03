@@ -9,6 +9,12 @@ You can find and compare releases at the [GitHub release page](https://github.co
 
 ## Unreleased
 
+## v15.3.1
+
+### Fixed
+
+- Allow sending both `query` and `queryId`, let `persistedQueryLoader` handle it https://github.com/webonyx/graphql-php/pull/1372
+
 ## v15.3.0
 
 ### Added
