@@ -3,6 +3,7 @@
 ## WIP
 
 - Fix js error thrown in dialog component
+- Remove 2FA ifo from internal users/load api
 - Update vendor libs
 
 ## 2.5.0 (2023-04-15)

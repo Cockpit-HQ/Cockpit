@@ -218,6 +218,10 @@ class Users extends App {
         }
 
         foreach ($users as &$user) {
+
+            // remove 2FA settings
+            unset($user['twofa']);
+
             $this->app->trigger('app.user.disguise', [&$user]);
         }
 
