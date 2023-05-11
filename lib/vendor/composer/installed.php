@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => 'a9fdfbd360d7b3dfb7b2dd607740c203074f9360',
+    'reference' => '24057f4cc2ee75e416f378cb72ab067645b40c70',
     'name' => 'cockpit-hq/cockpit',
   ),
   'versions' => 
@@ -22,8 +22,8 @@
     ),
     'claviska/simpleimage' => 
     array (
-      'pretty_version' => '4.0.2',
-      'version' => '4.0.2.0',
+      'pretty_version' => '4.0.3',
+      'version' => '4.0.3.0',
       'aliases' => 
       array (
       ),
@@ -36,7 +36,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => 'a9fdfbd360d7b3dfb7b2dd607740c203074f9360',
+      'reference' => '24057f4cc2ee75e416f378cb72ab067645b40c70',
     ),
     'colinodell/json5' => 
     array (
@@ -139,12 +139,21 @@
     ),
     'league/flysystem' => 
     array (
-      'pretty_version' => '3.14.0',
-      'version' => '3.14.0.0',
+      'pretty_version' => '3.15.1',
+      'version' => '3.15.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'e2a279d7f47d9098e479e8b21f7fb8b8de230158',
+      'reference' => 'a141d430414fcb8bf797a18716b09f759a385bed',
+    ),
+    'league/flysystem-local' => 
+    array (
+      'pretty_version' => '3.15.0',
+      'version' => '3.15.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '543f64c397fefdf9cfeac443ffb6beff602796b3',
     ),
     'league/mime-type-detection' => 
     array (
@@ -408,12 +417,12 @@
     ),
     'webonyx/graphql-php' => 
     array (
-      'pretty_version' => 'v15.3.1',
-      'version' => '15.3.1.0',
+      'pretty_version' => 'v15.3.2',
+      'version' => '15.3.2.0',
       'aliases' => 
       array (
       ),
-      'reference' => '876a851c67f213fe19626da0efc558ce7f63c537',
+      'reference' => '40b391e691a278fba1c759f6b7930941599f5f44',
     ),
     'zircote/swagger-php' => 
     array (
