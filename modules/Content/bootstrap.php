@@ -264,13 +264,13 @@ $this->module('content')->extend([
             return null;
         }
 
-        $this->app->trigger('content.item.save.before', [$modelName, &$item, $isUpdate]);
-        $this->app->trigger("content.item.save.before.{$modelName}", [&$item, $isUpdate]);
+        $this->app->trigger('content.item.save.before', [$modelName, &$item, $isUpdate, $collection]);
+        $this->app->trigger("content.item.save.before.{$modelName}", [&$item, $isUpdate, $collection]);
 
         $this->app->dataStorage->save($collection, $item);
 
-        $this->app->trigger('content.item.save', [$modelName, $item, $isUpdate]);
-        $this->app->trigger("content.item.save.{$modelName}", [&$item, $isUpdate]);
+        $this->app->trigger('content.item.save', [$modelName, $item, $isUpdate, $collection]);
+        $this->app->trigger("content.item.save.{$modelName}", [$item, $isUpdate, $collection]);
 
         return $item;
     },
@@ -350,6 +350,8 @@ $this->module('content')->extend([
         }
 
         $collection = "content/collections/{$modelName}";
+
+        $this->app->trigger('content.remove.before', [$modelName, &$filter, $collection]);
 
         $result = $this->app->dataStorage->remove($collection, $filter);
 

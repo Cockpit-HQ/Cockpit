@@ -5,6 +5,7 @@
 - Fix js error thrown in dialog component
 - Remove 2FA info from internal users/load api
 - Update icons
+- add `content.remove.before` event
 - Update vendor libs
 
 ## 2.5.0 (2023-04-15)
