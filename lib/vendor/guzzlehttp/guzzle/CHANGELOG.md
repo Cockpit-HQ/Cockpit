@@ -2,6 +2,24 @@
 
 Please refer to [UPGRADING](UPGRADING.md) guide for upgrading to a major version.
 
+## 7.6.0 - 2023-05-14
+
+### Added
+
+- Support for setting the minimum TLS version in a unified way
+- Apply on request the version set in options parameters
+
+## 7.5.2 - 2023-05-14
+
+### Fixed
+
+- Fixed set cookie constructor validation
+- Fixed handling of files with `'0'` body
+
+### Changed
+
+- Corrected docs and default connect timeout value to 300 seconds
+
 ## 7.5.1 - 2023-04-17
 
 ### Fixed
