@@ -6,6 +6,8 @@
 - Remove 2FA info from internal users/load api
 - Update icons
 - add `content.remove.before` event
+- Refactor `kiss-popoutmenu` component to `kiss-popout`
+- Introduce `user-info` component
 - Update vendor libs
 
 ## 2.5.0 (2023-04-15)
