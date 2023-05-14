@@ -1,0 +1,59 @@
+kiss-popout {
+    display: flex;
+    align-items: flex-start;
+    position: fixed;
+    background: var(--kiss-popout-background, rgba(0,0,0,.1));
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 20px;
+    touch-action: none;
+    opacity: 0;
+    pointer-events: none;
+    overflow-y: auto;
+    z-index: 10000;
+    transition: opacity .3s;
+}
+
+kiss-popout > kiss-content {
+    position: relative;
+    display: flow-root;
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-left: auto;
+    margin-right: auto;
+
+    padding: var(--kiss-popout-content-spacing, 15px);
+
+    background: var(--kiss-popout-content-background, #fff);
+    color: var(--kiss-popout-content-color, inherit);
+
+    min-width: var(--kiss-popout-width, 250px);
+    max-width: calc(100% - 0.01px) !important;
+
+    box-sizing: border-box;
+
+    transform: translateY(20px);
+    transition: all 200ms;
+}
+
+kiss-popout[size="large"] > kiss-content {
+    width: var(--kiss-popout-large-width, 600px);
+}
+
+kiss-popout[open] {
+    opacity: 1;
+    pointer-events: auto;
+}
+kiss-popout[open] > kiss-content {
+    transform: translateY(10px);
+}
+
+kiss-popout kiss-navlist a {
+    color: var(--kiss-popout-color, inherit);
+}
+
+kiss-popout kiss-navlist a:hover {
+    color: var(--kiss-popout-color-hover, inherit);
+}

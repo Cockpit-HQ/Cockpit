@@ -28,7 +28,7 @@
                 </kiss-card>
 
                 <div>
-                    <a class="kiss-size-large" kiss-popoutmenu="#model-menu-actions">
+                    <a class="kiss-size-large" kiss-popout="#model-menu-actions">
                         <icon>more_horiz</icon>
                     </a>
                 </div>
@@ -203,7 +203,7 @@
 
 </kiss-container>
 
-<kiss-popoutmenu id="model-menu-actions">
+<kiss-popout id="model-menu-actions">
     <kiss-content>
         <kiss-navlist class="kiss-margin">
             <ul>
@@ -224,4 +224,4 @@
             </ul>
         </kiss-navlist>
     </kiss-content>
-</kiss-popoutmenu>
+</kiss-popout>

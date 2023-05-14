@@ -122,7 +122,7 @@
                     <app-license></app-license>
 
                     <div class="kiss-margin-left">
-                        <a kiss-popoutmenu="#app-account-menu">
+                        <a kiss-popout="#app-account-menu">
                             <app-avatar size="30" name="<?=$this['user/name']?>"></app-avatar>
                         </a>
                     </div>
@@ -133,7 +133,7 @@
         </main>
     </div>
 
-    <kiss-popoutmenu id="app-account-menu">
+    <kiss-popout id="app-account-menu">
         <kiss-content>
 
             <kiss-navlist>
@@ -145,7 +145,7 @@
                 </ul>
             </kiss-navlist>
         </kiss-content>
-    </kiss-popoutmenu>
+    </kiss-popout>
 
     <kiss-offcanvas id="app-offcanvas">
         <kiss-content class="kiss-flex kiss-flex-column">

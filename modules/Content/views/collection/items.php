@@ -28,7 +28,7 @@
                 </kiss-card>
 
                 <div>
-                    <a class="kiss-size-large" kiss-popoutmenu="#model-menu-actions">
+                    <a class="kiss-size-large" kiss-popout="#model-menu-actions">
                         <icon>more_horiz</icon>
                     </a>
                 </div>
@@ -116,7 +116,7 @@
                                     <a class="kiss-cover" @click="sortItems('_created')"></a>
                                 </th>
                                 <th fixed="right" width="20">
-                                    <a class="kiss-size-4" :class="model.fields.length != visibleFields.length ? 'kiss-color-danger': 'kiss-link-muted'" kiss-popoutmenu="#model-column-options">
+                                    <a class="kiss-size-4" :class="model.fields.length != visibleFields.length ? 'kiss-color-danger': 'kiss-link-muted'" kiss-popout="#model-column-options">
                                         <icon>more_horiz</icon>
                                     </a>
                                 </th>
@@ -193,7 +193,7 @@
 
             <teleport to="body">
 
-                <kiss-popoutmenu :open="actionItem && 'true'" @popoutmenuclose="toggleItemActions(null)">
+                <kiss-popout :open="actionItem && 'true'" @popoutclose="toggleItemActions(null)">
                     <kiss-content>
                         <kiss-navlist v-if="actionItem">
                             <ul>
@@ -220,9 +220,9 @@
                             </ul>
                         </kiss-navlist>
                     </kiss-content>
-                </kiss-popoutmenu>
+                </kiss-popout>
 
-                <kiss-popoutmenu id="model-column-options" modal="true">
+                <kiss-popout id="model-column-options" modal="true">
                     <kiss-content>
                         <kiss-navlist class="kiss-margin">
                             <ul>
@@ -240,12 +240,12 @@
                             </ul>
                         </kiss-navlist>
 
-                        <button type="button" class="kiss-button kiss-button-small kiss-width-1-1 kiss-margin-small-top" kiss-popoutmenu-close><?= t('Close') ?></button>
+                        <button type="button" class="kiss-button kiss-button-small kiss-width-1-1 kiss-margin-small-top" kiss-popout-close><?= t('Close') ?></button>
                     </kiss-content>
-                </kiss-popoutmenu>
+                </kiss-popout>
 
                 <?php if ($this->helper('acl')->isAllowed("content/{$model['name']}/publish")): ?>
-                <kiss-popoutmenu id="model-items-menu-state" ref="stateChooser">
+                <kiss-popout id="model-items-menu-state" ref="stateChooser">
                     <kiss-content>
 
                         <kiss-navlist class="kiss-margin-small">
@@ -274,10 +274,10 @@
                             </ul>
                         </kiss-navlist>
                     </kiss-content>
-                </kiss-popoutmenu>
+                </kiss-popout>
                 <?php endif ?>
 
-                <kiss-popoutmenu id="model-menu-actions">
+                <kiss-popout id="model-menu-actions">
                     <kiss-content>
                         <kiss-navlist class="kiss-margin">
                             <ul>
@@ -313,7 +313,7 @@
                             </ul>
                         </kiss-navlist>
                     </kiss-content>
-                </kiss-popoutmenu>
+                </kiss-popout>
 
             </teleport>
 

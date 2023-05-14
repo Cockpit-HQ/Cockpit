@@ -39,7 +39,7 @@ export default {
 
     components: {
         'field-code': Vue.defineAsyncComponent(() =>
-            App.utils.import('app:assets/vue-components/field-code.js')
+            App.utils.import('app:assets/vue-components/fields/field-code.js')
         )
     },
 

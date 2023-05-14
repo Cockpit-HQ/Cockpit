@@ -1,27 +1,27 @@
 import { on, trigger } from '../../js/events.js';
 
 
-on(document.documentElement, 'click', '[kiss-popoutmenu]', function (e) {
+on(document.documentElement, 'click', '[kiss-popout]', function (e) {
 
     e.preventDefault();
 
-    let menu = document.querySelector(this.getAttribute('kiss-popoutmenu') || this.getAttribute('href'));
+    let menu = document.querySelector(this.getAttribute('kiss-popout') || this.getAttribute('href'));
 
     if (menu && menu.show) {
 
-        let position = this.getAttribute('kiss-popoutmenu-pos');
+        let position = this.getAttribute('kiss-popout-pos');
 
         menu.show(position ? this : null, position);
     }
 });
 
-customElements.define('kiss-popoutmenu', class extends HTMLElement {
+customElements.define('kiss-popout', class extends HTMLElement {
 
     connectedCallback() {
 
         on(this, 'click', e => {
 
-            if (e.target.matches('[kiss-popoutmenu-close]') || e.target.closest('[kiss-popoutmenu-close]')) {
+            if (e.target.matches('[kiss-popout-close]') || e.target.closest('[kiss-popout-close]')) {
                 return this.close();
             }
 
@@ -48,15 +48,15 @@ customElements.define('kiss-popoutmenu', class extends HTMLElement {
                 top = rect.top + ele.offsetHeight;
 
             switch (position) {
-                case "right":
+                case 'right':
                     left = rect.right - content.offsetWidth;
                     break;
 
-                case "center":
+                case 'center':
                     left = (rect.right - ele.offsetWidth/2) - content.offsetWidth / 2;
                     break;
 
-                case "left":
+                case 'left':
                 default:
                     left = rect.left;
                     break;
@@ -77,6 +77,6 @@ customElements.define('kiss-popoutmenu', class extends HTMLElement {
 
     close() {
         this.removeAttribute('open');
-        trigger(this, 'popoutmenuclose');
+        trigger(this, 'popoutclose');
     }
 });

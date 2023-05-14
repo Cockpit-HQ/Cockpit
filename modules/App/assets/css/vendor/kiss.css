@@ -47,8 +47,8 @@
     --kiss-offcanvas-background: var(--kiss-color-overlay);
     --kiss-offcanvas-content-color: var(--kiss-base-text-color);
 
-    --kiss-popoutmenu-background: var(--kiss-color-overlay);
-    --kiss-popoutmenu-content-background: var(--kiss-color-contrast);
+    --kiss-popout-background: var(--kiss-color-overlay);
+    --kiss-popout-content-background: var(--kiss-color-contrast);
 
     --kiss-navlist-font-size: 14px;
     --kiss-navlist-padding-vertical: 10px;
@@ -71,7 +71,7 @@ kiss-card,
 .kiss-badge,
 kiss-dialog kiss-content,
 kiss-dropdownbox,
-kiss-popoutmenu kiss-content,
+kiss-popout kiss-content,
 kiss-tooltip {
     border-radius: var(--app-border-radius);
 }
@@ -97,14 +97,14 @@ kiss-tooltip {
 
 kiss-dialog,
 kiss-offcanvas,
-kiss-popoutmenu {
+kiss-popout {
     backdrop-filter: grayscale(1) blur(4.5px);
 }
 
 kiss-offcanvas kiss-content,
 kiss-dialog kiss-content,
 kiss-dropdownbox,
-kiss-popoutmenu kiss-content {
+kiss-popout kiss-content {
     box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.034),
     0 6.7px 5.3px rgba(0, 0, 0, 0.048),
     0 12.5px 10px rgba(0, 0, 0, 0.06),
@@ -114,12 +114,12 @@ kiss-popoutmenu kiss-content {
 }
 
 kiss-dropdownbox,
-kiss-popoutmenu kiss-content {
+kiss-popout kiss-content {
     border-top: 2px var(--kiss-color-primary) solid;
 }
 
 kiss-dropdownbox kiss-navlist > ul > li > a > icon,
-kiss-popoutmenu kiss-navlist > ul > li > a > icon {
+kiss-popout kiss-navlist > ul > li > a > icon {
     transform: scale(1.2);
 }
 

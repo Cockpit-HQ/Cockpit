@@ -364,7 +364,7 @@ export default {
         </div>
 
         <teleport to="body">
-            <kiss-popoutmenu :open="actionFile && 'true'" @popoutmenuclose="toggleFileActions(null)">
+            <kiss-popout :open="actionFile && 'true'" @popoutclose="toggleFileActions(null)">
                 <kiss-content>
                     <kiss-navlist class="kiss-margin">
                         <ul v-if="actionFile">
@@ -395,9 +395,9 @@ export default {
                         </ul>
                     </kiss-navlist>
                 </kiss-content>
-            </kiss-popoutmenu>
+            </kiss-popout>
 
-            <kiss-popoutmenu :open="actionFolder && 'true'" @popoutmenuclose="toggleFolderActions(null)">
+            <kiss-popout :open="actionFolder && 'true'" @popoutclose="toggleFolderActions(null)">
                 <kiss-content>
                     <kiss-navlist class="kiss-margin">
                         <ul>
@@ -421,7 +421,7 @@ export default {
                         </ul>
                     </kiss-navlist>
                 </kiss-content>
-            </kiss-popoutmenu>
+            </kiss-popout>
 
             <app-loader-cover v-if="uploading !== false" :label="uploading+'%'"></app-loader-cover>
 

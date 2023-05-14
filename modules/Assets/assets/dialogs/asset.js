@@ -151,13 +151,13 @@ export default {
                     <div class="kiss-flex kiss-flex-middle">
                         <div class="kiss-size-4 kiss-margin-small-right kiss-flex kiss-color-muted" :title="t('Created at')"><icon>more_time</icon></div>
                         <div class="kiss-text-truncate kiss-size-small kiss-text-monospace kiss-color-muted kiss-flex-1">{{ (new Date(item._created * 1000).toLocaleString()) }}</div>
-                        <div><icon>account_circle</icon></div>
+                        <user-info :user-id="item._cby"></user-info>
                     </div>
 
                     <div class="kiss-flex kiss-flex-middle" v-if="item._created != item._modified">
                         <div class="kiss-size-4 kiss-margin-small-right kiss-flex kiss-color-muted" :title="t('Modified at')"><icon>history</icon></div>
                         <div class="kiss-text-truncate kiss-size-small kiss-text-monospace kiss-color-muted kiss-flex-1">{{ (new Date(item._modified * 1000).toLocaleString()) }}</div>
-                        <div><icon>account_circle</icon></div>
+                        <user-info :user-id="item._mby"></user-info>
                     </div>
             </div>
             <div class="kiss-margin-small-top kiss-margin-small-bottom kiss-bgcolor-contrast">

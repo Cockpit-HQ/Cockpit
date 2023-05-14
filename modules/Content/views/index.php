@@ -126,7 +126,7 @@
 
             </app-actionbar>
 
-            <kiss-popoutmenu :open="actionModel && 'true'" @popoutmenuclose="toggleModelActions(null)">
+            <kiss-popout :open="actionModel && 'true'" @popoutclose="toggleModelActions(null)">
                 <kiss-content>
                         <kiss-navlist v-if="actionModel">
                             <ul>
@@ -160,7 +160,7 @@
                             </ul>
                         </kiss-navlist>
                 </kiss-content>
-            </kiss-popoutmenu>
+            </kiss-popout>
 
         </template>
 

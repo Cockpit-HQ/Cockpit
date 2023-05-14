@@ -500,27 +500,27 @@
       }
   });
 
-  on$1(document.documentElement, 'click', '[kiss-popoutmenu]', function (e) {
+  on$1(document.documentElement, 'click', '[kiss-popout]', function (e) {
 
       e.preventDefault();
 
-      let menu = document.querySelector(this.getAttribute('kiss-popoutmenu') || this.getAttribute('href'));
+      let menu = document.querySelector(this.getAttribute('kiss-popout') || this.getAttribute('href'));
 
       if (menu && menu.show) {
 
-          let position = this.getAttribute('kiss-popoutmenu-pos');
+          let position = this.getAttribute('kiss-popout-pos');
 
           menu.show(position ? this : null, position);
       }
   });
 
-  customElements.define('kiss-popoutmenu', class extends HTMLElement {
+  customElements.define('kiss-popout', class extends HTMLElement {
 
       connectedCallback() {
 
           on$1(this, 'click', e => {
 
-              if (e.target.matches('[kiss-popoutmenu-close]') || e.target.closest('[kiss-popoutmenu-close]')) {
+              if (e.target.matches('[kiss-popout-close]') || e.target.closest('[kiss-popout-close]')) {
                   return this.close();
               }
 
@@ -547,15 +547,15 @@
                   top = rect.top + ele.offsetHeight;
 
               switch (position) {
-                  case "right":
+                  case 'right':
                       left = rect.right - content.offsetWidth;
                       break;
 
-                  case "center":
+                  case 'center':
                       left = (rect.right - ele.offsetWidth/2) - content.offsetWidth / 2;
                       break;
 
-                  case "left":
+                  case 'left':
                   default:
                       left = rect.left;
                       break;
@@ -576,7 +576,7 @@
 
       close() {
           this.removeAttribute('open');
-          trigger(this, 'popoutmenuclose');
+          trigger(this, 'popoutclose');
       }
   });
 
@@ -2775,7 +2775,7 @@
 
       offcanvas: function (content, options) {
 
-          let id = Math.random().toString(36).substring(2) + Date.now().toString(36),
+          let id = crypto.randomUUID(),
               size = '';
 
           options = options || {};
@@ -2837,7 +2837,7 @@
 
       dialog: function (content, options, dialogtype) {
 
-          let id = Math.random().toString(36).substring(2) + Date.now().toString(36);
+          let id = crypto.randomUUID();
 
           document.body.insertAdjacentHTML('beforeend', `
             <kiss-dialog id="dialog-${id}" size="${(options && options.size) || ''}" type="${dialogtype}" esc="${(options && options.escape) ? 'true':'false'}">
@@ -2950,6 +2950,52 @@
           dialog.show();
 
           setTimeout(() => input.focus(), 300);
+      },
+
+      popout: function (content, options) {
+
+          let id = crypto.randomUUID(),
+          size = '';
+
+          options = options || {};
+
+          document.body.insertAdjacentHTML('beforeend', `
+            <kiss-popout id="popout-${id}" size="${options.size || ''}">
+                <kiss-content class="${size}">
+                    ${content}
+                </kiss-content>
+            </kiss-popout>
+        `);
+
+          let popout = document.getElementById(`popout-${id}`);
+
+          if (options && options.zIndex) {
+              popout.style.zIndex = options.zIndex;
+          }
+
+          popout.__close = popout.close;
+          popout.__show = popout.show;
+
+          popout.close = function() {
+              popout.__close();
+              setTimeout(() => {
+                  popout.parentNode.removeChild(popout);
+              }, 300);
+          };
+
+          popout.show = function() {
+              popout.__show();
+
+              setTimeout(() => {
+                  let ele = popout.querySelector('[autofocus]');
+
+                  if (ele) {
+                      ele.focus();
+                  }
+              }, 300);
+          };
+
+          return popout;
       }
   };
 
@@ -3156,7 +3202,60 @@
           dialog.show();
 
           return dialog;
-      }
+      },
+
+      popout(component, data, callbacks, options) {
+
+          data = data || {};
+          callbacks = callbacks || {};
+
+          let def = {
+
+              $viewSetup(app) {
+
+                  app.mixin({
+                      methods: {
+                          $close() {
+
+                              if (this.$el.closest) {
+                                  this.$el.closest('kiss-popout').close();
+                              } else {
+                                  this.$el.parentNode.closest('kiss-popout').close();
+                              }
+                          },
+                          $call(name, ...args) {
+                              if (callbacks[name]) {
+                                  callbacks[name](...args);
+                              }
+                          }
+                      }
+                  });
+              },
+
+              data() {
+                  return  {
+                      data
+                  }
+              },
+
+              components: {
+                  'vue-popout-content': component
+              }
+          };
+
+          popout = App.ui.popout(/*html*/`
+            <div class="vue-popout">
+                <vue-popout-content v-bind="data"></vue-popout-content>
+            </div>
+        `, options || {});
+
+          popout.$view = popout.querySelector('.vue-popout');
+
+          VueView.compile(popout.$view, def);
+          setTimeout(() => popout.show(), 50);
+
+          return popout;
+      },
   };
 
   /**
@@ -3672,23 +3771,24 @@
   }));
 
   VueView.component('revisions-widget', 'system:assets/vue-components/revisions/widget.js');
+  VueView.component('user-info', 'app:assets/vue-components/user-info.js');
 
   // Fields
-  VueView.component('field-boolean', 'app:assets/vue-components/field-boolean.js');
-  VueView.component('field-code', 'app:assets/vue-components/field-code.js');
-  VueView.component('field-color', 'app:assets/vue-components/field-color.js');
-  VueView.component('field-date', 'app:assets/vue-components/field-date.js');
-  VueView.component('field-datetime', 'app:assets/vue-components/field-datetime.js');
-  VueView.component('field-nav', 'app:assets/vue-components/field-nav.js');
-  VueView.component('field-number', 'app:assets/vue-components/field-number.js');
-  VueView.component('field-object', 'app:assets/vue-components/field-object.js');
-  VueView.component('field-select', 'app:assets/vue-components/field-select.js');
-  VueView.component('field-set', 'app:assets/vue-components/field-set.js');
-  VueView.component('field-table', 'app:assets/vue-components/field-table.js');
-  VueView.component('field-tags', 'app:assets/vue-components/field-tags.js');
-  VueView.component('field-text', 'app:assets/vue-components/field-text.js');
-  VueView.component('field-time', 'app:assets/vue-components/field-time.js');
-  VueView.component('field-wysiwyg', 'app:assets/vue-components/field-wysiwyg.js');
+  VueView.component('field-boolean', 'app:assets/vue-components/fields/field-boolean.js');
+  VueView.component('field-code', 'app:assets/vue-components/fields/field-code.js');
+  VueView.component('field-color', 'app:assets/vue-components/fields/field-color.js');
+  VueView.component('field-date', 'app:assets/vue-components/fields/field-date.js');
+  VueView.component('field-datetime', 'app:assets/vue-components/fields/field-datetime.js');
+  VueView.component('field-nav', 'app:assets/vue-components/fields/field-nav.js');
+  VueView.component('field-number', 'app:assets/vue-components/fields/field-number.js');
+  VueView.component('field-object', 'app:assets/vue-components/fields/field-object.js');
+  VueView.component('field-select', 'app:assets/vue-components/fields/field-select.js');
+  VueView.component('field-set', 'app:assets/vue-components/fields/field-set.js');
+  VueView.component('field-table', 'app:assets/vue-components/fields/field-table.js');
+  VueView.component('field-tags', 'app:assets/vue-components/fields/field-tags.js');
+  VueView.component('field-text', 'app:assets/vue-components/fields/field-text.js');
+  VueView.component('field-time', 'app:assets/vue-components/fields/field-time.js');
+  VueView.component('field-wysiwyg', 'app:assets/vue-components/fields/field-wysiwyg.js');
 
   let html = document.documentElement;
   let baseUrl = (html.getAttribute('data-base') || '').replace(/\/$/, '');

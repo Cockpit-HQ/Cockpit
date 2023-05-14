@@ -3,7 +3,7 @@ import "./components/carousel/carousel.js";
 import "./components/dropdown/dropdown.js";
 import "./components/dialog/dialog.js";
 import "./components/offcanvas/offcanvas.js";
-import "./components/popoutmenu/popoutmenu.js";
+import "./components/popout/popout.js";
 import "./components/parallax/parallax.js";
 import "./components/svg/svg.js";
 import "./components/tabs/tabs.js";

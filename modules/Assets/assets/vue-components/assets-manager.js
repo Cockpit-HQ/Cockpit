@@ -377,7 +377,7 @@ export default {
         </app-actionbar>
 
         <teleport to="body">
-            <kiss-popoutmenu :open="actionAsset && 'true'" @popoutmenuclose="toggleAssetActions(null)">
+            <kiss-popout :open="actionAsset && 'true'" @popoutclose="toggleAssetActions(null)">
                 <kiss-content>
                     <kiss-navlist class="kiss-margin">
                         <ul>
@@ -414,9 +414,9 @@ export default {
                         </ul>
                     </kiss-navlist>
                 </kiss-content>
-            </kiss-popoutmenu>
+            </kiss-popout>
 
-            <kiss-popoutmenu :open="actionFolder && 'true'" @popoutmenuclose="toggleFolderActions(null)">
+            <kiss-popout :open="actionFolder && 'true'" @popoutclose="toggleFolderActions(null)">
                 <kiss-content>
                     <kiss-navlist class="kiss-margin">
                         <ul>
@@ -440,7 +440,7 @@ export default {
                         </ul>
                     </kiss-navlist>
                 </kiss-content>
-            </kiss-popoutmenu>
+            </kiss-popout>
 
         </teleport>
     `

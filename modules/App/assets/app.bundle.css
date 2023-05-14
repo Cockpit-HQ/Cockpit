@@ -2825,11 +2825,11 @@ kiss-offcanvas[open] {
 kiss-offcanvas[open] > kiss-content {
     transform: translateX(0);
 }
-kiss-popoutmenu {
+kiss-popout {
     display: flex;
     align-items: flex-start;
     position: fixed;
-    background: var(--kiss-popoutmenu-background, rgba(0,0,0,.1));
+    background: var(--kiss-popout-background, rgba(0,0,0,.1));
     top: 0;
     left: 0;
     right: 0;
@@ -2842,7 +2842,7 @@ kiss-popoutmenu {
     z-index: 10000;
     transition: opacity .3s;
 }
-kiss-popoutmenu > kiss-content {
+kiss-popout > kiss-content {
     position: relative;
     display: flow-root;
     margin-top: auto;
@@ -2850,12 +2850,12 @@ kiss-popoutmenu > kiss-content {
     margin-left: auto;
     margin-right: auto;
 
-    padding: var(--kiss-popoutmenu-content-spacing, 15px);
+    padding: var(--kiss-popout-content-spacing, 15px);
 
-    background: var(--kiss-popoutmenu-content-background, #fff);
-    color: var(--kiss-popoutmenu-content-color, inherit);
+    background: var(--kiss-popout-content-background, #fff);
+    color: var(--kiss-popout-content-color, inherit);
 
-    min-width: var(--kiss-popoutmenu-width, 250px);
+    min-width: var(--kiss-popout-width, 250px);
     max-width: calc(100% - 0.01px) !important;
 
     box-sizing: border-box;
@@ -2863,21 +2863,21 @@ kiss-popoutmenu > kiss-content {
     transform: translateY(20px);
     transition: all 200ms;
 }
-kiss-popoutmenu[size="large"] > kiss-content {
-    width: var(--kiss-popoutmenu-large-width, 600px);
+kiss-popout[size="large"] > kiss-content {
+    width: var(--kiss-popout-large-width, 600px);
 }
-kiss-popoutmenu[open] {
+kiss-popout[open] {
     opacity: 1;
     pointer-events: auto;
 }
-kiss-popoutmenu[open] > kiss-content {
+kiss-popout[open] > kiss-content {
     transform: translateY(10px);
 }
-kiss-popoutmenu kiss-navlist a {
-    color: var(--kiss-popoutmenu-color, inherit);
+kiss-popout kiss-navlist a {
+    color: var(--kiss-popout-color, inherit);
 }
-kiss-popoutmenu kiss-navlist a:hover {
-    color: var(--kiss-popoutmenu-color-hover, inherit);
+kiss-popout kiss-navlist a:hover {
+    color: var(--kiss-popout-color-hover, inherit);
 }
 kiss-row {
     --row-gap: var(--kiss-row-gap, 20px);
@@ -3911,8 +3911,8 @@ td.kiss-text-truncate { max-width: 0; }
     --kiss-offcanvas-background: var(--kiss-color-overlay);
     --kiss-offcanvas-content-color: var(--kiss-base-text-color);
 
-    --kiss-popoutmenu-background: var(--kiss-color-overlay);
-    --kiss-popoutmenu-content-background: var(--kiss-color-contrast);
+    --kiss-popout-background: var(--kiss-color-overlay);
+    --kiss-popout-content-background: var(--kiss-color-contrast);
 
     --kiss-navlist-font-size: 14px;
     --kiss-navlist-padding-vertical: 10px;
@@ -3933,7 +3933,7 @@ kiss-card,
 .kiss-badge,
 kiss-dialog kiss-content,
 kiss-dropdownbox,
-kiss-popoutmenu kiss-content,
+kiss-popout kiss-content,
 kiss-tooltip {
     border-radius: var(--app-border-radius);
 }
@@ -3954,13 +3954,13 @@ kiss-tooltip {
 .kiss-height-100vh { min-height: 100vh; }
 kiss-dialog,
 kiss-offcanvas,
-kiss-popoutmenu {
+kiss-popout {
     backdrop-filter: grayscale(1) blur(4.5px);
 }
 kiss-offcanvas kiss-content,
 kiss-dialog kiss-content,
 kiss-dropdownbox,
-kiss-popoutmenu kiss-content {
+kiss-popout kiss-content {
     box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.034),
     0 6.7px 5.3px rgba(0, 0, 0, 0.048),
     0 12.5px 10px rgba(0, 0, 0, 0.06),
@@ -3969,11 +3969,11 @@ kiss-popoutmenu kiss-content {
     0 100px 80px rgba(0, 0, 0, 0.12);
 }
 kiss-dropdownbox,
-kiss-popoutmenu kiss-content {
+kiss-popout kiss-content {
     border-top: 2px var(--kiss-color-primary) solid;
 }
 kiss-dropdownbox kiss-navlist > ul > li > a > icon,
-kiss-popoutmenu kiss-navlist > ul > li > a > icon {
+kiss-popout kiss-navlist > ul > li > a > icon {
     transform: scale(1.2);
 }
 .kiss-input {

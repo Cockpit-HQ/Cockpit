@@ -30,20 +30,21 @@ VueView.component('vue-table', Vue.defineAsyncComponent(() => {
 }));
 
 VueView.component('revisions-widget', 'system:assets/vue-components/revisions/widget.js');
+VueView.component('user-info', 'app:assets/vue-components/user-info.js');
 
 // Fields
-VueView.component('field-boolean', 'app:assets/vue-components/field-boolean.js');
-VueView.component('field-code', 'app:assets/vue-components/field-code.js');
-VueView.component('field-color', 'app:assets/vue-components/field-color.js');
-VueView.component('field-date', 'app:assets/vue-components/field-date.js');
-VueView.component('field-datetime', 'app:assets/vue-components/field-datetime.js');
-VueView.component('field-nav', 'app:assets/vue-components/field-nav.js');
-VueView.component('field-number', 'app:assets/vue-components/field-number.js');
-VueView.component('field-object', 'app:assets/vue-components/field-object.js');
-VueView.component('field-select', 'app:assets/vue-components/field-select.js');
-VueView.component('field-set', 'app:assets/vue-components/field-set.js');
-VueView.component('field-table', 'app:assets/vue-components/field-table.js');
-VueView.component('field-tags', 'app:assets/vue-components/field-tags.js');
-VueView.component('field-text', 'app:assets/vue-components/field-text.js');
-VueView.component('field-time', 'app:assets/vue-components/field-time.js');
-VueView.component('field-wysiwyg', 'app:assets/vue-components/field-wysiwyg.js');
+VueView.component('field-boolean', 'app:assets/vue-components/fields/field-boolean.js');
+VueView.component('field-code', 'app:assets/vue-components/fields/field-code.js');
+VueView.component('field-color', 'app:assets/vue-components/fields/field-color.js');
+VueView.component('field-date', 'app:assets/vue-components/fields/field-date.js');
+VueView.component('field-datetime', 'app:assets/vue-components/fields/field-datetime.js');
+VueView.component('field-nav', 'app:assets/vue-components/fields/field-nav.js');
+VueView.component('field-number', 'app:assets/vue-components/fields/field-number.js');
+VueView.component('field-object', 'app:assets/vue-components/fields/field-object.js');
+VueView.component('field-select', 'app:assets/vue-components/fields/field-select.js');
+VueView.component('field-set', 'app:assets/vue-components/fields/field-set.js');
+VueView.component('field-table', 'app:assets/vue-components/fields/field-table.js');
+VueView.component('field-tags', 'app:assets/vue-components/fields/field-tags.js');
+VueView.component('field-text', 'app:assets/vue-components/fields/field-text.js');
+VueView.component('field-time', 'app:assets/vue-components/fields/field-time.js');
+VueView.component('field-wysiwyg', 'app:assets/vue-components/fields/field-wysiwyg.js');

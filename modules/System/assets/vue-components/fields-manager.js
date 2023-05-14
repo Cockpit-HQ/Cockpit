@@ -231,7 +231,7 @@ let FieldsManager = {
                                     <div class="kiss-text-bold kiss-size-small">{{ _.get(fieldTypes, field.type+'.label', field.type) }}</div>
                                     <div class="kiss-color-muted kiss-size-xsmall">{{ _.get(fieldTypes, field.type+'.info', '') }}</div>
                                 </div>
-                                <a class="kiss-cover" :kiss-popoutmenu="'#'+uid+'-fieldtype-selector'"></a>
+                                <a class="kiss-cover" :kiss-popout="'#'+uid+'-fieldtype-selector'"></a>
                             </kiss-card>
                         </div>
 
@@ -314,13 +314,13 @@ let FieldsManager = {
                 </kiss-content>
             </kiss-dialog>
 
-            <kiss-popoutmenu :id="uid+'-fieldtype-selector'" modal="true">
+            <kiss-popout :id="uid+'-fieldtype-selector'" modal="true">
                 <kiss-content class="kiss-width-1-2@m">
                         <div class="kiss-size-4 kiss-text-bold">{{ t('Select field type') }}</div>
                         <div class="kiss-margin">
                             <input class="kiss-input kiss-width-1-1" :placeholder="t('Filter...')" v-model="fieldTypeFilter">
                         </div>
-                        <kiss-navlist kiss-popoutmenu-close="true" v-if="field">
+                        <kiss-navlist kiss-popout-close="true" v-if="field">
                             <kiss-grid class="kiss-margin-top" cols="1@s 2@m 3@l" gap="small">
                                 <kiss-card class="kiss-padding-xsmall" hover="contrast" v-for="(f,fieldType) in filteredFieledTypes">
                                     <kiss-row class="kiss-position-relative" gap="small">
@@ -340,10 +340,10 @@ let FieldsManager = {
                             </kiss-grid>
                         </kiss-navlist>
                         <div class="kiss-margin">
-                            <button type="button" class="kiss-button kiss-button-primary kiss-width-1-1" kiss-popoutmenu-close="true">{{ t('Cancel') }}</button>
+                            <button type="button" class="kiss-button kiss-button-primary kiss-width-1-1" kiss-popout-close="true">{{ t('Cancel') }}</button>
                         </div>
                 </kiss-content>
-            </kiss-popoutmenu>
+            </kiss-popout>
         </teleport>
     `
 }

@@ -31,7 +31,7 @@ export default {
 
     offcanvas: function (content, options) {
 
-        let id = Math.random().toString(36).substring(2) + Date.now().toString(36),
+        let id = crypto.randomUUID(),
             size = '';
 
         options = options || {};
@@ -93,7 +93,7 @@ export default {
 
     dialog: function (content, options, dialogtype) {
 
-        let id = Math.random().toString(36).substring(2) + Date.now().toString(36);
+        let id = crypto.randomUUID();
 
         document.body.insertAdjacentHTML('beforeend', `
             <kiss-dialog id="dialog-${id}" size="${(options && options.size) || ''}" type="${dialogtype}" esc="${(options && options.escape) ? 'true':'false'}">
@@ -206,5 +206,51 @@ export default {
         dialog.show();
 
         setTimeout(() => input.focus(), 300);
+    },
+
+    popout: function (content, options) {
+
+        let id = crypto.randomUUID(),
+        size = '';
+
+        options = options || {};
+
+        document.body.insertAdjacentHTML('beforeend', `
+            <kiss-popout id="popout-${id}" size="${options.size || ''}">
+                <kiss-content class="${size}">
+                    ${content}
+                </kiss-content>
+            </kiss-popout>
+        `);
+
+        let popout = document.getElementById(`popout-${id}`);
+
+        if (options && options.zIndex) {
+            popout.style.zIndex = options.zIndex;
+        }
+
+        popout.__close = popout.close;
+        popout.__show = popout.show;
+
+        popout.close = function() {
+            popout.__close();
+            setTimeout(() => {
+                popout.parentNode.removeChild(popout);
+            }, 300)
+        };
+
+        popout.show = function() {
+            popout.__show();
+
+            setTimeout(() => {
+                let ele = popout.querySelector('[autofocus]');
+
+                if (ele) {
+                    ele.focus();
+                }
+            }, 300)
+        };
+
+        return popout;
     }
 };
