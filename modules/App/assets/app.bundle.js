@@ -3206,6 +3206,8 @@
 
       popout(component, data, callbacks, options) {
 
+          let popout;
+
           data = data || {};
           callbacks = callbacks || {};
 
