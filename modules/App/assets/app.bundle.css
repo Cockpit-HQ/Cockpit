@@ -4070,6 +4070,10 @@ kiss-card[hover*="contrast"]:hover {
     background: var(--kiss-card-theme-contrast-color, #141923);
     background: var(--kiss-card-theme-contrast-color, #171d28);
 }
+.kiss-button:active {
+    transform: scale(.99);
+    filter: brightness(.9);
+}
 .kiss-button-group {
     display: inline-flex;
 }
