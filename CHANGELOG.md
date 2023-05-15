@@ -1,13 +1,15 @@
 # Release Notes
 
-## WIP
+## 2.5.1 (2023-05-15)
 
 - Fix js error thrown in dialog component
 - Remove 2FA info from internal users/load api
 - Update icons
+- Minor UI improvements
 - add `content.remove.before` event
 - Refactor `kiss-popoutmenu` component to `kiss-popout`
 - Introduce `user-info` component
+- Update Vue to v3.3.2
 - Update vendor libs
 
 ## 2.5.0 (2023-04-15)
