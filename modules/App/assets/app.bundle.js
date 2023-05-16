@@ -500,6 +500,16 @@
       }
   });
 
+  function isInViewport(element) {
+      const rect = element.getBoundingClientRect();
+      return (
+          rect.top >= 0 &&
+          rect.left >= 0 &&
+          rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+          rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+      );
+  }
+
   on$1(document.documentElement, 'click', '[kiss-popout]', function (e) {
 
       e.preventDefault();
@@ -569,6 +579,11 @@
               content.style.top = `${top}px`;
               content.style.left = `${left}px`;
 
+              if (!isInViewport(content)) {
+                  content.style.position = '';
+                  content.style.top = '';
+                  content.style.left = '';
+              }
           }
 
           this.setAttribute('open', 'true');
@@ -908,8 +923,8 @@
       return on$1(this, event, selector, handler)
   };
 
-  HTMLElement.prototype.onMutation = function(cb) {
-      return onMutation(cb, this)
+  HTMLElement.prototype.onMutation = function(callback) {
+      return onMutation(callback, this)
   };
 
   /**

@@ -14,6 +14,6 @@ HTMLElement.prototype.on = function(event, selector, handler) {
     return on(this, event, selector, handler)
 };
 
-HTMLElement.prototype.onMutation = function(cb) {
-    return onMutation(cb, this)
+HTMLElement.prototype.onMutation = function(callback) {
+    return onMutation(callback, this)
 };

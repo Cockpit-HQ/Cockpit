@@ -1,4 +1,5 @@
 import { on, trigger } from '../../js/events.js';
+import { isInViewport } from '../../js/utils.js';
 
 
 on(document.documentElement, 'click', '[kiss-popout]', function (e) {
@@ -70,6 +71,11 @@ customElements.define('kiss-popout', class extends HTMLElement {
             content.style.top = `${top}px`;
             content.style.left = `${left}px`;
 
+            if (!isInViewport(content)) {
+                content.style.position = '';
+                content.style.top = '';
+                content.style.left = '';
+            }
         }
 
         this.setAttribute('open', 'true');
