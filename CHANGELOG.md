@@ -1,5 +1,9 @@
 # Release Notes
 
+## WIP
+
+- Fix link content item dialog
+
 ## 2.5.1 (2023-05-15)
 
 - Fix js error thrown in dialog component
