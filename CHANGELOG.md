@@ -1,8 +1,9 @@
 # Release Notes
 
-## WIP
+## 2.5.2 (2023-05-18)
 
 - Fix link content item dialog
+- Update vendor libs
 
 ## 2.5.1 (2023-05-15)
 
