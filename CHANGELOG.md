@@ -1,5 +1,9 @@
 # Release Notes
 
+# WIP
+
+- Update Vue to v3.3.4
+
 ## 2.5.2 (2023-05-18)
 
 - Fix link content item dialog
