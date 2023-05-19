@@ -19,13 +19,6 @@ if ($this->helper('acl')->isSuperAdmin() && $this->helper('spaces')->isMaster())
     });
 }
 
-$this->on('app.permissions.collect', function($permissions) {
-
-    $permissions['Finder'] = [
-        'app/finder' => 'Manage files',
-    ];
-});
-
 
 $this->on('app.layout.init', function() {
     $this->helper('theme')->vars('bucketsUrl', rtrim($this->fileStorage->getURL('uploads://'), '/').'/buckets');
