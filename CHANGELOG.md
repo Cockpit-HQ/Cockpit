@@ -4,6 +4,8 @@
 
 - Try to auto-generate meaningful linked content preview if display setting is missing
 - Update Vue to v3.3.4
+- Add missing permission settings @raffaelj
+- Improve role permissions UI
 
 ## 2.5.2 (2023-05-18)
 
