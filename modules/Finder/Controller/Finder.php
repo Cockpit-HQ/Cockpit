@@ -11,7 +11,7 @@ class Finder extends App {
 
     protected function before() {
 
-        if (!$this->isAllowed('app/finder')) {
+        if (!$this->helper('acl')->isSuperAdmin()) {
             return $this->stop(401);
         }
     }

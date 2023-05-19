@@ -45,10 +45,16 @@ $this->on('app.permissions.collect', function (ArrayObject $permissions) {
 
     $permissions['Api & Security'] = [
         'app/api/manage' => 'Manage Api access',
+        'app/system/info' => 'View system info',
+        'app/resources/unlock' => 'Unlock resources',
     ];
 
     $permissions['Logs'] = [
         'app/logs' => 'View app logs',
+    ];
+
+    $permissions['Spaces'] = [
+        'app/spaces' => 'Manage spaces',
     ];
 
 });
