@@ -125,7 +125,7 @@
 
                         let permissions = {};
 
-                        Object.keys(this.permissions).forEach(group => {
+                        Object.keys(this.permissions).sort().forEach(group => {
                             if (!this.permissions[group].component) permissions[group] = this.permissions[group];
                         });
 
@@ -136,7 +136,7 @@
 
                         let permissions = {};
 
-                        Object.keys(this.permissions).forEach(group => {
+                        Object.keys(this.permissions).sort().forEach(group => {
                             if (this.permissions[group].component) permissions[group] = this.permissions[group];
                         });
 
