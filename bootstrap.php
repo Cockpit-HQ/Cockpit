@@ -1,6 +1,6 @@
 <?php
 
-define('APP_VERSION', '2.5.2');
+const APP_VERSION = '2.5.2';
 
 if (!defined('APP_START_TIME')) define('APP_START_TIME', microtime(true));
 if (!defined('APP_ADMIN')) define('APP_ADMIN', false);
@@ -26,7 +26,7 @@ spl_autoload_register(function($class) {
 
 class Cockpit {
 
-    protected static $instance = [];
+    protected static array $instance = [];
 
     public static function instance(?string $envDir = null, array $config = []): Lime\App {
 
@@ -182,46 +182,38 @@ class Cockpit {
 
             $app->trigger('app.filestorage.init', [&$storages]);
 
-            $filestorage = new FileStorage($storages);
-
-            return $filestorage;
+            return new FileStorage($storages);
         });
 
 
         // nosql storage
         $app->service('dataStorage', function() use($config) {
-            $client = new MongoHybrid\Client($config['database']['server'], $config['database']['options'], $config['database']['driverOptions']);
-            return $client;
+            return new MongoHybrid\Client($config['database']['server'], $config['database']['options'], $config['database']['driverOptions']);
         });
 
         // key-value storage
         $app->service('memory', function() use($config) {
 
-            $client = new MemoryStorage\Client($config['memory']['server'], array_merge([
+            return new MemoryStorage\Client($config['memory']['server'], array_merge([
                 'key' => $config['sec-key']
             ],$config['memory']['options']));
-
-            return $client;
         });
 
         // full-text search
         $app->service('search', function() use($config) {
-            $manager = new IndexHybrid\Manager($config['search']['server'], $config['search']['options']);
-            return $manager;
+            return new IndexHybrid\Manager($config['search']['server'], $config['search']['options']);
         });
 
         // mailer service
         $app->service('mailer', function() use($app, $config){
 
-            $options = isset($config['mailer']) ? $config['mailer']:[];
+            $options = $config['mailer'] ?? [];
 
             if (is_string($options)) {
                 parse_str($options, $options);
             }
 
-            $mailer = new \Mailer($options['transport'] ?? 'mail', $options);
-
-            return $mailer;
+            return new Mailer($options['transport'] ?? 'mail', $options);
         });
 
         $modulesPaths = [
@@ -229,7 +221,7 @@ class Cockpit {
             "{$appDir}/addons"   # addons
         ];
 
-        // if custon env dir
+        // if custom env dir
         if ($appDir != $envDir) {
             $modulesPaths[] = $config['paths']['#addons'];
         }

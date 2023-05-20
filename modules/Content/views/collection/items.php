@@ -35,6 +35,7 @@
             </div>
 
             <div class="kiss-margin" :class="{'kiss-disabled': !(fieldTypes && ((!loading && items.length) || filter || state !== false))}">
+
                 <form class="kiss-flex kiss-flex-middle" @submit.prevent="filter = txtFilter">
 
                     <input type="text" class="kiss-input kiss-flex-1 kiss-margin-xsmall-right" :placeholder="t('Filter items...')" v-model="txtFilter">
