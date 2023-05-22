@@ -11,6 +11,9 @@ require __DIR__.'/bootstrap.php';
 
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\ConsoleOutput;
+
+$output = new ConsoleOutput();
 
 $APP_SPACE = null;
 $APP_SPACE_DIR = __DIR__;
@@ -24,6 +27,9 @@ if ($spaceOption !== false && isset($argv[$spaceOption + 1])) {
     if (file_exists($spaceDir)) {
         $APP_SPACE_DIR = $spaceDir;
         $APP_SPACE = $space;
+    } else {
+        $output->writeln("<error>Space '{$space}' not found</error>");
+        exit(1);
     }
 }
 
@@ -69,4 +75,6 @@ _|_|_|_|_|
 
 $app->trigger('app.cli.init', [$cli]);
 
-$cli->run();
+$output->writeln("<info>{$app['app.name']} Tower</info> <comment>{$app['app.version']}</comment>");
+
+$cli->run(null, $output);

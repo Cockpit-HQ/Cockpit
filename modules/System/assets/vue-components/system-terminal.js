@@ -66,6 +66,7 @@ export default {
             fitAddon.fit();
 
             this.terminal.prompt();
+            this.terminal.focus();
         });
     },
 
