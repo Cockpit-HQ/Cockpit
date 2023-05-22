@@ -53,6 +53,13 @@ class Settings extends \Lime\Helper {
                 'label' => 'Spaces',
                 'permission' => 'app/spaces'
             ];
+
+            $items[] = [
+                'icon' => 'system:assets/icons/console.svg',
+                'route' => '/system/tower',
+                'label' => 'Tower',
+                'permission' => 'system/tower'
+            ];
         }
 
         $items[] = [

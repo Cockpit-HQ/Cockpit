@@ -34,4 +34,5 @@ class Settings extends App {
 
         return $this->render('system:views/info.php', compact('supportedImageTypes', 'addons', 'license'));
     }
+
 }

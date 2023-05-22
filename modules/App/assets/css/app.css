@@ -14,6 +14,8 @@
 @import "../vendor/kiss/lib.css";
 @import "./vendor/kiss.css";
 
+@import "../../../System/assets/css/system.css";
+
 vue-view { display: block; }
 vue-view:not([init="true"]) { display: none; }
 

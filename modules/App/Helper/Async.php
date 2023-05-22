@@ -2,6 +2,8 @@
 
 namespace App\Helper;
 
+use Symfony\Component\Process\PhpExecutableFinder;
+
 /**
  * Async Helper class.
  * Use only if you know what you're doing!!!
@@ -21,6 +23,10 @@ class Async extends \Lime\Helper {
     protected function initialize() {
 
         $this->phpPath = $this->app->retrieve('aysnc.php', 'php');
+
+        if ($this->phpPath === 'php') {
+            $this->phpPath = (new PhpExecutableFinder())->find();
+        }
     }
 
     public function exec($script, $params = [], $maxTime = 60) {

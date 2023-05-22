@@ -11,6 +11,7 @@ $this->bindClass('System\\Controller\\Users\\Roles', '/system/users/roles');
 $this->bindClass('System\\Controller\\Users', '/system/users');
 $this->bindClass('System\\Controller\\Utils', '/system/utils');
 $this->bindClass('System\\Controller\\Spaces', '/system/spaces');
+$this->bindClass('System\\Controller\\Tower', '/system/tower');
 $this->bindClass('System\\Controller\\Settings', '/system');
 
 // events
