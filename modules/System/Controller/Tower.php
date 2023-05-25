@@ -39,9 +39,10 @@ class Tower extends App {
             $command = substr($command, 6);
         }
 
+        $command = escapeshellcmd("tower {$command}");
         $phpBinaryPath = (new PhpExecutableFinder())->find();
 
-        $process = Process::fromShellCommandline("$phpBinaryPath tower $command");
+        $process = Process::fromShellCommandline("$phpBinaryPath {$command}");
         $process->setPty(true);
         $process->run();
 
