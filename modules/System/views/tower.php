@@ -14,7 +14,7 @@
     <vue-view>
         <template>
             <kiss-card class="kiss-padding-larger" theme="bordered" style="background:#000">
-                <span class="kiss-color-muted kiss-text-monospace kiss-size-small kiss-text-caption kiss-margin-small"><?=t('Terminal')?></span>
+                <div class="kiss-color-muted kiss-text-monospace kiss-size-small kiss-text-caption kiss-margin-small"><?=t('Terminal')?></div>
                 <system-terminal height="450"></system-terminal>
             </kiss-card>
         </template>

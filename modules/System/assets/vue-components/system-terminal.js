@@ -65,6 +65,7 @@ export default {
             this.terminal.loadAddon(fitAddon);
             fitAddon.fit();
 
+            this.terminal.writeln('\r\nHello 👋  Welcome to the Tower terminal.\r\n');
             this.terminal.prompt();
             this.terminal.focus();
         });
@@ -80,8 +81,8 @@ export default {
 
             if (this.command === 'clear') {
                 this.command = '';
-                this.terminal.clear();
                 this.terminal.prompt();
+                this.terminal.clear();
                 return;
             }
 
