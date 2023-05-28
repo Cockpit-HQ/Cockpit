@@ -33,7 +33,7 @@ function ensureWritableStorageFolder($path) {
 
 // misc checks
 $checks = array(
-    'Php version >= 8.0.0'                              => (version_compare(PHP_VERSION, '8.0.0') >= 0),
+    'Php version >= 8.1.0'                              => (version_compare(PHP_VERSION, '8.1.0') >= 0),
     'Missing PDO extension with Sqlite support'         => hasSQLiteSupport(),
     'Curl extension not available'                      => extension_loaded('curl'),
     'Fileinfo extension not available'                  => extension_loaded('fileinfo'),
@@ -87,24 +87,28 @@ if (!count($failed)) {
             exit;
         }
 
-    } catch(Throwable $e) { }
+        $created = time();
 
-    $created = time();
+        $user = [
+            'active' => true,
+            'user' => 'admin',
+            'name' => 'Admin',
+            'email' => 'admin@admin.com',
+            'password' => $app->hash('admin'),
+            'i18n' => 'en',
+            'role' => 'admin',
+            'theme' => 'auto',
+            '_modified' => $created,
+            '_created' => $created
+        ];
 
-    $user = [
-        'active' => true,
-        'user' => 'admin',
-        'name' => 'Admin',
-        'email' => 'admin@admin.com',
-        'password' => $app->hash('admin'),
-        'i18n' => 'en',
-        'role' => 'admin',
-        'theme' => 'auto',
-        '_modified' => $created,
-        '_created' => $created
-    ];
+        $app->dataStorage->save('system/users', $user);
 
-    $app->dataStorage->save('system/users', $user);
+    } catch(Throwable $e) {
+
+        $failed[] = $e->getMessage();
+
+    }
 
 }
 
@@ -116,6 +120,15 @@ if (!count($failed)) {
     <link rel="icon" type="image/png" href="../favicon.png">
     <link href="../modules/App/assets/css/app.css" type="text/css" rel="stylesheet">
     <script src="../modules/App/assets/vendor/kiss/lib.js" type="module"></script>
+    <style>
+
+        .install-card {
+            box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.034), 0 6.7px 5.3px rgba(0, 0, 0, 0.048), 0 12.5px 10px rgba(0, 0, 0, 0.06), 0 22.3px 17.9px rgba(0, 0, 0, 0.072), 0 41.8px 33.4px rgba(0, 0, 0, 0.086), 0 100px 80px rgba(0, 0, 0, 0.12);
+            border-radius: 4px;
+            overflow: hidden;
+            width: 450px;
+        }
+    </style>
     <script>
         document.documentElement.setAttribute('data-theme', getComputedStyle(document.documentElement).getPropertyValue("--app-auto-theme").trim());
     </script>
@@ -123,39 +136,77 @@ if (!count($failed)) {
 <body class="kiss-flex kiss-flex-center kiss-flex-middle">
 
 
-    <kiss-container size-small>
+    <kiss-container class="install-container">
 
-        <kiss-card class="kiss-padding-large kiss-align-center" theme="bordered contrast">
+        <kiss-card class="install-card kiss-padding-large animated <?=(count($failed) ? 'bounceInDown':'pulse')?>" theme="shadowed contrast">
 
-            <img class="kiss-margin-auto kiss-margin-large" src="../modules/App/assets/logo.svg" width="40" height="40" alt="logo">
-
-            <?php if (count($failed)): ?>
-
-                <h1>Installation failed</h1>
-
-                <?php foreach ($failed as &$info): ?>
-                <div class="kiss-margin-small">
-                    🔥  &nbsp; <?php echo @$info;?> &nbsp; 🔥
-                </div>
-                <?php endforeach; ?>
-
-                <div class="kiss-margin-large">
-                    <a class="kiss-button kiss-width-1-1" href="?<?=implode('&', [time(), ($APP_SPACE ? "space={$APP_SPACE}" : "")])?>">Retry installation</a>
+            <div>
+                <div class="kiss-flex kiss-margin">
+                    <div class="kiss-margin-right">
+                        <img src="../modules/App/assets/logo.svg" width="30" height="30"alt="logo">
+                    </div>
+                    <div class="kiss-flex-1 kiss-size-xsmall">
+                        <strong>Cockpit</strong>
+                        <div class="kiss-color-muted">Content Platform</div>
+                    </div>
                 </div>
 
-            <?php else: ?>
+                <hr class="kiss-margin-large-bottom">
 
-                <h1>Installation completed</h1>
+                <?php if (count($failed)): ?>
 
-                <div class="kiss-text-monospace">
-                    admin / admin
-                </div>
+                    <h1 class="kiss-size-3">
+                        <icon class="kiss-color-danger kiss-margin-small-right" size="larger">block</icon>
+                        Installation failed
+                    </h1>
 
-                <div class="kiss-margin-large">
-                    <a class="kiss-button kiss-button-primary kiss-width-1-1" href="../<?=($APP_SPACE ? ":{$APP_SPACE}" : "")?>" class="uk-button uk-button-large uk-button-primary uk-button-outline uk-width-1-1">Login now</a>
-                </div>
+                    <kiss-card class="kiss-padding kiss-bgcolor-contrast kiss-flex kiss-flex-column kiss-margin">
 
-            <?php endif; ?>
+                        <div class="kiss-text-caption kiss-text-bold kiss-color-muted kiss-margin-small">Reasons:</div>
+
+                        <?php foreach ($failed as $info): ?>
+                        <div class="kiss-text-monospace kiss-margin-small kiss-flex">
+                            <span>🔥</span><div class="kiss-flex-1 kiss-size-small kiss-margin-small-left"><?=$info?></div>
+                        </div>
+                        <?php endforeach; ?>
+
+                    </kiss-card>
+
+                    <div class="kiss-margin-large-bottom kiss-color-muted">
+                        Please try to fix the errors and retry the installation.
+                    </div>
+
+                    <div class="kiss-margin-large">
+                        <a class="kiss-button kiss-width-1-1" href="?<?=implode('&', [time(), ($APP_SPACE ? "space={$APP_SPACE}" : "")])?>">Retry installation</a>
+                    </div>
+
+                <?php else: ?>
+
+                    <h1 class="kiss-size-3">
+                        <icon class="kiss-color-success kiss-margin-small-right" size="larger">verified</icon>
+                        Installation completed
+                    </h1>
+
+                    <div class="kiss-text-caption kiss-text-bold kiss-color-muted kiss-margin">Next step:</div>
+
+                    <div class="kiss-margin">Please login into Cockpit using the following credentials:</div>
+
+                    <kiss-card class="kiss-text-monospace kiss-padding kiss-bgcolor-contrast kiss-flex kiss-flex-column kiss-margin">
+                        <div><icon class="kiss-color-muted kiss-margin-right" size="larger">person</icon>admin</div>
+                        <div><icon class="kiss-color-muted kiss-margin-right" size="larger">key</icon>admin</div>
+                    </kiss-card>
+
+                    <div class="kiss-margin-large-bottom kiss-color-muted">
+                        Don't forget to change the credentials after your initial login to prevent bad things from bad people.
+                    </div>
+
+                    <div class="kiss-margin-large">
+                        <a class="kiss-button kiss-button-primary kiss-width-1-1" href="../<?=($APP_SPACE ? ":{$APP_SPACE}" : "")?>" class="uk-button uk-button-large uk-button-primary uk-button-outline uk-width-1-1">Login now</a>
+                    </div>
+
+                <?php endif; ?>
+
+            </div>
 
         </kiss-card>
 

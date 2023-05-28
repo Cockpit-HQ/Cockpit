@@ -80,7 +80,7 @@ class App implements \ArrayAccess {
         $this->registry['modules'] = new ArrayObject([]);
 
         // try to guess site url
-        if (!isset($this['site_url']) && \PHP_SAPI !== 'cli') {
+        if (!isset($this->registry['site_url']) && \PHP_SAPI !== 'cli') {
 
             $url = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https':'http').'://';
 
@@ -96,7 +96,7 @@ class App implements \ArrayAccess {
             $this->registry['site_url'] = \rtrim($this->registry['site_url'], '/');
         }
 
-        if (!isset($this['docs_root'])) {
+        if (!isset($this->registry['docs_root'])) {
             $this->registry['docs_root'] = \str_replace(DIRECTORY_SEPARATOR, '/', isset($_SERVER['DOCUMENT_ROOT']) ? \realpath($_SERVER['DOCUMENT_ROOT']) : \dirname($_SERVER['SCRIPT_FILENAME']));
         }
 
@@ -104,7 +104,7 @@ class App implements \ArrayAccess {
         $this->registry['base_url']   = \rtrim($this->registry['base_url'], '/');
         $this->registry['base_route'] = \rtrim($this->registry['base_route'], '/');
 
-        self::$apps[$this['app.name']] = $this;
+        self::$apps[$this->registry['app.name']] = $this;
 
         // default helpers
         $this->helpers = new ArrayObject(\array_merge([
@@ -117,7 +117,7 @@ class App implements \ArrayAccess {
         // register simple autoloader
         spl_autoload_register(function ($class) use($self){
 
-            foreach ($self->retrieve('autoload', []) as $dir) {
+            foreach ($self->registry['autoload'] as $dir) {
 
                 $class_file = $dir.'/'.\str_replace('\\', '/', $class).'.php';
 
@@ -439,7 +439,7 @@ class App implements \ArrayAccess {
         if ($file = $this->path($path)) {
 
             $file = \str_replace(DIRECTORY_SEPARATOR, '/', $file);
-            $root = \str_replace(DIRECTORY_SEPARATOR, '/', $this['docs_root']);
+            $root = \str_replace(DIRECTORY_SEPARATOR, '/', $this->registry['docs_root']);
 
             $url = '/'.\ltrim(\str_replace($root, '', $file), '/');
             $url = \implode('/', \array_map('rawurlencode', explode('/', $url)));
@@ -648,7 +648,7 @@ class App implements \ArrayAccess {
     public function escape(?string $string, ?string $charset = null): string {
 
         if (\is_null($charset)){
-            $charset = $this['charset'];
+            $charset = $this->registry['charset'];
         }
 
         return \htmlspecialchars($string ?? '', \ENT_QUOTES, $charset);
@@ -1018,7 +1018,19 @@ class App implements \ArrayAccess {
         $context = compact('action', 'params');
         $controller = new $class($this, $context);
 
-        return \method_exists($controller, $action) && \is_callable([$controller, $action])
+        if (!\method_exists($controller, $action)) {
+
+            if (\method_exists($controller, '__catchall')) {
+
+                array_unshift($params, $action);
+                $action = '__catchall';
+
+            } else {
+                return false;
+            }
+        }
+
+        return \is_callable([$controller, $action])
                 ? \call_user_func_array([$controller,$action], $params)
                 : false;
     }
@@ -1124,6 +1136,7 @@ class App implements \ArrayAccess {
     }
 
     public function helper(string $helper): Helper {
+
         if (isset($this->helpers[$helper]) && !\is_object($this->helpers[$helper])) {
             $this->helpers[$helper] = new $this->helpers[$helper]($this);
         }
@@ -1196,7 +1209,7 @@ class App implements \ArrayAccess {
                     }
                 }
 
-                if ($autoload) $this['autoload']->append($dir);
+                if ($autoload) $this->registry['autoload']->append($dir);
             }
         }
 

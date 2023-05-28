@@ -87,9 +87,10 @@ let FieldsManager = {
 
     methods: {
 
-        add() {
+        add(previous) {
 
             this.state.editField = false;
+            this.state.position = previous ? this.fields.indexOf(previous) + 1 : false;
 
             this.field = {
                 name: '',
@@ -108,6 +109,7 @@ let FieldsManager = {
         edit(field) {
 
             this.state.editField = true;
+            this.state.position = false;
 
             if (Array.isArray(field.opts)) field.opts = {};
             if (Array.isArray(field.meta)) field.meta = {};
@@ -122,7 +124,12 @@ let FieldsManager = {
         addOrEditField() {
 
             if (!this.state.editField) {
-                this.fields.push(this.field);
+
+                if (this.state.position !== false) {
+                    this.fields.splice(this.state.position, 0, this.field);
+                } else {
+                    this.fields.push(this.field);
+                }
             }
 
             this.$forceUpdate();
@@ -160,33 +167,39 @@ let FieldsManager = {
             <app-loader v-if="!fieldTypes"></app-loader>
 
             <vue-draggable v-model="fields" v-if="fieldTypes && fields.length" handle=".fm-handle">
-                <template #item="{ element }">
-                    <kiss-card class="kiss-padding-small kiss-flex kiss-flex-middle" theme="bordered contrast" style="margin: 8px 0;">
-                        <a class="fm-handle kiss-margin-small-right kiss-color-muted"><icon>drag_handle</icon></a>
-                        <div class="kiss-margin-right">
-                            <div class="kiss-padding-small app-border-radius" :style="{background: _.get(fieldTypes, element.type+'.color', 'rgb(255, 248, 214)')}">
-                                <img :src="$base(_.get(fieldTypes, element.type+'.icon', 'system:assets/icons/edit.svg'))" width="20" height="20" style="opacity:.6" :title="element.type">
+                <template #item="{ element, index }">
+                    <div class="kiss-position-relative" style="margin: 8px 0;">
+                        <kiss-card class="kiss-padding-small kiss-flex kiss-flex-middle" theme="bordered contrast">
+                            <a class="fm-handle kiss-margin-small-right kiss-color-muted"><icon>drag_handle</icon></a>
+                            <div class="kiss-margin-right">
+                                <div class="kiss-padding-small app-border-radius" :style="{background: _.get(fieldTypes, element.type+'.color', 'rgb(255, 248, 214)')}">
+                                    <img :src="$base(_.get(fieldTypes, element.type+'.icon', 'system:assets/icons/edit.svg'))" width="20" height="20" style="opacity:.6" :title="element.type">
+                                </div>
                             </div>
+                            <div class="kiss-flex-1">
+                                <div class="kiss-text-bold">
+                                    {{ element.label || element.name }}
+                                    <icon class="kiss-color-muted kiss-margin-xsmall-left" v-if="element.i18n">language</icon>
+                                    <icon class="kiss-color-muted kiss-margin-xsmall-left" v-if="element.multiple">format_list_numbered</icon>
+                                </div>
+                                <div class="kiss-size-xsmall">
+                                    <span class="kiss-color-muted">{{ element.name }}</span>
+                                </div>
+                            </div>
+                            <div class="kiss-margin-small-right kiss-size-small kiss-color-muted">{{ element.group || '' }}</div>
+                            <a class="kiss-margin-left" @click="edit(element)"><icon>settings</icon></a>
+                            <a class="kiss-margin-left kiss-color-danger" @click="remove(element)"><icon>delete</icon></a>
+                        </kiss-card>
+
+                        <div class="kiss-position-absolute kiss-width-1-3 kiss-align-center kiss-visible-toggle" style="bottom:0;height:20px;left:50%;transform:translateX(-50%) translateY(15%);z-index:5;" v-if="fields.length > 1 && index !== (fields.length - 1)">
+                            <a class="kiss-button kiss-button-small kiss-hidden-hover animated fadeIn faster" :title="t('Add field')" @click="add(element)"><span class="kiss-size-6">+</span></a>
                         </div>
-                        <div class="kiss-flex-1">
-                            <div class="kiss-text-bold">
-                                {{ element.label || element.name }}
-                                <icon class="kiss-color-muted kiss-margin-xsmall-left" v-if="element.i18n">language</icon>
-                                <icon class="kiss-color-muted kiss-margin-xsmall-left" v-if="element.multiple">format_list_numbered</icon>
-                            </div>
-                            <div class="kiss-size-xsmall">
-                                <span class="kiss-color-muted">{{ element.name }}</span>
-                            </div>
-                        </div>
-                        <div class="kiss-margin-small-right kiss-size-small kiss-color-muted">{{ element.group || '' }}</div>
-                        <a class="kiss-margin-left" @click="edit(element)"><icon>settings</icon></a>
-                        <a class="kiss-margin-left kiss-color-danger" @click="remove(element)"><icon>delete</icon></a>
-                    </kiss-card>
+                    </div>
                 </template>
             </vue-draggable>
 
             <div class="kiss-margin kiss-align-center" v-if="fieldTypes">
-                <a class="kiss-size-large" @click="add"><icon>control_point</icon></a>
+                <a class="kiss-size-large" @click="add()"><icon>control_point</icon></a>
             </div>
 
         </div>
@@ -218,7 +231,7 @@ let FieldsManager = {
                                     <div class="kiss-text-bold kiss-size-small">{{ _.get(fieldTypes, field.type+'.label', field.type) }}</div>
                                     <div class="kiss-color-muted kiss-size-xsmall">{{ _.get(fieldTypes, field.type+'.info', '') }}</div>
                                 </div>
-                                <a class="kiss-cover" :kiss-popoutmenu="'#'+uid+'-fieldtype-selector'"></a>
+                                <a class="kiss-cover" :kiss-popout="'#'+uid+'-fieldtype-selector'"></a>
                             </kiss-card>
                         </div>
 
@@ -301,13 +314,13 @@ let FieldsManager = {
                 </kiss-content>
             </kiss-dialog>
 
-            <kiss-popoutmenu :id="uid+'-fieldtype-selector'" modal="true">
+            <kiss-popout :id="uid+'-fieldtype-selector'" modal="true">
                 <kiss-content class="kiss-width-1-2@m">
                         <div class="kiss-size-4 kiss-text-bold">{{ t('Select field type') }}</div>
                         <div class="kiss-margin">
                             <input class="kiss-input kiss-width-1-1" :placeholder="t('Filter...')" v-model="fieldTypeFilter">
                         </div>
-                        <kiss-navlist kiss-popoutmenu-close="true" v-if="field">
+                        <kiss-navlist kiss-popout-close="true" v-if="field">
                             <kiss-grid class="kiss-margin-top" cols="1@s 2@m 3@l" gap="small">
                                 <kiss-card class="kiss-padding-xsmall" hover="contrast" v-for="(f,fieldType) in filteredFieledTypes">
                                     <kiss-row class="kiss-position-relative" gap="small">
@@ -327,10 +340,10 @@ let FieldsManager = {
                             </kiss-grid>
                         </kiss-navlist>
                         <div class="kiss-margin">
-                            <button type="button" class="kiss-button kiss-button-primary kiss-width-1-1" kiss-popoutmenu-close="true">{{ t('Cancel') }}</button>
+                            <button type="button" class="kiss-button kiss-button-primary kiss-width-1-1" kiss-popout-close="true">{{ t('Cancel') }}</button>
                         </div>
                 </kiss-content>
-            </kiss-popoutmenu>
+            </kiss-popout>
         </teleport>
     `
 }

@@ -1,5 +1,5 @@
 .kiss-color-primary { color: var(--kiss-color-primary, blue) !important; }
-.kiss-color-success { color: var(--kiss-color-succcess, green) !important; }
+.kiss-color-success { color: var(--kiss-color-success, green) !important; }
 .kiss-color-danger { color: var(--kiss-color-danger, red) !important; }
 .kiss-color-warning { color: var(--kiss-color-warning, orange) !important; }
 .kiss-color-muted { color: var(--kiss-color-muted, #6d6f79) !important; }
@@ -8,7 +8,7 @@
 
 
 .kiss-bgcolor-primary { background-color: var(--kiss-color-primary, blue) !important; }
-.kiss-bgcolor-success { background-color: var(--kiss-color-succcess, green) !important; }
+.kiss-bgcolor-success { background-color: var(--kiss-color-success, green) !important; }
 .kiss-bgcolor-danger { background-color: var(--kiss-color-danger, red) !important; }
 .kiss-bgcolor-warning { background-color: var(--kiss-color-warning, orange) !important; }
 .kiss-bgcolor-muted { background-color: var(--kiss-color-muted, #6d6f79) !important; }

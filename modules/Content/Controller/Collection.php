@@ -4,6 +4,7 @@ namespace Content\Controller;
 
 use App\Controller\App;
 use ArrayObject;
+use MongoHybrid\NaturalLanguageToMongoQuery;
 
 class Collection extends App {
 
@@ -72,7 +73,6 @@ class Collection extends App {
         }
 
         $fields = $model['fields'];
-
         $locales = $this->helper('locales')->locales();
 
         if (count($locales) == 1) {
@@ -82,6 +82,45 @@ class Collection extends App {
         }
 
         $this->helper('theme')->favicon(isset($model['icon']) && $model['icon'] ? $model['icon'] : 'content:assets/icons/collection.svg', $model['color'] ?? '#000');
+
+        return $this->render('content:views/collection/item.php', compact('model', 'fields', 'locales', 'item'));
+    }
+
+    public function clone($model = null, $id = null) {
+
+        if (!$model || !$id) {
+            return false;
+        }
+
+        $model = $this->module('content')->model($model);
+
+        if (!$model || $model['type'] != 'collection') {
+            return $this->stop(404);
+        }
+
+        if (!$this->isAllowed("content/{$model['name']}/create")) {
+            return $this->stop(401);
+        }
+
+        $item = $this->module('content')->item($model['name'], ['_id' => $id]);
+
+        if (!$item) {
+            return false;
+        }
+
+        // clean meta data
+        unset($item['_id'], $item['_created'], $item['_modified'], $item['_cby'], $item['_mby']);
+
+        $item['_state'] = 0;
+
+        $fields = $model['fields'];
+        $locales = $this->helper('locales')->locales();
+
+        if (count($locales) == 1) {
+            $locales = [];
+        } else {
+            $locales[0]['visible'] = true;
+        }
 
         return $this->render('content:views/collection/item.php', compact('model', 'fields', 'locales', 'item'));
     }
@@ -117,7 +156,10 @@ class Collection extends App {
                 $_filter = null;
 
                 if (is_string($f)) {
-                    if (\preg_match('/^\{(.*)\}$/', $f)) {
+
+                    if ($f && $f[0] === ':') {
+                        $_filter = NaturalLanguageToMongoQuery::translate(substr($f, 1));
+                    } elseif (\preg_match('/^\{(.*)\}$/', $f)) {
 
                         try {
                             $_filter = json5_decode($f, true);
@@ -136,7 +178,11 @@ class Collection extends App {
 
                             foreach ($fields as $field) {
 
-                                if (!\in_array($field['type'], ['code', 'color', 'text', 'wysiwyg'])) continue;
+                                if (!\in_array($field['type'], ['code', 'color', 'text', 'wysiwyg', 'select'])) continue;
+
+                                if ($field['type'] == 'select' && ($field['opts']['multiple'] ?? false)) {
+                                    continue;
+                                }
 
                                 foreach ($terms as $term) {
                                     $_f = [];
@@ -162,13 +208,20 @@ class Collection extends App {
             $options['filter']['_state'] = intval($state);
         }
 
-        $items = $this->app->module('content')->items($model['name'], $options, $process);
-        $count = $this->app->module('content')->count($model['name'], $options['filter'] ?? []);
-        $pages = isset($options['limit']) ? ceil($count / $options['limit']) : 1;
-        $page  = 1;
+        try {
+            $items = $this->app->module('content')->items($model['name'], $options, $process);
+            $count = $this->app->module('content')->count($model['name'], $options['filter'] ?? []);
+            $pages = isset($options['limit']) ? ceil($count / $options['limit']) : 1;
+            $page  = 1;
 
-        if ($pages > 1 && isset($options['skip'])) {
-            $page = ceil($options['skip'] / $options['limit']) + 1;
+            if ($pages > 1 && isset($options['skip'])) {
+                $page = ceil($options['skip'] / $options['limit']) + 1;
+            }
+        } catch (\Exception $e) {
+            $items = [];
+            $count = 0;
+            $pages = 1;
+            $page  = 1;
         }
 
         return compact('items', 'count', 'pages', 'page');
@@ -225,6 +278,34 @@ class Collection extends App {
         ];
 
         $this->app->dataStorage->update("content/collections/{$model['name']}", ['_id' => ['$in' => $ids]], $data);
+
+        return ['success' => true];
+    }
+
+    public function batchUpdate($model = null) {
+
+        $model = $this->module('content')->model($model);
+        $data = $this->param('data');
+        $filter = $this->param('filter');
+
+        if (!$model || $model['type'] != 'collection' || !$data) {
+            return $this->stop(404);
+        }
+
+        if (!$this->isAllowed("content/{$model['name']}/update")) {
+            return $this->stop(401);
+        }
+
+        $keys = array_keys($data);
+
+        foreach ($keys as $key) {
+            if ($key[0] === '_') unset($data[$key]);
+        }
+
+        $data['_mby'] = $this->user['_id'];
+        $data['_modified'] = time();
+
+        $this->app->dataStorage->update("content/collections/{$model['name']}", $filter, $data);
 
         return ['success' => true];
     }

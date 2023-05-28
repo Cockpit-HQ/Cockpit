@@ -92,10 +92,10 @@ class Client {
      * Delete Key(s)
      *
      * @param  string $collection
-     * @param  string $key
+     * @param  string|array $key
      * @return integer
      */
-    public function removeKey(string $collection, string $key): mixed {
+    public function removeKey(string $collection, mixed $key): mixed {
         return $this->driver->remove($collection, ['key' => (is_array($key) ? ['$in' => $key] : $key)]);
     }
 
@@ -105,8 +105,8 @@ class Client {
      * @param  string $collection @param  string $collection
      * @param  string $key
      */
-    public function keyExists(string $collection, string $key): mixed {
-        return $this->driver->count($collection, ['key' => $key]);;
+    public function keyExists(string $collection, string $key): bool {
+        return $this->driver->count($collection, ['key' => $key]) > 0;
     }
 
     /**

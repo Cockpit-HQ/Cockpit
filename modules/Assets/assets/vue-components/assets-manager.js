@@ -307,7 +307,7 @@ export default {
 
             <kiss-grid cols="2@s 5@m 6@xl" class="spotlight-group" gap="small" v-if="!loading && assets.length" match="true" hover="shadow">
 
-                    <kiss-card class="kiss-position-relative kiss-bgcolor-contrast" theme="bordered" :style="{borderColor: (selectedAsset && selectedAsset._id == asset._id && 'var(--kiss-color-primary)') || null}" v-for="asset in assets">
+                    <kiss-card class="kiss-position-relative kiss-bgcolor-contrast" theme="bordered" hover="shadow" :style="{borderColor: (selectedAsset && selectedAsset._id == asset._id && 'var(--kiss-color-primary)') || null}" v-for="asset in assets">
                         <div class="kiss-position-relative" :class="{'kiss-bgcolor-transparentimage': asset.type == 'image'}">
                             <canvas width="400" height="300"></canvas>
                             <div class="kiss-cover kiss-padding kiss-flex kiss-flex-middle kiss-flex-center">
@@ -377,7 +377,7 @@ export default {
         </app-actionbar>
 
         <teleport to="body">
-            <kiss-popoutmenu :open="actionAsset && 'true'" id="asset-menu-actions" @popoutmenuclose="toggleAssetActions(null)">
+            <kiss-popout :open="actionAsset && 'true'" @popoutclose="toggleAssetActions(null)">
                 <kiss-content>
                     <kiss-navlist class="kiss-margin">
                         <ul>
@@ -414,9 +414,9 @@ export default {
                         </ul>
                     </kiss-navlist>
                 </kiss-content>
-            </kiss-popoutmenu>
+            </kiss-popout>
 
-            <kiss-popoutmenu :open="actionFolder && 'true'" id="asset-folder-actions" @popoutmenuclose="toggleFolderActions(null)">
+            <kiss-popout :open="actionFolder && 'true'" @popoutclose="toggleFolderActions(null)">
                 <kiss-content>
                     <kiss-navlist class="kiss-margin">
                         <ul>
@@ -440,7 +440,7 @@ export default {
                         </ul>
                     </kiss-navlist>
                 </kiss-content>
-            </kiss-popoutmenu>
+            </kiss-popout>
 
         </teleport>
     `

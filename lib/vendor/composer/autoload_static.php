@@ -4,23 +4,22 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit00d1f9b6bf944011268c41c2b4662055
+class ComposerStaticInit7664f6a98cbba47845afadcadc7d0442
 {
     public static $files = array (
-        '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
-        '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
+        '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
+        '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
+        '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
         '8825ede83f2f289127722d4e842cf7e8' => __DIR__ . '/..' . '/symfony/polyfill-intl-grapheme/bootstrap.php',
         'e69f7f6ee287b969198c3c9d6777bd38' => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer/bootstrap.php',
         'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
-        '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
         '0d59ee240a4cd96ddbb4ff164fccea4d' => __DIR__ . '/..' . '/symfony/polyfill-php73/bootstrap.php',
         'b6b991a57620e2fb6b2f66f03fe9ddc2' => __DIR__ . '/..' . '/symfony/string/Resources/functions.php',
-        'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
-        '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
-        '23c18046f52bef3eea034657bafda50f' => __DIR__ . '/..' . '/symfony/polyfill-php81/bootstrap.php',
         '7aed44d824e149ce152c0fb82af9379a' => __DIR__ . '/..' . '/colinodell/json5/src/global.php',
+        '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         '3a37ebac017bc098e9a86b35401e7a68' => __DIR__ . '/..' . '/mongodb/mongodb/src/functions.php',
+        '23c18046f52bef3eea034657bafda50f' => __DIR__ . '/..' . '/symfony/polyfill-php81/bootstrap.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -40,6 +39,7 @@ class ComposerStaticInit00d1f9b6bf944011268c41c2b4662055
             'Symfony\\Contracts\\Service\\' => 26,
             'Symfony\\Component\\Yaml\\' => 23,
             'Symfony\\Component\\String\\' => 25,
+            'Symfony\\Component\\Process\\' => 26,
             'Symfony\\Component\\Finder\\' => 25,
             'Symfony\\Component\\Console\\' => 26,
         ),
@@ -67,7 +67,9 @@ class ComposerStaticInit00d1f9b6bf944011268c41c2b4662055
         'L' => 
         array (
             'League\\MimeTypeDetection\\' => 25,
+            'League\\Flysystem\\Local\\' => 23,
             'League\\Flysystem\\' => 17,
+            'League\\ColorExtractor\\' => 22,
         ),
         'J' => 
         array (
@@ -92,6 +94,7 @@ class ComposerStaticInit00d1f9b6bf944011268c41c2b4662055
         ),
         'C' => 
         array (
+            'ColorThief\\' => 11,
             'ColinODell\\Json5\\' => 17,
         ),
         'B' => 
@@ -145,6 +148,10 @@ class ComposerStaticInit00d1f9b6bf944011268c41c2b4662055
         array (
             0 => __DIR__ . '/..' . '/symfony/string',
         ),
+        'Symfony\\Component\\Process\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/process',
+        ),
         'Symfony\\Component\\Finder\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/finder',
@@ -194,9 +201,17 @@ class ComposerStaticInit00d1f9b6bf944011268c41c2b4662055
         array (
             0 => __DIR__ . '/..' . '/league/mime-type-detection/src',
         ),
+        'League\\Flysystem\\Local\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/league/flysystem-local',
+        ),
         'League\\Flysystem\\' => 
         array (
             0 => __DIR__ . '/..' . '/league/flysystem/src',
+        ),
+        'League\\ColorExtractor\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/league/color-extractor/src',
         ),
         'Jean85\\' => 
         array (
@@ -234,6 +249,10 @@ class ComposerStaticInit00d1f9b6bf944011268c41c2b4662055
         array (
             0 => __DIR__ . '/..' . '/dasprid/enum/src',
         ),
+        'ColorThief\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/ksubileau/color-thief-php/src/ColorThief',
+        ),
         'ColinODell\\Json5\\' => 
         array (
             0 => __DIR__ . '/..' . '/colinodell/json5/src',
@@ -242,10 +261,6 @@ class ComposerStaticInit00d1f9b6bf944011268c41c2b4662055
         array (
             0 => __DIR__ . '/..' . '/bacon/bacon-qr-code/src',
         ),
-    );
-
-    public static $fallbackDirsPsr4 = array (
-        0 => __DIR__ . '/..' . '/league/color-extractor/src',
     );
 
     public static $prefixesPsr0 = array (
@@ -322,6 +337,21 @@ class ComposerStaticInit00d1f9b6bf944011268c41c2b4662055
         'BaconQrCode\\Writer' => __DIR__ . '/..' . '/bacon/bacon-qr-code/src/Writer.php',
         'ColinODell\\Json5\\Json5Decoder' => __DIR__ . '/..' . '/colinodell/json5/src/Json5Decoder.php',
         'ColinODell\\Json5\\SyntaxError' => __DIR__ . '/..' . '/colinodell/json5/src/SyntaxError.php',
+        'ColorThief\\Color' => __DIR__ . '/..' . '/ksubileau/color-thief-php/src/ColorThief/Color.php',
+        'ColorThief\\ColorThief' => __DIR__ . '/..' . '/ksubileau/color-thief-php/src/ColorThief/ColorThief.php',
+        'ColorThief\\Exception\\Exception' => __DIR__ . '/..' . '/ksubileau/color-thief-php/src/ColorThief/Exception/Exception.php',
+        'ColorThief\\Exception\\InvalidArgumentException' => __DIR__ . '/..' . '/ksubileau/color-thief-php/src/ColorThief/Exception/InvalidArgumentException.php',
+        'ColorThief\\Exception\\NotReadableException' => __DIR__ . '/..' . '/ksubileau/color-thief-php/src/ColorThief/Exception/NotReadableException.php',
+        'ColorThief\\Exception\\NotSupportedException' => __DIR__ . '/..' . '/ksubileau/color-thief-php/src/ColorThief/Exception/NotSupportedException.php',
+        'ColorThief\\Exception\\RuntimeException' => __DIR__ . '/..' . '/ksubileau/color-thief-php/src/ColorThief/Exception/RuntimeException.php',
+        'ColorThief\\Image\\Adapter\\AbstractAdapter' => __DIR__ . '/..' . '/ksubileau/color-thief-php/src/ColorThief/Image/Adapter/AbstractAdapter.php',
+        'ColorThief\\Image\\Adapter\\AdapterInterface' => __DIR__ . '/..' . '/ksubileau/color-thief-php/src/ColorThief/Image/Adapter/AdapterInterface.php',
+        'ColorThief\\Image\\Adapter\\GdAdapter' => __DIR__ . '/..' . '/ksubileau/color-thief-php/src/ColorThief/Image/Adapter/GdAdapter.php',
+        'ColorThief\\Image\\Adapter\\GmagickAdapter' => __DIR__ . '/..' . '/ksubileau/color-thief-php/src/ColorThief/Image/Adapter/GmagickAdapter.php',
+        'ColorThief\\Image\\Adapter\\ImagickAdapter' => __DIR__ . '/..' . '/ksubileau/color-thief-php/src/ColorThief/Image/Adapter/ImagickAdapter.php',
+        'ColorThief\\Image\\ImageLoader' => __DIR__ . '/..' . '/ksubileau/color-thief-php/src/ColorThief/Image/ImageLoader.php',
+        'ColorThief\\PQueue' => __DIR__ . '/..' . '/ksubileau/color-thief-php/src/ColorThief/PQueue.php',
+        'ColorThief\\VBox' => __DIR__ . '/..' . '/ksubileau/color-thief-php/src/ColorThief/VBox.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'DASPRiD\\Enum\\AbstractEnum' => __DIR__ . '/..' . '/dasprid/enum/src/AbstractEnum.php',
         'DASPRiD\\Enum\\EnumMap' => __DIR__ . '/..' . '/dasprid/enum/src/EnumMap.php',
@@ -662,9 +692,9 @@ class ComposerStaticInit00d1f9b6bf944011268c41c2b4662055
         'Jean85\\PrettyVersions' => __DIR__ . '/..' . '/jean85/pretty-package-versions/src/PrettyVersions.php',
         'Jean85\\Version' => __DIR__ . '/..' . '/jean85/pretty-package-versions/src/Version.php',
         'JsonException' => __DIR__ . '/..' . '/symfony/polyfill-php73/Resources/stubs/JsonException.php',
-        'League\\ColorExtractor\\Color' => __DIR__ . '/..' . '/league/color-extractor/src/League/ColorExtractor/Color.php',
-        'League\\ColorExtractor\\ColorExtractor' => __DIR__ . '/..' . '/league/color-extractor/src/League/ColorExtractor/ColorExtractor.php',
-        'League\\ColorExtractor\\Palette' => __DIR__ . '/..' . '/league/color-extractor/src/League/ColorExtractor/Palette.php',
+        'League\\ColorExtractor\\Color' => __DIR__ . '/..' . '/league/color-extractor/src/Color.php',
+        'League\\ColorExtractor\\ColorExtractor' => __DIR__ . '/..' . '/league/color-extractor/src/ColorExtractor.php',
+        'League\\ColorExtractor\\Palette' => __DIR__ . '/..' . '/league/color-extractor/src/Palette.php',
         'League\\Flysystem\\CalculateChecksumFromStream' => __DIR__ . '/..' . '/league/flysystem/src/CalculateChecksumFromStream.php',
         'League\\Flysystem\\ChecksumAlgoIsNotSupported' => __DIR__ . '/..' . '/league/flysystem/src/ChecksumAlgoIsNotSupported.php',
         'League\\Flysystem\\ChecksumProvider' => __DIR__ . '/..' . '/league/flysystem/src/ChecksumProvider.php',
@@ -682,8 +712,8 @@ class ComposerStaticInit00d1f9b6bf944011268c41c2b4662055
         'League\\Flysystem\\FilesystemWriter' => __DIR__ . '/..' . '/league/flysystem/src/FilesystemWriter.php',
         'League\\Flysystem\\InvalidStreamProvided' => __DIR__ . '/..' . '/league/flysystem/src/InvalidStreamProvided.php',
         'League\\Flysystem\\InvalidVisibilityProvided' => __DIR__ . '/..' . '/league/flysystem/src/InvalidVisibilityProvided.php',
-        'League\\Flysystem\\Local\\FallbackMimeTypeDetector' => __DIR__ . '/..' . '/league/flysystem/src/Local/FallbackMimeTypeDetector.php',
-        'League\\Flysystem\\Local\\LocalFilesystemAdapter' => __DIR__ . '/..' . '/league/flysystem/src/Local/LocalFilesystemAdapter.php',
+        'League\\Flysystem\\Local\\FallbackMimeTypeDetector' => __DIR__ . '/..' . '/league/flysystem-local/FallbackMimeTypeDetector.php',
+        'League\\Flysystem\\Local\\LocalFilesystemAdapter' => __DIR__ . '/..' . '/league/flysystem-local/LocalFilesystemAdapter.php',
         'League\\Flysystem\\MountManager' => __DIR__ . '/..' . '/league/flysystem/src/MountManager.php',
         'League\\Flysystem\\PathNormalizer' => __DIR__ . '/..' . '/league/flysystem/src/PathNormalizer.php',
         'League\\Flysystem\\PathPrefixer' => __DIR__ . '/..' . '/league/flysystem/src/PathPrefixer.php',
@@ -919,6 +949,7 @@ class ComposerStaticInit00d1f9b6bf944011268c41c2b4662055
         'OpenApi\\Processors\\Concerns\\CollectorTrait' => __DIR__ . '/..' . '/zircote/swagger-php/src/Processors/Concerns/CollectorTrait.php',
         'OpenApi\\Processors\\Concerns\\DocblockTrait' => __DIR__ . '/..' . '/zircote/swagger-php/src/Processors/Concerns/DocblockTrait.php',
         'OpenApi\\Processors\\Concerns\\MergePropertiesTrait' => __DIR__ . '/..' . '/zircote/swagger-php/src/Processors/Concerns/MergePropertiesTrait.php',
+        'OpenApi\\Processors\\Concerns\\RefTrait' => __DIR__ . '/..' . '/zircote/swagger-php/src/Processors/Concerns/RefTrait.php',
         'OpenApi\\Processors\\Concerns\\TypesTrait' => __DIR__ . '/..' . '/zircote/swagger-php/src/Processors/Concerns/TypesTrait.php',
         'OpenApi\\Processors\\DocBlockDescriptions' => __DIR__ . '/..' . '/zircote/swagger-php/src/Processors/DocBlockDescriptions.php',
         'OpenApi\\Processors\\ExpandClasses' => __DIR__ . '/..' . '/zircote/swagger-php/src/Processors/ExpandClasses.php',
@@ -933,6 +964,7 @@ class ComposerStaticInit00d1f9b6bf944011268c41c2b4662055
         'OpenApi\\Processors\\ProcessorInterface' => __DIR__ . '/..' . '/zircote/swagger-php/src/Processors/ProcessorInterface.php',
         'OpenApi\\Serializer' => __DIR__ . '/..' . '/zircote/swagger-php/src/Serializer.php',
         'OpenApi\\Util' => __DIR__ . '/..' . '/zircote/swagger-php/src/Util.php',
+        'PHPMailer\\PHPMailer\\DSNConfigurator' => __DIR__ . '/..' . '/phpmailer/phpmailer/src/DSNConfigurator.php',
         'PHPMailer\\PHPMailer\\Exception' => __DIR__ . '/..' . '/phpmailer/phpmailer/src/Exception.php',
         'PHPMailer\\PHPMailer\\OAuth' => __DIR__ . '/..' . '/phpmailer/phpmailer/src/OAuth.php',
         'PHPMailer\\PHPMailer\\OAuthTokenProvider' => __DIR__ . '/..' . '/phpmailer/phpmailer/src/OAuthTokenProvider.php',
@@ -1126,6 +1158,23 @@ class ComposerStaticInit00d1f9b6bf944011268c41c2b4662055
         'Symfony\\Component\\Finder\\Iterator\\SortableIterator' => __DIR__ . '/..' . '/symfony/finder/Iterator/SortableIterator.php',
         'Symfony\\Component\\Finder\\Iterator\\VcsIgnoredFilterIterator' => __DIR__ . '/..' . '/symfony/finder/Iterator/VcsIgnoredFilterIterator.php',
         'Symfony\\Component\\Finder\\SplFileInfo' => __DIR__ . '/..' . '/symfony/finder/SplFileInfo.php',
+        'Symfony\\Component\\Process\\Exception\\ExceptionInterface' => __DIR__ . '/..' . '/symfony/process/Exception/ExceptionInterface.php',
+        'Symfony\\Component\\Process\\Exception\\InvalidArgumentException' => __DIR__ . '/..' . '/symfony/process/Exception/InvalidArgumentException.php',
+        'Symfony\\Component\\Process\\Exception\\LogicException' => __DIR__ . '/..' . '/symfony/process/Exception/LogicException.php',
+        'Symfony\\Component\\Process\\Exception\\ProcessFailedException' => __DIR__ . '/..' . '/symfony/process/Exception/ProcessFailedException.php',
+        'Symfony\\Component\\Process\\Exception\\ProcessSignaledException' => __DIR__ . '/..' . '/symfony/process/Exception/ProcessSignaledException.php',
+        'Symfony\\Component\\Process\\Exception\\ProcessTimedOutException' => __DIR__ . '/..' . '/symfony/process/Exception/ProcessTimedOutException.php',
+        'Symfony\\Component\\Process\\Exception\\RuntimeException' => __DIR__ . '/..' . '/symfony/process/Exception/RuntimeException.php',
+        'Symfony\\Component\\Process\\ExecutableFinder' => __DIR__ . '/..' . '/symfony/process/ExecutableFinder.php',
+        'Symfony\\Component\\Process\\InputStream' => __DIR__ . '/..' . '/symfony/process/InputStream.php',
+        'Symfony\\Component\\Process\\PhpExecutableFinder' => __DIR__ . '/..' . '/symfony/process/PhpExecutableFinder.php',
+        'Symfony\\Component\\Process\\PhpProcess' => __DIR__ . '/..' . '/symfony/process/PhpProcess.php',
+        'Symfony\\Component\\Process\\Pipes\\AbstractPipes' => __DIR__ . '/..' . '/symfony/process/Pipes/AbstractPipes.php',
+        'Symfony\\Component\\Process\\Pipes\\PipesInterface' => __DIR__ . '/..' . '/symfony/process/Pipes/PipesInterface.php',
+        'Symfony\\Component\\Process\\Pipes\\UnixPipes' => __DIR__ . '/..' . '/symfony/process/Pipes/UnixPipes.php',
+        'Symfony\\Component\\Process\\Pipes\\WindowsPipes' => __DIR__ . '/..' . '/symfony/process/Pipes/WindowsPipes.php',
+        'Symfony\\Component\\Process\\Process' => __DIR__ . '/..' . '/symfony/process/Process.php',
+        'Symfony\\Component\\Process\\ProcessUtils' => __DIR__ . '/..' . '/symfony/process/ProcessUtils.php',
         'Symfony\\Component\\String\\AbstractString' => __DIR__ . '/..' . '/symfony/string/AbstractString.php',
         'Symfony\\Component\\String\\AbstractUnicodeString' => __DIR__ . '/..' . '/symfony/string/AbstractUnicodeString.php',
         'Symfony\\Component\\String\\ByteString' => __DIR__ . '/..' . '/symfony/string/ByteString.php',
@@ -1181,11 +1230,10 @@ class ComposerStaticInit00d1f9b6bf944011268c41c2b4662055
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit00d1f9b6bf944011268c41c2b4662055::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit00d1f9b6bf944011268c41c2b4662055::$prefixDirsPsr4;
-            $loader->fallbackDirsPsr4 = ComposerStaticInit00d1f9b6bf944011268c41c2b4662055::$fallbackDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit00d1f9b6bf944011268c41c2b4662055::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit00d1f9b6bf944011268c41c2b4662055::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit7664f6a98cbba47845afadcadc7d0442::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit7664f6a98cbba47845afadcadc7d0442::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit7664f6a98cbba47845afadcadc7d0442::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit7664f6a98cbba47845afadcadc7d0442::$classMap;
 
         }, null, ClassLoader::class);
     }

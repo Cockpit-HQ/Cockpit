@@ -8,6 +8,12 @@ $this->on('app.admin.init', function() {
     include(__DIR__.'/admin.php');
 });
 
+// load cli related code
+$this->on('app.cli.init', function($cli) {
+    $app = $this;
+    include(__DIR__.'/cli.php');
+});
+
 // load api request related code
 $this->on('app.api.request', function() {
     include(__DIR__.'/api.php');
@@ -258,13 +264,13 @@ $this->module('content')->extend([
             return null;
         }
 
-        $this->app->trigger('content.item.save.before', [$modelName, &$item, $isUpdate]);
-        $this->app->trigger("content.item.save.before.{$modelName}", [&$item, $isUpdate]);
+        $this->app->trigger('content.item.save.before', [$modelName, &$item, $isUpdate, $collection]);
+        $this->app->trigger("content.item.save.before.{$modelName}", [&$item, $isUpdate, $collection]);
 
         $this->app->dataStorage->save($collection, $item);
 
-        $this->app->trigger('content.item.save', [$modelName, $item, $isUpdate]);
-        $this->app->trigger("content.item.save.{$modelName}", [&$item, $isUpdate]);
+        $this->app->trigger('content.item.save', [$modelName, $item, $isUpdate, $collection]);
+        $this->app->trigger("content.item.save.{$modelName}", [$item, $isUpdate, $collection]);
 
         return $item;
     },
@@ -320,11 +326,11 @@ $this->module('content')->extend([
 
         $items = (array) $this->app->dataStorage->find($collection, $options);
 
-        if (isset($process['locale'])) {
+        if ($process['locale'] ?? false) {
             $items = $this->app->helper('locales')->applyLocales($items, $process['locale']);
         }
 
-        if (isset($process['populate']) && $process['populate']) {
+        if ($process['populate'] ?? false) {
             $items = $this->populate($items, $process['populate'], 0, $process);
         }
 
@@ -344,6 +350,8 @@ $this->module('content')->extend([
         }
 
         $collection = "content/collections/{$modelName}";
+
+        $this->app->trigger('content.remove.before', [$modelName, &$filter, $collection]);
 
         $result = $this->app->dataStorage->remove($collection, $filter);
 
@@ -370,6 +378,32 @@ $this->module('content')->extend([
 
         return $this->app->dataStorage->count($collection, $filter);
 
+    },
+
+    'tree' => function(string $modelName, $parentId = null, ?array $filter = null, ?array $fields = null, $process = []) {
+
+        $filter = is_array($filter) ? $filter : [];
+        $filter['_pid'] = $parentId;
+
+        $items = $this->app->dataStorage->find("content/collections/{$modelName}", [
+            'filter' => $filter,
+            'fields' => $fields,
+            'sort' => ['_o' => 1]
+        ])->toArray();
+
+        foreach ($items as &$item) {
+            $item['_children'] = $this->tree($modelName, $item['_id'], $filter, $fields);
+        }
+
+        if (isset($process['locale'])) {
+            $items = $this->app->helper('locales')->applyLocales($items, $process['locale']);
+        }
+
+        if (isset($process['populate']) && $process['populate']) {
+            $items = $this->populate($items, $process['populate'], 0, $process);
+        }
+
+        return $items;
     },
 
     'populate' => function(array $array, $maxlevel = -1, $level = 0, $process = []) {

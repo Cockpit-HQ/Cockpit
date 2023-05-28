@@ -1,8 +1,5 @@
 <?php
 
-include_once(__DIR__.'/lib/vendor/autoload.php');
-include_once(__DIR__.'/lib/SVGSanitizer.php');
-
 // Register Helpers
 $this->helpers['asset'] = 'Assets\\Helper\\Asset';
 
@@ -79,6 +76,11 @@ $this->module('assets')->extend([
                 $_file  = $this->app->path('#tmp:').'/'.$files['name'][$i];
                 $_isAllowed = $allowed === true ? true : preg_match("/\.({$allowed})$/i", $_file);
                 $_sizeAllowed = $max_size ? filesize($files['tmp_name'][$i]) < $max_size : true;
+
+                // prevent uploading php files
+                if ($_isAllowed && in_array(strtolower(pathinfo($_file, PATHINFO_EXTENSION)), ['php', 'phar', 'phtml'])) {
+                    $_isAllowed = false;
+                }
 
                 if (!$files['error'][$i] && $_isAllowed && $_sizeAllowed && move_uploaded_file($files['tmp_name'][$i], $_file)) {
 

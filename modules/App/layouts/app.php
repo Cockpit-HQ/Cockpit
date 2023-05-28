@@ -112,14 +112,17 @@
                     <a class="kiss-link-muted kiss-margin-small-left kiss-hidden@m" href="#app-offcanvas" kiss-offcanvas>
                         <icon>more_horiz</icon>
                     </a>
-                    <?php if($this->retrieve('app_space')): ?>
+                    <?php if ($this->retrieve('app_space')): ?>
                     <div class="kiss-margin-small-left"><span class="kiss-badge kiss-color-primary kiss-badge-outline kiss-text-upper"><?=str_replace(['-', '_'], ' ', $this->retrieve('app_space'))?></span></div>
                     <?php endif ?>
                     <div class="kiss-flex-1 kiss-margin-left">
 
                     </div>
+
+                    <app-license></app-license>
+
                     <div class="kiss-margin-left">
-                        <a kiss-popoutmenu="#app-account-menu">
+                        <a kiss-popout="#app-account-menu">
                             <app-avatar size="30" name="<?=$this['user/name']?>"></app-avatar>
                         </a>
                     </div>
@@ -130,7 +133,7 @@
         </main>
     </div>
 
-    <kiss-popoutmenu id="app-account-menu">
+    <kiss-popout id="app-account-menu">
         <kiss-content>
 
             <kiss-navlist>
@@ -142,7 +145,7 @@
                 </ul>
             </kiss-navlist>
         </kiss-content>
-    </kiss-popoutmenu>
+    </kiss-popout>
 
     <kiss-offcanvas id="app-offcanvas">
         <kiss-content class="kiss-flex kiss-flex-column">

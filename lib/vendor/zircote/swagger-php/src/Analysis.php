@@ -297,28 +297,22 @@ class Analysis
     }
 
     /**
-     * @param string|array $classes One ore more class names
-     * @param bool         $strict  in non-strict mode child classes are also detected
+     * @param class-string|array<class-string> $classes one or more class names
+     * @param bool                             $strict  in non-strict mode child classes are also detected
      *
      * @return OA\AbstractAnnotation[]
      */
     public function getAnnotationsOfType($classes, bool $strict = false): array
     {
+        $unique = new \SplObjectStorage();
         $annotations = [];
-        if ($strict) {
-            foreach ((array) $classes as $class) {
-                foreach ($this->annotations as $annotation) {
-                    if (get_class($annotation) === $class) {
-                        $annotations[] = $annotation;
-                    }
-                }
-            }
-        } else {
-            foreach ((array) $classes as $class) {
-                foreach ($this->annotations as $annotation) {
-                    if ($annotation instanceof $class) {
-                        $annotations[] = $annotation;
-                    }
+
+        foreach ((array) $classes as $class) {
+            /** @var OA\AbstractAnnotation $annotation */
+            foreach ($this->annotations as $annotation) {
+                if ($annotation instanceof $class && (!$strict || ($annotation->isRoot($class) && !$unique->contains($annotation)))) {
+                    $unique->attach($annotation);
+                    $annotations[] = $annotation;
                 }
             }
         }
@@ -338,7 +332,7 @@ class Analysis
                 $definition = $definitions[$fqdn];
                 if (is_iterable($definition['context']->annotations)) {
                     foreach (array_reverse($definition['context']->annotations) as $annotation) {
-                        if ($annotation->isRoot(OA\Schema::class) && !$annotation->_context->is('generated')) {
+                        if ($annotation instanceof OA\Schema && $annotation->isRoot(OA\Schema::class) && !$annotation->_context->is('generated')) {
                             return $annotation;
                         }
                     }

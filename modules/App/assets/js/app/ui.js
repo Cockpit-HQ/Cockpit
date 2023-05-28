@@ -31,7 +31,7 @@ export default {
 
     offcanvas: function (content, options) {
 
-        let id = Math.random().toString(36).substring(2) + Date.now().toString(36),
+        let id = crypto.randomUUID(),
             size = '';
 
         options = options || {};
@@ -93,7 +93,7 @@ export default {
 
     dialog: function (content, options, dialogtype) {
 
-        let id = Math.random().toString(36).substring(2) + Date.now().toString(36);
+        let id = crypto.randomUUID();
 
         document.body.insertAdjacentHTML('beforeend', `
             <kiss-dialog id="dialog-${id}" size="${(options && options.size) || ''}" type="${dialogtype}" esc="${(options && options.escape) ? 'true':'false'}">
@@ -137,11 +137,11 @@ export default {
         options = Object.assign({escape:true}, options || {});
 
         let dialog = this.dialog(/*html*/`
-            <div class="kiss-margin">
+            <div class="kiss-margin kiss-dialog-alert-message">
                 ${content}
             </div>
             <div class="kiss-margin-top kiss-flex kiss-flex-middle">
-                <button type="button" class="kiss-button kiss-button-primary kiss-flex-1" kiss-dialog-close>${App.i18n.get('Ok')}</button>
+                <button type="button" class="kiss-button kiss-button-large kiss-button-primary kiss-flex-1" kiss-dialog-close>${App.i18n.get('Ok')}</button>
             </div>
         `, options, 'alert');
 
@@ -153,12 +153,12 @@ export default {
         options = Object.assign({escape:true}, options || {});
 
         let dialog = this.dialog(/*html*/`
-            <div class="kiss-margin-bottom">
+            <div class="kiss-margin-bottom kiss-dialog-confirm-message">
                 ${text}
             </div>
             <div class="kiss-margin-top kiss-flex kiss-flex-middle kiss-button-group">
-                <button type="button" class="kiss-button-cancel kiss-button kiss-flex-1">${App.i18n.get('Cancel')}</button>
-                <button type="button" class="kiss-button-confirm kiss-button kiss-button-primary kiss-flex-1">${App.i18n.get('Ok')}</button>
+                <button type="button" class="kiss-button-cancel kiss-button kiss-button-large kiss-flex-1">${App.i18n.get('Cancel')}</button>
+                <button type="button" class="kiss-button-confirm kiss-button kiss-button-large kiss-button-primary kiss-flex-1">${App.i18n.get('Ok')}</button>
             </div>
         `, options, 'confirm');
 
@@ -178,7 +178,7 @@ export default {
     prompt: function (text, value = '', clb, options) {
         let dialog = this.dialog(/*html*/`
             <form>
-                <div class="kiss-margin kiss-text-bold">${text}</div>
+                <div class="kiss-margin kiss-dialog-prompt-message">${text}</div>
                 <div class="kiss-margin-bottom">
                     <input class="kiss-width-1-1 kiss-input" type="text" required>
                 </div>
@@ -187,7 +187,7 @@ export default {
                     <button type="submit" class="kiss-button-confirm kiss-button kiss-button-primary kiss-flex-1">${App.i18n.get('Ok')}</button>
                 </div>
             </form>
-        `, options, 'confirm');
+        `, options, 'prompt');
 
         let input = dialog.querySelector('.kiss-input');
 
@@ -206,5 +206,51 @@ export default {
         dialog.show();
 
         setTimeout(() => input.focus(), 300);
+    },
+
+    popout: function (content, options) {
+
+        let id = crypto.randomUUID(),
+        size = '';
+
+        options = options || {};
+
+        document.body.insertAdjacentHTML('beforeend', `
+            <kiss-popout id="popout-${id}" size="${options.size || ''}">
+                <kiss-content class="${size}">
+                    ${content}
+                </kiss-content>
+            </kiss-popout>
+        `);
+
+        let popout = document.getElementById(`popout-${id}`);
+
+        if (options && options.zIndex) {
+            popout.style.zIndex = options.zIndex;
+        }
+
+        popout.__close = popout.close;
+        popout.__show = popout.show;
+
+        popout.close = function() {
+            popout.__close();
+            setTimeout(() => {
+                popout.parentNode.removeChild(popout);
+            }, 300)
+        };
+
+        popout.show = function() {
+            popout.__show();
+
+            setTimeout(() => {
+                let ele = popout.querySelector('[autofocus]');
+
+                if (ele) {
+                    ele.focus();
+                }
+            }, 300)
+        };
+
+        return popout;
     }
 };

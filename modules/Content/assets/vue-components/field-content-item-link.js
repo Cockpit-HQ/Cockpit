@@ -95,7 +95,7 @@ export default {
         },
 
         getDisplay() {
-            return `<display-content class="kiss-display-inline-block" model="${this.model.name}" id="${this.val._id}" display="${this.display}"><app-loader class="kiss-display-inline-block" size="small" mode="dots"></app-loader></display-content>`;
+            return `<display-content class="kiss-display-inline-block" model="${this.model.name}" id="${this.val._id}" display="${this.display || ''}"><app-loader class="kiss-display-inline-block" size="small" mode="dots"></app-loader></display-content>`;
         },
 
         update() {
@@ -123,8 +123,7 @@ export default {
                 </kiss-card>
 
                 <div class="kiss-margin-small kiss-position-relative" v-if="val && val._id">
-                    <div class="kiss-size-small" v-if="display" v-html="getDisplay()"></div>
-                    <span class="kiss-badge kiss-badge-outline kiss-color-primary" v-else>{{ val._id}}</span>
+                    <div class="kiss-size-small" v-html="getDisplay()"></div>
                     <a class="kiss-cover" :href="$route('/content/'+model.type+'/item/'+model.name+'/'+val._id)" target="_blank" rel="noopener"></a>
                 </div>
 

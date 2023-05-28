@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', e => {
     AppEventStream.start();
 
     // bind global command for app search
-    Mousetrap.bind(['alt+f'], function(e) {
+    Mousetrap.bind(['alt+f', 'ctrl+space'], function(e) {
         e.preventDefault();
         showAppSearch();
         return false;

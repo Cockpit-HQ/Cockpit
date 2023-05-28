@@ -22,8 +22,6 @@ $this->bind('/app-event-stream', function() {
     $now = time();
     $lastCheck = $this->helper('session')->read('app.eventstream.lastcheck', $now);
 
-    $this->helper('session')->close();
-
     $user = $this->helper('auth')->getUser();
 
     if (!$user) {
@@ -31,6 +29,9 @@ $this->bind('/app-event-stream', function() {
     }
 
     $sessionId = md5(session_id());
+
+    $this->helper('session')->write('app.eventstream.lastcheck', $now);
+    $this->helper('session')->close();
 
     // auto-cleanup unrelevant events
     $this->helper('eventStream')->cleanup();
@@ -66,8 +67,6 @@ $this->bind('/app-event-stream', function() {
         return true;
     });
 
-    $this->helper('session')->write('app.eventstream.lastcheck', $now);
-
     return $events;
 });
 
@@ -101,7 +100,7 @@ $this->on('app.admin.request', function(Lime\Request $request) {
 
     $locale = $user && isset($user['i18n']) && $user['i18n'] ? $user['i18n'] : $i18n->locale;
 
-    if ($translationspath = $this->path("#config:i18n/App/{$locale}.php")) {
+    if ($locale !== 'en' && $translationspath = $this->path("#config:i18n/{$locale}/App.php")) {
 
         $i18n->locale = $locale;
 
@@ -109,7 +108,9 @@ $this->on('app.admin.request', function(Lime\Request $request) {
 
             $name = basename($m->_dir);
 
-            if ($translationspath = $this->path("#config:i18n/{$name}/{$locale}.php")) {
+            if ($translationspath = $this->path("#config:i18n/{$locale}/{$name}.php")) {
+                $i18n->load($translationspath, $locale);
+            } elseif($translationspath = $this->path("{$name}:i18n/{$locale}.json")) {
                 $i18n->load($translationspath, $locale);
             }
         }

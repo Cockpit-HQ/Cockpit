@@ -78,6 +78,19 @@
                         <?=('License')?>
                     </div>
 
+                    <?php if ($license): ?>
+                    <kiss-card class="kiss-padding kiss-margin kiss-text-monospace" theme="contrast shadowed">
+
+                        <div class="kiss-text-bold"><?=($license['company'] ? $license['company'] : $license['name'])?></div>
+
+                        <div class="kiss-color-muted kiss-size-small kiss-margin-small-top">
+                            <div class="kiss-text-caption"><?=t('Licensed domain')?></div>
+                            <div><?=$license['domain']?></div>
+                        </div>
+
+                    </kiss-card>
+                    <?php endif ?>
+
                     <kiss-card class="kiss-padding kiss-bgcolor-contrast">
                         <div class="kiss-text-monospace kiss-size-small kiss-color-muted" style="max-height:200px;overflow:auto;">
                             <?=($this->path('#app:LICENSE') ? nl2br($this->helper('fs')->read('#app:LICENSE')) : '!!! LICENSE IS MISSING !!!')?>
@@ -94,6 +107,7 @@
                             <tr><td>PHP SAPI</td><td class="kiss-color-muted"><?=php_sapi_name()?></td></tr>
                             <tr><td>System</td><td class="kiss-color-muted"><?=php_uname()?></td></tr>
                             <tr><td>Extensions</td><td class="kiss-color-muted"><?=implode(', ', get_loaded_extensions())?></td></tr>
+                            <tr><td>Supported image types</td><td class="kiss-color-muted"><?=implode(', ', $supportedImageTypes)?></td></tr>
                             <tr><td>Max. execution time</td><td class="kiss-color-muted"><?=ini_get('max_execution_time')?> sec.</td></tr>
                             <tr><td>Memory limit</td><td class="kiss-color-muted"><?=ini_get("memory_limit")?></td></tr>
                             <tr><td>Upload file size limit</td><td class="kiss-color-muted"><?=ini_get("upload_max_filesize")?></td></tr>
@@ -112,12 +126,12 @@
                 <?php if ($this->helper('acl')->isSuperAdmin()): ?>
                 <tab class="kiss-margin animated fadeIn" caption="<?=t('Env')?>">
 
-                    <table class="kiss-table">
+                    <table class="kiss-table" style="word-break: break-all;">
                         <tbody>
                             <?php foreach(getenv() as $key => $value): ?>
                             <tr>
                                 <td width="30%" class="kiss-size-small"><div class="kiss-size-xsmall"><?=$key?></div></td>
-                                <td class="kiss-color-muted"><div class="kiss-size-xsmall"><?=$value?></div></td>
+                                <td width="70%" class="kiss-color-muted"><div class="kiss-size-xsmall"><?=$value?></div></td>
                             </tr>
                             <?php endforeach ?>
                         </tbody>

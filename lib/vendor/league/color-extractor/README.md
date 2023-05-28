@@ -1,7 +1,7 @@
 ColorExtractor
 ==============
 
-[![Build Status](https://travis-ci.org/thephpleague/color-extractor.png?branch=master)](https://travis-ci.org/thephpleague/color-extractor)
+![Build Status](https://github.com/thephpleague/color-extractor/actions/workflows/run-tests.yml/badge.svg)
 [![Total Downloads](https://poser.pugx.org/league/color-extractor/downloads.png)](https://packagist.org/packages/league/color-extractor)
 [![Latest Stable Version](https://poser.pugx.org/league/color-extractor/v/stable.png)](https://packagist.org/packages/league/color-extractor)
 
@@ -12,7 +12,7 @@ Extract colors from an image like a human would do.
 Via Composer
 
 ``` bash
-$ composer require league/color-extractor:0.3.*
+$ composer require league/color-extractor:0.4.*
 ```
 
 ## Usage
@@ -51,7 +51,7 @@ $colors = $extractor->extract(5);
 ## Handling transparency
 
 By default **any pixel with alpha value greater than zero will be discarded**. This is because transparent colors are not perceived
-as is. For exemple fully transparent black would be seen white on a white background. So if you want to take transparency into account
+as is. For example fully transparent black would be seen white on a white background. So if you want to take transparency into account
 when building a palette you have to specify this background color. You can do this with the second argument of `Palette` constructors.
 Its default value is `null`, meaning a color won't be added to the palette if its alpha component exists and is greater than zero.
 

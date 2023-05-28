@@ -123,7 +123,7 @@ foreach ($singletons as $name => &$meta) {
             $options  = [];
 
             if (isset($args['populate']) && $args['populate']) {
-                $options['populate'] = $args['populate'];
+                $process['populate'] = $args['populate'];
             }
 
             $item = $app->module('content')->item($name, $options, null, $process);

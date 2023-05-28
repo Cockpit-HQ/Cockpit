@@ -107,5 +107,60 @@ export default {
         dialog.show();
 
         return dialog;
-    }
+    },
+
+    popout(component, data, callbacks, options) {
+
+        let popout;
+
+        data = data || {};
+        callbacks = callbacks || {};
+
+        let def = {
+
+            $viewSetup(app) {
+
+                app.mixin({
+                    methods: {
+                        $close() {
+
+                            if (this.$el.closest) {
+                                this.$el.closest('kiss-popout').close();
+                            } else {
+                                this.$el.parentNode.closest('kiss-popout').close();
+                            }
+                        },
+                        $call(name, ...args) {
+                            if (callbacks[name]) {
+                                callbacks[name](...args);
+                            }
+                        }
+                    }
+                });
+            },
+
+            data() {
+                return  {
+                    data
+                }
+            },
+
+            components: {
+                'vue-popout-content': component
+            }
+        };
+
+        popout = App.ui.popout(/*html*/`
+            <div class="vue-popout">
+                <vue-popout-content v-bind="data"></vue-popout-content>
+            </div>
+        `, options || {});
+
+        popout.$view = popout.querySelector('.vue-popout');
+
+        VueView.compile(popout.$view, def);
+        setTimeout(() => popout.show(), 50);
+
+        return popout;
+    },
 }

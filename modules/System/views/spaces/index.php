@@ -59,7 +59,7 @@
 
             </app-actionbar>
 
-            <kiss-popoutmenu :open="actionSpace && 'true'" @popoutmenuclose="togglespaceActions(null)">
+            <kiss-popout :open="actionSpace && 'true'" @popoutclose="togglespaceActions(null)">
                 <kiss-content>
                         <kiss-navlist v-if="actionSpace">
                             <ul>
@@ -80,7 +80,7 @@
                             </ul>
                         </kiss-navlist>
                 </kiss-content>
-            </kiss-popoutmenu>
+            </kiss-popout>
 
         </template>
 

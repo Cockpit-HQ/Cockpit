@@ -5,6 +5,8 @@ namespace Assets\Controller;
 use App\Controller\App;
 use ArrayObject;
 
+use MongoHybrid\NaturalLanguageToMongoQuery;
+
 class Assets extends App {
 
 
@@ -28,6 +30,7 @@ class Assets extends App {
         if ($skip   = $this->param('skip'  , null)) $options['skip']   = $skip;
         if ($folder = $this->param('folder', null)) $options['folder'] = $folder;
 
+
         if (isset($options['filter']) && (is_string($options['filter']) || \is_countable($options['filter']))) {
 
             $filter = [];
@@ -38,6 +41,11 @@ class Assets extends App {
 
                 if (!is_string($f)) {
                     $filter[] = $f;
+                    continue;
+                }
+
+                if ($f && $f[0] === ':') {
+                    $filter[] = NaturalLanguageToMongoQuery::translate(substr($f, 1));
                     continue;
                 }
 
@@ -270,8 +278,10 @@ class Assets extends App {
             }
         }
 
+        $src = $this->param('src', $id);
+
         $options = [
-            'src' => $id,
+            'src' => $src,
             'fp' => $this->param('fp', null),
             'mode' => $this->param('m', 'thumbnail'),
             'mime' => $mime,

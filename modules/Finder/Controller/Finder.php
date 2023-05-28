@@ -11,7 +11,7 @@ class Finder extends App {
 
     protected function before() {
 
-        if (!$this->isAllowed('app/finder')) {
+        if (!$this->helper('acl')->isSuperAdmin()) {
             return $this->stop(401);
         }
     }
@@ -24,6 +24,8 @@ class Finder extends App {
 
 
     public function api() {
+
+        $this->helper('session')->close();
 
         $this->root = $this->app->path('#root:');
         $cmd = $this->param('cmd', false);
@@ -89,13 +91,11 @@ class Finder extends App {
 
     protected function upload() {
 
-        $this->helper('session')->close();
-
         $path       = $this->_getPathParameter();
 
         if (!$path) return false;
 
-        $files      = $_FILES['files'] ?? [];
+        $files      = $this->app->request->files['files'] ?? [];
         $targetpath = $this->root.'/'.trim($path, '/');
         $uploaded   = [];
         $failed     = [];
@@ -189,7 +189,7 @@ class Finder extends App {
 
         $this->app->trigger('cockpit.media.removefiles', [$deletions]);
 
-        return json_encode(["success"=>true]);
+        return json_encode(['success' => true]);
     }
 
     protected function _rrmdir($dir) {
@@ -223,7 +223,7 @@ class Finder extends App {
             $this->app->trigger('cockpit.media.rename', [$source, $target]);
         }
 
-        return json_encode(["success"=>true]);
+        return json_encode(['success' => true]);
     }
 
     protected function readfile() {
@@ -254,9 +254,15 @@ class Finder extends App {
 
         if ($path && file_exists($file) && $contents!==false) {
 
+            $isPHPfile = preg_match('/\.php$/', $file);
+
+            if ($isPHPfile && !$this->helper('acl')->isSuperAdmin()) {
+                return ['success' => false, 'error' => 'Access denied.'];
+            }
+
             $ret = file_put_contents($file, $contents);
 
-            if ($ret && function_exists('opcache_invalidate') && preg_match('/\.php$/', $file)) {
+            if ($ret && $isPHPfile && function_exists('opcache_invalidate')) {
                 opcache_invalidate($file, true);
             }
         }
@@ -266,7 +272,6 @@ class Finder extends App {
 
     protected function unzip() {
 
-        $this->helper('session')->close(); // improve concurrency loading
 
         $path    = $this->_getPathParameter();
 
@@ -337,7 +342,6 @@ class Finder extends App {
 
     protected function downloadfolder() {
 
-        $this->helper('session')->close(); // improve concurrency loading
 
         $path   = $this->_getPathParameter();
 
@@ -371,7 +375,6 @@ class Finder extends App {
 
     protected function getfilelist() {
 
-        $this->helper('session')->close(); // improve concurrency loading
 
         $list = [];
         $toignore = [
@@ -424,7 +427,7 @@ class Finder extends App {
 
         $allowed = trim($this->app->retrieve('finder.allowed_uploads', '*'));
 
-        if (strtolower(pathinfo($file, PATHINFO_EXTENSION)) == 'php' && !$this->helper('acl')->isSuperAdmin()) {
+        if (in_array(strtolower(pathinfo($file, PATHINFO_EXTENSION)), ['php', 'phar', 'phtml']) && !$this->helper('acl')->isSuperAdmin()) {
             return false;
         }
 

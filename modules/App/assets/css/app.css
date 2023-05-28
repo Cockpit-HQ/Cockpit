@@ -14,6 +14,8 @@
 @import "../vendor/kiss/lib.css";
 @import "./vendor/kiss.css";
 
+@import "../../../System/assets/css/system.css";
+
 vue-view { display: block; }
 vue-view:not([init="true"]) { display: none; }
 
@@ -54,7 +56,7 @@ html[data-theme='light'] {
     --kiss-input-background: rgba(255,255,255,.5);
     --kiss-input-placeholder-color: rgba(0,0,0,.3);
 
-    --kiss-dropdown-background: rgba(255,255,255,.95);
+    --kiss-dropdown-background: rgba(255,255,255,1);
 
     --kiss-card-theme-contrast-color: #fff;
     --kiss-card-shadowed-color: rgba(0, 0, 0, 0.15);
@@ -417,6 +419,20 @@ app-pagination {
 
 kiss-dialog[type="app-search"] > kiss-content {
     margin-top: 15vh;
+}
+
+kiss-dialog[type="alert"] > kiss-content,
+kiss-dialog[type="confirm"] > kiss-content,
+kiss-dialog[type="prompt"] > kiss-content {
+    border: none;
+    background: none;
+    box-shadow: none;
+}
+
+.kiss-dialog-alert-message,
+.kiss-dialog-confirm-message,
+.kiss-dialog-prompt-message {
+    font-size: var(--kiss-font-size-2, 2rem);
 }
 
 @media (min-width: 768px) {

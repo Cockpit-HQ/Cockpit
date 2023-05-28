@@ -18,7 +18,7 @@ class EventStream extends \Lime\Helper {
         return $events;
     }
 
-    public function add(string $event, $data, array $options) {
+    public function add(string $event, $data = [], array $options = []) {
 
         $evt = [
             'type' => $event,

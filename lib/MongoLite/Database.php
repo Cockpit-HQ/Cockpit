@@ -124,7 +124,7 @@ class Database {
      * @param  array $document
      * @return boolean
      */
-    public function callCriteriaFunction(string $id, array $document): mixed {
+    public function callCriteriaFunction(string $id, ?array $document = null): mixed {
         return isset($this->document_criterias[$id]) ? $this->document_criterias[$id]($document):false;
     }
 
@@ -240,7 +240,7 @@ class UtilArrayQuery {
 
         foreach ($criteria as $key => $value) {
 
-            switch($key) {
+            switch ($key) {
 
                 case '$and':
 

@@ -104,7 +104,7 @@
 
                     if (searchParams.has('state')) {
                         try {
-                            let q = JSON.parse(atob(searchParams.get('state')));
+                            let q = JSON.parse(App.utils.base64decode(searchParams.get('state')));
                             if (q.page) this.page = q.page;
                             if (q.limit) this.limit = (parseInt(q.limit) || this.limit);
                             if (q.filter) {
@@ -144,7 +144,7 @@
 
                             window.history.pushState(
                                 null, null,
-                                App.route(['/system/users', '?state=', btoa(JSON.stringify({
+                                App.route(['/system/users', '?state=', App.utils.base64encode(JSON.stringify({
                                     page: this.page || null,
                                     filter: this.filter || null,
                                     limit: this.limit

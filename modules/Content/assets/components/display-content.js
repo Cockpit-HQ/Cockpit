@@ -27,7 +27,7 @@ customElements.define('display-content', class extends HTMLElement {
         const model = this.getAttribute('model');
         const display = this.getAttribute('display');
 
-        if (!id || !model || !display) {
+        if (!id || !model) {
             return;
         }
 
@@ -46,11 +46,36 @@ customElements.define('display-content', class extends HTMLElement {
 
         _contentCache[id].then(item => {
 
-            let html = 'n/a', ele;
+            let html = 'n/a';
 
             if (item) {
                 try {
-                    html = App.utils.$interpolate(display, {data:item});
+                    html = display
+                            ? App.utils.$interpolate(display, {data:item})
+                            : (() => {
+
+                                let data = {}, str;
+
+                                Object.keys(item).forEach(key => {
+
+                                    if (key[0] === '_' || !item[key] || typeof(item[key]) !== 'string') {
+                                        return;
+                                    }
+
+                                    data[key] = item[key];
+                                });
+
+                                str = JSON.stringify(Object.values(data)).replace(/('null'|\[|\]|\{|\}|"|\\|')/g, '').replace(/,/g, ', ');
+
+                                if (!str) return 'n/a';
+
+                                if (str.length > 50) {
+                                    str = str.substr(0, 50).trim() + '...';
+                                }
+
+                                return str;
+                            })();
+
                 } catch(e) {}
             }
 

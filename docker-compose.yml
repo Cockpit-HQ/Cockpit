@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+    cockpit:
+        image: cockpit-hq/cockpit:php-8.1
+        build:
+            context: .
+        user: www-data
+        volumes:
+            - ./:/var/www/html
+        ports:
+            - "8080:80"
+        networks:
+            - cockpit
+
+networks:
+    cockpit:
+        name: cockpit-hq
