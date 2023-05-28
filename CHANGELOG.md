@@ -6,6 +6,8 @@
 - Update Vue to v3.3.4
 - Add missing permission settings @raffaelj
 - Improve role permissions UI
+- Show locale value picker only if multiple locales are available
+- Use `crypto.randomUUID()` only if available
 
 ## 2.5.2 (2023-05-18)
 

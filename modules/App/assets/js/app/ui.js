@@ -1,4 +1,5 @@
 
+let uuid = 0;
 
 export default {
 
@@ -31,7 +32,7 @@ export default {
 
     offcanvas: function (content, options) {
 
-        let id = crypto.randomUUID(),
+        let id = `offcanvas-${uuid++}`,
             size = '';
 
         options = options || {};
@@ -93,7 +94,7 @@ export default {
 
     dialog: function (content, options, dialogtype) {
 
-        let id = crypto.randomUUID();
+        let id = `dialog-${uuid++}`;
 
         document.body.insertAdjacentHTML('beforeend', `
             <kiss-dialog id="dialog-${id}" size="${(options && options.size) || ''}" type="${dialogtype}" esc="${(options && options.escape) ? 'true':'false'}">
@@ -210,7 +211,7 @@ export default {
 
     popout: function (content, options) {
 
-        let id = crypto.randomUUID(),
+        let id = `popout-${uuid++}`,
         size = '';
 
         options = options || {};

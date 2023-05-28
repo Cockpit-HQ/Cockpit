@@ -32,7 +32,7 @@ export default {
     data() {
 
         return {
-            uid: `user-info-${crypto.randomUUID()}`,
+            uid: `user-info-${App.utils.uuid()}`,
             user: null,
         }
     },

@@ -2698,8 +2698,15 @@
       return new Function(...names, `return \`${str}\`;`)(...vals);
   };
 
-  let uuid = function() {
-      return crypto.randomUUID();
+  let uuid$1 = function() {
+
+      if (typeof(crypto.randomUUID) === 'function') {
+          return crypto.randomUUID();
+      }
+
+      return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+          (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+      );
   };
 
   let truncate = function(text, length, clamp = '...') {
@@ -2754,10 +2761,12 @@
       interpolate,
       on,
       toKebabCase,
-      uuid,
+      uuid: uuid$1,
       truncate,
       stripTags
   };
+
+  let uuid = 0;
 
   var ui$1 = {
 
@@ -2790,7 +2799,7 @@
 
       offcanvas: function (content, options) {
 
-          let id = crypto.randomUUID(),
+          let id = `offcanvas-${uuid++}`,
               size = '';
 
           options = options || {};
@@ -2852,7 +2861,7 @@
 
       dialog: function (content, options, dialogtype) {
 
-          let id = crypto.randomUUID();
+          let id = `dialog-${uuid++}`;
 
           document.body.insertAdjacentHTML('beforeend', `
             <kiss-dialog id="dialog-${id}" size="${(options && options.size) || ''}" type="${dialogtype}" esc="${(options && options.escape) ? 'true':'false'}">
@@ -2969,7 +2978,7 @@
 
       popout: function (content, options) {
 
-          let id = crypto.randomUUID(),
+          let id = `popout-${uuid++}`,
           size = '';
 
           options = options || {};
