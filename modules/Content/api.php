@@ -104,6 +104,7 @@ $this->on('restApi.config', function($restApi) {
 
             if ($populate) {
                 $process['populate'] = $populate;
+                $process['user'] = $app->helper('auth')->getUser();
             }
 
             $item = $app->module('content')->item($model, $filter ? $filter : [], $fields, $process);
@@ -284,6 +285,7 @@ $this->on('restApi.config', function($restApi) {
 
             if ($populate) {
                 $process['populate'] = $populate;
+                $process['user'] = $app->helper('auth')->getUser();
             }
 
             $item = $app->module('content')->item($model, $filter ? $filter : [], $fields, $process);
@@ -465,6 +467,7 @@ $this->on('restApi.config', function($restApi) {
 
             if ($populate) {
                 $process['populate'] = $populate;
+                $process['user'] = $app->helper('auth')->getUser();
             }
 
             if (!isset($options['filter']) || !is_array($options['filter'])) {
@@ -576,6 +579,7 @@ $this->on('restApi.config', function($restApi) {
 
             if ($populate) {
                 $process['populate'] = $populate;
+                $process['user'] = $app->helper('auth')->getUser();
             }
 
             return $app->module('content')->tree($model, $parentId, ['_state' => 1], $fields, $process);

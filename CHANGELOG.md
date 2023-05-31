@@ -8,6 +8,7 @@
 - Improve role permissions UI
 - Show locale value picker only if multiple locales are available
 - Use `crypto.randomUUID()` only if available
+- Populate only allowed models in content api
 
 ## 2.5.2 (2023-05-18)
 

@@ -428,6 +428,14 @@ $this->module('content')->extend([
 
             if (isset($v['_id'], $v['_model'])) {
 
+                if (
+                    isset($process['user']['role']) &&
+                    !in_array($v['_model'], $this->app->helper('content')->allowedModels($process['user']['role']))
+                ) {
+                    $array[$k] = null;
+                    continue;
+                }
+
                 $model = $v['_model'];
                 $array[$k] = $this->_resolveContentRef($v['_model'], (string)$v['_id'], $process);
 
