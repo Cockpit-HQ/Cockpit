@@ -45,7 +45,7 @@ export default {
                         if (this.terminal._core.buffer.x > 2) {
                             this.terminal.write('\b \b');
                             if (this.command.length > 0) {
-                                this.command = this.command.substr(0, command.length - 1);
+                                this.command = this.command.substr(0, this.command.length - 1);
                             }
                         }
                         break;
