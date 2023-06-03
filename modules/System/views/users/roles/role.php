@@ -56,6 +56,11 @@
 
                 <input class="kiss-input kiss-width-1-1" type="text" :placeholder="t('Filter groups...')" v-model="filter">
 
+                <div class="kiss-button-group kiss-margin">
+                    <button type="button" class="kiss-button kiss-button-small" @click="Object.keys(permissions).forEach(group => visible[group] = true)">{{ t('Open all') }}</button>
+                    <button type="button" class="kiss-button kiss-button-small" @click="Object.keys(permissions).forEach(group => visible[group] = false)">{{ t('Collapse all') }}</button>
+                </div>
+
                 <kiss-card class="kiss-margin kiss-padding" theme="bordered contrast" hover="shadow" v-for="(permissions, group) in simplePermissions">
 
                     <div class="kiss-flex kiss-flex-middle" :class="{'kiss-color-muted': !visible[group]}" @click="visible[group]=!visible[group]">
