@@ -10,7 +10,7 @@ class Tower extends App {
 
     protected function before() {
 
-        if (!$this->isAllowed('system/tower')) {
+        if (!$this->helper('acl')->isSuperAdmin()) {
             return $this->stop(401);
         }
 
