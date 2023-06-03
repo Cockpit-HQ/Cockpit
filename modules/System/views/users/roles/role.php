@@ -65,13 +65,8 @@
                     </div>
 
                     <div class="kiss-margin" :class="{'kiss-hidden': !visible[group]}">
-                        <div class="kiss-margin-small kiss-size-small kiss-flex kiss-middle" v-for="(label, permission) in permissions">
-                            <div><field-boolean v-model="role.permissions[permission]"></field-boolean></div>
-                            <div class="kiss-flex-1 kiss-margin-small-left">
-                                <div :class="{'kiss-color-muted':!role.permissions[permission]}">
-                                    {{label}}
-                                </div>
-                            </div>
+                        <div class="kiss-margin-small kiss-size-small" v-for="(label, permission) in permissions">
+                            <field-boolean v-model="role.permissions[permission]" :label="label"></field-boolean>
                         </div>
                     </div>
 

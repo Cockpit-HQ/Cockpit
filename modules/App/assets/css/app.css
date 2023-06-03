@@ -360,6 +360,11 @@ app-actionbar kiss-container {
     font-size: .95em;
 }
 
+[field="boolean"] label{
+    all: unset;
+    cursor: pointer;
+}
+
 .fields-renderer[nested="true"] .fields-renderer-field {
     display: inline-block;
     font-weight: normal;

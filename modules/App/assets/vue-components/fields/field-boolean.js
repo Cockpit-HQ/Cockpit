@@ -1,3 +1,5 @@
+let uuid = 0;
+
 export default {
 
     _meta: {
@@ -19,7 +21,8 @@ export default {
 
     data() {
         return {
-            val: this.modelValue
+            val: this.modelValue,
+            uuid: `field-boolean-${++uuid}`
         }
     },
 
@@ -49,8 +52,8 @@ export default {
 
     template: /*html*/`
         <div class="kiss-flex kiss-flex-middle" field="boolean">
-            <div class="kiss-flex kiss-flex-middle"><input class="app-switch" type="checkbox" v-model="val" @change="update"></div>
-            <span class="kiss-text-caption kiss-margin-small-left" :class="{'kiss-color-muted':!val}" v-if="label">{{ label }}</span>
+            <input :id="uuid" class="app-switch" type="checkbox" v-model="val" @change="update">
+            <label :for="uuid" class="kiss-margin-small-left" :class="{'kiss-color-muted':!val}" v-if="label">{{ label }}</label>
         </div>
     `,
 }
