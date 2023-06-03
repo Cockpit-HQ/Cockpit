@@ -146,6 +146,7 @@ return array(
     'GraphQL\\Executor\\Promise\\Promise' => $vendorDir . '/webonyx/graphql-php/src/Executor/Promise/Promise.php',
     'GraphQL\\Executor\\Promise\\PromiseAdapter' => $vendorDir . '/webonyx/graphql-php/src/Executor/Promise/PromiseAdapter.php',
     'GraphQL\\Executor\\ReferenceExecutor' => $vendorDir . '/webonyx/graphql-php/src/Executor/ReferenceExecutor.php',
+    'GraphQL\\Executor\\ScopedContext' => $vendorDir . '/webonyx/graphql-php/src/Executor/ScopedContext.php',
     'GraphQL\\Executor\\Values' => $vendorDir . '/webonyx/graphql-php/src/Executor/Values.php',
     'GraphQL\\GraphQL' => $vendorDir . '/webonyx/graphql-php/src/GraphQL.php',
     'GraphQL\\Language\\AST\\ArgumentNode' => $vendorDir . '/webonyx/graphql-php/src/Language/AST/ArgumentNode.php',
