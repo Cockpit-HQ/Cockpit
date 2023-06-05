@@ -139,6 +139,10 @@ class Collection extends App {
             return $this->stop(404);
         }
 
+        if (!$this->isAllowed("content/{$model['name']}/read")) {
+            return $this->stop(401);
+        }
+
         $options = $this->app->param('options');
         $process = $this->app->param('process', []);
         $state = $this->app->param('state', null);
