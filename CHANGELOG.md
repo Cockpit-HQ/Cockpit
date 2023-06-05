@@ -9,6 +9,7 @@
 - Show locale value picker only if multiple locales are available
 - Use `crypto.randomUUID()` only if available
 - Populate only allowed models in content api
+- Fix possible content `models` permission naming collision
 
 ## 2.5.2 (2023-05-18)
 

@@ -32,6 +32,7 @@ $this->module('content')->extend([
             return false;
         }
 
+        $name = preg_replace('/[^A-Za-z0-9]/', '', $name);
         $storagepath = $this->app->path('#storage:').'/content';
 
         if (!$this->app->path('#storage:content')) {

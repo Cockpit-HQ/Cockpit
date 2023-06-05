@@ -48,9 +48,9 @@ export default {
         <div>
 
             <div class="kiss-margin kiss-size-small kiss-flex kiss-middle">
-                <div><field-boolean v-model="modelValue['content/models/manage']"></field-boolean></div>
+                <div><field-boolean v-model="modelValue['content/:models/manage']"></field-boolean></div>
                 <div class="kiss-flex-1 kiss-margin-small-left">
-                    <div :class="{'kiss-color-muted':!modelValue['content/models/manage']}">
+                    <div :class="{'kiss-color-muted':!modelValue['content/:models/manage']}">
                         {{ t('Manage models') }}
                     </div>
                 </div>

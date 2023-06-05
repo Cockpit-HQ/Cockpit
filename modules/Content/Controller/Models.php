@@ -9,7 +9,7 @@ class Models extends App {
 
     public function create() {
 
-        if (!$this->isAllowed('content/models/manage')) {
+        if (!$this->isAllowed('content/:models/manage')) {
             return $this->stop(401);
         }
 
@@ -51,7 +51,7 @@ class Models extends App {
             return $this->stop(404);
         }
 
-        if (!$this->isAllowed("content/models/manage") && !$this->isAllowed("content/{$model['name']}/manage")) {
+        if (!$this->isAllowed("content/:models/manage") && !$this->isAllowed("content/{$model['name']}/manage")) {
             return $this->stop(401);
         }
 
@@ -80,7 +80,7 @@ class Models extends App {
             return $this->stop(404);
         }
 
-        if (!$this->isAllowed("content/models/manage")) {
+        if (!$this->isAllowed("content/:models/manage")) {
             return $this->stop(401);
         }
 
@@ -98,7 +98,7 @@ class Models extends App {
             return $this->stop(['error' => 'Model data is missing'], 412);
         }
 
-        if (!$this->isAllowed("content/models/manage") && !$this->isAllowed("content/{$model}/manage")) {
+        if (!$this->isAllowed("content/:models/manage") && !$this->isAllowed("content/{$model}/manage")) {
             return $this->stop(401);
         }
 
@@ -121,7 +121,7 @@ class Models extends App {
 
             $models = array_filter($models, function($model) use($acl) {
 
-                if ($acl->isAllowed('content/models/manage')) {
+                if ($acl->isAllowed('content/:models/manage')) {
                     return true;
                 }
 
@@ -204,7 +204,7 @@ class Models extends App {
             return $this->stop(['error' => 'Model unknown'], 404);
         }
 
-        if (!$this->isAllowed("content/models/manage")) {
+        if (!$this->isAllowed("content/:models/manage")) {
             return $this->stop(401);
         }
 

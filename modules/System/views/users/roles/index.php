@@ -34,7 +34,7 @@
                     <div class="kiss-flex-1 kiss-position-relative">
                         <div class="kiss-size-5"><strong>{{role.name || role.appid}}</strong></div>
                         <div class="kiss-color-muted kiss-size-small">
-                            {{role.info}}
+                            {{ role.info || '...' }}
                         </div>
                         <a class="kiss-cover" :href="$route('/system/users/roles/role/'+role._id)"></a>
                     </div>
