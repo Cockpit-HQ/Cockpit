@@ -24,6 +24,6 @@ class Content extends App {
 
         $data = $this->app->helper('locales')->applyLocales($data, $locale);
 
-        return $this->module('content')->populate($data, $lvl, 0, ['locale' => $locale]);
+        return $this->module('content')->populate($data, $lvl, 0, ['locale' => $locale, 'user' => $this->user]);
     }
 }

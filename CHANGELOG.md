@@ -10,6 +10,7 @@
 - Use `crypto.randomUUID()` only if available
 - Populate only allowed models in content api
 - Fix possible content `models` permission naming collision
+- Fix internal content find/populate api exposing data to users without required rights
 
 ## 2.5.2 (2023-05-18)
 

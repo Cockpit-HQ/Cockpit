@@ -143,6 +143,8 @@ class Collection extends App {
         $process = $this->app->param('process', []);
         $state = $this->app->param('state', null);
 
+        $process['user'] = $this->user;
+
         if (isset($options['filter'])) {
 
             if (is_string($options['filter']) || !isset($options['filter'][0])) {
