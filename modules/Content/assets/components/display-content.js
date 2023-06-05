@@ -40,7 +40,7 @@ customElements.define('display-content', class extends HTMLElement {
                         filter:{_id: id},
                         limit:1
                     }
-                }).then(resp => resolve(resp.items[0] || null)).catch(e => {
+                }).then(resp => resolve(resp.items[0] || null)).catch(() => {
                     resolve(null);
                 });
             }));
