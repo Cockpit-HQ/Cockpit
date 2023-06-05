@@ -11,7 +11,7 @@ class Settings extends \Lime\Helper {
         $items = [];
 
         $items[] = [
-            'icon' => null,
+            'icon' => 'system:assets/icons/account.svg',
             'route' => '/system/users/user',
             'label' => 'Account',
             'permission' => null
