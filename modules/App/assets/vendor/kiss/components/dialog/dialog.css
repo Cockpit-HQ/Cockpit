@@ -12,6 +12,8 @@ kiss-dialog {
     opacity: 0;
     pointer-events: none;
     overflow-y: auto;
+    transform: translateZ(0);
+    will-change: opacity;
     z-index: 1000;
 }
 
@@ -30,6 +32,8 @@ kiss-dialog > kiss-content {
 
     width: var(--kiss-dialog-width, 350px);
     max-width: calc(100% - 0.01px) !important;
+
+    transform: translateZ(0);
 
     box-sizing: border-box;
 }

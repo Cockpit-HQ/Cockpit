@@ -10,6 +10,8 @@ kiss-offcanvas {
     opacity: 0;
     pointer-events: none;
     z-index: 1000;
+    transform: translateZ(0);
+    will-change: opacity;
     transition: opacity 0.3s ease-in-out;
 }
 
@@ -22,13 +24,13 @@ kiss-offcanvas > kiss-content {
     min-width: 300px;
     overflow-y: auto;
     box-sizing: border-box;
-    transform: translateX(-100%);
+    transform: translateX(-100%) translateZ(0);
     transition: transform 0.3s ease-in-out;
 }
 
 kiss-offcanvas[flip="true"] > kiss-content {
     right: 0;
-    transform: translateX(100%);
+    transform: translateX(100%) translateZ(0);
 }
 
 kiss-offcanvas[open] {
@@ -37,5 +39,5 @@ kiss-offcanvas[open] {
 }
 
 kiss-offcanvas[open] > kiss-content {
-    transform: translateX(0);
+    transform: translateX(0) translateZ(0);
 }
