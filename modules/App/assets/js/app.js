@@ -24,7 +24,7 @@ let App = {
     _events: {},
     _paths: {},
 
-    base: function (url) {
+    base(url) {
 
         let path = url.match(/^(.*?)\:/);
 
@@ -35,15 +35,15 @@ let App = {
         return this.base_url + url;
     },
 
-    route: function (url) {
+    route(url) {
         return this.route_url + url;
     },
 
-    reroute: function (url) {
+    reroute(url) {
         location.href = /^http/.test(url) ? url : this.route(url);
     },
 
-    request: function (url, data, type) {
+    request(url, data, type) {
 
         url = this.route(url);
         type = type || 'json';
@@ -90,7 +90,7 @@ let App = {
                     }
                 }
 
-                if (this.status == 200) {
+                if (this.status === 200) {
                     fulfill(resdata, xhr);
                 } else {
                     reject(resdata, xhr);
@@ -102,12 +102,12 @@ let App = {
         });
     },
 
-    on: function (name, fn) {
+    on(name, fn) {
         if (!this._events[name]) this._events[name] = [];
         this._events[name].push(fn);
     },
 
-    off: function (name, fn) {
+    off(name, fn) {
         if (!this._events[name]) return;
 
         if (!fn) {
@@ -123,7 +123,7 @@ let App = {
         }
     },
 
-    trigger: function (name, params) {
+    trigger(name, params) {
 
         if (!this._events[name]) return;
 
@@ -134,7 +134,7 @@ let App = {
         }
     },
 
-    deferred: function () {
+    deferred() {
 
         let resolve, fail;
 
@@ -166,7 +166,7 @@ App.utils = utils;
 
 // custom utils
 App.utils.import = function(uri) {
-    return import(App.base(uri)+'?v='+App.version);
+    return import(App.base(uri)+`?v=${App.version}`);
 };
 
 App.utils.$interpolate = function (str, data) {
