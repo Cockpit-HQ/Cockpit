@@ -24,6 +24,9 @@ class Utils extends App {
 
     public function search() {
 
+        $this->helper('session')->close();
+        $this->hasValidCsrfToken(true);
+
         $findings = new \ArrayObject([]);
         $search = $this->param('search');
 

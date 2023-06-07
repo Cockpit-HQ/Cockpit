@@ -18,6 +18,7 @@ let App = {
 
     base_url: baseUrl,
     route_url: routeUrl,
+    csrf: (html.getAttribute("data-csrf") || undefined),
     version: (html.getAttribute("data-version") || '0.0.1'),
 
     _events: {},
@@ -47,6 +48,8 @@ let App = {
         url = this.route(url);
         type = type || 'json';
 
+        let csrf = this.csrf;
+
         return new Promise(function (fulfill, reject) {
 
             let xhr = new XMLHttpRequest();
@@ -55,6 +58,8 @@ let App = {
             xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 
             url += (url.indexOf('?') !== -1 ? '&' : '?') + 'nc=' + Math.random().toString(36).substr(2);
+
+            data = data || {};
 
             if (data) {
 
@@ -67,6 +72,10 @@ let App = {
                     xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
                     data = JSON.stringify(data || {});
                 }
+            }
+
+            if (csrf) {
+                xhr.setRequestHeader('X-CSRF-TOKEN', csrf);
             }
 
             xhr.onloadend = function () {

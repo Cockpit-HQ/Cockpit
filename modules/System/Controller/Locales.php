@@ -56,6 +56,8 @@ class Locales extends App {
 
     public function remove() {
 
+        $this->hasValidCsrfToken(true);
+
         $locale = $this->param('locale');
 
         if (!$locale || !isset($locale['_id'], $locale['i18n'])) {
@@ -72,6 +74,8 @@ class Locales extends App {
     }
 
     public function save() {
+
+        $this->hasValidCsrfToken(true);
 
         $locale = $this->param('locale');
 
@@ -121,6 +125,7 @@ class Locales extends App {
     public function load() {
 
         $this->helper('session')->close();
+        $this->hasValidCsrfToken(true);
 
         $locales = $this->app->dataStorage->find('system/locales', [
             'sort' => ['name' => 1]

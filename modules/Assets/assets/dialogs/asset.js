@@ -212,6 +212,9 @@ export default {
                 browserBackButtonClose: false
             }).use(Uppy.XHRUpload, {
                 endpoint: App.route('/assets/replace'),
+                headers: {
+                    'X-CSRF-TOKEN': App.csrf
+                },
                 bundle: true
             }).use(Uppy.Webcam, { target: Uppy.Dashboard, showVideoSourceDropdown: true })
             .use(Uppy.ScreenCapture, { target: Uppy.Dashboard })

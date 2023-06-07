@@ -51,6 +51,8 @@ class Roles extends App {
 
     public function remove() {
 
+        $this->hasValidCsrfToken(true);
+
         $role = $this->param('role');
 
         if (!$role || !isset($role['_id'], $role['appid'])) {
@@ -66,6 +68,8 @@ class Roles extends App {
     }
 
     public function save() {
+
+        $this->hasValidCsrfToken(true);
 
         $role = $this->param('role');
 

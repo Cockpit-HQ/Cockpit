@@ -8,10 +8,11 @@
 - Improve role permissions UI
 - Show locale value picker only if multiple locales are available
 - Use `crypto.randomUUID()` only if available
-- Populate only allowed models in content api
-- Fix possible content `models` permission naming collision
-- Fix internal content find/populate api exposing data to users without required rights
+- Populate only allowed models in content api (thanks @Ccamm)
+- Fix possible content `models` permission naming collision (thanks @raffaelj)
+- Fix internal content find/populate api exposing data to users without required rights (thanks @raffaelj)
 - Fix empty settings screen
+- Add csrf token validation to internal api calls to improve security (thanks @Ccamm)
 
 ## 2.5.2 (2023-05-18)
 

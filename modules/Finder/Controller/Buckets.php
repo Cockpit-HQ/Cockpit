@@ -12,6 +12,7 @@ class Buckets extends App {
     public function api(?string $bucket = null) {
 
         $this->helper('session')->close();
+        $this->hasValidCsrfToken(true);
 
         $cmd = $this->param('cmd', false);
 

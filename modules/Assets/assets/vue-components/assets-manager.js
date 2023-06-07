@@ -17,6 +17,9 @@ function getUppy(meta = {}) {
         browserBackButtonClose: false
     }).use(Uppy.XHRUpload, {
         endpoint: App.route('/assets/upload'),
+        headers: {
+            'X-CSRF-TOKEN': App.csrf
+        },
         bundle: true
     }).use(Uppy.Webcam, { target: Uppy.Dashboard, showVideoSourceDropdown: true })
     .use(Uppy.ScreenCapture, { target: Uppy.Dashboard })

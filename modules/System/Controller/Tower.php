@@ -29,6 +29,8 @@ class Tower extends App {
 
     public function exec() {
 
+        $this->hasValidCsrfToken(true);
+
         $command = trim($this->param('command', ''));
 
         if (!$command) {

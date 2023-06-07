@@ -26,11 +26,12 @@ class Finder extends App {
     public function api() {
 
         $this->helper('session')->close();
+        $this->hasValidCsrfToken(true);
 
         $this->root = $this->app->path('#root:');
         $cmd = $this->param('cmd', false);
 
-        if (file_exists($this->root) && in_array($cmd, get_class_methods($this))){
+        if (file_exists($this->root) && in_array($cmd, get_class_methods($this))) {
 
             $this->app->response->mime = 'json';
             return $this->{$cmd}();

@@ -28,6 +28,8 @@ class Spaces extends App {
 
         if ($space) {
 
+            $this->hasValidCsrfToken(true);
+
             if (!isset($space['name'])) {
                 return $this->stop(404);
             }
@@ -42,7 +44,6 @@ class Spaces extends App {
 
             return ['success' => true, 'space' => $space];
         }
-
 
         return $this->render('system:views/spaces/create.php');
     }

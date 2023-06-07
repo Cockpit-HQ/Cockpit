@@ -128,6 +128,7 @@ class Collection extends App {
     public function find($model = null) {
 
         $this->helper('session')->close();
+        $this->hasValidCsrfToken(true);
 
         if (!$model) {
             return false;
@@ -236,6 +237,7 @@ class Collection extends App {
     public function remove($model = null) {
 
         $this->helper('session')->close();
+        $this->hasValidCsrfToken(true);
 
         $model = $this->module('content')->model($model);
         $ids = $this->param('ids');
@@ -260,6 +262,7 @@ class Collection extends App {
     public function updateState($model = null) {
 
         $this->helper('session')->close();
+        $this->hasValidCsrfToken(true);
 
         $model = $this->module('content')->model($model);
         $ids = $this->param('ids');
@@ -289,6 +292,9 @@ class Collection extends App {
     }
 
     public function batchUpdate($model = null) {
+
+        $this->helper('session')->close();
+        $this->hasValidCsrfToken(true);
 
         $model = $this->module('content')->model($model);
         $data = $this->param('data');

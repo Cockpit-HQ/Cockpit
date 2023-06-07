@@ -9,7 +9,6 @@ use MongoHybrid\NaturalLanguageToMongoQuery;
 
 class Assets extends App {
 
-
     public function index() {
 
         $this->helper('theme')->favicon('assets:icon.svg');
@@ -20,6 +19,7 @@ class Assets extends App {
     public function assets() {
 
         $this->helper('session')->close();
+        $this->hasValidCsrfToken(true);
 
         $options = array_merge([
             'sort' => ['_created' => -1]
@@ -110,6 +110,8 @@ class Assets extends App {
 
     public function asset($id = null) {
 
+        $this->hasValidCsrfToken(true);
+
         if (!$id) {
             return false;
         }
@@ -122,6 +124,7 @@ class Assets extends App {
     public function update() {
 
         $this->helper('session')->close();
+        $this->hasValidCsrfToken(true);
 
         if (!$this->isAllowed('assets/edit')) {
             return $this->stop(['error' => 'Editing not allowed'], 401);
@@ -137,6 +140,7 @@ class Assets extends App {
     public function upload() {
 
         $this->helper('session')->close();
+        $this->hasValidCsrfToken(true);
 
         if (!$this->isAllowed('assets/upload')) {
             return $this->stop(['error' => 'Upload not allowed'], 401);
@@ -150,6 +154,7 @@ class Assets extends App {
     public function replace() {
 
         $this->helper('session')->close();
+        $this->hasValidCsrfToken(true);
 
         if (!$this->isAllowed('assets/upload')) {
             return $this->stop(['error' => 'Upload not allowed'], 401);
@@ -190,6 +195,7 @@ class Assets extends App {
     public function remove() {
 
         $this->helper('session')->close();
+        $this->hasValidCsrfToken(true);
 
         if (!$this->isAllowed('assets/delete')) {
             return $this->stop(['error' => 'Deleting assets not allowed'], 401);
@@ -204,6 +210,8 @@ class Assets extends App {
 
     public function folders() {
 
+        $this->hasValidCsrfToken(true);
+
         $folders = $this->module('assets')->folders(['sort' => ['name' => 1]]);
         $folders = $this->helper('utils')->buildTreeList($folders, ['parent_id_column_name' => '_p']);
 
@@ -211,6 +219,8 @@ class Assets extends App {
     }
 
     public function saveFolder() {
+
+        $this->hasValidCsrfToken(true);
 
         $name   = $this->param('name', null);
         $parent = $this->param('parent', '');
@@ -239,6 +249,8 @@ class Assets extends App {
     }
 
     public function removeFolder() {
+
+        $this->hasValidCsrfToken(true);
 
         if (!$this->isAllowed('assets/folders/delete')) {
             return $this->stop(['error' => 'Deleting folders not allowed'], 401);

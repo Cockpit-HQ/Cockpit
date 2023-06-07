@@ -251,6 +251,9 @@ export default {
 
             xhr.open('POST', App.route(`/finder/buckets/api/${this.bucket}`));
 
+            xhr.setRequestHeader('X-CSRF-TOKEN', App.csrf);
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+
             this.uploading = 0;
 
             xhr.upload.addEventListener('progress', ({loaded, total}) => {

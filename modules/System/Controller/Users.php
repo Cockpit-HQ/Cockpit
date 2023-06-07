@@ -76,6 +76,8 @@ class Users extends App {
 
     public function save() {
 
+        $this->hasValidCsrfToken(true);
+
         $user = $this->param('user');
 
         if (!$user) {
@@ -160,6 +162,8 @@ class Users extends App {
 
     public function remove() {
 
+        $this->hasValidCsrfToken(true);
+
         $user = $this->param('user');
 
         if (!$user || !isset($user['_id'])) {
@@ -178,6 +182,7 @@ class Users extends App {
     public function load() {
 
         $this->helper('session')->close();
+        $this->hasValidCsrfToken(true);
 
         $options = array_merge([
             'sort'   => ['user' => 1],
