@@ -3970,7 +3970,7 @@
 
   // custom utils
   App$1.utils.import = function(uri) {
-      return import(App$1.base(uri)+`?v=${App$1.version}`);
+      return import(`${App$1.base(uri)}?v=${App$1.version}`);
   };
 
   App$1.utils.$interpolate = function (str, data) {

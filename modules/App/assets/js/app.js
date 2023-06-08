@@ -166,7 +166,7 @@ App.utils = utils;
 
 // custom utils
 App.utils.import = function(uri) {
-    return import(App.base(uri)+`?v=${App.version}`);
+    return import(`${App.base(uri)}?v=${App.version}`);
 };
 
 App.utils.$interpolate = function (str, data) {
