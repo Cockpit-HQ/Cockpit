@@ -13,6 +13,7 @@
 - Fix internal content find/populate api exposing data to users without required rights (thanks @raffaelj)
 - Fix empty settings screen
 - Add csrf token validation to internal api calls to improve security (thanks @Ccamm)
+- Add clone functionality to tree content items
 
 ## 2.5.2 (2023-05-18)
 

@@ -136,7 +136,7 @@ let IconPicker = {
                         </div>
 
                         <kiss-grid gap="small" cols="4 8@m 10@xl" v-if="Array.isArray(icons) && icons.length">
-                            <kiss-card class="kiss-padding kiss-align-center kiss-position-relative" theme="contrast bordered" v-for="icn in filtered">
+                            <kiss-card class="kiss-padding kiss-align-center kiss-position-relative app-icon-preview" theme="bordered" hover="shadow contrast" v-for="icn in filtered">
                                 <img loading="lazy" width="100" height="100" :src="$base(icn.path)">
                                 <a class="kiss-cover" @click="selectIcon(icn)"></a>
                             </kiss-card>
