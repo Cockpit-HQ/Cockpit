@@ -57,7 +57,7 @@ $this->bind('/api/*', function($params) {
 
         // todo
 
-    } else {
+    } elseif ($token != 'public') {
 
         $key = $this->helper('api')->getKey($token);
 

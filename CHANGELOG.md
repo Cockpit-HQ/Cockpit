@@ -14,6 +14,7 @@
 - Fix empty settings screen
 - Add csrf token validation to internal api calls to improve security (thanks @Ccamm)
 - Add clone functionality to tree content items
+- Add additional checks to `/api/system/healthcheck`
 
 ## 2.5.2 (2023-05-18)
 
