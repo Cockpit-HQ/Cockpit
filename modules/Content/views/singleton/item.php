@@ -37,7 +37,7 @@
 
             <kiss-row class="kiss-margin-large" gap="large" :class="{'kiss-disabled': saving}" v-if="fields.length">
                 <div class="kiss-flex-1">
-                    <div class="kiss-width-3-4@xl">
+                    <div class="kiss-width-3-4@xl kiss-margin-auto">
                         <fields-renderer v-model="item" :fields="fields" :locales="locales"></fields-renderer>
                     </div>
                 </div>

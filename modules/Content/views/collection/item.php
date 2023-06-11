@@ -35,7 +35,7 @@
 
             <kiss-row class="kiss-margin-large" gap="large" v-if="fields.length">
                 <div class="kiss-flex-1">
-                    <div class="kiss-width-3-4@xl">
+                    <div class="kiss-width-3-4@xl kiss-margin-auto">
                         <fields-renderer v-model="item" :fields="fields" :locales="locales"></fields-renderer>
                     </div>
                 </div>
@@ -206,13 +206,13 @@
                             </a>
                         </li>
                         <li v-if="item._id">
-                            <a class="kiss-flex kiss-flex-middle" href="<?=$this->route("/content/collection/item/{$model['name']}")?>">
+                            <a class="kiss-flex kiss-flex-middle" :href="$route(`/content/collection/item/${model.name}`)">
                                 <icon class="kiss-margin-small-right">add_circle_outline</icon>
                                 <?=t('Create new item')?>
                             </a>
                         </li>
                         <li v-if="item._id">
-                            <a class="kiss-flex kiss-flex-middle":href="$route(`/content/collection/clone/${model.name}/${item._id}`)">
+                            <a class="kiss-flex kiss-flex-middle" :href="$route(`/content/collection/clone/${model.name}/${item._id}`)">
                                 <icon class="kiss-margin-small-right">control_point_duplicate</icon>
                                 <?=t('Clone item')?>
                             </a>
