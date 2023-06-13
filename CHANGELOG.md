@@ -16,6 +16,7 @@
 - Add clone functionality to tree content items
 - Add additional checks to `/api/system/healthcheck`
 - Fix disabling asset picker in wysiwyg field
+- Improve fields projection (eg nested fields) when using MongoLite as data storage
 
 ## 2.5.2 (2023-05-18)
 
