@@ -44,6 +44,14 @@
                                 <td width="30%" class="kiss-size-xsmall">Debug mode</td>
                                 <td class="kiss-size-small kiss-color-muted"><span class="kiss-badge kiss-badge-outline kiss-color-<?=($this->retrieve('debug') ? 'success':'danger')?>"><?=($this->retrieve('debug') ? 'Enabled':'Disabled')?></span></td>
                             </tr>
+                            <tr>
+                                <td width="30%" class="kiss-size-xsmall">Assets url</td>
+                                <td class="kiss-size-small kiss-color-muted kiss-text-truncate">{{ $base('#uploads:') }}</td>
+                            </tr>
+                            <tr>
+                                <td width="30%" class="kiss-size-xsmall">Datastorage</td>
+                                <td class="kiss-size-small kiss-color-muted"><?=$this->dataStorage->type?></td>
+                            </tr>
                         </tbody>
                     </table>
 
