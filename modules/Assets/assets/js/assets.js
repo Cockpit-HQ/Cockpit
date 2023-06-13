@@ -11,7 +11,7 @@ App.on('field-wysiwyg-setup', evt => {
 
     let editor = evt.params[0];
 
-    if (editor.settings && editor.settings.assetsPicker === false) {
+    if (editor.getParam('assetsPicker') === false) {
         return;
     }
 
