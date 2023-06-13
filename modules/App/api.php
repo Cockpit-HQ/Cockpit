@@ -40,24 +40,28 @@ $this->bind('/api/*', function($params) {
         'role' => null
     ];
 
-    if (preg_match('/^USR-/', $token)) {
+    if ($token != 'public') {
 
-        $user = $this->dataStorage->findOne('system/users', ['apiKey' => $token]);
+        if (preg_match('/^USR-/', $token)) {
 
-        if (!$user) {
-            $this->response->status = 412;
-            return ['error' => 'Authentication failed'];
+            $user = $this->dataStorage->findOne('system/users', ['apiKey' => $token]);
+
+            if (!$user) {
+                $this->response->status = 412;
+                return ['error' => 'Authentication failed'];
+            }
+
+            $apiUser['user'] = $user['user'];
+            $apiUser['role'] = $user['role'];
+
+        // is jwt token?
+        } elseif (preg_match('/^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]*$/', $token)) {
+
+            // todo
+
         }
 
-        $apiUser['user'] = $user['user'];
-        $apiUser['role'] = $user['role'];
-
-    // is jwt token?
-    } elseif ($token != 'public' && preg_match('/^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]*$/', $token)) {
-
-        // todo
-
-    } elseif ($token != 'public') {
+    } else {
 
         $key = $this->helper('api')->getKey($token);
 
