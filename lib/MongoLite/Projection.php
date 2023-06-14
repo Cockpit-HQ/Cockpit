@@ -4,7 +4,7 @@ namespace MongoLite;
 
 class Projection {
 
-    public static function onDocuments(array $documents, array $fields) {
+    public static function onDocuments(array $documents, array $fields): array {
 
         $vals = array_values($fields);
         $isInclusion = in_array(1, $vals) ? true : false;
@@ -18,7 +18,7 @@ class Projection {
         foreach ($documents as &$document) {
 
             $id = $document['_id'] ?? null;
-            $document = self::projectFieldsFilter($document, $projection, $isInclusion);
+            $document = self::process($document, $projection, $isInclusion);
 
             if ($id && ($fields['_id'] ?? true)) {
                 $document['_id'] = $id;
@@ -28,11 +28,11 @@ class Projection {
         return $documents;
     }
 
-    public static function onDocument(array $document, array $fields) {
+    public static function onDocument(array $document, array $fields): array {
         return self::onDocuments([$document], $fields)[0];
     }
 
-    protected static function normalizeProjection($fields) {
+    protected static function normalizeProjection($fields): array {
 
         $projection = [];
 
@@ -48,15 +48,22 @@ class Projection {
         return $projection;
     }
 
-    protected static function projectFieldsFilter(array $document, array $fields, bool $isInclusion) {
+    protected static function process(array $document, array $fields, bool $isInclusion): array {
 
         $result = [];
+
+        if (self::is_sequential($document)) {
+            foreach ($document as $key => $value) {
+                $result[] = self::process($value, $fields, $isInclusion);
+            }
+            return $result;
+        }
 
         foreach ($document as $field => $value) {
 
             if (is_array($value) && isset($fields[$field]) && is_array($fields[$field])) {
 
-                $result[$field] = self::projectFieldsFilter($value, $fields[$field], $isInclusion);
+                $result[$field] = self::process($value, $fields[$field], $isInclusion);
 
             } else {
 
@@ -71,7 +78,7 @@ class Projection {
         return $result;
     }
 
-    protected static function dotNotationToArray(string $dotNotation, mixed $value = 1) {
+    protected static function dotNotationToArray(string $dotNotation, mixed $value = 1): array {
 
         $result = [];
         $parts = explode('.', $dotNotation);
@@ -83,5 +90,17 @@ class Projection {
             $pointer = &$pointer[$part];
         }
         return $result;
+    }
+
+    protected static function is_sequential(array $arr): bool {
+
+        $i = 0;
+
+        foreach ($arr as $key => $value) {
+            if ($key !== $i) return false;
+            $i++;
+        }
+
+        return true;
     }
 }

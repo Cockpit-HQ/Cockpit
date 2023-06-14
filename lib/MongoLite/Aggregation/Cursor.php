@@ -70,6 +70,9 @@ class Cursor implements \Iterator {
                 case '$sort':
                     usort($data, $this->make_cmp($stage['$sort']));
                     break;
+                case '$group':
+                    $data = $this->group($data, $stage['$group']);
+                    break;
             }
         }
 
@@ -125,6 +128,31 @@ class Cursor implements \Iterator {
 
             return 0;
         };
+    }
+
+    protected function group($data, $params) {
+
+        $result = [];
+        $field = $params['_id'] ?? null;
+
+        if (!$field) {
+            return [];
+        }
+
+        foreach ($data as $item) {
+
+            $groupKey = $item[$field];
+
+            if (!isset($result[$groupKey])) {
+                $result[$groupKey] = ['_id' => $groupKey, 'data' => [], 'count' => 0];
+            }
+
+            $result[$groupKey]['data'][] = $item;
+            $result[$groupKey]['count'] += 1;
+        }
+
+        return array_values($result);
+    }
     }
 
 }
