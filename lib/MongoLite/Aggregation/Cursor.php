@@ -153,6 +153,4 @@ class Cursor implements \Iterator {
 
         return array_values($result);
     }
-    }
-
 }
