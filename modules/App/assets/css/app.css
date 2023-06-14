@@ -1,3 +1,4 @@
+@import "../fonts/inter/inter.css";
 @import "../fonts/material-icons/material-icons.css";
 @import "../vendor/animate.css";
 @import "./vendor/noty.css";
@@ -205,7 +206,7 @@ del { background: #c92a2a }
 
 .app-container-aside-menu kiss-navlist ul > li > a {
     color: inherit;
-    opacity: .65;
+    opacity: .5;
     transition: all 250ms;
 }
 
