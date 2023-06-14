@@ -1,0 +1,28 @@
+@import url(../../vendor/ag-grid/ag-grid-theme.css);
+
+
+.ag-theme-default {
+
+    --ag-background-color: var(--kiss-base-background-color);
+    --ag-foreground-color: var(--kiss-base-text-color);
+    --ag-border-color: none;
+    --ag-border-radius: var(--app-border-radius);
+    --ag-secondary-border-color: var(--kiss-color-contrast);
+    --ag-modal-overlay-background-color: var(--kiss-color-overlay);
+    --ag-header-background-color: var(--kiss-table-heading-background-color);
+    --ag-row-hover-color: var(--kiss-table-row-hover-color);
+    --ag-tooltip-background-color: var(--kiss-color-overlay);
+    --ag-odd-row-background-color: var(--kiss-color-overlay);
+    --ag-control-panel-background-color: var(--kiss-color-overlay);
+    --ag-subheader-background-color: var(--kiss-color-contrast);
+    --ag-input-disabled-background-color: var(--kiss-color-muted);
+    --ag-input-focus-border-color: var(--kiss-color-primary);
+    --ag-input-focus-box-shadow:
+        0 0 2px 0.5px rgba(255, 255, 255, 0.5),
+        0 0 4px 3px var(--ag-input-focus-border-color);
+    --ag-card-shadow: 0 1px 20px 1px rgba(0, 0, 0, 0.3);
+    --ag-disabled-foreground-color: var(--kiss-color-muted);
+    --ag-chip-background-color: var(--kiss-color-primary);
+    --ag-input-disabled-border-color: var(--kiss-color-muted);
+    --ag-input-disabled-background-color: var(--kiss-color-contrast);
+}

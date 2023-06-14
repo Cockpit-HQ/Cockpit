@@ -25,8 +25,24 @@ export default {
     },
 
     data() {
+
         return {
             val: this.modelValue || [],
+            selected: [],
+            gridOptions: {
+                rowSelection: 'multiple',
+                onSelectionChanged: (e) => {
+                    this.selected = e.api.getSelectedRows();
+                },
+                onRowDragEnd: (e) => {
+
+                    let rowData = [];
+                    e.api.forEachNode((rowNode) => rowData.push(rowNode.data));
+                    this.updateTableData(rowData);
+                },
+                rowDragManaged: true,
+                animateRows: true,
+            }
         }
     },
 
@@ -36,7 +52,7 @@ export default {
             default: ''
         },
         options: {
-            default: []
+            default: {}
         },
         columns: {
             type: Array,
@@ -64,50 +80,42 @@ export default {
         cols() {
 
             let cols = [
-                {rowHandle:true, formatter:'handle', headerSort:false, frozen:true, width:30, minWidth:30}
+                {
+                    rowDrag: true,
+                    width: 0,
+                    pinned: 'left',
+                },
+                {
+                    headerCheckboxSelection: true,
+                    checkboxSelection: true,
+                    showDisabledCheckboxes: true,
+                    width: 0,
+                    pinned: 'left',
+                }
             ];
 
             this.columns.forEach(col => {
 
                 cols.push({
                     field: col.name,
-                    title: col.label || col.name,
-                    editor: col.editor || true,
-                    headerSort: false
+                    headerName: col.label || col.name,
+                    editable: true,
+                    flex: 1,
+                    resizable: true,
                 });
-            })
-
-            cols.push({
-
-                formatter: (cell, formatterParams, onRendered) => {
-                    return '<icon class="kiss-color-danger" table-action="remove">delete</icon>';
-                },
-
-                // causing issues - hopefully will be fixed with upcoming tabulator version
-                // cellClick: (e, cell) => {
-                //     let idx = cell.getRow(true).getPosition(true);
-                //     this.val.splice(idx, 1);
-                //     this.update();
-                // },
-
-                headerSort:false, frozen:true, width:30, minWidth:30})
+            });
 
             return cols;
         }
     },
 
     mounted() {
-        this.$el.addEventListener('click', (e) => {
 
-            if (e.target.getAttribute('table-action') == 'remove') {
-                let row = e.target.closest('[role="row"]');
-                this.val.splice([...row.parentElement.childNodes].indexOf(row), 1);
-            }
-        })
     },
 
     methods: {
         addRow() {
+
             let val = {};
             this.columns.forEach(col => val[col.name] = null);
 
@@ -116,6 +124,12 @@ export default {
             }
 
             this.val.push(val);
+            this.update();
+        },
+
+        removeSelected() {
+            this.val = this.val.filter(row => !this.selected.includes(row));
+            this.selected = [];
             this.update();
         },
 
@@ -137,11 +151,14 @@ export default {
             </div>
 
             <div v-if="cols.length">
-                <vue-table :columns="cols" :rows="val" :height="height" @update:table-data="updateTableData"></vue-table>
 
-                <div class="kiss-margin-small-top">
+                <vue-table :columns="cols" :rows="val" :height="height" :grid-options="gridOptions" @update:row-data="updateTableData"></vue-table>
+
+                <div class="kiss-button-group kiss-margin-small-top">
                     <button type="button" class="kiss-button kiss-button-small" @click="addRow">{{ t('Add row') }}</button>
+                    <button type="button" class="kiss-button kiss-button-danger kiss-button-small" @click="removeSelected" v-if="selected.length">{{ t('Remove selected') }}</button>
                 </div>
+
             </div>
 
         </div>
