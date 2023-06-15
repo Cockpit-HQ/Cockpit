@@ -18,6 +18,7 @@
 - Fix disabling asset picker in wysiwyg field
 - Improve fields projection (eg nested fields) when using MongoLite as data storage
 - Use AG Grid instead of Tabulator.js as a foundation for the table field
+- Limit number of files to upload in admin ui based on php setting `max_file_uploads`
 
 ## 2.5.2 (2023-05-18)
 

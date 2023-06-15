@@ -16,6 +16,7 @@ class Theme extends \Lime\Helper {
             'app.version' => $this->app->retrieve('app.version'),
             'siteUrl' => $this->app->getSiteUrl(true),
             'maxUploadSize' => $this->helper('utils')->getMaxUploadSize(),
+            'maxFileUploads' => $this->helper('utils')->getMaxFileUploads(),
         ];
     }
 

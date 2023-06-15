@@ -43,6 +43,27 @@ class Utils extends \Lime\Helper {
     }
 
     /**
+     * Return max file upload
+     *
+     * @return int
+     */
+    public function getMaxFileUploads(): int {
+
+        static $max = -1;
+
+        if ($max < 0) {
+            // Start with post_max_size.
+            $max = intval(ini_get('max_file_uploads'));
+
+            if (!$max) {
+                $max = 20;
+            }
+        }
+
+        return $max;
+    }
+
+    /**
      * Parse size string
      *
      * @param string $size

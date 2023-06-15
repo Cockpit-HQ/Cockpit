@@ -5,7 +5,7 @@ function getUppy(meta = {}) {
         autoProceed: false,
         restrictions: {
             maxFileSize: App._vars.maxUploadSize || null,
-            //maxNumberOfFiles: 3,
+            maxNumberOfFiles: App._vars.maxFileUploads || 20,
             minNumberOfFiles: 1,
             //allowedFileTypes: ['image/*', 'video/*']
         },
