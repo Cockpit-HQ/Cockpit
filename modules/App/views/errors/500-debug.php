@@ -70,7 +70,7 @@
 
     <div class="wrapper">
         <h1>Something went terribly wrong:</h1>
-        <h2><?=nl2br($error['message']);?></h2>
+        <h2><?=nl2br(htmlentities($error['message']));?></h2>
     </div>
     <div class="wrapper content">
 
