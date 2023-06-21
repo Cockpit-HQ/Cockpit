@@ -1,6 +1,6 @@
 # Release Notes
 
-# WIP
+## 2.6.0 (2023-06-21)
 
 - Try to auto-generate meaningful linked content preview if display setting is missing
 - Update Vue to v3.3.4
