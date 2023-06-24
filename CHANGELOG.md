@@ -1,5 +1,9 @@
 # Release Notes
 
+## 2.6.1 (2023-06-24)
+
+- Fix api token checking
+
 ## 2.6.0 (2023-06-21)
 
 - Try to auto-generate meaningful linked content preview if display setting is missing

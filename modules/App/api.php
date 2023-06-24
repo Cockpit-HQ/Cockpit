@@ -40,26 +40,22 @@ $this->bind('/api/*', function($params) {
         'role' => null
     ];
 
-    if ($token != 'public') {
+    if ($token != 'public' && preg_match('/^USR-/', $token)) {
 
-        if (preg_match('/^USR-/', $token)) {
+        $user = $this->dataStorage->findOne('system/users', ['apiKey' => $token]);
 
-            $user = $this->dataStorage->findOne('system/users', ['apiKey' => $token]);
+        if (!$user) {
+            $this->response->status = 412;
+            return ['error' => 'Authentication failed'];
+        }
 
-            if (!$user) {
-                $this->response->status = 412;
-                return ['error' => 'Authentication failed'];
-            }
+        $apiUser['user'] = $user['user'];
+        $apiUser['role'] = $user['role'];
 
-            $apiUser['user'] = $user['user'];
-            $apiUser['role'] = $user['role'];
-
-        // is jwt token?
-        } elseif (preg_match('/^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]*$/', $token)) {
+    // is jwt token?
+    } elseif ($token != 'public' && preg_match('/^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]*$/', $token)) {
 
             // todo
-
-        }
 
     } else {
 
