@@ -1,5 +1,9 @@
 # Release Notes
 
+## WIP
+
+- Add video frame preview (assets manager)
+
 ## 2.6.1 (2023-06-24)
 
 - Fix api token checking
