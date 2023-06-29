@@ -3,6 +3,7 @@
 ## WIP
 
 - Add video frame preview (assets manager)
+- Fix `$not` for MongoLite
 
 ## 2.6.1 (2023-06-24)
 

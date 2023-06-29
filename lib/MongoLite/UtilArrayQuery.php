@@ -127,6 +127,20 @@ class UtilArrayQuery {
         }
 
         switch ($func) {
+
+            case '$not':
+
+                if (is_string($b)) {
+
+                    if (is_string($a)) {
+                        $r = !\preg_match(isset($b[0]) && $b[0]=='/' ? $b : '/'.$b.'/iu', $a);
+                    }
+
+                } elseif (is_array($b)) {
+                    $r = !self::check($a, $b);
+                }
+
+                break;
             case '$eq' :
                 $r = $a == $b;
                 break;
@@ -192,10 +206,9 @@ class UtilArrayQuery {
             case '$regex' :
             case '$preg' :
             case '$match' :
-            case '$not':
-                $r = (boolean) @\preg_match(isset($b[0]) && $b[0]=='/' ? $b : '/'.$b.'/iu', $a, $match);
-                if ($func === '$not') {
-                    $r = !$r;
+
+                if (is_string($a) && is_string($b)) {
+                    $r = (boolean) \preg_match(isset($b[0]) && $b[0]=='/' ? $b : '/'.$b.'/iu', $a);
                 }
                 break;
 
