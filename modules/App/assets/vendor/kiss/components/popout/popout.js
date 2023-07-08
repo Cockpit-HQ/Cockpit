@@ -1,5 +1,5 @@
 import { on, trigger } from '../../js/events.js';
-import { isInViewport } from '../../js/utils.js';
+import { isInViewport, isElementOnTop } from '../../js/utils.js';
 
 
 on(document.documentElement, 'click', '[kiss-popout]', function (e) {
@@ -13,6 +13,26 @@ on(document.documentElement, 'click', '[kiss-popout]', function (e) {
         let position = this.getAttribute('kiss-popout-pos');
 
         menu.show(position ? this : null, position);
+    }
+});
+
+on(document.documentElement, 'keyup', function (e) {
+
+    if (!['Esc', 'Escape'].includes(e.key)) {
+        return;
+    }
+
+    let elements = document.querySelectorAll('kiss-popout[open="true"]'), ele;
+
+    for (let i = 0; i < elements.length; i++) {
+
+        ele = elements[i];
+
+        if (isElementOnTop(ele)) {
+            e.stopImmediatePropagation();
+            ele.close();
+            break;
+        }
     }
 });
 

@@ -403,19 +403,46 @@
       }
   });
 
+  function isInViewport(element) {
+      const rect = element.getBoundingClientRect();
+      return (
+          rect.top >= 0 &&
+          rect.left >= 0 &&
+          rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+          rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+      );
+  }
+
+  function isElementOnTop(element) {
+      const rect = element.getBoundingClientRect();
+      let topElement = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
+      while (topElement && topElement.parentElement) {
+          if (topElement === element) {
+              return true;
+          }
+          topElement = topElement.parentElement;
+      }
+      return false;
+  }
+
   on$1(document.documentElement, 'keyup', function (e) {
 
       if (!['Esc', 'Escape'].includes(e.key)) {
           return;
       }
 
-      let last = null;
+      let elements = document.querySelectorAll('kiss-dialog[open="true"][esc="true"]'), ele;
 
-      document.querySelectorAll('kiss-dialog[open="true"][esc="true"]').forEach(dialog => {
-          last = dialog;
-      });
+      for (let i = 0; i < elements.length; i++) {
 
-      if (last) last.close();
+          ele = elements[i];
+
+          if (isElementOnTop(ele)) {
+              e.stopImmediatePropagation();
+              ele.close();
+              break;
+          }
+      }
   });
 
   customElements.define('kiss-dialog', class extends HTMLElement {
@@ -460,6 +487,27 @@
       }
   });
 
+  on$1(document.documentElement, 'keyup', function (e) {
+
+      if (!['Esc', 'Escape'].includes(e.key)) {
+          return;
+      }
+
+      let elements = document.querySelectorAll('kiss-offcanvas[open="true"]'), ele;
+
+      for (let i = 0; i < elements.length; i++) {
+
+          ele = elements[i];
+
+          if (isElementOnTop(ele)) {
+              e.stopImmediatePropagation();
+              ele.close();
+              break;
+          }
+      }
+
+  });
+
   customElements.define('kiss-offcanvas', class extends HTMLElement {
 
       connectedCallback() {
@@ -500,16 +548,6 @@
       }
   });
 
-  function isInViewport(element) {
-      const rect = element.getBoundingClientRect();
-      return (
-          rect.top >= 0 &&
-          rect.left >= 0 &&
-          rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-          rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-      );
-  }
-
   on$1(document.documentElement, 'click', '[kiss-popout]', function (e) {
 
       e.preventDefault();
@@ -521,6 +559,26 @@
           let position = this.getAttribute('kiss-popout-pos');
 
           menu.show(position ? this : null, position);
+      }
+  });
+
+  on$1(document.documentElement, 'keyup', function (e) {
+
+      if (!['Esc', 'Escape'].includes(e.key)) {
+          return;
+      }
+
+      let elements = document.querySelectorAll('kiss-popout[open="true"]'), ele;
+
+      for (let i = 0; i < elements.length; i++) {
+
+          ele = elements[i];
+
+          if (isElementOnTop(ele)) {
+              e.stopImmediatePropagation();
+              ele.close();
+              break;
+          }
       }
   });
 

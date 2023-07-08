@@ -26,3 +26,15 @@ export function isInViewport(element) {
         rect.right <= (window.innerWidth || document.documentElement.clientWidth)
     );
 }
+
+export function isElementOnTop(element) {
+    const rect = element.getBoundingClientRect();
+    let topElement = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
+    while (topElement && topElement.parentElement) {
+        if (topElement === element) {
+            return true;
+        }
+        topElement = topElement.parentElement;
+    }
+    return false;
+}

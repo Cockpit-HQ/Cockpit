@@ -1,4 +1,5 @@
 import { on } from '../../js/events.js';
+import { isElementOnTop } from '../../js/utils.js';
 
 
 on(document.documentElement, 'keyup', function (e) {
@@ -7,13 +8,18 @@ on(document.documentElement, 'keyup', function (e) {
         return;
     }
 
-    let last = null
+    let elements = document.querySelectorAll('kiss-dialog[open="true"][esc="true"]'), ele;
 
-    document.querySelectorAll('kiss-dialog[open="true"][esc="true"]').forEach(dialog => {
-        last = dialog;
-    });
+    for (let i = 0; i < elements.length; i++) {
 
-    if (last) last.close();
+        ele = elements[i];
+
+        if (isElementOnTop(ele)) {
+            e.stopImmediatePropagation();
+            ele.close();
+            break;
+        }
+    }
 });
 
 customElements.define('kiss-dialog', class extends HTMLElement {
