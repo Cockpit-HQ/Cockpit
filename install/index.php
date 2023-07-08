@@ -103,6 +103,7 @@ if (!count($failed)) {
         ];
 
         $app->dataStorage->save('system/users', $user);
+        $app->trigger('app.system.install');
 
     } catch(Throwable $e) {
 

@@ -4,6 +4,7 @@
 
 - Add video frame preview (assets manager)
 - Fix `$not` for MongoLite
+- Add `app.system.install` event trigger on initial installation
 
 ## 2.6.1 (2023-06-24)
 
