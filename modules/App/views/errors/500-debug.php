@@ -81,8 +81,8 @@
 
     $file   = file($error['file']);
     $offset = 6;
-    $line   = $error['line'] -1 ;
-    $start  = isset($file[$line-1]) ? $line-1 : $line;
+    $line   = $error['line'] ? $error['line'] - 1 : 0;
+    $start  = isset($file[$line-1]) ? $line - 1 : $line;
     $end    = $line + $offset;
 
     if ($start != $line) {
@@ -90,8 +90,13 @@
         $i = $offset;
 
         while (true) {
-            if (isset($file[($start-1)])) $start -= 1;
-            else break;
+
+            if (isset($file[($start-1)])) {
+                $start -= 1;
+            } else {
+                break;
+            }
+
             if ($line - $start > $offset) break;
         }
     }
