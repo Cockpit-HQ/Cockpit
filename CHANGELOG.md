@@ -6,6 +6,7 @@
 - Fix `$not` for MongoLite
 - Add `app.system.install` event trigger on initial installation
 - Add support for closing dialogs via `Escape`
+- Add cached modules loading
 
 ## 2.6.1 (2023-06-24)
 

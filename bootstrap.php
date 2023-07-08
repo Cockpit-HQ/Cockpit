@@ -227,7 +227,7 @@ class Cockpit {
         }
 
         // load modules
-        $app->loadModules($modulesPaths);
+        self::loadModules($envDir, $app, $config, $modulesPaths);
 
         // handle exceptions
         if (APP_CLI || APP_ADMIN) {
@@ -253,6 +253,50 @@ class Cockpit {
         $app->trigger('bootstrap');
 
         return $app;
+    }
+
+    protected static function loadModules($envDir, $app, $config, $modulesPaths) {
+
+        if ($config['debug']) {
+            $app->loadModules($modulesPaths);
+        } else {
+
+            $cacheFile = "{$config['paths']['#cache']}/modules.cache.php";
+
+            if (!file_exists($cacheFile)) {
+
+                $export  = ['version' => APP_VERSION, 'env' => $envDir, 'dirs' => [], 'autoload' => true];
+
+                foreach ($modulesPaths as &$dir) {
+
+                    if (!file_exists($dir)) continue;
+
+                    $export['dirs'][$dir] = [];
+
+                    foreach (new \DirectoryIterator($dir) as $module) {
+                        if ($module->isFile() || $module->isDot()) continue;
+                        $export['dirs'][$dir][] = $module->getRealPath();
+                    }
+                }
+
+                $contents = $app->helper('utils')->var_export($export, true);
+                file_put_contents($cacheFile, "<?php\n return {$contents};");
+            }
+
+            $cache = include($cacheFile);
+
+            if (APP_VERSION !== $cache['version'] || $cache['env'] !== $envDir) {
+                unlink($cacheFile);
+                $app->loadModules($modulesPaths);
+            } else {
+
+                foreach ($cache['dirs'] as $dir => $modules) {
+                    foreach ($modules as $path) $app->loadModule($path, null);
+                    $app['autoload']->append($dir);
+                }
+            }
+
+        }
     }
 
 }
