@@ -96,6 +96,10 @@ $app->on('error', function($error) {
         return;
     }
 
+    while (\ob_get_level()) {
+        \ob_end_clean();
+    }
+
     if ($this['debug']) {
         $body = $this->request->is('ajax') || APP_API_REQUEST ? json_encode(['error' => $error['message'], 'file' => $error['file'], 'line' => $error['line']]) : $this->render('app:views/errors/500-debug.php', ['error' => $error]);
     } else {
