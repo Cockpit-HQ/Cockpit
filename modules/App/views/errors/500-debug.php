@@ -91,6 +91,7 @@
 
         while (true) {
             if (isset($file[($start-1)])) $start -= 1;
+            else break;
             if ($line - $start > $offset) break;
         }
     }
