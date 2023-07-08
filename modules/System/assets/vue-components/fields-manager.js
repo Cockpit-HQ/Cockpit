@@ -320,10 +320,10 @@ let FieldsManager = {
                         <div class="kiss-margin">
                             <input class="kiss-input kiss-width-1-1" :placeholder="t('Filter...')" v-model="fieldTypeFilter">
                         </div>
-                        <kiss-navlist kiss-popout-close="true" v-if="field">
+                        <kiss-navlist v-if="field">
                             <kiss-grid class="kiss-margin-top" cols="1@s 2@m 3@l" gap="small">
                                 <kiss-card class="kiss-padding-xsmall" hover="contrast" v-for="(f,fieldType) in filteredFieledTypes">
-                                    <kiss-row class="kiss-position-relative" gap="small">
+                                    <kiss-row class="kiss-position-relative" gap="small" kiss-popout-close="true">
                                         <div>
                                             <div class="kiss-padding-small app-border-radius" :style="{background: f.color || 'rgb(255, 248, 214)'}">
                                                 <img :src="$base(f.icon || 'system:assets/icons/edit.svg')" width="20" height="20" :title="fieldType">
