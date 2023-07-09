@@ -230,7 +230,7 @@ class Cockpit {
         self::loadModules($envDir, $app, $config, $modulesPaths);
 
         // handle exceptions
-        if (APP_CLI || APP_ADMIN) {
+        if (!isset($GLOBALS['APP']) && (APP_CLI || APP_ADMIN)) {
 
             set_exception_handler(function($exception) use($app) {
 

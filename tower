@@ -73,6 +73,8 @@ _|_|_|_|_|
 
 {$app['app.name']} Tower", $app['app.version']);
 
+$GLOBALS['APP'] = $app;
+
 $app->trigger('app.cli.init', [$cli]);
 
 $output->writeln("<info>{$app['app.name']} Tower</info> <comment>{$app['app.version']}</comment>");

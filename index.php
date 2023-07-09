@@ -89,6 +89,8 @@ $app = Cockpit::instance($APP_SPACE_DIR, [
     'base_url' => $APP_BASE_URL
 ]);
 
+$GLOBALS['APP'] = $app;
+
 // handle exceptions
 $app->on('error', function($error) {
 
