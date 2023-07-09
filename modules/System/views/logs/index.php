@@ -194,7 +194,7 @@
                         }
 
                         this.$request(`/system/logs/load`, { options }).then(rsp => {
-                            this.items = rsp.items;
+                            this.items = rsp.items.filter(item => item !== null);
                             this.page = rsp.page;
                             this.pages = rsp.pages;
                             this.count = rsp.count;
