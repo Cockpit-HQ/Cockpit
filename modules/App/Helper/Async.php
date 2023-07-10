@@ -61,6 +61,7 @@ function Cockpit() {
 
     if (!isset(\$instance)) {
         \$instance = Cockpit::instance('{$envDir}');
+        \$GLOBALS['APP'] = \$instance;
     }
 
     return \$instance;
