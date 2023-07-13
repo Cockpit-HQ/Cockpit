@@ -98,7 +98,7 @@ export default {
                     video.src = videoURL;
                     video.crossOrigin = 'anonymous';  // may be needed in some cases
 
-                    video.onloadedmetadata = function() {
+                    video.onloadedmetadata = () => {
 
                         if (timeInSeconds > video.duration) {
                             timeInSeconds = Math.round(video.duration / 2);
