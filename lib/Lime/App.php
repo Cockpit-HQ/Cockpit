@@ -115,13 +115,13 @@ class App implements \ArrayAccess {
         ], $this->registry['helpers']));
 
         // register simple autoloader
-        spl_autoload_register(function ($class) use($self){
+        spl_autoload_register(function ($class) use($self) {
 
             foreach ($self->registry['autoload'] as $dir) {
 
                 $class_file = $dir.'/'.\str_replace('\\', '/', $class).'.php';
 
-                if (\file_exists($class_file)){
+                if (\file_exists($class_file)) {
                     include_once($class_file);
                     return;
                 }
@@ -310,7 +310,7 @@ class App implements \ArrayAccess {
     public function reroute(string $path): void {
 
         if (\strpos($path,'://') === false) {
-            if (\substr($path,0,1)!='/'){
+            if (\substr($path,0,1)!='/') {
                 $path = '/'.$path;
             }
             $path = $this->routeUrl($path);
@@ -333,7 +333,7 @@ class App implements \ArrayAccess {
 
         if (\count($keys)>5) return false;
 
-        switch (\count($keys)){
+        switch (\count($keys)) {
 
           case 1:
             $this->registry[$keys[0]] = $value;
@@ -378,7 +378,7 @@ class App implements \ArrayAccess {
 
         $args = \func_get_args();
 
-        switch (\count($args)){
+        switch (\count($args)) {
 
             case 1:
 
@@ -390,11 +390,11 @@ class App implements \ArrayAccess {
 
                 $parts = \explode(':', $file, 2);
 
-                if (count($parts)==2){
+                if (count($parts)==2) {
                     if (!isset($this->paths[$parts[0]])) return null;
 
                     foreach ($this->paths[$parts[0]] as &$path) {
-                        if (\file_exists($path.$parts[1])){
+                        if (\file_exists($path.$parts[1])) {
                             return $path.$parts[1];
                         }
                     }
@@ -461,7 +461,7 @@ class App implements \ArrayAccess {
 
         $args = \func_get_args();
 
-        switch(\count($args)){
+        switch(\count($args)) {
             case 1:
                 return $this->helper('cache')->read($args[0]);
             case 2:
@@ -508,25 +508,25 @@ class App implements \ArrayAccess {
     */
     public function trigger(string $event, array $params=[]): self {
 
-        if (!isset($this->events[$event])){
+        if (!isset($this->events[$event])) {
             return $this;
         }
 
-        if (!\count($this->events[$event])){
+        if (!\count($this->events[$event])) {
             return $this;
         }
 
         $queue = new \SplPriorityQueue();
 
-        foreach ($this->events[$event] as $index => $action){
+        foreach ($this->events[$event] as $index => $action) {
             $queue->insert($index, $action['prio']);
         }
 
         $queue->top();
 
-        while ($queue->valid()){
+        while ($queue->valid()) {
             $index = $queue->current();
-            if (\is_callable($this->events[$event][$index]['fn'])){
+            if (\is_callable($this->events[$event][$index]['fn'])) {
                 if (\call_user_func_array($this->events[$event][$index]['fn'], $params) === false) {
                     break; // stop Propagation
                 }
@@ -539,53 +539,55 @@ class App implements \ArrayAccess {
 
     /**
     * Render view.
-    * @param  String $____template Path to view
-    * @param  Array  $_____slots   Passed variables
-    * @return String               Rendered view
+    * @param  String $view Path to view
+    * @param  Array  $slots   Passed variables
+    * @return String Rendered view
     */
-    public function render(string $____template, array $_____slots = []): string {
+    public function render(string $view, array $slots = [], bool $print = false): string {
 
-        $this->trigger('app.render.view', [&$____template, &$_____slots]);
+        $this->trigger('app.render.view', [&$view, &$slots]);
 
-        if (\is_string($____template) && $____template) {
-            $this->trigger("app.render.view/{$____template}", [&$____template, &$_____slots]);
+        if (\is_string($view) && $view) {
+            $this->trigger("app.render.view/{$view}", [&$view, &$slots]);
         }
 
-        $____layout = $this->layout;
+        $layout = $this->layout;
 
-        if (\strpos($____template, ' with ') !== false ) {
-            list($____template, $____layout) = \explode(' with ', $____template, 2);
+        if (\strpos($view, ' with ') !== false ) {
+            list($view, $layout) = \explode(' with ', $view, 2);
         }
 
-        if (\strpos($____template, ':') !== false && $____file = $this->path($____template)) {
-            $____template = $____file;
+        if (\strpos($view, ':') !== false && $file = $this->path($view)) {
+            $view = $file;
         }
 
-        $extend = function($from) use(&$____layout) {
-            $____layout = $from;
+        $setViewLayout = function($from) use(&$layout) {
+            $layout = $from;
         };
 
-        \extract((array)$_____slots);
+        $render = function($view, $slots) use($setViewLayout) {
+            \extract((array)$slots);
+            \ob_start();
+            include $view;
+            return \ob_get_clean();
+        };
 
-        \ob_start();
-        include $____template;
-        $output = \ob_get_clean();
+        $contents = $render($view, $slots);
 
-        if ($____layout) {
+        if ($layout) {
 
-            if (\strpos($____layout, ':') !== false && $____file = $this->path($____layout)) {
-                $____layout = $____file;
+            if (\strpos($layout, ':') !== false && $file = $this->path($layout)) {
+                $layout = $file;
             }
 
-            $content_for_layout = $output;
-
-            \ob_start();
-            include $____layout;
-            $output = \ob_get_clean();
-
+            $contents = $render($layout, ['content_for_layout' => $contents]);
         }
 
-        return $output;
+        if ($print) {
+            echo $block;
+        }
+
+        return $contents;
     }
 
     /**
@@ -596,7 +598,7 @@ class App implements \ArrayAccess {
     */
     public function start(string $name, bool $reset = false): void {
 
-        if (!isset($this->blocks[$name]) || $reset){
+        if (!isset($this->blocks[$name]) || $reset) {
             $this->blocks[$name] = [];
         }
 
@@ -612,7 +614,7 @@ class App implements \ArrayAccess {
 
         $out = \ob_get_clean();
 
-        if (isset($this->blocks[$name])){
+        if (isset($this->blocks[$name])) {
             $this->blocks[$name][] = $out;
         }
     }
@@ -633,7 +635,7 @@ class App implements \ArrayAccess {
 
         $block = \implode("\n", $this->blocks[$name]);
 
-        if ($options['print']){
+        if ($options['print']) {
             echo $block;
         }
 
@@ -648,7 +650,7 @@ class App implements \ArrayAccess {
     */
     public function escape(?string $string, ?string $charset = null): string {
 
-        if (\is_null($charset)){
+        if (\is_null($charset)) {
             $charset = $this->registry['charset'];
         }
 
@@ -924,9 +926,9 @@ class App implements \ArrayAccess {
                     $params = [];
 
                     /* e.g. #\.html$#  */
-                    if (\substr($route,0,1)=='#' && \substr($route,-1)=='#'){
+                    if (\substr($route,0,1)=='#' && \substr($route,-1)=='#') {
 
-                        if (\preg_match($route, $path, $matches)){
+                        if (\preg_match($route, $path, $matches)) {
                             $params[':captures'] = \array_slice($matches, 1);
                             $found = $this->render_route($route, $params);
                             break;
@@ -934,11 +936,11 @@ class App implements \ArrayAccess {
                     }
 
                     /* e.g. /admin/*  */
-                    if (\strpos($route, '*') !== false){
+                    if (\strpos($route, '*') !== false) {
 
                         $pattern = '#^'.\str_replace('\*', '(.*)', \preg_quote($route, '#')).'#';
 
-                        if (\preg_match($pattern, $path, $matches)){
+                        if (\preg_match($pattern, $path, $matches)) {
 
                             $params[':splat'] = \array_slice($matches, 1);
                             $found = $this->render_route($route, $params);
@@ -947,16 +949,16 @@ class App implements \ArrayAccess {
                     }
 
                     /* e.g. /admin/:id  */
-                    if (strpos($route, ':') !== false){
+                    if (strpos($route, ':') !== false) {
 
                         $parts_p = \explode('/', $path);
                         $parts_r = \explode('/', $route);
 
-                        if (\count($parts_p) == \count($parts_r)){
+                        if (\count($parts_p) == \count($parts_r)) {
 
                             $matched = true;
 
-                            foreach ($parts_r as $index => $part){
+                            foreach ($parts_r as $index => $part) {
                                 if (':' === \substr($part,0,1)) {
                                     $params[\substr($part,1)] = $parts_p[$index];
                                     continue;
@@ -968,7 +970,7 @@ class App implements \ArrayAccess {
                                 }
                             }
 
-                            if ($matched){
+                            if ($matched) {
                                 $found = $this->render_route($route, $params);
                                 break;
                             }
@@ -994,11 +996,11 @@ class App implements \ArrayAccess {
 
             $ret = null;
 
-            if (\is_callable($this->routes[$route])){
+            if (\is_callable($this->routes[$route])) {
                 $ret = \call_user_func($this->routes[$route], $params);
             }
 
-            if (!is_null($ret)){
+            if (!is_null($ret)) {
                 return $ret;
             }
         }
@@ -1014,7 +1016,7 @@ class App implements \ArrayAccess {
     * @param  Array  $params
     * @return Mixed
     */
-    public function invoke(string $class, string $action='index', array$params=[]): mixed {
+    public function invoke(string $class, string $action='index', array $params=[]): mixed {
 
         $context = compact('action', 'params');
         $controller = new $class($this, $context);
@@ -1392,28 +1394,28 @@ function fetch_from_array(array &$array, ?string $index = null, mixed $default =
 
         $keys = \explode('/', $index);
 
-        switch (\count($keys)){
+        switch (\count($keys)) {
 
             case 1:
-                if (isset($array[$keys[0]])){
+                if (isset($array[$keys[0]])) {
                     return $array[$keys[0]];
                 }
                 break;
 
             case 2:
-                if (isset($array[$keys[0]][$keys[1]])){
+                if (isset($array[$keys[0]][$keys[1]])) {
                     return $array[$keys[0]][$keys[1]];
                 }
                 break;
 
             case 3:
-                if (isset($array[$keys[0]][$keys[1]][$keys[2]])){
+                if (isset($array[$keys[0]][$keys[1]][$keys[2]])) {
                     return $array[$keys[0]][$keys[1]][$keys[2]];
                 }
                 break;
 
             case 4:
-                if (isset($array[$keys[0]][$keys[1]][$keys[2]][$keys[3]])){
+                if (isset($array[$keys[0]][$keys[1]][$keys[2]][$keys[3]])) {
                     return $array[$keys[0]][$keys[1]][$keys[2]][$keys[3]];
                 }
                 break;
