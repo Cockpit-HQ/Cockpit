@@ -591,11 +591,12 @@ class App implements \ArrayAccess {
     /**
     * Start block
     * @param  String $name
+    * @param  Boolean $reset
     * @return Null
     */
-    public function start(string $name): void {
+    public function start(string $name, bool $reset = false): void {
 
-        if (!isset($this->blocks[$name])){
+        if (!isset($this->blocks[$name]) || $reset){
             $this->blocks[$name] = [];
         }
 
