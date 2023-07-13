@@ -59,7 +59,9 @@ class NaturalLanguageToMongoQuery {
             $tokens[] = $currentToken;
         }
 
-        for ($i = 0; $i < count($tokens); $i++) {
+        $cnt = count($tokens);
+
+        for ($i = 0; $i < $cnt; $i++) {
             if ($tokens[$i] === '=' || $tokens[$i] === '!') {
                 if ($tokens[$i + 1] === '=') {
                     $tokens[$i] .= '=';
