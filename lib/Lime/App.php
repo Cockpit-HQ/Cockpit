@@ -584,7 +584,7 @@ class App implements \ArrayAccess {
         }
 
         if ($print) {
-            echo $block;
+            echo $contents;
         }
 
         return $contents;
