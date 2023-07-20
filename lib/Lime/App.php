@@ -580,7 +580,7 @@ class App implements \ArrayAccess {
                 $layout = $file;
             }
 
-            $contents = $render($layout, ['content_for_layout' => $contents]);
+            $contents = $render($layout, [...$slots, 'content_for_layout' => $contents]);
         }
 
         if ($print) {
