@@ -46,6 +46,8 @@ $this->module('content')->extend([
             return false;
         }
 
+        $data['name'] = $name;
+
         $time = time();
 
         $model = array_replace_recursive([
@@ -53,12 +55,12 @@ $this->module('content')->extend([
             'label'     => $name,
             'info'      => '',
             'type'      => 'collection',
-            'fields'    => [],
+            'fields'     => [],
             'preview'   => [],
             'group'     => null,
             'meta'      => null,
             '_created'  => $time,
-            '_modified' => $time
+            '_modified'  => $time
         ], $data);
 
         $export = $this->app->helper('utils')->var_export($model, true);
