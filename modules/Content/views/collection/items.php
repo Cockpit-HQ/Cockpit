@@ -291,7 +291,7 @@
                                 </li>
                                 <li>
                                     <a class="kiss-flex kiss-flex-middle" href="<?= $this->route("/content/collection/item/{$model['name']}") ?>">
-                                        <icon class="kiss-margin-small-right">add_circle_outline</icon>
+                                        <icon class="kiss-margin-small-right">add_circle</icon>
                                         <?= t('Create item') ?>
                                     </a>
                                 </li>

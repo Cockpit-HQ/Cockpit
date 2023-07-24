@@ -127,7 +127,7 @@
                                 </li>
                                 <li v-if="actionModel.type=='collection'">
                                     <a class="kiss-flex kiss-flex-middle" :href="$route(`/content/collection/item/${actionModel.name}`)">
-                                        <icon class="kiss-margin-small-right">add_circle_outline</icon>
+                                        <icon class="kiss-margin-small-right">add_circle</icon>
                                         <?=t('Create item')?>
                                     </a>
                                 </li>

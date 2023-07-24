@@ -429,7 +429,7 @@ export default {
                             </li>
                             <li>
                                 <a class="kiss-flex kiss-flex-middle" @click="renameFolder(actionFolder)">
-                                    <icon class="kiss-margin-small-right" size="larger">drive_file_rename_outline</icon>
+                                    <icon class="kiss-margin-small-right" size="larger">bookmark_manager</icon>
                                     {{ t('Rename') }}
                                 </a>
                             </li>

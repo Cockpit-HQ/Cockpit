@@ -51,7 +51,7 @@
                                 <div class="kiss-flex kiss-flex-middle">
                                     <div class="kiss-size-4 kiss-margin-small-right kiss-flex" title="ID"><icon>adjust</icon></div>
                                     <div class="kiss-text-truncate kiss-text-bold kiss-text-monospace kiss-size-small kiss-flex-1">{{ item._id }}</div>
-                                    <a :title="t('Copy')" @click="copyID()"><icon>copy</icon></a>
+                                    <a :title="t('Copy')" @click="copyID()"><icon>content_copy</icon></a>
                                 </div>
                             </div>
 
@@ -207,7 +207,7 @@
                         </li>
                         <li v-if="item._id">
                             <a class="kiss-flex kiss-flex-middle" :href="$route(`/content/collection/item/${model.name}`)">
-                                <icon class="kiss-margin-small-right">add_circle_outline</icon>
+                                <icon class="kiss-margin-small-right">add_circle</icon>
                                 <?=t('Create new item')?>
                             </a>
                         </li>

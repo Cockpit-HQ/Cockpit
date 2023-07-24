@@ -145,7 +145,7 @@ export default {
                             {{ item._id }}
                             </div>
                         <a class="kiss-margin-xsmall-right" :title="t('Copy asset link')" @click="copyAssetLinkID()"><icon>share</icon></a>
-                        <a :title="t('Copy')" @click="copyID()"><icon>copy</icon></a>
+                        <a :title="t('Copy')" @click="copyID()"><icon>content_copy</icon></a>
                     </div>
 
                     <div class="kiss-flex kiss-flex-middle">
