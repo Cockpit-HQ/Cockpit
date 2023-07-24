@@ -50,6 +50,9 @@ class App implements \ArrayAccess {
     public ArrayObject $helpers;
     public mixed $layout = false;
 
+    /* global view variables */
+    public array $viewvars = [];
+
     /**
     * Constructor
     * @param Array $settings initial registry settings
@@ -543,15 +546,22 @@ class App implements \ArrayAccess {
     * @param  Array  $slots   Passed variables
     * @return String Rendered view
     */
-    public function render(string $view, array $slots = [], bool $print = false): string {
+    public function render(string $view, array $slots = [], bool $isLayout = false, bool $print = false): string {
 
-        $this->trigger('app.render.view', [&$view, &$slots]);
-
-        if (\is_string($view) && $view) {
-            $this->trigger("app.render.view/{$view}", [&$view, &$slots]);
+        if ($isLayout) {
+            $layout = null;
         }
+        else {
+            $this->trigger('app.render.view', [&$view, &$slots]);
 
-        $layout = $this->layout;
+            if (\is_string($view) && $view) {
+                $this->trigger("app.render.view/{$view}", [&$view, &$slots]);
+            }
+
+            $slots = \array_merge($this->viewvars, $slots);
+
+            $layout = $this->layout;
+        }
 
         if (\strpos($view, ' with ') !== false ) {
             list($view, $layout) = \explode(' with ', $view, 2);
@@ -576,11 +586,10 @@ class App implements \ArrayAccess {
 
         if ($layout) {
 
-            if (\strpos($layout, ':') !== false && $file = $this->path($layout)) {
-                $layout = $file;
-            }
+            $slots['content_for_layout'] = $contents;
 
-            $contents = $render($layout, ['content_for_layout' => $contents]);
+            $contents = $this->render($layout, $slots, true);
+
         }
 
         if ($print) {
