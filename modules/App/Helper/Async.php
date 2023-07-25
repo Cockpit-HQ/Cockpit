@@ -60,7 +60,7 @@ function Cockpit() {
     static \$instance;
 
     if (!isset(\$instance)) {
-        \$instance = Cockpit::instance('{$envDir}');
+        \$instance = Cockpit::instance('{$envDir}', ".\var_export($this->app['initialConfig'], true).");
         \$GLOBALS['APP'] = \$instance;
     }
 

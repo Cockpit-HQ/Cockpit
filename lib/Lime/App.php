@@ -76,6 +76,8 @@ class App implements \ArrayAccess {
             'site_url'     => null
         ], $settings);
 
+        $this->registry['initialConfig'] = $settings;
+
         // app modules container
         $this->registry['modules'] = new ArrayObject([]);
 
