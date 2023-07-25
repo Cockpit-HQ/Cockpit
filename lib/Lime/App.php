@@ -545,16 +545,16 @@ class App implements \ArrayAccess {
     */
     public function render(string $view, array $slots = [], bool $print = false): string {
 
-        $this->trigger('app.render.view', [&$view, &$slots]);
-
-        if (\is_string($view) && $view) {
-            $this->trigger("app.render.view/{$view}", [&$view, &$slots]);
-        }
-
         $layout = $this->layout;
+
+        $this->trigger('app.render.view', [&$view, &$slots]);
 
         if (\strpos($view, ' with ') !== false ) {
             list($view, $layout) = \explode(' with ', $view, 2);
+        }
+
+        if (\is_string($view) && $view) {
+            $this->trigger("app.render.view/{$view}", [&$view, &$slots]);
         }
 
         if (\strpos($view, ':') !== false && $file = $this->path($view)) {
@@ -565,14 +565,14 @@ class App implements \ArrayAccess {
             $layout = $from;
         };
 
-        $render = function($view, $slots) use($setViewLayout) {
-            \extract((array)$slots);
+        $render = function($view, $viewSlots) {
+            \extract((array)$viewSlots);
             \ob_start();
             include $view;
             return \ob_get_clean();
         };
 
-        $contents = $render($view, $slots);
+        $contents = $render($view, array_merge($slots, ['setViewLayout' => $setViewLayout]));
 
         if ($layout) {
 
@@ -580,7 +580,7 @@ class App implements \ArrayAccess {
                 $layout = $file;
             }
 
-            $contents = $render($layout, ['content_for_layout' => $contents]);
+            $contents = $render($layout, array_merge($slots, ['content_for_layout' => $contents]));
         }
 
         if ($print) {
