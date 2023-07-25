@@ -51,7 +51,7 @@ class App implements \ArrayAccess {
     public mixed $layout = false;
 
     /* global view variables */
-    public array $viewvars = [];
+    public array $viewVars = [];
 
     /**
     * Constructor
@@ -558,7 +558,7 @@ class App implements \ArrayAccess {
                 $this->trigger("app.render.view/{$view}", [&$view, &$slots]);
             }
 
-            $slots = \array_merge($this->viewvars, $slots);
+            $slots = \array_merge($this->viewVars, $slots);
 
             $layout = $this->layout;
         }
