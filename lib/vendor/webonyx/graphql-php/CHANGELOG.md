@@ -9,6 +9,18 @@ You can find and compare releases at the [GitHub release page](https://github.co
 
 ## Unreleased
 
+## v15.5.3
+
+### Fixed
+
+- Also set `queryId` from Apollo-source `sha256Hash` if `query` is provided https://github.com/webonyx/graphql-php/pull/1412
+
+## v15.5.2
+
+### Fixed
+
+- Do not set raw vars on query complexity rule if no validation rules are used https://github.com/webonyx/graphql-php/pull/1413
+
 ## v15.5.1
 
 ### Fixed
@@ -253,6 +265,13 @@ You can find and compare releases at the [GitHub release page](https://github.co
 - Remove alias `GraphQL\Validator\Rules\AbstractQuerySecurity`, use `GraphQL\Validator\Rules\QuerySecurityRule`
 - Remove alias `GraphQL\Validator\Rules\AbstractValidationRule`, use `GraphQL\Validator\Rules\ValidationRule`
 - Remove alias `GraphQL\Utils\FindBreakingChanges`, use `GraphQL\Utils\BreakingChangesFinder`
+
+## v14.11.10
+
+### Fixed
+
+- Fix PHP 8.2 deprecated string interpolation syntax
+- Fix PHP 8.2 deprecated dynamic properties
 
 ## v14.11.9
 
