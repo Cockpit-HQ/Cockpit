@@ -565,10 +565,10 @@ class App implements \ArrayAccess {
             $layout = $from;
         };
 
-        $render = function($view, $viewSlots) {
+        $render = function($__view, $viewSlots) {
             \extract((array)$viewSlots);
             \ob_start();
-            include $view;
+            include $__view;
             return \ob_get_clean();
         };
 
