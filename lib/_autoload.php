@@ -2,6 +2,9 @@
 
 include(__DIR__.'/vendor/autoload.php');
 
+include(__DIR__.'/Lime/App.php');
+include(__DIR__.'/DotEnv.php');
+
 /*
  * Autoload from lib folder (PSR-0)
  */

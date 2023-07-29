@@ -10,19 +10,10 @@ if (!defined('APP_SPACES_DIR')) define('APP_SPACES_DIR', __DIR__.'/.spaces');
 define('APP_DIR', str_replace(DIRECTORY_SEPARATOR, '/', __DIR__));
 
 // Autoload vendor libs
-include_once(__DIR__.'/lib/_autoload.php');
+require_once(__DIR__.'/lib/_autoload.php');
 
 // load .env file if exists
 DotEnv::load(APP_DIR);
-
-/*
- * Autoload from lib folder (PSR-0)
- */
-spl_autoload_register(function($class) {
-    $class_path = __DIR__.'/lib/'.str_replace('\\', '/', $class).'.php';
-    if (file_exists($class_path)) include_once($class_path);
-});
-
 
 class Cockpit {
 

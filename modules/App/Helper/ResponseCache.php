@@ -57,6 +57,8 @@ class ResponseCache extends \Lime\Helper {
                 }
 
                 $this->response->headers['APP_RSP_CACHE'] = 'true';
+                $this->response->headers['APP_RSP_EOL'] = $cache['eol'];
+
                 $this->response->mime = $cache['mime'] ?? 'text/html';
                 $this->response->body = $cache['contents'];
 
@@ -79,10 +81,15 @@ class ResponseCacheFileHandler extends \Lime\AppAware {
     public function cache($request, $response) {
 
         $hash = trim($request->route.'/'.md5(serialize($request->request)), '/').'.php';
+        $ttl = $this->app->retrieve('response/cache/duration', 60);
 
-        $this->app->fileStorage->write("cache://{$hash}", '<?php return '.var_export([
+        if (is_numeric($request->param('rspc')) && $request->param('rspc') > 1) {
+            $ttl = intval($request->param('rspc'));
+        }
+
+        $this->app->fileStorage->write("cache://rspc/{$hash}", '<?php return '.var_export([
             'mime' => $response->mime,
-            'eol' => (time() + $this->app->retrieve('response/cache/duration', 60)),
+            'eol' => (time() + $ttl),
             'contents' => is_object($response->body) ? json_decode(json_encode($response->body), true) : $response->body
         ], true ).';');
     }
@@ -90,7 +97,7 @@ class ResponseCacheFileHandler extends \Lime\AppAware {
     public function getCache($request) {
 
         $hash = trim($request->route.'/'.md5(serialize($request->request)), '/').'.php';
-        $file = $this->app->path("#cache:{$hash}");
+        $file = $this->app->path("#cache:rspc/{$hash}");
         $cache = null;
 
         if ($file) {
@@ -112,10 +119,16 @@ class ResponseCacheMemoryeHandler extends \Lime\AppAware {
     public function cache($request, $response) {
 
         $hash = trim($request->route.'/'.md5(serialize($request->request)), '/');
+        $key = "rspc:{$hash}";
+        $ttl = $this->app->retrieve('response/cache/duration', 60);
 
-        $this->app->memory->set($hash, [
+        if (is_numeric($request->param('rspc')) && $request->param('rspc') > 1) {
+            $ttl = intval($request->param('rspc'));
+        }
+
+        $this->app->memory->set($key, [
             'mime' => $response->mime,
-            'eol' => (time() + $this->app->retrieve('response/cache/duration', 60)),
+            'eol' => (time() + $ttl),
             'contents' => is_object($response->body) ? json_decode(json_encode($response->body), true) : $response->body
         ]);
     }
@@ -123,12 +136,13 @@ class ResponseCacheMemoryeHandler extends \Lime\AppAware {
     public function getCache($request) {
 
         $hash = trim($request->route.'/'.md5(serialize($request->request)), '/');
-        $cache = $this->app->memory->get($hash);
+        $key = "rspc:{$hash}";
+        $cache = $this->app->memory->get($key);
 
         if ($cache) {
 
             if ($cache['eol'] < time()) {
-                $this->app->memory->del($hash);
+                $this->app->memory->del($key);
                 $cache = null;
             }
         }
