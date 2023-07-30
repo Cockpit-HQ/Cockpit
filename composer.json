@@ -49,5 +49,9 @@
         "prefer-dist": true,
         "lock": false,
         "ignore-platform-reqs": true
+    },
+
+    "autoload": {
+        "classmap": ["lib/"]
     }
 }
