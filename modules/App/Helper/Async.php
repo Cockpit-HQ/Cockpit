@@ -46,6 +46,13 @@ class Async extends \Lime\Helper {
 
 $appDir = APP_DIR;
 $envDir = rtrim($this->app->path('#root:'), '/');
+
+$envAppVars = [
+    'app_space' => $this->app->retrieve('app_space'),
+    'base_route' => $this->app->retrieve('base_route'),
+    'base_url' => $this->app->retrieve('base_url')
+];
+
 $script = "<?php
 
 if (isset(\$_GET['async'])) {
@@ -60,7 +67,7 @@ function Cockpit() {
     static \$instance;
 
     if (!isset(\$instance)) {
-        \$instance = Cockpit::instance('{$envDir}');
+        \$instance = Cockpit::instance('{$envDir}', ".\var_export($envAppVars, true).");
         \$GLOBALS['APP'] = \$instance;
     }
 
