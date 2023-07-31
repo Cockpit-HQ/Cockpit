@@ -119,12 +119,17 @@ $this->on('app.admin.request', function(Lime\Request $request) {
     $this->trigger('app.admin.i18n.load', [$locale, $i18n]);
 
     $this->bind('/app.i18n.data.js', function() use($locale) {
+
         $this->helper('session')->close();
         $this->response->mime = 'js';
-        $data = $this->helper('i18n')->data($locale);
-        return 'if (window.i18n) {
-            window.i18n.register('.(count($data) ? json_encode($data):'{}').');
-        }';
+
+        $data = json_encode(new ArrayObject($this->helper('i18n')->data($locale)));
+
+        return <<<SCRIPT
+            if (window.i18n) {
+                window.i18n.register($data);
+            }
+        SCRIPT;
     });
 
     if (!$user) {
