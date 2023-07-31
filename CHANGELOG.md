@@ -1,12 +1,15 @@
 # Release Notes
 
-## WIP
+## 2.6.2 (2023-07-31)
 
 - Add video frame preview (assets manager)
 - Fix `$not` for MongoLite
 - Add `app.system.install` event trigger on initial installation
 - Add support for closing dialogs via `Escape`
 - Add cached modules loading
+- Update icon font
+- Fix global error handler when using spaces
+- Auto map :{space}/storage/* to .spaces/{space}/storage/* (Apache)
 
 ## 2.6.1 (2023-06-24)
 
