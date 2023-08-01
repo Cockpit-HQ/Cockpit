@@ -19,7 +19,10 @@ class Finder extends App {
     public function index() {
 
         $this->helper('theme')->favicon('finder:icon.svg');
-        return $this->render('finder:views/index.php');
+
+        $roots = $this->getRoots();
+
+        return $this->render('finder:views/index.php', compact('roots'));
     }
 
 
@@ -28,7 +31,14 @@ class Finder extends App {
         $this->helper('session')->close();
         $this->hasValidCsrfToken(true);
 
-        $this->root = $this->app->path('#root:');
+        $root = $this->param('root');
+        $allowed = array_values($this->getRoots());
+
+        if (!$root || !in_array($root, $allowed)) {
+            return false;
+        }
+
+        $this->root = $this->app->path($root);
         $cmd = $this->param('cmd', false);
 
         if (file_exists($this->root) && in_array($cmd, get_class_methods($this))) {
@@ -38,6 +48,17 @@ class Finder extends App {
         }
 
         return false;
+    }
+
+    protected function getRoots() {
+
+        $roots = [
+            'Cockpit' => '#root:',
+        ];
+
+        $this->app->trigger('finder.collect.roots', [&$roots]);
+
+        return $roots;
     }
 
     protected function ls() {

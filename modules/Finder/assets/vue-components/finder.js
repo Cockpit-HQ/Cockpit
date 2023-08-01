@@ -5,7 +5,7 @@ export default {
         return {
             loading: true,
             uploading: false,
-            currentpath: App.session.get(`finder.persist.${this.root}`, this.root),
+            currentpath: App.session.get(`finder.persist.${this.root}`, this.rootPath),
             files: [],
             folders: [],
             selected: [],
@@ -20,6 +20,11 @@ export default {
     props: {
         root: {
             type: String,
+            default: null
+        },
+
+        rootPath: {
+            type: String,
             default: '/'
         },
 
@@ -30,6 +35,10 @@ export default {
     },
 
     mounted() {
+
+        if (!this.root) {
+            return;
+        }
 
         this.loadpath();
 
@@ -51,6 +60,12 @@ export default {
                 e.stopPropagation();
                 this.uploadFiles(e.dataTransfer.files);
             });
+        }
+    },
+
+    watch: {
+        root() {
+            this.loadpath(App.session.get(`finder.persist.${this.root}`, this.rootPath));
         }
     },
 
@@ -117,7 +132,7 @@ export default {
 
             this.loading = true;
 
-            this.$request('/finder/api', {cmd: 'ls', path}).then(rsp => {
+            this.$request('/finder/api', {root: this.root, cmd: 'ls', path}).then(rsp => {
 
                 this.currentpath = path;
                 this.files = rsp.files || [];
@@ -162,7 +177,7 @@ export default {
         },
 
         download(file) {
-            window.open(this.$route(`/finder/api?cmd=download&path=${file.path}`));
+            window.open(this.$route(`/finder/api?cmd=download&path=${file.path}&root=${this.root}`));
         },
 
         createFolder() {
@@ -171,7 +186,7 @@ export default {
 
                 if (name.trim()) {
 
-                    this.$request('/finder/api', {cmd: 'createfolder', path: this.currentpath, name}).then(() => {
+                    this.$request('/finder/api', {root: this.root, cmd: 'createfolder', path: this.currentpath, name}).then(() => {
                         this.loadpath();
                     });
                 }
@@ -184,7 +199,7 @@ export default {
 
                 if (name.trim()) {
 
-                    this.$request('/finder/api', {cmd: 'createfile', path: this.currentpath, name}).then(() => {
+                    this.$request('/finder/api', {root: this.root, cmd: 'createfile', path: this.currentpath, name}).then(() => {
                         this.loadpath();
                     });
                 }
@@ -193,7 +208,7 @@ export default {
 
         edit(file) {
 
-            VueView.ui.offcanvas('finder:assets/dialogs/file-editor.js', {file}, {
+            VueView.ui.offcanvas('finder:assets/dialogs/file-editor.js', {root: this.root, file}, {
 
 
             }, {flip: true, size: 'xxlarge'})
@@ -205,7 +220,7 @@ export default {
 
                 if (name !== item.name && name.trim()) {
 
-                    this.$request('/finder/api', {cmd: 'rename', path: item.path, name}).then(() => {
+                    this.$request('/finder/api', {root: this.root, cmd: 'rename', path: item.path, name}).then(() => {
 
                         item.path = item.path.replace(item.name, name);
                         item.name = name;
@@ -218,7 +233,7 @@ export default {
 
             App.ui.confirm('Are you sure?', () => {
 
-                this.$request('/finder/api', {cmd: 'removefiles', paths: [item.path]}).then(() => {
+                this.$request('/finder/api', {root: this.root, cmd: 'removefiles', paths: [item.path]}).then(() => {
 
                     const index = this[item.is_file ? 'files':'folders'].indexOf(item);
 
@@ -234,7 +249,7 @@ export default {
 
             App.ui.confirm('Are you sure?', () => {
 
-                this.$request('/finder/api', {cmd:'removefiles', paths: this.selected}).then(() => {
+                this.$request('/finder/api', {root: this.root, cmd:'removefiles', paths: this.selected}).then(() => {
                     this.loadpath();
                     App.ui.notify('File(s) deleted', 'success');
                 });
@@ -270,6 +285,7 @@ export default {
 
             formData.append('cmd', 'upload');
             formData.append('path', this.currentpath);
+            formData.append('root', this.root);
 
             xhr.open('POST', App.route('/finder/api'));
 
@@ -302,7 +318,7 @@ export default {
     template: /*html*/`
         <div :class="{'kiss-disabled':loading}">
             <ul class="kiss-breadcrumbs">
-                <li><a @click="loadpath(root)"><icon size="larger">home</icon></a></li>
+                <li><a @click="loadpath(rootPath)"><icon size="larger">home</icon></a></li>
                 <li v-for="f in breadcrumbs"><a @click="loadpath(f.path)">{{ f.name }}</a></li>
             </ul>
         </div>

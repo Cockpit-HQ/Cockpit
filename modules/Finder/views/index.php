@@ -12,13 +12,26 @@
                 <?=t('Finder')?>
             </div>
 
-            <finder></finder>
+            <div class="kiss-margin" v-if="Object.keys(roots).length > 1">
+                <select class="kiss-input kiss-select" v-model="root">
+                    <option v-for="r,label in roots" :value="r">{{ label }}</option>
+                </select>
+            </div>
+
+            <finder :root="root"></finder>
 
         </template>
 
         <script type="module">
 
             export default {
+
+                data() {
+                    return {
+                        roots: <?=json_encode($roots)?>,
+                        root: '#root:'
+                    }
+                },
 
                 components: {
                     finder: Vue.defineAsyncComponent(() => App.utils.import('finder:assets/vue-components/finder.js'))

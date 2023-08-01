@@ -8,6 +8,10 @@ export default {
     },
 
     props: {
+        root: {
+            type: String,
+            default: null
+        },
         file: {
             default: null
         }
@@ -15,7 +19,7 @@ export default {
 
     mounted() {
 
-        this.$request('/finder/api', {cmd: 'readfile', path: this.file.path}).then(rsp => {
+        this.$request('/finder/api', {root: this.root, cmd: 'readfile', path: this.file.path}).then(rsp => {
             this.contents = rsp.contents;
             this.loading = false;
         });
@@ -42,7 +46,7 @@ export default {
 
         save() {
 
-            this.$request('/finder/api', {cmd: 'writefile', path: this.file.path, contents: this.contents}).then(ret => {
+            this.$request('/finder/api', {root: this.root, cmd: 'writefile', path: this.file.path, contents: this.contents}).then(ret => {
 
                 if (ret.success === false) {
                     App.ui.notify(ret.error || 'Saving contents failed', 'error');
