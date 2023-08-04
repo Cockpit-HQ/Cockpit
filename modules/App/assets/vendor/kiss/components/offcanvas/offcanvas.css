@@ -12,7 +12,6 @@ kiss-offcanvas {
     z-index: 1000;
     transform: translateZ(0);
     will-change: opacity;
-    transition: opacity 0.3s ease-in-out;
 }
 
 kiss-offcanvas > kiss-content {
@@ -36,6 +35,7 @@ kiss-offcanvas[flip="true"] > kiss-content {
 kiss-offcanvas[open] {
     opacity: 1;
     pointer-events: auto;
+    transition: opacity 0.3s ease-in-out;
 }
 
 kiss-offcanvas[open] > kiss-content {
