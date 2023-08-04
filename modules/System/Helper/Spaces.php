@@ -107,6 +107,7 @@ class Spaces extends \Lime\Helper {
         ];
 
         $instance->dataStorage->save('system/users', $user);
+        $instance->trigger('app.system.install');
 
         return [
             'name' => $name,
