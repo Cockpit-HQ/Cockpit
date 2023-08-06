@@ -67,6 +67,8 @@ $this->module('assets')->extend([
         $allowed   = $allowed == '*' ? true : str_replace([' ', ','], ['', '|'], preg_quote(is_array($allowed) ? implode(',', $allowed) : $allowed));
         $max_size  = $this->app->retrieve('assets/max_upload_size', 0);
 
+        $forbidden = ['php', 'phar', 'phtml', 'phps', 'htm', 'html', 'htaccess'];
+
         if (isset($files['name']) && is_array($files['name'])) {
 
             $cnt = count($files['name']);
@@ -78,7 +80,7 @@ $this->module('assets')->extend([
                 $_sizeAllowed = $max_size ? filesize($files['tmp_name'][$i]) < $max_size : true;
 
                 // prevent uploading php files
-                if ($_isAllowed && in_array(strtolower(pathinfo($_file, PATHINFO_EXTENSION)), ['php', 'phar', 'phtml', 'phps'])) {
+                if ($_isAllowed && in_array(strtolower(pathinfo($_file, PATHINFO_EXTENSION)), $forbidden)) {
                     $_isAllowed = false;
                 }
 

@@ -2,7 +2,7 @@
 
 ## WIP
 
-- Prevent uploading .phps files
+- Prevent uploading .phps + .html files in assets manager
 
 ## 2.6.2 (2023-07-31)
 
