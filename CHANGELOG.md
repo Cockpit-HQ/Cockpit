@@ -1,5 +1,9 @@
 # Release Notes
 
+## WIP
+
+- Prevent uploading .phps files
+
 ## 2.6.2 (2023-07-31)
 
 - Add video frame preview (assets manager)
