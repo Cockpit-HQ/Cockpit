@@ -1164,29 +1164,29 @@
         },
         {
             "name": "league/mime-type-detection",
-            "version": "1.12.0",
-            "version_normalized": "1.12.0.0",
+            "version": "1.13.0",
+            "version_normalized": "1.13.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/mime-type-detection.git",
-                "reference": "c7f2872fb273bf493811473dafc88d60ae829f48"
+                "reference": "a6dfb1194a2946fcdc1f38219445234f65b35c96"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/mime-type-detection/zipball/c7f2872fb273bf493811473dafc88d60ae829f48",
-                "reference": "c7f2872fb273bf493811473dafc88d60ae829f48",
+                "url": "https://api.github.com/repos/thephpleague/mime-type-detection/zipball/a6dfb1194a2946fcdc1f38219445234f65b35c96",
+                "reference": "a6dfb1194a2946fcdc1f38219445234f65b35c96",
                 "shasum": ""
             },
             "require": {
                 "ext-fileinfo": "*",
-                "php": "^7.2 || ^8.0"
+                "php": "^7.4 || ^8.0"
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^3.2",
                 "phpstan/phpstan": "^0.12.68",
-                "phpunit/phpunit": "^8.5.8 || ^9.3"
+                "phpunit/phpunit": "^8.5.8 || ^9.3 || ^10.0"
             },
-            "time": "2023-08-03T07:14:11+00:00",
+            "time": "2023-08-05T12:09:49+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -1207,7 +1207,7 @@
             "description": "Mime-type detection for Flysystem",
             "support": {
                 "issues": "https://github.com/thephpleague/mime-type-detection/issues",
-                "source": "https://github.com/thephpleague/mime-type-detection/tree/1.12.0"
+                "source": "https://github.com/thephpleague/mime-type-detection/tree/1.13.0"
             },
             "funding": [
                 {
@@ -3198,17 +3198,17 @@
         },
         {
             "name": "zircote/swagger-php",
-            "version": "4.7.10",
-            "version_normalized": "4.7.10.0",
+            "version": "4.7.11",
+            "version_normalized": "4.7.11.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zircote/swagger-php.git",
-                "reference": "6d2f0fcc46bf9043877de8656a9ea95331155522"
+                "reference": "f01574d1ac55cb0bf31a8dd80525ad58eef83afc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zircote/swagger-php/zipball/6d2f0fcc46bf9043877de8656a9ea95331155522",
-                "reference": "6d2f0fcc46bf9043877de8656a9ea95331155522",
+                "url": "https://api.github.com/repos/zircote/swagger-php/zipball/f01574d1ac55cb0bf31a8dd80525ad58eef83afc",
+                "reference": "f01574d1ac55cb0bf31a8dd80525ad58eef83afc",
                 "shasum": ""
             },
             "require": {
@@ -3227,7 +3227,7 @@
                 "phpunit/phpunit": ">=8",
                 "vimeo/psalm": "^4.23"
             },
-            "time": "2023-04-28T00:56:39+00:00",
+            "time": "2023-08-03T21:23:48+00:00",
             "bin": [
                 "bin/openapi"
             ],
@@ -3273,7 +3273,7 @@
             ],
             "support": {
                 "issues": "https://github.com/zircote/swagger-php/issues",
-                "source": "https://github.com/zircote/swagger-php/tree/4.7.10"
+                "source": "https://github.com/zircote/swagger-php/tree/4.7.11"
             },
             "install-path": "../zircote/swagger-php"
         }

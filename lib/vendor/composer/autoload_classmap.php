@@ -517,6 +517,7 @@ return array(
     'League\\Flysystem\\Visibility' => $vendorDir . '/league/flysystem/src/Visibility.php',
     'League\\Flysystem\\WhitespacePathNormalizer' => $vendorDir . '/league/flysystem/src/WhitespacePathNormalizer.php',
     'League\\MimeTypeDetection\\EmptyExtensionToMimeTypeMap' => $vendorDir . '/league/mime-type-detection/src/EmptyExtensionToMimeTypeMap.php',
+    'League\\MimeTypeDetection\\ExtensionLookup' => $vendorDir . '/league/mime-type-detection/src/ExtensionLookup.php',
     'League\\MimeTypeDetection\\ExtensionMimeTypeDetector' => $vendorDir . '/league/mime-type-detection/src/ExtensionMimeTypeDetector.php',
     'League\\MimeTypeDetection\\ExtensionToMimeTypeMap' => $vendorDir . '/league/mime-type-detection/src/ExtensionToMimeTypeMap.php',
     'League\\MimeTypeDetection\\FinfoMimeTypeDetector' => $vendorDir . '/league/mime-type-detection/src/FinfoMimeTypeDetector.php',
