@@ -79,9 +79,21 @@ class Users extends App {
         $this->hasValidCsrfToken(true);
 
         $user = $this->param('user');
+        $password = $this->param('password');
 
         if (!$user) {
             return $this->stop(['error' => 'User data is missing'], 412);
+        }
+
+        if (!$password) {
+            return $this->stop(['error' => 'Password for verification is missing'], 412);
+        }
+
+        // verify current logged in user
+        $currentUser = $this->app->dataStorage->findOne('system/users', ['_id' => $this->user['_id']], ['_id' => 1, 'password' => 1]);
+
+        if (!$currentUser || !password_verify($password, $currentUser['password'])) {
+            return $this->stop(['error' => 'User verification failed'], 412);
         }
 
         // don't allow to change role if not allowed

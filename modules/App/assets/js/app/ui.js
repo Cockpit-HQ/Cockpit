@@ -177,11 +177,20 @@ export default {
     },
 
     prompt: function (text, value = '', clb, options) {
+
+        options = Object.assign({
+            type: 'text',
+            info: null,
+        }, options || {});
+
+        const info = options.info ? `<div class="kiss-margin kiss-color-muted kiss-dialog-prompt-info">${options.info}</div>` : '';
+
         let dialog = this.dialog(/*html*/`
             <form>
                 <div class="kiss-margin kiss-dialog-prompt-message">${text}</div>
+                ${info}
                 <div class="kiss-margin-bottom">
-                    <input class="kiss-width-1-1 kiss-input" type="text" required>
+                    <input class="kiss-width-1-1 kiss-input" type="${options.type}" required>
                 </div>
                 <div class="kiss-margin-top kiss-flex kiss-flex-middle kiss-button-group">
                     <button type="button" class="kiss-button-cancel kiss-button kiss-flex-1">${App.i18n.get('Cancel')}</button>
