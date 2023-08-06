@@ -58,16 +58,18 @@ $this->module('assets')->extend([
             $files = $param;
         }
 
+        $finfo      = finfo_open(FILEINFO_MIME_TYPE);
         $uploaded  = [];
         $failed    = [];
-        $_files    = [];
+        $_files     = [];
         $assets    = [];
 
         $allowed   = $this->app->retrieve('assets/allowed_uploads', '*');
         $allowed   = $allowed == '*' ? true : str_replace([' ', ','], ['', '|'], preg_quote(is_array($allowed) ? implode(',', $allowed) : $allowed));
         $max_size  = $this->app->retrieve('assets/max_upload_size', 0);
 
-        $forbidden = ['php', 'phar', 'phtml', 'phps', 'htm', 'html', 'htaccess'];
+        $forbiddenExtension = ['php', 'phar', 'phtml', 'phps', 'htm', 'html', 'htaccess'];
+        $forbiddenMime = ['application/x-httpd-php', 'text/html'];
 
         if (isset($files['name']) && is_array($files['name'])) {
 
@@ -76,11 +78,15 @@ $this->module('assets')->extend([
             for ($i = 0; $i < $cnt; $i++) {
 
                 $_file  = $this->app->path('#tmp:').'/'.$files['name'][$i];
+                $_mime = finfo_file($finfo, $_file);
                 $_isAllowed = $allowed === true ? true : preg_match("/\.({$allowed})$/i", $_file);
                 $_sizeAllowed = $max_size ? filesize($files['tmp_name'][$i]) < $max_size : true;
 
-                // prevent uploading php files
-                if ($_isAllowed && in_array(strtolower(pathinfo($_file, PATHINFO_EXTENSION)), $forbidden)) {
+                // prevent uploading php / html files
+                if ($_isAllowed && (
+                    in_array(strtolower(pathinfo($_file, PATHINFO_EXTENSION)), $forbiddenExtension) ||
+                    in_array(strtolower($_mime), $forbiddenMime)
+                )) {
                     $_isAllowed = false;
                 }
 
