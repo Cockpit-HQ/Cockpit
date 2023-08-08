@@ -4,6 +4,7 @@
 
 - Prevent uploading .phps + .html files in assets manager
 - Require verification for updating user data
+- Support post field projection after content population
 
 ## 2.6.2 (2023-07-31)
 

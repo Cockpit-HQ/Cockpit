@@ -286,6 +286,19 @@ $this->module('content')->extend([
             throw new Exception('Try to access unknown model "'.$modelName.'"');
         }
 
+        $postPopulateProjection = [];
+
+        if (isset($fields)) {
+
+            foreach ($fields as $f => $v) {
+
+                if (strpos($f, '..') !== 0) continue;
+                $postPopulateProjection[substr($f, 2)] = $v;
+                $fields[explode('.', substr($f, 2))[0]] = 1;
+                unset($fields[$f]);
+            }
+        }
+
         if ($model['type'] == 'singleton') {
 
             $item = $this->app->dataStorage->findOne('content/singletons', ['_model' => $modelName], $fields);
@@ -302,12 +315,17 @@ $this->module('content')->extend([
             $item = $this->app->dataStorage->findOne($collection, $filter, $fields);
         }
 
-        if (isset($process['locale'])) {
+        if ($item && isset($process['locale'])) {
             $item = $this->app->helper('locales')->applyLocales($item, $process['locale']);
         }
 
-        if (isset($process['populate']) && $process['populate']) {
+        if ($item && isset($process['populate']) && $process['populate']) {
+
             $item = $this->populate($item, $process['populate'], 0, $process);
+
+            if (count($postPopulateProjection)) {
+                $item = \MongoLite\Projection::onDocument($item, $postPopulateProjection);
+            }
         }
 
         return $item;
@@ -327,6 +345,19 @@ $this->module('content')->extend([
 
         $collection = "content/collections/{$modelName}";
 
+        $postPopulateProjection = [];
+
+        if (isset($options['fields'])) {
+
+            foreach ($options['fields'] as $f => $v) {
+
+                if (strpos($f, '..') !== 0) continue;
+                $postPopulateProjection[substr($f, 2)] = $v;
+                $options['fields'][explode('.', substr($f, 2))[0]] = 1;
+                unset($options['fields'][$f]);
+            }
+        }
+
         $items = (array) $this->app->dataStorage->find($collection, $options);
 
         if ($process['locale'] ?? false) {
@@ -334,7 +365,12 @@ $this->module('content')->extend([
         }
 
         if ($process['populate'] ?? false) {
+
             $items = $this->populate($items, $process['populate'], 0, $process);
+
+            if (count($postPopulateProjection)) {
+                $items = \MongoLite\Projection::onDocuments($items, $postPopulateProjection);
+            }
         }
 
         return $items;
