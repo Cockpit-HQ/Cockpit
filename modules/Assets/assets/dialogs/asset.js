@@ -105,7 +105,7 @@ export default {
 
                     <div class="kiss-margin-small kiss-flex kiss-flex-middle">
                         <div class="kiss-margin-small-right kiss-color-muted kiss-text-monospace kiss-size-small kiss-flex-1">
-                            {{ size }} <span v-if="item.type=='image' && item.mime!='image/svg+xml'">&mdash; {{ item.width }}x{{ item.height }}</span>
+                            {{ size }} <span v-if="item.type=='image' && item.width && item.height">&mdash; {{ item.width }}x{{ item.height }}</span>
                         </div>
                         <div v-if="item.type == 'image' && Array.isArray(item.colors) && item.colors.length">
                             <div class="kiss-size-4">

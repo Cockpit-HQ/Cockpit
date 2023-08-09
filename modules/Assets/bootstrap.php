@@ -172,23 +172,58 @@ $this->module('assets')->extend([
                 default => 'unknown'
             };
 
-            if ($asset['type'] == 'image' && !preg_match('/\.svg$/i', $file)) {
+            if ($asset['type'] == 'image') {
 
-                $info = getimagesize($file);
-                $asset['width']  = $info[0];
-                $asset['height'] = $info[1];
-                $asset['colors'] = [];
+                if (preg_match('/\.svg$/i', $file)) {
 
-                if ($asset['width'] && $asset['height']) {
+                    if (function_exists('simplexml_load_string')) {
 
-                    try {
-                        $asset['colors'] = \ColorThief\ColorThief::getPalette($file, 5, ceil(($asset['width'] * $asset['height']) / 10000));
-                    } catch (\Exception $e) {
-                        $asset['colors'] = [];
+                        $svgContent = file_get_contents($file);
+
+                        libxml_use_internal_errors(true);
+                        $xml = simplexml_load_string($svgContent);
+                        libxml_use_internal_errors(false);
+
+                        if ($xml && isset($xml['width']) && isset($xml['height'])) {
+
+                            $asset['width'] = (string)$xml['width'];
+                            $asset['height'] = (string)$xml['height'];
+
+                            if (is_numeric($asset['width'])) $asset['width'] = $asset['width'] + 0;
+                            if (is_numeric($asset['height'])) $asset['height'] = $asset['height'] + 0;
+
+                            $colors = [];
+
+                            foreach([
+                                '/#([a-fA-F0-9]{3,8})\b/',
+                                '/rgba?\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*(,\s*[\d.]+\s*)?\)/',
+                                '/hsla?\(\s*\d+\s*,\s*[\d.%]+\s*,\s*[\d.%]+\s*(,\s*[\d.]+\s*)?\)/',
+                            ] as $regex) {
+                                preg_match_all($regex, $svgContent, $matches);
+                                if (isset($matches[0])) $colors = array_merge($colors, $matches[0]);
+                            }
+
+                            $asset['colors'] = count($colors) ? array_merge([], array_unique($colors)) : null;
+                        }
                     }
 
-                    foreach ($asset['colors'] as &$color) {
-                        $color = sprintf("#%02x%02x%02x", $color[0], $color[1], $color[2]);
+                } else {
+
+                    $info = getimagesize($file);
+                    $asset['width']  = $info[0];
+                    $asset['height'] = $info[1];
+
+                    if ($asset['width'] && $asset['height']) {
+
+                        try {
+                            $asset['colors'] = \ColorThief\ColorThief::getPalette($file, 5, ceil(($asset['width'] * $asset['height']) / 10000));
+                        } catch (\Exception $e) {
+                            $asset['colors'] = [];
+                        }
+
+                        foreach ($asset['colors'] as &$color) {
+                            $color = sprintf("#%02x%02x%02x", $color[0], $color[1], $color[2]);
+                        }
                     }
                 }
             }
