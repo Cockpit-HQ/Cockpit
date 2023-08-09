@@ -40,6 +40,7 @@ use MongoDB\Operation\DeleteMany;
 use MongoDB\Operation\DeleteOne;
 use MongoDB\Operation\Distinct;
 use MongoDB\Operation\DropCollection;
+use MongoDB\Operation\DropEncryptedCollection;
 use MongoDB\Operation\DropIndexes;
 use MongoDB\Operation\EstimatedDocumentCount;
 use MongoDB\Operation\Explain;
@@ -68,15 +69,13 @@ use function strlen;
 
 class Collection
 {
-    /** @var array */
-    private static $defaultTypeMap = [
+    private const DEFAULT_TYPE_MAP = [
         'array' => BSONArray::class,
         'document' => BSONDocument::class,
         'root' => BSONDocument::class,
     ];
 
-    /** @var integer */
-    private static $wireVersionForReadConcernWithWriteStage = 8;
+    private const WIRE_VERSION_FOR_READ_CONCERN_WITH_WRITE_STAGE = 8;
 
     /** @var string */
     private $collectionName;
@@ -157,7 +156,7 @@ class Collection
         $this->collectionName = $collectionName;
         $this->readConcern = $options['readConcern'] ?? $this->manager->getReadConcern();
         $this->readPreference = $options['readPreference'] ?? $this->manager->getReadPreference();
-        $this->typeMap = $options['typeMap'] ?? self::$defaultTypeMap;
+        $this->typeMap = $options['typeMap'] ?? self::DEFAULT_TYPE_MAP;
         $this->writeConcern = $options['writeConcern'] ?? $this->manager->getWriteConcern();
     }
 
@@ -200,7 +199,7 @@ class Collection
      * "result" array from the command response document.
      *
      * @see Aggregate::__construct() for supported options
-     * @param array $pipeline List of pipeline operations
+     * @param array $pipeline Aggregation pipeline
      * @param array $options  Command options
      * @return Traversable
      * @throws UnexpectedValueException if the command response was malformed
@@ -228,7 +227,7 @@ class Collection
         if (
             ! isset($options['readConcern']) &&
             ! is_in_transaction($options) &&
-            ( ! $hasWriteStage || server_supports_feature($server, self::$wireVersionForReadConcernWithWriteStage))
+            ( ! $hasWriteStage || server_supports_feature($server, self::WIRE_VERSION_FOR_READ_CONCERN_WITH_WRITE_STAGE))
         ) {
             $options['readConcern'] = $this->readConcern;
         }
@@ -495,22 +494,14 @@ class Collection
             $options['writeConcern'] = $this->writeConcern;
         }
 
-        $encryptedFields = $options['encryptedFields']
-            ?? get_encrypted_fields_from_driver($this->databaseName, $this->collectionName, $this->manager)
-            ?? get_encrypted_fields_from_server($this->databaseName, $this->collectionName, $this->manager, $server)
-            ?? null;
-
-        if ($encryptedFields !== null) {
-            // encryptedFields is not passed to the drop command
-            unset($options['encryptedFields']);
-
-            $encryptedFields = (array) $encryptedFields;
-            (new DropCollection($this->databaseName, $encryptedFields['escCollection'] ?? 'enxcol_.' . $this->collectionName . '.esc'))->execute($server);
-            (new DropCollection($this->databaseName, $encryptedFields['eccCollection'] ?? 'enxcol_.' . $this->collectionName . '.ecc'))->execute($server);
-            (new DropCollection($this->databaseName, $encryptedFields['ecocCollection'] ?? 'enxcol_.' . $this->collectionName . '.ecoc'))->execute($server);
+        if (! isset($options['encryptedFields'])) {
+            $options['encryptedFields'] = get_encrypted_fields_from_driver($this->databaseName, $this->collectionName, $this->manager)
+                ?? get_encrypted_fields_from_server($this->databaseName, $this->collectionName, $this->manager, $server);
         }
 
-        $operation = new DropCollection($this->databaseName, $this->collectionName, $options);
+        $operation = isset($options['encryptedFields'])
+            ? new DropEncryptedCollection($this->databaseName, $this->collectionName, $options)
+            : new DropCollection($this->databaseName, $this->collectionName, $options);
 
         return $operation->execute($server);
     }
@@ -975,7 +966,7 @@ class Collection
 
         // Check if the out option is inline because we will want to coerce a primary read preference if not
         if ($hasOutputCollection) {
-            $options['readPreference'] = new ReadPreference(ReadPreference::RP_PRIMARY);
+            $options['readPreference'] = new ReadPreference(ReadPreference::PRIMARY);
         }
 
         $server = select_server($this->manager, $options);
@@ -1114,7 +1105,7 @@ class Collection
      * Create a change stream for watching changes to the collection.
      *
      * @see Watch::__construct() for supported options
-     * @param array $pipeline List of pipeline operations
+     * @param array $pipeline Aggregation pipeline
      * @param array $options  Command options
      * @return ChangeStream
      * @throws InvalidArgumentException for parameter/option parsing errors

@@ -45,8 +45,7 @@ use function substr;
  */
 class WritableStream
 {
-    /** @var integer */
-    private static $defaultChunkSizeBytes = 261120;
+    private const DEFAULT_CHUNK_SIZE_BYTES = 261120;
 
     /** @var string */
     private $buffer = '';
@@ -107,7 +106,7 @@ class WritableStream
     {
         $options += [
             '_id' => new ObjectId(),
-            'chunkSizeBytes' => self::$defaultChunkSizeBytes,
+            'chunkSizeBytes' => self::DEFAULT_CHUNK_SIZE_BYTES,
             'disableMD5' => false,
         ];
 
@@ -255,10 +254,7 @@ class WritableStream
         $this->isClosed = true;
     }
 
-    /**
-     * @return mixed
-     */
-    private function fileCollectionInsert()
+    private function fileCollectionInsert(): void
     {
         $this->file['length'] = $this->length;
         $this->file['uploadDate'] = new UTCDateTime();
@@ -274,8 +270,6 @@ class WritableStream
 
             throw $e;
         }
-
-        return $this->file['_id'];
     }
 
     private function insertChunkFromBuffer(): void

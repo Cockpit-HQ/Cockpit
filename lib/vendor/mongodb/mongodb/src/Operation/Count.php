@@ -37,7 +37,6 @@ use function is_string;
 /**
  * Operation for the count command.
  *
- * @api
  * @see \MongoDB\Collection::count()
  * @see https://mongodb.com/docs/manual/reference/command/count/
  */
@@ -171,9 +170,16 @@ class Count implements Executable, Explainable
      * @see Explainable::getCommandDocument()
      * @return array
      */
-    public function getCommandDocument(Server $server)
+    public function getCommandDocument()
     {
-        return $this->createCommandDocument();
+        $cmd = $this->createCommandDocument();
+
+        // Read concern can change the query plan
+        if (isset($this->options['readConcern'])) {
+            $cmd['readConcern'] = $this->options['readConcern'];
+        }
+
+        return $cmd;
     }
 
     /**
