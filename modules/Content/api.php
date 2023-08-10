@@ -28,7 +28,7 @@ $this->on('restApi.config', function($restApi) {
          *         in="query",
          *         name="locale",
          *         required=false,
-         *         @OA\Schema(type="String")
+         *         @OA\Schema(type="string")
          *     ),
          *     @OA\Parameter(
          *         description="Url encoded filter json",
@@ -225,7 +225,7 @@ $this->on('restApi.config', function($restApi) {
          *         in="query",
          *         name="locale",
          *         required=false,
-         *         @OA\Schema(type="String")
+         *         @OA\Schema(type="string")
          *     ),
          *     @OA\Parameter(
          *         description="Url encoded fields projection as json",
@@ -367,7 +367,7 @@ $this->on('restApi.config', function($restApi) {
      *         in="query",
      *         name="locale",
      *         required=false,
-     *         @OA\Schema(type="String")
+     *         @OA\Schema(type="string")
      *     ),
      *     @OA\Parameter(
      *         description="Url encoded filter json",
@@ -495,6 +495,99 @@ $this->on('restApi.config', function($restApi) {
         }
     ]);
 
+    /**
+     * @OA\Get(
+     *     path="/content/aggregate/{model}",
+     *     tags={"content"},
+     *     @OA\Parameter(
+     *         description="Model name",
+     *         in="path",
+     *         name="model",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         description="Url encoded pipeline json",
+     *         in="query",
+     *         name="pipeline",
+     *         required=true,
+     *         @OA\Schema(type="json")
+     *     ),
+     *    @OA\Parameter(
+     *         description="Return content for specified locale",
+     *         in="query",
+     *         name="locale",
+     *         required=false,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         description="Populate items with linked content items.",
+     *         in="query",
+     *         name="populate",
+     *         required=false,
+     *         @OA\Schema(type="int")
+     *     ),
+     *     @OA\OpenApi(
+     *         security={
+     *             {"api_key": {}}
+     *         }
+     *     ),
+     *     @OA\Response(response="200", description="Get list of aggregated and published model items"),
+     *     @OA\Response(response="401", description="Unauthorized"),
+     *     @OA\Response(response="404", description="Model not found")
+     * )
+     */
+
+    $restApi->addEndPoint('/content/aggregate/{model}', [
+
+        'GET' => function ($params, $app) {
+
+            $model = $app->module('content')->model($params['model']);
+            $pipeline = $app->param('pipeline:string', null);
+
+            if (!$model) {
+                $app->response->status = 404;
+                return ['error' => "Model <{$params['model']}> not found"];
+            }
+
+            if (!$app->helper('acl')->isAllowed("content/{$params['model']}/read", $app->helper('auth')->getUser('role'))) {
+                $app->response->status = 403;
+                return ['error' => 'Permission denied'];
+            }
+
+            if (!in_array($model['type'], ['collection', 'tree'])) {
+                $app->response->status = 412;
+                return ['error' => "Aggregate method not allowed for <{$model['name']}>"];
+            }
+
+            try {
+                $pipeline = json5_decode($pipeline, true);
+            } catch (\Throwable $e) {
+                $app->response->status = 400;
+                return ['error' => "Pipeline is not valid json"];
+            }
+
+            if (!is_array($pipeline) || !array_is_list($pipeline)) {
+                $app->response->status = 400;
+                return ['error' => "Pipeline is not valid list format"];
+            }
+
+            $pipeline = array_merge([['$match' => ['_state' => 1]]], $pipeline);
+
+            $process = ['locale' => $app->param('locale', 'default')];
+            $populate = $app->param('populate:int', null);
+
+            if ($populate) {
+                $process['populate'] = $populate;
+                $process['user'] = $app->helper('auth')->getUser();
+            }
+
+            $items = $app->module('content')->aggregate($model['name'], $pipeline, $process);
+
+            return $items;
+        }
+    ]);
+
 
     /**
      * @OA\Get(
@@ -512,7 +605,7 @@ $this->on('restApi.config', function($restApi) {
      *         in="query",
      *         name="locale",
      *         required=false,
-     *         @OA\Schema(type="String")
+     *         @OA\Schema(type="string")
      *     ),
      *     @OA\Parameter(
      *         description="Url encoded fields projection as json",

@@ -36,4 +36,26 @@ class Content extends \Lime\Helper {
 
         return $this->allowedModels[$role];
     }
+
+    public function replaceLocaleInArrayKeys(array &$array, string $locale = '', $keepDefault = false) {
+
+        foreach ($array as $key => &$value) {
+            if (strpos($key, ':locale') !== false) {
+
+                $newKey = str_replace(':locale', $locale ? "_{$locale}" : '', $key);
+                $array[$newKey] = &$value;
+
+                if ($keepDefault) {
+                    $newKey = str_replace(':locale', '', $key);
+                    $array[$newKey] = &$value;
+                }
+
+                unset($array[$key]);
+            }
+
+            if (is_array($value)) {
+                $this->replaceLocaleInArrayKeys($value, $locale);
+            }
+        }
+    }
 }

@@ -311,6 +311,11 @@ $this->module('content')->extend([
 
         } elseif (in_array($model['type'], ['collection', 'tree'])) {
 
+            $this->app->helper('content')->replaceLocaleInArrayKeys(
+                $filter,
+                !isset($process['locale']) || $process['locale'] == 'default'  ? '' : $process['locale']
+            );
+
             $collection = "content/collections/{$modelName}";
             $item = $this->app->dataStorage->findOne($collection, $filter, $fields);
         }
@@ -349,6 +354,12 @@ $this->module('content')->extend([
 
         if (isset($options['fields'])) {
 
+            $this->app->helper('content')->replaceLocaleInArrayKeys(
+                $options['fields'],
+                !isset($process['locale']) || $process['locale'] == 'default'  ? '' : $process['locale'],
+                true
+            );
+
             foreach ($options['fields'] as $f => $v) {
 
                 if (strpos($f, '..') !== 0) continue;
@@ -356,6 +367,14 @@ $this->module('content')->extend([
                 $options['fields'][explode('.', substr($f, 2))[0]] = 1;
                 unset($options['fields'][$f]);
             }
+        }
+
+        if (isset($options['filter'])) {
+
+            $this->app->helper('content')->replaceLocaleInArrayKeys(
+                $options['filter'],
+                !isset($process['locale']) || $process['locale'] == 'default'  ? '' : $process['locale']
+            );
         }
 
         $items = (array) $this->app->dataStorage->find($collection, $options);
@@ -371,6 +390,33 @@ $this->module('content')->extend([
             if (count($postPopulateProjection)) {
                 $items = \MongoLite\Projection::onDocuments($items, $postPopulateProjection);
             }
+        }
+
+        return $items;
+    },
+
+    'aggregate' => function(string $modelName, array $pipeline = [], $process = []) {
+
+        $model = $this->model($modelName);
+
+        if (!$model) {
+            throw new Exception('Try to access unknown model "' . $modelName . '"');
+        }
+
+        if (!in_array($model['type'], ['collection', 'tree'])) {
+            return [];
+        }
+
+        $collection = "content/collections/{$modelName}";
+
+        $items = $this->app->dataStorage->aggregate($collection, $pipeline)->toArray();
+
+        if ($process['locale'] ?? false) {
+            $items = $this->app->helper('locales')->applyLocales($items, $process['locale']);
+        }
+
+        if ($process['populate'] ?? false) {
+            $items = $this->populate($items, $process['populate'], 0, $process);
         }
 
         return $items;
