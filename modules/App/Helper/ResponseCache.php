@@ -33,13 +33,13 @@ class ResponseCache extends \Lime\Helper {
 
         $cacheHandler = $this->cacheHandler;
 
-        $this->app->on('shutdown', function() use($request, $cacheHandler) {
+        $this->app->on('after', function() use($request, $cacheHandler) {
 
             if ($request->stopped || $this->response->status != 200) {
                 return;
             }
 
-            $cacheHandler->cache($request, $this->response);
+            $this->response->headers['Last-Modified'] = $cacheHandler->cache($request, $this->response);
 
         }, -2000);
     }
@@ -49,6 +49,14 @@ class ResponseCache extends \Lime\Helper {
         $cache = $this->cacheHandler->getCache($request);
 
         if ($cache) {
+
+            if (isset($request->server['HTTP_IF_MODIFIED_SINCE'])) {
+                $response = new \Lime\Response();
+                $response->status = 304;
+                $response->body = \Lime\Response::$statusCodes[304];
+                $response->flush();
+                exit;
+            }
 
             $this->app->on('before', function() use($cache) {
 
@@ -87,11 +95,16 @@ class ResponseCacheFileHandler extends \Lime\AppAware {
             $ttl = intval($request->param('rspc'));
         }
 
+        $created = gmdate("D, d M Y H:i:s", time()) . " GMT";
+
         $this->app->fileStorage->write("cache://rspc/{$hash}", '<?php return '.var_export([
+            'created' => $created,
             'mime' => $response->mime,
             'eol' => (time() + $ttl),
             'contents' => is_object($response->body) ? json_decode(json_encode($response->body), true) : $response->body
         ], true ).';');
+
+        return $created;
     }
 
     public function getCache($request) {
@@ -126,11 +139,16 @@ class ResponseCacheMemoryeHandler extends \Lime\AppAware {
             $ttl = intval($request->param('rspc'));
         }
 
+        $created = gmdate("D, d M Y H:i:s", time()) . " GMT";
+
         $this->app->memory->set($key, [
+            'created' => $created,
             'mime' => $response->mime,
             'eol' => (time() + $ttl),
             'contents' => is_object($response->body) ? json_decode(json_encode($response->body), true) : $response->body
         ]);
+
+        return $created;
     }
 
     public function getCache($request) {

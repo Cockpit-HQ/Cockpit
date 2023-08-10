@@ -6,6 +6,7 @@
 - Require verification for updating user data
 - Support post field projection after content population
 - Extract width + height and colors from uploaded svg files
+- Implement HTTP caching when using response cache (via rspc parameter)
 
 ## 2.6.2 (2023-07-31)
 
