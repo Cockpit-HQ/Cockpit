@@ -7,6 +7,7 @@
 - Support post field projection after content population
 - Extract width + height and colors from uploaded svg files
 - Implement HTTP caching when using response cache (via rspc parameter)
+- Resolve `{field}:locale` in filter and sort parameters
 
 ## 2.6.2 (2023-07-31)
 

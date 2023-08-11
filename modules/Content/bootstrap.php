@@ -369,10 +369,19 @@ $this->module('content')->extend([
             }
         }
 
+        // replace {field}:locale keys with locale defined in $process
         if (isset($options['filter'])) {
 
             $this->app->helper('content')->replaceLocaleInArrayKeys(
                 $options['filter'],
+                !isset($process['locale']) || $process['locale'] == 'default'  ? '' : $process['locale']
+            );
+        }
+
+        if (isset($options['sort'])) {
+
+            $this->app->helper('content')->replaceLocaleInArrayKeys(
+                $options['sort'],
                 !isset($process['locale']) || $process['locale'] == 'default'  ? '' : $process['locale']
             );
         }
