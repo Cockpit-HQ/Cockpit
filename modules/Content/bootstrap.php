@@ -407,6 +407,11 @@ $this->module('content')->extend([
             return [];
         }
 
+        $this->app->helper('content')->replaceLocaleInArrayKeys(
+            $pipeline,
+            !isset($process['locale']) || $process['locale'] == 'default'  ? '' : $process['locale']
+        );
+
         $collection = "content/collections/{$modelName}";
 
         $items = $this->app->dataStorage->aggregate($collection, $pipeline)->toArray();
