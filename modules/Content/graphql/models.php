@@ -23,12 +23,12 @@ foreach ($collections as $name => &$meta) {
                 $fields = array_merge([
                     '_id'       => Type::nonNull(Type::string()),
                     '_state'    => Type::nonNull(Type::int()),
-                    '_o'        => Type::nonNull(Type::int()),
                     '_cby'      => Type::nonNull(Type::string()),
                     '_created'  => Type::nonNull(Type::int()),
                     '_mby'      => Type::nonNull(Type::string()),
                     '_modified' => Type::nonNull(Type::int())
                 ], $meta['type'] === 'tree' ? [
+                    '_o'        => Type::nonNull(Type::int()),
                     '_pid'      => Type::string()
                 ] : [], FieldTypes::buildFieldsDefinitions($meta));
 
