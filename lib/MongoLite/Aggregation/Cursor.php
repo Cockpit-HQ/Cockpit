@@ -286,6 +286,7 @@ class Cursor implements \Iterator {
     }
 
     protected function bucket($data, $bucketDefinition) {
+
         if (!isset($bucketDefinition['groupBy'], $bucketDefinition['boundaries'], $bucketDefinition['output'])) {
             throw new Exception("The \$bucket stage requires 'groupBy', 'boundaries', and 'output' parameters.");
         }
@@ -348,7 +349,7 @@ class Cursor implements \Iterator {
                         break;
 
                     default:
-                        throw new Exception("Unknown accumulator $accumulator in $bucket stage");
+                        throw new Exception("Unknown accumulator {$accumulator} in \$bucket stage");
                 }
             }
             unset($bucket['items']);
