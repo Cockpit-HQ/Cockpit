@@ -53,7 +53,7 @@ class Cursor implements \Iterator {
         return $this->aggregate($data, $pipeline);
     }
 
-    public function aggregate(array $data, array $pipeline):array {
+    public function aggregate(array $data, array $pipeline): array {
 
         foreach ($pipeline as $stage) {
 
@@ -140,17 +140,17 @@ class Cursor implements \Iterator {
 
     // stages methods
 
-    protected function project(array $data, array $fields):array {
+    protected function project(array $data, array $fields): array {
         return Projection::onDocuments($data, $fields);
     }
 
-    protected function unsetFields(array $data, array $fieldsToUnset):array {
+    protected function unsetFields(array $data, array $fieldsToUnset): array {
         $fields = [];
         foreach ($fieldsToUnset as $field) $fields[$field] = 0;
         return Projection::onDocuments($data, $fields);
     }
 
-    private function group(array $data, array $groupDefinition):array {
+    private function group(array $data, array $groupDefinition): array {
         $groups = [];
 
         foreach ($data as $document) {
@@ -245,7 +245,7 @@ class Cursor implements \Iterator {
         return array_values($groups);
     }
 
-    protected function sort(array $data, array $sortFields):array {
+    protected function sort(array $data, array $sortFields): array {
         usort($data, function ($a, $b) use ($sortFields) {
             foreach ($sortFields as $field => $order) {
                 if ($a[$field] < $b[$field]) return -1 * $order;
@@ -256,12 +256,12 @@ class Cursor implements \Iterator {
         return $data;
     }
 
-    protected function sample(array $data, array $sampleParameters):array {
+    protected function sample(array $data, array $sampleParameters): array {
         shuffle($data);
         return array_slice($data, 0, $sampleParameters['size']);
     }
 
-    protected function facet(array $data, array $facetDefinitions):array {
+    protected function facet(array $data, array $facetDefinitions): array {
         $facetResult = [];
         foreach ($facetDefinitions as $outputField => $pipeline) {
             $facetResult[$outputField] = $this->aggregate($data, $pipeline);
@@ -269,7 +269,7 @@ class Cursor implements \Iterator {
         return [$facetResult];
     }
 
-    protected function lookup(array $data, array $lookupDefinition):array {
+    protected function lookup(array $data, array $lookupDefinition): array {
         $fromData = $lookupDefinition['from'];
         $localField = $lookupDefinition['localField'];
         $foreignField = $lookupDefinition['foreignField'];
@@ -285,7 +285,7 @@ class Cursor implements \Iterator {
         return $data;
     }
 
-    protected function bucket(array $data, array $bucketDefinition):array {
+    protected function bucket(array $data, array $bucketDefinition): array {
 
         if (!isset($bucketDefinition['groupBy'], $bucketDefinition['boundaries'], $bucketDefinition['output'])) {
             throw new Exception("The \$bucket stage requires 'groupBy', 'boundaries', and 'output' parameters.");
