@@ -9,6 +9,7 @@
 - Implement HTTP caching when using response cache (via rspc parameter)
 - Resolve `{field}:locale` in filter and sort parameters
 - Optimize icon font size
+- Add missing meta fields to GraphQL model definitions @filipmiik
 
 ## 2.6.2 (2023-07-31)
 
