@@ -24,9 +24,9 @@ foreach ($collections as $name => &$meta) {
                     '_id'       => Type::nonNull(Type::string()),
                     '_state'    => Type::nonNull(Type::int()),
                     '_o'        => Type::nonNull(Type::int()),
-                    '_cby'      => Type::nonNull(Type::ID()),
+                    '_cby'      => Type::nonNull(Type::string()),
                     '_created'  => Type::nonNull(Type::int()),
-                    '_mby'      => Type::nonNull(Type::ID()),
+                    '_mby'      => Type::nonNull(Type::string()),
                     '_modified' => Type::nonNull(Type::int())
                 ], $meta['type'] === 'tree' ? [
                     '_pid'      => Type::string()
@@ -106,9 +106,9 @@ foreach ($singletons as $name => &$meta) {
                 $fields = array_merge([
                     '_id'       => Type::string(),
                     '_state'    => Type::int(),
-                    '_cby'      => Type::ID(),
+                    '_cby'      => Type::string(),
                     '_created'  => Type::int(),
-                    '_mby'      => Type::ID(),
+                    '_mby'      => Type::string(),
                     '_modified' => Type::int()
                 ], FieldTypes::buildFieldsDefinitions($meta));
 
