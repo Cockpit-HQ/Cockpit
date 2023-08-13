@@ -320,7 +320,7 @@ export default {
                             <a class="kiss-cover" @click="selectedAsset=asset" v-if="modal"></a>
                         </div>
                         <div class="kiss-padding kiss-flex kiss-flex-middle">
-                            <div class="kiss-text-truncate kiss-size-xsmall kiss-flex-1"><a class="kiss-link-muted" @click="edit(asset)">{{ App.utils.truncate(asset.title, 25) }}</a></div>
+                            <div class="kiss-text-truncate kiss-size-xsmall kiss-flex-1"><a class="kiss-link-muted" @click="edit(asset)">{{ asset.title }}</a></div>
                             <a class="kiss-margin-small-left" @click="toggleAssetActions(asset)"><icon>more_horiz</icon></a>
                         </div>
                     </kiss-card>

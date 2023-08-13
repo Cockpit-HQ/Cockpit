@@ -2698,6 +2698,9 @@ kiss-grid {
     grid-template-rows: 1fr;
     gap: var(--grid-gap);
 }
+kiss-grid > * {
+    min-width: 0;
+}
 /*
  * Small
  */
