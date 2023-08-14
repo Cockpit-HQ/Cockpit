@@ -80,20 +80,24 @@ class Users extends App {
 
         $user = $this->param('user');
         $password = $this->param('password');
+        $isUpdate = isset($user['_id']);
 
         if (!$user) {
             return $this->stop(['error' => 'User data is missing'], 412);
         }
 
-        if (!$password) {
-            return $this->stop(['error' => 'Password for verification is missing'], 412);
-        }
+        if ($isUpdate) {
 
-        // verify current logged in user
-        $currentUser = $this->app->dataStorage->findOne('system/users', ['_id' => $this->user['_id']], ['_id' => 1, 'password' => 1]);
+            if (!$password) {
+                return $this->stop(['error' => 'Password for verification is missing'], 412);
+            }
 
-        if (!$currentUser || !password_verify($password, $currentUser['password'])) {
-            return $this->stop(['error' => 'User verification failed'], 412);
+            // verify current logged in user
+            $currentUser = $this->app->dataStorage->findOne('system/users', ['_id' => $this->user['_id']], ['_id' => 1, 'password' => 1]);
+
+            if (!$currentUser || !password_verify($password, $currentUser['password'])) {
+                return $this->stop(['error' => 'User verification failed'], 412);
+            }
         }
 
         // don't allow to change role if not allowed
@@ -102,7 +106,6 @@ class Users extends App {
         }
 
         $user['_modified'] = time();
-        $isUpdate = isset($user['_id']);
 
         if (!$isUpdate) {
 
@@ -177,6 +180,7 @@ class Users extends App {
         $this->hasValidCsrfToken(true);
 
         $user = $this->param('user');
+        $password = $this->param('password');
 
         if (!$user || !isset($user['_id'])) {
             return $this->stop(['error' => 'User is missing'], 412);
@@ -184,6 +188,17 @@ class Users extends App {
 
         if ($user['_id'] == $this->user['_id']) {
             return $this->stop(['error' => "User can't delete himself"], 412);
+        }
+
+        if (!$password) {
+            return $this->stop(['error' => 'Password for verification is missing'], 412);
+        }
+
+        // verify current logged in user
+        $currentUser = $this->app->dataStorage->findOne('system/users', ['_id' => $this->user['_id']], ['_id' => 1, 'password' => 1]);
+
+        if (!$currentUser || !password_verify($password, $currentUser['password'])) {
+            return $this->stop(['error' => 'User verification failed'], 412);
         }
 
         $this->app->dataStorage->remove('system/users', ['_id' => $user['_id']]);

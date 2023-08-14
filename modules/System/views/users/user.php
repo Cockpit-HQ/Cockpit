@@ -215,13 +215,13 @@ if (!isset($user['twofa'])) {
 
                         let isUpdate = this.user._id;
 
-                        App.ui.prompt('Action verification', '', (pwd) => {
+                        const sendRequest = (pwdVerification = null) => {
 
                             this.saving = true;
 
                             this.$request('/system/users/save', {
                                 user: this.user,
-                                password: pwd
+                                password: pwdVerification,
                             }).then(user => {
                                 this.user = user;
                                 this.saving = false;
@@ -235,8 +235,19 @@ if (!isset($user['twofa'])) {
                                 this.saving = false;
                                 App.ui.notify(res.error || 'Saving failed!', 'error');
                             })
+                        };
 
-                        }, {type: 'password', info: 'Please enter your password to verify this action'});
+                        if (!isUpdate) {
+                            sendRequest();
+                            return;
+                        }
+
+                        App.ui.prompt('Action verification', '', (pwd) => {
+                            sendRequest(pwd);
+                        }, {
+                            type: 'password',
+                            info: 'Please enter your password to verify this action'
+                        });
                     }
                 }
             }

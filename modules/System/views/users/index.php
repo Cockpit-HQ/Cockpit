@@ -1,13 +1,12 @@
-
 <kiss-container class="kiss-margin-large" size="small">
     <ul class="kiss-breadcrumbs">
-        <li><a href="<?=$this->route('/system')?>"><?=t('Settings')?></a></li>
+        <li><a href="<?= $this->route('/system') ?>"><?= t('Settings') ?></a></li>
     </ul>
     <vue-view>
         <template>
 
             <div class="kiss-margin-large-bottom kiss-flex kiss-flex-middle">
-                <div class="kiss-size-4 kiss-flex-1"><strong><?=t('Users')?></strong></div>
+                <div class="kiss-size-4 kiss-flex-1"><strong><?= t('Users') ?></strong></div>
             </div>
 
             <app-loader v-if="loading"></app-loader>
@@ -40,8 +39,10 @@
                                 </div>
                                 <a class="kiss-cover" :href="$route('/system/users/user/'+user._id)"></a>
                             </div>
-                            <div class="kiss-margin-left" v-if="user._id != '<?=$this['user/_id']?>'">
-                                <a class="kiss-color-danger" @click="remove(user)"><icon class="kiss-size-large">delete</icon></a>
+                            <div class="kiss-margin-left" v-if="user._id != '<?= $this['user/_id'] ?>'">
+                                <a class="kiss-color-danger" @click="remove(user)">
+                                    <icon class="kiss-size-large">delete</icon>
+                                </a>
                             </div>
                         </div>
 
@@ -69,10 +70,10 @@
                         </div>
                         <div class="kiss-flex-1"></div>
                         <div class="kiss-button-group">
-                            <?php if ($this->helper('acl')->isAllowed('app.roles.manage')): ?>
-                            <a class="kiss-button" href="<?=$this->route('/system/users/roles')?>"><?=t('Manage roles')?></a>
+                            <?php if ($this->helper('acl')->isAllowed('app.roles.manage')) : ?>
+                                <a class="kiss-button" href="<?= $this->route('/system/users/roles') ?>"><?= t('Manage roles') ?></a>
                             <?php endif ?>
-                            <a class="kiss-button kiss-button-primary" href="<?=$this->route('/system/users/create')?>"><?=t('Add user')?></a>
+                            <a class="kiss-button kiss-button-primary" href="<?= $this->route('/system/users/create') ?>"><?= t('Add user') ?></a>
                         </div>
                     </div>
                 </kiss-container>
@@ -81,7 +82,6 @@
 
         </template>
         <script type="module">
-
             export default {
 
                 data() {
@@ -152,11 +152,13 @@
                             );
                         }
 
-                        this.$request('/system/users/load', {options}).then(data => {
+                        this.$request('/system/users/load', {
+                            options
+                        }).then(data => {
 
                             this.users = data.users;
                             this.pages = data.pages;
-                            this.page  = data.page;
+                            this.page = data.page;
                             this.count = data.count;
 
                             this.loading = false;
@@ -167,14 +169,25 @@
 
                         App.ui.confirm('Are you sure?', () => {
 
-                            this.$request('/system/users/remove', {user}).then(res => {
-                                this.load(this.page == 1 ? 1 : (this.items.length - 1 ? this.page : this.page - 1));
+                            App.ui.prompt('Action verification', '', (pwd) => {
+
+                                this.$request('/system/users/remove', {
+                                    user,
+                                    password: pwd
+                                }).then(res => {
+                                    this.load(this.page == 1 ? 1 : (this.items.length - 1 ? this.page : this.page - 1));
+                                }).catch(res => {
+                                    App.ui.notify(res.error || 'Removing user failed!', 'error');
+                                });
+
+                            }, {
+                                type: 'password',
+                                info: 'Please enter your password to verify this action'
                             });
                         });
                     }
                 }
             }
-
         </script>
     </vue-view>
 
