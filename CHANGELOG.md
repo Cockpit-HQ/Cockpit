@@ -2,7 +2,7 @@
 
 ## WIP
 
-- Prevent uploading .phps + .html files in assets manager
+- Prevent uploading .phps + .(x)html files in assets manager
 - Require verification for updating user data
 - Support post field projection after content population (via ..{fieldname})
 - Extract width + height and colors from uploaded svg files

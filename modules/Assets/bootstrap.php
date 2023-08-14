@@ -68,8 +68,11 @@ $this->module('assets')->extend([
         $allowed   = $allowed == '*' ? true : str_replace([' ', ','], ['', '|'], preg_quote(is_array($allowed) ? implode(',', $allowed) : $allowed));
         $max_size  = $this->app->retrieve('assets/max_upload_size', 0);
 
-        $forbiddenExtension = ['php', 'phar', 'phtml', 'phps', 'htm', 'html', 'htaccess'];
-        $forbiddenMime = ['application/x-httpd-php', 'text/html'];
+        $forbiddenExtension = ['php', 'phar', 'phtml', 'phps', 'htm', 'html', 'xhtml', 'htaccess'];
+        $forbiddenMime = [
+            'application/x-httpd-php', 'application/x-php', 'text/x-php',
+            'text/html', 'application/xhtml+xml'
+        ];
 
         if (isset($files['name']) && is_array($files['name'])) {
 
