@@ -54,5 +54,22 @@ $this->module('system')->extend([
         $logger = $this->app->helper('log')->channel($channel);
 
         call_user_func_array([$logger, $type], [$message, $context]);
+    },
+
+    'verifyUser' => function(string $password) {
+
+        $user = $this->app->helper('auth')->getUser();
+
+        if (!$user) {
+            return false;
+        }
+
+        $data = $this->app->dataStorage->findOne('system/users', ['_id' => $user['_id']], ['_id' => 1, 'password' => 1]);
+
+        if (!$data || !password_verify($password, $data['password'])) {
+            return false;
+        }
+
+        return true;
     }
 ]);

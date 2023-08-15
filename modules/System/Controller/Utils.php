@@ -49,6 +49,17 @@ class Utils extends App {
 
     }
 
+    public function verifyUser() {
+
+        $password = $this->param('password');
+
+        if (!$password) {
+            return $this->stop(['error' => 'Password for verification is missing'], 412);
+        }
+
+        return ['success' => $this->app->module('system')->verifyUser($password)];
+    }
+
     public function icons() {
 
         $icons = new \ArrayObject([]);

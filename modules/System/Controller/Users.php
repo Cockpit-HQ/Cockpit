@@ -86,18 +86,9 @@ class Users extends App {
             return $this->stop(['error' => 'User data is missing'], 412);
         }
 
-        if ($isUpdate) {
-
-            if (!$password) {
-                return $this->stop(['error' => 'Password for verification is missing'], 412);
-            }
-
-            // verify current logged in user
-            $currentUser = $this->app->dataStorage->findOne('system/users', ['_id' => $this->user['_id']], ['_id' => 1, 'password' => 1]);
-
-            if (!$currentUser || !password_verify($password, $currentUser['password'])) {
-                return $this->stop(['error' => 'User verification failed'], 412);
-            }
+        // verify current logged in user
+        if ($isUpdate && (!$password || !$this->app->module('system')->verifyUser($password))) {
+            return $this->stop(['error' => 'User verification failed'], 412);
         }
 
         // don't allow to change role if not allowed
@@ -195,9 +186,7 @@ class Users extends App {
         }
 
         // verify current logged in user
-        $currentUser = $this->app->dataStorage->findOne('system/users', ['_id' => $this->user['_id']], ['_id' => 1, 'password' => 1]);
-
-        if (!$currentUser || !password_verify($password, $currentUser['password'])) {
+        if (!$this->app->module('system')->verifyUser($password)) {
             return $this->stop(['error' => 'User verification failed'], 412);
         }
 
