@@ -1,6 +1,6 @@
 # Release Notes
 
-## WIP
+## 2.6.3 (2023-08-15)
 
 - Prevent uploading .phps + .(x)html files in assets manager
 - Require verification for updating user data
