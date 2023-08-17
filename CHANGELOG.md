@@ -1,5 +1,9 @@
 # Release Notes
 
+## WIP
+
+- Fix mime type detection on asset upload
+
 ## 2.6.3 (2023-08-15)
 
 - Prevent uploading .phps + .(x)html files in assets manager

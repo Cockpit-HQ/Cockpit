@@ -81,13 +81,15 @@ $this->module('assets')->extend([
             for ($i = 0; $i < $cnt; $i++) {
 
                 $_file  = $this->app->path('#tmp:').'/'.$files['name'][$i];
-                $_mime = finfo_file($finfo, $_file);
+                $_mime = $finfo->file($files['tmp_name'][$i]);
                 $_isAllowed = $allowed === true ? true : preg_match("/\.({$allowed})$/i", $_file);
                 $_sizeAllowed = $max_size ? filesize($files['tmp_name'][$i]) < $max_size : true;
 
+                $extension = strtolower(pathinfo(parse_url($_file, PHP_URL_PATH), PATHINFO_EXTENSION));
+
                 // prevent uploading php / html files
                 if ($_isAllowed && (
-                    in_array(strtolower(pathinfo($_file, PATHINFO_EXTENSION)), $forbiddenExtension) ||
+                    in_array($extension, $forbiddenExtension) ||
                     in_array(strtolower($_mime), $forbiddenMime)
                 )) {
                     $_isAllowed = false;
