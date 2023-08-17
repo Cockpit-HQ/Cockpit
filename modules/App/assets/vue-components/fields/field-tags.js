@@ -66,8 +66,15 @@ export default {
 
             if (Array.isArray(this.list) && this.list.length) {
 
+                let id, value, label;
+
                 this.options = this.list.map((item, idx) => {
-                    return { id: idx, value: item}
+
+                    id = item.id || idx;
+                    value = item.value || item;
+                    label = item.label || value;
+
+                    return { id, value, label }
                 });
             }
 
