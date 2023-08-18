@@ -30,32 +30,47 @@ export default {
     computed: {
         changes() {
 
-            let changes = [], _diff, _diffhtml;
+            if (!this.selectedRev) return [];
+
+            let changes = [], _diff, _diffhtml, current, prev;
 
             Object.keys(this.selectedRev.data).forEach(key => {
 
-                if (this.current[key] == undefined) return;
-                if (JSON.stringify(this.current[key]) == JSON.stringify(this.selectedRev.data[key])) return;
-
-                _diff = Diff.diffChars(JSON.stringify(this.selectedRev.data[key], null, ' '), JSON.stringify(this.current[key], null, ' '));
                 _diffhtml = '';
 
-                for (let i=0; i < _diff.length; i++) {
+                if (this.current[key] == undefined) return;
 
-                    if (_diff[i].added && _diff[i + 1] && _diff[i + 1].removed) {
-                        let swap = _diff[i];
-                        _diff[i] = _diff[i + 1];
-                        _diff[i + 1] = swap;
-                    }
+                current = JSON.stringify(this.current[key], null, ' ');
+                prev = JSON.stringify(this.selectedRev.data[key], null, ' ');
 
-                    if (_diff[i].removed) {
-                        _diffhtml += '<del>'+_diff[i].value+'</del>';
-                    } else if (_diff[i].added) {
-                        _diffhtml += '<ins>'+_diff[i].value+'</ins>';
-                    } else {
-                        _diffhtml += _diff[i].value;
+                if (current == prev) return;
+
+                if (current.length > 200 || prev.length > 200) {
+
+                    _diffhtml = prev;
+
+                } else {
+
+                    _diff = Diff.diffChars(prev, current);
+
+                    for (let i=0; i < _diff.length; i++) {
+
+                        if (_diff[i].added && _diff[i + 1] && _diff[i + 1].removed) {
+                            let swap = _diff[i];
+                            _diff[i] = _diff[i + 1];
+                            _diff[i + 1] = swap;
+                        }
+
+                        if (_diff[i].removed) {
+                            _diffhtml += '<del>'+_diff[i].value+'</del>';
+                        } else if (_diff[i].added) {
+                            _diffhtml += '<ins>'+_diff[i].value+'</ins>';
+                        } else {
+                            _diffhtml += _diff[i].value;
+                        }
                     }
                 }
+
 
                 changes.push({
                     key,

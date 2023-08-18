@@ -33,9 +33,10 @@ class Asset extends \Lime\Helper {
             return ['error' => 'Missing src parameter'];
         }
 
+        $hash = $mime ? md5(json_encode($options))."_{$quality}_{$mode}.{$mime}" : null;
+
         if (!$rebuild && $mime) {
 
-            $hash = md5(json_encode($options))."_{$quality}_{$mode}.{$mime}";
             $thumbpath = $cachefolder."/{$hash}";
 
             if ($this->app->fileStorage->fileExists($thumbpath)) {
@@ -48,12 +49,30 @@ class Asset extends \Lime\Helper {
             }
         }
 
+        $src = rawurldecode($src);
+
         // normalize path
         if (strpos($src, '../') !== false) {
             $src = implode('/', array_filter(explode('/', $src), fn ($s) => trim($s, '.')));
         }
 
-        $src   = rawurldecode($src);
+        $options['src'] = $src;
+
+        if (\strpos($src, 'uploads://') === 0) {
+
+            $options['src'] = \str_replace('uploads://', '', $src);
+
+            return $this->imageByPath($options, $asPath, $hash);
+        }
+
+        return $this->imageByAsset($options, $asPath, $hash);
+
+    }
+
+    protected function imageByAsset(array $options = [], bool $asPath = false, ?string $hash = null) {
+
+        extract($options);
+
         $asset = null;
 
         if (\strpos($src, 'assets://') === 0) {
@@ -68,7 +87,20 @@ class Asset extends \Lime\Helper {
             return ['error' => 'Asset not found'];
         }
 
-        $path = trim($asset['path'], '/');
+        $options['src'] = $asset['path'];
+
+        if (!$fp && isset($asset['fp']['x'], $asset['fp']['y'])) {
+            $options['fp'] = "{$asset['fp']['x']} {$asset['fp']['y']}";
+        }
+
+        return $this->imageByPath($options, $asPath, $hash);
+    }
+
+    protected function imageByPath(array $options = [], bool $asPath = false, ?string $hash = null) {
+
+        extract($options);
+
+        $path = trim($src, '/');
         $srcUrl = $this->app->fileStorage->getURL("uploads://{$path}");
         $src = $this->app->path("#uploads:{$path}");
 
@@ -86,10 +118,6 @@ class Asset extends \Lime\Helper {
             return false;
         }
 
-        if (isset($asset['fp']) && !$fp) {
-            $fp = $asset['fp']['x'].' '.$asset['fp']['y'];
-        }
-
         $ext = strtolower(pathinfo($src, PATHINFO_EXTENSION));
 
         // handle svg files
@@ -103,7 +131,7 @@ class Asset extends \Lime\Helper {
         }
 
         // check if image
-        if (!in_array($ext, ['png', 'jpg', 'jpeg', 'gif', 'webp'])) {
+        if (!in_array($ext, ['avif', 'png', 'jpg', 'jpeg', 'gif', 'webp'])) {
             return $srcUrl;
         }
 
@@ -122,24 +150,24 @@ class Asset extends \Lime\Helper {
             return $srcUrl;
         }
 
-        if (!$fp) {
-            $fp = 'center';
-        }
-
         if (!in_array($mode, ['thumbnail', 'bestFit', 'resize', 'fitToWidth', 'fitToHeight'])) {
             $mode = 'thumbnail';
         }
 
-        if ($mime && in_array($mime, ['gif', 'jpeg', 'png', 'webp', 'bmp'])) {
+        if ($mime && in_array($mime, ['avif', 'gif', 'jpeg', 'png', 'webp', 'bmp'])) {
             $ext = $mime;
             $mime = "image/{$ext}";
         } else {
             $mime = null;
         }
 
+        if (!$fp) {
+            $fp = 'center';
+        }
+
         $method = $mode;
 
-        $hash = md5(json_encode($options))."_{$quality}_{$mode}.{$ext}";
+        $hash = $hash ?? md5(json_encode($options))."_{$quality}_{$mode}.{$ext}";
         $thumbpath = $cachefolder."/{$hash}";
 
         if ($rebuild || !$this->app->fileStorage->fileExists($thumbpath)) {

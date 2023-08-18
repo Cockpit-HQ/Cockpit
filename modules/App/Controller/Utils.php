@@ -4,9 +4,11 @@ namespace App\Controller;
 
 class Utils extends App {
 
-    public function generateToken($length = 20) {
-
+    protected function before() {
         $this->helper('session')->close();
+    }
+
+    public function generateToken($length = 20) {
 
         return ['token' => bin2hex(random_bytes($length))];
     }
@@ -23,6 +25,7 @@ class Utils extends App {
     public function search() {
 
         $this->helper('session')->close();
+        $this->hasValidCsrfToken(true);
 
         $findings = new \ArrayObject([]);
         $search = $this->param('search');

@@ -2,6 +2,7 @@
 
 namespace GraphQL\Executor;
 
+use GraphQL\Error\InvariantViolation;
 use GraphQL\Executor\Promise\Adapter\SyncPromiseAdapter;
 use GraphQL\Executor\Promise\Promise;
 use GraphQL\Executor\Promise\PromiseAdapter;
@@ -15,6 +16,8 @@ use GraphQL\Utils\Utils;
  *
  * @phpstan-type FieldResolver callable(mixed, array<string, mixed>, mixed, ResolveInfo): mixed
  * @phpstan-type ImplementationFactory callable(PromiseAdapter, Schema, DocumentNode, mixed, mixed, array<mixed>, ?string, callable): ExecutorImplementation
+ *
+ * @see \GraphQL\Tests\Executor\ExecutorTest
  */
 class Executor
 {
@@ -34,9 +37,7 @@ class Executor
      */
     private static $implementationFactory = [ReferenceExecutor::class, 'create'];
 
-    /**
-     * @phpstan-return FieldResolver
-     */
+    /** @phpstan-return FieldResolver */
     public static function getDefaultFieldResolver(): callable
     {
         return self::$defaultFieldResolver;
@@ -57,17 +58,13 @@ class Executor
         return self::$defaultPromiseAdapter ??= new SyncPromiseAdapter();
     }
 
-    /**
-     * Set a custom default promise adapter.
-     */
-    public static function setPromiseAdapter(?PromiseAdapter $defaultPromiseAdapter = null): void
+    /** Set a custom default promise adapter. */
+    public static function setPromiseAdapter(PromiseAdapter $defaultPromiseAdapter = null): void
     {
         self::$defaultPromiseAdapter = $defaultPromiseAdapter;
     }
 
-    /**
-     * @phpstan-return ImplementationFactory
-     */
+    /** @phpstan-return ImplementationFactory */
     public static function getImplementationFactory(): callable
     {
         return self::$implementationFactory;
@@ -96,15 +93,17 @@ class Executor
      * @phpstan-param FieldResolver|null $fieldResolver
      *
      * @api
+     *
+     * @throws InvariantViolation
      */
     public static function execute(
         Schema $schema,
         DocumentNode $documentNode,
         $rootValue = null,
         $contextValue = null,
-        ?array $variableValues = null,
-        ?string $operationName = null,
-        ?callable $fieldResolver = null
+        array $variableValues = null,
+        string $operationName = null,
+        callable $fieldResolver = null
     ): ExecutionResult {
         $promiseAdapter = new SyncPromiseAdapter();
 
@@ -142,9 +141,9 @@ class Executor
         DocumentNode $documentNode,
         $rootValue = null,
         $contextValue = null,
-        ?array $variableValues = null,
-        ?string $operationName = null,
-        ?callable $fieldResolver = null
+        array $variableValues = null,
+        string $operationName = null,
+        callable $fieldResolver = null
     ): Promise {
         $executor = (self::$implementationFactory)(
             $promiseAdapter,

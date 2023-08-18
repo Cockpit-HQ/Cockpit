@@ -160,7 +160,7 @@ class Response {
             }
 
             if ($this->etag){
-                $headers['ETag'] = md5($this->body);
+                $headers['ETag'] = md5($body);
             }
 
             \header('HTTP/1.0 '.$this->status.' '.self::$statusCodes[$this->status]);

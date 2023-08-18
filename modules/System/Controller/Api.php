@@ -70,6 +70,8 @@ class Api extends App {
 
     public function remove() {
 
+        $this->hasValidCsrfToken(true);
+
         $key = $this->param('key');
 
         if (!$key || !isset($key['_id'], $key['key'])) {

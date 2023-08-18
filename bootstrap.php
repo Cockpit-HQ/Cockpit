@@ -1,8 +1,7 @@
 <?php
 
-define('APP_VERSION', '2.3.9');
+const APP_VERSION = '2.6.3';
 
-if (!defined('APP_START_TIME')) define('APP_START_TIME', microtime(true));
 if (!defined('APP_ADMIN')) define('APP_ADMIN', false);
 if (!defined('APP_CLI')) define('APP_CLI', PHP_SAPI == 'cli');
 if (!defined('APP_SPACES_DIR')) define('APP_SPACES_DIR', __DIR__.'/.spaces');
@@ -10,23 +9,14 @@ if (!defined('APP_SPACES_DIR')) define('APP_SPACES_DIR', __DIR__.'/.spaces');
 define('APP_DIR', str_replace(DIRECTORY_SEPARATOR, '/', __DIR__));
 
 // Autoload vendor libs
-include_once(__DIR__.'/lib/_autoload.php');
+require_once(__DIR__.'/lib/_autoload.php');
 
 // load .env file if exists
 DotEnv::load(APP_DIR);
 
-/*
- * Autoload from lib folder (PSR-0)
- */
-spl_autoload_register(function($class) {
-    $class_path = __DIR__.'/lib/'.str_replace('\\', '/', $class).'.php';
-    if (file_exists($class_path)) include_once($class_path);
-});
-
-
 class Cockpit {
 
-    protected static $instance = [];
+    protected static array $instance = [];
 
     public static function instance(?string $envDir = null, array $config = []): Lime\App {
 
@@ -76,6 +66,10 @@ class Cockpit {
             ],
             'memory' => [
                 'server' => "redislite://{$envDir}/storage/data/app.memory.sqlite",
+                'options' => []
+            ],
+            'search' => [
+                'server' => "indexlite://{$envDir}/storage/data",
                 'options' => []
             ],
 
@@ -178,40 +172,38 @@ class Cockpit {
 
             $app->trigger('app.filestorage.init', [&$storages]);
 
-            $filestorage = new FileStorage($storages);
-
-            return $filestorage;
+            return new FileStorage($storages);
         });
 
 
         // nosql storage
         $app->service('dataStorage', function() use($config) {
-            $client = new MongoHybrid\Client($config['database']['server'], $config['database']['options'], $config['database']['driverOptions']);
-            return $client;
+            return new MongoHybrid\Client($config['database']['server'], $config['database']['options'], $config['database']['driverOptions']);
         });
 
         // key-value storage
         $app->service('memory', function() use($config) {
 
-            $client = new MemoryStorage\Client($config['memory']['server'], array_merge([
+            return new MemoryStorage\Client($config['memory']['server'], array_merge([
                 'key' => $config['sec-key']
             ],$config['memory']['options']));
+        });
 
-            return $client;
+        // full-text search
+        $app->service('search', function() use($config) {
+            return new IndexHybrid\Manager($config['search']['server'], $config['search']['options']);
         });
 
         // mailer service
         $app->service('mailer', function() use($app, $config){
 
-            $options = isset($config['mailer']) ? $config['mailer']:[];
+            $options = $config['mailer'] ?? [];
 
             if (is_string($options)) {
                 parse_str($options, $options);
             }
 
-            $mailer = new \Mailer($options['transport'] ?? 'mail', $options);
-
-            return $mailer;
+            return new Mailer($options['transport'] ?? 'mail', $options);
         });
 
         $modulesPaths = [
@@ -219,16 +211,16 @@ class Cockpit {
             "{$appDir}/addons"   # addons
         ];
 
-        // if custon env dir
+        // if custom env dir
         if ($appDir != $envDir) {
             $modulesPaths[] = $config['paths']['#addons'];
         }
 
         // load modules
-        $app->loadModules($modulesPaths);
+        self::loadModules($envDir, $app, $config, $modulesPaths);
 
         // handle exceptions
-        if (APP_CLI || APP_ADMIN) {
+        if (!isset($GLOBALS['APP']) && (APP_CLI || APP_ADMIN)) {
 
             set_exception_handler(function($exception) use($app) {
 
@@ -251,6 +243,50 @@ class Cockpit {
         $app->trigger('bootstrap');
 
         return $app;
+    }
+
+    protected static function loadModules($envDir, $app, $config, $modulesPaths) {
+
+        if ($config['debug']) {
+            $app->loadModules($modulesPaths);
+        } else {
+
+            $cacheFile = "{$config['paths']['#cache']}/modules.cache.php";
+
+            if (!file_exists($cacheFile)) {
+
+                $export  = ['version' => APP_VERSION, 'env' => $envDir, 'dirs' => [], 'autoload' => true];
+
+                foreach ($modulesPaths as &$dir) {
+
+                    if (!file_exists($dir)) continue;
+
+                    $export['dirs'][$dir] = [];
+
+                    foreach (new \DirectoryIterator($dir) as $module) {
+                        if ($module->isFile() || $module->isDot()) continue;
+                        $export['dirs'][$dir][] = $module->getRealPath();
+                    }
+                }
+
+                $contents = $app->helper('utils')->var_export($export, true);
+                file_put_contents($cacheFile, "<?php\n return {$contents};");
+            }
+
+            $cache = include($cacheFile);
+
+            if (APP_VERSION !== $cache['version'] || $cache['env'] !== $envDir) {
+                unlink($cacheFile);
+                $app->loadModules($modulesPaths);
+            } else {
+
+                foreach ($cache['dirs'] as $dir => $modules) {
+                    foreach ($modules as $path) $app->loadModule($path, null);
+                    $app['autoload']->append($dir);
+                }
+            }
+
+        }
     }
 
 }

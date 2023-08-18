@@ -40,7 +40,7 @@ kiss-row[gap="xlarge"] {
 
 
 kiss-row[gap="none"] {
-    --row-gap: 0;
+    --row-gap: 0px;
 }
 
 

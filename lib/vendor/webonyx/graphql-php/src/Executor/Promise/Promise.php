@@ -19,6 +19,8 @@ class Promise
 
     /**
      * @param mixed $adoptedPromise
+     *
+     * @throws InvariantViolation
      */
     public function __construct($adoptedPromise, PromiseAdapter $adapter)
     {
@@ -30,7 +32,7 @@ class Promise
         $this->adapter = $adapter;
     }
 
-    public function then(?callable $onFulfilled = null, ?callable $onRejected = null): Promise
+    public function then(callable $onFulfilled = null, callable $onRejected = null): Promise
     {
         return $this->adapter->then($this, $onFulfilled, $onRejected);
     }

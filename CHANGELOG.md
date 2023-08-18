@@ -1,5 +1,103 @@
 # Release Notes
 
+## 2.6.3 (2023-08-15)
+
+- Prevent uploading .phps + .(x)html files in assets manager
+- Require verification for updating user data
+- Support post field projection after content population (via ..{fieldname})
+- Extract width + height and colors from uploaded svg files
+- Implement HTTP caching when using response cache (via rspc parameter)
+- Resolve `{field}:locale` in filter and sort parameters
+- Optimize icon font size
+- Add missing meta fields to GraphQL model definitions @filipmiik
+- Fix long text expanding grid items
+
+## 2.6.2 (2023-07-31)
+
+- Add video frame preview (assets manager)
+- Fix `$not` for MongoLite
+- Add `app.system.install` event trigger on initial installation
+- Add support for closing dialogs via `Escape`
+- Add cached modules loading
+- Update icon font
+- Fix global error handler when using spaces
+- Auto map :{space}/storage/* to .spaces/{space}/storage/* (Apache)
+
+## 2.6.1 (2023-06-24)
+
+- Fix api token checking
+
+## 2.6.0 (2023-06-21)
+
+- Try to auto-generate meaningful linked content preview if display setting is missing
+- Update Vue to v3.3.4
+- Add missing permission settings @raffaelj
+- Improve role permissions UI
+- Show locale value picker only if multiple locales are available
+- Use `crypto.randomUUID()` only if available
+- Populate only allowed models in content api (thanks @Ccamm)
+- Fix possible content `models` permission naming collision (thanks @raffaelj)
+- Fix internal content find/populate api exposing data to users without required rights (thanks @raffaelj)
+- Fix empty settings screen
+- Add csrf token validation to internal api calls to improve security (thanks @Ccamm)
+- Add clone functionality to tree content items
+- Add additional checks to `/api/system/healthcheck`
+- Fix disabling asset picker in wysiwyg field
+- Improve fields projection (eg nested fields) when using MongoLite as data storage
+- Use AG Grid instead of Tabulator.js as a foundation for the table field
+- Limit number of files to upload in admin ui based on php setting `max_file_uploads`
+
+## 2.5.2 (2023-05-18)
+
+- Fix link content item dialog
+- Update vendor libs
+
+## 2.5.1 (2023-05-15)
+
+- Fix js error thrown in dialog component
+- Remove 2FA info from internal users/load api
+- Update icons
+- Minor UI improvements
+- add `content.remove.before` event
+- Refactor `kiss-popoutmenu` component to `kiss-popout`
+- Introduce `user-info` component
+- Update Vue to v3.3.2
+- Update vendor libs
+
+## 2.5.0 (2023-04-15)
+
+- Fix initial item position on tree item creation
+- Add avif image type support (depending on used GD lib)
+- Add experimental natural language to mongo query support (only for admin ui filtering collection items and assets)
+- Add lightweight indexing library (for full-text search)
+- Make logged login data configurable
+- Add filter models feature on role permission page
+- Fix populate option singleton data queries via GraphQL
+- Clone / duplicate collection items
+- Refactor admin ui language loading
+- Add `content:field:remove` and `content:field:rename` tower cli commands to cleanup content data after model changes
+
+
+## 2.4.1 (2023-03-20)
+
+- Add field preview renderer for boolen field
+- Fix tag field
+- Add display meta property support for tree content models
+- Add active property to field-nav items
+- Add additional security check when uploading files
+- Fix assets image cache check
+- Add thumbnail api usage to internal bucket storage file previews
+- Improve revisions display performance
+
+## 2.4.0 (2023-03-08)
+
+- Add additional security check editing php files in finder
+- Fix base64 encoding data not in latin char range
+- Add internal bucket storage container feature
+- Add /content/tree/{model} api endpoint
+- Batch edit content items
+- Update vendor libs
+
 ## 2.3.9 (2023-02-13)
 
 - Fix batch state update (when using MongoLite) #75

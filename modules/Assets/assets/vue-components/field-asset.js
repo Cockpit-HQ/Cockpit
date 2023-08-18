@@ -25,7 +25,7 @@ export default {
 
     props: {
         modelValue: {
-            type: String,
+            type: Object,
             default: null
         },
 
@@ -49,7 +49,7 @@ export default {
 
         pickAsset() {
 
-            VueView.ui.modal('assets:assets/dialogs/asset-picker.js', {filter:this.filter}, {
+            VueView.ui.modal('assets:assets/dialogs/asset-picker.js', {filter: this.filter}, {
                 selectAsset: (asset) => {
 
                     this.val = asset;

@@ -1,0 +1,4 @@
+[data-theme="dark"] .app-icon-preview img {
+    filter: invert(100%);
+}
+

@@ -8,6 +8,12 @@ $this->on('app.admin.init', function() {
     include(__DIR__.'/admin.php');
 });
 
+// load cli related code
+$this->on('app.cli.init', function($cli) {
+    $app = $this;
+    include(__DIR__.'/cli.php');
+});
+
 // load api request related code
 $this->on('app.api.request', function() {
     include(__DIR__.'/api.php');
@@ -26,6 +32,7 @@ $this->module('content')->extend([
             return false;
         }
 
+        $name = preg_replace('/[^A-Za-z0-9]/', '', $name);
         $storagepath = $this->app->path('#storage:').'/content';
 
         if (!$this->app->path('#storage:content')) {
@@ -39,6 +46,8 @@ $this->module('content')->extend([
             return false;
         }
 
+        $data['name'] = $name;
+
         $time = time();
 
         $model = array_replace_recursive([
@@ -46,12 +55,12 @@ $this->module('content')->extend([
             'label'     => $name,
             'info'      => '',
             'type'      => 'collection',
-            'fields'    => [],
+            'fields'     => [],
             'preview'   => [],
             'group'     => null,
             'meta'      => null,
             '_created'  => $time,
-            '_modified' => $time
+            '_modified'  => $time
         ], $data);
 
         $export = $this->app->helper('utils')->var_export($model, true);
@@ -258,13 +267,13 @@ $this->module('content')->extend([
             return null;
         }
 
-        $this->app->trigger('content.item.save.before', [$modelName, &$item, $isUpdate]);
-        $this->app->trigger("content.item.save.before.{$modelName}", [&$item, $isUpdate]);
+        $this->app->trigger('content.item.save.before', [$modelName, &$item, $isUpdate, $collection]);
+        $this->app->trigger("content.item.save.before.{$modelName}", [&$item, $isUpdate, $collection]);
 
         $this->app->dataStorage->save($collection, $item);
 
-        $this->app->trigger('content.item.save', [$modelName, $item, $isUpdate]);
-        $this->app->trigger("content.item.save.{$modelName}", [&$item, $isUpdate]);
+        $this->app->trigger('content.item.save', [$modelName, $item, $isUpdate, $collection]);
+        $this->app->trigger("content.item.save.{$modelName}", [$item, $isUpdate, $collection]);
 
         return $item;
     },
@@ -275,6 +284,19 @@ $this->module('content')->extend([
 
         if (!$model) {
             throw new Exception('Try to access unknown model "'.$modelName.'"');
+        }
+
+        $postPopulateProjection = [];
+
+        if (isset($fields)) {
+
+            foreach ($fields as $f => $v) {
+
+                if (strpos($f, '..') !== 0) continue;
+                $postPopulateProjection[substr($f, 2)] = $v;
+                $fields[explode('.', substr($f, 2))[0]] = 1;
+                unset($fields[$f]);
+            }
         }
 
         if ($model['type'] == 'singleton') {
@@ -289,16 +311,26 @@ $this->module('content')->extend([
 
         } elseif (in_array($model['type'], ['collection', 'tree'])) {
 
+            $this->app->helper('content')->replaceLocaleInArrayKeys(
+                $filter,
+                !isset($process['locale']) || $process['locale'] == 'default'  ? '' : $process['locale']
+            );
+
             $collection = "content/collections/{$modelName}";
             $item = $this->app->dataStorage->findOne($collection, $filter, $fields);
         }
 
-        if (isset($process['locale'])) {
+        if ($item && isset($process['locale'])) {
             $item = $this->app->helper('locales')->applyLocales($item, $process['locale']);
         }
 
-        if (isset($process['populate']) && $process['populate']) {
+        if ($item && isset($process['populate']) && $process['populate']) {
+
             $item = $this->populate($item, $process['populate'], 0, $process);
+
+            if (count($postPopulateProjection)) {
+                $item = \MongoLite\Projection::onDocument($item, $postPopulateProjection);
+            }
         }
 
         return $item;
@@ -318,13 +350,86 @@ $this->module('content')->extend([
 
         $collection = "content/collections/{$modelName}";
 
+        $postPopulateProjection = [];
+
+        if (isset($options['fields'])) {
+
+            $this->app->helper('content')->replaceLocaleInArrayKeys(
+                $options['fields'],
+                !isset($process['locale']) || $process['locale'] == 'default'  ? '' : $process['locale'],
+                true
+            );
+
+            foreach ($options['fields'] as $f => $v) {
+
+                if (strpos($f, '..') !== 0) continue;
+                $postPopulateProjection[substr($f, 2)] = $v;
+                $options['fields'][explode('.', substr($f, 2))[0]] = 1;
+                unset($options['fields'][$f]);
+            }
+        }
+
+        // replace {field}:locale keys with locale defined in $process
+        if (isset($options['filter'])) {
+
+            $this->app->helper('content')->replaceLocaleInArrayKeys(
+                $options['filter'],
+                !isset($process['locale']) || $process['locale'] == 'default'  ? '' : $process['locale']
+            );
+        }
+
+        if (isset($options['sort'])) {
+
+            $this->app->helper('content')->replaceLocaleInArrayKeys(
+                $options['sort'],
+                !isset($process['locale']) || $process['locale'] == 'default'  ? '' : $process['locale']
+            );
+        }
+
         $items = (array) $this->app->dataStorage->find($collection, $options);
 
-        if (isset($process['locale'])) {
+        if ($process['locale'] ?? false) {
             $items = $this->app->helper('locales')->applyLocales($items, $process['locale']);
         }
 
-        if (isset($process['populate']) && $process['populate']) {
+        if ($process['populate'] ?? false) {
+
+            $items = $this->populate($items, $process['populate'], 0, $process);
+
+            if (count($postPopulateProjection)) {
+                $items = \MongoLite\Projection::onDocuments($items, $postPopulateProjection);
+            }
+        }
+
+        return $items;
+    },
+
+    'aggregate' => function(string $modelName, array $pipeline = [], $process = []) {
+
+        $model = $this->model($modelName);
+
+        if (!$model) {
+            throw new Exception('Try to access unknown model "' . $modelName . '"');
+        }
+
+        if (!in_array($model['type'], ['collection', 'tree'])) {
+            return [];
+        }
+
+        $this->app->helper('content')->replaceLocaleInArrayKeys(
+            $pipeline,
+            !isset($process['locale']) || $process['locale'] == 'default'  ? '' : $process['locale']
+        );
+
+        $collection = "content/collections/{$modelName}";
+
+        $items = $this->app->dataStorage->aggregate($collection, $pipeline)->toArray();
+
+        if ($process['locale'] ?? false) {
+            $items = $this->app->helper('locales')->applyLocales($items, $process['locale']);
+        }
+
+        if ($process['populate'] ?? false) {
             $items = $this->populate($items, $process['populate'], 0, $process);
         }
 
@@ -344,6 +449,8 @@ $this->module('content')->extend([
         }
 
         $collection = "content/collections/{$modelName}";
+
+        $this->app->trigger('content.remove.before', [$modelName, &$filter, $collection]);
 
         $result = $this->app->dataStorage->remove($collection, $filter);
 
@@ -372,6 +479,32 @@ $this->module('content')->extend([
 
     },
 
+    'tree' => function(string $modelName, $parentId = null, ?array $filter = null, ?array $fields = null, $process = []) {
+
+        $filter = is_array($filter) ? $filter : [];
+        $filter['_pid'] = $parentId;
+
+        $items = $this->app->dataStorage->find("content/collections/{$modelName}", [
+            'filter' => $filter,
+            'fields' => $fields,
+            'sort' => ['_o' => 1]
+        ])->toArray();
+
+        foreach ($items as &$item) {
+            $item['_children'] = $this->tree($modelName, $item['_id'], $filter, $fields);
+        }
+
+        if (isset($process['locale'])) {
+            $items = $this->app->helper('locales')->applyLocales($items, $process['locale']);
+        }
+
+        if (isset($process['populate']) && $process['populate']) {
+            $items = $this->populate($items, $process['populate'], 0, $process);
+        }
+
+        return $items;
+    },
+
     'populate' => function(array $array, $maxlevel = -1, $level = 0, $process = []) {
 
         if (!is_array($array)) {
@@ -393,6 +526,14 @@ $this->module('content')->extend([
             }
 
             if (isset($v['_id'], $v['_model'])) {
+
+                if (
+                    isset($process['user']['role']) &&
+                    !in_array($v['_model'], $this->app->helper('content')->allowedModels($process['user']['role']))
+                ) {
+                    $array[$k] = null;
+                    continue;
+                }
 
                 $model = $v['_model'];
                 $array[$k] = $this->_resolveContentRef($v['_model'], (string)$v['_id'], $process);

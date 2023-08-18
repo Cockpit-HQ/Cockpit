@@ -71,15 +71,15 @@ class Tree extends App {
         } else {
 
             $item['_pid'] = null;
-            $item['_o'] = 0;
 
             if ($this->param('pid') && $this->app->dataStorage->findOne("content/collections/{$model['name']}", ['_id' => $this->param('pid')], ['_id' => 1])) {
                 $item['_pid'] = $this->param('pid');
             }
+
+            $item['_o'] = $this->app->dataStorage->count("content/collections/{$model['name']}", ['_pid' => $item['_pid']]);
         }
 
         $fields = $model['fields'];
-
         $locales = $this->helper('locales')->locales();
 
         if (count($locales) == 1) {
@@ -202,6 +202,45 @@ class Tree extends App {
         }
 
         return ['success' => true];
+    }
+
+    public function clone($model = null, $id = null) {
+
+        if (!$model || !$id) {
+            return false;
+        }
+
+        $model = $this->module('content')->model($model);
+
+        if (!$model || $model['type'] != 'tree') {
+            return $this->stop(404);
+        }
+
+        if (!$this->isAllowed("content/{$model['name']}/create")) {
+            return $this->stop(401);
+        }
+
+        $item = $this->module('content')->item($model['name'], ['_id' => $id]);
+
+        if (!$item) {
+            return false;
+        }
+
+        // clean meta data
+        unset($item['_id'], $item['_created'], $item['_modified'], $item['_cby'], $item['_mby']);
+
+        $item['_state'] = 0;
+
+        $fields = $model['fields'];
+        $locales = $this->helper('locales')->locales();
+
+        if (count($locales) == 1) {
+            $locales = [];
+        } else {
+            $locales[0]['visible'] = true;
+        }
+
+        return $this->render('content:views/tree/item.php', compact('model', 'fields', 'locales', 'item'));
     }
 
 }

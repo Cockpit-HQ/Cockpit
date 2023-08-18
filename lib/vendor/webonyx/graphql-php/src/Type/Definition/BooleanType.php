@@ -25,6 +25,7 @@ class BooleanType extends ScalarType
         return (bool) $value;
     }
 
+    /** @throws Error */
     public function parseValue($value): bool
     {
         if (\is_bool($value)) {
@@ -35,7 +36,7 @@ class BooleanType extends ScalarType
         throw new Error("Boolean cannot represent a non boolean value: {$notBoolean}");
     }
 
-    public function parseLiteral(Node $valueNode, ?array $variables = null): bool
+    public function parseLiteral(Node $valueNode, array $variables = null): bool
     {
         if ($valueNode instanceof BooleanValueNode) {
             return $valueNode->value;

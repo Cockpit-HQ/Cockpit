@@ -84,7 +84,7 @@
 [tooltip][flow^="down"]::before {
     top: 100%;
     border-top-width: 0;
-    border-bottom-color: var(--tooltip-bgcolor, #000);;
+    border-bottom-color: var(--tooltip-bgcolor, #000);
 }
 [tooltip][flow^="down"]::after {
     top: calc(100% + 5px);
@@ -101,7 +101,7 @@
     margin-right: var(--tooltip-offset, 10px);
     top: 50%;
     border-right-width: 0;
-    border-left-color: var(--tooltip-bgcolor, #000);;
+    border-left-color: var(--tooltip-bgcolor, #000);
     left: calc(0em - 5px);
     transform: translate(-.5em, -50%);
 }
@@ -117,7 +117,7 @@
     margin-left: var(--tooltip-offset, 10px);
     top: 50%;
     border-left-width: 0;
-    border-right-color: var(--tooltip-bgcolor, #000);;
+    border-right-color: var(--tooltip-bgcolor, #000);
     right: calc(0em - 5px);
     transform: translate(.5em, -50%);
 }

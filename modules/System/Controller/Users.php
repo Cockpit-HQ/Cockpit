@@ -76,10 +76,19 @@ class Users extends App {
 
     public function save() {
 
+        $this->hasValidCsrfToken(true);
+
         $user = $this->param('user');
+        $password = $this->param('password');
+        $isUpdate = isset($user['_id']);
 
         if (!$user) {
             return $this->stop(['error' => 'User data is missing'], 412);
+        }
+
+        // verify current logged in user
+        if ($isUpdate && (!$password || !$this->app->module('system')->verifyUser($password))) {
+            return $this->stop(['error' => 'User verification failed'], 412);
         }
 
         // don't allow to change role if not allowed
@@ -88,7 +97,6 @@ class Users extends App {
         }
 
         $user['_modified'] = time();
-        $isUpdate = isset($user['_id']);
 
         if (!$isUpdate) {
 
@@ -160,7 +168,10 @@ class Users extends App {
 
     public function remove() {
 
+        $this->hasValidCsrfToken(true);
+
         $user = $this->param('user');
+        $password = $this->param('password');
 
         if (!$user || !isset($user['_id'])) {
             return $this->stop(['error' => 'User is missing'], 412);
@@ -168,6 +179,15 @@ class Users extends App {
 
         if ($user['_id'] == $this->user['_id']) {
             return $this->stop(['error' => "User can't delete himself"], 412);
+        }
+
+        if (!$password) {
+            return $this->stop(['error' => 'Password for verification is missing'], 412);
+        }
+
+        // verify current logged in user
+        if (!$this->app->module('system')->verifyUser($password)) {
+            return $this->stop(['error' => 'User verification failed'], 412);
         }
 
         $this->app->dataStorage->remove('system/users', ['_id' => $user['_id']]);
@@ -178,6 +198,7 @@ class Users extends App {
     public function load() {
 
         $this->helper('session')->close();
+        $this->hasValidCsrfToken(true);
 
         $options = array_merge([
             'sort'   => ['user' => 1],
@@ -218,6 +239,10 @@ class Users extends App {
         }
 
         foreach ($users as &$user) {
+
+            // remove 2FA settings
+            unset($user['twofa']);
+
             $this->app->trigger('app.user.disguise', [&$user]);
         }
 
@@ -241,10 +266,14 @@ class Users extends App {
 
         $languages = [['i18n' => 'en', 'language' => 'English']];
 
-        foreach ($this->app->helper('fs')->ls('*.php', '#config:i18n/App') as $file) {
+        foreach ($this->app->helper('fs')->ls('#config:i18n') as $dir) {
 
-            $lang     = include($file->getRealPath());
-            $i18n     = $file->getBasename('.php');
+            if (!$dir->isDir() || $dir->isDot() || !file_exists($dir->getRealPath().'/App.php')) {
+                continue;
+            }
+
+            $lang     = include($dir->getRealPath().'/App.php');
+            $i18n     = $dir->getBasename();
             $language = $lang['@meta']['language'] ?? $i18n;
 
             $languages[] = ['i18n' => $i18n, 'language'=> $language];

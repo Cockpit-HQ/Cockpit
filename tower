@@ -10,9 +10,52 @@ define('APP_CLI', true);
 require __DIR__.'/bootstrap.php';
 
 use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
-$app = Cockpit::instance();
-$cli = new Application("
+$output = new ConsoleOutput();
+
+$APP_SPACE = null;
+$APP_SPACE_DIR = __DIR__;
+
+$spaceOption = array_search('--space', $argv);
+
+if ($spaceOption !== false && isset($argv[$spaceOption + 1])) {
+    $space = $argv[$spaceOption + 1];
+    $spaceDir = APP_SPACES_DIR."/{$space}";
+
+    if (file_exists($spaceDir)) {
+        $APP_SPACE_DIR = $spaceDir;
+        $APP_SPACE = $space;
+    } else {
+        $output->writeln("<error>Space '{$space}' not found</error>");
+        exit(1);
+    }
+}
+
+define('APP_SPACE', $APP_SPACE ?? false);
+
+class CockpitConsoleApp extends Application {
+
+    protected function getDefaultInputDefinition() {
+
+        $definition = parent::getDefaultInputDefinition();
+
+        // Add a global --env option
+        $definition->addOption(new InputOption(
+            'space',
+            null,
+            InputOption::VALUE_OPTIONAL,
+            'Space environment',
+            null)
+        );
+
+        return $definition;
+    }
+}
+
+$app = Cockpit::instance($APP_SPACE_DIR);
+$cli = new CockpitConsoleApp("
   _|_|_|                      _|                  _|    _|
 _|          _|_|      _|_|_|  _|  _|    _|_|_|        _|_|_|_|
 _|        _|    _|  _|        _|_|      _|    _|  _|    _|
@@ -30,6 +73,10 @@ _|_|_|_|_|
 
 {$app['app.name']} Tower", $app['app.version']);
 
+$GLOBALS['APP'] = $app;
+
 $app->trigger('app.cli.init', [$cli]);
 
-$cli->run();
+$output->writeln("<info>{$app['app.name']} Tower</info> <comment>{$app['app.version']}</comment>");
+
+$cli->run(null, $output);

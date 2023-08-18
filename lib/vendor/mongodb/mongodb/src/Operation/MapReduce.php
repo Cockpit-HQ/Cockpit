@@ -40,6 +40,7 @@ use function is_integer;
 use function is_object;
 use function is_string;
 use function MongoDB\create_field_path_type_map;
+use function MongoDB\document_to_array;
 use function MongoDB\is_mapreduce_output_inline;
 use function trigger_error;
 
@@ -48,7 +49,6 @@ use const E_USER_DEPRECATED;
 /**
  * Operation for the mapReduce command.
  *
- * @api
  * @see \MongoDB\Collection::mapReduce()
  * @see https://mongodb.com/docs/manual/reference/command/mapReduce/
  */
@@ -309,16 +309,14 @@ class MapReduce implements Executable
         return new MapReduceResult($getIterator, $result);
     }
 
-    /**
-     * @param string|array|object $out
-     */
+    /** @param string|array|object $out */
     private function checkOutDeprecations($out): void
     {
         if (is_string($out)) {
             return;
         }
 
-        $out = (array) $out;
+        $out = document_to_array($out);
 
         if (isset($out['nonAtomic']) && ! $out['nonAtomic']) {
             @trigger_error('Specifying false for "out.nonAtomic" is deprecated.', E_USER_DEPRECATED);

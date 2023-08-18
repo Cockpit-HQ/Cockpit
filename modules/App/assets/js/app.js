@@ -18,12 +18,13 @@ let App = {
 
     base_url: baseUrl,
     route_url: routeUrl,
+    csrf: (html.getAttribute("data-csrf") || undefined),
     version: (html.getAttribute("data-version") || '0.0.1'),
 
     _events: {},
     _paths: {},
 
-    base: function (url) {
+    base(url) {
 
         let path = url.match(/^(.*?)\:/);
 
@@ -34,18 +35,20 @@ let App = {
         return this.base_url + url;
     },
 
-    route: function (url) {
+    route(url) {
         return this.route_url + url;
     },
 
-    reroute: function (url) {
+    reroute(url) {
         location.href = /^http/.test(url) ? url : this.route(url);
     },
 
-    request: function (url, data, type) {
+    request(url, data, type) {
 
         url = this.route(url);
         type = type || 'json';
+
+        let csrf = this.csrf;
 
         return new Promise(function (fulfill, reject) {
 
@@ -55,6 +58,8 @@ let App = {
             xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 
             url += (url.indexOf('?') !== -1 ? '&' : '?') + 'nc=' + Math.random().toString(36).substr(2);
+
+            data = data || {};
 
             if (data) {
 
@@ -69,6 +74,10 @@ let App = {
                 }
             }
 
+            if (csrf) {
+                xhr.setRequestHeader('X-CSRF-TOKEN', csrf);
+            }
+
             xhr.onloadend = function () {
 
                 let resdata = xhr.responseText;
@@ -81,7 +90,7 @@ let App = {
                     }
                 }
 
-                if (this.status == 200) {
+                if (this.status === 200) {
                     fulfill(resdata, xhr);
                 } else {
                     reject(resdata, xhr);
@@ -93,12 +102,12 @@ let App = {
         });
     },
 
-    on: function (name, fn) {
+    on(name, fn) {
         if (!this._events[name]) this._events[name] = [];
         this._events[name].push(fn);
     },
 
-    off: function (name, fn) {
+    off(name, fn) {
         if (!this._events[name]) return;
 
         if (!fn) {
@@ -114,7 +123,7 @@ let App = {
         }
     },
 
-    trigger: function (name, params) {
+    trigger(name, params) {
 
         if (!this._events[name]) return;
 
@@ -125,7 +134,7 @@ let App = {
         }
     },
 
-    deferred: function () {
+    deferred() {
 
         let resolve, fail;
 
@@ -157,7 +166,7 @@ App.utils = utils;
 
 // custom utils
 App.utils.import = function(uri) {
-    return import(App.base(uri)+'?v='+App.version);
+    return import(`${App.base(uri)}?v=${App.version}`);
 };
 
 App.utils.$interpolate = function (str, data) {

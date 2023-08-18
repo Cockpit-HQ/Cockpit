@@ -22,8 +22,6 @@ $this->bind('/app-event-stream', function() {
     $now = time();
     $lastCheck = $this->helper('session')->read('app.eventstream.lastcheck', $now);
 
-    $this->helper('session')->close();
-
     $user = $this->helper('auth')->getUser();
 
     if (!$user) {
@@ -31,6 +29,9 @@ $this->bind('/app-event-stream', function() {
     }
 
     $sessionId = md5(session_id());
+
+    $this->helper('session')->write('app.eventstream.lastcheck', $now);
+    $this->helper('session')->close();
 
     // auto-cleanup unrelevant events
     $this->helper('eventStream')->cleanup();
@@ -66,8 +67,6 @@ $this->bind('/app-event-stream', function() {
         return true;
     });
 
-    $this->helper('session')->write('app.eventstream.lastcheck', $now);
-
     return $events;
 });
 
@@ -101,7 +100,7 @@ $this->on('app.admin.request', function(Lime\Request $request) {
 
     $locale = $user && isset($user['i18n']) && $user['i18n'] ? $user['i18n'] : $i18n->locale;
 
-    if ($translationspath = $this->path("#config:i18n/App/{$locale}.php")) {
+    if ($locale !== 'en' && $translationspath = $this->path("#config:i18n/{$locale}/App.php")) {
 
         $i18n->locale = $locale;
 
@@ -109,7 +108,9 @@ $this->on('app.admin.request', function(Lime\Request $request) {
 
             $name = basename($m->_dir);
 
-            if ($translationspath = $this->path("#config:i18n/{$name}/{$locale}.php")) {
+            if ($translationspath = $this->path("#config:i18n/{$locale}/{$name}.php")) {
+                $i18n->load($translationspath, $locale);
+            } elseif($translationspath = $this->path("{$name}:i18n/{$locale}.json")) {
                 $i18n->load($translationspath, $locale);
             }
         }
@@ -118,12 +119,17 @@ $this->on('app.admin.request', function(Lime\Request $request) {
     $this->trigger('app.admin.i18n.load', [$locale, $i18n]);
 
     $this->bind('/app.i18n.data.js', function() use($locale) {
+
         $this->helper('session')->close();
         $this->response->mime = 'js';
-        $data = $this->helper('i18n')->data($locale);
-        return 'if (window.i18n) {
-            window.i18n.register('.(count($data) ? json_encode($data):'{}').');
-        }';
+
+        $data = json_encode(new ArrayObject($this->helper('i18n')->data($locale)));
+
+        return <<<SCRIPT
+            if (window.i18n) {
+                window.i18n.register($data);
+            }
+        SCRIPT;
     });
 
     if (!$user) {
@@ -169,21 +175,4 @@ $this->on('after', function() {
             break;
     }
 
-     /**
-     * send some debug information
-     * back to client (visible in the network panel)
-     */
-    if ($this['debug'] && $this->response) {
-
-        /**
-        * some system info
-        */
-
-        $DURATION_TIME = microtime(true) - APP_START_TIME;
-        $MEMORY_USAGE  = memory_get_peak_usage(false)/1024/1024;
-
-        $this->response->headers["APP_DURATION_TIME"] = "{$DURATION_TIME}SEC";
-        $this->response->headers["APP_MEMORY_USAGE"] = "{$MEMORY_USAGE}MB";
-        $this->response->headers["APP_LOADED_FILES"] = count(get_included_files());
-    }
 });

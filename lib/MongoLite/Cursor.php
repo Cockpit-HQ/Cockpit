@@ -191,45 +191,12 @@ class Cursor implements \Iterator {
         $result    = $stmt->fetchAll( \PDO::FETCH_ASSOC);
         $documents = [];
 
-        if (!$this->projection) {
+        foreach ($result as &$doc) {
+            $documents[] = \json_decode($doc['document'], true);
+        }
 
-            foreach ($result as &$doc) {
-                $documents[] = \json_decode($doc['document'], true);
-            }
-
-        } else {
-
-            $exclude = [];
-            $include = [];
-
-            foreach ($this->projection as $key => $value) {
-
-                if ($value) {
-                    $include[$key] = 1;
-                } else {
-                    $exclude[$key] = 1;
-                }
-            }
-
-            foreach ($result as &$doc) {
-
-                $item = \json_decode($doc['document'], true);
-                $id   = $item['_id'];
-
-                if ($exclude) {
-                    $item = \array_diff_key($item, $exclude);
-                }
-
-                if ($include) {
-                    $item = array_key_intersect($item, $include);
-                }
-
-                if (!isset($exclude['_id'])) {
-                    $item['_id'] = $id;
-                }
-
-                $documents[] = $item;
-            }
+        if (is_array($this->projection)) {
+            $documents = Projection::onDocuments($documents, $this->projection);
         }
 
         return $documents;
@@ -269,15 +236,4 @@ class Cursor implements \Iterator {
         return isset($this->data[$this->position]);
     }
 
-}
-
-function array_key_intersect(&$a, &$b): array {
-
-    $array = [];
-
-    foreach ($a as $key => $value) {
-        if (isset($b[$key])) $array[$key] = $value;
-    }
-
-    return $array;
 }

@@ -12,13 +12,16 @@
         "php": "^7.2 || ^8.0",
         "ext-hash": "*",
         "ext-json": "*",
-        "ext-mongodb": "^1.15.0",
-        "jean85/pretty-package-versions": "^1.2 || ^2.0.1",
-        "symfony/polyfill-php80": "^1.19"
+        "ext-mongodb": "^1.16.0",
+        "jean85/pretty-package-versions": "^2.0.1",
+        "symfony/polyfill-php73": "^1.27",
+        "symfony/polyfill-php80": "^1.27",
+        "symfony/polyfill-php81": "^1.27"
     },
     "require-dev": {
-        "squizlabs/php_codesniffer": "^3.6",
-        "doctrine/coding-standard": "^9.0",
+        "doctrine/coding-standard": "^11.1",
+        "rector/rector": "^0.16.0",
+        "squizlabs/php_codesniffer": "^3.7",
         "symfony/phpunit-bridge": "^5.2",
         "vimeo/psalm": "^4.28"
     },
@@ -32,12 +35,13 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.15.x-dev"
+            "dev-master": "1.16.x-dev"
         }
     },
     "config": {
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true
-        }
+        },
+        "sort-packages": true
     }
 }

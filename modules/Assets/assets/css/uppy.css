@@ -1,5 +1,9 @@
 @import url(../vendor/uppy/uppy.css);
 
+.uppy-Dashboard--modal.uppy-Dashboard--animateOpenClose > .uppy-Dashboard-overlay {
+    backdrop-filter: grayscale(1) blur(4.5px);
+}
+
 .uppy-Dashboard-poweredBy { display: none !important }
 
 .uppy-Dashboard-AddFiles-title,
@@ -38,6 +42,12 @@
     color: #fff;
     font-size: .9em;
 }
+
+.uppy-DashboardTab-btn:active,
+.uppy-DashboardTab-btn:focus {
+    color: inherit;
+}
+
 
 .uppy-DashboardTab-btn,
 .uppy-Dashboard-note,

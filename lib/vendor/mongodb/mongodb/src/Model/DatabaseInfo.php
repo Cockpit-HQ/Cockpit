@@ -29,7 +29,6 @@ use function array_key_exists;
  * This class models the database information returned by the listDatabases
  * command. It provides methods to access common database properties.
  *
- * @api
  * @see \MongoDB\Client::listDatabases()
  * @see https://mongodb.com/docs/manual/reference/command/listDatabases/
  */
@@ -38,9 +37,7 @@ class DatabaseInfo implements ArrayAccess
     /** @var array */
     private $info;
 
-    /**
-     * @param array $info Database info
-     */
+    /** @param array $info Database info */
     public function __construct(array $info)
     {
         $this->info = $info;

@@ -6,6 +6,10 @@ kiss-grid {
     gap: var(--grid-gap);
 }
 
+kiss-grid > * {
+    min-width: 0;
+}
+
 /*
  * Small
  */

@@ -48,6 +48,6 @@ class Session extends \Lime\Helper {
     }
 
     public function regenerateId(bool $delete_old_session = false): bool {
-        return \session_regenerate_id(true);
+        return \session_regenerate_id($delete_old_session);
     }
 }

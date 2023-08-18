@@ -54,18 +54,24 @@
 
                 <div class="kiss-margin kiss-margin-large-top kiss-size-4"><strong><?=t('Permissions')?></strong></div>
 
-                <kiss-card class="kiss-margin kiss-padding" theme="bordered contrast" v-for="(permissions, group) in simplePermissions">
+                <input class="kiss-input kiss-width-1-1" type="text" :placeholder="t('Filter groups...')" v-model="filter">
 
-                    <strong class="kiss-text-caption">{{ group }}</strong>
+                <div class="kiss-button-group kiss-margin">
+                    <button type="button" class="kiss-button kiss-button-small" @click="Object.keys(permissions).forEach(group => visible[group] = true)">{{ t('Open all') }}</button>
+                    <button type="button" class="kiss-button kiss-button-small" @click="Object.keys(permissions).forEach(group => visible[group] = false)">{{ t('Collapse all') }}</button>
+                </div>
 
-                    <div class="kiss-margin">
-                        <div class="kiss-margin-small kiss-size-small kiss-flex kiss-middle" v-for="(label, permission) in permissions">
-                            <div><field-boolean v-model="role.permissions[permission]"></field-boolean></div>
-                            <div class="kiss-flex-1 kiss-margin-small-left">
-                                <div :class="{'kiss-color-muted':!role.permissions[permission]}">
-                                    {{label}}
-                                </div>
-                            </div>
+                <kiss-card class="kiss-margin kiss-padding" theme="bordered contrast" hover="shadow" v-for="(permissions, group) in simplePermissions">
+
+                    <div class="kiss-flex kiss-flex-middle" :class="{'kiss-color-muted': !visible[group]}" @click="visible[group]=!visible[group]">
+                        <icon class="kiss-margin-small-right">workspaces</icon>
+                        <a class="kiss-link-muted kiss-text-caption kiss-text-bold kiss-flex-1">{{ group }}</a>
+                        <a><icon>unfold_more</icon></a>
+                    </div>
+
+                    <div class="kiss-margin" :class="{'kiss-hidden': !visible[group]}">
+                        <div class="kiss-margin-small kiss-size-small" v-for="(label, permission) in permissions">
+                            <field-boolean v-model="role.permissions[permission]" :label="label"></field-boolean>
                         </div>
                     </div>
 
@@ -73,9 +79,13 @@
 
                 <kiss-card class="kiss-margin kiss-padding" theme="bordered contrast" v-for="(meta, group) in componentPermissions">
 
-                    <strong class="kiss-text-caption">{{ group }}</strong>
+                    <div class="kiss-flex kiss-flex-middle" :class="{'kiss-color-muted': !visible[group]}" @click="visible[group]=!visible[group]">
+                        <icon class="kiss-margin-small-right">workspaces</icon>
+                        <a class="kiss-link-muted kiss-text-caption kiss-text-bold kiss-flex-1">{{ group }}</a>
+                        <a><icon>unfold_more</icon></a>
+                    </div>
 
-                    <div class="kiss-margin">
+                    <div class="kiss-margin" :class="{'kiss-hidden': !visible[group]}">
                         <component :is="meta.component" v-model="role.permissions" v-bind="meta.props || {}"></component>
                     </div>
 
@@ -113,7 +123,9 @@
                     return {
                         saving: false,
                         role: <?=json_encode($role)?>,
-                        permissions: <?=json_encode($permissions)?>
+                        permissions: <?=json_encode($permissions)?>,
+                        visible: {},
+                        filter: ''
                     };
                 },
 
@@ -123,9 +135,11 @@
 
                     simplePermissions() {
 
-                        let permissions = {};
+                        let permissions = {}, filter = this.filter.toLowerCase();
 
-                        Object.keys(this.permissions).forEach(group => {
+                        Object.keys(this.permissions).sort().forEach(group => {
+
+                            if (filter && group.toLowerCase().indexOf(filter) === -1) return;
                             if (!this.permissions[group].component) permissions[group] = this.permissions[group];
                         });
 
@@ -134,9 +148,11 @@
 
                     componentPermissions() {
 
-                        let permissions = {};
+                        let permissions = {}, filter = this.filter.toLowerCase();
 
-                        Object.keys(this.permissions).forEach(group => {
+                        Object.keys(this.permissions).sort().forEach(group => {
+
+                            if (filter && group.toLowerCase().indexOf(filter) === -1) return;
                             if (this.permissions[group].component) permissions[group] = this.permissions[group];
                         });
 

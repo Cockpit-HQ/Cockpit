@@ -5,8 +5,9 @@ namespace Assets\Controller;
 use App\Controller\App;
 use ArrayObject;
 
-class Assets extends App {
+use MongoHybrid\NaturalLanguageToMongoQuery;
 
+class Assets extends App {
 
     public function index() {
 
@@ -18,6 +19,7 @@ class Assets extends App {
     public function assets() {
 
         $this->helper('session')->close();
+        $this->hasValidCsrfToken(true);
 
         $options = array_merge([
             'sort' => ['_created' => -1]
@@ -27,6 +29,7 @@ class Assets extends App {
         if ($sort   = $this->param('sort'  , null)) $options['sort']   = $sort;
         if ($skip   = $this->param('skip'  , null)) $options['skip']   = $skip;
         if ($folder = $this->param('folder', null)) $options['folder'] = $folder;
+
 
         if (isset($options['filter']) && (is_string($options['filter']) || \is_countable($options['filter']))) {
 
@@ -38,6 +41,11 @@ class Assets extends App {
 
                 if (!is_string($f)) {
                     $filter[] = $f;
+                    continue;
+                }
+
+                if ($f && $f[0] === ':') {
+                    $filter[] = NaturalLanguageToMongoQuery::translate(substr($f, 1));
                     continue;
                 }
 
@@ -102,6 +110,8 @@ class Assets extends App {
 
     public function asset($id = null) {
 
+        $this->hasValidCsrfToken(true);
+
         if (!$id) {
             return false;
         }
@@ -114,6 +124,7 @@ class Assets extends App {
     public function update() {
 
         $this->helper('session')->close();
+        $this->hasValidCsrfToken(true);
 
         if (!$this->isAllowed('assets/edit')) {
             return $this->stop(['error' => 'Editing not allowed'], 401);
@@ -129,6 +140,7 @@ class Assets extends App {
     public function upload() {
 
         $this->helper('session')->close();
+        $this->hasValidCsrfToken(true);
 
         if (!$this->isAllowed('assets/upload')) {
             return $this->stop(['error' => 'Upload not allowed'], 401);
@@ -142,6 +154,7 @@ class Assets extends App {
     public function replace() {
 
         $this->helper('session')->close();
+        $this->hasValidCsrfToken(true);
 
         if (!$this->isAllowed('assets/upload')) {
             return $this->stop(['error' => 'Upload not allowed'], 401);
@@ -182,6 +195,7 @@ class Assets extends App {
     public function remove() {
 
         $this->helper('session')->close();
+        $this->hasValidCsrfToken(true);
 
         if (!$this->isAllowed('assets/delete')) {
             return $this->stop(['error' => 'Deleting assets not allowed'], 401);
@@ -196,6 +210,8 @@ class Assets extends App {
 
     public function folders() {
 
+        $this->hasValidCsrfToken(true);
+
         $folders = $this->module('assets')->folders(['sort' => ['name' => 1]]);
         $folders = $this->helper('utils')->buildTreeList($folders, ['parent_id_column_name' => '_p']);
 
@@ -203,6 +219,8 @@ class Assets extends App {
     }
 
     public function saveFolder() {
+
+        $this->hasValidCsrfToken(true);
 
         $name   = $this->param('name', null);
         $parent = $this->param('parent', '');
@@ -231,6 +249,8 @@ class Assets extends App {
     }
 
     public function removeFolder() {
+
+        $this->hasValidCsrfToken(true);
 
         if (!$this->isAllowed('assets/folders/delete')) {
             return $this->stop(['error' => 'Deleting folders not allowed'], 401);
@@ -270,8 +290,10 @@ class Assets extends App {
             }
         }
 
+        $src = $this->param('src', $id);
+
         $options = [
-            'src' => $id,
+            'src' => $src,
             'fp' => $this->param('fp', null),
             'mode' => $this->param('m', 'thumbnail'),
             'mime' => $mime,

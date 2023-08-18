@@ -2,6 +2,8 @@
 
 namespace App\Helper;
 
+use Symfony\Component\Process\PhpExecutableFinder;
+
 /**
  * Async Helper class.
  * Use only if you know what you're doing!!!
@@ -21,6 +23,10 @@ class Async extends \Lime\Helper {
     protected function initialize() {
 
         $this->phpPath = $this->app->retrieve('aysnc.php', 'php');
+
+        if ($this->phpPath === 'php') {
+            $this->phpPath = (new PhpExecutableFinder())->find();
+        }
     }
 
     public function exec($script, $params = [], $maxTime = 60) {
@@ -40,6 +46,13 @@ class Async extends \Lime\Helper {
 
 $appDir = APP_DIR;
 $envDir = rtrim($this->app->path('#root:'), '/');
+
+$envAppVars = [
+    'app_space' => $this->app->retrieve('app_space'),
+    'base_route' => $this->app->retrieve('base_route'),
+    'base_url' => $this->app->retrieve('base_url')
+];
+
 $script = "<?php
 
 if (isset(\$_GET['async'])) {
@@ -54,7 +67,8 @@ function Cockpit() {
     static \$instance;
 
     if (!isset(\$instance)) {
-        \$instance = Cockpit::instance('{$envDir}');
+        \$instance = Cockpit::instance('{$envDir}', ".\var_export($envAppVars, true).");
+        \$GLOBALS['APP'] = \$instance;
     }
 
     return \$instance;

@@ -89,12 +89,17 @@ $app = Cockpit::instance($APP_SPACE_DIR, [
     'base_url' => $APP_BASE_URL
 ]);
 
+$GLOBALS['APP'] = $app;
+
 // handle exceptions
 $app->on('error', function($error) {
 
     if (!isset($this->request)) {
         return;
     }
+
+    //clean output buffer
+    while (ob_get_level()) ob_end_clean();
 
     if ($this['debug']) {
         $body = $this->request->is('ajax') || APP_API_REQUEST ? json_encode(['error' => $error['message'], 'file' => $error['file'], 'line' => $error['line']]) : $this->render('app:views/errors/500-debug.php', ['error' => $error]);
@@ -154,6 +159,25 @@ if (!APP_API_REQUEST) {
 } else {
     $app->trigger('app.api.init');
 }
+
+$app->on('after', function () {
+
+    /**
+     * send some debug information in debug mode
+     */
+
+    if (!$this->retrieve('debug') || !$this->response) {
+        return;
+    }
+
+    $DURATION_TIME = microtime(true) - APP_START_TIME;
+    $MEMORY_USAGE  = memory_get_peak_usage(false) / 1024 / 1024;
+
+    $this->response->headers['APP_DURATION_TIME'] = "{$DURATION_TIME}SEC";
+    $this->response->headers['APP_MEMORY_USAGE'] = "{$MEMORY_USAGE}MB";
+    $this->response->headers['APP_LOADED_FILES'] = count(get_included_files());
+
+});
 
 // run app
 $app->trigger(APP_API_REQUEST ? 'app.api.request':'app.admin.request', [$request])->run($request->route, $request);

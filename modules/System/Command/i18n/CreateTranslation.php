@@ -107,18 +107,18 @@ class CreateTranslation extends Command {
                     $name = 'App';
                 }
 
-                $strings = array_merge([
+                $strings = array_merge($name == 'App' ? [
                     '@meta' => ['language' => \App\Helper\i18n::$locales[$locale] ?? strtoupper($locale)]
-                ], $strings);
+                ] : [], $strings);
 
-                if ($this->app->path("#config:i18n/{$name}/{$locale}.php")) {
-                    $langfile = include($this->app->path("#config:i18n/{$name}/{$locale}.php"));
+                if ($this->app->path("#config:i18n/{$locale}/{$name}.php")) {
+                    $langfile = include($this->app->path("#config:i18n/{$locale}/{$name}.php"));
                     $strings  = array_merge($strings, $langfile);
                 }
 
                 ksort($strings);
 
-                $this->app->helper('fs')->write("#config:i18n/{$name}/{$locale}.php", '<?php return '.$this->app->helper('utils')->var_export($strings, true).';');
+                $this->app->helper('fs')->write("#config:i18n/{$locale}/{$name}.php", '<?php return '.$this->app->helper('utils')->var_export($strings, true).';');
             }
 
         }

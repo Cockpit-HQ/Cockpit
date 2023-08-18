@@ -1,4 +1,5 @@
 import { on, onMutation } from '../../js/events.js';
+import { isElementOnTop } from '../../js/utils.js';
 
 on(document.documentElement, 'click', '[kiss-offcanvas]', function (e) {
 
@@ -9,6 +10,27 @@ on(document.documentElement, 'click', '[kiss-offcanvas]', function (e) {
     if (offcanvas && offcanvas.show) {
         offcanvas.show();
     }
+});
+
+on(document.documentElement, 'keyup', function (e) {
+
+    if (!['Esc', 'Escape'].includes(e.key)) {
+        return;
+    }
+
+    let elements = document.querySelectorAll('kiss-offcanvas[open="true"]'), ele;
+
+    for (let i = 0; i < elements.length; i++) {
+
+        ele = elements[i];
+
+        if (isElementOnTop(ele)) {
+            e.stopImmediatePropagation();
+            ele.close();
+            break;
+        }
+    }
+
 });
 
 customElements.define('kiss-offcanvas', class extends HTMLElement {

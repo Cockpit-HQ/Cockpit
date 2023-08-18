@@ -26,7 +26,6 @@ use MongoDB\Exception\UnsupportedException;
 /**
  * Operation for deleting a single document with the delete command.
  *
- * @api
  * @see \MongoDB\Collection::deleteOne()
  * @see https://mongodb.com/docs/manual/reference/command/delete/
  */
@@ -92,8 +91,8 @@ class DeleteOne implements Executable, Explainable
      * @see Explainable::getCommandDocument()
      * @return array
      */
-    public function getCommandDocument(Server $server)
+    public function getCommandDocument()
     {
-        return $this->delete->getCommandDocument($server);
+        return $this->delete->getCommandDocument();
     }
 }

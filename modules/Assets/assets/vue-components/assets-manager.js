@@ -5,7 +5,7 @@ function getUppy(meta = {}) {
         autoProceed: false,
         restrictions: {
             maxFileSize: App._vars.maxUploadSize || null,
-            //maxNumberOfFiles: 3,
+            maxNumberOfFiles: App._vars.maxFileUploads || 20,
             minNumberOfFiles: 1,
             //allowedFileTypes: ['image/*', 'video/*']
         },
@@ -17,6 +17,9 @@ function getUppy(meta = {}) {
         browserBackButtonClose: false
     }).use(Uppy.XHRUpload, {
         endpoint: App.route('/assets/upload'),
+        headers: {
+            'X-CSRF-TOKEN': App.csrf
+        },
         bundle: true
     }).use(Uppy.Webcam, { target: Uppy.Dashboard, showVideoSourceDropdown: true })
     .use(Uppy.ScreenCapture, { target: Uppy.Dashboard })
@@ -307,7 +310,7 @@ export default {
 
             <kiss-grid cols="2@s 5@m 6@xl" class="spotlight-group" gap="small" v-if="!loading && assets.length" match="true" hover="shadow">
 
-                    <kiss-card class="kiss-position-relative kiss-bgcolor-contrast" theme="bordered" :style="{borderColor: (selectedAsset && selectedAsset._id == asset._id && 'var(--kiss-color-primary)') || null}" v-for="asset in assets">
+                    <kiss-card class="kiss-position-relative kiss-bgcolor-contrast" theme="bordered" hover="shadow" :style="{borderColor: (selectedAsset && selectedAsset._id == asset._id && 'var(--kiss-color-primary)') || null}" v-for="asset in assets">
                         <div class="kiss-position-relative" :class="{'kiss-bgcolor-transparentimage': asset.type == 'image'}">
                             <canvas width="400" height="300"></canvas>
                             <div class="kiss-cover kiss-padding kiss-flex kiss-flex-middle kiss-flex-center">
@@ -317,7 +320,7 @@ export default {
                             <a class="kiss-cover" @click="selectedAsset=asset" v-if="modal"></a>
                         </div>
                         <div class="kiss-padding kiss-flex kiss-flex-middle">
-                            <div class="kiss-text-truncate kiss-size-xsmall kiss-flex-1"><a class="kiss-link-muted" @click="edit(asset)">{{ App.utils.truncate(asset.title, 25) }}</a></div>
+                            <div class="kiss-text-truncate kiss-size-xsmall kiss-flex-1"><a class="kiss-link-muted" @click="edit(asset)">{{ asset.title }}</a></div>
                             <a class="kiss-margin-small-left" @click="toggleAssetActions(asset)"><icon>more_horiz</icon></a>
                         </div>
                     </kiss-card>
@@ -377,7 +380,7 @@ export default {
         </app-actionbar>
 
         <teleport to="body">
-            <kiss-popoutmenu :open="actionAsset && 'true'" id="asset-menu-actions" @popoutmenuclose="toggleAssetActions(null)">
+            <kiss-popout :open="actionAsset && 'true'" @popoutclose="toggleAssetActions(null)">
                 <kiss-content>
                     <kiss-navlist class="kiss-margin">
                         <ul>
@@ -414,9 +417,9 @@ export default {
                         </ul>
                     </kiss-navlist>
                 </kiss-content>
-            </kiss-popoutmenu>
+            </kiss-popout>
 
-            <kiss-popoutmenu :open="actionFolder && 'true'" id="asset-folder-actions" @popoutmenuclose="toggleFolderActions(null)">
+            <kiss-popout :open="actionFolder && 'true'" @popoutclose="toggleFolderActions(null)">
                 <kiss-content>
                     <kiss-navlist class="kiss-margin">
                         <ul>
@@ -426,7 +429,7 @@ export default {
                             </li>
                             <li>
                                 <a class="kiss-flex kiss-flex-middle" @click="renameFolder(actionFolder)">
-                                    <icon class="kiss-margin-small-right" size="larger">drive_file_rename_outline</icon>
+                                    <icon class="kiss-margin-small-right" size="larger">bookmark_manager</icon>
                                     {{ t('Rename') }}
                                 </a>
                             </li>
@@ -440,7 +443,7 @@ export default {
                         </ul>
                     </kiss-navlist>
                 </kiss-content>
-            </kiss-popoutmenu>
+            </kiss-popout>
 
         </teleport>
     `

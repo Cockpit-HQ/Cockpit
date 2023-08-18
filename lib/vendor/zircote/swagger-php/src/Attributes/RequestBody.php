@@ -9,20 +9,21 @@ namespace OpenApi\Attributes;
 use OpenApi\Generator;
 use OpenApi\Annotations as OA;
 
-#[\Attribute(\Attribute::TARGET_CLASS | \Attribute::TARGET_METHOD | \Attribute::TARGET_PROPERTY | \Attribute::TARGET_PARAMETER)]
+#[\Attribute(\Attribute::TARGET_CLASS | \Attribute::TARGET_METHOD | \Attribute::TARGET_PROPERTY | \Attribute::TARGET_PARAMETER | \Attribute::IS_REPEATABLE)]
 class RequestBody extends OA\RequestBody
 {
     /**
-     * @param array<MediaType>|JsonContent|XmlContent|Attachable|null $content
-     * @param array<string,mixed>|null                                $x
-     * @param Attachable[]|null                                       $attachables
+     * @param string|class-string|object|null                                   $ref
+     * @param array<MediaType>|MediaType|JsonContent|XmlContent|Attachable|null $content
+     * @param array<string,mixed>|null                                          $x
+     * @param Attachable[]|null                                                 $attachables
      */
     public function __construct(
         string|object|null $ref = null,
         ?string $request = null,
         ?string $description = null,
         ?bool $required = null,
-        array|JsonContent|XmlContent|Attachable|null $content = null,
+        array|MediaType|JsonContent|XmlContent|Attachable|null $content = null,
         // annotation
         ?array $x = null,
         ?array $attachables = null

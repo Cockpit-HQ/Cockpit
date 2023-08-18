@@ -11,7 +11,7 @@ class Settings extends \Lime\Helper {
         $items = [];
 
         $items[] = [
-            'icon' => null,
+            'icon' => 'system:assets/icons/account.svg',
             'route' => '/system/users/user',
             'label' => 'Account',
             'permission' => null
@@ -52,6 +52,13 @@ class Settings extends \Lime\Helper {
                 'route' => '/system/spaces',
                 'label' => 'Spaces',
                 'permission' => 'app/spaces'
+            ];
+
+            $items[] = [
+                'icon' => 'system:assets/icons/console.svg',
+                'route' => '/system/tower',
+                'label' => 'Tower',
+                'permission' => 'system/tower'
             ];
         }
 

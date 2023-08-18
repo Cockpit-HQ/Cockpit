@@ -5,7 +5,7 @@
     <?php
 
         $items = array_filter($items, function($item) {
-            return isset($item['permission']) && $this->helper('acl')->isAllowed($item['permission']);
+            return isset($item['permission']) ? $this->helper('acl')->isAllowed($item['permission']) : true;
         });
 
         if (!count($items)) continue;

@@ -24,6 +24,8 @@ class Logs extends App {
             $path = $this->path("{$m}:");
             $icon = $this->path("{$m}:icon.svg") ? "{$m}:icon.svg" : 'system:assets/icons/channel.svg';
 
+            if (!$path) continue;
+
             $channels[$m] = [
                 'name' => $m,
                 'label' => basename($path),

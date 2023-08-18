@@ -40,7 +40,7 @@ $this->bind('/api/*', function($params) {
         'role' => null
     ];
 
-    if (preg_match('/^USR-/', $token)) {
+    if ($token != 'public' && preg_match('/^USR-/', $token)) {
 
         $user = $this->dataStorage->findOne('system/users', ['apiKey' => $token]);
 
@@ -55,7 +55,7 @@ $this->bind('/api/*', function($params) {
     // is jwt token?
     } elseif ($token != 'public' && preg_match('/^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]*$/', $token)) {
 
-        // todo
+            // todo
 
     } else {
 

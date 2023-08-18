@@ -33,6 +33,18 @@ class Authenticated extends Base {
         return $this->helper('acl')->isAllowed($permission);
     }
 
+    protected function hasValidCsrfToken(bool $stop = false) {
+
+        $csrf = $this->app->request->headers['X-Csrf-Token'] ?? '';
+        $check = $this->helper('csrf')->isValid('app-csrf', $csrf, true);
+
+        if (!$check && $stop) {
+            return $this->stop(412);
+        }
+
+        return $check;
+    }
+
     protected function checkAndLockResource($resourceId) {
 
         $meta = null;

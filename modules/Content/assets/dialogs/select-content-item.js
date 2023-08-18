@@ -125,7 +125,7 @@ export default {
                                 <th fixed="left" width="50">ID</th>
                                 <th width="20">State</th>
                                 <th v-for="field in fields">{{ field.label || field.name}}</th>
-                                <th width="120"><?=t('Modified')?></th>
+                                <th width="120">{{ t('Modified') }}</th>
                                 <th fixed="right" width="20"></th>
                             </tr>
                         </thead>

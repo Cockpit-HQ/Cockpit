@@ -17,7 +17,22 @@ class Settings extends App {
         }
 
         $addons = array_filter(array_keys($this->app['modules']->getArrayCopy()), fn($name) => !in_array($name, ['app', 'assets', 'content','system']));
+        $license = $this->app->helper('license')->license();
 
-        return $this->render('system:views/info.php', compact('addons'));
+        $supportedImageTypes = [];
+
+        foreach ([
+            'BMP' => 'imagebmp',
+            'GIF' => 'imagegif',
+            'JPEG' => 'imagejpeg',
+            'PNG' => 'imagepng',
+            'WEBP' => 'imagewebp',
+            'AVIF' => 'imageavif'
+        ] as $type => $fn) {
+            if (function_exists($fn)) $supportedImageTypes[] = $type;
+        }
+
+        return $this->render('system:views/info.php', compact('supportedImageTypes', 'addons', 'license'));
     }
+
 }

@@ -48,10 +48,14 @@
 
 .CodeMirror .CodeMirror-activeline-background { background: #01060e; }
 .CodeMirror .CodeMirror-matchingbracket {
-  text-decoration: underline;
-  color: white !important;
+    text-decoration: underline;
+    color: white !important;
 }
 
 .CodeMirror-focused {
-  border-color: var(--kiss-color-primary);
+    border-color: var(--kiss-color-primary);
+}
+
+[field="object"][embed="true"] .CodeMirror:not(.CodeMirror-focused) {
+    border-color: rgba(0, 0, 0, 0);
 }

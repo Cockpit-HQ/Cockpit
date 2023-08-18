@@ -15,9 +15,11 @@ use OpenApi\Generator;
 class Header extends AbstractAnnotation
 {
     /**
+     * The relative or absolute path to the endpoint.
+     *
      * @see [Using refs](https://swagger.io/docs/specification/using-ref/)
      *
-     * @var string|object
+     * @var string|class-string|object
      */
     public $ref = Generator::UNDEFINED;
 

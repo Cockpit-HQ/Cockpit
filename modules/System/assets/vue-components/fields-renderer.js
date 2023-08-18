@@ -416,10 +416,10 @@ export default {
 
                 <div class="kiss-margin-small-top" v-if="field.i18n && locales.length">
                     <div class="kiss-margin" v-for="locale in visibleLocales">
-                        <div class="kiss-margin-small kiss-flex kiss-flex-middle kiss-visible-toggle">
+                        <div class="kiss-margin-small kiss-flex kiss-flex-middle kiss-visible-toggle" v-if="Array.isArray(locales) && locales.length > 1">
                             <span class="kiss-badge kiss-badge-outline kiss-color-primary">{{ locale.i18n }}</span>
                             <kiss-dropdown class="kiss-margin-xsmall-left">
-                                <a class="kiss-invisible-hover kiss-color-muted" :ariaLabel="t('Copy value from another locale')" kiss-tooltip="right"><icon>copy</icon></a>
+                                <a class="kiss-invisible-hover kiss-color-muted" :ariaLabel="t('Copy value from another locale')" kiss-tooltip="right"><icon>content_copy</icon></a>
 
                                 <kiss-dropdownbox pos="left">
                                     <kiss-navlist>

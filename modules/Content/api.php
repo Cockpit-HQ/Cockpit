@@ -28,7 +28,7 @@ $this->on('restApi.config', function($restApi) {
          *         in="query",
          *         name="locale",
          *         required=false,
-         *         @OA\Schema(type="String")
+         *         @OA\Schema(type="string")
          *     ),
          *     @OA\Parameter(
          *         description="Url encoded filter json",
@@ -68,7 +68,7 @@ $this->on('restApi.config', function($restApi) {
 
             if (!$app->module('content')->model($model)) {
                 $app->response->status = 404;
-                return ["error" => "Model <{$model}> not found"];
+                return ['error' => "Model <{$model}> not found"];
             }
 
             if (!$app->helper('acl')->isAllowed("content/{$model}/read", $app->helper('auth')->getUser('role'))) {
@@ -104,6 +104,7 @@ $this->on('restApi.config', function($restApi) {
 
             if ($populate) {
                 $process['populate'] = $populate;
+                $process['user'] = $app->helper('auth')->getUser();
             }
 
             $item = $app->module('content')->item($model, $filter ? $filter : [], $fields, $process);
@@ -153,7 +154,7 @@ $this->on('restApi.config', function($restApi) {
 
             if (!$model) {
                 $app->response->status = 404;
-                return ["error" => "Model <{$params['model']}> not found"];
+                return ['error' => "Model <{$params['model']}> not found"];
             }
 
             if (!$data || !is_array($data)) {
@@ -224,7 +225,7 @@ $this->on('restApi.config', function($restApi) {
          *         in="query",
          *         name="locale",
          *         required=false,
-         *         @OA\Schema(type="String")
+         *         @OA\Schema(type="string")
          *     ),
          *     @OA\Parameter(
          *         description="Url encoded fields projection as json",
@@ -257,7 +258,7 @@ $this->on('restApi.config', function($restApi) {
 
             if (!$app->module('content')->model($model)) {
                 $app->response->status = 404;
-                return ["error" => "Model <{$model}> not found"];
+                return ['error' => "Model <{$model}> not found"];
             }
 
             if (!$app->helper('acl')->isAllowed("content/{$model}/read", $app->helper('auth')->getUser('role'))) {
@@ -284,6 +285,7 @@ $this->on('restApi.config', function($restApi) {
 
             if ($populate) {
                 $process['populate'] = $populate;
+                $process['user'] = $app->helper('auth')->getUser();
             }
 
             $item = $app->module('content')->item($model, $filter ? $filter : [], $fields, $process);
@@ -330,7 +332,7 @@ $this->on('restApi.config', function($restApi) {
 
             if (!$model) {
                 $app->response->status = 404;
-                return ["error" => "Model <{$params['model']}> not found"];
+                return ['error' => "Model <{$params['model']}> not found"];
             }
 
             if (!in_array($model['type'], ['collection', 'tree'])) {
@@ -365,7 +367,7 @@ $this->on('restApi.config', function($restApi) {
      *         in="query",
      *         name="locale",
      *         required=false,
-     *         @OA\Schema(type="String")
+     *         @OA\Schema(type="string")
      *     ),
      *     @OA\Parameter(
      *         description="Url encoded filter json",
@@ -428,7 +430,7 @@ $this->on('restApi.config', function($restApi) {
 
             if (!$app->module('content')->model($model)) {
                 $app->response->status = 404;
-                return ["error" => "Model <{$model}> not found"];
+                return ['error' => "Model <{$model}> not found"];
             }
 
             if (!$app->helper('acl')->isAllowed("content/{$model}/read", $app->helper('auth')->getUser('role'))) {
@@ -467,6 +469,7 @@ $this->on('restApi.config', function($restApi) {
 
             if ($populate) {
                 $process['populate'] = $populate;
+                $process['user'] = $app->helper('auth')->getUser();
             }
 
             if (!isset($options['filter']) || !is_array($options['filter'])) {
@@ -499,6 +502,190 @@ $this->on('restApi.config', function($restApi) {
             }
 
             return $items;
+        }
+    ]);
+
+    /**
+     * @OA\Get(
+     *     path="/content/aggregate/{model}",
+     *     tags={"content"},
+     *     @OA\Parameter(
+     *         description="Model name",
+     *         in="path",
+     *         name="model",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         description="Url encoded pipeline json",
+     *         in="query",
+     *         name="pipeline",
+     *         required=true,
+     *         @OA\Schema(type="json")
+     *     ),
+     *    @OA\Parameter(
+     *         description="Return content for specified locale",
+     *         in="query",
+     *         name="locale",
+     *         required=false,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         description="Populate items with linked content items.",
+     *         in="query",
+     *         name="populate",
+     *         required=false,
+     *         @OA\Schema(type="int")
+     *     ),
+     *     @OA\OpenApi(
+     *         security={
+     *             {"api_key": {}}
+     *         }
+     *     ),
+     *     @OA\Response(response="200", description="Get list of aggregated and published model items"),
+     *     @OA\Response(response="401", description="Unauthorized"),
+     *     @OA\Response(response="404", description="Model not found")
+     * )
+     */
+
+    $restApi->addEndPoint('/content/aggregate/{model}', [
+
+        'GET' => function ($params, $app) {
+
+            $model = $app->module('content')->model($params['model']);
+            $pipeline = $app->param('pipeline:string', null);
+
+            if (!$model) {
+                $app->response->status = 404;
+                return ['error' => "Model <{$params['model']}> not found"];
+            }
+
+            if (!$app->helper('acl')->isAllowed("content/{$params['model']}/read", $app->helper('auth')->getUser('role'))) {
+                $app->response->status = 403;
+                return ['error' => 'Permission denied'];
+            }
+
+            if (!in_array($model['type'], ['collection', 'tree'])) {
+                $app->response->status = 412;
+                return ['error' => "Aggregate method not allowed for <{$model['name']}>"];
+            }
+
+            try {
+                $pipeline = json5_decode($pipeline, true);
+            } catch (\Throwable $e) {
+                $app->response->status = 400;
+                return ['error' => "Pipeline is not valid json"];
+            }
+
+            if (!is_array($pipeline) || !array_is_list($pipeline)) {
+                $app->response->status = 400;
+                return ['error' => "Pipeline is not valid list format"];
+            }
+
+            $pipeline = array_merge([['$match' => ['_state' => 1]]], $pipeline);
+
+            $process = ['locale' => $app->param('locale', 'default')];
+            $populate = $app->param('populate:int', null);
+
+            if ($populate) {
+                $process['populate'] = $populate;
+                $process['user'] = $app->helper('auth')->getUser();
+            }
+
+            $items = $app->module('content')->aggregate($model['name'], $pipeline, $process);
+
+            return $items;
+        }
+    ]);
+
+
+    /**
+     * @OA\Get(
+     *     path="/content/tree/{model}",
+     *     tags={"content"},
+     *     @OA\Parameter(
+     *         description="Model name",
+     *         in="path",
+     *         name="model",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *    @OA\Parameter(
+     *         description="Return content for specified locale",
+     *         in="query",
+     *         name="locale",
+     *         required=false,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         description="Url encoded fields projection as json",
+     *         in="query",
+     *         name="fields",
+     *         required=false,
+     *         @OA\Schema(type="json")
+     *     ),
+     *     @OA\Parameter(
+     *         description="Populate items with linked content items.",
+     *         in="query",
+     *         name="populate",
+     *         required=false,
+     *         @OA\Schema(type="int")
+     *     ),
+     *     @OA\OpenApi(
+     *         security={
+     *             {"api_key": {}}
+     *         }
+     *     ),
+     *     @OA\Response(response="200", description="Get items tree"),
+     *     @OA\Response(response="401", description="Unauthorized"),
+     *     @OA\Response(response="404", description="Model not found")
+     * )
+     */
+
+    $restApi->addEndPoint('/content/tree/{model}', [
+
+        'GET' => function($params, $app) {
+
+            $model = $params['model'];
+
+            if (!$app->module('content')->model($model)) {
+                $app->response->status = 404;
+                return ['error' => "Model <{$model}> not found"];
+            }
+
+            if (!$app->helper('acl')->isAllowed("content/{$model}/read", $app->helper('auth')->getUser('role'))) {
+                $app->response->status = 403;
+                return ['error' => 'Permission denied'];
+            }
+
+            $_model = $app->module('content')->model($model);
+
+            if ($_model['type'] !== 'tree') {
+                $app->response->status = 400;
+                return ['error' => 'Permission denied'];
+            }
+
+            $process = ['locale' => $app->param('locale', 'default')];
+            $parentId = $app->param('parent:string', null);
+            $populate = $app->param('populate:int', null);
+            $fields = $app->param('fields:string', null);
+
+            if ($fields) {
+
+                try {
+                    $fields = json5_decode($fields, true);
+                } catch(\Throwable $e) {
+                    $app->response->status = 400;
+                    return ['error' => "<{fields}> is not valid json"];
+                }
+            }
+
+            if ($populate) {
+                $process['populate'] = $populate;
+                $process['user'] = $app->helper('auth')->getUser();
+            }
+
+            return $app->module('content')->tree($model, $parentId, ['_state' => 1], $fields, $process);
         }
     ]);
 });

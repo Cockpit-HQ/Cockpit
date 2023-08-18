@@ -86,7 +86,9 @@ class DocumentValidator
     /**
      * Validate a GraphQL query against a schema.
      *
-     * @param array<ValidationRule>|null $rules
+     * @param array<ValidationRule>|null $rules Defaults to using all available rules
+     *
+     * @throws \Exception
      *
      * @return array<int, Error>
      *
@@ -95,12 +97,12 @@ class DocumentValidator
     public static function validate(
         Schema $schema,
         DocumentNode $ast,
-        ?array $rules = null,
-        ?TypeInfo $typeInfo = null
+        array $rules = null,
+        TypeInfo $typeInfo = null
     ): array {
         $rules ??= static::allRules();
 
-        if (\count($rules) === 0) {
+        if ($rules === []) {
             return [];
         }
 
@@ -127,6 +129,8 @@ class DocumentValidator
     /**
      * Returns all global validation rules.
      *
+     * @throws \InvalidArgumentException
+     *
      * @return array<string, ValidationRule>
      *
      * @api
@@ -145,9 +149,7 @@ class DocumentValidator
         return self::$rules;
     }
 
-    /**
-     * @return array<class-string<ValidationRule>, ValidationRule>
-     */
+    /** @return array<class-string<ValidationRule>, ValidationRule> */
     public static function defaultRules(): array
     {
         return self::$defaultRules ??= [
@@ -183,6 +185,8 @@ class DocumentValidator
     /**
      * @deprecated just add rules via @see DocumentValidator::addRule()
      *
+     * @throws \InvalidArgumentException
+     *
      * @return array<class-string<QuerySecurityRule>, QuerySecurityRule>
      */
     public static function securityRules(): array
@@ -194,9 +198,7 @@ class DocumentValidator
         ];
     }
 
-    /**
-     * @return array<class-string<ValidationRule>, ValidationRule>
-     */
+    /** @return array<class-string<ValidationRule>, ValidationRule> */
     public static function sdlRules(): array
     {
         return self::$sdlRules ??= [
@@ -226,6 +228,8 @@ class DocumentValidator
      * @example DocumentValidator::getRule(GraphQL\Validator\Rules\QueryComplexity::class);
      *
      * @api
+     *
+     * @throws \InvalidArgumentException
      */
     public static function getRule(string $name): ?ValidationRule
     {
@@ -257,16 +261,18 @@ class DocumentValidator
      *
      * @param array<ValidationRule>|null $rules
      *
+     * @throws \Exception
+     *
      * @return array<int, Error>
      */
     public static function validateSDL(
         DocumentNode $documentAST,
-        ?Schema $schemaToExtend = null,
-        ?array $rules = null
+        Schema $schemaToExtend = null,
+        array $rules = null
     ): array {
         $rules ??= self::sdlRules();
 
-        if (\count($rules) === 0) {
+        if ($rules === []) {
             return [];
         }
 
@@ -285,25 +291,31 @@ class DocumentValidator
         return $context->getErrors();
     }
 
+    /**
+     * @throws \Exception
+     * @throws Error
+     */
     public static function assertValidSDL(DocumentNode $documentAST): void
     {
         $errors = self::validateSDL($documentAST);
-        if (\count($errors) > 0) {
-            throw new Error(self::combineErrorMessages($errors));
-        }
-    }
-
-    public static function assertValidSDLExtension(DocumentNode $documentAST, Schema $schema): void
-    {
-        $errors = self::validateSDL($documentAST, $schema);
-        if (\count($errors) > 0) {
+        if ($errors !== []) {
             throw new Error(self::combineErrorMessages($errors));
         }
     }
 
     /**
-     * @param array<Error> $errors
+     * @throws \Exception
+     * @throws Error
      */
+    public static function assertValidSDLExtension(DocumentNode $documentAST, Schema $schema): void
+    {
+        $errors = self::validateSDL($documentAST, $schema);
+        if ($errors !== []) {
+            throw new Error(self::combineErrorMessages($errors));
+        }
+    }
+
+    /** @param array<Error> $errors */
     private static function combineErrorMessages(array $errors): string
     {
         $messages = [];

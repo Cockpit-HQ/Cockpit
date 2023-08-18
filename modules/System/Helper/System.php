@@ -6,7 +6,6 @@ use ArrayObject;
 
 class System extends \Lime\Helper {
 
-
     public function try(callable $callback, $rescue = null, bool $report = true) {
         try {
             return $callback();

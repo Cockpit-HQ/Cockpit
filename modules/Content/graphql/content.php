@@ -15,7 +15,7 @@ $gql->queries['fields']['content'] = [
         'sort'  => JsonType::instance(),
         'locale'  => ['type' => Type::string(), 'defaultValue' => 'default'],
         'populate'   => ['type' => Type::int(), 'defaultValue' => 0],
-        'projection' => ['type' => Type::string(), 'defaultValue' => ''],
+        'fields' => ['type' => JsonType::instance(), 'defaultValue' => null],
         'filter'   => ['type' => JsonType::instance(), 'defaultValue' => []]
     ],
 
@@ -45,6 +45,7 @@ $gql->queries['fields']['content'] = [
             $process['populate'] = $args['populate'];
         }
 
+        if (isset($args['fields'])) $options['fields'] = $args['fields'];
         if (isset($args['limit'])) $options['limit'] = $args['limit'];
         if (isset($args['skip'])) $options['skip'] = $args['skip'];
 
@@ -64,6 +65,48 @@ $gql->queries['fields']['content'] = [
 
         return $app->module('content')->items($model, $options, $process);
 
+    }
+];
+
+$gql->queries['fields']['contentTree'] = [
+
+    'type' => Type::listOf(JsonType::instance()),
+
+    'args' => [
+        'model'  => Type::nonNull(Type::string()),
+        'parent'  => ['type' => Type::string(), 'defaultValue' => null],
+        'locale'  => ['type' => Type::string(), 'defaultValue' => 'default'],
+        'populate'   => ['type' => Type::int(), 'defaultValue' => 0],
+        'fields' => ['type' => JsonType::instance(), 'defaultValue' => null],
+    ],
+
+    'resolve' => function ($root, $args) use($app) {
+
+        $model = $args['model'];
+
+        if (!$app->module('content')->exists($model)) {
+            return [];
+        }
+
+        if (!$app->helper('acl')->isAllowed("content/{$model}/read", $app->helper('auth')->getUser('role'))) {
+            $app->response->status = 412;
+            return [];
+        }
+
+        $meta = $app->module('content')->model($model);
+
+        if ($meta['type'] !== 'tree') {
+            $app->response->status = 400;
+            return [];
+        }
+
+        $process = ['locale' => $args['locale']];
+
+        if ($args['populate']) {
+            $process['populate'] = $args['populate'];
+        }
+
+        return $app->module('content')->tree($model, $args['parent'], ['_state' => 1], $args['fields'], $process);
     }
 ];
 

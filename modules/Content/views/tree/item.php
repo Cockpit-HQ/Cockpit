@@ -21,7 +21,7 @@
                     <span v-if="!item._id"><?=t('New Item')?></span>
                     <span v-if="item._id"><?=t('Edit Item')?></span>
                 </div>
-                <a class="kiss-size-large kiss-margin-small-left" kiss-popoutmenu="#model-item-menu-actions"><icon>more_horiz</icon></a>
+                <a class="kiss-size-large kiss-margin-small-left" kiss-popout="#model-item-menu-actions"><icon>more_horiz</icon></a>
             </div>
         </kiss-container>
 
@@ -35,7 +35,7 @@
 
             <kiss-row class="kiss-margin-large" gap="large" v-if="fields.length">
                 <div class="kiss-flex-1">
-                    <div class="kiss-width-3-4@xl">
+                    <div class="kiss-width-3-4@xl kiss-margin-auto">
                         <fields-renderer v-model="item" :fields="fields" :locales="locales"></fields-renderer>
                     </div>
                 </div>
@@ -51,7 +51,7 @@
                                 <div class="kiss-flex kiss-flex-middle">
                                     <div class="kiss-size-4 kiss-margin-small-right kiss-flex" title="ID"><icon>adjust</icon></div>
                                     <div class="kiss-text-truncate kiss-text-bold kiss-text-monospace kiss-size-small kiss-flex-1">{{ item._id }}</div>
-                                    <a :title="t('Copy')" @click="copyID()"><icon>copy</icon></a>
+                                    <a :title="t('Copy')" @click="copyID()"><icon>content_copy</icon></a>
                                 </div>
                             </div>
 
@@ -59,7 +59,7 @@
                                 <div class="kiss-flex kiss-flex-middle">
                                     <div class="kiss-size-4 kiss-margin-small-right kiss-flex kiss-color-muted" :title="t('Created at')"><icon>more_time</icon></div>
                                     <div class="kiss-text-truncate kiss-size-small kiss-text-monospace kiss-color-muted kiss-flex-1">{{ (new Date(item._created * 1000).toLocaleString()) }}</div>
-                                    <div><icon>account_circle</icon></div>
+                                    <user-info :user-id="item._cby"></user-info>
                                 </div>
                             </div>
 
@@ -67,7 +67,7 @@
                                 <div class="kiss-flex kiss-flex-middle">
                                     <div class="kiss-size-4 kiss-margin-small-right kiss-flex kiss-color-muted" :title="t('Modified at')"><icon>history</icon></div>
                                     <div class="kiss-text-truncate kiss-size-small kiss-text-monospace kiss-color-muted kiss-flex-1">{{ (new Date(item._modified * 1000).toLocaleString()) }}</div>
-                                    <div><icon>account_circle</icon></div>
+                                    <user-info :user-id="item._mby"></user-info>
                                 </div>
                             </div>
 
@@ -80,7 +80,7 @@
                         <div class="kiss-text-caption kiss-size-xsmall kiss-text-bold">{{ t('State') }}</div>
 
                         <div class="kiss-margin-small">
-                            <button type="button" class="kiss-button kiss-flex kiss-flex-middle kiss-width-expand kiss-align-left" :class="{'kiss-bgcolor-danger': !item._state, 'kiss-bgcolor-success': item._state == 1}" kiss-popoutmenu="#model-item-menu-state">
+                            <button type="button" class="kiss-button kiss-flex kiss-flex-middle kiss-width-expand kiss-align-left" :class="{'kiss-bgcolor-danger': !item._state, 'kiss-bgcolor-success': item._state == 1}" kiss-popout="#model-item-menu-state">
                                 <span class="kiss-flex-1" v-if="item._state == 1">{{ t('Published') }}</span>
                                 <span class="kiss-flex-1" v-if="!item._state">{{ t('Unpublished') }}</span>
                                 <icon>expand_more</icon>
@@ -115,7 +115,7 @@
 
                         <div class="kiss-text-caption kiss-size-xsmall kiss-text-bold kiss-margin-small-bottom">{{ t('Content preview') }}</div>
 
-                        <a class="kiss-button kiss-width-1-1" kiss-popoutmenu="#model-item-preview-links" v-if="model.preview.length > 1">{{ t('Open preview') }}</a>
+                        <a class="kiss-button kiss-width-1-1" kiss-popout="#model-item-preview-links" v-if="model.preview.length > 1">{{ t('Open preview') }}</a>
                         <a class="kiss-button kiss-width-1-1" @click="showPreviewUri(model.preview[0].uri)" v-if="model.preview.length == 1">{{ t('Open preview') }}</a>
                     </div>
 
@@ -137,8 +137,11 @@
             <kiss-container>
                 <div class="kiss-flex kiss-flex-middle">
                     <div class="kiss-button-group" v-if="item._id">
-                        <a class="kiss-button" href="<?=$this->route("/content/tree/item/{$model['name']}")?>">
+                        <a class="kiss-button" :href="$route(`/content/tree/item/${model.name}`)">
                             <?=t('Create new item')?>
+                        </a>
+                        <a class="kiss-button" :href="$route(`/content/tree/clone/${model.name}/${item._id}`)">
+                            <?=t('Clone item')?>
                         </a>
                     </div>
                     <div class="kiss-flex-1"></div>
@@ -158,7 +161,7 @@
         </app-actionbar>
 
         <?php if ($this->helper('acl')->isAllowed("content/{$model['name']}/publish")): ?>
-        <kiss-popoutmenu id="model-item-menu-state">
+        <kiss-popout id="model-item-menu-state">
             <kiss-content>
 
                 <kiss-navlist class="kiss-margin-small">
@@ -181,10 +184,10 @@
                     </ul>
                 </kiss-navlist>
             </kiss-content>
-        </kiss-popoutmenu>
+        </kiss-popout>
         <?php endif ?>
 
-        <kiss-popoutmenu id="model-item-menu-actions">
+        <kiss-popout id="model-item-menu-actions">
             <kiss-content>
                 <kiss-navlist class="kiss-margin">
                     <ul>
@@ -196,9 +199,15 @@
                             </a>
                         </li>
                         <li v-if="item._id">
-                            <a class="kiss-flex kiss-flex-middle" href="<?=$this->route("/content/collection/item/{$model['name']}")?>">
-                                <icon class="kiss-margin-small-right">add_circle_outline</icon>
+                            <a class="kiss-flex kiss-flex-middle" :href="$route(`/content/tree/item/${model.name}`)">
+                                <icon class="kiss-margin-small-right">add_circle</icon>
                                 <?=t('Create new item')?>
+                            </a>
+                        </li>
+                        <li v-if="item._id">
+                            <a class="kiss-flex kiss-flex-middle" :href="$route(`/content/tree/clone/${model.name}/${item._id}`)">
+                                <icon class="kiss-margin-small-right">control_point_duplicate</icon>
+                                <?=t('Clone item')?>
                             </a>
                         </li>
                         <li class="kiss-nav-divider"></li>
@@ -211,9 +220,9 @@
                     </ul>
                 </kiss-navlist>
             </kiss-content>
-        </kiss-popoutmenu>
+        </kiss-popout>
 
-        <kiss-popoutmenu id="model-item-preview-links" v-if="model.preview && model.preview.length">
+        <kiss-popout id="model-item-preview-links" v-if="model.preview && model.preview.length">
             <kiss-content>
                 <kiss-navlist class="kiss-margin">
                     <ul>
@@ -227,7 +236,7 @@
                     </ul>
                 </kiss-navlist>
             </kiss-content>
-        </kiss-popoutmenu>
+        </kiss-popout>
 
     </template>
 

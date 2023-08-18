@@ -17,6 +17,7 @@ class Content extends App {
     public function populate() {
 
         $this->helper('session')->close();
+        $this->hasValidCsrfToken(true);
 
         $locale = $this->param('locale', 'default');
         $lvl = $this->param('lvl', 10);
@@ -24,6 +25,6 @@ class Content extends App {
 
         $data = $this->app->helper('locales')->applyLocales($data, $locale);
 
-        return $this->module('content')->populate($data, $lvl, 0, ['locale' => $locale]);
+        return $this->module('content')->populate($data, $lvl, 0, ['locale' => $locale, 'user' => $this->user]);
     }
 }
