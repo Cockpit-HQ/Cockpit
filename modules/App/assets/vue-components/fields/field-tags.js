@@ -153,7 +153,7 @@ export default {
 
         resolveItemsByList() {
 
-            return new Promise((resolve, reject) => {
+            return new Promise((resolve) => {
 
                 if (Array.isArray(this.list) && this.list.length) {
 
@@ -161,9 +161,9 @@ export default {
 
                     options = this.list.map((item, idx) => {
 
-                        id = item.id || idx;
-                        value = item.value || item;
-                        label = item.label || value;
+                        id = item.id ?? idx;
+                        value = item.value ?? item;
+                        label = item.label ?? value;
 
                         return { id, value, label }
                     });
@@ -180,7 +180,7 @@ export default {
                 label: '',
             }, this.src.map || {});
 
-            return new Promise((resolve, reject) => {
+            return new Promise((resolve) => {
 
                 let options = [];
 
@@ -191,17 +191,13 @@ export default {
                         return;
                     }
 
-                    let option;
-
                     list.forEach((item, idx) => {
 
-                        option = {
-                            value: item[mapping.value] || item,
-                            label: item[mapping.label] || item[mapping.value] || item,
-                            id: item[mapping.id] || item[mapping.value] || idx
-                        };
-
-                        options.push(option);
+                        options.push({
+                            value: item[mapping.value] ?? item,
+                            label: item[mapping.label] ?? item[mapping.value] ?? item,
+                            id: item[mapping.id] ?? item[mapping.value] ?? idx
+                        });
                     });
 
                     resolve(options);

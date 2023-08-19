@@ -92,18 +92,18 @@ export default {
 
         resolveItemsByOptions() {
 
-            return new Promise((resolve, reject) => {
+            return new Promise((resolve) => {
 
                 let list = [], groups = { '': [] };
 
                 if (typeof (this.options) === 'string' || Array.isArray(this.options)) {
 
-                    (typeof (this.options) === 'string' ? this.options.split(',') : this.options || []).forEach(function (option) {
+                    (typeof (this.options) === 'string' ? this.options.split(',') : this.options || []).forEach((option) => {
 
                         option = {
-                            value: (option.hasOwnProperty('value') ? option.value.toString().trim() : option.toString().trim()),
-                            label: (option.hasOwnProperty('label') ? option.label.toString().trim() : option.toString().trim()),
-                            group: (option.hasOwnProperty('group') ? option.group.toString().trim() : '')
+                            value: (option.value ?? option).toString().trim(),
+                            label: (option.label ?? option).toString().trim(),
+                            group: (option.group ?? '').toString().trim()
                         };
 
                         list.push(option)
@@ -136,7 +136,7 @@ export default {
                 group: ''
             }, this.src.map || {});
 
-            return new Promise((resolve, reject) => {
+            return new Promise((resolve) => {
 
                 let groups = { '': [] };
 
@@ -147,14 +147,12 @@ export default {
                         return;
                     }
 
-                    let option;
-
                     list.forEach(item => {
 
-                        option = {
-                            value: item[mapping.value] || item,
-                            label: item[mapping.label] || item[mapping.value] || item,
-                            group: item[mapping.group] || ''
+                        const option = {
+                            value: item[mapping.value] ?? item,
+                            label: item[mapping.label] ?? item[mapping.value] ?? item,
+                            group: item[mapping.group] ?? ''
                         };
 
                         if (!groups[option.group]) {
