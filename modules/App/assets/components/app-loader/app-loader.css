@@ -177,7 +177,8 @@ app-loader-cover app-loader {
 .app-loader-cover-label {
     display: none;
     margin-top: 2rem;
-    font-weight: bold;
+    font-weight: 200;
+    font-size: 2rem;
 }
 
 app-loader-cover[label] .app-loader-cover-label {

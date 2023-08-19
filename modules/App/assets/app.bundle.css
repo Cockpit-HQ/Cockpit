@@ -2,8 +2,8 @@
 @font-face {
     font-family: 'Material Icons Outlined';
     font-style: normal;
-    font-weight: 100 700;
-    src: url(fonts/material-icons/material-icons-outlined.woff2?v=2.6.2) format('woff2');
+    font-weight: 400;
+    src: url(fonts/material-icons/material-outline.woff2?v=2.6.4) format('woff2');
 }
 icon {
     display: inline-block;
@@ -37,6 +37,9 @@ icon,
 }
 icon[size="larger"] {
     transform: scale(1.2);
+}
+icon[size="large"] {
+    transform: scale(2);
 }
 /*!
  * animate.css -http://daneden.me/animate
@@ -2235,7 +2238,8 @@ app-loader-cover app-loader {
 .app-loader-cover-label {
     display: none;
     margin-top: 2rem;
-    font-weight: bold;
+    font-weight: 200;
+    font-size: 2rem;
 }
 app-loader-cover[label] .app-loader-cover-label {
     display: block;
@@ -4023,6 +4027,7 @@ select.kiss-input option {
 }
 .kiss-input-small {
     padding: .3em .3em;
+    font-size: .8em;
 }
 .kiss-disabled,
 .kiss-nav-header { opacity: .6; }

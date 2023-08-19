@@ -45,6 +45,8 @@ customElements.define('kiss-dialog', class extends HTMLElement {
                 focusElement.focus();
             }
 
+            this.scroll(0, 0);
+
         }, 100);
     }
 

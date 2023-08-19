@@ -468,6 +468,8 @@
                   focusElement.focus();
               }
 
+              this.scroll(0, 0);
+
           }, 100);
       }
 
@@ -2923,7 +2925,7 @@
 
           document.body.insertAdjacentHTML('beforeend', `
             <kiss-dialog id="dialog-${id}" size="${(options && options.size) || ''}" type="${dialogtype}" esc="${(options && options.escape) ? 'true':'false'}">
-                <kiss-content class="animated fadeInUp faster">
+                <kiss-content class="animated fadeIn fast">
                     ${content}
                 </kiss-content>
             </kiss-dialog>
@@ -3006,6 +3008,7 @@
           options = Object.assign({
               type: 'text',
               info: null,
+              escape: true
           }, options || {});
 
           const info = options.info ? `<div class="kiss-margin kiss-color-muted kiss-dialog-prompt-info">${options.info}</div>` : '';
@@ -3290,7 +3293,7 @@
           dialog.$view = dialog.querySelector('.vue-modal');
 
           VueView.compile(dialog.$view, def);
-          dialog.show();
+          setTimeout(() => dialog.show(), 100);
 
           return dialog;
       },
@@ -3435,8 +3438,8 @@
                           return App.base(url);
                       },
 
-                      $request(url, data) {
-                          return App.request(url, data);
+                      $request(url, data, type) {
+                          return App.request(url, data, type);
                       },
 
                       $dialog: VueView.ui.modal,

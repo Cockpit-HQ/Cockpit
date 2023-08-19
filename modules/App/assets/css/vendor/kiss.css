@@ -162,6 +162,7 @@ select.kiss-input option {
 
 .kiss-input-small {
     padding: .3em .3em;
+    font-size: .8em;
 }
 
 .kiss-disabled,

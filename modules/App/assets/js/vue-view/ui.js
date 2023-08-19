@@ -104,7 +104,7 @@ export default {
         dialog.$view = dialog.querySelector('.vue-modal');
 
         VueView.compile(dialog.$view, def);
-        dialog.show();
+        setTimeout(() => dialog.show(), 100);
 
         return dialog;
     },

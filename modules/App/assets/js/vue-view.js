@@ -84,8 +84,8 @@ import ui from "./vue-view/ui.js";
                         return App.base(url);
                     },
 
-                    $request(url, data) {
-                        return App.request(url, data);
+                    $request(url, data, type) {
+                        return App.request(url, data, type);
                     },
 
                     $dialog: VueView.ui.modal,
