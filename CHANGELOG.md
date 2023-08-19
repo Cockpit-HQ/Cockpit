@@ -4,6 +4,7 @@
 
 - Fix mime type detection on asset upload
 - Fix possible Cross-site Scripting (XSS) in Rest/GraphQL viewer
+- Add src setting for slect and tag fields to load options from internal sources
 
 ## 2.6.3 (2023-08-15)
 

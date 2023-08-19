@@ -16,7 +16,9 @@ export default {
 
     data() {
         return {
-            val: this.modelValue
+            val: this.modelValue,
+            loading: false,
+            list: { '': [] }
         }
     },
 
@@ -27,6 +29,10 @@ export default {
         },
         options: {
             default: []
+        },
+        src: {
+            type: Object,
+            default: null
         },
         multiple: {
             type: Boolean,
@@ -43,40 +49,10 @@ export default {
 
     computed: {
 
-        list() {
+    },
 
-            let list = [], groups = {'': []};
-
-            if (typeof(this.options) === 'string' || Array.isArray(this.options)) {
-
-                (typeof(this.options) === 'string' ? this.options.split(',') : this.options || []).forEach(function(option) {
-
-                    option = {
-                        value : (option.hasOwnProperty('value') ? option.value.toString().trim() : option.toString().trim()),
-                        label : (option.hasOwnProperty('label') ? option.label.toString().trim() : option.toString().trim()),
-                        group : (option.hasOwnProperty('group') ? option.group.toString().trim() : '')
-                    };
-
-                    list.push(option)
-                });
-
-            }
-
-            list.forEach(item => {
-
-                if (!groups[item.group]) {
-                    groups[item.group] = [];
-                }
-
-                groups[item.group].push(item);
-            });
-
-            if (!groups[''].length) {
-                delete groups[''];
-            }
-
-            return groups;
-        }
+    mounted() {
+        this.resolveItems()
     },
 
     methods: {
@@ -102,11 +78,109 @@ export default {
 
         update() {
             this.$emit('update:modelValue', this.val)
+        },
+
+        resolveItems() {
+
+            this.loading = true;
+
+            (this.src ? this.resolveItemsBySrc() : this.resolveItemsByOptions()).then(list => {
+                this.list = list;
+                this.loading = false;
+            });
+        },
+
+        resolveItemsByOptions() {
+
+            return new Promise((resolve, reject) => {
+
+                let list = [], groups = { '': [] };
+
+                if (typeof (this.options) === 'string' || Array.isArray(this.options)) {
+
+                    (typeof (this.options) === 'string' ? this.options.split(',') : this.options || []).forEach(function (option) {
+
+                        option = {
+                            value: (option.hasOwnProperty('value') ? option.value.toString().trim() : option.toString().trim()),
+                            label: (option.hasOwnProperty('label') ? option.label.toString().trim() : option.toString().trim()),
+                            group: (option.hasOwnProperty('group') ? option.group.toString().trim() : '')
+                        };
+
+                        list.push(option)
+                    });
+
+                }
+
+                list.forEach(item => {
+
+                    if (!groups[item.group]) {
+                        groups[item.group] = [];
+                    }
+
+                    groups[item.group].push(item);
+                });
+
+                if (!groups[''].length) {
+                    delete groups[''];
+                }
+
+                resolve(groups);
+            });
+        },
+
+        resolveItemsBySrc() {
+
+            const mapping = Object.assign({
+                value: '',
+                label: '',
+                group: ''
+            }, this.src.map || {});
+
+            return new Promise((resolve, reject) => {
+
+                let groups = { '': [] };
+
+                this.$request(this.src.route, this.src.params || {}).then(list => {
+
+                    if (!Array.isArray(list)) {
+                        resolve(groups);
+                        return;
+                    }
+
+                    let option;
+
+                    list.forEach(item => {
+
+                        option = {
+                            value: item[mapping.value] || item,
+                            label: item[mapping.label] || item[mapping.value] || item,
+                            group: item[mapping.group] || ''
+                        };
+
+                        if (!groups[option.group]) {
+                            groups[option.group] = [];
+                        }
+
+                        groups[option.group].push(option);
+                    });
+
+                    if (!groups[''].length) {
+                        delete groups[''];
+                    }
+
+                    resolve(groups);
+
+                }).catch((err) => {
+                    console.error(err);
+                    resolve(groups);
+                });;
+            });
         }
     },
 
     template: /*html*/`
-        <div field="select">
+        <div field="select" :class="{'kiss-disabled':loading}">
+
             <select class="kiss-input kiss-width-1-1" v-model="val" @change="update" v-if="!multiple">
                 <option :value="null"></option>
                 <optgroup :label="group || 'Options'" v-for="(lst,group) in list">

@@ -38,7 +38,8 @@ export default {
         return {
             uid: `field-tags-${++instanceCount}`,
             val: this.modelValue || [],
-            options: []
+            options: [],
+            loading: false
         }
     },
 
@@ -57,26 +58,16 @@ export default {
         list: {
             type: Array,
             default: []
+        },
+        src: {
+            type: Object,
+            default: null
         }
     },
 
     mounted() {
 
         ready.then(() => {
-
-            if (Array.isArray(this.list) && this.list.length) {
-
-                let id, value, label;
-
-                this.options = this.list.map((item, idx) => {
-
-                    id = item.id || idx;
-                    value = item.value || item;
-                    label = item.label || value;
-
-                    return { id, value, label }
-                });
-            }
 
             this.input = this.$el.querySelector('input, select');
 
@@ -96,6 +87,10 @@ export default {
                 itemSelectText: App.i18n.get('Press to select'),
             })
 
+            if (this.src || (Array.isArray(this.list) && this.list.length)) {
+                this.resolveOptions();
+            }
+
             this.updateChoices();
 
             this.input.addEventListener('change', (e) => {
@@ -110,7 +105,6 @@ export default {
         modelValue() {
 
             this.val = this.modelValue;
-
             this.updateChoices();
             this.update();
         }
@@ -124,19 +118,17 @@ export default {
 
         updateChoices() {
 
-            if (!this.choices) return;
+            if (!this.choices || this.loading) return;
 
             this.choices.removeActiveItems();
 
-            if (Array.isArray(this.list) && this.list.length) {
+            if (this.options.length) {
 
                 if (Array.isArray(this.val)) {
                     this.val.forEach(val => this.choices.setChoiceByValue(val))
                 }
 
-                //this.choices.setChoices(this.val || []);
             } else {
-
                 this.choices.setValue(this.val || []);
             }
 
@@ -144,13 +136,88 @@ export default {
 
         update() {
             this.$emit('update:modelValue', this.val)
+        },
+
+        resolveOptions() {
+
+            this.loading = true;
+
+            (this.src ? this.resolveItemsBySrc() : this.resolveItemsByList()).then(options => {
+
+                this.loading = false;
+                this.options = options;
+                this.choices.setChoices(this.options, 'value', 'label', true);
+                this.updateChoices();
+            });
+        },
+
+        resolveItemsByList() {
+
+            return new Promise((resolve, reject) => {
+
+                if (Array.isArray(this.list) && this.list.length) {
+
+                    let id, value, label, options = [];
+
+                    options = this.list.map((item, idx) => {
+
+                        id = item.id || idx;
+                        value = item.value || item;
+                        label = item.label || value;
+
+                        return { id, value, label }
+                    });
+
+                    resolve(options)
+                }
+            });
+        },
+
+        resolveItemsBySrc() {
+
+            const mapping = Object.assign({
+                value: '',
+                label: '',
+            }, this.src.map || {});
+
+            return new Promise((resolve, reject) => {
+
+                let options = [];
+
+                this.$request(this.src.route, this.src.params || {}).then(list => {
+
+                    if (!Array.isArray(list)) {
+                        resolve(groups);
+                        return;
+                    }
+
+                    let option;
+
+                    list.forEach((item, idx) => {
+
+                        option = {
+                            value: item[mapping.value] || item,
+                            label: item[mapping.label] || item[mapping.value] || item,
+                            id: item[mapping.id] || item[mapping.value] || idx
+                        };
+
+                        options.push(option);
+                    });
+
+                    resolve(options);
+                }).catch((err) => {
+                    console.error(err);
+                    resolve([]);
+                });
+            });
         }
     },
 
     template: /*html*/`
         <div field="tags">
-            <input type="text" hidden v-if="!Array.isArray(list) || !list.length" />
-            <select multiple v-if="Array.isArray(list) && list.length" hidden></select>
+            <select multiple hidden v-if="src"></select>
+            <select multiple hidden v-else-if="Array.isArray(list) && list.length"></select>
+            <input type="text" hidden v-else />
         </div>
     `
 }
