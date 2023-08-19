@@ -16,14 +16,19 @@
 
 @import "../../../System/assets/css/system.css";
 
-vue-view { display: block; }
-vue-view:not([init="true"]) { display: none; }
+vue-view {
+    display: block;
+}
+
+vue-view:not([init="true"]) {
+    display: none;
+}
 
 :root {
 
     --app-header-background: var(--kiss-base-background-color);
     --app-border-radius: 3px;
-    --app-shadow-color: rgba(0,0,0,0.12);
+    --app-shadow-color: rgba(0, 0, 0, 0.12);
 
     --app-actionbar-bgcolor: #131720e6;
 
@@ -39,7 +44,7 @@ vue-view:not([init="true"]) { display: none; }
 html[data-theme='light'] {
     --kiss-base-background-color: #f6f8fa;
     --kiss-base-text-color: #121212;
-    --kiss-hr-color: rgba(0,0,0,.1);
+    --kiss-hr-color: rgba(0, 0, 0, .1);
     --kiss-link-hover-color: #1994ff;
     --kiss-button-default-background: #e0dee6;
     --kiss-button-default-color: #000;
@@ -49,14 +54,14 @@ html[data-theme='light'] {
     --kiss-color-success: #4caf50;
     --kiss-color-warning: orange;
     --kiss-color-danger: #f91941;
-    --kiss-color-muted: rgba(0,0,0,.55);
-    --kiss-color-overlay: rgba(255,255,255, .8);
+    --kiss-color-muted: rgba(0, 0, 0, .55);
+    --kiss-color-overlay: rgba(255, 255, 255, .8);
 
-    --kiss-input-border-color: rgba(0,0,0,.1);
-    --kiss-input-background: rgba(255,255,255,.5);
-    --kiss-input-placeholder-color: rgba(0,0,0,.3);
+    --kiss-input-border-color: rgba(0, 0, 0, .1);
+    --kiss-input-background: rgba(255, 255, 255, .5);
+    --kiss-input-placeholder-color: rgba(0, 0, 0, .3);
 
-    --kiss-dropdown-background: rgba(255,255,255,1);
+    --kiss-dropdown-background: rgba(255, 255, 255, 1);
 
     --kiss-card-theme-contrast-color: #fff;
     --kiss-card-shadowed-color: rgba(0, 0, 0, 0.15);
@@ -66,15 +71,15 @@ html[data-theme='light'] {
     --kiss-table-heading-background-color: #fff;
     --kiss-table-row-hover-color: #efefef;
 
-    --app-shadow-color: rgba(0,0,0,0.12);
+    --app-shadow-color: rgba(0, 0, 0, 0.12);
     --app-actionbar-bgcolor: #eff7f7e8;
     --app-loader-color2: #333;
-    --app-fieldcontainer-border-color-inactive: rgba(0,0,0, .1);
+    --app-fieldcontainer-border-color-inactive: rgba(0, 0, 0, .1);
     --app-scrollbar-color: var(--kiss-color-muted);
 }
 
 html[data-theme='light'] .kiss-bgcolor-transparentimage {
-    background-image: linear-gradient(45deg, rgba(0,0,0, .15) 25%, transparent 25%), linear-gradient(-45deg, rgba(0,0,0, .15) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, rgba(0,0,0, .15) 75%), linear-gradient(-45deg, transparent 75%, rgba(0,0,0, .15) 75%);
+    background-image: linear-gradient(45deg, rgba(0, 0, 0, .15) 25%, transparent 25%), linear-gradient(-45deg, rgba(0, 0, 0, .15) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, rgba(0, 0, 0, .15) 75%), linear-gradient(-45deg, transparent 75%, rgba(0, 0, 0, .15) 75%);
     background-size: 20px 20px;
     background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
 }
@@ -83,6 +88,7 @@ html[data-theme='light'] [active="true"] .kiss-tabs-nav-link:after {
     border-color: var(--kiss-color-primary);
     border-width: 2px;
 }
+
 html[data-theme='light'] .kiss-bgcolor-success,
 html[data-theme='light'] .kiss-bgcolor-danger {
     color: #fff;
@@ -90,11 +96,11 @@ html[data-theme='light'] .kiss-bgcolor-danger {
 
 html[data-theme='light'] kiss-card[hover="shadow"]:hover {
     box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.014),
-    0 6.7px 5.3px rgba(0, 0, 0, 0.028),
-    0 12.5px 10px rgba(0, 0, 0, 0.04),
-    0 22.3px 17.9px rgba(0, 0, 0, 0.052),
-    0 41.8px 33.4px rgba(0, 0, 0, 0.066),
-    0 100px 80px rgba(0, 0, 0, 0.06);
+        0 6.7px 5.3px rgba(0, 0, 0, 0.028),
+        0 12.5px 10px rgba(0, 0, 0, 0.04),
+        0 22.3px 17.9px rgba(0, 0, 0, 0.052),
+        0 41.8px 33.4px rgba(0, 0, 0, 0.066),
+        0 100px 80px rgba(0, 0, 0, 0.06);
 }
 
 html[data-theme='light'] [src$="App/assets/logo.svg"] {
@@ -110,11 +116,15 @@ html[data-theme='light'].login-page {
 }
 
 @media (prefers-color-scheme: light) {
-    html { --app-auto-theme: light; }
+    html {
+        --app-auto-theme: light;
+    }
 }
 
 @media (prefers-color-scheme: dark) {
-    html { --app-auto-theme: dark; }
+    html {
+        --app-auto-theme: dark;
+    }
 }
 
 
@@ -144,13 +154,19 @@ body {
     min-height: 100vh;
 }
 
-ins, del {
+ins,
+del {
     color: #fff;
     text-decoration: none;
 }
 
-ins { background: #249924 }
-del { background: #c92a2a }
+ins {
+    background: #249924
+}
+
+del {
+    background: #c92a2a
+}
 
 .app-container {
     display: flex;
@@ -203,25 +219,25 @@ del { background: #c92a2a }
     margin-right: auto;
 }
 
-.app-container-aside-menu kiss-navlist ul > li > a {
+.app-container-aside-menu kiss-navlist ul>li>a {
     color: inherit;
     opacity: .5;
     transition: all 250ms;
 }
 
-.app-container-aside-menu kiss-navlist ul > li > a:hover{
+.app-container-aside-menu kiss-navlist ul>li>a:hover {
     color: inherit;
     opacity: 1;
 }
 
-.app-container-aside-menu kiss-navlist ul > li.active > a {
+.app-container-aside-menu kiss-navlist ul>li.active>a {
     position: relative;
     color: var(--kiss-color-primary);
     font-weight: bold;
     opacity: 1;
 }
 
-.app-container-aside-menu kiss-navlist ul > li.active > a:before {
+.app-container-aside-menu kiss-navlist ul>li.active>a:before {
     content: "";
     position: absolute;
     width: 2px;
@@ -231,14 +247,14 @@ del { background: #c92a2a }
     background: var(--kiss-color-primary);
 }
 
-.app-container-aside-menu kiss-navlist ul > li > * {
+.app-container-aside-menu kiss-navlist ul>li>* {
     display: flex;
     align-items: center;
     padding: 8px 0;
     letter-spacing: 1.5px;
 }
 
-.app-container-aside-menu kiss-navlist[space="small"] ul > li > * {
+.app-container-aside-menu kiss-navlist[space="small"] ul>li>* {
     padding: 6px 0;
     font-size: 18px;
 }
@@ -281,7 +297,7 @@ label {
 
 .login-wrapper {
     position: relative;
-    width:400px;
+    width: 400px;
     max-width: 90%;
     margin-top: 20vh;
     padding: 30px;
@@ -291,7 +307,7 @@ label {
 .login-wrapper::before {
     content: "";
     display: block;
-    position:absolute;
+    position: absolute;
     top: 0;
     left: 0;
     right: 0;
@@ -308,10 +324,6 @@ label {
         0 22.3px 17.9px rgba(0, 0, 0, 0.072),
         0 41.8px 33.4px rgba(0, 0, 0, 0.086),
         0 100px 80px rgba(0, 0, 0, 0.12);
-}
-
-app-fieldcontainer label {
-    color: inherit;
 }
 
 app-header {
@@ -345,12 +357,12 @@ app-actionbar kiss-container {
     margin: 0;
 }
 
-.app-list-items > li {
+.app-list-items>li {
     padding: 0;
     margin: 0;
 }
 
-.app-list-items > li:not(:first-child) {
+.app-list-items>li:not(:first-child) {
     padding-top: 10px;
     margin-top: 10px;
     border-top: 1px var(--kiss-hr-color) solid;
@@ -360,7 +372,7 @@ app-actionbar kiss-container {
     font-size: .95em;
 }
 
-[field="boolean"] label{
+[field="boolean"] label {
     all: unset;
     cursor: pointer;
 }
@@ -380,8 +392,14 @@ app-actionbar kiss-container {
     border: 1px var(--kiss-color-primary) solid;
 }
 
-app-fieldcontainer app-fieldcontainer {
-    all: unset;
+app-fieldcontainer label {
+    color: inherit;
+}
+
+app-fieldcontainer app-fieldcontainer,
+.app-fieldcontainer-no-style app-fieldcontainer {
+    padding: unset;
+    border: unset;
     display: block;
 }
 
@@ -399,7 +417,7 @@ app-pagination {
     white-space: nowrap;
 }
 
-.table-scroll > table {
+.table-scroll>table {
     margin: 0;
 }
 
@@ -414,21 +432,34 @@ app-pagination {
     z-index: 2;
 }
 
-.table-scroll [fixed="top"] { top: 0; }
-.table-scroll [fixed="left"] { left: 0; }
-.table-scroll [fixed="right"] { right: 0; }
+.table-scroll [fixed="top"] {
+    top: 0;
+}
+
+.table-scroll [fixed="left"] {
+    left: 0;
+}
+
+.table-scroll [fixed="right"] {
+    right: 0;
+}
 
 
-.table-scroll th[fixed] {background-color: var(--kiss-table-heading-background-color);}
-.table-scroll td[fixed] {background: var(--kiss-color-contrast);}
+.table-scroll th[fixed] {
+    background-color: var(--kiss-table-heading-background-color);
+}
 
-kiss-dialog[type="app-search"] > kiss-content {
+.table-scroll td[fixed] {
+    background: var(--kiss-color-contrast);
+}
+
+kiss-dialog[type="app-search"]>kiss-content {
     margin-top: 15vh;
 }
 
-kiss-dialog[type="alert"] > kiss-content,
-kiss-dialog[type="confirm"] > kiss-content,
-kiss-dialog[type="prompt"] > kiss-content {
+kiss-dialog[type="alert"]>kiss-content,
+kiss-dialog[type="confirm"]>kiss-content,
+kiss-dialog[type="prompt"]>kiss-content {
     border: none;
     background: none;
     box-shadow: none;

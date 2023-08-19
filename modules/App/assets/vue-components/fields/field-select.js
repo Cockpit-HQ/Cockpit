@@ -6,8 +6,8 @@ export default {
         info: 'Select from a list',
         icon: 'system:assets/icons/select.svg',
         settings: [
-            {name: 'multiple', type: 'boolean', opts: {default: false}},
-            {name: 'options', type: 'text', multiple: true},
+            { name: 'multiple', type: 'boolean', opts: { default: false } },
+            { name: 'options', type: 'text', multiple: true },
         ],
         render(value, field) {
             return Array.isArray(value) ? value.join(', ') : value;
@@ -37,13 +37,21 @@ export default {
         multiple: {
             type: Boolean,
             default: false
-        }
+        },
+        placeholder: {
+            type: String,
+            default: ''
+        },
     },
 
     watch: {
         modelValue() {
             this.val = this.modelValue;
             this.update();
+        },
+
+        options() {
+            this.resolveItems();
         }
     },
 
@@ -179,8 +187,8 @@ export default {
     template: /*html*/`
         <div field="select" :class="{'kiss-disabled':loading}">
 
-            <select class="kiss-input kiss-width-1-1" v-model="val" @change="update" v-if="!multiple">
-                <option :value="null"></option>
+            <select class="kiss-input kiss-width-1-1" :class="{'kiss-color-muted': !value && value !== 0}" v-model="val" @change="update" v-if="!multiple">
+                <option :value="null">{{ placeholder || ''}}</option>
                 <optgroup :label="group || 'Options'" v-for="(lst,group) in list">
                     <option v-for="option in lst" :value="option.value">{{ option.label }}</option>
                 </optgroup>
