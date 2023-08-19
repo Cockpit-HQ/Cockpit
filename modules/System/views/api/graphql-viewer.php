@@ -112,7 +112,7 @@
 
   </script>
 
-  <input id="apiKey" type="text" placeholder="API Key" value="<?=($apiKey ? $apiKey : '')?>">
+  <input id="apiKey" type="text" placeholder="API Key" value="<?=$this->escape($apiKey ? $apiKey : '')?>">
 
 <style>
 
@@ -223,7 +223,7 @@ color: #CACDD3;
   background: #10131a;
   border: 1px solid <?=($primaryColor ? $primaryColor : '#0e8fff')?>;
   box-shadow: none !important;
-  fill: <?=($primaryColor ? $primaryColor : '#0e8fff')?>;
+  fill: <?= $this->escape($primaryColor ? $primaryColor : '#0e8fff')?>;
 }
 
 .graphiql-container .history-contents p {
