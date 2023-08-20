@@ -58,7 +58,7 @@ $APP_SPACE = null;
 // support ?space=myenv to install custom cockpit instance from /.spaces/*
 if (isset($_GET['space']) && $_GET['space']) {
 
-    $APP_SPACE = $_GET['space'];
+    $APP_SPACE = preg_replace('/[^a-z0-9\-_]/', '', $_GET['space']);
     $spaceDir  = $APP_SPACE_DIR."/.spaces/{$APP_SPACE}";
 
     if (!file_exists($spaceDir)) {
