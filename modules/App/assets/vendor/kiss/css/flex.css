@@ -1,4 +1,7 @@
-.kiss-flex { display: flex !important; }
+.kiss-flex {
+    display: flex !important;
+    gap: var(--kiss-flex-gap, 0);
+}
 .kiss-flex-inline { display: inline-flex !important; }
 
 .kiss-flex::before,
@@ -35,6 +38,12 @@
 
 .kiss-flex-first { order: -1;}
 .kiss-flex-last { order: 99;}
+
+.kiss-flex[gap] { --kiss-flex-gap: var(--kiss-block-element-margin, 1rem); }
+.kiss-flex[gap="none"] { --kiss-flex-gap: 0;}
+.kiss-flex[gap="xsmall"] { --kiss-flex-gap: var(--kiss-block-element-margin-xsmall, 4px);}
+.kiss-flex[gap="small"] { --kiss-flex-gap: var(--kiss-block-element-margin-small, .6rem);}
+.kiss-flex[gap="large"] { --kiss-flex-gap: var(--kiss-block-element-margin-large, 3rem);}
 
 /* Phone landscape and bigger */
 @media (min-width: 640px) {
