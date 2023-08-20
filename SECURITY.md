@@ -3,7 +3,7 @@ If you discover a security vulnerability in Cockpit, please review the following
 ## Guidelines
 While working to identify potential security vulnerabilities in Cockpit, we ask that you:
 
-- **Privately** share any issues that you discover with us via security@getcockpit.com as soon as possible.
+- **Privately** share any issues that you discover with us via security@getcockpit.com or via [Huntr](https://huntr.dev/bounties/disclose/?target=https://github.com/Cockpit-HQ/Cockpit) as soon as possible.
 - Give us a reasonable amount of time to address any reported issues before publicizing them.
 - Only report issues that are in scope.
 - Provide a quality report with precise explanations and concrete attack scenarios.
