@@ -6,6 +6,7 @@ use Aws\Api\DocModel;
 use Aws\Api\Service;
 use Aws\EndpointDiscovery\EndpointDiscoveryMiddleware;
 use Aws\EndpointV2\EndpointProviderV2;
+use Aws\Exception\AwsException;
 use Aws\Signature\SignatureProvider;
 use GuzzleHttp\Psr7\Uri;
 
@@ -235,14 +236,11 @@ class AwsClient implements AwsClientInterface
         $this->addInvocationId();
         $this->addEndpointParameterMiddleware($args);
         $this->addEndpointDiscoveryMiddleware($config, $args);
+        $this->addRequestCompressionMiddleware($config);
         $this->loadAliases();
         $this->addStreamRequestPayload();
         $this->addRecursionDetection();
         $this->addRequestBuilder();
-
-        if (!$config['suppress_php_deprecation_warning']) {
-            $this->emitDeprecationWarning();
-        }
 
         if (isset($args['with_resolved'])) {
             $args['with_resolved']($config);
@@ -358,7 +356,7 @@ class AwsClient implements AwsClientInterface
         $klass = get_class($this);
 
         if ($klass === __CLASS__) {
-            return ['', 'Aws\Exception\AwsException'];
+            return ['', AwsException::class];
         }
 
         $service = substr($klass, strrpos($klass, '\\') + 1, -6);
@@ -446,6 +444,17 @@ class AwsClient implements AwsClientInterface
             Middleware::signer($this->credentialProvider, $resolver, $this->tokenProvider),
             'signer'
         );
+    }
+
+    private function addRequestCompressionMiddleware($config)
+    {
+        if (empty($config['disable_request_compression'])) {
+            $list = $this->getHandlerList();
+            $list->appendBuild(
+                RequestCompressionMiddleware::wrap($config),
+                'request-compression'
+            );
+        }
     }
 
     private function addInvocationId()

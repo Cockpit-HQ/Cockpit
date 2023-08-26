@@ -4381,7 +4381,7 @@ del {
     z-index: 5;
 }
 .has-side-panel .app-container-aside {
-    width: 350px;
+    width: 330px;
 }
 .app-container-aside-menu {
     position: fixed;
@@ -4390,21 +4390,22 @@ del {
     left: 0;
     width: 50px;
     height: 100vh;
-    padding-top: 10px;
+    padding-top: 15px;
     padding-bottom: 20px;
     flex-direction: column;
 }
 .app-container-aside-panel {
     position: fixed;
     display: flex;
-    top: 0;
-    left: 50px;
+    top: 10px;
+    left: 60px;
     padding: 20px 25px;
     flex-direction: column;
-    width: 300px;
-    height: 100vh;
+    width: 280px;
+    height: calc(100vh - 20px);
     background: var(--kiss-card-theme-contrast-color, #171d28);
-    box-shadow: 0 0 2px rgb(0 0 0 / 30%);
+    border-radius: 6px;
+    box-shadow: 0 0 10px rgb(0 0 0 / 10%);
     overflow: auto;
 }
 .app-container-aside-menu kiss-navlist a {
@@ -4638,7 +4639,7 @@ kiss-dialog[type="prompt"]>kiss-content {
     }
 
     .has-side-panel app-actionbar {
-        padding-left: 370px;
+        padding-left: 350px;
     }
 
     .app-container-aside {
