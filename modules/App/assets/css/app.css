@@ -199,12 +199,12 @@ del {
 .app-container-aside-panel {
     position: fixed;
     display: flex;
-    top: 10px;
+    top: 15px;
     left: 60px;
-    padding: 20px 25px;
+    padding: 20px 20px;
     flex-direction: column;
     width: 280px;
-    height: calc(100vh - 20px);
+    height: calc(100vh - 30px);
     background: var(--kiss-card-theme-contrast-color, #171d28);
     border-radius: 6px;
     box-shadow: 0 0 10px rgb(0 0 0 / 10%);
