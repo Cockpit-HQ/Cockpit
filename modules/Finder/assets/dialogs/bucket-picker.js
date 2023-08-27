@@ -410,7 +410,7 @@ export default {
                             </li>
                             <li>
                                 <a class="kiss-flex kiss-flex-middle" @click="rename(actionFolder)">
-                                    <icon class="kiss-margin-small-right" size="larger">bookmark_manager</icon>
+                                    <icon class="kiss-margin-small-right" size="larger">edit</icon>
                                     {{ t('Rename') }}
                                 </a>
                             </li>
