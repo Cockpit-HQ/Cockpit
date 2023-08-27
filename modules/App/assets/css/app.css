@@ -206,7 +206,7 @@ del {
     width: 280px;
     height: calc(100vh - 30px);
     background: var(--kiss-card-theme-contrast-color, #171d28);
-    border-radius: 6px;
+    border-radius: 8px;
     box-shadow: 0 0 10px rgb(0 0 0 / 10%);
     overflow: auto;
 }
@@ -298,21 +298,13 @@ label {
 
 .login-wrapper {
     position: relative;
-    width: 400px;
+    width: 500px;
     max-width: 90%;
     margin-top: 20vh;
-    padding: 30px;
-    border-radius: 10px;
 }
 
-.login-wrapper::before {
-    content: "";
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+.login-dialog {
+    padding: var(--kiss-padding-large, 3rem);
     border-radius: 10px;
     background: var(--kiss-base-background-color);
     z-index: -1;
