@@ -335,9 +335,5 @@
     </kiss-navlist>
 <?php endif ?>
 
-<div class="kiss-margin kiss-visible@m">
-
-
-</div>
 
 <?php $this->end('app-side-panel') ?>

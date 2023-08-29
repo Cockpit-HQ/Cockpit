@@ -21,8 +21,8 @@
                     <div class="kiss-size-5 kiss-text-bold"><?= $this->escape($model['label'] ? $model['label'] : $model['name']) ?></div>
                 </div>
 
-                <kiss-card class="kiss-flex kiss-flex-middle kiss-overlay-input kiss-padding-small kiss-margin-small-right" theme="contrast shadowed" v-if="hasLocalization">
-                    <icon class="kiss-margin-xsmall-right">language</icon>
+                <kiss-card class="kiss-flex kiss-flex-middle kiss-overlay-input kiss-padding-small kiss-margin-small-right" gap="small" theme="contrast shadowed" v-if="hasLocalization">
+                    <icon size="larger">language</icon>
                     <span class="kiss-size-small kiss-text-caption kiss-text-bolder">{{ App._locales[this.locale] }}</span>
                     <select v-model="locale"><option :value="i18n" v-for="(label,i18n) in App._locales">{{label}}</option></select>
                 </kiss-card>
