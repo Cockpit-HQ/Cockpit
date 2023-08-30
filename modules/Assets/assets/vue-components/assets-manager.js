@@ -265,6 +265,10 @@ export default {
         copyAssetLinkID(asset) {
             App.utils.copyText(location.origin + App.route(`/assets/link/${asset._id}`), () =>  App.ui.notify('Asset link copied!'));
         },
+
+        isSelected(asset) {
+            return (this.selectedAsset && this.selectedAsset._id == asset._id) || this.selected.indexOf(asset._id) > -1;
+        }
     },
 
     template: /*html*/`
@@ -310,7 +314,7 @@ export default {
 
             <kiss-grid cols="2@s 5@m 6@xl" class="spotlight-group" gap="small" v-if="!loading && assets.length" match="true" hover="shadow">
 
-                    <kiss-card class="kiss-position-relative kiss-bgcolor-contrast" theme="bordered" hover="shadow" :style="{borderColor: (selectedAsset && selectedAsset._id == asset._id && 'var(--kiss-color-primary)') || null}" v-for="asset in assets">
+                    <kiss-card class="kiss-position-relative kiss-bgcolor-contrast" theme="bordered" hover="shadow" :style="{borderColor: isSelected(asset) ? 'var(--kiss-color-primary)' : null}" v-for="asset in assets">
                         <div class="kiss-position-relative" :class="{'kiss-bgcolor-transparentimage': asset.type == 'image'}">
                             <canvas width="400" height="300"></canvas>
                             <div class="kiss-cover kiss-padding kiss-flex kiss-flex-middle kiss-flex-center">
@@ -319,9 +323,10 @@ export default {
                             <a class="kiss-cover spotlight" :href="$base('#uploads:'+asset.path)" :data-media="asset.type" :data-title="asset.title" v-if="['image', 'video'].indexOf(asset.type) > -1"></a>
                             <a class="kiss-cover" @click="selectedAsset=asset" v-if="modal"></a>
                         </div>
-                        <div class="kiss-padding kiss-flex kiss-flex-middle">
+                        <div class="kiss-padding kiss-flex kiss-flex-middle" gap="small">
+                            <div v-if="!modal"><input class="kiss-checkbox" type="checkbox" v-model="selected" :value="asset._id"></div>
                             <div class="kiss-text-truncate kiss-size-xsmall kiss-flex-1"><a class="kiss-link-muted" @click="edit(asset)">{{ asset.title }}</a></div>
-                            <a class="kiss-margin-small-left" @click="toggleAssetActions(asset)"><icon>more_horiz</icon></a>
+                            <a @click="toggleAssetActions(asset)"><icon>more_horiz</icon></a>
                         </div>
                     </kiss-card>
 
@@ -356,7 +361,7 @@ export default {
 
         <app-actionbar v-if="!modal">
             <kiss-container>
-                <div class="kiss-flex kiss-flex-middle">
+                <div class="kiss-flex kiss-flex-middle" gap>
                     <div class="kiss-flex kiss-flex-middle" v-if="!loading && count">
                         <app-pagination>
                             <div class="kiss-color-muted">{{ count }} {{ count == 1 ? t('Item') : t('Items') }}</div>
@@ -371,6 +376,9 @@ export default {
                         </app-pagination>
                     </div>
                     <div class="kiss-flex-1 kiss-margin-right"></div>
+                    <div v-if="selected.length">
+                        <button type="button" class="kiss-button kiss-button-danger" @click="removeSelected()">{{ t('Delete') }} -{{ selected.length }}-</button>
+                    </div>
                     <div class="kiss-button-group">
                         <button class="kiss-button" @click="createFolder()">{{ t('Create folder') }}</button>
                         <button class="kiss-button kiss-button-primary" :disabled="!uppy" @click="upload()">{{ t('Upload asset') }}</button>
