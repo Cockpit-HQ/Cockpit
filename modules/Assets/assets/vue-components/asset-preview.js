@@ -1,3 +1,5 @@
+import { thumbHashToDataURL } from '../vendor/thumbhash.js';
+
 
 let uuid = 0, cache = {};
 
@@ -7,7 +9,8 @@ export default {
 
         return {
             uuid: `assetPreview${++uuid}`,
-            loading: true
+            loading: true,
+            preview: null
         }
     },
 
@@ -35,14 +38,18 @@ export default {
 
         update() {
 
+            this.preview = null;
+
+            if (this.asset.thumbhash) {
+                this.preview = thumbHashToDataURL(this.asset.thumbhash.split('-'))
+            }
+
             if (this.asset.type == 'image') {
-                let img = new Image();
 
-                img.onload = () => {
+                this.$request(`/assets/thumbnail/${this.asset._id}?m=bestFit&mime=auto&h=300&t=${this.asset._modified}&re=0`).then(rsp => {
+                    this.preview = rsp.url;
                     this.loading = false;
-                }
-
-                img.src = this.$route(`/assets/thumbnail/${this.asset._id}?m=bestFit&mime=auto&h=300&t=${this.asset._modified}`);
+                });
             }
 
             if (this.asset.type == 'video') {
@@ -119,7 +126,7 @@ export default {
     template: /*html*/`
         <div :id="uuid">
             <div class="kiss-cover kiss-flex kiss-flex-middle kiss-flex-center" v-if="asset.type=='image'">
-                <img class="animated fadeIn kiss-margin-auto kiss-responsive-height" loading="lazy" :src="$route('/assets/thumbnail/'+asset._id+'?m=bestFit&mime=auto&h=300&t='+asset._modified)" :style="{minHeight: asset.mime == 'image/svg+xml' ? '60%':''}" v-if="!loading">
+                <img class="kiss-position-absolute kiss-margin-auto kiss-responsive-height" :alt="asset.title" loading="lazy" :src="preview" :width="asset.width" :height="asset.height" style="height:100%" v-if="preview">
                 <app-loader size="small" v-if="loading"></app-loader>
             </div>
             <div class="kiss-cover kiss-flex kiss-flex-middle kiss-flex-center" v-else-if="asset.type=='video'">

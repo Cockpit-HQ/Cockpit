@@ -1,7 +1,7 @@
 <kiss-container class="kiss-margin-large">
 
     <ul class="kiss-breadcrumbs">
-        <li><a href="<?=$this->route('/content')?>"><?=t('Content')?></a></li>
+        <li><a href="<?= $this->route('/content') ?>"><?= t('Content') ?></a></li>
     </ul>
 
     <vue-view>
@@ -53,7 +53,7 @@
                         <div class="kiss-padding-small kiss-flex-1 kiss-position-relative">
                             <div class="kiss-size-small kiss-text-bold kiss-text-truncate">{{ model.label || model.name }}</div>
                             <div class="kiss-margin-xsmall-top kiss-color-muted kiss-size-xsmall kiss-text-truncate">{{model.info || t('Singleton')}}</div>
-                            <a class="kiss-cover" :href="$route(`/content/singleton/item/${model.name}`)"></a>
+                            <a class="kiss-cover" :href="$route(`/content/singleton/item/${model.name}`)" :aria-label="model.label || model.name"></a>
                         </div>
                         <a class="kiss-padding-small" @click="toggleModelActions(model)">
                             <icon>more_horiz</icon>
@@ -72,12 +72,12 @@
                             <div class="kiss-cover kiss-flex kiss-flex-middle kiss-flex-center">
                                 <div :style="{color: model.color || 'inherit' }"><kiss-svg :src="$base(model.icon || 'content:assets/icons/'+model.type+'.svg')" width="30" height="30"></kiss-svg></div>
                             </div>
-                            <a class="kiss-cover" :href="$route(`/content/${model.type}/items/${model.name}`)"></a>
+                            <a class="kiss-cover" :href="$route(`/content/${model.type}/items/${model.name}`)" :aria-label="model.label || model.name"></a>
                         </div>
                         <div class="kiss-padding-small kiss-flex-1 kiss-position-relative">
                             <div class="kiss-size-small kiss-text-bold kiss-text-truncate">{{ model.label || model.name }}</div>
                             <div class="kiss-margin-xsmall-top kiss-color-muted kiss-size-xsmall kiss-text-truncate">{{model.info || model.type}}</div>
-                            <a class="kiss-cover" :href="$route(`/content/${model.type}/items/${model.name}`)"></a>
+                            <a class="kiss-cover" :href="$route(`/content/${model.type}/items/${model.name}`)" :aria-label="model.label || model.name"></a>
                         </div>
                         <a class="kiss-padding-small" @click="toggleModelActions(model)">
                             <icon>more_horiz</icon>

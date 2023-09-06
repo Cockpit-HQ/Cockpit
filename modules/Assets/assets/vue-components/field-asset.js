@@ -34,6 +34,21 @@ export default {
         }
     },
 
+    mounted() {
+
+        if (this.val && this.val._id) {
+
+            const options = {
+                filter: [{_id: this.val._id}],
+                limit: 1
+            };
+
+            this.$request('/assets/assets', { options }).then(rsp => {
+                this.val = rsp.assets[0] ?? null;
+            });
+        }
+    },
+
     watch: {
 
         val() {
@@ -41,7 +56,6 @@ export default {
         },
         modelValue() {
             this.val = this.modelValue;
-            this.update();
         }
     },
 
@@ -51,9 +65,7 @@ export default {
 
             VueView.ui.modal('assets:assets/dialogs/asset-picker.js', {filter: this.filter}, {
                 selectAsset: (asset) => {
-
                     this.val = asset;
-                    this.update();
                 }
             }, {size: 'xlarge'})
         },
@@ -64,7 +76,6 @@ export default {
 
                 update: updatedAsset => {
                     this.val = updatedAsset;
-                    this.update();
                 }
 
             }, {flip: true, size: 'large'})

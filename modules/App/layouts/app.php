@@ -40,7 +40,7 @@
                     <kiss-navlist>
                         <ul>
                             <li class="<?=($this->request->route == '/') ? 'active':''?>">
-                                <a href="<?=$this->route('/')?>" aria-label="<?=t('Dashboard')?>" kiss-tooltip="right">
+                                <a href="<?=$this->route('/')?>" aria-label="<?=t('Dashboard')?>" aria-label="<?=t('Dashboard')?>" kiss-tooltip="right">
                                     <kiss-svg src="<?=$this->base('app:icon.svg')?>" width="25" height="25"><canvas width="25" height="25"></canvas></kiss-svg>
                                 </a>
                             </li>

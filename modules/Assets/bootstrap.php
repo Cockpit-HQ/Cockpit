@@ -13,6 +13,13 @@ $this->on('app.api.request', function() {
     include(__DIR__.'/api.php');
 });
 
+// load cli related code
+$this->on('app.cli.init', function ($cli) {
+    $app = $this;
+    include(__DIR__ . '/cli.php');
+});
+
+
 // assets api
 $this->module('assets')->extend([
 
@@ -220,10 +227,21 @@ $this->module('assets')->extend([
 
                     if ($asset['width'] && $asset['height']) {
 
+                        $tmppath = $this->app->path('#tmp:').$clean;
+
                         try {
-                            $asset['colors'] = \ColorThief\ColorThief::getPalette($file, 5, ceil(($asset['width'] * $asset['height']) / 10000));
+
+                            $img = new SimpleImageLib($file);
+                            $img->bestFit(100, 100)->toFile($tmppath);
+
+                            $asset['colors'] = \ColorThief\ColorThief::getPalette($tmppath, 5);
+                            $asset['thumbhash'] = implode('-', Thumbhash::fromFile($tmppath));
+
+                            unlink($tmppath);
+
                         } catch (\Exception $e) {
                             $asset['colors'] = [];
+                            $asset['thumbhash'] = null;
                         }
 
                         foreach ($asset['colors'] as &$color) {

@@ -320,13 +320,13 @@ export default {
                             <div class="kiss-cover kiss-padding kiss-flex kiss-flex-middle kiss-flex-center">
                                 <div><asset-preview :asset="asset"></asset-preview></div>
                             </div>
-                            <a class="kiss-cover spotlight" :href="$base('#uploads:'+asset.path)" :data-media="asset.type" :data-title="asset.title" v-if="['image', 'video'].indexOf(asset.type) > -1"></a>
-                            <a class="kiss-cover" @click="selectedAsset=asset" v-if="modal"></a>
+                            <a class="kiss-cover spotlight" :href="$base('#uploads:'+asset.path)" :data-media="asset.type" :data-title="asset.title" :aria-label="asset.title" v-if="['image', 'video'].indexOf(asset.type) > -1"></a>
+                            <a class="kiss-cover" @click="selectedAsset=asset" :aria-label="asset.title" v-if="modal"></a>
                         </div>
                         <div class="kiss-padding kiss-flex kiss-flex-middle" gap="small">
                             <div v-if="!modal"><input class="kiss-checkbox" type="checkbox" v-model="selected" :value="asset._id"></div>
                             <div class="kiss-text-truncate kiss-size-xsmall kiss-flex-1"><a class="kiss-link-muted" @click="edit(asset)">{{ asset.title }}</a></div>
-                            <a @click="toggleAssetActions(asset)"><icon>more_horiz</icon></a>
+                            <a @click="toggleAssetActions(asset)" :aria-label="t('Toggle asset options')"><icon>more_horiz</icon></a>
                         </div>
                     </kiss-card>
 

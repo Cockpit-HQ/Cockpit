@@ -9,6 +9,7 @@ class Session extends \Lime\Helper {
 
     protected bool $initialized = false;
     public string $name;
+    protected $session;
 
     public function init(?string $name = null) {
 
@@ -16,7 +17,7 @@ class Session extends \Lime\Helper {
 
         if (\session_status() != PHP_SESSION_ACTIVE) {
 
-            $this->name = $name ? $name : $this->app["session.name"];
+            $this->name = $name ? $name : $this->app->retrieve('session.name');
 
             \session_name($this->name);
             \session_start();
@@ -25,18 +26,19 @@ class Session extends \Lime\Helper {
         }
 
         $this->initialized = true;
+        $this->session = &$_SESSION;
     }
 
     public function write(string $key, mixed $value): void {
-        $_SESSION[$key] = $value;
+        $this->session[$key] = $value;
     }
 
     public function read(string $key, mixed $default = null) {
-        return fetch_from_array($_SESSION, $key, $default);
+        return fetch_from_array($this->session, $key, $default);
     }
 
     public function delete(string $key): void {
-        unset($_SESSION[$key]);
+        unset($this->session[$key]);
     }
 
     public function destroy(): void {

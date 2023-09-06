@@ -1669,6 +1669,7 @@ class ComposerStaticInitcd58276a9f48ccfb9ef51a077a4397a3
         'Tests\\Providers\\Time\\ITimeProviderTest' => __DIR__ . '/..' . '/robthree/twofactorauth/tests/Providers/Time/ITimeProviderTest.php',
         'Tests\\Providers\\Time\\TestTimeProvider' => __DIR__ . '/..' . '/robthree/twofactorauth/tests/Providers/Time/TestTimeProvider.php',
         'Tests\\TwoFactorAuthTest' => __DIR__ . '/..' . '/robthree/twofactorauth/tests/TwoFactorAuthTest.php',
+        'Thumbhash' => __DIR__ . '/../../..' . '/lib/Thumbhash.php',
         'UnhandledMatchError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/UnhandledMatchError.php',
         'ValueError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/ValueError.php',
         'ZipStreamTest\\ZipStreamTest' => __DIR__ . '/..' . '/maennchen/zipstream-php/test/ZipStreamTest.php',

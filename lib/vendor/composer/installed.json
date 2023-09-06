@@ -59,17 +59,17 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.280.0",
-            "version_normalized": "3.280.0.0",
+            "version": "3.281.1",
+            "version_normalized": "3.281.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "bf4f3079bc59af44a752677cfbcd43f7953c4343"
+                "reference": "d7a52685e00941636f25f4d53f26a4fa186f36d4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/bf4f3079bc59af44a752677cfbcd43f7953c4343",
-                "reference": "bf4f3079bc59af44a752677cfbcd43f7953c4343",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/d7a52685e00941636f25f4d53f26a4fa186f36d4",
+                "reference": "d7a52685e00941636f25f4d53f26a4fa186f36d4",
                 "shasum": ""
             },
             "require": {
@@ -110,7 +110,7 @@
                 "ext-openssl": "Allows working with CloudFront private distributions and verifying received SNS messages",
                 "ext-sockets": "To use client-side monitoring"
             },
-            "time": "2023-08-30T18:19:33+00:00",
+            "time": "2023-09-06T18:09:38+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -151,7 +151,7 @@
             "support": {
                 "forum": "https://forums.aws.amazon.com/forum.jspa?forumID=80",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.280.0"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.281.1"
             },
             "install-path": "../aws/aws-sdk-php"
         },
@@ -3503,17 +3503,17 @@
         },
         {
             "name": "webonyx/graphql-php",
-            "version": "v15.6.2",
-            "version_normalized": "15.6.2.0",
+            "version": "v15.6.3",
+            "version_normalized": "15.6.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webonyx/graphql-php.git",
-                "reference": "0a917058620a197530b357c46d8d5943a054a37e"
+                "reference": "3f045a4626d179ea6462e1a11744619860b55eb8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webonyx/graphql-php/zipball/0a917058620a197530b357c46d8d5943a054a37e",
-                "reference": "0a917058620a197530b357c46d8d5943a054a37e",
+                "url": "https://api.github.com/repos/webonyx/graphql-php/zipball/3f045a4626d179ea6462e1a11744619860b55eb8",
+                "reference": "3f045a4626d179ea6462e1a11744619860b55eb8",
                 "shasum": ""
             },
             "require": {
@@ -3530,14 +3530,14 @@
                 "nyholm/psr7": "^1.5",
                 "phpbench/phpbench": "^1.2",
                 "phpstan/extension-installer": "^1.1",
-                "phpstan/phpstan": "1.10.28",
-                "phpstan/phpstan-phpunit": "1.3.13",
+                "phpstan/phpstan": "1.10.32",
+                "phpstan/phpstan-phpunit": "1.3.14",
                 "phpstan/phpstan-strict-rules": "1.5.1",
                 "phpunit/phpunit": "^9.5 || ^10",
                 "psr/http-message": "^1 || ^2",
                 "react/http": "^1.6",
                 "react/promise": "^2.9",
-                "rector/rector": "^0.17",
+                "rector/rector": "^0.18",
                 "symfony/polyfill-php81": "^1.23",
                 "symfony/var-exporter": "^5 || ^6",
                 "thecodingmachine/safe": "^1.3 || ^2"
@@ -3547,7 +3547,7 @@
                 "psr/http-message": "To use standard GraphQL server",
                 "react/promise": "To leverage async resolving on React PHP platform"
             },
-            "time": "2023-08-08T17:15:12+00:00",
+            "time": "2023-09-01T08:13:33+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -3567,7 +3567,7 @@
             ],
             "support": {
                 "issues": "https://github.com/webonyx/graphql-php/issues",
-                "source": "https://github.com/webonyx/graphql-php/tree/v15.6.2"
+                "source": "https://github.com/webonyx/graphql-php/tree/v15.6.3"
             },
             "funding": [
                 {
@@ -3579,17 +3579,17 @@
         },
         {
             "name": "zircote/swagger-php",
-            "version": "4.7.12",
-            "version_normalized": "4.7.12.0",
+            "version": "4.7.13",
+            "version_normalized": "4.7.13.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zircote/swagger-php.git",
-                "reference": "6279683387b09e6f8fac6f4fb12c4ad6239bce18"
+                "reference": "e1062da5b47d3a97ee9910301f902b0f5b408340"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zircote/swagger-php/zipball/6279683387b09e6f8fac6f4fb12c4ad6239bce18",
-                "reference": "6279683387b09e6f8fac6f4fb12c4ad6239bce18",
+                "url": "https://api.github.com/repos/zircote/swagger-php/zipball/e1062da5b47d3a97ee9910301f902b0f5b408340",
+                "reference": "e1062da5b47d3a97ee9910301f902b0f5b408340",
                 "shasum": ""
             },
             "require": {
@@ -3608,7 +3608,7 @@
                 "phpunit/phpunit": ">=8",
                 "vimeo/psalm": "^4.23"
             },
-            "time": "2023-08-30T22:56:22+00:00",
+            "time": "2023-08-30T23:32:39+00:00",
             "bin": [
                 "bin/openapi"
             ],
@@ -3654,7 +3654,7 @@
             ],
             "support": {
                 "issues": "https://github.com/zircote/swagger-php/issues",
-                "source": "https://github.com/zircote/swagger-php/tree/4.7.12"
+                "source": "https://github.com/zircote/swagger-php/tree/4.7.13"
             },
             "install-path": "../zircote/swagger-php"
         }

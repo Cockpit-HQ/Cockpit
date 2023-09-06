@@ -311,7 +311,11 @@ class Assets extends App {
             return false;
         }
 
-        $this->app->reroute($thumbUrl);
+        if($this->param('re:int', 1)) {
+            $this->app->reroute($thumbUrl);
+        }
+
+        return ['url' => $thumbUrl];
     }
 
 }

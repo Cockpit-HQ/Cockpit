@@ -1369,6 +1369,7 @@ return array(
     'Tests\\Providers\\Time\\ITimeProviderTest' => $vendorDir . '/robthree/twofactorauth/tests/Providers/Time/ITimeProviderTest.php',
     'Tests\\Providers\\Time\\TestTimeProvider' => $vendorDir . '/robthree/twofactorauth/tests/Providers/Time/TestTimeProvider.php',
     'Tests\\TwoFactorAuthTest' => $vendorDir . '/robthree/twofactorauth/tests/TwoFactorAuthTest.php',
+    'Thumbhash' => $baseDir . '/lib/Thumbhash.php',
     'UnhandledMatchError' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/UnhandledMatchError.php',
     'ValueError' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/ValueError.php',
     'ZipStreamTest\\ZipStreamTest' => $vendorDir . '/maennchen/zipstream-php/test/ZipStreamTest.php',
