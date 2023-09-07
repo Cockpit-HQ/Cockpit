@@ -11,7 +11,7 @@
 
 class Thumbhash {
 
-    public static function fromFile($file) {
+    public static function fromFile($file): array {
 
         $image = imagecreatefromstring(file_get_contents($file));
 
@@ -43,7 +43,7 @@ class Thumbhash {
      * @returns array The ThumbHash as an array.
      */
 
-    public static function RGBAToHash($w, $h, $rgba) {
+    public static function RGBAToHash(int $w, int $h, array $rgba): array {
         // Encoding an image larger than 100x100 is slow with no benefit
         if ($w > 100 || $h > 100) {
             throw new \Exception("{$w}x{$h} doesn't fit in 100x100");
@@ -128,7 +128,7 @@ class Thumbhash {
      * Encode a channel using the Discrete Cosine Transform (DCT)
      * into DC (constant) and normalized AC (varying) terms.
      */
-    public static function encodeChannel($channel, $nx, $ny, $w, $h) {
+    public static function encodeChannel(array $channel, int $nx, int $ny, int $w, int $h): array {
         $dc = 0;
         $ac = [];
         $scale = 0;
@@ -306,7 +306,7 @@ class Thumbhash {
      * @param  array  $hash  The bytes of the ThumbHash.
      * @return float The approximate aspect ratio (i.e. width / height).
      */
-    public static function toApproximateAspectRatio(array $hash) {
+    public static function toApproximateAspectRatio(array $hash): float {
         $header = $hash[3];
         $hasAlpha = $hash[2] & 0x80;
         $isLandscape = $hash[4] & 0x80;
@@ -326,7 +326,7 @@ class Thumbhash {
      * @param $rgba String The pixels in the input image, row-by-row. Must have w*h*4 elements.
      * @returns String A data URL containing a PNG for the input image.
      */
-    public static function rgbaToDataURL(int $w, int $h, $rgba) {
+    public static function rgbaToDataURL(int $w, int $h, array $rgba): string {
         $row = $w * 4 + 1;
         $idat = 6 + $h * (5 + $row);
         $bytes = [

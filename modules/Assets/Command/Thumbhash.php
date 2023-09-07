@@ -24,9 +24,11 @@ class Thumbhash extends Command {
 
     protected function execute(InputInterface $input, OutputInterface $output): int {
 
-        $cntGenerated = 0;
-        $cntProcessed = 0;
+        if (function_exists('ini_set')) {
+            ini_set('memory_limit', -1);
+        }
 
+        $cntGenerated = 0;
         $run = 0;
         $limit = 20;
 
@@ -41,11 +43,11 @@ class Thumbhash extends Command {
                 'limit' => $limit
             ]);
 
-            foreach ($assets as $asset) {
+            foreach ($assets as &$asset) {
 
                 $progressBar->advance();
 
-                if ($asset['mime'] == 'image/svg+xml' || isset($asset['thumbhash'])) continue;
+                if ($asset['mime'] == 'image/svg+xml' /*|| isset($asset['thumbhash'])*/) continue;
 
                 $thumbpath = $this->app->helper('asset')->image([
                     'src' => $asset['_id'],

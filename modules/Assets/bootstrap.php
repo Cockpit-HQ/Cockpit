@@ -231,6 +231,10 @@ $this->module('assets')->extend([
 
                         try {
 
+                            if (function_exists('ini_set')) {
+                                ini_set('memory_limit', -1);
+                            }
+
                             $img = new SimpleImageLib($file);
                             $img->bestFit(100, 100)->toFile($tmppath);
 
