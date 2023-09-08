@@ -127,7 +127,7 @@ export default {
             this.loading = true;
             this.selectedFile = null;
 
-            this.$request(`/finder/buckets/api/${this.bucket}`, {cmd: 'ls', path}).then(rsp => {
+            this.$request(`/system/buckets/api/${this.bucket}`, {cmd: 'ls', path}).then(rsp => {
 
                 this.currentpath = path;
                 this.files = rsp.files || [];
@@ -177,7 +177,7 @@ export default {
 
                 if (name.trim()) {
 
-                    this.$request(`/finder/buckets/api/${this.bucket}`, {cmd: 'createfolder', path: this.currentpath, name}).then(() => {
+                    this.$request(`/system/buckets/api/${this.bucket}`, {cmd: 'createfolder', path: this.currentpath, name}).then(() => {
                         this.loadpath();
                     });
                 }
@@ -192,7 +192,7 @@ export default {
 
                     this.selectedFile = null;
 
-                    this.$request(`/finder/buckets/api/${this.bucket}`, {cmd: 'rename', path: item.path, name}).then(() => {
+                    this.$request(`/system/buckets/api/${this.bucket}`, {cmd: 'rename', path: item.path, name}).then(() => {
 
                         item.path = item.path.replace(item.name, name);
                         item.name = name;
@@ -205,7 +205,7 @@ export default {
 
             App.ui.confirm('Are you sure?', () => {
 
-                this.$request(`/finder/buckets/api/${this.bucket}`, {cmd: 'removefiles', paths: [item.path]}).then(() => {
+                this.$request(`/system/buckets/api/${this.bucket}`, {cmd: 'removefiles', paths: [item.path]}).then(() => {
 
                     const index = this[item.is_file ? 'files':'folders'].indexOf(item);
 
@@ -223,7 +223,7 @@ export default {
 
             App.ui.confirm('Are you sure?', () => {
 
-                this.$request(`/finder/buckets/api/${this.bucket}`, {cmd:'removefiles', paths: this.selected}).then(() => {
+                this.$request(`/system/buckets/api/${this.bucket}`, {cmd:'removefiles', paths: this.selected}).then(() => {
                     this.loadpath();
                     App.ui.notify('File(s) deleted', 'success');
                 });
@@ -249,7 +249,7 @@ export default {
             formData.append('cmd', 'upload');
             formData.append('path', this.currentpath);
 
-            xhr.open('POST', App.route(`/finder/buckets/api/${this.bucket}`));
+            xhr.open('POST', App.route(`/system/buckets/api/${this.bucket}`));
 
             xhr.setRequestHeader('X-CSRF-TOKEN', App.csrf);
             xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');

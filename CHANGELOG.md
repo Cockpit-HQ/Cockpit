@@ -8,6 +8,7 @@
 - Sanitize space name during installation
 - Multiselect & delete of assets
 - Add thumbhash to image assets on upload
+- Move buckets code to system module
 
 ## 2.6.3 (2023-08-15)
 

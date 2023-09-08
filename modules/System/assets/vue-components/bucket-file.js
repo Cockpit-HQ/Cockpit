@@ -65,7 +65,7 @@ export default {
 
         pickFile() {
 
-            VueView.ui.modal('finder:assets/dialogs/bucket-picker.js', {bucket: this.bucket, type: this.type, selectFile: (file) => {
+            VueView.ui.modal('system:assets/dialogs/bucket-picker.js', {bucket: this.bucket, type: this.type, selectFile: (file) => {
 
                 this.val = {
                     bucket: this.bucket,

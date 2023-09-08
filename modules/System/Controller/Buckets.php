@@ -1,6 +1,6 @@
 <?php
 
-namespace Finder\Controller;
+namespace System\Controller;
 
 use App\Controller\App;
 use ArrayObject;
