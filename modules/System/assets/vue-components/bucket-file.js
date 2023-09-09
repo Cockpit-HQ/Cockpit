@@ -27,7 +27,7 @@ export default {
     computed: {
 
         file() {
-            return this.val && this.val.file ? this.val.file : null;
+            return this.val?.file;
         },
 
         fileUrl() {
