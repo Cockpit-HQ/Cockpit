@@ -27,7 +27,7 @@ export default {
     computed: {
 
         file() {
-            return (this.val && this.val.file) || null;
+            return this.val && this.val.file ? this.val.file : null;
         },
 
         fileUrl() {
@@ -36,7 +36,7 @@ export default {
                 return null;
             }
 
-            return App._vars.bucketsUrl + '/' + this.val.bucket + '/' + this.val.file.path;
+            return `${App._vars.bucketsUrl}/${this.val.bucket}/${this.val.file.path}`;
         },
 
         thumbUrl() {
