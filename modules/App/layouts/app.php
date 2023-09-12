@@ -122,9 +122,13 @@
                     <app-license></app-license>
 
                     <div class="kiss-margin-left">
-                        <a kiss-popout="#app-account-menu">
+                        <kiss-card class="kiss-flex kiss-flex-middle kiss-padding-xsmall" theme="shadowed contrast">
                             <app-avatar size="30" name="<?=$this['user/name']?>"></app-avatar>
-                        </a>
+                            <div class="kiss-padding-small kiss-size-xsmall">
+                                <strong><?=$this['user/name']?></strong>
+                            </div>
+                            <a class="kiss-cover" kiss-popout="#app-account-menu"></a>
+                        </kiss-card>
                     </div>
                 </kiss-container>
             </app-header>

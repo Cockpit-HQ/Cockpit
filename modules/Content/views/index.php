@@ -151,7 +151,7 @@
 
                 <kiss-card class="kiss-margin-small">
                     <span class="kiss-text-caption kiss-size-xsmall"><?= t('Models') ?></span>
-                    <div class="kiss-size-3 kiss-text-bold">{{ (singletons.length + lists.length) }}</div>
+                    <div class="kiss-size-3 kiss-text-bold kiss-margin-small-top">{{ (singletons.length + lists.length) }}</div>
                 </kiss-card>
 
                 <kiss-grid cols="2" gap="small" v-if="!filterModelType">
