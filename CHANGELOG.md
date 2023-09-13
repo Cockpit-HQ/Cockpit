@@ -9,6 +9,8 @@
 - Multiselect & delete of assets
 - Add thumbhash to image assets on upload
 - Move buckets code to system module
+- Add support for custom meta data for asset fields
+- Support for multiple assets selection
 
 ## 2.6.3 (2023-08-15)
 

@@ -21,7 +21,7 @@ App.on('field-wysiwyg-setup', evt => {
 
             VueView.ui.modal('assets:assets/dialogs/asset-picker.js', {}, {
 
-                selectAsset: (asset) => {
+                onSelect: (asset) => {
 
                     let content, url = App.base(`#uploads:${asset.path}`);
 

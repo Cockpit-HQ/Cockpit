@@ -34,7 +34,6 @@ export default {
         return {
             assets: [],
             selected: [],
-            selectedAsset: null,
             folders: [],
             folder: null,
 
@@ -57,17 +56,35 @@ export default {
     },
 
     props: {
+
         modal: {
             type: Boolean,
             default: false
         },
 
-        selectAsset: {
+        onSelect: {
             default: null
+        },
+
+        selectMultiple: {
+            type: Boolean,
+            default: false
         },
 
         initFilter: {
             default: null
+        }
+    },
+
+    computed: {
+
+        selectedAssets() {
+
+            if (!this.selected.length) {
+                return [];
+            };
+
+            return this.assets.filter(asset => this.selected.indexOf(asset._id) > -1);
         }
     },
 
@@ -123,7 +140,6 @@ export default {
 
             this.loading = true;
             this.selected = [];
-            this.selectedAsset = null;
 
             this.$request('/assets/assets', {options, folder: this.folder}).then(rsp => {
                 this.assets = rsp.assets;
@@ -172,6 +188,20 @@ export default {
             });
         },
 
+        toggleSelect(asset) {
+
+            if (!this.selectMultiple) {
+                this.selected = [];
+            }
+
+            if (this.selected.indexOf(asset._id) > -1) {
+                this.selected.splice(this.selected.indexOf(asset._id), 1);
+                return;
+            }
+
+            this.selected.push(asset._id);
+        },
+
         toggleAllSelect(e) {
 
             this.selected = [];
@@ -179,6 +209,10 @@ export default {
             if (e.target.checked) {
                 this.assets.forEach(asset => this.selected.push(asset._id));
             }
+        },
+
+        isSelected(asset) {
+            return this.selected.indexOf(asset._id) > -1;
         },
 
         toggleAssetActions(asset) {
@@ -264,10 +298,6 @@ export default {
 
         copyAssetLinkID(asset) {
             App.utils.copyText(location.origin + App.route(`/assets/link/${asset._id}`), () =>  App.ui.notify('Asset link copied!'));
-        },
-
-        isSelected(asset) {
-            return (this.selectedAsset && this.selectedAsset._id == asset._id) || this.selected.indexOf(asset._id) > -1;
         }
     },
 
@@ -321,10 +351,10 @@ export default {
                                 <div><asset-preview :asset="asset"></asset-preview></div>
                             </div>
                             <a class="kiss-cover spotlight" :href="$base('#uploads:'+asset.path)" :data-media="asset.type" :data-title="asset.title" :aria-label="asset.title" v-if="['image', 'video'].indexOf(asset.type) > -1"></a>
-                            <a class="kiss-cover" @click="selectedAsset=asset" :aria-label="asset.title" v-if="modal"></a>
+                            <a class="kiss-cover" @click="toggleSelect(asset)" :aria-label="asset.title" v-if="modal"></a>
                         </div>
                         <div class="kiss-padding kiss-flex kiss-flex-middle" gap="small">
-                            <div v-if="!modal"><input class="kiss-checkbox" type="checkbox" v-model="selected" :value="asset._id"></div>
+                            <div v-if="!modal || selectMultiple"><input class="kiss-checkbox" type="checkbox" v-model="selected" :value="asset._id"></div>
                             <div class="kiss-text-truncate kiss-size-xsmall kiss-flex-1"><a class="kiss-link-muted" @click="edit(asset)">{{ asset.title }}</a></div>
                             <a @click="toggleAssetActions(asset)" :aria-label="t('Toggle asset options')"><icon>more_horiz</icon></a>
                         </div>
@@ -355,7 +385,7 @@ export default {
             </div>
             <div class="kiss-button-group">
                 <button class="kiss-button" kiss-dialog-close>{{ t('Cancel') }}</button>
-                <button class="kiss-button kiss-button-primary" v-if="selectedAsset" @click="selectAsset && selectAsset(selectedAsset)">{{ t('Select asset') }}</button>
+                <button class="kiss-button kiss-button-primary" v-if="selected.length" @click="onSelect && onSelect(selectMultiple ? selectedAssets : selectedAssets[0])">{{ t('Select') }}</button>
             </div>
         </div>
 

@@ -23,7 +23,12 @@ export default {
 
     watch: {
         asset: {
-            handler() {
+            handler(ov, nv) {
+
+                if (ov?.path === nv?.path) {
+                    return;
+                }
+
                 setTimeout(() => this.update());
             },
             deep: true
