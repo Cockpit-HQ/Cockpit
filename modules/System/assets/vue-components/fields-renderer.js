@@ -202,7 +202,7 @@ let FieldRenderer = {
                         </div>
                         <div class="kiss-flex-1 kiss-margin-left">
                             <span class="kiss-size-xsmall kiss-color-muted kiss-text-upper">{{ fieldItem.field.type }}</span>
-                            <kiss-row class="kiss-margin-xsmall-top kiss-flex-middle">
+                            <kiss-row class="kiss-flex-middle">
                                 <div class="kiss-size-4 kiss-text-bold kiss-flex-1">{{ fieldItem.create ? t('Add item'):t('Update item') }}</div>
                             </kiss-row>
                         </div>

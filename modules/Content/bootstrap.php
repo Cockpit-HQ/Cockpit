@@ -580,7 +580,15 @@ $this->module('content')->extend([
             foreach ($items as $k => &$v) {
                 if (!is_array($v)) continue;
                 if (is_array($items[$k])) $items[$k] = $update($items[$k]);
-                if (isset($v['_id']) && $v['_id'] == $refId) $items[$k] = $value;
+                if (isset($v['_id']) && $v['_id'] == $refId) {
+
+                    $data = ($value && isset($v['_data'])) ? $v['_data'] : null;
+                    $items[$k] = $value;
+
+                    if ($data) {
+                        $items[$k]['_data'] = $data;
+                    }
+                }
             }
             return $items;
         };
