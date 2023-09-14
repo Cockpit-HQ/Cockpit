@@ -131,7 +131,7 @@ export default {
     template: /*html*/`
         <div :id="uuid">
             <div class="kiss-cover kiss-flex kiss-flex-middle kiss-flex-center" v-if="asset.type=='image'">
-                <img class="kiss-position-absolute kiss-margin-auto kiss-responsive-height" :alt="asset.title" loading="lazy" :src="preview" :width="asset.width" :height="asset.height" style="height:100%" v-if="preview">
+                <img class="kiss-position-absolute kiss-margin-auto kiss-responsive-height" :alt="asset.title" loading="lazy" :src="preview" :width="asset.width" :height="asset.height" :style="{height: asset.height+'px'}" v-if="preview">
                 <app-loader size="small" v-if="loading"></app-loader>
             </div>
             <div class="kiss-cover kiss-flex kiss-flex-middle kiss-flex-center" v-else-if="asset.type=='video'">

@@ -369,7 +369,7 @@ export default {
             <table class="kiss-table" v-if="!loading && assets.length && view == 'table'">
                 <thead>
                     <tr>
-                        <th width="20"><input class="kiss-checkbox kiss-size-6" type="checkbox" @click="toggleAllSelect"></th>
+                        <th width="20" v-if="!modal || selectMultiple"><input class="kiss-checkbox kiss-size-6" type="checkbox" @click="toggleAllSelect"></th>
                         <th width="50"></th>
                         <th width="70%">{{ t('Title') }}</th>
                         <th>{{ t('Size') }}</th>
@@ -378,10 +378,13 @@ export default {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="asset in assets">
-                        <td><input class="kiss-checkbox" type="checkbox" v-model="selected" :value="asset._id"></td>
-                        <td class="kiss-position-relative"><asset-preview class="kiss-cover kiss-padding-small" :asset="asset"></asset-preview></td>
-                        <td class="kiss-text-truncate"><a class="kiss-link-muted" @click="edit(asset)">{{ asset.title }}</a></td>
+                    <tr v-for="asset in assets" :style="{borderLeft: isSelected(asset) ? '1px var(--kiss-color-primary) solid' : null}">
+                        <td v-if="!modal || selectMultiple"><input class="kiss-checkbox" type="checkbox" v-model="selected" :value="asset._id"></td>
+                        <td class="kiss-position-relative kiss-padding-small">
+                            <asset-preview :asset="asset"></asset-preview>
+                            <a class="kiss-cover spotlight" :href="$base('#uploads:'+asset.path)" :data-media="asset.type" :data-title="asset.title" :aria-label="asset.title" v-if="!modal && ['image', 'video'].indexOf(asset.type) > -1"></a>
+                        </td>
+                        <td class="kiss-text-truncate"><a class="kiss-link-muted" @click="modal ? toggleSelect(asset) : edit(asset)">{{ asset.title }}</a></td>
                         <td class="kiss-color-muted">{{ App.utils.formatSize(asset.size) }}</td>
                         <td class="kiss-color-muted">{{ asset.mime }}</td>
                         <td><a @click="toggleAssetActions(asset)" :aria-label="t('Toggle asset options')"><icon>more_horiz</icon></a></td>
@@ -405,7 +408,7 @@ export default {
                     <a class="kiss-margin-small-left" v-if="(page + 1) <= pages" @click="load(page + 1)">{{ t('Next') }}</a>
                 </app-pagination>
             </div>
-            <div class="kiss-flex kiss-flex-middle" gap="">
+            <div class="kiss-flex kiss-flex-middle" gap="" v-if="!loading">
                 <a class="kiss-link-muted" :class="view=='cards' ? 'kiss-color-primary' : 'kiss-color-muted'" @click="view='cards'"><icon size="large">grid_view</icon></a>
                 <a class="kiss-link-muted" :class="view=='table' ? 'kiss-color-primary' : 'kiss-color-muted'" @click="view='table'"><icon size="large">dns</icon></a>
             </div>
@@ -436,7 +439,7 @@ export default {
                             <a class="kiss-margin-small-left" v-if="(page + 1) <= pages" @click="load(page + 1)">{{ t('Next') }}</a>
                         </app-pagination>
                     </div>
-                    <div class="kiss-flex kiss-flex-middle" gap="">
+                    <div class="kiss-flex kiss-flex-middle" gap="" v-if="!loading">
                         <a class="kiss-link-muted" :class="view=='cards' ? 'kiss-color-primary' : 'kiss-color-muted'" @click="view='cards'"><icon size="large">grid_view</icon></a>
                         <a class="kiss-link-muted" :class="view=='table' ? 'kiss-color-primary' : 'kiss-color-muted'" @click="view='table'"><icon size="large">dns</icon></a>
                     </div>
