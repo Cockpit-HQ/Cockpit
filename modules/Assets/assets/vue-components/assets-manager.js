@@ -50,7 +50,7 @@ export default {
             pages: 1,
             limit: 15,
 
-            view: 'table',
+            view: App.session.get('assets.manager.view', 'cards'),
 
             loading: false,
             uppy: null
@@ -109,6 +109,9 @@ export default {
         filter(val) {
             this.txtFilter = val;
             this.load();
+        },
+        view(val) {
+            App.session.set('assets.manager.view', val);
         }
     },
 
