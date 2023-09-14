@@ -11,6 +11,7 @@
 - Move buckets code to system module
 - Add support for custom meta data for asset fields
 - Support for multiple assets selection
+- Add color field render function to show color in items list
 
 ## 2.6.3 (2023-08-15)
 

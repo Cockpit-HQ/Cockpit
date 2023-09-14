@@ -6,7 +6,19 @@ export default {
         icon: 'system:assets/icons/color.svg',
         settings: [
             {name: 'size', type: 'number', opts: {placeholder: '40'}},
-        ]
+        ],
+        render(value, field, context) {
+
+            if (!value) {
+                return '';
+            }
+
+            if (Array.isArray(value)) {
+                return value.length;
+            }
+
+            return `<icon size="larger" style="color:${value}">invert_colors</icon>`;
+        }
     },
 
     data() {
