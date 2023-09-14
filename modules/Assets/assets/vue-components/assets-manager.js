@@ -381,12 +381,12 @@ export default {
                     <tr v-for="asset in assets" :style="{borderLeft: isSelected(asset) ? '1px var(--kiss-color-primary) solid' : null}">
                         <td v-if="!modal || selectMultiple"><input class="kiss-checkbox" type="checkbox" v-model="selected" :value="asset._id"></td>
                         <td class="kiss-position-relative kiss-padding-small">
-                            <asset-preview :asset="asset"></asset-preview>
+                            <asset-preview :asset="asset" max-height="30px"></asset-preview>
                             <a class="kiss-cover spotlight" :href="$base('#uploads:'+asset.path)" :data-media="asset.type" :data-title="asset.title" :aria-label="asset.title" v-if="!modal && ['image', 'video'].indexOf(asset.type) > -1"></a>
                         </td>
-                        <td class="kiss-text-truncate"><a class="kiss-link-muted" @click="modal ? toggleSelect(asset) : edit(asset)">{{ asset.title }}</a></td>
-                        <td class="kiss-color-muted">{{ App.utils.formatSize(asset.size) }}</td>
-                        <td class="kiss-color-muted">{{ asset.mime }}</td>
+                        <td class="kiss-text-truncate" :class="{'kiss-color-primary': isSelected(asset)}"><a class="kiss-link-muted" @click="modal ? toggleSelect(asset) : edit(asset)">{{ asset.title }}</a></td>
+                        <td class="kiss-color-muted kiss-text-monospace">{{ App.utils.formatSize(asset.size) }}</td>
+                        <td class="kiss-color-muted kiss-text-monospace">{{ asset.mime }}</td>
                         <td><a @click="toggleAssetActions(asset)" :aria-label="t('Toggle asset options')"><icon>more_horiz</icon></a></td>
                     </tr>
                 </tbody>

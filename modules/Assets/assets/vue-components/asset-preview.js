@@ -18,6 +18,10 @@ export default {
         asset: {
             type: Object,
             default: {}
+        },
+        maxHeight: {
+            type: String,
+            default: '100%',
         }
     },
 
@@ -131,14 +135,14 @@ export default {
     template: /*html*/`
         <div :id="uuid">
             <div class="kiss-cover kiss-flex kiss-flex-middle kiss-flex-center" v-if="asset.type=='image'">
-                <img class="kiss-position-absolute kiss-margin-auto kiss-responsive-height" :alt="asset.title" loading="lazy" :src="preview" :width="asset.width" :height="asset.height" :style="{height: asset.height+'px'}" v-if="preview">
+                <img class="kiss-position-absolute kiss-margin-auto kiss-responsive-height" :alt="asset.title" loading="lazy" :src="preview" :width="asset.width" :height="asset.height" :style="{height: maxHeight}" v-if="preview">
                 <app-loader size="small" v-if="loading"></app-loader>
             </div>
             <div class="kiss-cover kiss-flex kiss-flex-middle kiss-flex-center" v-else-if="asset.type=='video'">
-                <canvas class="kiss-margin-auto kiss-responsive-height" style="opacity:.5"></canvas>
+                <canvas class="kiss-margin-auto kiss-responsive-height" style="opacity:.5" :style="{height: maxHeight}"></canvas>
                 <div class="kiss-cover kiss-flex kiss-flex-middle kiss-flex-center">
                     <app-loader size="small" v-if="loading"></app-loader>
-                    <kiss-svg :src="$base('assets:assets/icons/video.svg')" width="80" height="80" v-if="!loading"></kiss-svg>
+                    <kiss-svg :src="$base('assets:assets/icons/video.svg')" width="80" height="80" style="max-width:50%" v-if="!loading"></kiss-svg>
                 </div>
             </div>
             <kiss-svg :src="$base('assets:assets/icons/file.svg')" width="80" height="80" v-else></kiss-svg>
