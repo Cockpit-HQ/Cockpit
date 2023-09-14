@@ -10,8 +10,9 @@
 - Add thumbhash to image assets on upload
 - Move buckets code to system module
 - Add support for custom meta data for asset fields
-- Support for multiple assets selection
-- Add color field render function to show color in items list
+- Support for multiple assets selection (eg asset field with multiple values)
+- Add color field value render function to show color in items list
+- Add table view to assets manager
 
 ## 2.6.3 (2023-08-15)
 

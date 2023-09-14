@@ -50,6 +50,8 @@ export default {
             pages: 1,
             limit: 15,
 
+            view: 'table',
+
             loading: false,
             uppy: null
         }
@@ -148,7 +150,6 @@ export default {
                 this.pages = rsp.pages;
                 this.count = rsp.count;
 
-                this.view = 'assets';
                 this.loading = false;
             })
         },
@@ -342,7 +343,7 @@ export default {
                 </div>
             </div>
 
-            <kiss-grid cols="2@s 5@m 6@xl" class="spotlight-group" gap="small" v-if="!loading && assets.length" match="true" hover="shadow">
+            <kiss-grid cols="2@s 5@m 6@xl" class="spotlight-group" gap="small" v-if="!loading && assets.length && view == 'cards'" match="true" hover="shadow">
 
                     <kiss-card class="kiss-position-relative kiss-bgcolor-contrast" theme="bordered" hover="shadow" :style="{borderColor: isSelected(asset) ? 'var(--kiss-color-primary)' : null}" v-for="asset in assets">
                         <div class="kiss-position-relative" :class="{'kiss-bgcolor-transparentimage': asset.type == 'image'}">
@@ -362,9 +363,32 @@ export default {
 
             </kiss-grid>
 
+            <table class="kiss-table" v-if="!loading && assets.length && view == 'table'">
+                <thead>
+                    <tr>
+                        <th width="20"><input class="kiss-checkbox kiss-size-6" type="checkbox" @click="toggleAllSelect"></th>
+                        <th width="50"></th>
+                        <th width="70%">{{ t('Title') }}</th>
+                        <th>{{ t('Size') }}</th>
+                        <th>{{ t('Mime') }}</th>
+                        <th width="20"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="asset in assets">
+                        <td><input class="kiss-checkbox" type="checkbox" v-model="selected" :value="asset._id"></td>
+                        <td class="kiss-position-relative"><asset-preview class="kiss-cover kiss-padding-small" :asset="asset"></asset-preview></td>
+                        <td class="kiss-text-truncate"><a class="kiss-link-muted" @click="edit(asset)">{{ asset.title }}</a></td>
+                        <td class="kiss-color-muted">{{ App.utils.formatSize(asset.size) }}</td>
+                        <td class="kiss-color-muted">{{ asset.mime }}</td>
+                        <td><a @click="toggleAssetActions(asset)" :aria-label="t('Toggle asset options')"><icon>more_horiz</icon></a></td>
+                    </tr>
+                </tbody>
+            </table>
+
         </div>
 
-        <div class="kiss-flex kiss-flex-middle kiss-margin-large-top" v-if="modal">
+        <div class="kiss-flex kiss-flex-middle kiss-margin-large-top" v-if="modal" gap="">
             <div class="kiss-flex kiss-flex-middle" v-if="!loading && count">
                 <app-pagination>
                     <div class="kiss-color-muted">{{ count }} {{ count == 1 ? t('Item') : t('Items') }}</div>
@@ -377,6 +401,10 @@ export default {
                     </div>
                     <a class="kiss-margin-small-left" v-if="(page + 1) <= pages" @click="load(page + 1)">{{ t('Next') }}</a>
                 </app-pagination>
+            </div>
+            <div class="kiss-flex kiss-flex-middle" gap="">
+                <a class="kiss-link-muted" :class="view=='cards' ? 'kiss-color-primary' : 'kiss-color-muted'" @click="view='cards'"><icon size="large">grid_view</icon></a>
+                <a class="kiss-link-muted" :class="view=='table' ? 'kiss-color-primary' : 'kiss-color-muted'" @click="view='table'"><icon size="large">dns</icon></a>
             </div>
             <div class="kiss-flex-1 kiss-margin-right"></div>
             <div class="kiss-button-group kiss-margin-right">
@@ -404,6 +432,10 @@ export default {
                             </div>
                             <a class="kiss-margin-small-left" v-if="(page + 1) <= pages" @click="load(page + 1)">{{ t('Next') }}</a>
                         </app-pagination>
+                    </div>
+                    <div class="kiss-flex kiss-flex-middle" gap="">
+                        <a class="kiss-link-muted" :class="view=='cards' ? 'kiss-color-primary' : 'kiss-color-muted'" @click="view='cards'"><icon size="large">grid_view</icon></a>
+                        <a class="kiss-link-muted" :class="view=='table' ? 'kiss-color-primary' : 'kiss-color-muted'" @click="view='table'"><icon size="large">dns</icon></a>
                     </div>
                     <div class="kiss-flex-1 kiss-margin-right"></div>
                     <div v-if="selected.length">
