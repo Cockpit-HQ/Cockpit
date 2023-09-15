@@ -56,6 +56,8 @@ class Thumbhash extends Command {
                     'mode' => 'bestFit'
                 ], true);
 
+                if (!$this->app->path("#{$thumbpath}")) continue;
+
                 $thumbhash = implode('-', \Thumbhash::fromFile($this->app->path("#{$thumbpath}")));
 
                 $data = ['_id' => $asset['_id'], 'thumbhash' => $thumbhash];

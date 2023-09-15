@@ -276,7 +276,7 @@ class Cockpit {
             $cache = include($cacheFile);
 
             if (APP_VERSION !== $cache['version'] || $cache['env'] !== $envDir) {
-                unlink($cacheFile);
+                @unlink($cacheFile);
                 $app->loadModules($modulesPaths);
             } else {
 
