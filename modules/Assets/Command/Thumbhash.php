@@ -47,7 +47,7 @@ class Thumbhash extends Command {
 
                 $progressBar->advance();
 
-                if ($asset['mime'] == 'image/svg+xml' /*|| isset($asset['thumbhash'])*/) continue;
+                if ($asset['mime'] == 'image/svg+xml' || isset($asset['thumbhash'])) continue;
 
                 $thumbpath = $this->app->helper('asset')->image([
                     'src' => $asset['_id'],
