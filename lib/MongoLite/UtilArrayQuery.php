@@ -12,6 +12,8 @@ class UtilArrayQuery {
 
     public static function buildCondition(mixed $criteria, string $concat = ' && '): string {
 
+        //if (!$criteria) return 'true';
+
         $fn = [];
 
         foreach ($criteria as $key => $value) {

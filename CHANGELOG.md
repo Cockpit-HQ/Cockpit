@@ -1,5 +1,9 @@
 # Release Notes
 
+## WIP
+
+- Fix broken assets loading for asset field with multiple values
+
 ## 2.7.0 (2023-09-15)
 
 - Fix mime type detection on asset upload

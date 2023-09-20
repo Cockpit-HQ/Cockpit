@@ -55,9 +55,16 @@ export default {
 
             if (this.asset.type == 'image') {
 
+                let start = (Date.now()), delay = 250, duration;
+
                 this.$request(`/assets/thumbnail/${this.asset._id}?m=bestFit&mime=auto&h=300&t=${this.asset._modified}&re=0`).then(rsp => {
-                    this.preview = rsp.url;
-                    this.loading = false;
+
+                    duration = Date.now() - start;
+
+                    setTimeout(() => {
+                        this.preview = rsp.url;
+                        this.loading = false;
+                    }, duration > delay ? 0 : delay - (Date.now() - start));
                 });
             }
 
@@ -135,8 +142,8 @@ export default {
     template: /*html*/`
         <div :id="uuid">
             <div class="kiss-cover kiss-flex kiss-flex-middle kiss-flex-center" v-if="asset.type=='image'">
-                <img class="kiss-position-absolute kiss-margin-auto kiss-responsive-height" :alt="asset.title" loading="lazy" :src="preview" :width="asset.width" :height="asset.height" :style="{height: '100%'}" v-if="preview && loading">
-                <img class="kiss-position-absolute kiss-margin-auto kiss-responsive-height animated fadeIn" :alt="asset.title" loading="lazy" :src="preview" :width="asset.width" :height="asset.height" :style="{height: maxHeight}" v-if="preview && !loading">
+                <img class="kiss-position-absolute kiss-margin-auto kiss-responsive-height" :alt="asset.title" loading="lazy" :src="preview" :width="asset.width" :height="asset.height" :style="{height: maxHeight ?? '100%'}" v-if="preview && loading">
+                <img class="kiss-position-absolute kiss-margin-auto kiss-responsive-height animated fadeIn fast" :alt="asset.title" loading="lazy" :src="preview" :width="asset.width" :height="asset.height" :style="{height: maxHeight}" v-if="preview && !loading">
                 <app-loader size="small" v-if="loading"></app-loader>
             </div>
             <div class="kiss-cover kiss-flex kiss-flex-middle kiss-flex-center" v-else-if="asset.type=='video'">

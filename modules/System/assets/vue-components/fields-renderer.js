@@ -6,17 +6,19 @@ let FieldRenderer = {
 
     data() {
 
+        if (!this.field.opts || (this.field.opts && Array.isArray(this.field.opts))) {
+            this.field.opts = {};
+        }
+
+        // set default value if defined
         if (this.modelValue === undefined) {
 
             let val = null;
 
-            if (this.field.opts) {
+            val = (!this.locale && this.field.opts.default !== undefined && this.field.opts.default) || null;
 
-                val = (!this.locale && this.field.opts.default !== undefined && this.field.opts.default) || null;
-
-                if (this.locale && this.field.opts[`default_${this.locale}`]) {
-                    val = this.field.opts[`default_${this.locale}`];
-                }
+            if (this.locale && this.field.opts[`default_${this.locale}`]) {
+                val = this.field.opts[`default_${this.locale}`];
             }
 
             if (!this.locale && this.field.type == 'boolean' && val === null) {
