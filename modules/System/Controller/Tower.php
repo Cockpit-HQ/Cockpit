@@ -23,7 +23,9 @@ class Tower extends App {
 
     public function index() {
 
-        return $this->render('system:views/tower.php');
+        $isAvailable = function_exists('proc_open') && (new PhpExecutableFinder())->find();
+
+        return $this->render('system:views/tower.php', compact('isAvailable'));
     }
 
 
