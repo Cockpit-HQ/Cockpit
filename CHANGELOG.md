@@ -3,6 +3,7 @@
 ## WIP
 
 - Fix broken assets loading for asset field with multiple values
+- Fix referenced assets updates for content tree items
 
 ## 2.7.0 (2023-09-15)
 

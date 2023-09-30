@@ -604,7 +604,7 @@ $this->module('content')->extend([
 
         foreach ($models as $name => $meta) {
 
-            if ($meta['type'] !== 'collection') continue;
+            if (!in_array($meta['type'], ['collection', 'tree'])) continue;
 
             $collection = "content/collections/{$name}";
             $items = $this->app->dataStorage->findTerm($collection, $refId)->toArray();
