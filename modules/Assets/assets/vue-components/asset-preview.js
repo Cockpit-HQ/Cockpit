@@ -1,7 +1,9 @@
 import { thumbHashToDataURL } from '../vendor/thumbhash.js';
 
 
-let uuid = 0, cache = {};
+let uuid = 0,
+    hasWebPSupport = document.createElement('canvas').toDataURL('image/webp').startsWith('data:image/webp'),
+    cache = {};
 
 export default {
 
@@ -55,9 +57,12 @@ export default {
 
             if (this.asset.type == 'image') {
 
-                let start = (Date.now()), delay = 250, duration;
+                let start = (Date.now()),
+                    delay = 250,
+                    mime = hasWebPSupport ? 'webp' : 'auto',
+                    duration;
 
-                this.$request(`/assets/thumbnail/${this.asset._id}?m=bestFit&mime=auto&h=300&t=${this.asset._modified}&re=0`).then(rsp => {
+                this.$request(`/assets/thumbnail/${this.asset._id}?m=bestFit&mime=${mime}&h=300&t=${this.asset._modified}&re=0&q=70`).then(rsp => {
 
                     duration = Date.now() - start;
 
