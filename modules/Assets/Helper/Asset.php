@@ -154,6 +154,9 @@ class Asset extends \Lime\Helper {
             $mode = 'thumbnail';
         }
 
+        if (substr($mime, 0, 6) == 'image/') $mime = substr($mime, 6);
+        if ($mime == 'jpg') $mime = 'jpeg';
+
         if ($mime && in_array($mime, ['avif', 'gif', 'jpeg', 'png', 'webp', 'bmp'])) {
             $ext = $mime;
             $mime = "image/{$ext}";
