@@ -3,7 +3,7 @@ export default {
 
     _meta: {
         label: 'Table',
-        info: 'Mangage table data',
+        info: 'Manage table data',
         icon: 'system:assets/icons/table.svg',
         settings: [
             {
