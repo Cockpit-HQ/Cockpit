@@ -260,6 +260,19 @@ let FieldRenderer = {
                                     {{ t('Clone') }}
                                 </a>
                             </li>
+                            <li class="kiss-nav-divider" v-if="val.length > 1"></li>
+                            <li v-if="val.indexOf(actionItem) !== 0">
+                                <a class="kiss-flex kiss-flex-middle" @click="val.unshift(val.splice(val.indexOf(actionItem), 1)[0])">
+                                    <icon class="kiss-margin-small-right">arrow_upward</icon>
+                                    {{ t('Move to top') }}
+                                </a>
+                            </li>
+                            <li v-if="val.indexOf(actionItem) !== val.length - 1">
+                                <a class="kiss-flex kiss-flex-middle" @click="val.push(val.splice(val.indexOf(actionItem), 1)[0])">
+                                    <icon class="kiss-margin-small-right">arrow_downward</icon>
+                                    {{ t('Move to bottom') }}
+                                </a>
+                            </li>
                             <li class="kiss-nav-divider"></li>
                             <li>
                                 <a class="kiss-color-danger kiss-flex kiss-flex-middle" @click="removeFieldItem(val, val.indexOf(actionItem))">
