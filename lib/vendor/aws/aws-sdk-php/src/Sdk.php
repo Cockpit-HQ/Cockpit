@@ -198,6 +198,8 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionDataPipeline(array $args = [])
  * @method \Aws\DataSync\DataSyncClient createDataSync(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionDataSync(array $args = [])
+ * @method \Aws\DataZone\DataZoneClient createDataZone(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionDataZone(array $args = [])
  * @method \Aws\DatabaseMigrationService\DatabaseMigrationServiceClient createDatabaseMigrationService(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionDatabaseMigrationService(array $args = [])
  * @method \Aws\Detective\DetectiveClient createDetective(array $args = [])
@@ -719,7 +721,7 @@ namespace Aws;
  */
 class Sdk
 {
-    const VERSION = '3.282.1';
+    const VERSION = '3.283.0';
 
     /** @var array Arguments for creating clients */
     private $args;
