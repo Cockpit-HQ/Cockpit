@@ -4,6 +4,7 @@
 
 - Fix broken assets loading for asset field with multiple values
 - Fix referenced assets updates for content tree items
+- Fix mime type of generated thumbnails in assets manager
 
 ## 2.7.0 (2023-09-15)
 

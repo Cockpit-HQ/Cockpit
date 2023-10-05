@@ -155,7 +155,7 @@ export default {
                 <vue-table :columns="cols" :rows="val" :height="height" :grid-options="gridOptions" @update:row-data="updateTableData"></vue-table>
 
                 <div class="kiss-button-group kiss-margin-small-top">
-                    <button type="button" class="kiss-button kiss-button-small" @click="addRow">{{ t('Add row') }}</button>
+                    <button type="button" class="kiss-button kiss-button-small" @click="addRow"><icon class="kiss-margin-small-right">control_point</icon> {{ t('Add row') }}</button>
                     <button type="button" class="kiss-button kiss-button-danger kiss-button-small" @click="removeSelected" v-if="selected.length">{{ t('Remove selected') }}</button>
                 </div>
 

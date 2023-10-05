@@ -32,6 +32,7 @@ let FieldRenderer = {
             val: this.modelValue,
             fieldItem: null,
             fieldTypes: null,
+            actionItem: null,
             uid: `field-render-uid-${++fuid}`
         }
     },
@@ -155,6 +156,12 @@ let FieldRenderer = {
             list.splice(index, 1);
         },
 
+        cloneFieldItem(list, index) {
+
+            let item = JSON.parse(JSON.stringify(list[index]));
+            list.push(item);
+        },
+
         update() {
             this.$emit('update:modelValue', this.val)
         }
@@ -167,29 +174,34 @@ let FieldRenderer = {
 
             <div v-if="field.multiple">
 
-                <kiss-card class="kiss-padding-small kiss-size-small kiss-color-muted" theme="bordered contrast" v-show="!val || !Array.isArray(val) || !val.length">{{ t('No items') }}</kiss-card>
+                <kiss-card class="kiss-padding kiss-align-center kiss-size-small kiss-color-muted" theme="contrast" v-show="!val || !Array.isArray(val) || !val.length">
+                    <kiss-svg :src="$base('system:assets/icons/list.svg')" width="30" height="30"><canvas width="30" height="30"></canvas></kiss-svg>
+                    <div class="kiss-margin-small kiss-size-small">{{ t('No items') }}</div>
+                </kiss-card>
 
                 <vue-draggable v-model="val" handle=".fm-handle" v-if="Array.isArray(val)">
                     <template #item="{ element, index }">
                         <div class="kiss-margin-small kiss-flex kiss-flex-middle">
-                            <kiss-card class="kiss-flex-1 kiss-padding-small kiss-size-small kiss-position-relative" theme="bordered contrast">
-                                <span class="kiss-badge kiss-badge-outline kiss-color-muted" v-if="val[index] == null">n/a</span>
-                                <div class="kiss-text-truncate" v-else-if="fieldTypes[field.type]?.render" v-html="fieldTypes[field.type].render(val[index], field)"></div>
-                                <div v-else>
-                                    <span class="kiss-badge kiss-badge-outline" v-if="Array.isArray(val[index])">{{ val[index].length }}</span>
-                                    <span class="kiss-badge kiss-badge-outline" v-else-if="typeof(val[index]) === 'object'">Object</span>
-                                    <div class="kiss-text-truncate" v-else>{{ val[index] }}</div>
+                            <kiss-card class="kiss-flex-1 kiss-padding-small kiss-flex kiss-flex-middle" gap="small" theme="bordered contrast">
+                                <a class="fm-handle kiss-color-muted"><icon>drag_handle</icon></a>
+                                <div class="kiss-position-relative kiss-size-small kiss-flex-1">
+                                    <span class="kiss-badge kiss-badge-outline kiss-color-muted" v-if="val[index] == null">n/a</span>
+                                    <div class="kiss-text-truncate" v-else-if="fieldTypes[field.type]?.render" v-html="fieldTypes[field.type].render(val[index], field)"></div>
+                                    <div v-else>
+                                        <span class="kiss-badge kiss-badge-outline" v-if="Array.isArray(val[index])">{{ val[index].length }}</span>
+                                        <span class="kiss-badge kiss-badge-outline" v-else-if="typeof(val[index]) === 'object'">Object</span>
+                                        <div class="kiss-text-truncate" v-else>{{ val[index] }}</div>
+                                    </div>
+                                    <a class="kiss-cover" @click="editFieldItem(field, index)"></a>
                                 </div>
-                                <a class="kiss-cover" @click="editFieldItem(field, index)"></a>
+                                <a @click="actionItem = element"><icon>more_horiz</icon></a>
                             </kiss-card>
-                            <a class="kiss-margin-small-left kiss-color-danger" @click="removeFieldItem(val, index)"><icon>delete</icon></a>
-                            <a class="fm-handle kiss-margin-left kiss-color-muted"><icon>drag_handle</icon></a>
                         </div>
                     </template>
                 </vue-draggable>
 
-                <div class="kiss-margin kiss-align-center">
-                    <a @click="addFieldItem(field)" :tooltip="t('Add item')" flow="down"><icon class="kiss-size-large">control_point</icon></a>
+                <div class="kiss-margin-small">
+                    <button type="button" class="kiss-button kiss-button-small" @click="addFieldItem(field)"><icon class="kiss-margin-small-right">control_point</icon> {{ t('Add item') }}</button>
                 </div>
             </div>
         </div>
@@ -205,7 +217,10 @@ let FieldRenderer = {
                         <div class="kiss-flex-1 kiss-margin-left">
                             <span class="kiss-size-xsmall kiss-color-muted kiss-text-upper">{{ fieldItem.field.type }}</span>
                             <kiss-row class="kiss-flex-middle">
-                                <div class="kiss-size-4 kiss-text-bold kiss-flex-1">{{ fieldItem.create ? t('Add item'):t('Update item') }}</div>
+                                <div class="kiss-size-4 kiss-flex-1">
+                                    <strong class="kiss-text-capitalize">{{ field.label || field.name}}</strong>
+                                    <span class="kiss-color-muted kiss-text-light kiss-margin-small-left">{{ fieldItem.create ? t('Add item'):t('Update item') }}</span>
+                                </div>
                             </kiss-row>
                         </div>
                     </div>
@@ -226,6 +241,36 @@ let FieldRenderer = {
 
                 </kiss-content>
             </kiss-dialog>
+        </teleport>
+        <teleport to="body" v-if="actionItem">
+            <kiss-popout open="true" @popoutclose="actionItem = null">
+                <kiss-content>
+                    <kiss-navlist>
+                        <ul>
+                            <li class="kiss-nav-header">{{ field.label || field.name }} - Item</li>
+                            <li>
+                                <a class="kiss-flex kiss-flex-middle" @click="editFieldItem(field, val.indexOf(actionItem))">
+                                    <icon class="kiss-margin-small-right">create</icon>
+                                    {{ t('Edit') }}
+                                </a>
+                            </li>
+                            <li>
+                                <a class="kiss-flex kiss-flex-middle" @click="cloneFieldItem(val, val.indexOf(actionItem))">
+                                    <icon class="kiss-margin-small-right">control_point_duplicate</icon>
+                                    {{ t('Clone') }}
+                                </a>
+                            </li>
+                            <li class="kiss-nav-divider"></li>
+                            <li>
+                                <a class="kiss-color-danger kiss-flex kiss-flex-middle" @click="removeFieldItem(val, val.indexOf(actionItem))">
+                                    <icon class="kiss-margin-small-right">delete</icon>
+                                    {{ t('Delete') }}
+                                </a>
+                            </li>
+                        </ul>
+                    </kiss-navlist>
+                </kiss-content>
+            </kiss-popout>
         </teleport>
     `
 }

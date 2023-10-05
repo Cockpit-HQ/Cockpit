@@ -127,10 +127,10 @@ export default {
                     <a class="kiss-cover" :href="$route('/content/'+model.type+'/item/'+model.name+'/'+val._id)" target="_blank" rel="noopener"></a>
                 </div>
 
-                <a class="kiss-button kiss-button-small" @click="pickItem()">
+                <button type="button" class="kiss-button kiss-button-small" @click="pickItem()">
                     <icon class="kiss-margin-small-right">link</icon>
                     {{ 'Link '+(model.name || model.label)+' item' }}
-                </a>
+                </button>
 
             </div>
         </div>
