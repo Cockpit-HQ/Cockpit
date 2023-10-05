@@ -169,7 +169,7 @@ export default {
     template: /*html*/`
         <div field="asset">
 
-            <kiss-card class="kiss-padding-large kiss-margin-small kiss-align-center kiss-color-muted kiss-position-relative" theme="contrast" style="height:150px" v-if="!val">
+            <kiss-card class="kiss-flex kiss-flex-column kiss-flex-center kiss-padding-larger kiss-margin-small kiss-align-center kiss-color-muted kiss-position-relative" theme="contrast" style="height:150px" v-if="!val">
                 <kiss-svg :src="$base('assets:icon.svg')" width="30" height="30"><canvas width="30" height="30"></canvas></kiss-svg>
                 <div class="kiss-margin-small kiss-size-small">{{ t('No asset selected') }}</div>
                 <a class="kiss-cover" @click="pickAsset()"></a>

@@ -116,7 +116,7 @@ export default {
 
             <div v-if="link && model">
 
-                <kiss-card class="kiss-padding kiss-color-muted kiss-align-center kiss-margin-small kiss-position-relative" theme="contrast" v-if="!val">
+                <kiss-card class="kiss-padding-larger kiss-color-muted kiss-align-center kiss-margin-small kiss-position-relative" theme="contrast" v-if="!val">
                     <kiss-svg :src="$base('content:assets/icons/reference.svg')" width="40" height="40"></kiss-svg>
                     <div class="kiss-margin-small kiss-size-small">{{ t('No content item linked' )}}</div>
                     <a class="kiss-cover" @click="pickItem()"></a>

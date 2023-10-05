@@ -174,8 +174,8 @@ let FieldRenderer = {
 
             <div v-if="field.multiple">
 
-                <kiss-card class="kiss-padding kiss-align-center kiss-size-small kiss-color-muted" theme="contrast" v-show="!val || !Array.isArray(val) || !val.length">
-                    <kiss-svg :src="$base('system:assets/icons/list.svg')" width="30" height="30"><canvas width="30" height="30"></canvas></kiss-svg>
+                <kiss-card class="kiss-padding-larger kiss-align-center kiss-size-small kiss-color-muted" theme="contrast" v-show="!val || !Array.isArray(val) || !val.length">
+                    <kiss-svg :src="$base('system:assets/icons/list-items.svg')" width="30" height="30"><canvas width="30" height="30"></canvas></kiss-svg>
                     <div class="kiss-margin-small kiss-size-small">{{ t('No items') }}</div>
                 </kiss-card>
 
