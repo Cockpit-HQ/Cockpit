@@ -121,15 +121,9 @@
 
                     <app-license></app-license>
 
-                    <div class="kiss-margin-left">
-                        <kiss-card class="kiss-flex kiss-flex-middle kiss-padding-xsmall" theme="shadowed contrast">
-                            <app-avatar size="30" name="<?=$this['user/name']?>"></app-avatar>
-                            <div class="kiss-padding-small kiss-size-xsmall">
-                                <strong><?=$this['user/name']?></strong>
-                            </div>
-                            <a class="kiss-cover" kiss-popout="#app-account-menu"></a>
-                        </kiss-card>
-                    </div>
+                    <a class="kiss-margin-left" href="#app-account-menu" kiss-popout>
+                        <app-avatar size="30" name="<?=$this['user/name']?>"></app-avatar>
+                    </a>
                 </kiss-container>
             </app-header>
 
