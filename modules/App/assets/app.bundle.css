@@ -4492,12 +4492,10 @@ app-avatar canvas,
 }
 .app-field-links-outline li a.inview {
     color: inherit;
-    opacity: .8;
 }
 .app-field-links-outline li a.active {
     font-weight: bold;
     padding-left: 20px;
-    opacity: 1;
 }
 .app-field-links-outline li a:before {
     content: "";
@@ -4505,10 +4503,11 @@ app-avatar canvas,
     top: 50%;
     left: 0;
     width: 0;
-    border-top: 1px solid var(--kiss-color-primary);
+    border-top: 1px solid currentColor;
     transition: all 150ms;
 }
 .app-field-links-outline li a.active:before {
+    border-color: var(--kiss-color-primary);
     width: 15px;
 }
 label {
