@@ -5,6 +5,7 @@ import "./components/dialog/dialog.js";
 import "./components/offcanvas/offcanvas.js";
 import "./components/popout/popout.js";
 import "./components/parallax/parallax.js";
+import "./components/sticky/sticky.js";
 import "./components/svg/svg.js";
 import "./components/tabs/tabs.js";
 import "./components/tooltip/tooltip.js";

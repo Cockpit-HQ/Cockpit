@@ -15,6 +15,7 @@
 @import "components/popout/popout.css";
 @import "components/row.css";
 @import "components/parallax/parallax.css";
+@import "components/sticky/sticky.css";
 @import "components/svg/svg.css";
 @import "components/tabs/tabs.css";
 @import "components/tooltip/tooltip.css";

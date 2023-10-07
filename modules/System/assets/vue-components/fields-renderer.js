@@ -1,5 +1,17 @@
 import { FieldTypes } from "../js/settings.js"
 
+function isElementInViewport(el) {
+
+    let rect = el.getBoundingClientRect();
+
+    return (
+        rect.top >= 0 &&
+        rect.left >= 0 &&
+        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+        rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+    );
+}
+
 let fuid = 0;
 
 let FieldRenderer = {
@@ -295,7 +307,8 @@ export default {
 
         return {
             val: this.modelValue,
-            group: null
+            group: null,
+            uid: `app-fr-${++fuid}`,
         }
     },
 
@@ -313,6 +326,10 @@ export default {
         },
         nested: {
             default: false
+        },
+        outline: {
+            type: String,
+            default: null
         },
     },
 
@@ -352,6 +369,15 @@ export default {
                 evt.params.errors = errors;
             }
         });
+
+        // watch outline links on scroll
+        if (this.outline) {
+
+            setTimeout(() => {
+                window.addEventListener('scroll', this.updateOutline);
+                this.updateOutline();
+            }, 500);
+        }
     },
 
     watch: {
@@ -444,6 +470,42 @@ export default {
             } catch(e) {}
 
             return true;
+        },
+
+        focus(field, evt) {
+
+            evt.preventDefault();
+            evt.stopPropagation();
+
+            const target = document.getElementById(`${this.uid}-${field.name}`);
+            target.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
+            target.focus();
+
+            setTimeout(() => this.updateOutline(), 100);
+        },
+
+        updateOutline() {
+
+            let links = document.getElementById(`${this.uid}-outline`).querySelectorAll('a[data-target]'), section;
+
+            for (let i = 0; i < links.length; i++) {
+
+                links[i].classList.remove('inview');
+                links[i].classList.remove('active');
+                section = document.getElementById(links[i].dataset.target);
+
+                if (!section) {
+                    continue;
+                }
+
+                if (isElementInViewport(section)) {
+                    links[i].classList.add('inview');
+
+                    if (section.getAttribute('active') == 'true') {
+                        links[i].classList.add('active');
+                    }
+                }
+            }
         }
     },
 
@@ -464,7 +526,7 @@ export default {
                 </select>
             </kiss-card>
 
-            <app-fieldcontainer class="kiss-margin" :class="{'kiss-disabled': field.opts && field.opts.readonly}" v-for="field in visibleFields">
+            <app-fieldcontainer :id="uid+'-'+field.name" class="kiss-margin" :class="{'kiss-disabled': field.opts && field.opts.readonly}" v-for="field in visibleFields">
                 <div>
                     <div class="kiss-flex kiss-flex-middle">
                         <label class="fields-renderer-field kiss-text-capitalize kiss-flex kiss-flex-middle kiss-flex-1">
@@ -504,5 +566,19 @@ export default {
 
             </app-fieldcontainer>
         </div>
+        <teleport :to="outline" v-if="outline">
+            <kiss-card>
+                <div class="kiss-text-caption kiss-text-bold">{{ t('Fields') }}</div>
+                <ul :id="uid+'-outline'" class="app-field-links-outline kiss-margin-small">
+                    <li v-for="field in visibleFields">
+                        <div>
+                            <a class="kiss-text-capitalize kiss-text-truncate" :data-target="uid+'-'+field.name" @click="evt => focus(field, evt)">
+                                {{ field.name || field.label }}
+                            </a>
+                        </div>
+                    </li>
+                </ul>
+            </kiss-card>
+        </teleport>
     `
 }

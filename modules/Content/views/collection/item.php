@@ -34,10 +34,11 @@
             </div>
 
             <kiss-row class="kiss-margin-large" gap="large" v-if="fields.length">
+                <div class="kiss-visible@m kiss-width-1-5@m kiss-width-1-8@xl kiss-width-max-small">
+                    <kiss-sticky id="content-fields-outline" data-offset="20"></kiss-sticky>
+                </div>
                 <div class="kiss-flex-1">
-                    <div class="kiss-width-3-4@xl kiss-margin-auto">
-                        <fields-renderer v-model="item" :fields="fields" :locales="locales"></fields-renderer>
-                    </div>
+                    <fields-renderer v-model="item" :fields="fields" :locales="locales" outline="#content-fields-outline"></fields-renderer>
                 </div>
                 <div class="kiss-width-1-4@m kiss-width-1-5@xl">
 

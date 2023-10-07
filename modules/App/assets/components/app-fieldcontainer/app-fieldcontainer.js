@@ -8,7 +8,7 @@ const fn = e => {
         }
     }
 
-    let containers = document.querySelectorAll('app-fieldcontainer');
+    let containers = document.querySelectorAll('app-fieldcontainer[active="true"]');
 
     containers.forEach(container => {
 
@@ -36,5 +36,10 @@ customElements.define('app-fieldcontainer', class extends HTMLElement {
 
     disconnectedCallback() {
 
+    }
+
+    focus() {
+        this.setAttribute('active', 'true');
+        fn({target: this});
     }
 });

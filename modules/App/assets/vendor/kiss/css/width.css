@@ -278,3 +278,6 @@
     }
 
 }
+
+.kiss-width-max-small { max-width: var(--kiss-width-max-small, 200px) !important; }
+.kiss-width-max-medium { max-width: var(--kiss-width-max-small, 640px) !important; }
