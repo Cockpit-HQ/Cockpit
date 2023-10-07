@@ -4485,21 +4485,31 @@ app-avatar canvas,
     margin: 4px 0;
 }
 .app-field-links-outline li a {
+    position: relative;
     display: block;
     color: var(--kiss-color-muted);
     transition: all 150ms;
 }
 .app-field-links-outline li a.inview {
     color: inherit;
-    font-size: 110%;
+    opacity: .8;
 }
 .app-field-links-outline li a.active {
     font-weight: bold;
-    font-size: 115%;
-    color: var(--kiss-color-primary);
+    padding-left: 20px;
+    opacity: 1;
+}
+.app-field-links-outline li a:before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 0;
+    border-top: 1px solid var(--kiss-color-primary);
+    transition: all 150ms;
 }
 .app-field-links-outline li a.active:before {
-    content: "— ";
+    width: 15px;
 }
 label {
     display: block;
