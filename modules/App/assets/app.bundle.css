@@ -4491,9 +4491,11 @@ app-avatar canvas,
 }
 .app-field-links-outline li a.inview {
     color: inherit;
+    font-size: 110%;
 }
 .app-field-links-outline li a.active {
     font-weight: bold;
+    font-size: 115%;
     color: var(--kiss-color-primary);
 }
 .app-field-links-outline li a.active:before {

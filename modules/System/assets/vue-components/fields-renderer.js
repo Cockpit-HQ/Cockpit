@@ -1,16 +1,4 @@
-import { FieldTypes } from "../js/settings.js"
-
-function isElementInViewport(el) {
-
-    let rect = el.getBoundingClientRect();
-
-    return (
-        rect.top >= 0 &&
-        rect.left >= 0 &&
-        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-        rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-    );
-}
+import { FieldTypes } from "../js/settings.js";
 
 let fuid = 0;
 
@@ -498,7 +486,7 @@ export default {
                     continue;
                 }
 
-                if (isElementInViewport(section)) {
+                if (KISS.utils.isInViewport(section, 40)) {
                     links[i].classList.add('inview');
 
                     if (section.getAttribute('active') == 'true') {

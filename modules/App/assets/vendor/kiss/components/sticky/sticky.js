@@ -1,4 +1,9 @@
-document.addEventListener('scroll', function () {
+
+let register = [];
+
+document.addEventListener('scroll', () => {
+
+    if (!register.length) return;
 
     const stickies = document.querySelectorAll('kiss-sticky, [data-sticky="true"]');
     let stickyHeight = 0;
@@ -22,7 +27,10 @@ document.addEventListener('scroll', function () {
 customElements.define('kiss-sticky', class extends HTMLElement {
 
     connectedCallback() {
-
+        register.push(this);
     }
 
+    disconnectedCallback() {
+        register.slice(register.indexOf(this), 1);
+    }
 });
