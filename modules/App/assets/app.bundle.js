@@ -3716,8 +3716,8 @@
 
       connectedCallback() {
 
-          this.addEventListener('click', e => this.setAttribute('active','true'));
-          this.addEventListener('focusin', e => this.setAttribute('active','true'));
+          this.addEventListener('click', e => this.focus());
+          this.addEventListener('focusin', e => this.focus());
       }
 
       disconnectedCallback() {
@@ -3725,8 +3725,14 @@
       }
 
       focus() {
+
+          if (this.getAttribute('active') === 'true') {
+              return;
+          }
+
           this.setAttribute('active', 'true');
           fn({target: this});
+          trigger(this, 'fieldcontainer:focus');
       }
   });
 

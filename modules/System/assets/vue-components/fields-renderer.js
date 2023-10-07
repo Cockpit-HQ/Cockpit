@@ -361,6 +361,8 @@ export default {
         // watch outline links on scroll
         if (this.outline) {
 
+            this.$el.parentNode.addEventListener('fieldcontainer:focus', () => this.updateOutline());
+
             setTimeout(() => {
                 window.addEventListener('scroll', this.updateOutline);
                 this.updateOutline();
