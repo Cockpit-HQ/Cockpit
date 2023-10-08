@@ -4488,10 +4488,12 @@ app-avatar canvas,
     position: relative;
     display: block;
     color: var(--kiss-color-muted);
+    opacity: .6;
     transition: all 150ms;
 }
 .app-field-links-outline li a.inview {
     color: inherit;
+    opacity: 1;
 }
 .app-field-links-outline li a.active {
     font-weight: bold;

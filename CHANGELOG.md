@@ -1,10 +1,11 @@
 # Release Notes
 
-## WIP
+## 2.7.1 (2023-10-08)
 
 - Fix broken assets loading for asset field with multiple values
 - Fix referenced assets updates for content tree items
 - Fix mime type of generated thumbnails in assets manager
+- Add tower web console availability check
 - Add fields outline for better navigation
 
 ## 2.7.0 (2023-09-15)
