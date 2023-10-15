@@ -84,6 +84,23 @@ let uuid = function() {
     );
 }
 
+let nanoid = function(size = 10) {
+
+    const alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    let id = '';
+
+    if (typeof (crypto.getRandomValues) === 'function') {
+        const bytes = new Uint8Array(size);
+        crypto.getRandomValues(bytes);
+        for (let i = 0; i < size; i++) id += alphabet[bytes[i] % alphabet.length];
+        return id;
+    }
+
+    for (let i = 0; i < size; i++) id += alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+    return id;
+}
+
+
 let truncate = function(text, length, clamp = '...') {
     let content = text || '';
     return content.length > length ? content.slice(0, length) + clamp : content;
@@ -134,6 +151,7 @@ export default {
     formatDuration,
     formatNumber,
     interpolate,
+    nanoid,
     on,
     toKebabCase,
     uuid,

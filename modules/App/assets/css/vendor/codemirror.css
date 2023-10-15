@@ -35,7 +35,7 @@
 .CodeMirror span.cm-builtin { color: #e6b450; }
 .CodeMirror span.cm-string { color: #c2d94c; }
 
-.CodeMirror span.cm-variable { color: #b3b1ad; }
+.CodeMirror span.cm-variable { color: #1c99c0; }
 .CodeMirror span.cm-variable-2 { color: #f07178; }
 .CodeMirror span.cm-variable-3 { color: #39bae6; }
 .CodeMirror span.cm-type { color: #ff8f40; }
