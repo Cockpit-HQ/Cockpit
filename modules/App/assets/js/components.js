@@ -1,5 +1,3 @@
-import "./vue-view.js";
-
 import "../components/app-avatar/app-avatar.js";
 import "../components/app-actionbar/app-actionbar.js";
 import "../components/app-fieldcontainer/app-fieldcontainer.js";
