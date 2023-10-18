@@ -774,7 +774,7 @@
   }
 
 
-  var utils$2 = {
+  var utils$1 = {
       debounce,
       isInViewport,
       isElementOnTop,
@@ -1379,7 +1379,7 @@
 
   window.KISS = Object.assign(window.KISS || {}, {
       events,
-      utils: utils$2,
+      utils: utils$1,
   });
 
   /**
@@ -3228,7 +3228,7 @@
       }).join(''));
   };
 
-  var utils$1 = {
+  var utils = {
       base64encode,
       base64decode,
       copyText,
@@ -3755,7 +3755,7 @@
   App$1.i18n = window.i18n || null;
   App$1.assets = assets;
   App$1.ui = ui;
-  App$1.utils = utils$1;
+  App$1.utils = utils;
 
   App$1.utils.import = function (uri) {
       return import(`${App$1.base(uri)}?v=${App$1.version}`);
@@ -4173,7 +4173,7 @@
 
       data = Object.assign({}, App.utils.$interpolate.fns, data);
 
-      return utils.interpolate(str, data);
+      return App.utils.interpolate(str, data);
   };
 
   App.utils.$interpolate.fns = {};

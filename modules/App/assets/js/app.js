@@ -5,7 +5,7 @@ App.utils.$interpolate = function (str, data) {
 
     data = Object.assign({}, App.utils.$interpolate.fns, data);
 
-    return utils.interpolate(str, data);
+    return App.utils.interpolate(str, data);
 };
 
 App.utils.$interpolate.fns = {};
