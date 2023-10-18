@@ -120,6 +120,8 @@
     background: none;
     border: none;
     color: inherit;
+    font-size: inherit;
+    font-family: inherit;
 }
 
 .kiss-legend {
