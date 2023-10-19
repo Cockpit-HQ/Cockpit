@@ -9,11 +9,17 @@ customElements.define('display-image', class extends HTMLElement {
     }
 
     connectedCallback() {
-        this.render();
+
+        this.ready = false;
+
+        setTimeout(() => {
+            this.render();
+            this.ready = true;
+        }, 0);
     }
 
-    attributeChangedCallback(oldvalue, newvalue) {
-        if (oldvalue != newvalue) this.render();
+    attributeChangedCallback(name, oldValue, newValue) {
+        if (this.ready && oldValue != newValue) this.render();
     }
 
     render() {

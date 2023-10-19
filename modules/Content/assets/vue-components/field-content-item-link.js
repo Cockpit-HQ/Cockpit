@@ -18,12 +18,8 @@ export default {
                 return `<span class="kiss-badge kiss-badge-outline">${value.length}</span>`;
             }
 
-            if (!field.opts.link) {
+            if (!field.opts.link || !value || !value._id) {
                 return 'n/a'
-            }
-
-            if (!field.opts.display) {
-                return `<span class="kiss-badge kiss-badge-outline">${value._id.substr(-5)}</span>`
             }
 
             return `<display-content class="kiss-display-inline-block" model="${field.opts.link}" id="${value._id}" display="${field.opts.display}"><app-loader class="kiss-display-inline-block" size="small" mode="dots"></app-loader></display-content>`;
