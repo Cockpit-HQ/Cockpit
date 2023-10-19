@@ -27,8 +27,8 @@ export default {
 
     mounted() {
 
-        this.$request('/content/models/load').then(models => {
-            this.models = models;
+        App.utils.getContentModels().then(models => {
+            this.models = Object.values(models);
         });
     },
 

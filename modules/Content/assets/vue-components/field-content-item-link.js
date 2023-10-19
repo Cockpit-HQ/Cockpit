@@ -67,13 +67,13 @@ export default {
 
     mounted() {
 
-        this.$request('/content/models/load').then(models => {
+        App.utils.getContentModels().then(models => {
 
             this.model = false;
 
-            models.forEach(m => {
-                if (m.name == this.link) this.model = m;
-            });
+            if (models[this.link]) {
+                this.model = models[this.link];
+            }
         });
     },
 

@@ -16,16 +16,12 @@ App.utils.getContentModels = () => {
 
             let data = {};
 
-            _models.forEach(model => {
-
-                data[model.name] = {
-                    label: model.label,
-                    icon: model.icon,
-                    fields: {}
-                };
-            })
+            _models.forEach(model => data[model.name] = model);
 
             resolve(data)
+
+        }).catch((err) => {
+            reject(err);
         });
     });
 
