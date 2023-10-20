@@ -22,7 +22,7 @@ customElements.define('display-content', class extends HTMLElement {
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        if (this.ready && oldValue != newValue) this.render(name, oldValue, newValue);
+        if (this.ready && oldValue !== newValue) this.render(name, oldValue, newValue);
     }
 
     render() {

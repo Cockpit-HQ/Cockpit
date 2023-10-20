@@ -19,7 +19,7 @@ customElements.define('display-image', class extends HTMLElement {
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        if (this.ready && oldValue != newValue) this.render();
+        if (this.ready && oldValue !== newValue) this.render();
     }
 
     render() {
