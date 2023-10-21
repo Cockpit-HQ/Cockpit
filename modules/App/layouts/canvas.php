@@ -12,7 +12,7 @@
 
     <script src="<?=$this->route('/app.i18n.data.js')?>" type="module"></script>
 
-    <?php $this->block('app.layout.header') ?>
+    <?php $this->block('app.layout.head') ?>
 
     <?php if ($this->helper('theme')->theme() == 'auto'): ?>
     <script>
