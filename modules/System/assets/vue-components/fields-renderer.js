@@ -530,7 +530,7 @@ export default {
                             <icon class="kiss-size-5 kiss-color-danger kiss-margin-xsmall-left" v-if="field.required" :title="t('Required')">trip_origin</icon>
                         </label>
                         <div class="kiss-flex kiss-flex-middle app-fieldcontainer-visible-hover" gap="small" v-if="fieldActions.length && !field.i18n">
-                            <component :is="action.component" v-model="val[field.name]" :field="field" :locale="locale" v-for="action in fieldActions"></component>
+                            <component :is="action.component" v-model="val[field.name]" :document="val"  :field="field" :locale="locale" v-for="action in fieldActions"></component>
                         </div>
                         <a class="app-fieldcontainer-visible-hover" :class="{'kiss-color-muted': nested}" @click="clear(field, val)" :aria-label="t('Clear') + ': ' + (field.label || field.name)" kiss-tooltip="right" v-if="field.opts && !field.opts.readonly"><icon>backspace</icon></a>
                     </div>
@@ -561,7 +561,7 @@ export default {
                             </div>
                             <div class="kiss-flex-1"></div>
                             <div class="kiss-flex kiss-flex-middle app-fieldcontainer-visible-hover" gap="small" v-if="fieldActions.length">
-                                <component :is="action.component" v-model="val[field.name+(locale.i18n === 'default' ? '': '_'+locale.i18n)]" :field="field" :locale="locale.i18n" v-for="action in fieldActions"></component>
+                                <component :is="action.component" v-model="val[field.name+(locale.i18n === 'default' ? '': '_'+locale.i18n)]" :document="val" :field="field" :locale="locale.i18n" v-for="action in fieldActions"></component>
                             </div>
                         </div>
                         <field-renderer :field="field" :locale="locale.i18n" v-model="val[field.name+(locale.i18n === 'default' ? '': '_'+locale.i18n)]"></field-renderer>
