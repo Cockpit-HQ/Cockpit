@@ -297,6 +297,7 @@ export default {
             val: this.modelValue,
             group: null,
             uid: `app-fr-${++fuid}`,
+            fieldActions: [],
         }
     },
 
@@ -319,6 +320,10 @@ export default {
             type: String,
             default: null
         },
+    },
+
+    beforeMount() {
+        App.trigger('fields-renderer-init', {form: this});
     },
 
     mounted() {
@@ -518,13 +523,16 @@ export default {
 
             <app-fieldcontainer :id="uid+'-'+field.name" class="kiss-margin" :class="{'kiss-disabled': field.opts && field.opts.readonly}" v-for="field in visibleFields">
                 <div>
-                    <div class="kiss-flex kiss-flex-middle">
+                    <div class="kiss-flex kiss-flex-middle" gap="small">
                         <label class="fields-renderer-field kiss-text-capitalize kiss-flex kiss-flex-middle kiss-flex-1">
                             <div>{{field.label || field.name}}</div>
                             <icon class="kiss-size-5 kiss-color-muted kiss-margin-xsmall-left" v-if="field.i18n && locales.length" :title="t('Localized')">language</icon>
                             <icon class="kiss-size-5 kiss-color-danger kiss-margin-xsmall-left" v-if="field.required" :title="t('Required')">trip_origin</icon>
                         </label>
-                        <a class="app-fieldcontainer-visible-hover kiss-margin-left" :class="{'kiss-color-muted': nested}" @click="clear(field, val)" :aria-label="t('Clear') + ': ' + (field.label || field.name)" kiss-tooltip="right" v-if="field.opts && !field.opts.readonly"><icon>backspace</icon></a>
+                        <div class="kiss-flex kiss-flex-middle app-fieldcontainer-visible-hover" gap="small" v-if="fieldActions.length && !field.i18n">
+                            <component :is="action.component" v-model="val[field.name]" :field="field" :locale="locale" v-for="action in fieldActions"></component>
+                        </div>
+                        <a class="app-fieldcontainer-visible-hover" :class="{'kiss-color-muted': nested}" @click="clear(field, val)" :aria-label="t('Clear') + ': ' + (field.label || field.name)" kiss-tooltip="right" v-if="field.opts && !field.opts.readonly"><icon>backspace</icon></a>
                     </div>
                 </div>
                 <div class="kiss-color-muted kiss-size-xsmall" v-if="field.info">{{ field.info }}</div>
@@ -535,20 +543,26 @@ export default {
 
                 <div class="kiss-margin-small-top" v-if="field.i18n && locales.length">
                     <div class="kiss-margin" v-for="locale in visibleLocales">
-                        <div class="kiss-margin-small kiss-flex kiss-flex-middle kiss-visible-toggle" v-if="Array.isArray(locales) && locales.length > 1">
-                            <span class="kiss-badge kiss-badge-outline kiss-color-primary">{{ locale.i18n }}</span>
-                            <kiss-dropdown class="kiss-margin-small-left">
-                                <a class="kiss-invisible-hover kiss-color-muted" :ariaLabel="t('Copy value from another locale')" kiss-tooltip="right"><icon>content_copy</icon></a>
+                        <div class="kiss-flex kiss-flex-middle" gap="small">
+                            <div class="kiss-margin-small kiss-flex kiss-flex-middle kiss-visible-toggle" v-if="Array.isArray(locales) && locales.length > 1">
+                                <span class="kiss-badge kiss-badge-outline kiss-color-primary">{{ locale.i18n }}</span>
+                                <kiss-dropdown class="kiss-margin-small-left">
+                                    <a class="kiss-invisible-hover kiss-color-muted" :ariaLabel="t('Copy value from another locale')" kiss-tooltip="right"><icon>content_copy</icon></a>
 
-                                <kiss-dropdownbox pos="left">
-                                    <kiss-navlist>
-                                        <ul>
-                                            <li class="kiss-nav-header">{{ t('Locale') }}</li>
-                                            <li :class="{'kiss-hidden': l.i18n == locale.i18n}" v-for="l in locales"><a @click="copyLocaleValue(locale.i18n, l.i18n, field.name)">{{ l.name }}</a></li>
-                                        </ul>
-                                    </kiss-navlist>
-                                </kiss-dropdownbox>
-                            </kiss-dropdown>
+                                    <kiss-dropdownbox pos="left">
+                                        <kiss-navlist>
+                                            <ul>
+                                                <li class="kiss-nav-header">{{ t('Locale') }}</li>
+                                                <li :class="{'kiss-hidden': l.i18n == locale.i18n}" v-for="l in locales"><a @click="copyLocaleValue(locale.i18n, l.i18n, field.name)">{{ l.name }}</a></li>
+                                            </ul>
+                                        </kiss-navlist>
+                                    </kiss-dropdownbox>
+                                </kiss-dropdown>
+                            </div>
+                            <div class="kiss-flex-1"></div>
+                            <div class="kiss-flex kiss-flex-middle app-fieldcontainer-visible-hover" gap="small" v-if="fieldActions.length">
+                                <component :is="action.component" v-model="val[field.name+(locale.i18n === 'default' ? '': '_'+locale.i18n)]" :field="field" :locale="locale.i18n" v-for="action in fieldActions"></component>
+                            </div>
                         </div>
                         <field-renderer :field="field" :locale="locale.i18n" v-model="val[field.name+(locale.i18n === 'default' ? '': '_'+locale.i18n)]"></field-renderer>
                     </div>
