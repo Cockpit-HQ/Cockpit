@@ -2,6 +2,7 @@
 
 ## WIP
 
+- Refactor fields renderer to support custom actions on fields
 - Update Vue to version 3.3.7
 
 ## 2.7.1 (2023-10-08)

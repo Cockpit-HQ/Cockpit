@@ -1,4 +1,4 @@
-import { FieldTypes } from "../js/settings.js"
+import { FieldTypes } from "../../js/settings.js"
 
 let instanceCount = 0;
 
