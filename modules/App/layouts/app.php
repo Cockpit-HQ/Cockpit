@@ -4,7 +4,8 @@ $this->trigger('app.layout.init');
 
 $sidePanelContents = $this->block('app-side-panel', ['print' => false]);
 
-?><!DOCTYPE html>
+?>
+<!DOCTYPE html>
 <html lang="en" class="<?= $this->helper('theme')->pageClass() ?>" data-base="<?= rtrim($this->baseUrl('/'), '/') ?>" data-route="<?= rtrim($this->routeUrl('/'), '/') ?>" data-csrf="<?= $this->helper('csrf')->token('app-csrf') ?>" data-version="<?= $this->retrieve('app.version') ?>" data-theme="<?= $this->helper('theme')->theme() ?>">
 
 <head>
@@ -23,10 +24,10 @@ $sidePanelContents = $this->block('app-side-panel', ['print' => false]);
     <?php $this->block('app.layout.head') ?>
 
     <?php if ($this->helper('theme')->theme() == 'auto') : ?>
-    <script>
-        // set client preferred color scheme
-        document.documentElement.setAttribute('data-theme', getComputedStyle(document.documentElement).getPropertyValue('--app-auto-theme').trim());
-    </script>
+        <script>
+            // set client preferred color scheme
+            document.documentElement.setAttribute('data-theme', getComputedStyle(document.documentElement).getPropertyValue('--app-auto-theme').trim());
+        </script>
     <?php endif ?>
 
 </head>
@@ -43,7 +44,7 @@ $sidePanelContents = $this->block('app-side-panel', ['print' => false]);
                         <ul>
                             <li class="<?= ($this->request->route == '/') ? 'active' : '' ?>">
                                 <a href="<?= $this->route('/') ?>" aria-label="<?= t('Dashboard') ?>" aria-label="<?= t('Dashboard') ?>" kiss-tooltip="right">
-                                    <kiss-svg src="<?= $this->base('app:icon.svg') ?>" width="25" height="25"><canvas width="25" height="25"></canvas></kiss-svg>
+                                    <kiss-svg src="<?= $this->base('app:icon.svg') ?>" width="20" height="20"><canvas width="20" height="20"></canvas></kiss-svg>
                                 </a>
                             </li>
                             <?php foreach ($this->helper('menus')->menu('modules', true) as $group => $links) : ?>
@@ -53,7 +54,7 @@ $sidePanelContents = $this->block('app-side-panel', ['print' => false]);
                                 <?php foreach ($links as $link) : ?>
                                     <li class="<?= (strpos($this->request->route, $link['route']) === 0) ? 'active' : '' ?>">
                                         <a href="<?= $this->route($link['route']) ?>" aria-label="<?= t($link['label']) ?>" kiss-tooltip="right">
-                                            <kiss-svg src="<?= $this->base($link['icon']) ?>" width="25" height="25"><canvas width="25" height="25"></canvas></kiss-svg>
+                                            <kiss-svg src="<?= $this->base($link['icon']) ?>" width="20" height="20"><canvas width="20" height="20"></canvas></kiss-svg>
                                         </a>
                                     </li>
                                 <?php endforeach ?>
@@ -62,7 +63,7 @@ $sidePanelContents = $this->block('app-side-panel', ['print' => false]);
                             <li class="kiss-nav-divider"></li>
                             <li>
                                 <a class="kiss-flex kiss-flex-center" aria-label="<?= t('Search') ?>" kiss-tooltip="right" app-search>
-                                    <kiss-svg src="<?= $this->base('system:assets/icons/search.svg') ?>" width="25"><canvas width="25" height="25"></canvas></kiss-svg>
+                                    <kiss-svg src="<?= $this->base('system:assets/icons/search.svg') ?>" width="20"><canvas width="20" height="20"></canvas></kiss-svg>
                                 </a>
                             </li>
                         </ul>
@@ -72,31 +73,19 @@ $sidePanelContents = $this->block('app-side-panel', ['print' => false]);
                 <kiss-navlist space="small">
                     <ul>
                         <li>
-                            <a class="kiss-flex kiss-flex-center" href="<?= $this->route('/system/users/user') ?>" aria-label="<?= t('Account') ?>" kiss-tooltip="right">
-                                <icon>account_circle</icon>
-                            </a>
-                        </li>
-                        <li>
                             <a class="kiss-flex kiss-flex-center" href="<?= $this->route('/system') ?>" aria-label="<?= t('Settings') ?>" kiss-tooltip="right">
                                 <icon>tune</icon>
                             </a>
                         </li>
-                        <?php if ($this->helper('acl')->isAllowed('app.users.manage')) : ?>
-                            <li>
-                                <a class="kiss-flex kiss-flex-center" href="<?= $this->route('/system/users') ?>" aria-label="<?= t('Users') ?>" kiss-tooltip="right">
-                                    <icon>supervisor_account</icon>
-                                </a>
-                            </li>
-                        <?php endif ?>
                     </ul>
                 </kiss-navlist>
 
             </div>
 
             <?php if ($sidePanelContents) : ?>
-            <div class="app-container-aside-panel">
-                <?= $sidePanelContents ?>
-            </div>
+                <div class="app-container-aside-panel">
+                    <?= $sidePanelContents ?>
+                </div>
             <?php endif ?>
 
         </aside>
@@ -179,18 +168,18 @@ $sidePanelContents = $this->block('app-side-panel', ['print' => false]);
                                 <li class="kiss-nav-divider"></li>
 
                                 <?php if ($group && count($links) > 1) : ?>
-                                <li class="kiss-nav-header"><?= t($group) ?></li>
+                                    <li class="kiss-nav-header"><?= t($group) ?></li>
                                 <?php else : ?>
 
                                 <?php endif ?>
 
                                 <?php foreach ($links as $link) : ?>
-                                <li class="<?= (strpos($this->request->route, $link['route']) === 0) ? 'active' : '' ?>">
-                                    <a href="<?= $this->route($link['route']) ?>">
-                                        <kiss-svg class="kiss-margin-small-right" src="<?= $this->base($link['icon']) ?>" width="25" height="25"></kiss-svg>
-                                        <?= t($link['label']) ?>
-                                    </a>
-                                </li>
+                                    <li class="<?= (strpos($this->request->route, $link['route']) === 0) ? 'active' : '' ?>">
+                                        <a href="<?= $this->route($link['route']) ?>">
+                                            <kiss-svg class="kiss-margin-small-right" src="<?= $this->base($link['icon']) ?>" width="25" height="25"></kiss-svg>
+                                            <?= t($link['label']) ?>
+                                        </a>
+                                    </li>
                                 <?php endforeach ?>
 
                             <?php endforeach ?>
@@ -215,11 +204,11 @@ $sidePanelContents = $this->block('app-side-panel', ['print' => false]);
                             </a>
                         </li>
                         <?php if ($this->helper('acl')->isAllowed('app.users.manage')) : ?>
-                        <li>
-                            <a class="kiss-flex kiss-flex-middle" href="<?= $this->route('/system/users') ?>">
-                                <icon class="kiss-margin-small-right">supervisor_account</icon> <?= t('Users') ?>
-                            </a>
-                        </li>
+                            <li>
+                                <a class="kiss-flex kiss-flex-middle" href="<?= $this->route('/system/users') ?>">
+                                    <icon class="kiss-margin-small-right">supervisor_account</icon> <?= t('Users') ?>
+                                </a>
+                            </li>
                         <?php endif ?>
                     </ul>
                 </kiss-navlist>
@@ -256,7 +245,6 @@ $sidePanelContents = $this->block('app-side-panel', ['print' => false]);
             _vars: Object.freeze(<?= json_encode($this->helper('theme')->vars()) ?>),
             user: Object.freeze(<?= json_encode($this->retrieve('user')) ?>),
         });
-
     </script>
 
     <?php $this->trigger('app.layout.footer') ?>

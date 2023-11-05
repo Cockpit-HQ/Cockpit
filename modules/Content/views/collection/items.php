@@ -8,9 +8,9 @@
 
         <template>
 
-            <div class="kiss-flex kiss-flex-middle kiss-margin-bottom">
+            <div class="kiss-flex kiss-flex-middle kiss-margin-bottom" gap="small">
 
-                <kiss-card class="kiss-flex kiss-flex-middle kiss-overlay-input kiss-padding-small kiss-margin-small-right" gap="small" theme="contrast shadowed" v-if="hasLocalization">
+                <kiss-card class="kiss-flex kiss-flex-middle kiss-overlay-input kiss-padding-small" gap="small" theme="contrast shadowed" v-if="hasLocalization">
                     <icon size="larger">language</icon>
                     <span class="kiss-size-small kiss-text-caption kiss-text-bolder">{{ App._locales[this.locale] }}</span>
                     <select v-model="locale">
@@ -18,11 +18,6 @@
                     </select>
                 </kiss-card>
 
-                <div>
-                    <a class="kiss-size-large" kiss-popout="#model-menu-actions">
-                        <icon>more_horiz</icon>
-                    </a>
-                </div>
             </div>
 
             <div class="kiss-margin" :class="{'kiss-disabled': !(fieldTypes && ((!loading && items.length) || filter || state !== false))}">
@@ -705,6 +700,12 @@
     </a>
 
     <div class="kiss-text-bold kiss-size-4 kiss-flex-1 kiss-text-truncate"><?= $this->escape($model['label'] ? $model['label'] : $model['name']) ?></div>
+
+    <div>
+        <a class="kiss-size-large" kiss-popout="#model-menu-actions">
+            <icon>more_vert</icon>
+        </a>
+    </div>
 </div>
 
 <?php if(trim($model['info'] ?? '')): ?>

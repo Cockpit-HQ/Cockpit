@@ -4394,7 +4394,7 @@ del {
     z-index: 5;
 }
 .has-side-panel .app-container-aside {
-    width: 330px;
+    width: 320px;
 }
 .app-container-aside-menu {
     position: fixed;
@@ -4411,7 +4411,7 @@ del {
     position: fixed;
     display: flex;
     top: 15px;
-    left: 60px;
+    left: 50px;
     padding: 20px 20px;
     flex-direction: column;
     width: 280px;
@@ -4683,7 +4683,7 @@ kiss-dialog[type="prompt"]>kiss-content {
     }
 
     .has-side-panel app-actionbar {
-        padding-left: 350px;
+        padding-left: 340px;
     }
 
     .app-container-aside {
