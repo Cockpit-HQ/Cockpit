@@ -812,6 +812,7 @@ return array(
     'League\\Flysystem\\PathTraversalDetected' => $vendorDir . '/league/flysystem/src/PathTraversalDetected.php',
     'League\\Flysystem\\PortableVisibilityGuard' => $vendorDir . '/league/flysystem/src/PortableVisibilityGuard.php',
     'League\\Flysystem\\ProxyArrayAccessToProperties' => $vendorDir . '/league/flysystem/src/ProxyArrayAccessToProperties.php',
+    'League\\Flysystem\\ResolveIdenticalPathConflict' => $vendorDir . '/league/flysystem/src/ResolveIdenticalPathConflict.php',
     'League\\Flysystem\\StorageAttributes' => $vendorDir . '/league/flysystem/src/StorageAttributes.php',
     'League\\Flysystem\\SymbolicLinkEncountered' => $vendorDir . '/league/flysystem/src/SymbolicLinkEncountered.php',
     'League\\Flysystem\\UnableToCheckDirectoryExistence' => $vendorDir . '/league/flysystem/src/UnableToCheckDirectoryExistence.php',
