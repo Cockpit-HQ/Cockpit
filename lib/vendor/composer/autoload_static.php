@@ -519,6 +519,7 @@ class ComposerStaticInitcd58276a9f48ccfb9ef51a077a4397a3
         'Aws\\PresignUrlMiddleware' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/PresignUrlMiddleware.php',
         'Aws\\Psr16CacheAdapter' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/Psr16CacheAdapter.php',
         'Aws\\PsrCacheAdapter' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/PsrCacheAdapter.php',
+        'Aws\\QueryCompatibleInputMiddleware' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/QueryCompatibleInputMiddleware.php',
         'Aws\\RequestCompressionMiddleware' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/RequestCompressionMiddleware.php',
         'Aws\\ResponseContainerInterface' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/ResponseContainerInterface.php',
         'Aws\\Result' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/Result.php',

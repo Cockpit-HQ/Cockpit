@@ -219,6 +219,7 @@ return array(
     'Aws\\PresignUrlMiddleware' => $vendorDir . '/aws/aws-sdk-php/src/PresignUrlMiddleware.php',
     'Aws\\Psr16CacheAdapter' => $vendorDir . '/aws/aws-sdk-php/src/Psr16CacheAdapter.php',
     'Aws\\PsrCacheAdapter' => $vendorDir . '/aws/aws-sdk-php/src/PsrCacheAdapter.php',
+    'Aws\\QueryCompatibleInputMiddleware' => $vendorDir . '/aws/aws-sdk-php/src/QueryCompatibleInputMiddleware.php',
     'Aws\\RequestCompressionMiddleware' => $vendorDir . '/aws/aws-sdk-php/src/RequestCompressionMiddleware.php',
     'Aws\\ResponseContainerInterface' => $vendorDir . '/aws/aws-sdk-php/src/ResponseContainerInterface.php',
     'Aws\\Result' => $vendorDir . '/aws/aws-sdk-php/src/Result.php',

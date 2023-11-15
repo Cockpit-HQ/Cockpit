@@ -108,8 +108,8 @@ class AwsS3V3Adapter implements FilesystemAdapter, PublicUrlGenerator, ChecksumP
         private array $multipartUploadOptions = self::MUP_AVAILABLE_OPTIONS,
     ) {
         $this->prefixer = new PathPrefixer($prefix);
-        $this->visibility = $visibility ?: new PortableVisibilityConverter();
-        $this->mimeTypeDetector = $mimeTypeDetector ?: new FinfoMimeTypeDetector();
+        $this->visibility = $visibility ?? new PortableVisibilityConverter();
+        $this->mimeTypeDetector = $mimeTypeDetector ?? new FinfoMimeTypeDetector();
     }
 
     public function fileExists(string $path): bool
@@ -397,8 +397,8 @@ class AwsS3V3Adapter implements FilesystemAdapter, PublicUrlGenerator, ChecksumP
         $resultPaginator = $this->client->getPaginator('ListObjectsV2', $options + $this->options);
 
         foreach ($resultPaginator as $result) {
-            yield from ($result->get('CommonPrefixes') ?: []);
-            yield from ($result->get('Contents') ?: []);
+            yield from ($result->get('CommonPrefixes') ?? []);
+            yield from ($result->get('Contents') ?? []);
         }
     }
 
@@ -415,8 +415,11 @@ class AwsS3V3Adapter implements FilesystemAdapter, PublicUrlGenerator, ChecksumP
     public function copy(string $source, string $destination, Config $config): void
     {
         try {
-            /** @var string $visibility */
-            $visibility = $config->get(Config::OPTION_VISIBILITY) ?: $this->visibility($source)->visibility();
+            $visibility = $config->get(Config::OPTION_VISIBILITY);
+
+            if ($visibility === null && $config->get('retain_visibility', true)) {
+                $visibility = $this->visibility($source)->visibility();
+            }
         } catch (Throwable $exception) {
             throw UnableToCopyFile::fromLocationTo(
                 $source,
@@ -431,7 +434,7 @@ class AwsS3V3Adapter implements FilesystemAdapter, PublicUrlGenerator, ChecksumP
                 $this->prefixer->prefixPath($source),
                 $this->bucket,
                 $this->prefixer->prefixPath($destination),
-                $this->visibility->visibilityToAcl($visibility),
+                $this->visibility->visibilityToAcl($visibility ?: 'private'),
                 $this->createOptionsFromConfig($config)['params']
             );
         } catch (Throwable $exception) {

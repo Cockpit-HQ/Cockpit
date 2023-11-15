@@ -6,12 +6,13 @@ namespace League\Flysystem;
 
 use DateTimeInterface;
 use Generator;
-use League\Flysystem\UrlGeneration\ShardedPrefixPublicUrlGenerator;
 use League\Flysystem\UrlGeneration\PrefixPublicUrlGenerator;
 use League\Flysystem\UrlGeneration\PublicUrlGenerator;
+use League\Flysystem\UrlGeneration\ShardedPrefixPublicUrlGenerator;
 use League\Flysystem\UrlGeneration\TemporaryUrlGenerator;
 use Throwable;
 
+use function array_key_exists;
 use function is_array;
 
 class Filesystem implements FilesystemOperator
@@ -29,7 +30,7 @@ class Filesystem implements FilesystemOperator
         private ?TemporaryUrlGenerator $temporaryUrlGenerator = null,
     ) {
         $this->config = new Config($config);
-        $this->pathNormalizer = $pathNormalizer ?: new WhitespacePathNormalizer();
+        $this->pathNormalizer = $pathNormalizer ?? new WhitespacePathNormalizer();
     }
 
     public function fileExists(string $location): bool
@@ -119,7 +120,7 @@ class Filesystem implements FilesystemOperator
 
     public function move(string $source, string $destination, array $config = []): void
     {
-        $config = $this->config->extend($config);
+        $config = $this->resolveConfigForMoveAndCopy($config);
         $from = $this->pathNormalizer->normalizePath($source);
         $to = $this->pathNormalizer->normalizePath($destination);
 
@@ -138,7 +139,7 @@ class Filesystem implements FilesystemOperator
 
     public function copy(string $source, string $destination, array $config = []): void
     {
-        $config = $this->config->extend($config);
+        $config = $this->resolveConfigForMoveAndCopy($config);
         $from = $this->pathNormalizer->normalizePath($source);
         $to = $this->pathNormalizer->normalizePath($destination);
 
@@ -183,7 +184,7 @@ class Filesystem implements FilesystemOperator
     public function publicUrl(string $path, array $config = []): string
     {
         $this->publicUrlGenerator ??= $this->resolvePublicUrlGenerator()
-            ?: throw UnableToGeneratePublicUrl::noGeneratorConfigured($path);
+            ?? throw UnableToGeneratePublicUrl::noGeneratorConfigured($path);
         $config = $this->config->extend($config);
 
         return $this->publicUrlGenerator->publicUrl($path, $config);
@@ -191,7 +192,7 @@ class Filesystem implements FilesystemOperator
 
     public function temporaryUrl(string $path, DateTimeInterface $expiresAt, array $config = []): string
     {
-        $generator = $this->temporaryUrlGenerator ?: $this->adapter;
+        $generator = $this->temporaryUrlGenerator ?? $this->adapter;
 
         if ($generator instanceof TemporaryUrlGenerator) {
             return $generator->temporaryUrl($path, $expiresAt, $this->config->extend($config));
@@ -255,5 +256,22 @@ class Filesystem implements FilesystemOperator
         if (ftell($resource) !== 0 && stream_get_meta_data($resource)['seekable']) {
             rewind($resource);
         }
+    }
+
+    private function resolveConfigForMoveAndCopy(array $config): Config
+    {
+        $retainVisibility = $this->config->get('retain_visibility', $config['retain_visibility'] ?? true);
+        $fullConfig = $this->config->extend($config);
+
+        /*
+         * By default, we retain visibility. When we do not retain visibility, the visibility setting
+         * from the default configuration is ignored. Only when it is set explicitly, we propagate the
+         * setting.
+         */
+        if ($retainVisibility && ! array_key_exists(Config::OPTION_VISIBILITY, $config)) {
+            $fullConfig = $fullConfig->withoutSettings(Config::OPTION_VISIBILITY)->extend($config);
+        }
+
+        return $fullConfig;
     }
 }
