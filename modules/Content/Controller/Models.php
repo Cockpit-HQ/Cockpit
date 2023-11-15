@@ -129,7 +129,14 @@ class Models extends App {
             });
         }
 
-        return array_values($models);
+        $models = array_values($models);
+
+        // sort models
+        usort($models, function ($a, $b) {
+            return mb_strtolower($a['label'] ? $a['label'] : $a['name']) <=> mb_strtolower($b['label'] ? $b['label'] : $b['name']);
+        });
+
+        return $models;
     }
 
     public function saveItem($model = null) {
