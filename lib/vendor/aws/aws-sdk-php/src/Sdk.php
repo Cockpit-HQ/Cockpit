@@ -414,8 +414,6 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionMWAA(array $args = [])
  * @method \Aws\MachineLearning\MachineLearningClient createMachineLearning(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionMachineLearning(array $args = [])
- * @method \Aws\Macie\MacieClient createMacie(array $args = [])
- * @method \Aws\MultiRegionClient createMultiRegionMacie(array $args = [])
  * @method \Aws\Macie2\Macie2Client createMacie2(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionMacie2(array $args = [])
  * @method \Aws\MainframeModernization\MainframeModernizationClient createMainframeModernization(array $args = [])
@@ -676,6 +674,8 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionTransfer(array $args = [])
  * @method \Aws\Translate\TranslateClient createTranslate(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionTranslate(array $args = [])
+ * @method \Aws\TrustedAdvisor\TrustedAdvisorClient createTrustedAdvisor(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionTrustedAdvisor(array $args = [])
  * @method \Aws\VPCLattice\VPCLatticeClient createVPCLattice(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionVPCLattice(array $args = [])
  * @method \Aws\VerifiedPermissions\VerifiedPermissionsClient createVerifiedPermissions(array $args = [])
@@ -721,7 +721,7 @@ namespace Aws;
  */
 class Sdk
 {
-    const VERSION = '3.286.2';
+    const VERSION = '3.287.0';
 
     /** @var array Arguments for creating clients */
     private $args;
