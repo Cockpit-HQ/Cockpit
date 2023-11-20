@@ -1,4 +1,4 @@
-import { on } from '../../js/events.js';
+import { on, trigger } from '../../js/events.js';
 
 let Animations = {
     default(resolve, current, next) {
@@ -200,10 +200,17 @@ customElements.define('kiss-carousel', class extends HTMLElement {
         if (!this.activeSlide && !idx) {
             slide.classList.add('active');
             this.activeSlide = slide;
+            trigger(this, 'carouselenter', {
+                detail: {slide: this.activeSlide}
+            });
             return;
         }
 
         this.isAnimating = true;
+
+        trigger(this, 'carouselleave', {
+            detail: {slide: this.activeSlide}
+        });
 
         animate(this.animation, this.activeSlide, slide).then(() => {
 
@@ -222,6 +229,10 @@ customElements.define('kiss-carousel', class extends HTMLElement {
 
             this.activeSlide = slide;
             this.isAnimating = false;
+
+            trigger(this, 'carouselenter', {
+                detail: {slide: this.activeSlide}
+            });
         });
     }
 });
