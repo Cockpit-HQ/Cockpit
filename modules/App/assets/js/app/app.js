@@ -6,7 +6,6 @@ import "../../vendor/storage.js";
 import "../../vendor/i18n.js";
 import "../../vendor/dompurify.js";
 import "../../vendor/mousetrap.js";
-import "../../vendor/instant.page.js";
 import utils from "./utils.js";
 import ui from "./ui.js";
 import assets from "./assets.js";
