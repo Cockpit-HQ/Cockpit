@@ -66,6 +66,10 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionAutoScaling(array $args = [])
  * @method \Aws\AutoScalingPlans\AutoScalingPlansClient createAutoScalingPlans(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionAutoScalingPlans(array $args = [])
+ * @method \Aws\B2bi\B2biClient createB2bi(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionB2bi(array $args = [])
+ * @method \Aws\BCMDataExports\BCMDataExportsClient createBCMDataExports(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionBCMDataExports(array $args = [])
  * @method \Aws\Backup\BackupClient createBackup(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionBackup(array $args = [])
  * @method \Aws\BackupGateway\BackupGatewayClient createBackupGateway(array $args = [])
@@ -76,6 +80,10 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionBatch(array $args = [])
  * @method \Aws\Bedrock\BedrockClient createBedrock(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionBedrock(array $args = [])
+ * @method \Aws\BedrockAgent\BedrockAgentClient createBedrockAgent(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionBedrockAgent(array $args = [])
+ * @method \Aws\BedrockAgentRuntime\BedrockAgentRuntimeClient createBedrockAgentRuntime(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionBedrockAgentRuntime(array $args = [])
  * @method \Aws\BedrockRuntime\BedrockRuntimeClient createBedrockRuntime(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionBedrockRuntime(array $args = [])
  * @method \Aws\BillingConductor\BillingConductorClient createBillingConductor(array $args = [])
@@ -186,6 +194,8 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionControlTower(array $args = [])
  * @method \Aws\CostExplorer\CostExplorerClient createCostExplorer(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionCostExplorer(array $args = [])
+ * @method \Aws\CostOptimizationHub\CostOptimizationHubClient createCostOptimizationHub(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionCostOptimizationHub(array $args = [])
  * @method \Aws\CostandUsageReportService\CostandUsageReportServiceClient createCostandUsageReportService(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionCostandUsageReportService(array $args = [])
  * @method \Aws\CustomerProfiles\CustomerProfilesClient createCustomerProfiles(array $args = [])
@@ -230,6 +240,8 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionECRPublic(array $args = [])
  * @method \Aws\EKS\EKSClient createEKS(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionEKS(array $args = [])
+ * @method \Aws\EKSAuth\EKSAuthClient createEKSAuth(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionEKSAuth(array $args = [])
  * @method \Aws\EMRContainers\EMRContainersClient createEMRContainers(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionEMRContainers(array $args = [])
  * @method \Aws\EMRServerless\EMRServerlessClient createEMRServerless(array $args = [])
@@ -278,6 +290,8 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionForecastService(array $args = [])
  * @method \Aws\FraudDetector\FraudDetectorClient createFraudDetector(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionFraudDetector(array $args = [])
+ * @method \Aws\FreeTier\FreeTierClient createFreeTier(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionFreeTier(array $args = [])
  * @method \Aws\GameLift\GameLiftClient createGameLift(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionGameLift(array $args = [])
  * @method \Aws\Glacier\GlacierClient createGlacier(array $args = [])
@@ -534,6 +548,10 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionPrometheusService(array $args = [])
  * @method \Aws\Proton\ProtonClient createProton(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionProton(array $args = [])
+ * @method \Aws\QBusiness\QBusinessClient createQBusiness(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionQBusiness(array $args = [])
+ * @method \Aws\QConnect\QConnectClient createQConnect(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionQConnect(array $args = [])
  * @method \Aws\QLDB\QLDBClient createQLDB(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionQLDB(array $args = [])
  * @method \Aws\QLDBSession\QLDBSessionClient createQLDBSession(array $args = [])
@@ -556,6 +574,8 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionRedshiftServerless(array $args = [])
  * @method \Aws\Rekognition\RekognitionClient createRekognition(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionRekognition(array $args = [])
+ * @method \Aws\Repostspace\RepostspaceClient createRepostspace(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionRepostspace(array $args = [])
  * @method \Aws\ResilienceHub\ResilienceHubClient createResilienceHub(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionResilienceHub(array $args = [])
  * @method \Aws\ResourceExplorer2\ResourceExplorer2Client createResourceExplorer2(array $args = [])
@@ -704,6 +724,8 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionWorkMailMessageFlow(array $args = [])
  * @method \Aws\WorkSpaces\WorkSpacesClient createWorkSpaces(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionWorkSpaces(array $args = [])
+ * @method \Aws\WorkSpacesThinClient\WorkSpacesThinClientClient createWorkSpacesThinClient(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionWorkSpacesThinClient(array $args = [])
  * @method \Aws\WorkSpacesWeb\WorkSpacesWebClient createWorkSpacesWeb(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionWorkSpacesWeb(array $args = [])
  * @method \Aws\XRay\XRayClient createXRay(array $args = [])
@@ -725,7 +747,7 @@ namespace Aws;
  */
 class Sdk
 {
-    const VERSION = '3.288.1';
+    const VERSION = '3.291.0';
 
     /** @var array Arguments for creating clients */
     private $args;

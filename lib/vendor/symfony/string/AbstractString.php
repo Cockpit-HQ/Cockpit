@@ -448,7 +448,7 @@ abstract class AbstractString implements \Stringable, \JsonSerializable
             $delimiter .= 'i';
         }
 
-        set_error_handler(static function ($t, $m) { throw new InvalidArgumentException($m); });
+        set_error_handler(static fn ($t, $m) => throw new InvalidArgumentException($m));
 
         try {
             if (false === $chunks = preg_split($delimiter, $this->string, $limit, $flags)) {
@@ -507,23 +507,14 @@ abstract class AbstractString implements \Stringable, \JsonSerializable
             return $b;
         }
 
-        set_error_handler(static function ($t, $m) { throw new InvalidArgumentException($m); });
-
         try {
-            try {
-                $b->string = mb_convert_encoding($this->string, $toEncoding, 'UTF-8');
-            } catch (InvalidArgumentException|\ValueError $e) {
-                if (!\function_exists('iconv')) {
-                    if ($e instanceof \ValueError) {
-                        throw new InvalidArgumentException($e->getMessage(), $e->getCode(), $e);
-                    }
-                    throw $e;
-                }
-
-                $b->string = iconv('UTF-8', $toEncoding, $this->string);
+            $b->string = mb_convert_encoding($this->string, $toEncoding, 'UTF-8');
+        } catch (\ValueError $e) {
+            if (!\function_exists('iconv')) {
+                throw new InvalidArgumentException($e->getMessage(), $e->getCode(), $e);
             }
-        } finally {
-            restore_error_handler();
+
+            $b->string = iconv('UTF-8', $toEncoding, $this->string);
         }
 
         return $b;
