@@ -3,7 +3,7 @@
 ## WIP
 
 - Refactor fields renderer to support custom actions on fields
-- Update Vue to version 3.3.7
+- Update Vue to version 3.3.9
 - Sort content models alphabetically on overview page
 - Add option to store content models in database
 
