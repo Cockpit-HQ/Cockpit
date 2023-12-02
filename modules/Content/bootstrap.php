@@ -2,6 +2,7 @@
 
 // Register Helpers
 $this->helpers['content'] = 'Content\\Helper\\Content';
+$this->helpers['content.model'] = 'Content\\Helper\\Model';
 
 // load admin related code
 $this->on('app.admin.init', function() {
@@ -23,153 +24,34 @@ $this->on('app.api.request', function() {
 $this->module('content')->extend([
 
     // memoize data
-    '_models' => [],
     '_refs' => [],
 
     'createModel' => function(string $name, array $data = []): mixed {
-
-        if (!trim($name)) {
-            return false;
-        }
-
-        $name = preg_replace('/[^A-Za-z0-9]/', '', $name);
-        $storagepath = $this->app->path('#storage:').'/content';
-
-        if (!$this->app->path('#storage:content')) {
-
-            if (!$this->app->helper('fs')->mkdir($storagepath)) {
-                return false;
-            }
-        }
-
-        if ($this->exists($name)) {
-            return false;
-        }
-
-        $data['name'] = $name;
-
-        $time = time();
-
-        $model = array_replace_recursive([
-            'name'      => $name,
-            'label'     => $name,
-            'info'      => '',
-            'type'      => 'collection',
-            'fields'     => [],
-            'preview'   => [],
-            'group'     => null,
-            'meta'      => null,
-            '_created'  => $time,
-            '_modified'  => $time
-        ], $data);
-
-        $export = $this->app->helper('utils')->var_export($model, true);
-
-        if (!$this->app->helper('fs')->write("#storage:content/{$name}.model.php", "<?php\n return {$export};")) {
-            return false;
-        }
-
-        $this->app->trigger('content.model.create', [$model]);
-
-        return $model;
+        return $this->app->helper('content.model')->create($name, $data);
     },
 
     'updateModel' => function(string $name, array $data): mixed {
-
-        if (!$this->exists($name)) {
-            return false;
-        }
-
-        $metapath = $this->app->path("#storage:content/{$name}.model.php");
-
-        if (!$metapath) {
-            return false;
-        }
-
-        $data['_modified'] = time();
-
-        $model  = include($metapath);
-        $model  = array_merge($model, $data);
-        $export = $this->app->helper('utils')->var_export($model, true);
-
-        if (!$this->app->helper('fs')->write($metapath, "<?php\n return {$export};")) {
-            return false;
-        }
-
-        $this->app->trigger('content.update.model', [$model]);
-        $this->app->trigger("content.update.model.{$name}", [$model]);
-
-        if (function_exists('opcache_invalidate')) opcache_invalidate($metapath, true);
-
-        return $model;
+        return $this->app->helper('content.model')->update($name, $data);
     },
 
     'saveModel' => function(string $name, array $data): mixed {
-
-        if (!trim($name)) {
-            return false;
-        }
-
-        return $this->exists($name) ? $this->updateModel($name, $data) : $this->createModel($name, $data);
+        return $this->app->helper('content.model')->save($name, $data);
     },
 
     'removeModel' => function(string $name): bool {
-
-        $model = $this->model($name);
-
-        if (!$model) {
-            return false;
-        }
-
-        $this->app->helper('fs')->delete("#storage:content/{$name}.model.php");
-
-        if ($model['type'] == 'singleton') {
-            $this->app->dataStorage->remove('content/singletons', ['_model' => $name]);
-        } elseif (in_array($model['type'], ['collection', 'tree'])) {
-            $this->app->dataStorage->dropCollection("content/collections/{$name}");
-        }
-
-        $this->app->trigger('content.remove.model', [$name, $model]);
-
-        return true;
+        return $this->app->helper('content.model')->remove($name);
     },
 
     'models' => function(bool $extended = false): array {
-
-        $models = [];
-
-        foreach ($this->app->helper('fs')->ls('*.model.php', '#storage:content') as $path) {
-
-            $store = include($path->getPathName());
-
-            if ($extended) {
-                $store['_entriesCount'] = $this->count($store['name']);
-            }
-
-            $models[$store['name']] = $store;
-        }
-
-        ksort($models);
-
-        return $models;
+        return $this->app->helper('content.model')->models();
     },
 
-    'exists' => function(string $name): ?string {
-        return $this->app->path("#storage:content/{$name}.model.php");
+    'exists' => function(string $name): mixed {
+        return $this->app->helper('content.model')->exists($name);
     },
 
     'model' => function(string $name): mixed {
-
-        if (!isset($this->props['_models'][$name])) {
-
-            $this->props['_models'][$name] = false;
-
-            if ($path = $this->exists($name)) {
-                $this->props['_models'][$name] = include($path);
-            }
-        }
-
-        return $this->props['_models'][$name];
+        return $this->app->helper('content.model')->model($name);
     },
 
     'getDefaultModelItem' => function(string $model): array {
