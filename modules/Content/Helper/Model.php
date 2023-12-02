@@ -4,7 +4,7 @@ namespace Content\Helper;
 
 class Model extends \Lime\Helper {
 
-    protected array $models = [];
+    protected array $models;
     protected ?string $storage;
 
     protected function initialize() {
