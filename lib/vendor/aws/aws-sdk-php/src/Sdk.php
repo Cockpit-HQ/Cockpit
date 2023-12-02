@@ -106,6 +106,8 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionChimeSDKVoice(array $args = [])
  * @method \Aws\CleanRooms\CleanRoomsClient createCleanRooms(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionCleanRooms(array $args = [])
+ * @method \Aws\CleanRoomsML\CleanRoomsMLClient createCleanRoomsML(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionCleanRoomsML(array $args = [])
  * @method \Aws\Cloud9\Cloud9Client createCloud9(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionCloud9(array $args = [])
  * @method \Aws\CloudControlApi\CloudControlApiClient createCloudControlApi(array $args = [])
@@ -442,10 +444,14 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionManagedBlockchainQuery(array $args = [])
  * @method \Aws\ManagedGrafana\ManagedGrafanaClient createManagedGrafana(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionManagedGrafana(array $args = [])
+ * @method \Aws\MarketplaceAgreement\MarketplaceAgreementClient createMarketplaceAgreement(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionMarketplaceAgreement(array $args = [])
  * @method \Aws\MarketplaceCatalog\MarketplaceCatalogClient createMarketplaceCatalog(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionMarketplaceCatalog(array $args = [])
  * @method \Aws\MarketplaceCommerceAnalytics\MarketplaceCommerceAnalyticsClient createMarketplaceCommerceAnalytics(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionMarketplaceCommerceAnalytics(array $args = [])
+ * @method \Aws\MarketplaceDeployment\MarketplaceDeploymentClient createMarketplaceDeployment(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionMarketplaceDeployment(array $args = [])
  * @method \Aws\MarketplaceEntitlementService\MarketplaceEntitlementServiceClient createMarketplaceEntitlementService(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionMarketplaceEntitlementService(array $args = [])
  * @method \Aws\MarketplaceMetering\MarketplaceMeteringClient createMarketplaceMetering(array $args = [])
@@ -747,7 +753,7 @@ namespace Aws;
  */
 class Sdk
 {
-    const VERSION = '3.291.0';
+    const VERSION = '3.293.2';
 
     /** @var array Arguments for creating clients */
     private $args;
