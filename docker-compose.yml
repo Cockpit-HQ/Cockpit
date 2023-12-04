@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
     cockpit:
-        image: cockpit-hq/cockpit:php-8.1
+        image: cockpit-hq/cockpit:php-8.2
         build:
             context: .
         user: www-data
