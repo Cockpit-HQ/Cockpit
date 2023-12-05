@@ -33,6 +33,18 @@ class MountManager implements FilesystemOperator
         $this->config = new Config($config);
     }
 
+    /**
+     * @param array<string,FilesystemOperator> $filesystems
+     */
+    public function extend(array $filesystems, array $config = []): MountManager
+    {
+        $clone = clone $this;
+        $clone->config = $this->config->extend($config);
+        $clone->mountFilesystems($filesystems);
+
+        return $clone;
+    }
+
     public function fileExists(string $location): bool
     {
         /** @var FilesystemOperator $filesystem */
@@ -329,7 +341,7 @@ class MountManager implements FilesystemOperator
     /**
      * @param string $path
      *
-     * @return array{0:FilesystemOperator, 1:string}
+     * @return array{0:FilesystemOperator, 1:string, 2:string}
      */
     private function determineFilesystemAndPath(string $path): array
     {
@@ -373,8 +385,8 @@ class MountManager implements FilesystemOperator
         array $config,
     ): void {
         $config = $this->config->extend($config);
-        $retainVisibility = (bool) $config->get('retain_visibility', true);
-        $visibility = $config->get('visibility');
+        $retainVisibility = (bool) $config->get(Config::OPTION_RETAIN_VISIBILITY, true);
+        $visibility = $config->get(Config::OPTION_VISIBILITY);
 
         try {
             if ($visibility == null && $retainVisibility) {
@@ -382,7 +394,7 @@ class MountManager implements FilesystemOperator
             }
 
             $stream = $sourceFilesystem->readStream($sourcePath);
-            $destinationFilesystem->writeStream($destinationPath, $stream, $visibility ? compact('visibility') : []);
+            $destinationFilesystem->writeStream($destinationPath, $stream, $visibility ? compact(Config::OPTION_VISIBILITY) : []);
         } catch (UnableToRetrieveMetadata | UnableToReadFile | UnableToWriteFile $exception) {
             throw UnableToCopyFile::fromLocationTo($source, $destination, $exception);
         }

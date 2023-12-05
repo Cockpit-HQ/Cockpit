@@ -796,6 +796,7 @@ return array(
     'League\\Flysystem\\ChecksumProvider' => $vendorDir . '/league/flysystem/src/ChecksumProvider.php',
     'League\\Flysystem\\Config' => $vendorDir . '/league/flysystem/src/Config.php',
     'League\\Flysystem\\CorruptedPathDetected' => $vendorDir . '/league/flysystem/src/CorruptedPathDetected.php',
+    'League\\Flysystem\\DecoratedAdapter' => $vendorDir . '/league/flysystem/src/DecoratedAdapter.php',
     'League\\Flysystem\\DirectoryAttributes' => $vendorDir . '/league/flysystem/src/DirectoryAttributes.php',
     'League\\Flysystem\\DirectoryListing' => $vendorDir . '/league/flysystem/src/DirectoryListing.php',
     'League\\Flysystem\\FileAttributes' => $vendorDir . '/league/flysystem/src/FileAttributes.php',
