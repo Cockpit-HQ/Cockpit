@@ -6,6 +6,7 @@
 - Update Vue to version 3.3.9
 - Sort content models alphabetically on overview page
 - Add option to store content models in database
+- Fix table field scrollposition jump on editing data
 
 ## 2.7.1 (2023-10-08)
 

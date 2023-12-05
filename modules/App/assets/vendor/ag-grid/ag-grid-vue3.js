@@ -48,6 +48,7 @@ export default {
         let opts = Object.assign({
             columnDefs: this.columns,
             rowData: this.rows,
+            suppressScrollOnNewData: true,
         }, this.gridOptions || {});
 
         //instantiate Tabulator when element is mounted
