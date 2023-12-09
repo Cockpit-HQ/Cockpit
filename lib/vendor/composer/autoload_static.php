@@ -454,6 +454,7 @@ class ComposerStaticInitcd58276a9f48ccfb9ef51a077a4397a3
         'Aws\\EndpointParameterMiddleware' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/EndpointParameterMiddleware.php',
         'Aws\\EndpointV2\\EndpointDefinitionProvider' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/EndpointV2/EndpointDefinitionProvider.php',
         'Aws\\EndpointV2\\EndpointProviderV2' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/EndpointV2/EndpointProviderV2.php',
+        'Aws\\EndpointV2\\EndpointV2Middleware' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/EndpointV2/EndpointV2Middleware.php',
         'Aws\\EndpointV2\\EndpointV2SerializerTrait' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/EndpointV2/EndpointV2SerializerTrait.php',
         'Aws\\EndpointV2\\Rule\\AbstractRule' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/EndpointV2/Rule/AbstractRule.php',
         'Aws\\EndpointV2\\Rule\\EndpointRule' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/EndpointV2/Rule/EndpointRule.php',

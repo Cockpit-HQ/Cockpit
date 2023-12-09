@@ -48,7 +48,7 @@ export default {
             page: 1,
             count: 0,
             pages: 1,
-            limit: 15,
+            limit: App.session.get('assets.manager.limit', 15),
 
             view: App.session.get('assets.manager.view', 'cards'),
 
@@ -108,6 +108,10 @@ export default {
     watch: {
         filter(val) {
             this.txtFilter = val;
+            this.load();
+        },
+        limit(val) {
+            App.session.set('assets.manager.limit', val);
             this.load();
         },
         view(val) {
@@ -406,6 +410,12 @@ export default {
                         </select>
                     </div>
                     <a class="kiss-margin-small-left" v-if="(page + 1) <= pages" @click="load(page + 1)">{{ t('Next') }}</a>
+                    <div class="kiss-margin-left kiss-overlay-input">
+                        <span class="kiss-color-muted">{{ t('Show') }}:</span> {{ limit}}
+                        <select v-model="limit">
+                            <option v-for="l in [15, 30, 50, 100]" :value="l">{{ l }}</option>
+                        </select>
+                    </div>
                 </app-pagination>
             </div>
             <div class="kiss-flex kiss-flex-middle" gap="" v-if="!loading">
@@ -437,6 +447,12 @@ export default {
                                 </select>
                             </div>
                             <a class="kiss-margin-small-left" v-if="(page + 1) <= pages" @click="load(page + 1)">{{ t('Next') }}</a>
+                            <div class="kiss-margin-left kiss-overlay-input">
+                                <span class="kiss-color-muted">{{ t('Show') }}:</span> {{ limit}}
+                                <select v-model="limit">
+                                    <option v-for="l in [15, 30, 50, 100]" :value="l">{{ l }}</option>
+                                </select>
+                            </div>
                         </app-pagination>
                     </div>
                     <div class="kiss-flex kiss-flex-middle" gap="" v-if="!loading">

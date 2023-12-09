@@ -154,6 +154,7 @@ return array(
     'Aws\\EndpointParameterMiddleware' => $vendorDir . '/aws/aws-sdk-php/src/EndpointParameterMiddleware.php',
     'Aws\\EndpointV2\\EndpointDefinitionProvider' => $vendorDir . '/aws/aws-sdk-php/src/EndpointV2/EndpointDefinitionProvider.php',
     'Aws\\EndpointV2\\EndpointProviderV2' => $vendorDir . '/aws/aws-sdk-php/src/EndpointV2/EndpointProviderV2.php',
+    'Aws\\EndpointV2\\EndpointV2Middleware' => $vendorDir . '/aws/aws-sdk-php/src/EndpointV2/EndpointV2Middleware.php',
     'Aws\\EndpointV2\\EndpointV2SerializerTrait' => $vendorDir . '/aws/aws-sdk-php/src/EndpointV2/EndpointV2SerializerTrait.php',
     'Aws\\EndpointV2\\Rule\\AbstractRule' => $vendorDir . '/aws/aws-sdk-php/src/EndpointV2/Rule/AbstractRule.php',
     'Aws\\EndpointV2\\Rule\\EndpointRule' => $vendorDir . '/aws/aws-sdk-php/src/EndpointV2/Rule/EndpointRule.php',

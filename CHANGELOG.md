@@ -8,6 +8,7 @@
 - Add option to store content models in database
 - Fix table field scrollposition jump on editing data
 - Filter also asstes folder on simple string based search queries
+- Add assets limit settings (assets manger view)
 
 ## 2.7.1 (2023-10-08)
 
