@@ -1,11 +1,11 @@
-function getUppy(meta = {}) {
+function getUppy(meta = {}, bundle = false) {
 
     return new Uppy.Uppy({
         meta,
         autoProceed: false,
         restrictions: {
             maxFileSize: App._vars.maxUploadSize || null,
-            maxNumberOfFiles: App._vars.maxFileUploads || 20,
+            maxNumberOfFiles: bundle ? (App._vars.maxFileUploads || 20) : null,
             minNumberOfFiles: 1,
             //allowedFileTypes: ['image/*', 'video/*']
         },
@@ -20,7 +20,7 @@ function getUppy(meta = {}) {
         headers: {
             'X-CSRF-TOKEN': App.csrf
         },
-        bundle: true
+        bundle: bundle,
     }).use(Uppy.Webcam, { target: Uppy.Dashboard, showVideoSourceDropdown: true })
     .use(Uppy.ScreenCapture, { target: Uppy.Dashboard })
     //.use(Uppy.Url, { target: Uppy.Dashboard, companionUrl: 'https://companion.uppy.io' })

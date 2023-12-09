@@ -10,6 +10,7 @@
 - Filter also assets folder on simple string based search queries
 - Add assets limit settings (assets manger view)
 - Trigger upload dialog when dragging files into assets manger
+- Upload assets one by one to overcome max upload size limit
 
 ## 2.7.1 (2023-10-08)
 

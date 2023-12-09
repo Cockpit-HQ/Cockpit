@@ -159,6 +159,22 @@ class Assets extends App {
 
         $meta = ['folder' => $this->param('folder', '')];
 
+        if (isset($this->app->request->files['file'])) {
+
+            $file = $this->app->request->files['file'];
+
+            $param = [
+                'name' => [$file['name']],
+                'full_path' => [$file['full_path']],
+                'type' => [$file['type']],
+                'tmp_name' => [$file['tmp_name']],
+                'error' => [$file['error']],
+                'size' => [$file['size']],
+            ];
+
+            return $this->module('assets')->upload($param, $meta);
+        }
+
         return $this->module('assets')->upload('files', $meta);
     }
 
@@ -181,13 +197,15 @@ class Assets extends App {
             return false;
         }
 
-        $result = $this->module('assets')->upload('files', [
+        $meta = [
             '_id' => $asset['_id'],
             'title' => $asset['title'],
             'description' => $asset['description'],
             'tags' => $asset['tags'],
             '_created' => $asset['_created'],
-        ]);
+        ];
+
+        $result = $this->module('assets')->upload('files', $meta);
 
         if (!isset($result['assets'][0])) {
             return false;
