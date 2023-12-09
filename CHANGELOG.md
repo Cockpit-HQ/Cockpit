@@ -9,6 +9,7 @@
 - Fix table field scrollposition jump on editing data
 - Filter also asstes folder on simple string based search queries
 - Add assets limit settings (assets manger view)
+- Trigger upload dialog when dragging files into assets manger
 
 ## 2.7.1 (2023-10-08)
 

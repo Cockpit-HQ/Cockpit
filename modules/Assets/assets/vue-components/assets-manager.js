@@ -101,8 +101,23 @@ export default {
             'assets:assets/vendor/spotlight/spotlight.bundle.js',
             'assets:assets/vendor/spotlight/css/spotlight.min.css',
         ]).then(() => {
+
             this.uppy = true;
-        })
+
+            if (this.$el.parentNode) {
+
+                this.$el.parentNode.addEventListener('dragover', (evt) => {
+
+                    if (
+                        evt.dataTransfer.items &&
+                        evt.dataTransfer.items.length > 0 &&
+                        evt.dataTransfer.items[0].kind === 'file'
+                    ) {
+                        this.upload();
+                    }
+                });
+            }
+        });
     },
 
     watch: {
