@@ -12,7 +12,8 @@ export default {
         return {
             uuid: `assetPreview${++uuid}`,
             loading: true,
-            preview: null
+            preview: null,
+            path: null,
         }
     },
 
@@ -29,12 +30,7 @@ export default {
 
     watch: {
         asset: {
-            handler(ov, nv) {
-
-                if (ov?.path === nv?.path) {
-                    return;
-                }
-
+            handler() {
                 setTimeout(() => this.update());
             },
             deep: true
@@ -49,6 +45,11 @@ export default {
 
         update() {
 
+            if (this.path === this.asset.path) {
+                return;
+            }
+
+            this.path = this.asset.path;
             this.preview = null;
 
             if (this.asset.thumbhash) {
