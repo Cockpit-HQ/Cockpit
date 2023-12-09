@@ -103,6 +103,17 @@ class Assets extends App {
             'sort' => ['name' => 1]
         ];
 
+        if (isset($terms)) {
+
+            $f = [];
+
+            foreach ($terms as $term) {
+                $f[] = [ 'name' => ['$regex' => $term, '$options' => 'i']];
+            }
+
+            $options['filter']['$or'] = $f;
+        }
+
         $folders = $this->module('assets')->folders($options);
 
         return compact('assets', 'count', 'pages', 'page', 'folders');

@@ -7,6 +7,7 @@
 - Sort content models alphabetically on overview page
 - Add option to store content models in database
 - Fix table field scrollposition jump on editing data
+- Filter also asstes folder on simple string based search queries
 
 ## 2.7.1 (2023-10-08)
 
