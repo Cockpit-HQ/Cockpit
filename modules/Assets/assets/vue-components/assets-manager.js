@@ -20,7 +20,7 @@ function getUppy(meta = {}, bundle = false) {
         headers: {
             'X-CSRF-TOKEN': App.csrf
         },
-        bundle: bundle,
+        bundle,
     }).use(Uppy.Webcam, { target: Uppy.Dashboard, showVideoSourceDropdown: true })
     .use(Uppy.ScreenCapture, { target: Uppy.Dashboard })
     //.use(Uppy.Url, { target: Uppy.Dashboard, companionUrl: 'https://companion.uppy.io' })
