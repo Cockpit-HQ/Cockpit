@@ -1,4 +1,6 @@
-<vue-view>
+<div class="bg-animation-northern-lights"></div>
+
+<vue-view class="kiss-position-relative">
     <template>
 
         <kiss-container class="login-wrapper">
@@ -182,3 +184,75 @@
     </script>
 
 </vue-view>
+
+<style>
+@keyframes bg-animation-northern-lights {
+    from { background-position: 50% 50%, 50% 50%; }
+    to { background-position: 350% 50%, 350% 50%; }
+}
+
+.bg-animation-northern-lights {
+
+    --stripes: repeating-linear-gradient(
+        100deg,
+        #fff 0%,
+        #fff 7%,
+        transparent 10%,
+        transparent 12%,
+        #fff 16%
+    );
+    --stripesDark: repeating-linear-gradient(
+        100deg,
+        #000 0%,
+        #000 7%,
+        transparent 10%,
+        transparent 12%,
+        #000 16%
+    );
+    --rainbow: repeating-linear-gradient(
+        100deg,
+        #60a5fa 10%,
+        #e879f9 15%,
+        #60a5fa 20%,
+        #5eead4 25%,
+        #60a5fa 30%
+    );
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    background-image: var(--stripes), var(--rainbow);
+    background-size: 300%, 200%;
+    background-position: 50% 50%, 50% 50%;
+
+    filter: blur(10px) invert(100%);
+    mask-image: radial-gradient(ellipse at 100% 0%, black 40%, transparent 75%);
+
+    pointer-events: none;
+    opacity: 0.5;
+    z-index: 0;
+}
+
+.bg-animation-northern-lights::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: var(--stripes), var(--rainbow);
+    background-size: 200%, 100%;
+    animation: bg-animation-northern-lights 60s linear infinite;
+    background-attachment: fixed;
+    mix-blend-mode: difference;
+}
+
+[data-theme="dark"] .bg-animation-northern-lights {
+    background-image: var(--stripesDark), var(--rainbow);
+    filter: blur(10px) opacity(40%) saturate(200%);
+}
+[data-theme="dark"] .bg-animation-northern-lights::after {
+    background-image: var(--stripesDark), var(--rainbow);
+}
+
+</style>
