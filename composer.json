@@ -42,7 +42,8 @@
         "webonyx/graphql-php": "^15.0",
         "zircote/swagger-php": "^4.5.1",
         "symfony/console": "^5.3",
-        "symfony/process": "^6.2"
+        "symfony/process": "^6.2",
+        "doctrine/annotations": "^2.0"
     },
 
     "config": {
