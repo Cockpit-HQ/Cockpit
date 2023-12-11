@@ -67,7 +67,10 @@ class FileStorage {
 
         $config = $this->config[$name];
         $adapter = new \ReflectionClass($config['adapter']);
-        $this->storages[$name] = new Filesystem($adapter->newInstanceArgs($config['args'] ?: []));
+        $this->storages[$name] = new Filesystem(
+            $adapter->newInstanceArgs($config['args'] ?: []),
+            ['visibility' => $config['visibility'] ?? 'public']
+        );
 
         if (isset($config['mount']) && $config['mount']) {
             $mountMethod->invokeArgs($this->manager, [$name, $this->storages[$name]]);
