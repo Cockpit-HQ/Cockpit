@@ -59,17 +59,17 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.293.7",
-            "version_normalized": "3.293.7.0",
+            "version": "3.293.8",
+            "version_normalized": "3.293.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "3bf86ba8b9bbea2b298f89e6f5edc58de276690b"
+                "reference": "abb250f6ac8798fa1547eff6f9bda526a90efa15"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/3bf86ba8b9bbea2b298f89e6f5edc58de276690b",
-                "reference": "3bf86ba8b9bbea2b298f89e6f5edc58de276690b",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/abb250f6ac8798fa1547eff6f9bda526a90efa15",
+                "reference": "abb250f6ac8798fa1547eff6f9bda526a90efa15",
                 "shasum": ""
             },
             "require": {
@@ -110,7 +110,7 @@
                 "ext-openssl": "Allows working with CloudFront private distributions and verifying received SNS messages",
                 "ext-sockets": "To use client-side monitoring"
             },
-            "time": "2023-12-08T19:11:21+00:00",
+            "time": "2023-12-11T19:15:29+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -151,7 +151,7 @@
             "support": {
                 "forum": "https://forums.aws.amazon.com/forum.jspa?forumID=80",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.293.7"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.293.8"
             },
             "install-path": "../aws/aws-sdk-php"
         },
@@ -3583,17 +3583,17 @@
         },
         {
             "name": "zircote/swagger-php",
-            "version": "4.8.0",
-            "version_normalized": "4.8.0.0",
+            "version": "4.8.1",
+            "version_normalized": "4.8.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zircote/swagger-php.git",
-                "reference": "8ea52e3542133faf364bd9295d1a69406b465220"
+                "reference": "2a2ae434965f5c497713e05d1398fc9476dfdeb0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zircote/swagger-php/zipball/8ea52e3542133faf364bd9295d1a69406b465220",
-                "reference": "8ea52e3542133faf364bd9295d1a69406b465220",
+                "url": "https://api.github.com/repos/zircote/swagger-php/zipball/2a2ae434965f5c497713e05d1398fc9476dfdeb0",
+                "reference": "2a2ae434965f5c497713e05d1398fc9476dfdeb0",
                 "shasum": ""
             },
             "require": {
@@ -3615,7 +3615,7 @@
             "suggest": {
                 "doctrine/annotations": "^1.7 || ^2.0"
             },
-            "time": "2023-12-04T19:43:43+00:00",
+            "time": "2023-12-11T08:35:08+00:00",
             "bin": [
                 "bin/openapi"
             ],
@@ -3661,7 +3661,7 @@
             ],
             "support": {
                 "issues": "https://github.com/zircote/swagger-php/issues",
-                "source": "https://github.com/zircote/swagger-php/tree/4.8.0"
+                "source": "https://github.com/zircote/swagger-php/tree/4.8.1"
             },
             "install-path": "../zircote/swagger-php"
         }
