@@ -10,6 +10,18 @@ export default {
             { name: 'options', type: 'text', multiple: true },
         ],
         render(value, field) {
+            const options = field?.opts?.options ?? []
+            
+            if (Array.isArray(options) && options.length > 0 && (typeof(options[0]) !== 'string')) {
+                
+                const selectedValues = typeof (value) === 'string' ? value.split(',') : value || []
+                var selectedOptions = options.filter((o) => selectedValues.indexOf((o.value ?? o).toString().trim()) !== -1);
+
+                if(selectedOptions.length > 0){
+                    return selectedOptions.map(o => (o.label ?? o).toString().trim()).join(", ");
+                }
+            }
+            
             return Array.isArray(value) ? value.join(', ') : value;
         }
     },
