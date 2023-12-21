@@ -13,7 +13,7 @@ export default {
             if (field && field.opts && field.opts.options && Array.isArray(field.opts.options)  && field.opts.options.length > 0 && (typeof(field.opts.options[0]) !== 'string')) {
                 
                 const selectedValues = typeof (value) === 'string' ? value.split(',') : value || []
-                var selectedOptions = field.opts.options.filter((o) => selectedValues.indexOf((o.value ?? o).toString().trim()) !== -1);
+                const selectedOptions = field.opts.options.filter((o) => selectedValues.indexOf((o.value ?? o).toString().trim()) !== -1);
 
                 if(selectedOptions.length > 0){
                     return selectedOptions.map(o => (o.label ?? o).toString().trim()).join(", ");
