@@ -23,7 +23,12 @@
 
     "require": {
         "php": "^8.1.0",
+        "ext-curl": "*",
+        "ext-fileinfo": "*",
+        "ext-gd": "*",
         "ext-json": "*",
+        "ext-pdo_sqlite": "*",
+        "ext-zip": "*",
         "phpmailer/phpmailer": "^6.4",
         "guzzlehttp/guzzle": "^7.4.5",
         "claviska/simpleimage": "^4.0",
