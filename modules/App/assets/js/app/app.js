@@ -156,9 +156,9 @@ let App = {
 };
 
 // general services
-App.session = window.JSONStorage ? window.JSONStorage.select("app", "session") : null;
-App.storage = window.JSONStorage ? window.JSONStorage.select("app", "local") : null;
-App.memory = window.JSONStorage ? window.JSONStorage.select("app", "memory") : null;
+App.session = window.JSONStorage ? window.JSONStorage.select('app', 'session') : null;
+App.storage = window.JSONStorage ? window.JSONStorage.select('app', 'local') : null;
+App.memory = window.JSONStorage ? window.JSONStorage.select('app', 'memory') : null;
 App.i18n = window.i18n || null;
 App.assets = assets;
 App.ui = ui;

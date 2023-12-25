@@ -3,7 +3,7 @@
 ## WIP
 
 - Refactor fields renderer to support custom actions on fields
-- Update Vue to version 3.3.11
+- Update Vue to version 3.3.13
 - Sort content models alphabetically on overview page
 - Add option to store content models in database
 - Fix table field scrollposition jump on editing data
