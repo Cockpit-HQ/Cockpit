@@ -500,6 +500,8 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionNetworkFirewall(array $args = [])
  * @method \Aws\NetworkManager\NetworkManagerClient createNetworkManager(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionNetworkManager(array $args = [])
+ * @method \Aws\NetworkMonitor\NetworkMonitorClient createNetworkMonitor(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionNetworkMonitor(array $args = [])
  * @method \Aws\NimbleStudio\NimbleStudioClient createNimbleStudio(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionNimbleStudio(array $args = [])
  * @method \Aws\OAM\OAMClient createOAM(array $args = [])
@@ -755,7 +757,7 @@ namespace Aws;
  */
 class Sdk
 {
-    const VERSION = '3.294.4';
+    const VERSION = '3.295.0';
 
     /** @var array Arguments for creating clients */
     private $args;
