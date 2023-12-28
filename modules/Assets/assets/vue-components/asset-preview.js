@@ -124,7 +124,6 @@ export default {
                     };
 
                     video.muted = true;
-                    video.src = videoURL;
                     video.crossOrigin = 'anonymous';  // may be needed in some cases
 
                     video.onloadedmetadata = () => {
@@ -136,6 +135,8 @@ export default {
                         // seek to time
                         video.currentTime = timeInSeconds;
                     };
+
+                    setTimeout(() => video.src = videoURL, 5);
                 });
             }
 
