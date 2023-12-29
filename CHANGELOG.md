@@ -11,6 +11,7 @@
 - Add assets limit settings (assets manger view)
 - Trigger upload dialog when dragging files into assets manger
 - Upload assets one by one to overcome max upload size limit
+- PHP >= 8.2 is required now
 
 ## 2.7.1 (2023-10-08)
 
