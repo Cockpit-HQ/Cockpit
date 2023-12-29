@@ -5,11 +5,11 @@
 - Refactor fields renderer to support custom actions on fields
 - Update Vue to version 3.3.13
 - Sort content models alphabetically on overview page
-- Add option to store content models in database
+- Add config option to store content models in database
 - Fix table field scrollposition jump on editing data
 - Filter also assets folder on simple string based search queries
-- Add assets limit settings (assets manger view)
-- Trigger upload dialog when dragging files into assets manger
+- Add assets view limit setting (assets manger view)
+- Trigger upload dialog when dragging files into assets manager
 - Upload assets one by one to overcome max upload size limit
 - PHP >= 8.2 is required now
 
