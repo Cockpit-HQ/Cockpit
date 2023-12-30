@@ -37,7 +37,7 @@ export default {
             handler: function (data) {
 
                 if (this.api) {
-                    this.api.setRowData(data);
+                    this.api.setGridOption('rowData', data);
                 }
             },
             deep: true,
