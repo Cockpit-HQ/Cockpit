@@ -1,6 +1,6 @@
 # Release Notes
 
-## WIP
+## 2.7.2 (2023-12-30)
 
 - Refactor fields renderer to support custom actions on fields
 - Update Vue to version 3.4.0
@@ -11,7 +11,6 @@
 - Add assets view limit setting (assets manger view)
 - Trigger upload dialog when dragging files into assets manager
 - Upload assets one by one to overcome max upload size limit
-- PHP >= 8.2 is required now
 
 ## 2.7.1 (2023-10-08)
 
