@@ -14,6 +14,13 @@ require_once(__DIR__.'/lib/_autoload.php');
 // load .env file if exists
 DotEnv::load(APP_DIR);
 
+if (!function_exists('env')) {
+
+    function env($key, $default = null) {
+        return DotEnv::value($key, $default);
+    }
+}
+
 class Cockpit {
 
     protected static array $instance = [];

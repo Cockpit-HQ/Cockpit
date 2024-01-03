@@ -6,19 +6,18 @@ class DotEnv {
 
         $config = is_file($dir) ? $dir : "{$dir}/.env";
 
-        if (file_exists($config)) {
-
-            $vars = self::parse(file_get_contents($config));
-
-            foreach ($vars as $key => $value) {
-                $_ENV[$key] = $value;
-                putenv("{$key}={$value}");
-            }
-
-            return true;
+        if (!file_exists($config)) {
+            return false;
         }
 
-        return false;
+        $vars = self::parse(file_get_contents($config));
+
+        foreach ($vars as $key => $value) {
+            $_ENV[$key] = $value;
+            putenv("{$key}={$value}");
+        }
+
+        return true;
     }
 
     public static function parse(string $str, bool $expand = true): array {
@@ -54,5 +53,16 @@ class DotEnv {
         }
 
         return $vars;
+    }
+
+    public static function value(string $key, $default = null) {
+
+        $value = $_ENV[$key] ?? getenv($key);
+
+        if (!$value) {
+            $value = is_callable($default) ? $default() : $default;
+        }
+
+        return $value;
     }
 }
