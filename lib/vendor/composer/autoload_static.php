@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitcd58276a9f48ccfb9ef51a077a4397a3
+class ComposerStaticInit5723017241f53032fa5adda76b6b8857
 {
     public static $files = array (
         '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
@@ -709,9 +709,9 @@ class ComposerStaticInitcd58276a9f48ccfb9ef51a077a4397a3
         'ColorThief\\Image\\ImageLoader' => __DIR__ . '/..' . '/ksubileau/color-thief-php/src/ColorThief/Image/ImageLoader.php',
         'ColorThief\\PQueue' => __DIR__ . '/..' . '/ksubileau/color-thief-php/src/ColorThief/PQueue.php',
         'ColorThief\\VBox' => __DIR__ . '/..' . '/ksubileau/color-thief-php/src/ColorThief/VBox.php',
-        'ComposerAutoloaderInitcd58276a9f48ccfb9ef51a077a4397a3' => __DIR__ . '/..' . '/composer/autoload_real.php',
+        'ComposerAutoloaderInit5723017241f53032fa5adda76b6b8857' => __DIR__ . '/..' . '/composer/autoload_real.php',
         'Composer\\Autoload\\ClassLoader' => __DIR__ . '/..' . '/composer/ClassLoader.php',
-        'Composer\\Autoload\\ComposerStaticInitcd58276a9f48ccfb9ef51a077a4397a3' => __DIR__ . '/..' . '/composer/autoload_static.php',
+        'Composer\\Autoload\\ComposerStaticInit5723017241f53032fa5adda76b6b8857' => __DIR__ . '/..' . '/composer/autoload_static.php',
         'Composer\\BinProxyWrapper' => __DIR__ . '/..' . '/bin/jp.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'DASPRiD\\Enum\\AbstractEnum' => __DIR__ . '/..' . '/dasprid/enum/src/AbstractEnum.php',
@@ -1700,10 +1700,10 @@ class ComposerStaticInitcd58276a9f48ccfb9ef51a077a4397a3
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitcd58276a9f48ccfb9ef51a077a4397a3::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitcd58276a9f48ccfb9ef51a077a4397a3::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInitcd58276a9f48ccfb9ef51a077a4397a3::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInitcd58276a9f48ccfb9ef51a077a4397a3::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit5723017241f53032fa5adda76b6b8857::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit5723017241f53032fa5adda76b6b8857::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit5723017241f53032fa5adda76b6b8857::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit5723017241f53032fa5adda76b6b8857::$classMap;
 
         }, null, ClassLoader::class);
     }
