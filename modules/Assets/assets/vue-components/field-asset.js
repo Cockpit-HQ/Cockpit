@@ -36,7 +36,7 @@ export default {
 
                     const src = App.route(`/assets/thumbnail/${value._id}?m=bestFit&mime=auto&h=20&t=${value._modified}`);
 
-                    return `<img class="kiss-responsive-height" src="${src}" style="height:20px">`;
+                    return `<img loading="lazy" class="kiss-responsive-height" src="${src}" style="height:20px">`;
                 }
 
                 return `<kiss-svg width="20" height="20" src="${App.base(value.type === 'video' ? 'assets:assets/icons/video.svg' : 'assets:assets/icons/file.svg')}"><canvas width="20" height="20"></canvas></kiss-svg>`;
@@ -48,7 +48,7 @@ export default {
 
                 const src = App.route(`/assets/thumbnail/${value._id}?m=bestFit&mime=auto&h=40&t=${value._modified}`);
 
-                thumb = `<img class="kiss-responsive-height" src="${src}" style="height:40px">`;
+                thumb = `<img loading="lazy" class="kiss-responsive-height" src="${src}" style="height:40px">`;
             }
 
             return /*html*/ `

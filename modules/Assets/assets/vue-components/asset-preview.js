@@ -5,6 +5,15 @@ let uuid = 0,
     hasWebPSupport = document.createElement('canvas').toDataURL('image/webp').startsWith('data:image/webp'),
     cache = {};
 
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (!entry.isIntersecting || !entry.target.$updatePreview) return;
+        observer.unobserve(entry.target);
+        setTimeout(() => entry.target.$updatePreview());
+    });
+});
+
 export default {
 
     data() {
@@ -38,7 +47,9 @@ export default {
     },
 
     mounted() {
-        setTimeout(() => this.update());
+
+        this.$el.$updatePreview = this.update;
+        setTimeout(() => observer.observe(this.$el));
     },
 
     methods: {
