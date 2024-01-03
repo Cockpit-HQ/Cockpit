@@ -1,5 +1,11 @@
 # Release Notes
 
+## WIP
+
+- Lazy loading of asset preview images
+- Update Vue to version 3.4.3
+- Require PHP >=8.2
+
 ## 2.7.2 (2023-12-30)
 
 - Refactor fields renderer to support custom actions on fields
