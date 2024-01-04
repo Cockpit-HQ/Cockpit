@@ -55,6 +55,8 @@ AddType application/x-font-woff         woff
 # Assorted types
 AddType image/x-icon                    ico
 AddType image/webp                      webp
+AddType image/avif                      avif
+AddType image/avif-sequence             avifs
 AddType text/cache-manifest             appcache manifest
 AddType text/x-component                htc
 AddType application/xml                 rss atom xml rdf

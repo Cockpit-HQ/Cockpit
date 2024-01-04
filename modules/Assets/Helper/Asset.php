@@ -2,9 +2,21 @@
 
 namespace Assets\Helper;
 
+use Symfony\Component\Process\Process;
 use SimpleImageLib as SimpleImage;
 
 class Asset extends \Lime\Helper {
+
+    protected ?Vips $vips = null;
+
+    protected function initialize() {
+
+        $useVips = $this->app->retrieve('assets/vips');
+
+        if ($useVips) {
+            $this->vips = new Vips(is_string($useVips) ? $useVips : null);
+        }
+    }
 
     public function image(array $options = [], bool $asPath = false) {
 
@@ -179,31 +191,48 @@ class Asset extends \Lime\Helper {
                 $this->app->fileStorage->delete($thumbpath);
             }
 
-            $img = new Img($src);
-            $img->{$method}($width, $height, $fp);
+            if ($this->vips) {
 
-            // Apply image filters
-            foreach ($filters as $filter => $opts) {
-                // Handle non-associative array
-                if (is_int($filter)) {
-                    $filter = $opts;
-                    $opts = [];
+                $tmp = $this->app->path('#tmp:').uniqid().".{$ext}";
+
+                $this->vips->thumbnail($tmp, [
+                    'src' => $src,
+                    'size' => "{$width}x{$height}",
+                    'quality' => $quality
+                ]);
+
+                if (file_exists($tmp)) {
+
+                    if (is_array($filters) && !empty($filters)) {
+
+                        $img = new Img($tmp);
+
+                        // Apply image filters
+                        $this->applyFilters($img, $filters);
+
+                        $this->app->fileStorage->write($thumbpath, $img->toString($mime, $quality));
+                        unset($img);
+                    } else {
+                        $this->app->fileStorage->write($thumbpath, file_get_contents($tmp));
+                    }
+
+                    unlink($tmp);
+                } else {
+                    return false;
                 }
 
-                if (in_array($filter, [
-                    'blur', 'brighten',
-                    'colorize', 'contrast',
-                    'darken', 'desaturate',
-                    'edgeDetect', 'emboss',
-                    'flip', 'invert', 'opacity', 'pixelate', 'sepia', 'sharpen', 'sketch'
-                ])) {
-                    call_user_func_array([$img, $filter], (array) $opts);
-                }
+            } else {
+
+                $img = new Img($src);
+                $img->{$method}($width, $height, $fp);
+
+                // Apply image filters
+                $this->applyFilters($img, $filters);
+
+                $this->app->fileStorage->write($thumbpath, $img->toString($mime, $quality));
+
+                unset($img);
             }
-
-            $this->app->fileStorage->write($thumbpath, $img->toString($mime, $quality));
-
-            unset($img);
         }
 
         if ($base64) {
@@ -211,6 +240,38 @@ class Asset extends \Lime\Helper {
         }
 
         return $asPath ? $thumbpath : $this->app->fileStorage->getURL($thumbpath);
+    }
+
+    protected function applyFilters(Img $img, array $filters): Img {
+
+        if (empty($filters)) return $img;
+
+        // Apply image filters
+        foreach ($filters as $filter => $opts) {
+            // Handle non-associative array
+            if (is_int($filter)) {
+                $filter = $opts;
+                $opts = [];
+            }
+
+            $opts = (array) $opts;
+
+            foreach ($opts as $key => $value) {
+                if (is_numeric($value)) $opts[$key] = $value + 0;
+            }
+
+            if (in_array($filter, [
+                'blur', 'brighten',
+                'colorize', 'contrast',
+                'darken', 'desaturate',
+                'edgeDetect', 'emboss',
+                'flip', 'invert', 'opacity', 'pixelate', 'sepia', 'sharpen', 'sketch'
+            ])) {
+                call_user_func_array([$img, $filter], (array) $opts);
+            }
+        }
+
+        return $img;
     }
 }
 
@@ -247,7 +308,6 @@ class Img {
 
     public function thumbnail($width, $height, $anchor = 'center') {
 
-
         if (\preg_match('/\d \d/', $anchor)) {
 
             // Determine aspect ratios
@@ -283,5 +343,31 @@ class Img {
         }
 
         return $this;
+    }
+}
+
+class Vips {
+
+    protected string $binary = 'vipsthumbnail';
+
+    public function __construct(?string $binary = null) {
+
+        if ($binary) {
+            $this->binary = $binary;
+        }
+    }
+
+    public function thumbnail(string $dest, array $options = []) {
+
+        $options = array_merge([
+            'size' => '200x200',
+            'src' => null,
+            'quality' => 100,
+        ], $options);
+
+        $command = "{$this->binary} '{$options['src']}' --size {$options['size']} --smartcrop attention -o '{$dest}[Q={$options['quality']}]'";
+
+        $process = Process::fromShellCommandline($command);
+        $process->run();
     }
 }
