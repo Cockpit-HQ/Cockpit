@@ -2,12 +2,14 @@
 
 namespace Assets\Helper;
 
-use Symfony\Component\Process\Process;
-use SimpleImageLib as SimpleImage;
+use Assets\Utils\Img;
+use Assets\Utils\Vips;
+use Assets\Utils\Ffmpeg;
 
 class Asset extends \Lime\Helper {
 
     protected ?Vips $vips = null;
+    protected ?Ffmpeg $ffmpeg = null;
 
     protected function initialize() {
 
@@ -15,6 +17,12 @@ class Asset extends \Lime\Helper {
 
         if ($useVips) {
             $this->vips = new Vips(is_string($useVips) ? $useVips : null);
+        }
+
+        $useFfmpeg = $this->app->retrieve('assets/ffmpeg');
+
+        if ($useFfmpeg) {
+            $this->ffmpeg = new Ffmpeg(is_string($useFfmpeg) ? $useFfmpeg : null);
         }
     }
 
@@ -140,6 +148,23 @@ class Asset extends \Lime\Helper {
             }
 
             return $asPath ? "uploads://{$path}" : $srcUrl;
+        }
+
+        // check if video
+        if (in_array($ext, ['mp4', 'avi', 'mov', 'webm', 'mkv', 'flv', 'wmv', 'mpeg', 'mpg', 'm4v']) && $this->ffmpeg) {
+
+            $tmp = $this->app->path('#tmp:').uniqid('video').".jpg";
+
+            $this->ffmpeg->thumbnail($tmp, [
+                'src' => $src,
+            ]);
+
+            if (!file_exists($tmp)) {
+                return false;
+            }
+
+            $src = $tmp;
+            $ext = 'jpg';
         }
 
         // check if image
@@ -272,102 +297,5 @@ class Asset extends \Lime\Helper {
         }
 
         return $img;
-    }
-}
-
-class Img {
-
-    protected $image;
-
-    public function __construct($img) {
-
-        $this->image = new SimpleImage($img);
-    }
-
-    public function negative() {
-        $this->image->invert();
-        return $this;
-    }
-
-    public function grayscale() {
-        $this->image->desaturate();
-        return $this;
-    }
-
-    public function base64data($format = null, $quality = 100) {
-        return $this->image->toDataUri($format, $quality);
-    }
-
-    public function show($format = null, $quality = 100) {
-        $this->image->toScreen($format, $quality);
-    }
-
-    public function blur($passes = 1, $type = 'gaussian') {
-        return $this->image->blur($type, $passes);
-    }
-
-    public function thumbnail($width, $height, $anchor = 'center') {
-
-        if (\preg_match('/\d \d/', $anchor)) {
-
-            // Determine aspect ratios
-            $currentRatio = $this->image->getHeight() / $this->image->getWidth();
-            $targetRatio = $height / $width;
-
-            // Fit to height/width
-            if ($targetRatio > $currentRatio) {
-                $this->image->resize(null, $height);
-            } else {
-                $this->image->resize($width, null);
-            }
-
-            $anchor = \explode(' ', $anchor);
-
-            $x1 = \floor(($this->image->getWidth() * $anchor[0]) - ($width * $anchor[0]));
-            $x2 = $width + $x1;
-            $y1 = \floor(($this->image->getHeight() * $anchor[1]) - ($height * $anchor[1]));
-            $y2 = $height + $y1;
-
-            return $this->image->crop($x1, $y1, $x2, $y2);
-        }
-
-        return $this->image->thumbnail($width, $height, $anchor);
-    }
-
-    public function __call($method, $args) {
-
-        $ret = \call_user_func_array([$this->image, $method], $args);
-
-        if ($ret !== $this->image) {
-            return $ret;
-        }
-
-        return $this;
-    }
-}
-
-class Vips {
-
-    protected string $binary = 'vipsthumbnail';
-
-    public function __construct(?string $binary = null) {
-
-        if ($binary) {
-            $this->binary = $binary;
-        }
-    }
-
-    public function thumbnail(string $dest, array $options = []) {
-
-        $options = array_merge([
-            'size' => '200x200',
-            'src' => null,
-            'quality' => 100,
-        ], $options);
-
-        $command = "{$this->binary} '{$options['src']}' --size {$options['size']} --smartcrop attention -o '{$dest}[Q={$options['quality']}]'";
-
-        $process = Process::fromShellCommandline($command);
-        $process->run();
     }
 }
