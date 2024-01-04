@@ -35,6 +35,8 @@ $this->on('app.layout.init', function() {
         'active' => false,
         'prio'   => 1
     ]);
+
+    $this->helper('theme')->vars('ffmpeg', $this->retrieve('assets/ffmpeg') ? true : false);
 });
 
 $this->on('app.layout.assets', function(array &$assets) {

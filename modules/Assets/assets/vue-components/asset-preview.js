@@ -68,29 +68,32 @@ export default {
             }
 
             if (this.asset.type == 'image') {
-
-                let start = (Date.now()),
-                    delay = 250,
-                    mime = hasWebPSupport ? 'webp' : 'auto',
-                    duration;
-
-                this.$request(`/assets/thumbnail/${this.asset._id}?m=bestFit&mime=${mime}&h=300&t=${this.asset._modified}&re=0&q=70`).then(rsp => {
-
-                    duration = Date.now() - start;
-
-                    setTimeout(() => {
-                        this.preview = rsp.url;
-                        this.loading = false;
-                    }, duration > delay ? 0 : delay - (Date.now() - start));
-                });
-            }
-
-            if (this.asset.type == 'video') {
-                setTimeout(() => this.captureFrame(), 0);
+                setTimeout(() => this.captureImageThumbnail(), 0);
+            } else if (this.asset.type == 'video') {
+                setTimeout(() => this.captureVideoThumbnail(), 0);
             }
         },
 
-        captureFrame() {
+        captureImageThumbnail() {
+
+            let start = (Date.now()),
+            delay = 250,
+            mime = hasWebPSupport ? 'webp' : 'auto',
+            duration;
+
+            this.$request(`/assets/thumbnail/${this.asset._id}?m=bestFit&mime=${mime}&h=300&t=${this.asset._modified}&re=0&q=70`).then(rsp => {
+
+                duration = Date.now() - start;
+
+                setTimeout(() => {
+                    this.preview = rsp.url;
+                    this.loading = false;
+                }, duration > delay ? 0 : delay - (Date.now() - start));
+            });
+
+        },
+
+        captureVideoThumbnail() {
 
             let videoURL = this.$base(`#uploads:${this.asset.path}`);
             let timeInSeconds = 2;
@@ -118,6 +121,17 @@ export default {
             if (!cache[this.asset.path]) {
 
                 cache[this.asset.path] = new Promise((resolve, reject) => {
+
+                    if (App._vars.ffmpeg) {
+
+                        const mime = hasWebPSupport ? 'webp' : 'auto';
+
+                        this.$request(`/assets/thumbnail/${this.asset._id}?m=bestFit&mime=${mime}&h=300&t=${this.asset._modified}&re=0&q=70`).then(rsp => {
+                            resolve(rsp.url);
+                        });
+
+                        return;
+                    }
 
                     let video = document.createElement('video');
 

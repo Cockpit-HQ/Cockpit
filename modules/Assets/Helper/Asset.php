@@ -153,14 +153,18 @@ class Asset extends \Lime\Helper {
         // check if video
         if (in_array($ext, ['mp4', 'avi', 'mov', 'webm', 'mkv', 'flv', 'wmv', 'mpeg', 'mpg', 'm4v']) && $this->ffmpeg) {
 
-            $tmp = $this->app->path('#tmp:').uniqid('video').".jpg";
-
-            $this->ffmpeg->thumbnail($tmp, [
-                'src' => $src,
-            ]);
+            $tmp = $this->app->path('#tmp:').basename($src, '.'.$ext).".jpg";
 
             if (!file_exists($tmp)) {
-                return false;
+
+                // cache base video image source
+                $this->ffmpeg->thumbnail($tmp, [
+                    'src' => $src,
+                ]);
+
+                if (!file_exists($tmp)) {
+                    return false;
+                }
             }
 
             $src = $tmp;

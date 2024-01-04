@@ -127,6 +127,12 @@ class Theme extends \Lime\Helper {
 
         switch (count($args)) {
             case 1:
+
+                if (is_array($args[0])) {
+                    $this->vars = array_merge($this->vars, $args[0]);
+                    break;
+                }
+
                 return $this->vars[$args[0]] ?? null;
             case 2:
                 $this->vars[$args[0]] = $args[1];
