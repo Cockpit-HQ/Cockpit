@@ -21,7 +21,7 @@ class Ffmpeg {
             'src' => null,
         ], $options);
 
-        $command = "{$this->binary} -i '{$options['src']}' -vf 'thumbnail=300' -frames:v 1 '{$dest}'";
+        $command = "{$this->binary} -i '{$options['src']}' -vf 'thumbnail=600' -frames:v 1 '{$dest}'";
 
         $process = Process::fromShellCommandline($command);
         $process->run();

@@ -67,9 +67,9 @@ export default {
                 this.preview = thumbHashToDataURL(this.asset.thumbhash.split('-'))
             }
 
-            if (this.asset.type == 'image') {
+            if (this.asset.type === 'image') {
                 setTimeout(() => this.captureImageThumbnail(), 0);
-            } else if (this.asset.type == 'video') {
+            } else if (this.asset.type === 'video') {
                 setTimeout(() => this.captureVideoThumbnail(), 0);
             }
         },
