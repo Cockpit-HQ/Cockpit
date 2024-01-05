@@ -7,6 +7,7 @@
 - Require PHP >=8.2
 - Add vips config option for more performant thumbnail generation
 - Add ffmpeg config option for more video thumbnail generation support
+- Fix download file / folder (Finder)
 
 ## 2.7.2 (2023-12-30)
 

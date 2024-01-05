@@ -177,7 +177,11 @@ export default {
         },
 
         download(file) {
-            window.open(this.$route(`/finder/api?cmd=download&path=${file.path}&root=${this.root}`));
+            window.open(this.$route(`/finder/api?cmd=download&path=${file.path}&root=${encodeURIComponent(this.root)}&xcsrftoken=${App.csrf || ''}`));
+        },
+
+        downloadfolder(folder) {
+            window.open(this.$route(`/finder/api?cmd=downloadfolder&path=${folder.path}&root=${encodeURIComponent(this.root)}&xcsrftoken=${App.csrf || ''}`));
         },
 
         createFolder() {
@@ -453,7 +457,7 @@ export default {
                             </li>
                             <li class="kiss-nav-divider"></li>
                             <li>
-                                <a class="kiss-flex kiss-flex-middle" @click="download(actionFolder)">
+                                <a class="kiss-flex kiss-flex-middle" @click="downloadfolder(actionFolder)">
                                     <icon class="kiss-margin-small-right" size="larger">cloud_download</icon>
                                     {{ t('Download') }}
                                 </a>

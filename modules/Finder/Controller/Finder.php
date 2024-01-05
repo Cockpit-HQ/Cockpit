@@ -38,7 +38,7 @@ class Finder extends App {
             return false;
         }
 
-        $this->root = $this->app->path($root);
+        $this->root = rtrim($this->app->path($root), '/');
         $cmd = $this->param('cmd', false);
 
         if (file_exists($this->root) && in_array($cmd, get_class_methods($this))) {
@@ -364,7 +364,6 @@ class Finder extends App {
 
     protected function downloadfolder() {
 
-
         $path   = $this->_getPathParameter();
 
         if (!$path) return false;
@@ -379,7 +378,7 @@ class Finder extends App {
 
         $prefix = basename($path);
         $files  = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($folder), \RecursiveIteratorIterator::LEAVES_ONLY);
-        $zip    = new \ZipStream\ZipStream("{$prefix}.zip");
+        $zip    = new \ZipStream\ZipStream(outputName: "{$prefix}.zip", sendHttpHeaders: true);
 
         foreach ($files as $name => $file) {
 
@@ -387,7 +386,10 @@ class Finder extends App {
 
             $filePath = $file->getRealPath();
             $relativePath = substr($filePath, strlen($folder) + 1);
-            $zip->addFileFromPath("{$prefix}/{$relativePath}", $filePath);
+            $zip->addFileFromPath(
+                fileName: "{$prefix}/{$relativePath}",
+                path: $filePath
+            );
         }
 
         $zip->finish();
