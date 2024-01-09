@@ -122,13 +122,13 @@ class Utils extends \Lime\Helper {
     public function sluggify(string $string, string $replacement = '-', bool $tolower = true): string {
         $quotedReplacement = \preg_quote($replacement, '/');
 
-        $merge = array(
+        $merge = [
             '/[^\s\p{Ll}\p{Lm}\p{Lo}\p{Lt}\p{Lu}\p{Nd}]/mu' => ' ',
             '/\\s+/' => $replacement,
             \sprintf('/^[%s]+|[%s]+$/', $quotedReplacement, $quotedReplacement) => '',
-        );
+        ];
 
-        $map = array(
+        $map = [
             '/ä|æ|ǽ/' => 'ae',
             '/ö|œ/' => 'oe',
             '/ü/' => 'ue',
@@ -210,7 +210,7 @@ class Utils extends \Lime\Helper {
             '/Ю|ю/' => 'yu',
             '/Я|я/' => 'ya',
             '/Ъ|ъ|Ь|ь/' => '',
-        ) + $merge;
+        ] + $merge;
 
         $string = \preg_replace(\array_keys($map), \array_values($map), $string);
 

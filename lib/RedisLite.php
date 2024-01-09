@@ -150,7 +150,7 @@ class RedisLite {
         } else {
 
             $matcher = function_exists('fnmatch') ? 'fnmatch': function($pattern, $string){
-                return preg_match("#^".strtr(preg_quote($pattern, '#'), array('\*' => '.*', '\?' => '.'))."$#i", $string);
+                return preg_match("#^".strtr(preg_quote($pattern, '#'), ['\*' => '.*', '\?' => '.'])."$#i", $string);
             };
 
             foreach ($res as $record) {
