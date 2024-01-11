@@ -8,6 +8,7 @@
 - Add vips config option for more performant thumbnail generation
 - Add ffmpeg config option for more video thumbnail generation support
 - Fix download file / folder (Finder)
+- Add alt text info for image assets
 
 ## 2.7.2 (2023-12-30)
 

@@ -151,7 +151,7 @@ $this->module('assets')->extend([
 
             $asset = [
                 'path' => $path,
-                'title' => $name,
+                'title' => ucfirst(str_replace(['_', '-'], ' ', basename($name, ".{$ext}"))),
                 'mime' => finfo_file($finfo, $file),
                 'type' => 'unknown',
                 'description' => '',
@@ -185,6 +185,8 @@ $this->module('assets')->extend([
             };
 
             if ($asset['type'] == 'image') {
+
+                $asset['altText'] = $name;
 
                 if (preg_match('/\.svg$/i', $file)) {
 
