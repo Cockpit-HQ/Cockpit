@@ -3,7 +3,7 @@
 ## WIP
 
 - Lazy loading of asset preview images
-- Update Vue to version 3.4.3
+- Update Vue to version 3.4.10
 - Require PHP >=8.2
 - Add vips config option for more performant thumbnail generation
 - Add ffmpeg config option for more video thumbnail generation support
