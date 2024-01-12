@@ -333,6 +333,15 @@ export default {
             </ul>
         </div>
 
+        <form class="kiss-margin kiss-flex kiss-flex-middle" v-if="(!loading && (assets.length || folders.length)) || filter" @submit.prevent="filter = txtFilter">
+            <input type="text" class="kiss-input kiss-flex-1 kiss-margin-xsmall-right" :placeholder="t('Search for assets or folders')" v-model="txtFilter">
+
+            <div class="kiss-button-group kiss-margin-small-left">
+                <button type="button" class="kiss-button" @click="filter = ''" v-if="filter">{{ t('Reset') }}</button>
+                <button class="kiss-button kiss-flex">{{ t('Search') }}</button>
+            </div>
+        </form>
+
         <div class="kiss-margin" :class="{'kiss-dialog-overflow': modal}" :expand="modal">
 
             <app-loader v-if="loading"></app-loader>
@@ -348,15 +357,6 @@ export default {
                 </kiss-card>
 
             </kiss-grid>
-
-            <form class="kiss-margin kiss-flex kiss-flex-middle" v-if="(!loading && assets.length) || filter" @submit.prevent="filter = txtFilter">
-                <input type="text" class="kiss-input kiss-flex-1 kiss-margin-xsmall-right" :placeholder="t('Filter assets...')" v-model="txtFilter">
-
-                <div class="kiss-button-group kiss-margin-small-left">
-                    <button type="button" class="kiss-button" @click="filter = ''" v-if="filter">{{ t('Reset') }}</button>
-                    <button class="kiss-button kiss-flex">{{ t('Search') }}</button>
-                </div>
-            </form>
 
             <div class="animated fadeIn kiss-margin-large kiss-color-muted kiss-align-center" :class="{'kiss-height-30vh kiss-flex kiss-flex-middle kiss-flex-center': !modal}" v-if="!loading && !assets.length">
                 <div>
