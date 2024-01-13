@@ -686,6 +686,8 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionStorageGateway(array $args = [])
  * @method \Aws\Sts\StsClient createSts(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionSts(array $args = [])
+ * @method \Aws\SupplyChain\SupplyChainClient createSupplyChain(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionSupplyChain(array $args = [])
  * @method \Aws\Support\SupportClient createSupport(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionSupport(array $args = [])
  * @method \Aws\SupportApp\SupportAppClient createSupportApp(array $args = [])
@@ -757,7 +759,7 @@ namespace Aws;
  */
 class Sdk
 {
-    const VERSION = '3.295.9';
+    const VERSION = '3.296.0';
 
     /** @var array Arguments for creating clients */
     private $args;
