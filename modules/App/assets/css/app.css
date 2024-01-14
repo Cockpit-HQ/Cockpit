@@ -437,6 +437,18 @@ app-actionbar kiss-container {
     min-width: 0;
 }
 
+@container (min-width: 500px) {
+    .field-multiple-sortable-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@container (min-width: 700px) {
+    .field-multiple-sortable-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
 .field-layout-dragarea {
     min-height: 47px;
     border-radius: var(--app-border-radius);
@@ -543,10 +555,6 @@ kiss-dialog[type="prompt"]>kiss-content {
 
     .app-container-aside {
         display: block;
-    }
-
-    .field-multiple-sortable-grid {
-        grid-template-columns: repeat(4, 1fr);
     }
 
 }
