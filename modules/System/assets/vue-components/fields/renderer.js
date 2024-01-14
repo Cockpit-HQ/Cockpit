@@ -37,6 +37,12 @@ let FieldRenderer = {
         }
     },
 
+    mounted() {
+        FieldTypes.get().then(types => {
+            this.fieldTypes = types;
+        });
+    },
+
     props: {
         modelValue: {
             default: undefined
@@ -62,10 +68,23 @@ let FieldRenderer = {
         }
     },
 
-    mounted() {
-        FieldTypes.get().then(types => {
-            this.fieldTypes = types;
-        });
+    computed: {
+        multipleListMode() {
+
+            const allowed = ['list', 'grid'];
+
+            let mode = 'list';
+
+            if (this.fieldTypes[this.field.type]?.multipleListMode) {
+                mode = this.fieldTypes[this.field.type].multipleListMode;
+            }
+
+            if (this.field.meta?.multipleListMode) {
+                mode = this.field.meta.multipleListMode;
+            }
+
+            return allowed.includes(mode) ? mode : 'list';
+        }
     },
 
     methods: {
@@ -179,7 +198,25 @@ let FieldRenderer = {
                     <div class="kiss-margin-small kiss-size-small">{{ t('No items') }}</div>
                 </kiss-card>
 
-                <vue-draggable v-model="val" handle=".fm-handle" v-if="Array.isArray(val)">
+                <vue-draggable class="field-multiple-sortable-grid" v-model="val" v-if="multipleListMode=='grid' && Array.isArray(val)">
+                    <template #item="{ element, index }">
+                        <kiss-card class="kiss-flex-1 kiss-padding-small kiss-flex" gap="small" theme="bordered contrast">
+                            <div class="kiss-position-relative kiss-size-small kiss-flex-1">
+                                <span class="kiss-badge kiss-badge-outline kiss-color-muted" v-if="val[index] == null">n/a</span>
+                                <div class="kiss-text-truncate" v-else-if="fieldTypes[field.type]?.render" v-html="fieldTypes[field.type].render(val[index], field)"></div>
+                                <div v-else>
+                                    <span class="kiss-badge kiss-badge-outline" v-if="Array.isArray(val[index])">{{ val[index].length }}</span>
+                                    <span class="kiss-badge kiss-badge-outline" v-else-if="typeof(val[index]) === 'object'">Object</span>
+                                    <div class="kiss-text-truncate" v-else>{{ val[index] }}</div>
+                                </div>
+                                <a class="kiss-cover" @click="editFieldItem(field, index)"></a>
+                            </div>
+                            <a @click="actionItem = element"><icon>more_vert</icon></a>
+                        </kiss-card>
+                    </template>
+                </vue-draggable>
+
+                <vue-draggable v-model="val" handle=".fm-handle" v-if="multipleListMode=='list' && Array.isArray(val)">
                     <template #item="{ element, index }">
                         <div class="kiss-margin-small kiss-flex kiss-flex-middle">
                             <kiss-card class="kiss-flex-1 kiss-padding-small kiss-flex kiss-flex-middle" gap="small" theme="bordered contrast">
@@ -264,13 +301,13 @@ let FieldRenderer = {
                             <li v-if="val.indexOf(actionItem) !== 0">
                                 <a class="kiss-flex kiss-flex-middle" @click="val.unshift(val.splice(val.indexOf(actionItem), 1)[0])">
                                     <icon class="kiss-margin-small-right">arrow_upward</icon>
-                                    {{ t('Move to top') }}
+                                    {{ t('Move first') }}
                                 </a>
                             </li>
                             <li v-if="val.indexOf(actionItem) !== val.length - 1">
                                 <a class="kiss-flex kiss-flex-middle" @click="val.push(val.splice(val.indexOf(actionItem), 1)[0])">
                                     <icon class="kiss-margin-small-right">arrow_downward</icon>
-                                    {{ t('Move to bottom') }}
+                                    {{ t('Move last') }}
                                 </a>
                             </li>
                             <li class="kiss-nav-divider"></li>

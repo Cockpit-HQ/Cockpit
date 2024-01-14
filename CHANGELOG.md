@@ -9,6 +9,7 @@
 - Add ffmpeg config option for more video thumbnail generation support
 - Fix download file / folder (Finder)
 - Add alt text info for image assets
+- Render asset field with multiple values as grid
 
 ## 2.7.2 (2023-12-30)
 

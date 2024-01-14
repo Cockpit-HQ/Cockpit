@@ -4,6 +4,7 @@ export default {
         label: 'Asset',
         info: 'Asset link',
         icon: 'assets:icon.svg',
+        multipleListMode: 'grid',
         addFieldItem(field, value) {
 
             VueView.ui.modal('assets:assets/dialogs/asset-picker.js', { filter: field?.opts?.filter, multiple: true }, {

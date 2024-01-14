@@ -4600,6 +4600,15 @@ app-actionbar kiss-container {
     font-weight: normal;
     font-size: 11px;
 }
+.field-multiple-sortable-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    grid-template-rows: 1fr;
+    gap: 10px;
+}
+.field-multiple-sortable-grid > * {
+    min-width: 0;
+}
 .field-layout-dragarea {
     min-height: 47px;
     border-radius: var(--app-border-radius);
@@ -4688,6 +4697,10 @@ kiss-dialog[type="prompt"]>kiss-content {
 
     .app-container-aside {
         display: block;
+    }
+
+    .field-multiple-sortable-grid {
+        grid-template-columns: repeat(4, 1fr);
     }
 
 }
