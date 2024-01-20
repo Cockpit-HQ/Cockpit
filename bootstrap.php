@@ -53,7 +53,11 @@ class Cockpit {
         }
 
         if (file_exists("{$envDir}/config/config.php")) {
+
             $cfg = include("{$envDir}/config/config.php");
+
+            //resolve env vars (eg ${DB_SERVER}) based values
+            DotEnv::resolveEnvsInArray($cfg);
         }
 
         $config = array_replace_recursive([

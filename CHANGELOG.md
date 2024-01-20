@@ -10,6 +10,7 @@
 - Fix download file / folder (Finder)
 - Add alt text info for image assets
 - Render asset field with multiple values as grid
+- Add support for ${ENV_VAR} in config values
 
 ## 2.7.2 (2023-12-30)
 

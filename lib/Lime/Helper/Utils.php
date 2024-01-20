@@ -540,15 +540,4 @@ class Utils extends \Lime\Helper {
 
         echo $export;
     }
-
-    public function resolveEnvString(string $str) {
-
-        $envs = getenv();
-
-        foreach ($envs as $key => $value) {
-            $str = str_replace("\${$key}", $value, $str);
-        }
-
-        return $str;
-    }
 }
