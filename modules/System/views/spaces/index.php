@@ -11,6 +11,15 @@
             <div class="kiss-margin-large-bottom kiss-flex kiss-flex-middle">
                 <span class="kiss-size-4 kiss-text-bold"><?=t('Spaces')?></span>
                 <span class="kiss-badge kiss-margin-small-left">BETA</span>
+
+                <div class="kiss-flex-1"></div>
+
+                <?php if ($this->module('finder') && $this->helper('acl')->isSuperAdmin()): ?>
+                <button class="kiss-button kiss-button-blank kiss-margin-left kiss-padding-remove-horizontal" type="button" @click="openFinder()">
+                    <icon class="kiss-margin-small-right">folder</icon>
+                    {{ t('Open Finder') }}
+                </button>
+                <?php endif ?>
             </div>
 
             <app-loader v-if="loading"></app-loader>
@@ -35,7 +44,7 @@
                     </div>
                 </div>
 
-                <kiss-grid cols="4@m">
+                <kiss-grid cols="4@m 5@xl">
                     <kiss-card class="kiss-flex kiss-flex-middle animated fadeIn" theme="shadowed contrast" hover="shadow" v-for="space in filtered">
                         <div class="kiss-position-relative kiss-padding-small kiss-bgcolor-contrast">
                             <canvas width="40" height="40"></canvas>
@@ -94,6 +103,15 @@
                                         <?=t('Delete')?>
                                     </a>
                                 </li>
+                                <?php if ($this->module('finder') && $this->helper('acl')->isSuperAdmin()): ?>
+                                <li class="kiss-nav-divider"></li>
+                                <li>
+                                    <a class="kiss-flex kiss-flex-middle" @click="openFinder(actionSpace.name)">
+                                        <icon class="kiss-margin-small-right">folder</icon>
+                                        <?=t('Open Finder')?>
+                                    </a>
+                                </li>
+                                <?php endif ?>
                             </ul>
                         </kiss-navlist>
                 </kiss-content>
@@ -184,7 +202,19 @@
                         }
 
                         this.actionSpace = space;
-                    }
+                    },
+
+                    openFinder(path = '') {
+
+                        VueView.ui.offcanvas('finder:assets/dialogs/finder.js', {
+                            root: '#root:',
+                            path: `/.spaces/${path}`
+                        }, {
+
+
+                        }, {flip: true, size: 'xxlarge'})
+                    },
+
                 }
             }
 

@@ -15,6 +15,8 @@ class Spaces extends App {
         if (!$this->helper('spaces')->isMaster()) {
             return $this->stop(403);
         }
+
+        $this->helper('session')->close();
     }
 
     public function index() {
@@ -45,7 +47,16 @@ class Spaces extends App {
             return ['success' => true, 'space' => $space];
         }
 
-        return $this->render('system:views/spaces/create.php');
+        $groups = [];
+
+        foreach ($this->helper('spaces')->spaces() as $space) {
+            if (!isset($space['group']) || !$space['group'] || in_array($space['group'], $groups)) continue;
+            $groups[] = $space['group'];
+        }
+
+        sort($groups);
+
+        return $this->render('system:views/spaces/create.php', compact('groups'));
     }
 
     public function load() {
@@ -66,5 +77,45 @@ class Spaces extends App {
         }
 
         return ['success' => $this->helper('spaces')->remove($space['name'])];
+    }
+
+    public function checkDatabaseConnection() {
+
+        $this->hasValidCsrfToken(true);
+
+        $options = $this->param('options');
+
+        if (
+            !$options ||
+            !isset($options['type']) ||
+            $options['type'] !== 'mongodb'
+        ) {
+            return $this->stop(['error' => 'Invalid options'], 412);
+        }
+
+        \DotEnv::resolveEnvsInArray($options);
+
+        if (!$this->isDatabaseConnectionValid($options)) {
+            return $this->stop(['error' => 'Connection failed'], 412);
+        }
+
+        return ['success' => true];
+    }
+
+    protected function isDatabaseConnectionValid(array $options) {
+
+        try {
+
+            $client = new \MongoHybrid\Client($options['server'], [
+                'db' => $options['database']
+            ]);
+
+            $client->lstCollections();
+
+        } catch (\Throwable $e) {
+            return false;
+        }
+
+        return true;
     }
 }

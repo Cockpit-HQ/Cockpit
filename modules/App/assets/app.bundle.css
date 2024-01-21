@@ -2420,9 +2420,14 @@ kiss-accordion-trigger[active="true"] + kiss-content {
     border: var(--kiss-button-outline-width, 1px) currentColor solid;
     color: currentColor;
 }
+.kiss-button-blank {
+    background: rgba(0, 0, 0, 0);
+    border-color: rgba(0, 0, 0, 0);
+    color: currentColor;
+}
 .kiss-button:not(:disabled) { cursor: pointer; }
 .kiss-button:disabled {
-    opacity: .8;
+    opacity: .6;
 }
 .kiss-button:hover {
     text-decoration: none;
