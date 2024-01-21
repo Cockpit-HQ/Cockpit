@@ -83,11 +83,26 @@ define('APP_DOCUMENT_ROOT', $APP_DOCUMENT_ROOT);
 define('APP_BASE_URL', $APP_BASE_URL);
 define('APP_API_REQUEST', strpos($APP_ROUTE, '/api/') === 0 ? 1:0);
 
-$app = Cockpit::instance($APP_SPACE_DIR, [
+$appOptions = [
     'app_space' => $APP_SPACE,
     'base_route' => $APP_BASE_ROUTE,
     'base_url' => $APP_BASE_URL
-]);
+];
+
+if ($APP_SPACE) {
+
+    $masterConfig = [];
+
+    if (file_exists("{$APP_DIR}/config/config.php")) {
+        $masterConfig = include("{$APP_DIR}/config/config.php");
+    }
+
+    if (isset($masterConfig['site_url']) && $masterConfig['site_url']) {
+        $appOptions['site_url'] = $masterConfig['site_url'];
+    }
+}
+
+$app = Cockpit::instance($APP_SPACE_DIR, $appOptions);
 
 $GLOBALS['APP'] = $app;
 
