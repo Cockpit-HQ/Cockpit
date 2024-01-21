@@ -11,6 +11,7 @@
 - Add alt text info for image assets
 - Render asset field with multiple values as grid
 - Add support for ${ENV_VAR} in config values
+- Allow custom database settings on space creation
 
 ## 2.7.2 (2023-12-30)
 
