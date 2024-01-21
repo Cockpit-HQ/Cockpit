@@ -42,6 +42,15 @@ class Spaces extends App {
 
             $options = $space['options'] ?? [];
 
+            // check mongodb connection before creating space
+            if (
+                isset($options['database']['type']) &&
+                $options['database']['type'] === 'mongodb' &&
+                !$this->isDatabaseConnectionValid($options['database'])
+            ) {
+                return $this->stop(['error' => 'Database connection failed'], 412);
+            }
+
             $space = $this->helper('spaces')->create($space['name'], $options);
 
             return ['success' => true, 'space' => $space];
@@ -65,6 +74,8 @@ class Spaces extends App {
     }
 
     public function remove() {
+
+        $this->hasValidCsrfToken(true);
 
         $password = $this->param('password');
         $space = $this->param('space');
@@ -99,16 +110,16 @@ class Spaces extends App {
             return $this->stop(['error' => 'Invalid options'], 412);
         }
 
-        \DotEnv::resolveEnvsInArray($options);
-
         if (!$this->isDatabaseConnectionValid($options)) {
-            return $this->stop(['error' => 'Connection failed'], 412);
+            return $this->stop(['error' => 'Database connection failed'], 412);
         }
 
         return ['success' => true];
     }
 
     protected function isDatabaseConnectionValid(array $options) {
+
+        \DotEnv::resolveEnvsInArray($options);
 
         try {
 
