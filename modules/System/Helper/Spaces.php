@@ -63,15 +63,38 @@ class Spaces extends \Lime\Helper {
             'user' => 'admin',
             'password' => 'admin',
             'email' => 'admin@admin.com',
+            'datastorage' => [
+                'type' => 'mongolite',
+                'server' => '',
+                'database' => ''
+            ]
         ], $options);
 
         $fs = $this->app->helper('fs');
         $name = $this->app->helper('utils')->sluggify(trim($name));
-
         $path = APP_SPACES_DIR."/{$name}";
+        $spaceConfig = new ArrayObject([]);
 
         if (file_exists($path)) {
             return false;
+        }
+
+        if ($options['datastorage']['type'] == 'mongodb') {
+
+            if (
+                !isset($options['datastorage']['server']) ||
+                !isset($options['datastorage']['database']) ||
+                !$options['datastorage']['server'] ||
+                !$options['datastorage']['database']
+            ) {
+                return false;
+            }
+
+            $spaceConfig['database'] = [
+                'server' => $options['datastorage']['server'],
+                'options' => ['db' => $options['datastorage']['database']],
+                'driverOptions' => []
+            ];
         }
 
         // create env folders
@@ -80,8 +103,6 @@ class Spaces extends \Lime\Helper {
         $fs->mkdir("{$path}/storage/data");
         $fs->mkdir("{$path}/storage/tmp");
         $fs->mkdir("{$path}/storage/uploads");
-
-        $spaceConfig = new ArrayObject([]);
 
         $this->app->trigger('spaces.config.create', [$spaceConfig]);
 
