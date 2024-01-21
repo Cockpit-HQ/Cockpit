@@ -186,11 +186,20 @@
 
                     remove(space) {
 
-                        App.ui.confirm('Are you sure?', () => {
+                        App.ui.prompt('Action verification', '', (password) => {
 
-                            this.$request('/system/spaces/remove', {space}).then(res => {
+                            if (!password) return
+
+                            this.$request('/system/spaces/remove', {space, password}).then(res => {
                                 this.spaces.splice(this.spaces.indexOf(space), 1);
+                                App.ui.notify('Space removed!', 'success');
+                            }).catch(res => {
+                                App.ui.notify(res.error || 'Removing space failed!', 'error');
                             });
+
+                        }, {
+                            type: 'password',
+                            info: 'Please enter your password to verify this action'
                         });
                     },
 

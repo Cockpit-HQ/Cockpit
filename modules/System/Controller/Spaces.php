@@ -66,7 +66,13 @@ class Spaces extends App {
 
     public function remove() {
 
+        $password = $this->param('password');
         $space = $this->param('space');
+
+        // verify current logged in user
+        if (!$password || !$this->app->module('system')->verifyUser($password)) {
+            return $this->stop(['error' => 'User verification failed'], 412);
+        }
 
         if (!$space || !isset($space['name'])) {
             return $this->stop(['error' => 'Space is missing'], 412);

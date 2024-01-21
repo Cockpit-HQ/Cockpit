@@ -13,6 +13,7 @@
 - Add support for ${ENV_VAR} in config values
 - Allow custom database settings on space creation
 - Spaces groups
+- Add account verification before deleting a space
 
 ## 2.7.2 (2023-12-30)
 
