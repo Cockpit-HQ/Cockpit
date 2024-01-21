@@ -27,12 +27,24 @@
 
             <form :class="{'kiss-disabled':saving}" @submit.prevent="save" v-if="!created">
 
-                <div class="kiss-margin-large">
+                <div class="kiss-margin-small">
                     <label><?=t('Name')?></label>
                     <input class="kiss-input" type="text" v-model="space.name" required>
                 </div>
 
-                <div class="kiss-text-caption kiss-text-bold"><?=t('Admin user')?></div>
+                <div class="kiss-margin-small">
+                    <label><?=t('Group')?></label>
+                    <input class="kiss-input" type="text" v-model="space.options.group" list="space-groups">
+                </div>
+                <?php if (count($groups)): ?>
+                <datalist id="space-groups">
+                    <?php foreach($groups as $group): ?>
+                    <option><?=$group?></option>
+                    <?php endforeach ?>
+                </datalist>
+                <?php endif ?>
+
+                <div class="kiss-text-caption kiss-text-bold kiss-margin-large-top"><?=t('Admin user')?></div>
 
                 <div class="kiss-margin">
                     <div class="kiss-margin-small"><input class="kiss-input" type="text" v-model="space.options.user" placeholder="<?=t('Username')?>" required></div>
@@ -107,6 +119,7 @@
                         space: {
                             name: '',
                             options: {
+                                group: null,
                                 datastorage: {
                                     type: 'mongolite',
                                     server: <?=($this->dataStorage->type == 'mongodb' && extension_loaded('mongodb')) ? "'{$this['database/server']}'" : "''"?>,

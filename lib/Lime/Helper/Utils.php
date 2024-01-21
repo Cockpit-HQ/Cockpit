@@ -532,7 +532,7 @@ class Utils extends \Lime\Helper {
         $export = var_export($expr, true);
         $array  = preg_split("/\r\n|\n|\r/", $export);
         $array  = preg_replace(["/\s*array\s\($/", "/\)(,)?$/", "/\s=>\s$/"], [NULL, ']$1', ' => ['], $array);
-        $export = join(PHP_EOL, array_filter(["["] + $array));
+        $export = implode(PHP_EOL, array_filter(["["] + $array));
 
         if ($return) {
             return $export;

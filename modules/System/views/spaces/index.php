@@ -28,6 +28,13 @@
                     <input type="text" class="kiss-input" :placeholder="t('Filter spaces...')" v-model="filter">
                 </div>
 
+                <div class="animated fadeIn kiss-height-50vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted" v-if="!filtered.length">
+                    <div>
+                        <kiss-svg :src="$base('system:assets/icons/spaces.svg')" width="40" height="40"></kiss-svg>
+                        <p class="kiss-size-large kiss-margin-small-top"><?=t('No spaces')?></p>
+                    </div>
+                </div>
+
                 <kiss-grid cols="4@m">
                     <kiss-card class="kiss-flex kiss-flex-middle animated fadeIn" theme="shadowed contrast" hover="shadow" v-for="space in filtered">
                         <div class="kiss-position-relative kiss-padding-small kiss-bgcolor-contrast">
@@ -52,6 +59,16 @@
 
                 <kiss-container>
                     <div class="kiss-flex kiss-flex-middle">
+                        <div v-if="groups.length">
+                            <span class="kiss-text-caption kiss-color-muted"><?= t('group') ?></span>
+                            <div class="kiss-margin-xsmall-top kiss-display-block kiss-overlay-input">
+                                <div class="kiss-size-4" :class="{'kiss-color-muted': !group, 'kiss-text-bold': group}">{{ group || t('All groups') }}</div>
+                                <select v-model="group">
+                                    <option :value="null">{{t('All')}}</option>
+                                    <option :selected="group == name" v-for="name in groups">{{ name }}</option>
+                                </select>
+                            </div>
+                        </div>
                         <div class="kiss-flex-1"></div>
                         <a class="kiss-button kiss-button-primary" href="<?=$this->route('/system/spaces/create')?>"><?=t('Create space')?></a>
                     </div>
@@ -93,7 +110,8 @@
                         spaces: null,
                         filter: '',
                         loading: false,
-                        actionSpace: null
+                        actionSpace: null,
+                        group: null,
                     }
                 },
 
@@ -107,16 +125,33 @@
 
                         let spaces = [];
 
-                        (this.spaces || []).forEach(p => {
+                        (this.spaces || []).forEach(space => {
 
-                            if (this.filter && !`${p.name} ${p.label || ''}`.toLocaleLowerCase().includes(this.filter.toLocaleLowerCase())) {
+                            if (this.group && this.group !== space.group) {
                                 return;
                             }
-                            spaces.push(p)
+
+                            if (this.filter && !`${space.name}`.toLocaleLowerCase().includes(this.filter.toLocaleLowerCase())) {
+                                return;
+                            }
+
+                            spaces.push(space)
                         });
 
                         return spaces;
                     },
+
+                    groups() {
+
+                        let groups = [];
+
+                        (this.spaces || []).forEach(space => {
+                            if (!space.group || groups.indexOf(space.group) > -1) return;
+                            groups.push(space.group);
+                        });
+
+                        return groups.sort();
+                    }
                 },
 
                 methods: {

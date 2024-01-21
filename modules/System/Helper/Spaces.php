@@ -7,9 +7,18 @@ use ArrayObject, DirectoryIterator;
 class Spaces extends \Lime\Helper {
 
     protected array $instances = [];
+    protected bool $isMaster;
+
+    protected function initialize() {
+        $this->isMaster = $this->app->path('#app:') === $this->app->path('#root:');
+    }
 
     public function isMaster() {
-        return $this->app->path('#app:') === $this->app->path('#root:');
+        return $this->isMaster;
+    }
+
+    public function isSpace() {
+        return !$this->isMaster;
     }
 
     public function spaces() {
@@ -27,10 +36,17 @@ class Spaces extends \Lime\Helper {
                 if (!$f->isDir() || $f->isDot()) continue;
 
                 $name = $f->getFilename();
+                $group = null;
+
+                if (file_exists($folder."/{$name}/config/config.php")) {
+                    $cfg = include($folder."/{$name}/config/config.php");
+                    $group = $cfg['@space']['group'] ?? null;
+                }
 
                 $spaces[] = [
                     'name' => $name,
-                    'url' => "{$rootUrl}/:{$name}"
+                    'url' => "{$rootUrl}/:{$name}",
+                    'group' => $group
                 ];
             }
         }
@@ -60,6 +76,7 @@ class Spaces extends \Lime\Helper {
     public function create(string $name, array $options = []) {
 
         $options = array_merge([
+            'group' => null,
             'user' => 'admin',
             'password' => 'admin',
             'email' => 'admin@admin.com',
@@ -73,7 +90,13 @@ class Spaces extends \Lime\Helper {
         $fs = $this->app->helper('fs');
         $name = $this->app->helper('utils')->sluggify(trim($name));
         $path = APP_SPACES_DIR."/{$name}";
-        $spaceConfig = new ArrayObject([]);
+
+        // Space
+        $spaceConfig = new ArrayObject([
+            '@space' => [
+                'group' => $options['group'],
+            ]
+        ]);
 
         if (file_exists($path)) {
             return false;
