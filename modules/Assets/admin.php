@@ -54,3 +54,17 @@ $this->on('app.permissions.collect', function($permissions) {
         'assets/folders/delete' => 'Delete folders',
     ];
 });
+
+$this->on('spaces.config.create', function($config) {
+
+    $cfg = $this['assets'];
+
+    if (isset($cfg['vips']) || isset($cfg['ffmpeg'])) {
+
+        $config['assets'] = [];
+
+        if ($cfg['vips'] ?? false) $config['assets']['vips'] = $cfg['vips'];
+        if ($cfg['ffmpeg'] ?? false) $config['assets']['ffmpeg'] = $cfg['ffmpeg'];
+    }
+
+});
