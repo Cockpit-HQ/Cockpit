@@ -1,9 +1,10 @@
+ServerSignature Off
+
 # Don't show directory listings
 Options -Indexes
 
 # Character encoding: Serve text/html or text/plain as UTF-8
 AddDefaultCharset UTF-8
-
 
 # URL rewrites
 <IfModule mod_rewrite.c>
