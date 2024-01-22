@@ -21,7 +21,7 @@ if (strpos($APP_DIR, $APP_DOCUMENT_ROOT)!==0 && isset($_SERVER['SCRIPT_NAME'])) 
     $APP_DOCUMENT_ROOT = str_replace(dirname(str_replace(DIRECTORY_SEPARATOR, '/', $_SERVER['SCRIPT_NAME'])), '', $APP_DIR);
 }
 
-// Support php debug webserver: e.g. php -S localhost:8080 index.php
+// Support php cli-server: e.g. php -S localhost:8080 index.php
 if (PHP_SAPI == 'cli-server') {
 
     $file  = $_SERVER['SCRIPT_FILENAME'];
@@ -40,6 +40,36 @@ if (PHP_SAPI == 'cli-server') {
     if ($index !== __FILE__ && is_file($index)) {
         include($index);
         return;
+    }
+
+    // handle static space storage files
+    if (substr($_SERVER['PATH_INFO'], 0, 2) == '/:' && strpos($_SERVER['PATH_INFO'], '/storage/') !== false) {
+
+        $spaceFilePath = APP_SPACES_DIR.'/'.trim(substr($_SERVER['PATH_INFO'], 2), '/');
+        $path  = pathinfo($spaceFilePath);
+
+        if (is_file($spaceFilePath)) {
+
+            if ($path['extension'] === 'php') {
+                include($spaceFilePath);
+            } else {
+
+                $mimeType = (new finfo(FILEINFO_MIME_TYPE))->file($spaceFilePath);
+
+                header('Content-Description: File Transfer');
+                header("Content-Type: {mimeType}"); // Change the MIME type as needed
+                header('Expires: 0');
+                header('Cache-Control: must-revalidate');
+                header('Pragma: public');
+                header('Content-Length: ' . filesize($spaceFilePath));
+
+                $fp = fopen($spaceFilePath, 'rb');
+                fpassthru($fp);
+                fclose($fp);
+            }
+
+            exit;
+        }
     }
 
     $APP_BASE = "";
