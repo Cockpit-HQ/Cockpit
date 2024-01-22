@@ -37,7 +37,7 @@ if (PHP_SAPI == 'cli-server') {
     }
 
     /* index files (eg. install/index.php) */
-    if (is_file($index) && $index != __FILE__) {
+    if ($index !== __FILE__ && is_file($index)) {
         include($index);
         return;
     }

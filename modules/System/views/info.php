@@ -28,7 +28,7 @@
 
             <kiss-tabs>
 
-                <tab class="kiss-margin animated fadeIn" caption="<?=t('App')?>">
+                <tab class="kiss-margin animated fadeIn" caption="<?=t('System')?>">
 
                     <div class="kiss-text-caption kiss-text-bold kiss-size-bold kiss-margin">
                         <?=('General')?>
@@ -107,6 +107,7 @@
 
                 </tab>
 
+                <?php if ($this->helper('acl')->isSuperAdmin() && $this->helper('spaces')->isMaster()): ?>
                 <tab class="kiss-margin animated fadeIn" caption="PHP">
 
                     <table class="kiss-table">
@@ -130,8 +131,9 @@
                     </table>
 
                 </tab>
+                <?php endif ?>
 
-                <?php if ($this->helper('acl')->isSuperAdmin()): ?>
+                <?php if ($this->helper('acl')->isSuperAdmin() && $this->helper('spaces')->isMaster()): ?>
                 <tab class="kiss-margin animated fadeIn" caption="<?=t('Env')?>">
 
                     <table class="kiss-table" style="word-break: break-all;">
