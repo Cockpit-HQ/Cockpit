@@ -223,18 +223,20 @@ if (!isset($user['twofa'])) {
                                 user: this.user,
                                 password: pwdVerification,
                             }).then(user => {
+
                                 this.user = user;
-                                this.saving = false;
 
                                 if (isUpdate) {
                                     App.ui.notify('User updated!');
                                 } else {
                                     App.ui.notify('User created!');
                                 }
+
                             }).catch(res => {
-                                this.saving = false;
                                 App.ui.notify(res.error || 'Saving failed!', 'error');
-                            })
+                            }).finally(() => {
+                                this.saving = false;
+                            });
                         };
 
                         if (!isUpdate) {
