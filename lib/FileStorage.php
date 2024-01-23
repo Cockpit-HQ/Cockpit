@@ -20,6 +20,10 @@ class FileStorage {
 
     public function addStorage(string $name, array $config): self {
 
+        if (isset($config['url'])) {
+            $config['url'] = rtrim($config['url'], '/');
+        }
+
         $this->config[$name] = $config;
 
         if (isset($config['mount']) && $config['mount']) {
@@ -38,7 +42,7 @@ class FileStorage {
         return $this->storages[$name] ?? null;
     }
 
-    public function getURL(string $file): ?string {
+    public function getURL(string $file, bool $checkExist = true): ?string {
 
         $url = null;
 
@@ -48,8 +52,8 @@ class FileStorage {
 
             if (!$path) {
                 $url = $this->config[$prefix]['url'];
-            } elseif ($this->manager->fileExists($file)) {
-                $url = rtrim($this->config[$prefix]['url'], '/').'/'.ltrim($path, '/');
+            } elseif (!$checkExist || ($checkExist && $this->manager->fileExists($file))) {
+                $url = $this->config[$prefix]['url'].'/'.ltrim($path, '/');
             }
         }
 

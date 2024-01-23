@@ -135,21 +135,26 @@ class Cockpit {
             ]);
 
             $urls = [
+                'root' => rtrim($app->pathToUrl('#root:', true), '/'),
                 'tmp' => rtrim($app->pathToUrl('#tmp:', true), '/'),
                 'cache' => rtrim($app->pathToUrl('#cache:', true), '/'),
-                'upload' => rtrim($app->pathToUrl('#uploads:', true), '/'),
+                'uploads' => rtrim($app->pathToUrl('#uploads:', true), '/'),
             ];
 
             if (isset($config['app_space']) && $config['app_space']) {
 
                 foreach ($urls as $key => $url) {
-                    if (strpos($url, "/.spaces/{$config['app_space']}/") !== false) {
-                        $urls[$key] = str_replace("/.spaces/{$config['app_space']}/", "/:{$config['app_space']}/", $url);
+                    if (
+                        str_ends_with($url, "/.spaces/{$config['app_space']}") ||
+                        str_contains($url, "/.spaces/{$config['app_space']}/")
+                    ) {
+                        $urls[$key] = str_replace("/.spaces/{$config['app_space']}", "/:{$config['app_space']}", $url);
                     }
                 }
             }
 
             $storages = array_replace_recursive([
+
 
                 '#app' => [
                     'adapter' => 'League\Flysystem\Local\LocalFilesystemAdapter',
@@ -158,11 +163,25 @@ class Cockpit {
                     'url' => rtrim($app->pathToUrl('#app:', true), '/')
                 ],
 
-                'root' => [
+                '#root' => [
                     'adapter' => 'League\Flysystem\Local\LocalFilesystemAdapter',
                     'args' => [$app->path('#root:')],
                     'mount' => true,
                     'url' => rtrim($app->pathToUrl('#root:', true), '/')
+                ],
+
+                '#uploads' => [
+                    'adapter' => 'League\Flysystem\Local\LocalFilesystemAdapter',
+                    'args' => [$app->path('#uploads:'), $visibility],
+                    'mount' => true,
+                    'url' => $urls['uploads']
+                ],
+
+                'root' => [
+                    'adapter' => 'League\Flysystem\Local\LocalFilesystemAdapter',
+                    'args' => [$app->path('#root:')],
+                    'mount' => true,
+                    'url' => $urls['root']
                 ],
 
                 'tmp' => [
@@ -183,15 +202,7 @@ class Cockpit {
                     'adapter' => 'League\Flysystem\Local\LocalFilesystemAdapter',
                     'args' => [$app->path('#uploads:'), $visibility],
                     'mount' => true,
-                    'url' => $urls['upload']
-                ],
-
-                // local uploads folder
-                '#uploads' => [
-                    'adapter' => 'League\Flysystem\Local\LocalFilesystemAdapter',
-                    'args' => [$app->path('#uploads:'), $visibility],
-                    'mount' => true,
-                    'url' => $urls['upload']
+                    'url' => $urls['uploads']
                 ],
 
             ], $config['fileStorage'] ?? []);

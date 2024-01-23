@@ -5,7 +5,7 @@ export default {
         return {
             loading: true,
             uploading: false,
-            currentpath: this.rootPath ?? App.session.get(`finder.persist.${this.root}`, '/'),
+            currentpath: this.rootPath || '/',
             files: [],
             folders: [],
             selected: [],
@@ -25,7 +25,7 @@ export default {
 
         rootPath: {
             type: String,
-            default: null
+            default: '/'
         },
 
         modal: {
@@ -65,7 +65,7 @@ export default {
 
     watch: {
         root() {
-            this.loadpath(App.session.get(`finder.persist.${this.root}`, this.rootPath));
+            this.loadpath(this.rootPath);
         }
     },
 
@@ -141,8 +141,6 @@ export default {
                 this.filter = '';
 
                 this.loading = false;
-
-                App.session.set(`finder.persist.${this.root}`, path);
             });
         },
 
