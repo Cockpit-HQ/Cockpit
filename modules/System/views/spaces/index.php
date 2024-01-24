@@ -96,15 +96,7 @@
                                         <?=t('Open space')?>
                                     </a>
                                 </li>
-                                <li class="kiss-nav-divider"></li>
-                                <li>
-                                    <a class="kiss-color-danger kiss-flex kiss-flex-middle" @click="remove(actionSpace)">
-                                        <icon class="kiss-margin-small-right">delete</icon>
-                                        <?=t('Delete')?>
-                                    </a>
-                                </li>
                                 <?php if ($this->module('finder') && $this->helper('acl')->isSuperAdmin()): ?>
-                                <li class="kiss-nav-divider"></li>
                                 <li>
                                     <a class="kiss-flex kiss-flex-middle" @click="openFinder(actionSpace.name)">
                                         <icon class="kiss-margin-small-right">folder</icon>
@@ -112,6 +104,13 @@
                                     </a>
                                 </li>
                                 <?php endif ?>
+                                <li class="kiss-nav-divider"></li>
+                                <li>
+                                    <a class="kiss-color-danger kiss-flex kiss-flex-middle" @click="remove(actionSpace)">
+                                        <icon class="kiss-margin-small-right">delete</icon>
+                                        <?=t('Delete')?>
+                                    </a>
+                                </li>
                             </ul>
                         </kiss-navlist>
                 </kiss-content>

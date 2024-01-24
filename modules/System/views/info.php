@@ -136,14 +136,18 @@
                 <?php if ($this->helper('acl')->isSuperAdmin() && $this->helper('spaces')->isMaster()): ?>
                 <tab class="kiss-margin animated fadeIn" caption="<?=t('Env')?>">
 
-                    <table class="kiss-table" style="word-break: break-all;">
+                    <app-loader v-if="loadingEnv"></app-loader>
+
+                    <div class="kiss-padding-large kiss-align-center" v-if="!env && !loadingEnv">
+                        <button type="button" class="kiss-button" @click="getEnvVars()">{{ t('Load environment variables') }}</button>
+                    </div>
+
+                    <table class="kiss-table" style="word-break: break-all;" v-if="env">
                         <tbody>
-                            <?php foreach(getenv() as $key => $value): ?>
-                            <tr>
-                                <td width="30%" class="kiss-size-small"><div class="kiss-size-xsmall"><?=$key?></div></td>
-                                <td width="70%" class="kiss-color-muted"><div class="kiss-size-xsmall"><?=$value?></div></td>
+                            <tr v-for="(val, key) in env">
+                                <td width="30%" class="kiss-size-small"><div class="kiss-size-xsmall">{{ key }}</div></td>
+                                <td width="70%" class="kiss-color-muted"><div class="kiss-size-xsmall">{{ val }}</div></td>
                             </tr>
-                            <?php endforeach ?>
                         </tbody>
                     </table>
 
@@ -158,6 +162,13 @@
 
             export default {
 
+                data() {
+                    return {
+                        env: null,
+                        loadingEnv: false
+                    }
+                },
+
                 methods: {
                     clearCache() {
 
@@ -169,6 +180,28 @@
                                 App.ui.unblock();
                                 App.ui.notify('Cache cleared!');
                             });
+                        });
+                    },
+
+                    getEnvVars() {
+
+                        App.ui.prompt('Action verification', '', (password) => {
+
+                            if (!password) return
+
+                            this.loadingEnv = true;
+
+                            this.$request('/system/utils/env', {password}).then(res => {
+                                this.env = res.env;
+                            }).catch(res => {
+                                App.ui.notify(res.error || 'Loading failed!', 'error');
+                            }).finally(() => {
+                                this.loadingEnv = false;
+                            });
+
+                        }, {
+                            type: 'password',
+                            info: 'Please enter your password to verify this action'
                         });
                     }
                 }
