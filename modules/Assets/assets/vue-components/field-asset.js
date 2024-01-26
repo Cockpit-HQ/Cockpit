@@ -43,20 +43,22 @@ export default {
                 return `<kiss-svg width="20" height="20" src="${App.base(value.type === 'video' ? 'assets:assets/icons/video.svg' : 'assets:assets/icons/file.svg')}"><canvas width="20" height="20"></canvas></kiss-svg>`;
             }
 
-            let thumb = `<kiss-svg width="40" height="40" src="${App.base(value.type === 'video' ? 'assets:assets/icons/video.svg' : 'assets:assets/icons/file.svg')}"><canvas width="40" height="40"></canvas></kiss-svg>`;
+            const mediaSize= 50;
+
+            let media = `<kiss-svg width="${mediaSize}" height="${mediaSize}" src="${App.base(value.type === 'video' ? 'assets:assets/icons/video.svg' : 'assets:assets/icons/file.svg')}"><canvas width="${mediaSize}" height="${mediaSize}"></canvas></kiss-svg>`;
 
             if (value.type === 'image') {
 
-                const src = App.route(`/assets/thumbnail/${value._id}?m=bestFit&mime=auto&h=40&t=${value._modified}`);
+                const src = App.route(`/assets/thumbnail/${value._id}?m=bestFit&mime=auto&h=${mediaSize}&t=${value._modified}`);
 
-                thumb = `<img loading="lazy" class="kiss-responsive-height" src="${src}" style="height:40px">`;
+                media = `<img loading="lazy" class="kiss-responsive-height" src="${src}" style="height:${mediaSize}px;object-fit:cover;">`;
             }
 
             return /*html*/ `
                 <kiss-row class="kiss-flex-middle" gap="small">
                     <div class="kiss-position-relative">
-                        <canvas width="40" height="40"></canvas>
-                        <div class="kiss-cover">${thumb}</div>
+                        <canvas width="${mediaSize}" height="${mediaSize}"></canvas>
+                        <div class="kiss-cover">${media}</div>
                     </div>
                     <div class="kiss-flex-1 kiss-size-xsmall">
                         <div class="kiss-text-truncate">${value.title}</div>
