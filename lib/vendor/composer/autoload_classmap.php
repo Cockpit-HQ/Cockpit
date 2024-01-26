@@ -110,6 +110,7 @@ return array(
     'Aws\\Credentials\\CredentialProvider' => $vendorDir . '/aws/aws-sdk-php/src/Credentials/CredentialProvider.php',
     'Aws\\Credentials\\Credentials' => $vendorDir . '/aws/aws-sdk-php/src/Credentials/Credentials.php',
     'Aws\\Credentials\\CredentialsInterface' => $vendorDir . '/aws/aws-sdk-php/src/Credentials/CredentialsInterface.php',
+    'Aws\\Credentials\\CredentialsUtils' => $vendorDir . '/aws/aws-sdk-php/src/Credentials/CredentialsUtils.php',
     'Aws\\Credentials\\EcsCredentialProvider' => $vendorDir . '/aws/aws-sdk-php/src/Credentials/EcsCredentialProvider.php',
     'Aws\\Credentials\\InstanceProfileProvider' => $vendorDir . '/aws/aws-sdk-php/src/Credentials/InstanceProfileProvider.php',
     'Aws\\Crypto\\AbstractCryptoClient' => $vendorDir . '/aws/aws-sdk-php/src/Crypto/AbstractCryptoClient.php',

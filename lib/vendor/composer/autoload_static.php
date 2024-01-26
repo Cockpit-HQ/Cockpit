@@ -410,6 +410,7 @@ class ComposerStaticInit5723017241f53032fa5adda76b6b8857
         'Aws\\Credentials\\CredentialProvider' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/Credentials/CredentialProvider.php',
         'Aws\\Credentials\\Credentials' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/Credentials/Credentials.php',
         'Aws\\Credentials\\CredentialsInterface' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/Credentials/CredentialsInterface.php',
+        'Aws\\Credentials\\CredentialsUtils' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/Credentials/CredentialsUtils.php',
         'Aws\\Credentials\\EcsCredentialProvider' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/Credentials/EcsCredentialProvider.php',
         'Aws\\Credentials\\InstanceProfileProvider' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/Credentials/InstanceProfileProvider.php',
         'Aws\\Crypto\\AbstractCryptoClient' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/Crypto/AbstractCryptoClient.php',

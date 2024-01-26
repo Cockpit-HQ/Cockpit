@@ -48,7 +48,7 @@ export default {
             page: 1,
             count: 0,
             pages: 1,
-            limit: App.session.get('assets.manager.limit', 15),
+            limit: App.storage.get('assets.manager.limit', 15),
 
             view: App.session.get('assets.manager.view', 'cards'),
 
@@ -126,7 +126,7 @@ export default {
             this.load();
         },
         limit(val) {
-            App.session.set('assets.manager.limit', val);
+            App.storage.set('assets.manager.limit', val);
             this.load();
         },
         view(val) {
