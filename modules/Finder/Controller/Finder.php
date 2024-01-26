@@ -14,6 +14,8 @@ class Finder extends App {
         if (!$this->helper('acl')->isSuperAdmin()) {
             return $this->stop(401);
         }
+
+        $this->helper('session')->close();
     }
 
     public function index() {
@@ -28,7 +30,6 @@ class Finder extends App {
 
     public function api() {
 
-        $this->helper('session')->close();
         $this->hasValidCsrfToken(true);
 
         $root = $this->param('root');
@@ -179,10 +180,11 @@ class Finder extends App {
         if (!$path) return false;
 
         $name = $this->param('name', false);
+        $file = $this->root.'/'.trim($path, '/').'/'.$name;
         $ret  = false;
 
         if ($name && $this->_isFileTypeAllowed($name) && $path) {
-            $ret = @file_put_contents($this->root.'/'.trim($path, '/').'/'.$name, '');
+            $ret = @file_put_contents($file, '');
         }
 
         return json_encode(['success' => $ret]);

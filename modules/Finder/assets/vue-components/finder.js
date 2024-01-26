@@ -260,7 +260,7 @@ export default {
 
         open(file) {
 
-            if (file.mime.indexOf('text') > -1 || ['json', 'svg'].includes(file.ext)) {
+            if (file.mime.indexOf('text') > -1 || file.mime.indexOf('x-empty') > -1 || ['json', 'svg'].includes(file.ext)) {
                 return this.edit(file);
             }
 
@@ -428,7 +428,7 @@ export default {
                             <li v-if="actionFile">
                                 <div class="kiss-color-muted kiss-text-truncate kiss-margin-small-bottom">{{ App.utils.truncate(actionFile.name, 30) }}</div>
                             </li>
-                            <li v-if="actionFile && (actionFile.mime.indexOf('text') > -1 || ['json', 'svg'].includes(actionFile.ext))">
+                            <li v-if="actionFile && (actionFile.mime.indexOf('text') > -1 || actionFile.mime.indexOf('x-empty') > -1 || ['json', 'svg'].includes(actionFile.ext))">
                                 <a class="kiss-flex kiss-flex-middle" @click="edit(actionFile)">
                                     <icon class="kiss-margin-small-right" size="larger">create</icon>
                                     {{ t('Edit') }}
