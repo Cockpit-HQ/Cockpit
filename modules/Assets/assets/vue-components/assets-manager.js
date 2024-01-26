@@ -316,6 +316,8 @@ export default {
                 this.breadcrumbs = [];
             }
 
+            this.filter = '';
+
             this.load(1);
         },
 
