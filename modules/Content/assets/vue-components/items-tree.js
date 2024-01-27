@@ -162,7 +162,7 @@ export default {
                 toUpdate.push({_id: p._id, _o: idx});
             });
 
-            this.$request(`/content/tree/updateOrder/${this.model.name}`, {items:toUpdate})
+            this.$request(`/content/tree/updateOrder/${this.model.name}`, {items:toUpdate});
         },
 
         onEnd() {
