@@ -69,7 +69,7 @@
                 <kiss-container>
                     <div class="kiss-flex kiss-flex-middle">
                         <div v-if="groups.length">
-                            <span class="kiss-text-caption kiss-color-muted"><?= t('group') ?></span>
+                            <span class="kiss-text-caption kiss-color-muted"><?= t('Group') ?></span>
                             <div class="kiss-margin-xsmall-top kiss-display-block kiss-overlay-input">
                                 <div class="kiss-size-4" :class="{'kiss-color-muted': !group, 'kiss-text-bold': group}">{{ group || t('All groups') }}</div>
                                 <select v-model="group">
