@@ -144,6 +144,27 @@ export default {
             return this.allowMoving;
         },
 
+        moveItem(item, pos) {
+
+            if (!pos || this.items.length < 2) return;
+
+            if (pos === 'first') {
+                this.items.unshift(this.items.splice(this.items.indexOf(item), 1)[0]);
+            }
+
+            if (pos === 'last') {
+                this.items.push(this.items.splice(this.items.indexOf(item), 1)[0])
+            }
+
+            let toUpdate = []
+
+            this.items.forEach((p, idx) => {
+                toUpdate.push({_id: p._id, _o: idx});
+            });
+
+            this.$request(`/content/tree/updateOrder/${this.model.name}`, {items:toUpdate})
+        },
+
         onEnd() {
             if (!this.allowMoving) {
                 App.ui.notify('You are not allowed to move content items', 'error');
@@ -187,7 +208,7 @@ export default {
                 v-if="!loading"
             >
                 <template #item="{ element }">
-                    <div class="kiss-margin-xsmall">
+                    <div class="kiss-margin-xsmall" :data-item="element._id">
                         <kiss-card class="kiss-padding-small kiss-flex kiss-flex-middle kiss-margin-xsmall" theme="bordered contrast shadowed">
                             <a class="fm-handle kiss-margin-small-right kiss-color-muted"><icon>drag_handle</icon></a>
                             <a class="kiss-margin-small-right kiss-color-muted" :class="{'kiss-hidden': !element._children}" :placeholder="t('Toggle children')" @click="element._showChildren = !element._showChildren">
@@ -233,6 +254,28 @@ export default {
                                     <icon class="kiss-margin-small-right" size="larger">delete</icon>
                                     {{ t('Delete') }}
                                 </a>
+                            </li>
+                        </ul>
+                        <ul class="kiss-margin-small" v-if="Array.isArray(actionItem.tree.items) && actionItem.tree.items.length > 1">
+                            <li class="kiss-nav-header">{{ t('Move item') }}</li>
+                            <li v-if="actionItem.tree.items.indexOf(actionItem.item) !== 0">
+                                <a class="kiss-flex kiss-flex-middle" @click="actionItem.tree.moveItem(actionItem.item, 'first')">
+                                        <icon class="kiss-margin-small-right">arrow_upward</icon>
+                                        {{ t('Move first') }}
+                                    </a>
+                                </li>
+                            <li v-if="actionItem.tree.items.indexOf(actionItem.item) !== actionItem.tree.items.length - 1">
+                                <a class="kiss-flex kiss-flex-middle" @click="actionItem.tree.moveItem(actionItem.item, 'last')">
+                                    <icon class="kiss-margin-small-right">arrow_downward</icon>
+                                    {{ t('Move last') }}
+                                </a>
+                            </li>
+                            <li class="kiss-nav-divider"></li>
+                            <li v-if="actionItem.tree.items.indexOf(actionItem.item) !== actionItem.tree.items.length - 1">
+                                <span class="kiss-flex kiss-flex-middle" @click="actionItem.tree.moveItem(actionItem.item, 'last')">
+                                    <icon class="kiss-margin-small-right">arrow_downward</icon>
+                                    {{ t('Move last') }}
+                                </span>
                             </li>
                         </ul>
                         </kiss-navlist>

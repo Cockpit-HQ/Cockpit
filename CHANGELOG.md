@@ -15,6 +15,7 @@
 - Spaces groups
 - Add account verification before deleting a space
 - Add assets sorting
+- Add quick sort tree item (move first or last)
 
 ## 2.7.2 (2023-12-30)
 
