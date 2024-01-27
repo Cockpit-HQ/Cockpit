@@ -6,7 +6,8 @@ export default {
     data() {
         return {
             loading: false,
-            maxlevel: false
+            maxlevel: false,
+            actionItem: null
         }
     },
 
@@ -147,6 +148,22 @@ export default {
             if (!this.allowMoving) {
                 App.ui.notify('You are not allowed to move content items', 'error');
             }
+        },
+
+        toggleActionItemActions(item, tree) {
+
+            if (!tree) {
+                tree = this;
+            }
+
+            if (this.p) {
+                this.$emit('show-item-actions', item, tree);
+                return;
+            }
+
+            let val =  (!item || this.actionItem?.item === item) ? null : {tree, item};
+
+            setTimeout(() => this.actionItem = val, !val ? 300 : 0);
         }
     },
 
@@ -180,15 +197,47 @@ export default {
                                 <tree-item :model="model" :item="element"></tree-item>
                                 <a class="kiss-cover" :href="$route('/content/tree/item/'+model.name+'/'+element._id)"></a>
                             </div>
-                            <a class="kiss-margin-small-left" @click="createItem(element._id)" v-if="!isMaxLevel"><icon>create_new_folder</icon></a>
-                            <a class="kiss-margin-small-left kiss-color-danger" @click="remove(element)"><icon>delete</icon></a>
+                            <a class="kiss-margin-small-left" @click="toggleActionItemActions(element)"><icon>more_horiz</icon></a>
                         </kiss-card>
                         <div v-if="!isMaxLevel && (element._showChildren || !element._children)" :style="{paddingLeft: (((level+1)*23)+'px')}">
-                            <items-tree class="items-tree" :model="model" :items="element.children" :level="level+1" :p="element" :locale="locale" :allow-moving="allowMoving"></items-tree>
+                            <items-tree class="items-tree" :model="model" :items="element.children" :level="level+1" :p="element" :locale="locale" :allow-moving="allowMoving" @show-item-actions="(item, tree) => toggleActionItemActions(item, tree)"></items-tree>
                         </div>
                     </div>
                 </template>
             </vue-draggable>
         </div>
+        <teleport to="body" v-if="!p">
+            <kiss-popout :open="actionItem && 'true'" @popoutclose="toggleActionItemActions(null)">
+                <kiss-content>
+                    <kiss-navlist class="kiss-margin" v-if="actionItem">
+                        <ul>
+                            <li class="kiss-nav-header">{{ t('Item actions') }}</li>
+                            <li v-if="actionAsset">
+                                <div class="kiss-color-muted kiss-text-truncate kiss-margin-small-bottom">{{ t('Item actions')}}</div>
+                            </li>
+                            <li>
+                                <a class="kiss-flex kiss-flex-middle" :href="$route('/content/tree/item/'+model.name+'/'+actionItem.item._id)">
+                                    <icon class="kiss-margin-small-right" size="larger">create</icon>
+                                    {{ t('Edit') }}
+                                </a>
+                            </li>
+                            <li v-if="!actionItem.tree.isMaxLevel">
+                                <a class="kiss-flex kiss-flex-middle" @click="actionItem.tree.createItem(actionItem.item._id)">
+                                    <icon class="kiss-margin-small-right" size="larger">create_new_folder</icon>
+                                    {{ t('Add child item') }}
+                                </a>
+                            </li>
+                            <li class="kiss-nav-divider"></li>
+                            <li>
+                                <a class="kiss-flex kiss-flex-middle kiss-color-danger"  @click="actionItem.tree.remove(actionItem.item)">
+                                    <icon class="kiss-margin-small-right" size="larger">delete</icon>
+                                    {{ t('Delete') }}
+                                </a>
+                            </li>
+                        </ul>
+                        </kiss-navlist>
+                </kiss-content>
+            </kiss-popout>
+        </teleport>
     `
 }

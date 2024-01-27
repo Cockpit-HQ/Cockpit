@@ -18,7 +18,7 @@
                 </a>
 
                 <div class="kiss-margin-small-right">
-                    <div class="kiss-size-5 kiss-text-bold"><?= $this->escape($model['label'] ? $model['label'] : $model['name']) ?></div>
+                    <div class="kiss-size-4 kiss-text-bold"><?= $this->escape($model['label'] ? $model['label'] : $model['name']) ?></div>
                 </div>
 
                 <kiss-card class="kiss-flex kiss-flex-middle kiss-overlay-input kiss-padding-small kiss-margin-small-right" gap="small" theme="contrast shadowed" v-if="hasLocalization">

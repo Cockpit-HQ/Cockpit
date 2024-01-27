@@ -10,18 +10,20 @@
             </ul>
 
             <div class="kiss-flex kiss-flex-middle">
-                <div class="kiss-flex kiss-position-relative">
-                    <span class="kiss-badge" style="<?=($model['color'] ? "background:{$model['color']};border-color:{$model['color']}":"")?>"><?=$this->escape($model['label'] ? $model['label'] : $model['name'])?></span>
-                    <a class="kiss-cover" href="<?=$this->route("/content/tree/items/{$model['name']}")?>"></a>
+
+                <div class="kiss-margin-small-right">
+                    <kiss-svg class="kiss-margin-auto" src="<?= $this->base(isset($model['icon']) && $model['icon'] ? $model['icon'] : 'content:assets/icons/tree.svg') ?>" width="30" height="30" style="color:<?= ($this->escape($model['color'] ?? 'inherit')) ?>"><canvas width="30" height="30"></canvas></kiss-svg>
                 </div>
-                <a class="kiss-color-muted kiss-margin-small-left" onclick="VueView.ui.offcanvas('content:assets/dialogs/switch-model-view.js')">
+                <a class="kiss-color-muted kiss-margin-small-right" onclick="VueView.ui.offcanvas('content:assets/dialogs/switch-model-view.js')">
                     <icon>expand_circle_down</icon>
                 </a>
-                <div class="kiss-margin-small-left kiss-size-5 kiss-text-bold">
-                    <span v-if="!item._id"><?=t('New Item')?></span>
-                    <span v-if="item._id"><?=t('Edit Item')?></span>
+                <div class="kiss-margin-small-right">
+                    <a class="kiss-link-muted kiss-size-4 kiss-text-bold" href="<?=$this->route("/content/tree/items/{$model['name']}")?>"><?= $this->escape($model['label'] ? $model['label'] : $model['name']) ?></a>
                 </div>
-                <a class="kiss-size-large kiss-margin-small-left" kiss-popout="#model-item-menu-actions"><icon>more_horiz</icon></a>
+                <span class="kiss-badge kiss-badge-outline kiss-color-primary kiss-margin-small-right" v-if="!item._id">
+                    <?=t('New Item')?>
+                </span>
+                <a class="kiss-size-large kiss-margin-small-right" kiss-popout="#model-item-menu-actions"><icon>more_horiz</icon></a>
             </div>
         </kiss-container>
 
