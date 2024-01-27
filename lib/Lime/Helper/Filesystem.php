@@ -26,11 +26,11 @@ class Filesystem extends \Lime\Helper {
             case 0:
                 $dir = \getcwd();
             case 1:
-                $dir = (\strpos($args[0], ':')) ? $this->app->path($args[0]) : $args[0];
+                $dir = (\str_contains($args[0], ':')) ? $this->app->path($args[0]) : $args[0];
                 break;
             case 2:
                 $pattern = $args[0];
-                $dir = (\strpos($args[1], ':')) ? $this->app->path($args[1]) : $args[1];
+                $dir = (\str_contains($args[1], ':')) ? $this->app->path($args[1]) : $args[1];
                 break;
             default:
                 return $lst;
@@ -65,7 +65,7 @@ class Filesystem extends \Lime\Helper {
             return false;
         }
 
-        $args[0] = \strpos($args[0], ':') ? $this->app->path($args[0]) : $args[0];
+        $args[0] = \str_contains($args[0], ':') ? $this->app->path($args[0]) : $args[0];
 
         return $args[0] ? \call_user_func_array('file_get_contents', $args) : '';
     }
@@ -81,7 +81,7 @@ class Filesystem extends \Lime\Helper {
             return false;
         }
 
-        if (\strpos($args[0], ':') !== false && !$this->app->isAbsolutePath($args[0])) {
+        if (\str_contains($args[0], ':') && !$this->app->isAbsolutePath($args[0])) {
 
             list($namespace, $additional) = \explode(":",$args[0], 2);
 
@@ -107,7 +107,7 @@ class Filesystem extends \Lime\Helper {
      */
     public function mkdir(string $path, int $mode = 0755): bool {
 
-        if (\strpos($path, ':') !== false && !$this->app->isAbsolutePath($path)) {
+        if (\str_contains($path, ':') && !$this->app->isAbsolutePath($path)) {
             list($namespace, $additional) = \explode(':', $path, 2);
             $dir = $this->app->path("{$namespace}:").$additional;
         } else {
@@ -157,8 +157,8 @@ class Filesystem extends \Lime\Helper {
     public function copy(string $path, string $dest, bool $_init = true): bool {
 
         if ($_init) {
-            if (\strpos($path, ':')) $path = $this->app->path($path);
-            if (\strpos($dest, ':')) $dest = $this->app->path($dest);
+            if (\str_contains($path, ':')) $path = $this->app->path($path);
+            if (\str_contains($dest, ':')) $dest = $this->app->path($dest);
         }
 
         if (\is_dir($path)) {

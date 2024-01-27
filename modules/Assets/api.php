@@ -92,7 +92,7 @@ $this->on('restApi.config', function($restApi) {
 
                 $mime = null;
 
-                if (strpos($app->request->headers['Accept'] ?? '', 'image/webp') !== false) {
+                if (str_contains($app->request->headers['Accept'] ?? '', 'image/webp')) {
                     $gdinfo = \gd_info();
                     $mime = isset($gdinfo['WebP Support']) && $gdinfo['WebP Support'] ? 'webp' : null;
                 }

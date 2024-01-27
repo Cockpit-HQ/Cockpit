@@ -31,7 +31,7 @@ class DotEnv {
 
             if (!$line) continue;
             if ($line[0] == '#') continue;
-            if (!strpos($line, '=')) continue;
+            if (!str_contains($line, '=')) continue;
 
             list($name, $value) = explode('=', $line, 2);
 
@@ -70,7 +70,7 @@ class DotEnv {
 
         static $envs = null;
 
-        if (strpos($str, '${') === false) {
+        if (!str_contains($str, '${')) {
             return $str;
         }
 

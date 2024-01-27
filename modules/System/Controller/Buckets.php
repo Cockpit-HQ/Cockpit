@@ -234,7 +234,7 @@ class Buckets extends App {
 
             $path = trim(trim($path, '/'));
 
-            if (strpos($path, '../') !== false) {
+            if (str_contains($path, '../')) {
                 $path = false;
             }
         }

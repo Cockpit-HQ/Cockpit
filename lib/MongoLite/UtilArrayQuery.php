@@ -61,11 +61,11 @@ class UtilArrayQuery {
 
                     $d = '$document';
 
-                    if (\strpos($key, '(') !== false || \strpos($key, '"') !== false || \strpos($key, "'") !== false) {
+                    if (\str_contains($key, '(') || \str_contains($key, '"') || \str_contains($key, "'")) {
                         throw new \InvalidArgumentException('Unallowed characters used in filter keys');
                     }
 
-                    if (\strpos($key, '.') !== false) {
+                    if (\str_contains($key, '.')) {
 
                         $keys = \explode('.', $key);
 
@@ -293,7 +293,7 @@ function fuzzy_search(string $search, string $text, $distance = 3): float {
 
         foreach ($tokens as $token) {
 
-            if (\strpos($token, $needle) !== false) {
+            if (\str_contains($token, $needle)) {
                 $score += 1;
             } else {
 

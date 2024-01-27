@@ -36,7 +36,7 @@ class MongoLite {
 
     public function getCollection(string $name, ?string $db = null): \MongoLite\Collection {
 
-        if (strpos($name, '/') !== false) {
+        if (str_contains($name, '/')) {
             list($db, $name) = explode('/', $name, 2);
         }
 
@@ -51,7 +51,7 @@ class MongoLite {
 
     public function dropCollection(string $name, ?string $db = null) {
 
-        if (strpos($name, '/') !== false) {
+        if (str_contains($name, '/')) {
             list($db, $name) = explode('/', $name, 2);
         }
 
@@ -66,7 +66,7 @@ class MongoLite {
 
     public function renameCollection(string $name, string $newname, ?string $db = null): bool {
 
-        if (strpos($name, '/') !== false) {
+        if (str_contains($name, '/')) {
             list($db, $name) = explode('/', $name, 2);
         }
 
@@ -240,7 +240,7 @@ class MongoLite {
                 }
             }
 
-            if (is_string($v) && strpos($v, '$DATE(') === 0) {
+            if (is_string($v) && str_starts_with($v, '$DATE(')) {
                 $format = trim(substr($v, 6, -1));
                 $v = date($format ? $format : 'Y-m-d');
             }

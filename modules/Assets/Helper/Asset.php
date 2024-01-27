@@ -72,13 +72,13 @@ class Asset extends \Lime\Helper {
         $src = rawurldecode($src);
 
         // normalize path
-        if (strpos($src, '../') !== false) {
+        if (str_contains($src, '../')) {
             $src = implode('/', array_filter(explode('/', $src), fn ($s) => trim($s, '.')));
         }
 
         $options['src'] = $src;
 
-        if (\strpos($src, 'uploads://') === 0) {
+        if (\str_starts_with($src, 'uploads://')) {
 
             $options['src'] = \str_replace('uploads://', '', $src);
 
@@ -95,7 +95,7 @@ class Asset extends \Lime\Helper {
 
         $asset = null;
 
-        if (\strpos($src, 'assets://') === 0) {
+        if (\str_starts_with($src, 'assets://')) {
             $asset = ['path' => \str_replace('assets://', '', $src)];
         } elseif (!preg_match('/\.(png|jpg|jpeg|gif|svg|webp)$/i', $src)) {
             $asset = $this->app->dataStorage->findOne('assets', ['_id' => $src]);

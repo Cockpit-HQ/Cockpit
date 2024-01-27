@@ -9,13 +9,13 @@ class Client {
 
     public function __construct(string $server, array $options = [], array $driverOptions = []) {
 
-        if (strpos($server, 'mongodb://')===0 || strpos($server, 'mongodb+srv://')===0) {
+        if (str_starts_with($server, 'mongodb://') || str_starts_with($server, 'mongodb+srv://')) {
 
             $this->driver = new Mongo($server, $options, $driverOptions);
             $this->type = 'mongodb';
         }
 
-        if (strpos($server, 'mongolite://') === 0) {
+        if (str_starts_with($server, 'mongolite://')) {
             $this->driver = new MongoLite($server, $options);
             $this->type = 'mongolite';
         }

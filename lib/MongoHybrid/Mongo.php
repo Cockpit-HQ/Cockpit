@@ -315,7 +315,7 @@ class Mongo {
                 $v = \json_decode(\json_encode($v), true);
             }
 
-            if (is_string($v) && strpos($v, '$DATE(') === 0) {
+            if (is_string($v) && str_starts_with($v, '$DATE(')) {
                 $format = trim(substr($v, 6, -1));
                 $v = date($format ? $format : 'Y-m-d');
             }

@@ -13,12 +13,12 @@ require(__DIR__.'/bootstrap.php');
  * Collect needed paths
  */
 $APP_SPACE_DIR = __DIR__;
-$APP_DIR = str_replace(DIRECTORY_SEPARATOR, '/', __DIR__);
-$APP_DOCUMENT_ROOT = str_replace(DIRECTORY_SEPARATOR, '/', isset($_SERVER['DOCUMENT_ROOT']) ? realpath($_SERVER['DOCUMENT_ROOT']) : __DIR__);
+$APP_DIR = __DIR__;
+$APP_DOCUMENT_ROOT = realpath($_SERVER['DOCUMENT_ROOT'] ?? __DIR__);
 
 # make sure that $_SERVER['DOCUMENT_ROOT'] is set correctly
-if (strpos($APP_DIR, $APP_DOCUMENT_ROOT)!==0 && isset($_SERVER['SCRIPT_NAME'])) {
-    $APP_DOCUMENT_ROOT = str_replace(dirname(str_replace(DIRECTORY_SEPARATOR, '/', $_SERVER['SCRIPT_NAME'])), '', $APP_DIR);
+if (!str_starts_with($APP_DIR, $APP_DOCUMENT_ROOT) && isset($_SERVER['SCRIPT_NAME'])) {
+    $APP_DOCUMENT_ROOT = str_replace(dirname($_SERVER['SCRIPT_NAME']), '', $APP_DIR);
 }
 
 // Support php cli-server: e.g. php -S localhost:8080 index.php
@@ -43,7 +43,7 @@ if (PHP_SAPI == 'cli-server') {
     }
 
     // handle static space storage files
-    if (substr($_SERVER['PATH_INFO'], 0, 2) == '/:' && strpos($_SERVER['PATH_INFO'], '/storage/') !== false) {
+    if (substr($_SERVER['PATH_INFO'], 0, 2) == '/:' && str_contains($_SERVER['PATH_INFO'], '/storage/')) {
 
         $spaceFilePath = APP_SPACES_DIR.'/'.trim(substr($_SERVER['PATH_INFO'], 2), '/');
         $path  = pathinfo($spaceFilePath);
@@ -111,7 +111,7 @@ if ($APP_ROUTE == '') {
 
 define('APP_DOCUMENT_ROOT', $APP_DOCUMENT_ROOT);
 define('APP_BASE_URL', $APP_BASE_URL);
-define('APP_API_REQUEST', strpos($APP_ROUTE, '/api/') === 0 ? 1:0);
+define('APP_API_REQUEST', str_starts_with($APP_ROUTE, '/api/') ? 1 : 0);
 
 $appOptions = [
     'app_space' => $APP_SPACE,

@@ -9,12 +9,12 @@ class Manager {
 
     public function __construct(string $server, array $options = []) {
 
-        if (strpos($server, 'indexlite://') === 0) {
+        if (str_starts_with($server, 'indexlite://')) {
             $this->manager = new \IndexLite\Manager(explode('://', $server, 2)[1], $options);
             $this->type = 'indexlite';
         }
 
-        if (strpos($server, 'meilisearch://') === 0) {
+        if (str_starts_with($server, 'meilisearch://')) {
 
             $server = str_replace('meilisearch://', ($options['https'] ?? true) ? 'https://' : 'http://', $server);
 

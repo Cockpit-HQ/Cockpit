@@ -39,7 +39,7 @@ class Tower extends App {
             return $this->stop(['error' => 'Command is missing'], 412);
         }
 
-        if (strpos($command, 'tower ') === 0) {
+        if (str_starts_with($command, 'tower ')) {
             $command = substr($command, 6);
         }
 

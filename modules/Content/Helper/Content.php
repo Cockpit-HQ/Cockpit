@@ -40,7 +40,8 @@ class Content extends \Lime\Helper {
     public function replaceLocaleInArrayKeys(array &$array, string $locale = '', $keepDefault = false) {
 
         foreach ($array as $key => &$value) {
-            if (strpos($key, ':locale') !== false) {
+
+            if (str_contains($key, ':locale')) {
 
                 $newKey = str_replace(':locale', $locale ? "_{$locale}" : '', $key);
                 $array[$newKey] = &$value;

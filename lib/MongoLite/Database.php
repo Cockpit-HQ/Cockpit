@@ -54,7 +54,7 @@ class Database {
             $document = \json_decode($document, true);
             $val      = '';
 
-            if (strpos($key, '.') !== false) {
+            if (str_contains($key, '.')) {
 
                 $keys = \explode('.', $key);
 

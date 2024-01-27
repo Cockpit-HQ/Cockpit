@@ -163,7 +163,7 @@ class Cursor implements \Iterator {
                     $keyParts[] = isset($document[trim($expression, '$')]) ? $document[trim($expression, '$')] : null;
                 }
                 $key = implode('-', $keyParts);
-            } elseif (is_string($groupDefinition['_id']) && strpos($groupDefinition['_id'], '$') === 0) {
+            } elseif (is_string($groupDefinition['_id']) && str_starts_with($groupDefinition['_id'], '$')) {
                 // Single field group definition (e.g. "$category")
                 $fieldName = trim($groupDefinition['_id'], '$');
                 $key = isset($document[$fieldName]) ? $document[$fieldName] : "";
@@ -373,7 +373,7 @@ class Cursor implements \Iterator {
         }
 
         // Ensure the field starts with $
-        if (strpos($path, '$') !== 0) {
+        if (!str_starts_with($path, '$')) {
             throw new Exception("Unwind field should start with a $");
         }
 

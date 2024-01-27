@@ -52,7 +52,7 @@ $sidePanelContents = $this->block('app-side-panel', ['print' => false]);
                                 <li class="kiss-nav-divider"></li>
 
                                 <?php foreach ($links as $link) : ?>
-                                    <li class="<?= (strpos($this->request->route, $link['route']) === 0) ? 'active' : '' ?>">
+                                    <li class="<?= (str_starts_with($this->request->route, $link['route'])) ? 'active' : '' ?>">
                                         <a href="<?= $this->route($link['route']) ?>" aria-label="<?= t($link['label']) ?>" kiss-tooltip="right">
                                             <kiss-svg src="<?= $this->base($link['icon']) ?>" width="20" height="20"><canvas width="20" height="20"></canvas></kiss-svg>
                                         </a>
@@ -174,7 +174,7 @@ $sidePanelContents = $this->block('app-side-panel', ['print' => false]);
                                 <?php endif ?>
 
                                 <?php foreach ($links as $link) : ?>
-                                    <li class="<?= (strpos($this->request->route, $link['route']) === 0) ? 'active' : '' ?>">
+                                    <li class="<?= (str_starts_with($this->request->route, $link['route'])) ? 'active' : '' ?>">
                                         <a href="<?= $this->route($link['route']) ?>">
                                             <kiss-svg class="kiss-margin-small-right" src="<?= $this->base($link['icon']) ?>" width="25" height="25"></kiss-svg>
                                             <?= t($link['label']) ?>

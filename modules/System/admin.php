@@ -123,7 +123,7 @@ $this->on('app.search', function($search, $findings) {
 
         foreach ($this->helper('spaces')->spaces() as $space) {
 
-            if (strpos($space['name'], $search) !== false) {
+            if (str_contains($space['name'], $search)) {
                 $findings[] = [
                     'title' => $space['name'],
                     'route' => $space['url'],

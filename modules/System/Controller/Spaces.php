@@ -89,7 +89,7 @@ class Spaces extends App {
             return $this->stop(['error' => 'Space is missing'], 412);
         }
 
-        if (strpos($space['name'], '.') !== false || strpos($space['name'], '/')) {
+        if (str_contains($space['name'], '.') || str_contains($space['name'], '/')) {
             return false;
         }
 

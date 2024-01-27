@@ -250,7 +250,7 @@ class App implements \ArrayAccess {
 
         $url = '';
 
-        if (\strpos($path, ':')===false) {
+        if (!\str_contains($path, ':')) {
 
             /*
             if ($this->registry['base_port'] != '80') {
@@ -309,7 +309,7 @@ class App implements \ArrayAccess {
     */
     public function reroute(string $path): void {
 
-        if (\strpos($path,'://') === false) {
+        if (!\str_contains($path,'://')) {
             if (\substr($path,0,1)!='/') {
                 $path = '/'.$path;
             }
@@ -549,7 +549,7 @@ class App implements \ArrayAccess {
 
         $this->trigger('app.render.view', [&$view, &$slots]);
 
-        if (\strpos($view, ' with ') !== false ) {
+        if (\str_contains($view, ' with ')) {
             list($view, $layout) = \explode(' with ', $view, 2);
         }
 
@@ -557,7 +557,7 @@ class App implements \ArrayAccess {
             $this->trigger("app.render.view/{$view}", [&$view, &$slots]);
         }
 
-        if (\strpos($view, ':') !== false && $file = $this->path($view)) {
+        if (\str_contains($view, ':') && $file = $this->path($view)) {
             $view = $file;
         }
 
@@ -576,7 +576,7 @@ class App implements \ArrayAccess {
 
         if ($layout) {
 
-            if (\strpos($layout, ':') !== false && $file = $this->path($layout)) {
+            if (\str_contains($layout, ':') && $file = $this->path($layout)) {
                 $layout = $file;
             }
 
@@ -674,7 +674,7 @@ class App implements \ArrayAccess {
             extract($href, \EXTR_OVERWRITE);
         }
 
-        $ispath = \strpos($src, ':') !== false && !\preg_match('#^(|http\:|https\:)//#', $src);
+        $ispath = \str_contains($src, ':') && !\preg_match('#^(|http\:|https\:)//#', $src);
         $output = '<link href="'.($ispath ? $this->pathToUrl($src):$src).($version ? "?ver={$version}":"").'" type="'.$type.'" rel="'.$rel.'">';
 
         return $output;
@@ -696,7 +696,7 @@ class App implements \ArrayAccess {
             extract($src, \EXTR_OVERWRITE);
         }
 
-        $ispath = \strpos($src, ':') !== false && !\preg_match('#^(/|http\:|https\:)//#', $src);
+        $ispath = \str_contains($src, ':') && !\preg_match('#^(/|http\:|https\:)//#', $src);
         $output = '<script src="'.($ispath ? $this->pathToUrl($src):$src).($version ? "?ver={$version}":"").'" type="'.$type.'" '.$load.'></script>';
 
         return $output;
@@ -936,7 +936,7 @@ class App implements \ArrayAccess {
                     }
 
                     /* e.g. /admin/*  */
-                    if (\strpos($route, '*') !== false) {
+                    if (\str_contains($route, '*')) {
 
                         $pattern = '#^'.\str_replace('\*', '(.*)', \preg_quote($route, '#')).'#';
 
@@ -949,7 +949,7 @@ class App implements \ArrayAccess {
                     }
 
                     /* e.g. /admin/:id  */
-                    if (strpos($route, ':') !== false) {
+                    if (str_contains($route, ':')) {
 
                         $parts_p = \explode('/', $path);
                         $parts_r = \explode('/', $route);
@@ -1390,7 +1390,7 @@ function fetch_from_array(array &$array, ?string $index = null, mixed $default =
 
         return $array[$index];
 
-    } elseif (\strpos($index, '/')) {
+    } elseif (\str_contains($index, '/')) {
 
         $keys = \explode('/', $index);
 

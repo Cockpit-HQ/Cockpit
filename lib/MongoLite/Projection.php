@@ -38,7 +38,7 @@ class Projection {
 
         foreach ($fields as $field => $value) {
 
-            if (strpos($field, '.') !== false) {
+            if (str_contains($field, '.')) {
                 $projection = array_replace_recursive($projection, self::dotNotationToArray($field, $value));
             } else {
                 $projection[$field] = $value;

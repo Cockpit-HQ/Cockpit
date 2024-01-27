@@ -9,7 +9,7 @@ class Client {
 
     public function __construct(string $server, array $options = []) {
 
-        if (strpos($server, 'redis://') === 0) {
+        if (str_starts_with($server, 'redis://')) {
 
             $uri = parse_url($server);
 
@@ -40,7 +40,7 @@ class Client {
 
             $this->driver->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_PHP);
 
-        } elseif (strpos($server, 'redislite://') === 0) {
+        } elseif (str_starts_with($server, 'redislite://')) {
             $this->driver = new \RedisLite(str_replace('redislite://', '', $server), $options);
         }
 

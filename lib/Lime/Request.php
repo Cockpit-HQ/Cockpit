@@ -78,7 +78,7 @@ class Request {
         $src = $source ? $source : $this->request;
         $cast = null;
 
-        if (\strpos($index, ':') !== false) {
+        if (\str_contains($index, ':')) {
             list($index, $cast) = \explode(':', $index, 2);
         }
 

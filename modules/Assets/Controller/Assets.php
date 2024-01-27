@@ -312,7 +312,7 @@ class Assets extends App {
 
             $mime = null;
 
-            if (strpos($this->app->request->headers['Accept'] ?? '', 'image/webp') !== false) {
+            if (str_contains($this->app->request->headers['Accept'] ?? '', 'image/webp')) {
                 $gdinfo = \gd_info();
                 $mime = isset($gdinfo['WebP Support']) && $gdinfo['WebP Support'] ? 'webp' : null;
             }
