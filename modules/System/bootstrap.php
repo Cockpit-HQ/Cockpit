@@ -9,6 +9,8 @@ $this->helpers['revisions'] = 'System\\Helper\\Revisions';
 $this->helpers['system']    = 'System\\Helper\\System';
 $this->helpers['spaces']    = 'System\\Helper\\Spaces';
 
+// events
+
 $this->on('app.admin.init', function() {
     include(__DIR__.'/admin.php');
 }, 500);

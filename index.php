@@ -130,6 +130,10 @@ if ($APP_SPACE) {
     if (isset($masterConfig['site_url']) && $masterConfig['site_url']) {
         $appOptions['site_url'] = $masterConfig['site_url'];
     }
+
+    if (isset($masterConfig['app.name']) && $masterConfig['app.name']) {
+        $appOptions['app.name'] = $masterConfig['app.name'];
+    }
 }
 
 $app = Cockpit::instance($APP_SPACE_DIR, $appOptions);

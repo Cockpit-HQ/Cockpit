@@ -24,10 +24,10 @@ $sidePanelContents = $this->block('app-side-panel', ['print' => false]);
     <?php $this->block('app.layout.head') ?>
 
     <?php if ($this->helper('theme')->theme() == 'auto') : ?>
-        <script>
-            // set client preferred color scheme
-            document.documentElement.setAttribute('data-theme', getComputedStyle(document.documentElement).getPropertyValue('--app-auto-theme').trim());
-        </script>
+    <script>
+        // set client preferred color scheme
+        document.documentElement.setAttribute('data-theme', getComputedStyle(document.documentElement).getPropertyValue('--app-auto-theme').trim());
+    </script>
     <?php endif ?>
 
 </head>
