@@ -270,13 +270,6 @@ export default {
                                     {{ t('Move last') }}
                                 </a>
                             </li>
-                            <li class="kiss-nav-divider"></li>
-                            <li v-if="actionItem.tree.items.indexOf(actionItem.item) !== actionItem.tree.items.length - 1">
-                                <span class="kiss-flex kiss-flex-middle" @click="actionItem.tree.moveItem(actionItem.item, 'last')">
-                                    <icon class="kiss-margin-small-right">arrow_downward</icon>
-                                    {{ t('Move last') }}
-                                </span>
-                            </li>
                         </ul>
                         </kiss-navlist>
                 </kiss-content>
