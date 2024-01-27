@@ -50,6 +50,9 @@ export default {
             pages: 1,
             limit: App.storage.get('assets.manager.limit', 15),
 
+            sort: App.storage.get('assets.manager.sort', {_created: -1}),
+            sortOptions: {title: 'Title', _created: 'Created', size: 'Size'},
+
             view: App.session.get('assets.manager.view', 'cards'),
 
             loading: false,
@@ -87,6 +90,14 @@ export default {
             };
 
             return this.assets.filter(asset => this.selected.indexOf(asset._id) > -1);
+        },
+
+        sortDir() {
+            return this.sort[Object.keys(this.sort)[0]];
+        },
+
+        sortKey() {
+            return Object.keys(this.sort)[0];
         }
     },
 
@@ -129,6 +140,13 @@ export default {
             App.storage.set('assets.manager.limit', val);
             this.load();
         },
+        sort: {
+            deep: true,
+            handler(val) {
+                App.storage.set('assets.manager.sort', val);
+                this.load();
+            }
+        },
         view(val) {
             App.session.set('assets.manager.view', val);
         }
@@ -156,6 +174,7 @@ export default {
             let options = {
                 limit: this.limit,
                 skip: (page - 1) * this.limit,
+                sort: this.sort
             };
 
             if (this.filter || this.initFilter) {
@@ -323,6 +342,13 @@ export default {
 
         copyAssetLinkID(asset) {
             App.utils.copyText(location.origin + App.route(`/assets/link/${asset._id}`), () =>  App.ui.notify('Asset link copied!'));
+        },
+
+        updateSortBy(e) {
+
+            let sort = {};
+            sort[e.srcElement.value] = this.sortDir;
+            this.sort = sort;
         }
     },
 
@@ -433,6 +459,15 @@ export default {
                             <option v-for="l in [15, 30, 50, 100]" :value="l">{{ l }}</option>
                         </select>
                     </div>
+                    <div class="kiss-margin-left">
+                        <a @click="sort[sortKey] = sortDir == -1 ? 1 : -1"><icon>{{ sortDir == 1 ? 'arrow_downward':'arrow_upward' }}</icon></a>
+                        <div class="kiss-margin-xsmall-left kiss-overlay-input">
+                            <span class="kiss-color-muted">{{ sortOptions[sortKey]}}</span>
+                            <select @change="updateSortBy">
+                                <option v-for="(lbl, key) in sortOptions" :value="key" :selected="key==sortKey">{{ t(lbl) }}</option>
+                            </select>
+                        </div>
+                    </div>
                 </app-pagination>
             </div>
             <div class="kiss-flex kiss-flex-middle" gap="" v-if="!loading">
@@ -469,6 +504,15 @@ export default {
                                 <select v-model="limit">
                                     <option v-for="l in [15, 30, 50, 100]" :value="l">{{ l }}</option>
                                 </select>
+                            </div>
+                            <div class="kiss-margin-left">
+                                <a @click="sort[sortKey] = sortDir == -1 ? 1 : -1"><icon>{{ sortDir == 1 ? 'arrow_downward':'arrow_upward' }}</icon></a>
+                                <div class="kiss-margin-xsmall-left kiss-overlay-input">
+                                    <span class="kiss-color-muted">{{ sortOptions[sortKey]}}</span>
+                                    <select @change="updateSortBy">
+                                        <option v-for="(lbl, key) in sortOptions" :value="key" :selected="key==sortKey">{{ t(lbl) }}</option>
+                                    </select>
+                                </div>
                             </div>
                         </app-pagination>
                     </div>

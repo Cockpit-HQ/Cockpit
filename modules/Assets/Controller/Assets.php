@@ -30,7 +30,6 @@ class Assets extends App {
         if ($skip   = $this->param('skip'  , null)) $options['skip']   = $skip;
         if ($folder = $this->param('folder', null)) $options['folder'] = $folder;
 
-
         if (isset($options['filter']) && (is_string($options['filter']) || \is_countable($options['filter']))) {
 
             $filter = [];
