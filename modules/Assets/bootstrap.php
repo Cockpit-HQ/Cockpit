@@ -55,7 +55,7 @@ $this->module('assets')->extend([
         return $this->app->dataStorage->find('assets/folders', $options)->toArray();
     },
 
-    'upload' => function(string|array $param = 'files', array $meta = []) {
+    'upload' => function(string|array $param = 'files', array $meta = [], bool $isUpload = true) {
 
         $files = [];
 
@@ -102,7 +102,7 @@ $this->module('assets')->extend([
                     $_isAllowed = false;
                 }
 
-                if (!$files['error'][$i] && $_isAllowed && $_sizeAllowed && move_uploaded_file($files['tmp_name'][$i], $_file)) {
+                if (!$files['error'][$i] && $_isAllowed && $_sizeAllowed && ($isUpload ? move_uploaded_file($files['tmp_name'][$i], $_file) : rename($files['tmp_name'][$i], $_file))) {
 
                     $_files[]   = $_file;
                     $uploaded[] = $files['name'][$i];
