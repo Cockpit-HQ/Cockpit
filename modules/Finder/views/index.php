@@ -12,11 +12,20 @@
                 <?=t('Finder')?>
             </div>
 
-            <div class="kiss-margin" v-if="Object.keys(roots).length > 1">
+            <kiss-card class="kiss-padding kiss-overlay-input kiss-width-1-4@m kiss-width-1-6@xl kiss-margin" theme="bordered contrast" hover="shadow" v-if="Object.keys(roots).length > 1">
+                <div>
+                    <div class="kiss-text-bold kiss-flex kiss-flex-middle" gap="small">
+                        <icon size="larger" class="kiss-size-4 kiss-color-primary">folder</icon>
+                        <div class="kiss-text-truncate kiss-flex-1">
+                            {{ rootLabel }}
+                        </div>
+                        <icon class="kiss-color-muted">unfold_more</icon>
+                    </div>
+                </div>
                 <select class="kiss-input kiss-select" v-model="root">
                     <option v-for="r,label in roots" :value="r">{{ label }}</option>
                 </select>
-            </div>
+            </kiss-card>
 
             <finder :root="root"></finder>
 
@@ -35,6 +44,12 @@
 
                 components: {
                     finder: Vue.defineAsyncComponent(() => App.utils.import('finder:assets/vue-components/finder.js'))
+                },
+
+                computed: {
+                    rootLabel() {
+                        return Object.keys(this.roots)[Object.values(this.roots).indexOf(this.root)];
+                    }
                 }
             }
 

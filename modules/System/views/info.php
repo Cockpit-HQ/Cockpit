@@ -38,7 +38,7 @@
                         <tbody>
                             <tr>
                                 <td width="30%" class="kiss-size-xsmall">Version</td>
-                                <td class="kiss-size-small kiss-color-muted"><?=APP_VERSION?></td>
+                                <td class="kiss-size-small kiss-text-monospace kiss-color-muted"><?=APP_VERSION?></td>
                             </tr>
                             <tr>
                                 <td width="30%" class="kiss-size-xsmall">Debug mode</td>
@@ -46,11 +46,11 @@
                             </tr>
                             <tr>
                                 <td width="30%" class="kiss-size-xsmall">Assets url</td>
-                                <td class="kiss-size-small kiss-color-muted kiss-text-truncate">{{ $base('#uploads:') }}</td>
+                                <td class="kiss-size-small kiss-text-monospace kiss-color-muted kiss-text-truncate">{{ $base('#uploads:') }}</td>
                             </tr>
                             <tr>
                                 <td width="30%" class="kiss-size-xsmall">Datastorage</td>
-                                <td class="kiss-size-small kiss-color-muted"><?=$this->dataStorage->type?></td>
+                                <td class="kiss-size-small kiss-text-monospace kiss-color-muted"><?=$this->dataStorage->type?></td>
                             </tr>
                         </tbody>
                     </table>
@@ -112,16 +112,16 @@
 
                     <table class="kiss-table">
                         <tbody>
-                            <tr><td width="30%">Version</td><td class="kiss-color-muted"><?=phpversion()?></td></tr>
-                            <tr><td>PHP SAPI</td><td class="kiss-color-muted"><?=php_sapi_name()?></td></tr>
-                            <tr><td>System</td><td class="kiss-color-muted"><?=php_uname()?></td></tr>
-                            <tr><td>Extensions</td><td class="kiss-color-muted"><?=implode(', ', get_loaded_extensions())?></td></tr>
-                            <tr><td>Supported image types</td><td class="kiss-color-muted"><?=implode(', ', $supportedImageTypes)?></td></tr>
-                            <tr><td>Max. execution time</td><td class="kiss-color-muted"><?=ini_get('max_execution_time')?> sec.</td></tr>
-                            <tr><td>Memory limit</td><td class="kiss-color-muted"><?=ini_get("memory_limit")?></td></tr>
-                            <tr><td>Upload file size limit</td><td class="kiss-color-muted"><?=ini_get("upload_max_filesize")?></td></tr>
-                            <tr><td>Realpath Cache</td><td class="kiss-color-muted"><?=ini_get("realpath_cache_size")?> / <?=ini_get("realpath_cache_ttl")?> (ttl)</td></tr>
-                            <tr><td>System temporary directory</td><td class="kiss-color-muted"><?=sys_get_temp_dir()?></td></tr>
+                            <tr><td width="30%">Version</td><td class="kiss-text-monospace kiss-color-muted"><?=phpversion()?></td></tr>
+                            <tr><td>PHP SAPI</td><td class="kiss-text-monospace kiss-color-muted"><?=php_sapi_name()?></td></tr>
+                            <tr><td>System</td><td class="kiss-text-monospace kiss-color-muted"><?=php_uname()?></td></tr>
+                            <tr><td>Extensions</td><td class="kiss-text-monospace kiss-color-muted"><?=implode(', ', get_loaded_extensions())?></td></tr>
+                            <tr><td>Supported image types</td><td class="kiss-text-monospace kiss-color-muted"><?=implode(', ', $supportedImageTypes)?></td></tr>
+                            <tr><td>Max. execution time</td><td class="kiss-text-monospace kiss-color-muted"><?=ini_get('max_execution_time')?> sec.</td></tr>
+                            <tr><td>Memory limit</td><td class="kiss-text-monospace kiss-color-muted"><?=ini_get("memory_limit")?></td></tr>
+                            <tr><td>Upload file size limit</td><td class="kiss-text-monospace kiss-color-muted"><?=ini_get("upload_max_filesize")?></td></tr>
+                            <tr><td>Realpath Cache</td><td class="kiss-text-monospace kiss-color-muted"><?=ini_get("realpath_cache_size")?> / <?=ini_get("realpath_cache_ttl")?> (ttl)</td></tr>
+                            <tr><td>System temporary directory</td><td class="kiss-text-monospace kiss-color-muted"><?=sys_get_temp_dir()?></td></tr>
                             <tr>
                                 <td>OPCache</td>
                                 <td><span class="kiss-badge kiss-badge-outline kiss-color-<?=(ini_get("opcache.enable") ? 'success':'danger')?>"><?=(ini_get("opcache.enable") ? 'Enabled':'Disabled')?></span></td>
@@ -146,7 +146,7 @@
                         <tbody>
                             <tr v-for="(val, key) in env">
                                 <td width="30%" class="kiss-size-small"><div class="kiss-size-xsmall">{{ key }}</div></td>
-                                <td width="70%" class="kiss-color-muted"><div class="kiss-size-xsmall">{{ val }}</div></td>
+                                <td width="70%" class="kiss-text-monospace kiss-color-muted"><div class="kiss-size-xsmall">{{ val }}</div></td>
                             </tr>
                         </tbody>
                     </table>
