@@ -101,6 +101,12 @@ class Update extends Command {
         $fs->delete("{$tmppath}/{$zipname}");
         $fs->delete("{$tmppath}/update-{$zipname}");
 
+        $moduleCacheFile = '#cache:modules.cache.php';
+
+        if ($this->app->path($moduleCacheFile)) {
+            $fs->delete($moduleCacheFile);
+        }
+
         if (function_exists('opcache_reset')) {
             \opcache_reset();
         }
