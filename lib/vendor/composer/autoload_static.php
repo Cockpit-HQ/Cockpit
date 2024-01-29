@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit5723017241f53032fa5adda76b6b8857
+class ComposerStaticInitfb114fa4d291ebdea911cfa961c2cd9b
 {
     public static $files = array (
         '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
@@ -22,7 +22,6 @@ class ComposerStaticInit5723017241f53032fa5adda76b6b8857
         'b6b991a57620e2fb6b2f66f03fe9ddc2' => __DIR__ . '/..' . '/symfony/string/Resources/functions.php',
         '7aed44d824e149ce152c0fb82af9379a' => __DIR__ . '/..' . '/colinodell/json5/src/global.php',
         '3a37ebac017bc098e9a86b35401e7a68' => __DIR__ . '/..' . '/mongodb/mongodb/src/functions.php',
-        '5897ea0ac4cccf14d323035e65887801' => __DIR__ . '/..' . '/symfony/polyfill-php82/bootstrap.php',
         '662a729f963d39afe703c9d9b7ab4a8c' => __DIR__ . '/..' . '/symfony/polyfill-php83/bootstrap.php',
     );
 
@@ -34,7 +33,6 @@ class ComposerStaticInit5723017241f53032fa5adda76b6b8857
         'S' => 
         array (
             'Symfony\\Polyfill\\Php83\\' => 23,
-            'Symfony\\Polyfill\\Php82\\' => 23,
             'Symfony\\Polyfill\\Php81\\' => 23,
             'Symfony\\Polyfill\\Php80\\' => 23,
             'Symfony\\Polyfill\\Php73\\' => 23,
@@ -124,10 +122,6 @@ class ComposerStaticInit5723017241f53032fa5adda76b6b8857
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-php83',
         ),
-        'Symfony\\Polyfill\\Php82\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/symfony/polyfill-php82',
-        ),
         'Symfony\\Polyfill\\Php81\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-php81',
@@ -190,8 +184,8 @@ class ComposerStaticInit5723017241f53032fa5adda76b6b8857
         ),
         'Psr\\Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-factory/src',
-            1 => __DIR__ . '/..' . '/psr/http-message/src',
+            0 => __DIR__ . '/..' . '/psr/http-message/src',
+            1 => __DIR__ . '/..' . '/psr/http-factory/src',
         ),
         'Psr\\Http\\Client\\' => 
         array (
@@ -329,7 +323,6 @@ class ComposerStaticInit5723017241f53032fa5adda76b6b8857
         'AWS\\CRT\\NativeResource' => __DIR__ . '/..' . '/aws/aws-crt-php/src/AWS/CRT/NativeResource.php',
         'AWS\\CRT\\OptionValue' => __DIR__ . '/..' . '/aws/aws-crt-php/src/AWS/CRT/Options.php',
         'AWS\\CRT\\Options' => __DIR__ . '/..' . '/aws/aws-crt-php/src/AWS/CRT/Options.php',
-        'AllowDynamicProperties' => __DIR__ . '/..' . '/symfony/polyfill-php82/Resources/stubs/AllowDynamicProperties.php',
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
         'Aws\\AbstractConfigurationProvider' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/AbstractConfigurationProvider.php',
         'Aws\\Api\\AbstractModel' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/Api/AbstractModel.php',
@@ -710,9 +703,6 @@ class ComposerStaticInit5723017241f53032fa5adda76b6b8857
         'ColorThief\\Image\\ImageLoader' => __DIR__ . '/..' . '/ksubileau/color-thief-php/src/ColorThief/Image/ImageLoader.php',
         'ColorThief\\PQueue' => __DIR__ . '/..' . '/ksubileau/color-thief-php/src/ColorThief/PQueue.php',
         'ColorThief\\VBox' => __DIR__ . '/..' . '/ksubileau/color-thief-php/src/ColorThief/VBox.php',
-        'ComposerAutoloaderInit5723017241f53032fa5adda76b6b8857' => __DIR__ . '/..' . '/composer/autoload_real.php',
-        'Composer\\Autoload\\ClassLoader' => __DIR__ . '/..' . '/composer/ClassLoader.php',
-        'Composer\\Autoload\\ComposerStaticInit5723017241f53032fa5adda76b6b8857' => __DIR__ . '/..' . '/composer/autoload_static.php',
         'Composer\\BinProxyWrapper' => __DIR__ . '/..' . '/bin/jp.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'DASPRiD\\Enum\\AbstractEnum' => __DIR__ . '/..' . '/dasprid/enum/src/AbstractEnum.php',
@@ -1437,12 +1427,6 @@ class ComposerStaticInit5723017241f53032fa5adda76b6b8857
         'Psr\\Log\\LoggerInterface' => __DIR__ . '/..' . '/psr/log/src/LoggerInterface.php',
         'Psr\\Log\\LoggerTrait' => __DIR__ . '/..' . '/psr/log/src/LoggerTrait.php',
         'Psr\\Log\\NullLogger' => __DIR__ . '/..' . '/psr/log/src/NullLogger.php',
-        'Random\\BrokenRandomEngineError' => __DIR__ . '/..' . '/symfony/polyfill-php82/Resources/stubs/Random/BrokenRandomEngineError.php',
-        'Random\\CryptoSafeEngine' => __DIR__ . '/..' . '/symfony/polyfill-php82/Resources/stubs/Random/CryptoSafeEngine.php',
-        'Random\\Engine' => __DIR__ . '/..' . '/symfony/polyfill-php82/Resources/stubs/Random/Engine.php',
-        'Random\\Engine\\Secure' => __DIR__ . '/..' . '/symfony/polyfill-php82/Resources/stubs/Random/Engine/Secure.php',
-        'Random\\RandomError' => __DIR__ . '/..' . '/symfony/polyfill-php82/Resources/stubs/Random/RandomError.php',
-        'Random\\RandomException' => __DIR__ . '/..' . '/symfony/polyfill-php82/Resources/stubs/Random/RandomException.php',
         'RedisLite' => __DIR__ . '/../../..' . '/lib/RedisLite.php',
         'ReturnTypeWillChange' => __DIR__ . '/..' . '/symfony/polyfill-php81/Resources/stubs/ReturnTypeWillChange.php',
         'RobThree\\Auth\\Providers\\Qr\\BaconQrCodeProvider' => __DIR__ . '/..' . '/robthree/twofactorauth/lib/Providers/Qr/BaconQrCodeProvider.php',
@@ -1470,8 +1454,6 @@ class ComposerStaticInit5723017241f53032fa5adda76b6b8857
         'RobThree\\Auth\\TwoFactorAuth' => __DIR__ . '/..' . '/robthree/twofactorauth/lib/TwoFactorAuth.php',
         'RobThree\\Auth\\TwoFactorAuthException' => __DIR__ . '/..' . '/robthree/twofactorauth/lib/TwoFactorAuthException.php',
         'SVGSanitizer' => __DIR__ . '/../../..' . '/lib/SVGSanitizer.php',
-        'SensitiveParameter' => __DIR__ . '/..' . '/symfony/polyfill-php82/Resources/stubs/SensitiveParameter.php',
-        'SensitiveParameterValue' => __DIR__ . '/..' . '/symfony/polyfill-php82/Resources/stubs/SensitiveParameterValue.php',
         'SimpleImageLib' => __DIR__ . '/../../..' . '/lib/SimpleImageLib.php',
         'Stringable' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',
         'Symfony\\Component\\Console\\Application' => __DIR__ . '/..' . '/symfony/console/Application.php',
@@ -1665,10 +1647,6 @@ class ComposerStaticInit5723017241f53032fa5adda76b6b8857
         'Symfony\\Polyfill\\Php80\\Php80' => __DIR__ . '/..' . '/symfony/polyfill-php80/Php80.php',
         'Symfony\\Polyfill\\Php80\\PhpToken' => __DIR__ . '/..' . '/symfony/polyfill-php80/PhpToken.php',
         'Symfony\\Polyfill\\Php81\\Php81' => __DIR__ . '/..' . '/symfony/polyfill-php81/Php81.php',
-        'Symfony\\Polyfill\\Php82\\NoDynamicProperties' => __DIR__ . '/..' . '/symfony/polyfill-php82/NoDynamicProperties.php',
-        'Symfony\\Polyfill\\Php82\\Php82' => __DIR__ . '/..' . '/symfony/polyfill-php82/Php82.php',
-        'Symfony\\Polyfill\\Php82\\Random\\Engine\\Secure' => __DIR__ . '/..' . '/symfony/polyfill-php82/Random/Engine/Secure.php',
-        'Symfony\\Polyfill\\Php82\\SensitiveParameterValue' => __DIR__ . '/..' . '/symfony/polyfill-php82/SensitiveParameterValue.php',
         'Symfony\\Polyfill\\Php83\\Php83' => __DIR__ . '/..' . '/symfony/polyfill-php83/Php83.php',
         'TestsDependency\\BaconQRCodeTest' => __DIR__ . '/..' . '/robthree/twofactorauth/testsDependency/BaconQRCodeTest.php',
         'TestsDependency\\EndroidQRCodeTest' => __DIR__ . '/..' . '/robthree/twofactorauth/testsDependency/EndroidQRCodeTest.php',
@@ -1738,10 +1716,10 @@ class ComposerStaticInit5723017241f53032fa5adda76b6b8857
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit5723017241f53032fa5adda76b6b8857::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit5723017241f53032fa5adda76b6b8857::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit5723017241f53032fa5adda76b6b8857::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit5723017241f53032fa5adda76b6b8857::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitfb114fa4d291ebdea911cfa961c2cd9b::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitfb114fa4d291ebdea911cfa961c2cd9b::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInitfb114fa4d291ebdea911cfa961c2cd9b::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInitfb114fa4d291ebdea911cfa961c2cd9b::$classMap;
 
         }, null, ClassLoader::class);
     }

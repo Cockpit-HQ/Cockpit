@@ -42,7 +42,6 @@
         "robthree/twofactorauth": "^1.8",
         "bacon/bacon-qr-code": "^2.0",
         "symfony/polyfill-mbstring": "^1.22",
-        "symfony/polyfill-php82": "^1.22",
         "symfony/polyfill-php83": "^1.22",
         "webonyx/graphql-php": "^15.0",
         "zircote/swagger-php": "^4.5.1",

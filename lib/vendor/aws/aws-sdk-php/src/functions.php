@@ -541,7 +541,7 @@ function parse_ini_section_with_subsections($filename, $section_name) {
                     && trim($line, '[]') === $section_name)
                 {
                     continue;
-                } elseif (str_starts_with($line, '[')) {
+                } elseif (strpos($line, '[') === 0) {
                     break;
                 }
 
