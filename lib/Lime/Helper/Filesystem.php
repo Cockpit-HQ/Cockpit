@@ -210,7 +210,7 @@ class Filesystem extends \Lime\Helper {
             $this->mkdir(dirname($newpath));
             $this->delete($newpath);
             if (!@\rename($path, $newpath)) {
-               return false;
+                return false;
             }
         }
 
