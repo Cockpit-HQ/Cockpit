@@ -49,9 +49,9 @@ export default {
 
             if (value.type === 'image') {
 
-                const src = App.route(`/assets/thumbnail/${value._id}?m=bestFit&mime=auto&h=${mediaSize}&t=${value._modified}`);
+                const src = App.route(`/assets/thumbnail/${value._id}?m=bestFit&mime=auto&h=${(mediaSize * 2)}&t=${value._modified}`);
 
-                media = `<img loading="lazy" class="kiss-responsive-height" src="${src}" style="height:${mediaSize}px;object-fit:cover;">`;
+                media = `<img loading="lazy" class="kiss-responsive-height" src="${src}" style="height:${mediaSize}px;object-fit:cover;object-position:center;">`;
             }
 
             return /*html*/ `
