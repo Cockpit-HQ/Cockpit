@@ -293,15 +293,11 @@ kiss-card[hover*="contrast"]:hover {
     font-weight: bold;
 }
 
-.kiss-tabs-nav {
-    border-bottom: 1px var(--kiss-hr-color) solid;
-}
-
 .kiss-tabs-nav-link {
     padding-left: 0;
     padding-right: 0;
     margin-right: 25px;
-    text-transform: uppercase;
+    letter-spacing: .05em;
 }
 
 [active="true"] > .kiss-tabs-nav-link:after {
