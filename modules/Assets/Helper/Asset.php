@@ -10,8 +10,11 @@ class Asset extends \Lime\Helper {
 
     protected ?Vips $vips = null;
     protected ?Ffmpeg $ffmpeg = null;
+    protected ?string $storage = null;
 
     protected function initialize() {
+
+        $this->storage = $this->app->retrieve('assets/storage', 'tmp://thumbs');
 
         $useVips = $this->app->retrieve('assets/vips');
 
@@ -29,7 +32,7 @@ class Asset extends \Lime\Helper {
     public function image(array $options = [], bool $asPath = false) {
 
         $options = array_merge([
-            'cachefolder' => 'tmp://thumbs',
+            'storage' => $this->storage,
             'src' => '',
             'mode' => 'thumbnail',
             'mime' => null,
@@ -57,7 +60,7 @@ class Asset extends \Lime\Helper {
 
         if (!$rebuild && $mime) {
 
-            $thumbpath = $cachefolder."/{$hash}";
+            $thumbpath = $storage."/{$hash}";
 
             if ($this->app->fileStorage->fileExists($thumbpath)) {
 
@@ -212,7 +215,7 @@ class Asset extends \Lime\Helper {
         $method = $mode;
 
         $hash = $hash ?? md5(json_encode($options))."_{$quality}_{$mode}.{$ext}";
-        $thumbpath = $cachefolder."/{$hash}";
+        $thumbpath = $storage."/{$hash}";
 
         if ($rebuild || !$this->app->fileStorage->fileExists($thumbpath)) {
 

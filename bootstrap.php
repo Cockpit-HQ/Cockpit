@@ -155,7 +155,6 @@ class Cockpit {
 
             $storages = array_replace_recursive([
 
-
                 '#app' => [
                     'adapter' => 'League\Flysystem\Local\LocalFilesystemAdapter',
                     'args' => [$app->path('#app:')],

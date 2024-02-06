@@ -1,5 +1,10 @@
 # Release Notes
 
+
+## WIP
+
+- Allow to configure thumbnail storage path via config
+
 ## 2.8.0 (2024-01-31)
 
 - Lazy loading of asset preview images
