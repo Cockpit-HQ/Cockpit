@@ -1162,6 +1162,7 @@ return array(
     'RobThree\\Auth\\Providers\\Time\\TimeException' => $vendorDir . '/robthree/twofactorauth/lib/Providers/Time/TimeException.php',
     'RobThree\\Auth\\TwoFactorAuth' => $vendorDir . '/robthree/twofactorauth/lib/TwoFactorAuth.php',
     'RobThree\\Auth\\TwoFactorAuthException' => $vendorDir . '/robthree/twofactorauth/lib/TwoFactorAuthException.php',
+    'SQLite3Exception' => $vendorDir . '/symfony/polyfill-php83/Resources/stubs/SQLite3Exception.php',
     'SVGSanitizer' => $baseDir . '/lib/SVGSanitizer.php',
     'SimpleImageLib' => $baseDir . '/lib/SimpleImageLib.php',
     'Stringable' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',
