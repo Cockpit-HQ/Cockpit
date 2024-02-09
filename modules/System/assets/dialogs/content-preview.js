@@ -1,4 +1,4 @@
-import fieldsRenderer from "../vue-components/fields-renderer.js"
+import fieldsRenderer from "../vue-components/fields/renderer.js"
 
 export default {
 
