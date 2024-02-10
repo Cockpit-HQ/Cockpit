@@ -3988,8 +3988,8 @@ kiss-tooltip {
 }
 .kiss-bgcolor-transparentimage {
     background-image: linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%), linear-gradient(-45deg, rgba(255, 255, 255, .15) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, rgba(255, 255, 255, .15) 75%), linear-gradient(-45deg, transparent 75%, rgba(255, 255, 255, .15) 75%);
-    background-size: 20px 20px;
-    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+    background-size: var(--kiss-bgcolor-transparentimage-size, 20px) var(--kiss-bgcolor-transparentimage-size, 20px);
+    background-position: 0 0, 0 calc(var(--kiss-bgcolor-transparentimage-size, 20px) / 2), calc(var(--kiss-bgcolor-transparentimage-size, 20px) / 2) calc(-1 * var(--kiss-bgcolor-transparentimage-size, 20px) / 2), calc(-1 * var(--kiss-bgcolor-transparentimage-size, 20px) / 2) 0px;
 }
 .kiss-height-30vh { min-height: 30vh; }
 .kiss-height-50vh { min-height: 50vh; }

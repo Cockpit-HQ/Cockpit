@@ -4,6 +4,7 @@
 ## WIP
 
 - Allow to configure thumbnail storage path via config
+- Fix content preview #171
 
 ## 2.8.0 (2024-01-31)
 
