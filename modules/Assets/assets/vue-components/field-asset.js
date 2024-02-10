@@ -58,7 +58,7 @@ export default {
                 <kiss-row class="kiss-flex-middle" gap="small">
                     <div class="kiss-position-relative">
                         <canvas width="${mediaSize}" height="${mediaSize}"></canvas>
-                        <div class="kiss-cover ${ value.type === 'image' && 'kiss-bgcolor-transparentimage' }" style="--kiss-bgcolor-transparentimage-size:10px">${media}</div>
+                        <div class="kiss-cover ${ value.type === 'image' ? 'kiss-bgcolor-transparentimage' : '' }" style="--kiss-bgcolor-transparentimage-size:10px">${media}</div>
                     </div>
                     <div class="kiss-flex-1 kiss-size-xsmall">
                         <div class="kiss-text-truncate">${value.title}</div>
