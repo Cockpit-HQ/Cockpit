@@ -1,10 +1,11 @@
 # Release Notes
 
 
-## WIP
+## 2.8.1 (2024-02-11)
 
 - Allow to configure thumbnail storage path via config
 - Fix content preview #171
+- Update Vue to 3.4.18
 
 ## 2.8.0 (2024-01-31)
 
