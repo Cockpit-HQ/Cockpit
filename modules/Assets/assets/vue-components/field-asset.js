@@ -51,7 +51,7 @@ export default {
 
                 const src = App.route(`/assets/thumbnail/${value._id}?m=bestFit&mime=auto&h=${(mediaSize * 2)}&t=${value._modified}`);
 
-                media = `<img loading="lazy" class="kiss-responsive-height" src="${src}" style="height:${mediaSize}px;object-fit:contain;object-position:center;">`;
+                media = `<img loading="lazy" class="kiss-responsive-height kiss-margin-auto" src="${src}" style="height:${mediaSize}px;object-fit:contain;object-position:center;">`;
             }
 
             return /*html*/ `
