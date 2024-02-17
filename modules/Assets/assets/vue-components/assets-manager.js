@@ -378,8 +378,9 @@ export default {
 
                 <kiss-card class="kiss-flex kiss-flex-middle" theme="shadowed contrast" v-for="folder in folders">
                     <div class="kiss-padding kiss-bgcolor-contrast"><icon size="larger">folder</icon></div>
-                    <div class="kiss-padding kiss-text-truncate kiss-flex-1 kiss-text-bold">
-                        <a class="kiss-link-muted" @click="openFolder(folder)">{{ folder.name }}</a>
+                    <div class="kiss-padding kiss-text-truncate kiss-flex-1 kiss-text-bold kiss-position-relative">
+                        {{ folder.name }}
+                        <a class="kiss-cover" @click="openFolder(folder)"></a>
                     </div>
                     <a class="kiss-padding" @click="toggleFolderActions(folder)"><icon>more_horiz</icon></a>
                 </kiss-card>
