@@ -4,7 +4,7 @@ export default {
 
         return {
             agGrid: null,
-            api: null
+            api: null,
         }
     },
 
@@ -49,6 +49,8 @@ export default {
             columnDefs: this.columns,
             rowData: this.rows,
             suppressScrollOnNewData: true,
+            onCellEditingStarted: (e) => e.api.setSuppressRowDrag(true),
+            onCellEditingStopped: (e) => e.api.setSuppressRowDrag(false),
         }, this.gridOptions || {});
 
         //instantiate Tabulator when element is mounted
