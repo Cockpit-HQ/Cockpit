@@ -380,7 +380,7 @@ export default {
                     <div class="kiss-padding kiss-bgcolor-contrast"><icon size="larger">folder</icon></div>
                     <div class="kiss-padding kiss-text-truncate kiss-flex-1 kiss-text-bold kiss-position-relative">
                         {{ folder.name }}
-                        <a class="kiss-cover" @click="openFolder(folder)"></a>
+                        <a class="kiss-cover" :aria-label="t('Open folder:')+folder.name" @click="openFolder(folder)"></a>
                     </div>
                     <a class="kiss-padding" @click="toggleFolderActions(folder)"><icon>more_horiz</icon></a>
                 </kiss-card>
