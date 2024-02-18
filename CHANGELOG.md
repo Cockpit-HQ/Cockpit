@@ -1,5 +1,8 @@
 # Release Notes
 
+## WIP
+
+- Update Vue to 3.4.19
 
 ## 2.8.1 (2024-02-11)
 
