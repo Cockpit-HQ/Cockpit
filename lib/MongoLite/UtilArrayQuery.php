@@ -209,9 +209,17 @@ class UtilArrayQuery {
             case '$preg' :
             case '$match' :
 
-                if (is_string($a) && is_string($b)) {
-                    $r = (boolean) \preg_match(isset($b[0]) && $b[0]=='/' ? $b : '/'.$b.'/iu', $a);
+                if (is_string($b)) {
+
+                    $b = isset($b[0]) && $b[0]=='/' ? $b : '/'.$b.'/iu';
+
+                    if (is_string($a)) {
+                        $r = (boolean) \preg_match($b, $a);
+                    } elseif (is_countable($a)) {
+                        $r = (boolean) \preg_match($b, implode(' ', $a));
+                    }
                 }
+
                 break;
 
             case '$ne':

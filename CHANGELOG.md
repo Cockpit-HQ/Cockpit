@@ -3,6 +3,7 @@
 ## WIP
 
 - Update Vue to 3.4.19
+- Support $regex filter on list of strings (MongoLite)
 
 ## 2.8.1 (2024-02-11)
 
