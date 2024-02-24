@@ -1255,6 +1255,7 @@
 .uppy-ProviderBrowser-viewType--list .uppy-ProviderBrowserItem-inner {
   display: flex;
   align-items: center;
+  color: inherit;
   padding: 2px;
   overflow: hidden;
   white-space: nowrap;
@@ -2328,10 +2329,6 @@ button.uppy-Dashboard-Item-progressIndicator:focus .uppy-Dashboard-Item-progress
 .uppy-Dashboard-Item.is-inprogress .uppy-Dashboard-Item-previewInnerWrap::after,
 .uppy-Dashboard-Item.is-error .uppy-Dashboard-Item-previewInnerWrap::after {
   display: block;
-}
-
-.uppy-Dashboard-Item.is-inprogress:not(.is-resumable) .uppy-Dashboard-Item-action--remove {
-  display: none;
 }
 
 [dir="ltr"] .uppy-Dashboard-Item-errorDetails{
