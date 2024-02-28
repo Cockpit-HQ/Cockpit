@@ -9,15 +9,20 @@ class Client {
 
     public function __construct(string $server, array $options = [], array $driverOptions = []) {
 
-        if (str_starts_with($server, 'mongodb://') || str_starts_with($server, 'mongodb+srv://')) {
+        $scheme = strtolower(explode('://', $server, 2)[0] ?? '');
 
-            $this->driver = new Mongo($server, $options, $driverOptions);
-            $this->type = 'mongodb';
-        }
-
-        if (str_starts_with($server, 'mongolite://')) {
-            $this->driver = new MongoLite($server, $options);
-            $this->type = 'mongolite';
+        switch ($scheme) {
+            case 'mongodb':
+            case 'mongodb+srv':
+                $this->driver = new Mongo($server, $options, $driverOptions);
+                $this->type = 'mongodb';
+                break;
+            case 'mongolite':
+                $this->driver = new MongoLite($server, $options);
+                $this->type = 'mongolite';
+                break;
+            default:
+                throw new \Exception("Unsupported scheme: {$scheme}");
         }
     }
 

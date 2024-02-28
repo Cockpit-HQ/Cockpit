@@ -9,39 +9,45 @@ class Client {
 
     public function __construct(string $server, array $options = []) {
 
-        if (str_starts_with($server, 'redis://')) {
+        $scheme = strtolower(explode('://', $server, 2)[0] ?? '');
 
-            $uri = parse_url($server);
+        switch ($scheme) {
+            case 'redis':
+            case 'rediss':
+                $uri = parse_url($server);
 
-            $options = array_merge([
-                'host' => $uri['host'],
-                'port' => $uri['port'] ?? 6379,
-                'auth' => null,
-                'timeout' => 1,
-            ], $options);
+                $options = array_merge([
+                    'host' => $uri['host'],
+                    'port' => $uri['port'] ?? 6379,
+                    'auth' => null,
+                    'timeout' => 1,
+                ], $options);
 
-            $this->driver = new \Redis();
+                $this->driver = new \Redis();
 
-            if (isset($options['auth'])) {
-                $this->driver->connect($options['host'], $options['port'], $options['timeout'], NULL, 0, 0, ['auth' => $options['auth']]);
-            } else {
-                $this->driver->connect($options['host'], $options['port'], $options['timeout'], NULL, 0, 0);
-            }
+                if (isset($options['auth'])) {
+                    $this->driver->connect($options['host'], $options['port'], $options['timeout'], NULL, 0, 0, ['auth' => $options['auth']]);
+                } else {
+                    $this->driver->connect($options['host'], $options['port'], $options['timeout'], NULL, 0, 0);
+                }
 
-            // use custom prefix on all keys
-            if (isset($options['prefix']) && $options['prefix']) {
-                $this->driver->setOption(\Redis::OPT_PREFIX, $options['prefix']);
-            }
+                // use custom prefix on all keys
+                if (isset($options['prefix']) && $options['prefix']) {
+                    $this->driver->setOption(\Redis::OPT_PREFIX, $options['prefix']);
+                }
 
-            // select database
-            if (isset($options['db']) && is_numeric($options['db'])) {
-                $this->driver->select($options['db']);
-            }
+                // select database
+                if (isset($options['db']) && is_numeric($options['db'])) {
+                    $this->driver->select($options['db']);
+                }
 
-            $this->driver->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_PHP);
-
-        } elseif (str_starts_with($server, 'redislite://')) {
-            $this->driver = new \RedisLite(str_replace('redislite://', '', $server), $options);
+                $this->driver->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_PHP);
+                break;
+            case 'redislite':
+                $this->driver = new \RedisLite(str_replace('redislite://', '', $server), $options);
+                break;
+            default:
+                throw new \Exception("Unsupported scheme: {$scheme}");
         }
 
         if (isset($options['key']) && is_string($options['key'])) {
