@@ -261,13 +261,19 @@ class Cockpit {
             set_exception_handler(function($exception) use($app) {
 
                 $error = [
+                    'time' => date('d-M-Y H:i:s'),
                     'message' => $exception->getMessage(),
-                    'file' => $exception->getFile(),
+                    'file' => str_replace(APP_DIR, '', str_replace(DIRECTORY_SEPARATOR, '/', $exception->getFile())),
                     'line' => $exception->getLine(),
                     'trace' => array_slice($exception->getTrace(), 0, 4),
                 ];
 
                 $app->trigger('error', [$error, $exception]);
+
+                // output error to system error log
+                if (function_exists('ini_get')) {
+                    error_log("[{$error['time']}] COCKPIT[ERROR]: {$error['message']} @{$error['file']}:{$error['line']}\n", 3, ini_get('error_log'));
+                }
             });
         }
 

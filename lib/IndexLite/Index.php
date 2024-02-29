@@ -98,7 +98,7 @@ class Index {
                 }
 
                 // does value contain html?
-                if (preg_match('/<[^>]+>/', $value)) {
+                if (!is_null($value) && preg_match('/<[^>]+>/', $value)) {
                     $value = strip_tags(preg_replace('/\<br(\s*)?\/?\>/i', "\n", $value));
                 }
 
