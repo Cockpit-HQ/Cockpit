@@ -5,6 +5,7 @@
 - Update Vue to 3.4.21
 - Support $regex filter on list of strings (MongoLite)
 - Add support for rediss:// scheme for MemoryStorage connection strings
+- Add more schema configuration support for Redis based MemoryStorage connection strings
 
 ## 2.8.1 (2024-02-11)
 

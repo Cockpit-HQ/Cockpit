@@ -12,16 +12,27 @@ class Client {
         $scheme = strtolower(explode('://', $server, 2)[0] ?? '');
 
         switch ($scheme) {
-            case 'redis':
-            case 'rediss':
+
+            case 'redislite':
+
+                $this->driver = new \RedisLite(str_replace('redislite://', '', $server), $options);
+                break;
+
+            default:
+
                 $uri = parse_url($server);
+                $query = [];
+
+                if (isset($uri['query']) && $uri['query']) {
+                    parse_str($uri['query'], $query);
+                }
 
                 $options = array_merge([
-                    'host' => $uri['host'],
+                    'host' => ($uri['scheme'] === 'tls' ? 'tls://' : '').$uri['host'],
                     'port' => $uri['port'] ?? 6379,
                     'auth' => null,
                     'timeout' => 1,
-                ], $options);
+                ], $query, $options);
 
                 $this->driver = new \Redis();
 
@@ -37,17 +48,12 @@ class Client {
                 }
 
                 // select database
-                if (isset($options['db']) && is_numeric($options['db'])) {
-                    $this->driver->select($options['db']);
+                if (isset($options['database']) && is_numeric($options['database'])) {
+                    $this->driver->select(intval($options['database']));
                 }
 
                 $this->driver->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_PHP);
                 break;
-            case 'redislite':
-                $this->driver = new \RedisLite(str_replace('redislite://', '', $server), $options);
-                break;
-            default:
-                throw new \Exception("Unsupported scheme: {$scheme}");
         }
 
         if (isset($options['key']) && is_string($options['key'])) {
