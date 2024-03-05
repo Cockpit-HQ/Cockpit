@@ -6,6 +6,7 @@
 - Support $regex filter on list of strings (MongoLite)
 - Add support for rediss:// scheme for MemoryStorage connection strings
 - Add more schema configuration support for Redis based MemoryStorage connection strings
+- Update referenced asset items on content item save
 
 ## 2.8.1 (2024-02-11)
 

@@ -305,4 +305,35 @@ class Asset extends \Lime\Helper {
 
         return $img;
     }
+
+    public function updateRefs(array $array): array {
+
+        static $refs;
+
+        if (is_null($refs)) $refs = [];
+
+        if (!is_array($array)) {
+            return $array;
+        }
+
+        foreach ($array as $k => $v) {
+
+            if (is_array($array[$k])) {
+                $array[$k] = $this->updateRefs($array[$k]);
+            }
+
+            // check if is asset
+            if (isset($v['_id'], $v['path'], $v['mime'], $v['type'])) {
+
+                if (!isset($refs[$v['_id']])) {
+                    $refs[$v['_id']] = $this->app->dataStorage->findOne('assets', ['_id' => $v['_id']]);;
+                }
+
+                // update with latest asset data
+                $array[$k] = $refs[$v['_id']];
+            }
+        }
+
+        return $array;
+    }
 }

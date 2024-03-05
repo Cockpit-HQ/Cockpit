@@ -149,6 +149,10 @@ $this->module('content')->extend([
             return null;
         }
 
+        if ($this->app->module('assets')) {
+            $item = $this->app->helper('asset')->updateRefs($item);
+        }
+
         $this->app->trigger('content.item.save.before', [$modelName, &$item, $isUpdate, $collection]);
         $this->app->trigger("content.item.save.before.{$modelName}", [&$item, $isUpdate, $collection]);
 
