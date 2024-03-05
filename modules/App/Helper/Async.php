@@ -22,7 +22,7 @@ class Async extends \Lime\Helper {
 
     protected function initialize() {
 
-        $this->phpPath = $this->app->retrieve('aysnc.php', 'php');
+        $this->phpPath = $this->app->retrieve('aysnc/php', 'php');
 
         if ($this->phpPath === 'php') {
             $this->phpPath = (new PhpExecutableFinder())->find();
