@@ -80,6 +80,8 @@ customElements.define('kiss-carousel', class extends HTMLElement {
 
         this.wrapper = this.querySelector(':scope > kiss-slides') || this;
         this.animation = this.getAttribute('animation') || 'slide';
+        this.swipe = this.getAttribute('swipe') === 'false' ? false : true;
+
         this.setActive(0)
 
         // events
@@ -105,9 +107,14 @@ customElements.define('kiss-carousel', class extends HTMLElement {
 
         let pointerStart = null;
 
+        const exclude = 'a, input, textarea, select, button, video, audio';
+
         on(this.wrapper, 'pointerdown', e => {
 
-            if (e.target.matches('a, input, textarea, select, button')) {
+            if (!this.swipe ||
+                e.target.matches(exclude) ||
+                e.target.closest(exclude)
+            ) {
                 return;
             }
 

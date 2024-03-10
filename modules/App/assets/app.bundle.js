@@ -535,6 +535,8 @@
 
           this.wrapper = this.querySelector(':scope > kiss-slides') || this;
           this.animation = this.getAttribute('animation') || 'slide';
+          this.swipe = this.getAttribute('swipe') === 'false' ? false : true;
+
           this.setActive(0);
 
           // events
@@ -560,9 +562,14 @@
 
           let pointerStart = null;
 
+          const exclude = 'a, input, textarea, select, button, video, audio';
+
           on$1(this.wrapper, 'pointerdown', e => {
 
-              if (e.target.matches('a, input, textarea, select, button')) {
+              if (!this.swipe ||
+                  e.target.matches(exclude) ||
+                  e.target.closest(exclude)
+              ) {
                   return;
               }
 
@@ -3099,7 +3106,7 @@
       }
   }) (typeof window !== 'undefined' ? window : null, typeof  window !== 'undefined' ? document : null);
 
-  let formatSize = function (bytes) {
+  let formatSize = function(bytes) {
       if (bytes == 0) { return "0.00 B"; }
       let e = Math.floor(Math.log(bytes) / Math.log(1024));
       return ((bytes / Math.pow(1024, e)).toFixed(2) + ' ' + ' KMGTP'.charAt(e) + 'B').replace('.00', '');
@@ -3109,7 +3116,7 @@
       return (new Intl.NumberFormat(navigator.language, { style: 'decimal', maximumFractionDigits: round})).format(num);
   };
 
-  let formatDuration = function (time) {
+  let formatDuration = function(time) {
       // Hours, minutes and seconds
       let hrs = ~~(time / 3600);
       let mins = ~~((time % 3600) / 60);
@@ -3127,12 +3134,14 @@
       return ret;
   };
 
-  let on = function (element, name, delegate, fn) {
+  let isNumeric = function(n) { return !isNaN(parseFloat(n)) && isFinite(n); };
+
+  let on = function(element, name, delegate, fn) {
 
       if (!fn) {
           element.addEventListener(name, arguments[2]);
       } else {
-          element.addEventListener(name, function (e) {
+          element.addEventListener(name, function(e) {
 
               let target = e.target;
 
@@ -3158,7 +3167,7 @@
       return str.replace(/([a-z])([A-Z])/g, '$1-$2').replace(/\s+/g, '-').toLowerCase();
   };
 
-  let copyText = function (text, cb) {
+  let copyText = function(text, cb) {
       let inp = document.createElement('textarea');
       document.body.appendChild(inp);
       inp.value = text;
@@ -3168,7 +3177,7 @@
       if (cb) cb();
   };
 
-  let interpolate = function (str, params) {
+  let interpolate = function(str, params) {
       const names = Object.keys(params);
       const vals = Object.values(params);
       return new Function(...names, `return \`${str}\`;`)(...vals);
@@ -3252,6 +3261,7 @@
       formatDuration,
       formatNumber,
       interpolate,
+      isNumeric,
       nanoid,
       on,
       toKebabCase,
