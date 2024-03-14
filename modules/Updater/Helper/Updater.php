@@ -1,59 +1,27 @@
 <?php
 
-namespace System\Command\App;
+namespace Updater\Helper;
 
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Output\OutputInterface;
+class Updater extends \Lime\Helper {
 
-class Update extends Command {
-
-    protected static $defaultName = 'app:update';
-    protected $app = null;
-
-    public function __construct(\Lime\App $app) {
-        $this->app = $app;
-        parent::__construct();
-    }
-
-    protected function configure(): void {
-        $this
-            ->setHelp('This command updates Cockpit to the latest version')
-            ->addArgument('target', InputArgument::OPTIONAL, 'What is the target release (e.g. core or pro')
-            ->addArgument('version', InputArgument::OPTIONAL, 'Cockpit version');
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output): int {
-
-        $version = $input->getArgument('version') ?? 'master';
-        $target = $input->getArgument('target') ?? 'core';
+    public function update(string $version = 'master', $target = 'core'): bool {
 
         if (!in_array($target, ['core', 'pro'])) {
             $target = 'core';
         }
 
-        if (!is_writable(APP_DIR)) {
-            $output->writeln("<error>[x] app root is not writable!</error>");
-            return Command::FAILURE;
-        }
-
         $zipUrl = "https://files.getcockpit.com/releases/{$version}/cockpit-{$target}.zip";
 
-        $output->writeln("Download Cockpit release from {$zipUrl}...");
+        $this->process($zipUrl, "cockpit-{$target}");
 
-        try {
-            $this->update($zipUrl, "cockpit-{$target}");
-        } catch (\Exception $e) {
-            $output->writeln("<error>[x] {$e->getMessage()}</error>");
-            return Command::FAILURE;
-        }
-
-        $output->writeln('<info>[✓]</info> Cockpit updated!');
-        return Command::SUCCESS;
+        return true;
     }
 
-    protected function update(string $zipUrl, string $zipRoot = '/'): bool {
+    protected function process(string $zipUrl, string $zipRoot = '/'): bool {
+
+        if (!is_writable(APP_DIR)) {
+            throw new \Exception("App root is not writable!");
+        }
 
         $targetPath = APP_DIR;
 
@@ -73,7 +41,6 @@ class Update extends Command {
         @fclose($handle);
 
         // extract zip contents
-
         @mkdir("{$tmppath}/update-{$zipname}", 0777);
         $zip = new \ZipArchive;
 
@@ -89,12 +56,10 @@ class Update extends Command {
             throw new \Exception('Open zip file failed!');
         }
 
-
         $fs->delete("{$tmppath}/update-{$zipname}/{$zipRoot}/config");
         $fs->delete("{$tmppath}/update-{$zipname}/{$zipRoot}/storage");
 
-        // copy
-
+        // copy files
         $fs->copy("{$tmppath}/update-{$zipname}/{$zipRoot}", $targetPath);
 
         // cleanup
