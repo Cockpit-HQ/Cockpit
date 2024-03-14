@@ -4,13 +4,20 @@ namespace Updater\Helper;
 
 class Updater extends \Lime\Helper {
 
+    protected string $releasesUrl;
+
+    protected function initialize() {
+
+        $this->releasesUrl = rtrim($this->app->retrieve('updater/releasesUrl', 'https://files.getcockpit.com/releases'), '/');
+    }
+
     public function update(string $version = 'master', $target = 'core'): bool {
 
         if (!in_array($target, ['core', 'pro'])) {
             $target = 'core';
         }
 
-        $zipUrl = "https://files.getcockpit.com/releases/{$version}/cockpit-{$target}.zip";
+        $zipUrl = "{$this->releasesUrl}/{$version}/cockpit-{$target}.zip";
 
         $this->process($zipUrl, "cockpit-{$target}");
 
