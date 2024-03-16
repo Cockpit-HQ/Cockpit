@@ -358,8 +358,6 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionIoTFleetWise(array $args = [])
  * @method \Aws\IoTJobsDataPlane\IoTJobsDataPlaneClient createIoTJobsDataPlane(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionIoTJobsDataPlane(array $args = [])
- * @method \Aws\IoTRoboRunner\IoTRoboRunnerClient createIoTRoboRunner(array $args = [])
- * @method \Aws\MultiRegionClient createMultiRegionIoTRoboRunner(array $args = [])
  * @method \Aws\IoTSecureTunneling\IoTSecureTunnelingClient createIoTSecureTunneling(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionIoTSecureTunneling(array $args = [])
  * @method \Aws\IoTSiteWise\IoTSiteWiseClient createIoTSiteWise(array $args = [])
@@ -702,6 +700,8 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionSynthetics(array $args = [])
  * @method \Aws\Textract\TextractClient createTextract(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionTextract(array $args = [])
+ * @method \Aws\TimestreamInfluxDB\TimestreamInfluxDBClient createTimestreamInfluxDB(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionTimestreamInfluxDB(array $args = [])
  * @method \Aws\TimestreamQuery\TimestreamQueryClient createTimestreamQuery(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionTimestreamQuery(array $args = [])
  * @method \Aws\TimestreamWrite\TimestreamWriteClient createTimestreamWrite(array $args = [])
@@ -763,7 +763,7 @@ namespace Aws;
  */
 class Sdk
 {
-    const VERSION = '3.300.10';
+    const VERSION = '3.301.1';
 
     /** @var array Arguments for creating clients */
     private $args;

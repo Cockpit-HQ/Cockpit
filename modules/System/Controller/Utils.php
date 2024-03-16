@@ -64,6 +64,7 @@ class Utils extends App {
 
         $icons = new \ArrayObject([]);
         $dirs  = [
+            'system:assets/icon-sets',
             '#config:icons',
         ];
 
