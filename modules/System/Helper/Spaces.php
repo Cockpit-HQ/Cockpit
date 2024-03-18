@@ -159,7 +159,7 @@ class Spaces extends \Lime\Helper {
         ];
     }
 
-    public  function remove(string $name) {
+    public function remove(string $name) {
 
             $path = APP_SPACES_DIR."/{$name}";
 

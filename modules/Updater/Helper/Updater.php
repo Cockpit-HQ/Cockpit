@@ -11,7 +11,7 @@ class Updater extends \Lime\Helper {
         $this->releasesUrl = rtrim($this->app->retrieve('updater/releasesUrl', 'https://files.getcockpit.com/releases'), '/');
     }
 
-    public function update(string $version = 'master', $target = 'core'): bool {
+    public function update(string $version = 'master', string $target = 'core'): bool {
 
         if (!in_array($target, ['core', 'pro'])) {
             $target = 'core';
@@ -22,6 +22,21 @@ class Updater extends \Lime\Helper {
         $this->process($zipUrl, "cockpit-{$target}");
 
         return true;
+    }
+
+    public function getLatestReleaseInfo() {
+
+        $url = "{$this->releasesUrl}/latest.json";
+        $contents = $this->app->helper('utils')->urlGetContents($url);
+
+        if (!$contents) {
+            return [
+                'version' => APP_VERSION,
+                'date' => date('Y-m-d'),
+            ];
+        }
+
+        return json_decode($contents, true);
     }
 
     protected function process(string $zipUrl, string $zipRoot = '/'): bool {
@@ -38,14 +53,11 @@ class Updater extends \Lime\Helper {
         $zipRoot = trim($zipRoot, '/');
 
         // download
-
         $zipname = basename($zipUrl);
 
-        if (!file_put_contents("{$tmppath}/{$zipname}", $handle = @fopen($zipUrl, 'r'))) {
+        if (!file_put_contents("{$tmppath}/{$zipname}", $this->app->helper('utils')->urlGetContents($zipUrl))) {
             throw new \Exception("Couldn't download {$zipUrl}!");
         }
-
-        @fclose($handle);
 
         // extract zip contents
         @mkdir("{$tmppath}/update-{$zipname}", 0777);
@@ -73,12 +85,23 @@ class Updater extends \Lime\Helper {
         $fs->delete("{$tmppath}/{$zipname}");
         $fs->delete("{$tmppath}/update-{$zipname}");
 
-        $moduleCacheFile = '#cache:modules.cache.php';
+        // delete modules cache
+        $cache = ['#cache:modules.cache.php'];
 
-        if ($this->app->path($moduleCacheFile)) {
-            $fs->delete($moduleCacheFile);
+        // delete modules cache for all spaces
+        $spaces = $this->app->helper('spaces')->spaces();
+
+        foreach ($spaces as $space) {
+            $cache[] = APP_SPACES_DIR."/{$space['name']}/storage/cache/modules.cache.php";
         }
 
+        foreach ($cache as $file) {
+            if ($this->app->path($file)) {
+                $fs->delete($file);
+            }
+        }
+
+        // clear opcache
         if (function_exists('opcache_reset')) {
             \opcache_reset();
         }

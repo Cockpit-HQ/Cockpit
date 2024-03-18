@@ -8,6 +8,7 @@
 - Update referenced asset items on content item save
 - Add App.utils.isNumeric helper function
 - Add default icon-set
+- Add system update admin ui
 
 ## 2.8.1 (2024-02-11)
 
