@@ -15,7 +15,7 @@
 
         <app-loader v-if="loading"></app-loader>
 
-        <div class="animated fadeIn kiss-height-30vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted" v-if="roles && !roles.length">
+        <div class="animated fadeIn kiss-height-50vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted" v-if="roles && !roles.length">
             <div>
                 <icon class="kiss-size-xlarge">admin_panel_settings</icon>
                 <p class="kiss-size-large kiss-text-bold"><?=t('No roles')?></p>

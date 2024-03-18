@@ -9,7 +9,7 @@
 
             <app-loader class="kiss-margin-large" v-if="loading"></app-loader>
 
-            <div class="animated fadeIn kiss-height-30vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted kiss-margin-large" v-if="!loading && !models.length">
+            <div class="animated fadeIn kiss-height-50vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted kiss-margin-large" v-if="!loading && !models.length">
                 <div>
                     <kiss-svg src="<?= $this->base('content:icon.svg') ?>" width="40" height="40"></kiss-svg>
                     <p class="kiss-size-large kiss-margin-top"><?= t('No models') ?></p>
@@ -29,7 +29,7 @@
                 </div>
 
 
-                <div class="animated fadeIn kiss-height-30vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted kiss-margin-large" v-if="!singletons.length && !lists.length">
+                <div class="animated fadeIn kiss-height-50vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted kiss-margin-large" v-if="!singletons.length && !lists.length">
                     <div>
                         <kiss-svg src="<?= $this->base('content:icon.svg') ?>" width="40" height="40"></kiss-svg>
                         <p class="kiss-size-large kiss-margin-top"><?= t('No models found') ?></p>
