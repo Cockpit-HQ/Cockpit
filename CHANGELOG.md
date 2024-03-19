@@ -1,6 +1,6 @@
 # Release Notes
 
-## WIP
+## 2.8.2 (2024-03-19)
 
 - Update Vue to 3.4.21
 - Support $regex filter on list of strings (MongoLite)
