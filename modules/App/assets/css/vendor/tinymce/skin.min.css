@@ -60,7 +60,8 @@
 .tox .tox-toolbar,
 .tox .tox-toolbar__overflow,
 .tox .tox-toolbar__primary,
-.tox .tox-statusbar {
+.tox .tox-statusbar,
+.tox .tox-tbtn {
     background: var(--kiss-base-background-color);
 }
 
@@ -85,6 +86,10 @@
 .tox .tox-tbtn:hover {
     background: var(--kiss-color-contrast);
     color: inherit;
+}
+
+.tox .tox-tbtn:not(.tox-tbtn--enabled):hover svg {
+    fill: var(--kiss-color-primary);
 }
 
 .tox .tox-tbtn--bespoke {
@@ -142,6 +147,10 @@
 .tox:not(.tox-tinymce-inline) .tox-editor-header {
     box-shadow: none;
     background: none;
+}
+
+.tox .tox-edit-area::before {
+    border: none;
 }
 
 .tox .tox-edit-area__iframe {

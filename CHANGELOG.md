@@ -4,6 +4,7 @@
 
 - Fix: Reflected Cross-Site Scripting via GraphQL Viewer
 - Fix: Stored Cross-Site Scripting in Content Item using text fields
+- Update TinyMCE to v7.0.0
 
 ## 2.8.2 (2024-03-19)
 
