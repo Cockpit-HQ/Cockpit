@@ -1,5 +1,9 @@
 # Release Notes
 
+## WIP
+
+- Fix: Reflected Cross-Site Scripting via GraphQL Viewer
+
 ## 2.8.2 (2024-03-19)
 
 - Update Vue to 3.4.21

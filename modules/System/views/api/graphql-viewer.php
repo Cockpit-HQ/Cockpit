@@ -221,9 +221,9 @@ color: #CACDD3;
 
 .graphiql-container .execute-button {
   background: #10131a;
-  border: 1px solid <?=($primaryColor ? $primaryColor : '#0e8fff')?>;
+  border: 1px solid <?=$this->escape($primaryColor ? $primaryColor : '#0e8fff')?>;
   box-shadow: none !important;
-  fill: <?= $this->escape($primaryColor ? $primaryColor : '#0e8fff')?>;
+  fill: <?=$this->escape($primaryColor ? $primaryColor : '#0e8fff')?>;
 }
 
 .graphiql-container .history-contents p {
