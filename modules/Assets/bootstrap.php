@@ -95,7 +95,7 @@ $this->module('assets')->extend([
                 $extension = strtolower(pathinfo(parse_url($_file, PHP_URL_PATH), PATHINFO_EXTENSION));
 
                 // prevent uploading php / html files
-                if ($_isAllowed && (
+                if ($extension && $_isAllowed && (
                     in_array($extension, $forbiddenExtension) ||
                     in_array(strtolower($_mime), $forbiddenMime)
                 )) {
