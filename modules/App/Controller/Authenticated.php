@@ -36,7 +36,7 @@ class Authenticated extends Base {
     protected function hasValidCsrfToken(bool $stop = false) {
 
         $csrf = $this->app->param('xcsrftoken', $this->app->request->headers['X-Csrf-Token'] ?? '');
-        $check = $this->helper('csrf')->isValid('app-csrf', $csrf, true);
+        $check = $this->helper('csrf')->isValid('app.csrf', $csrf, true);
 
         if (!$check && $stop) {
             return $this->stop(412);

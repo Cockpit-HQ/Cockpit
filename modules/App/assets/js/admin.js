@@ -28,7 +28,7 @@ let checkSessionTimeout = function() {
     }, false);
 
     // get login csrf token
-    App.request('/utils/csrf/login').then(res => {
+    App.request('/utils/csrf/app.login').then(res => {
         csrf = res.token;
     });
 

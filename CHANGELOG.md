@@ -5,6 +5,7 @@
 - Fix: Reflected Cross-Site Scripting via GraphQL Viewer
 - Fix: Stored Cross-Site Scripting in Content Item using text fields
 - Fix: Arbitrary File Write through Path Traversal and Rename Functionality of Finder
+- Fix: Static Cross-Site Request Forgery Csrf Token
 - Update TinyMCE to v7.0.0
 - Add finder.disabled setting
 

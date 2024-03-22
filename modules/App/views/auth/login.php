@@ -119,7 +119,7 @@
 
                     this.$request('/auth/check', {
                         auth: this.auth,
-                        csrf: "<?= $this->helper('csrf')->token('login') ?>"
+                        csrf: "<?= $csrfToken ?>"
                     }).then(rsp => {
 
                         this.loading = false;

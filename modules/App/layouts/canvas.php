@@ -1,5 +1,13 @@
 <!DOCTYPE html>
-<html lang="en" class="<?=$this->helper('theme')->pageClass()?>" data-base="<?=$this->base('/')?>" data-route="<?=$this->route('/')?>" data-version="<?=$this->retrieve('app.version')?>" data-theme="<?=$this->helper('theme')->theme()?>">
+<html
+    lang="en"
+    class="<?=$this->helper('theme')->pageClass()?>"
+    data-base="<?=$this->base('/')?>"
+    data-route="<?=$this->route('/')?>"
+    data-csrf="<?= $this->helper('csrf')->token("app.csrf.{$this['user/_id']}") ?>"
+    data-version="<?=$this->retrieve('app.version')?>"
+    data-theme="<?=$this->helper('theme')->theme()?>"
+>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
