@@ -96,7 +96,7 @@ window.AppEventStream =  {
     }
 }
 
-document.addEventListener('DOMContentLoaded', evt => {
+document.addEventListener('DOMContentLoaded', () => {
 
     checkSessionTimeout();
     AppEventStream.start();
