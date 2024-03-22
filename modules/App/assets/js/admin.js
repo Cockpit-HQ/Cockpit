@@ -1,7 +1,6 @@
 
 let checkSessionTimeout = function() {
 
-    let csrf;
     let check = function() {
 
         let isActive = document.getElementById('app-session-login');
@@ -13,7 +12,7 @@ let checkSessionTimeout = function() {
             }
 
             if (res && !res.status && !isActive) {
-                VueView.ui.modal('app:assets/dialog/login.js', {csrf})
+                VueView.ui.modal('/auth/dialog');
             }
 
         }).catch(rsp => {
@@ -26,11 +25,6 @@ let checkSessionTimeout = function() {
     document.addEventListener('visibilitychange', function() {
         if (!document.hidden) check();
     }, false);
-
-    // get login csrf token
-    App.request('/utils/csrf/app.login').then(res => {
-        csrf = res.token;
-    });
 
 }
 

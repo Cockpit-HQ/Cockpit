@@ -32,6 +32,17 @@ class Auth extends Base {
         return $this->render('app:views/auth/login.php', compact('redirectTo', 'csrfToken'));
     }
 
+    public function dialog() {
+
+        $this->layout = 'app:layouts/raw.php';
+
+        $this->app->response->mime = 'js';
+
+        $csrfToken = $this->helper('csrf')->token('app.login');
+
+        return $this->render('app:views/auth/dialog.php', compact('csrfToken'));
+    }
+
     public function logout() {
 
         $this->helper('auth')->logout();
@@ -106,7 +117,7 @@ class Auth extends Base {
 
             $this->app->trigger('app.user.login', [$user]);
 
-            return ['success' => true, 'user' => $user];
+            return ['success' => true, 'user' => $user, 'csrf' => $this->helper('csrf')->token('app.csrf')];
         }
 
         return ['success' => false];
@@ -116,6 +127,10 @@ class Auth extends Base {
 
         $code = $this->param('code', null);
         $token = $this->param('token', null);
+
+        if (!$code || !$token) {
+            return $this->stop(412);
+        }
 
         try {
             $user = (array) $this->app->helper('jwt')->decode($token);
@@ -140,7 +155,7 @@ class Auth extends Base {
 
             $this->app->trigger('app.user.login', [&$user]);
 
-            return ['success' => true, 'user' => $user];
+            return ['success' => true, 'user' => $user, 'csrf' => $this->helper('csrf')->token('app.csrf')];
         }
 
         return $this->stop(412);
