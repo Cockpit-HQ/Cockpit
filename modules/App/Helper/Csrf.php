@@ -4,7 +4,7 @@ namespace App\Helper;
 
 class Csrf extends \Lime\Helper {
 
-    protected ?string $sessionKey;
+    protected string $sessionKey;
 
     protected function initialize() {
 
