@@ -96,14 +96,13 @@ window.AppEventStream =  {
     }
 }
 
-document.addEventListener('DOMContentLoaded', e => {
+document.addEventListener('DOMContentLoaded', evt => {
 
     checkSessionTimeout();
-
     AppEventStream.start();
 
     // bind global command for app search
-    Mousetrap.bind(['alt+f', 'ctrl+space'], function(e) {
+    Mousetrap.bind(['alt+f', 'ctrl+space'], e => {
         e.preventDefault();
         showAppSearch();
         return false;
