@@ -239,7 +239,12 @@ class Finder extends App {
 
         $name = $this->param('name', false);
 
+        if (!$this->_isValidFilename($name)) {
+            return $this->stop(['error' => 'Invalid file name'], 412);
+        }
+
         if ($path && $name && $this->_isFileTypeAllowed($name)) {
+
             $source = $this->root.'/'.trim($path, '/');
             $target = dirname($source).'/'.$name;
 
@@ -464,6 +469,21 @@ class Finder extends App {
         $allowed = str_replace([' ', ','], ['', '|'], preg_quote(is_array($allowed) ? implode(',', $allowed) : $allowed));
 
         return preg_match("/\.({$allowed})$/i", $file);
+    }
+
+    protected function _isValidFilename($filename) {
+
+        // Basic check to exclude directory traversal attempts and null byte
+        if (strpos($filename, '../') !== false || strpos($filename, '..\\') !== false || strpos($filename, "\0") !== false) {
+            return false;
+        }
+
+        // Regular expression to check for invalid characters
+        if (preg_match('/[\/:*?"<>|]/', $filename)) {
+            return false;
+        }
+
+        return true;
     }
 
 }

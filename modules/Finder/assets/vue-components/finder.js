@@ -190,6 +190,8 @@ export default {
 
                     this.$request('/finder/api', {root: this.root, cmd: 'createfolder', path: this.currentpath, name}).then(() => {
                         this.loadpath();
+                    }).catch(rsp => {
+                        App.ui.notify(rsp.error || 'Creating folder failed!', 'error');
                     });
                 }
             });
@@ -203,6 +205,8 @@ export default {
 
                     this.$request('/finder/api', {root: this.root, cmd: 'createfile', path: this.currentpath, name}).then(() => {
                         this.loadpath();
+                    }).catch(rsp => {
+                        App.ui.notify(rsp.error || 'Creating file failed!', 'error');
                     });
                 }
             });
@@ -226,6 +230,9 @@ export default {
 
                         item.path = item.path.replace(item.name, name);
                         item.name = name;
+
+                    }).catch(rsp => {
+                        App.ui.notify(rsp.error || 'Renaming failed!', 'error');
                     });
                 }
             });
