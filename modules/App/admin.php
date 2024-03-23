@@ -88,7 +88,11 @@ $this->on('app.admin.request', function(Lime\Request $request) {
         }
 
         $this->bind('/check-session', function() use($status) {
-            return compact('status');
+
+            $csrf = $status ? $this->helper('csrf')->token('app.csrf') : null;
+
+            return compact('status', 'csrf');
+
         }, $request->route == '/check-session');
 
         return;

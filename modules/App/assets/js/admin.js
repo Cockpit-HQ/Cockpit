@@ -8,6 +8,7 @@ let checkSessionTimeout = function() {
         App.request('/check-session').then(res => {
 
             if (res && res.status && isActive) {
+                App.csrf = rsp.csrf;
                 isActive.closest('kiss-dialog').close();
             }
 
