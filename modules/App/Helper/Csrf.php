@@ -8,6 +8,7 @@ class Csrf extends \Lime\Helper {
 
     protected function initialize() {
 
+        $self = $this;
         $key = $this->app->helper('session')->read("app.csrf._key", null);
 
         if (!$key) {
@@ -15,6 +16,16 @@ class Csrf extends \Lime\Helper {
             $this->app->helper('session')->write("app.csrf._key", $key);
         }
 
+        $this->sessionKey = $key;
+
+        $this->app->on('app.auth.setuser', function($user, $permanent) use($self) {
+            if ($permanent) $self->reset();
+        });
+    }
+
+    public function reset() {
+        $key = bin2hex(random_bytes(32));
+        $this->app->helper('session')->write("app.csrf._key", $key);
         $this->sessionKey = $key;
     }
 
