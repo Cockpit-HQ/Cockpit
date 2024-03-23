@@ -232,6 +232,11 @@ if (!isset($user['twofa'])) {
                                     App.ui.notify('User created!');
                                 }
 
+                                // reload to get the new csrf token
+                                if (App.user._id === user._id) {
+                                    setTimeout(() => location.reload(), 600);
+                                }
+
                             }).catch(res => {
                                 App.ui.notify(res.error || 'Saving failed!', 'error');
                             }).finally(() => {

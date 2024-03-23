@@ -160,7 +160,9 @@ class Users extends App {
         unset($user['password'], $user['_reset_token']);
 
         if ($user['_id'] == $this->user['_id']) {
+            $this->unlockResource($user['_id']);
             $this->helper('auth')->setUser($user);
+            $this->checkAndLockResource($user['_id']);
         }
 
         return $user;

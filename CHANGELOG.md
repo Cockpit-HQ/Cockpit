@@ -8,6 +8,7 @@
 - Fix: Static Cross-Site Request Forgery Csrf Token
 - Update TinyMCE to v7.0.0
 - Add finder.disabled setting
+- Fix session after account save
 
 ## 2.8.2 (2024-03-19)
 
