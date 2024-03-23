@@ -1,4 +1,8 @@
-<kiss-container class="kiss-margin">
+<?php
+
+    $isFinderAvailable = $this->module('finder') && !$this->retrieve('finder.disabled', false) && $this->helper('acl')->isSuperAdmin();
+
+?><kiss-container class="kiss-margin">
 
     <ul class="kiss-breadcrumbs">
         <li><a href="<?=$this->route('/system')?>"><?=t('Settings')?></a></li>
@@ -14,7 +18,7 @@
 
                 <div class="kiss-flex-1"></div>
 
-                <?php if ($this->module('finder') && $this->helper('acl')->isSuperAdmin()): ?>
+                <?php if ($isFinderAvailable): ?>
                 <button class="kiss-button kiss-button-blank kiss-margin-left kiss-padding-remove-horizontal" type="button" @click="openFinder()">
                     <icon class="kiss-margin-small-right">folder</icon>
                     {{ t('Open Finder') }}
@@ -96,7 +100,7 @@
                                         <?=t('Open space')?>
                                     </a>
                                 </li>
-                                <?php if ($this->module('finder') && $this->helper('acl')->isSuperAdmin()): ?>
+                                <?php if ($isFinderAvailable): ?>
                                 <li>
                                     <a class="kiss-flex kiss-flex-middle" @click="openFinder(actionSpace.name)">
                                         <icon class="kiss-margin-small-right">folder</icon>
