@@ -5,14 +5,15 @@ let checkSessionTimeout = function() {
 
         let isActive = document.getElementById('app-session-login');
 
-        App.request('/check-session').then(res => {
+        App.request('/check-session').then(rsp => {
 
-            if (res && res.status && isActive) {
-                App.csrf = rsp.csrf;
+            App.csrf = rsp.csrf || '';
+
+            if (rsp && rsp.status && isActive) {
                 isActive.closest('kiss-dialog').close();
             }
 
-            if (res && !res.status && !isActive) {
+            if (rsp && !rsp.status && !isActive) {
                 VueView.ui.modal('/auth/dialog');
             }
 
