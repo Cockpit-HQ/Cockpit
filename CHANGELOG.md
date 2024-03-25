@@ -9,6 +9,7 @@
 - Update TinyMCE to v7.0.0
 - Add finder.disabled setting
 - Fix session after account save
+- Fix deprecation message on mime check (image api)
 
 ## 2.8.2 (2024-03-19)
 
