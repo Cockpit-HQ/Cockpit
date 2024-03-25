@@ -7,6 +7,7 @@
 - Fix: Arbitrary File Write through Path Traversal and Rename Functionality of Finder
 - Fix: Static Cross-Site Request Forgery Csrf Token
 - Update TinyMCE to v7.0.0
+- Update uppy.js to v.3.23.0
 - Add finder.disabled setting
 - Fix session after account save
 - Fix deprecation message on mime check (image api)
