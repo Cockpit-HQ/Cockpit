@@ -55,7 +55,7 @@ class Csrf extends \Lime\Helper {
         return $token;
     }
 
-    public function isValid(string $key, string $token, bool $checkpayload = false): bool {
+    public function isValid(string $key, ?string $token, bool $checkpayload = false): bool {
 
         if (!$token) {
             return false;
