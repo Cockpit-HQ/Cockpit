@@ -6,11 +6,12 @@
 - Fix: Stored Cross-Site Scripting in Content Item using text fields
 - Fix: Arbitrary File Write through Path Traversal and Rename Functionality of Finder
 - Fix: Static Cross-Site Request Forgery Csrf Token
+- Fix session after account save
+- Fix deprecation message on mime check (image api)
 - Update TinyMCE to v7.0.0
 - Update uppy.js to v.3.23.0
 - Add finder.disabled setting
-- Fix session after account save
-- Fix deprecation message on mime check (image api)
+- Add error notification on failed asset upload
 
 ## 2.8.2 (2024-03-19)
 

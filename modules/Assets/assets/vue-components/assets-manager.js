@@ -161,8 +161,20 @@ export default {
             });
 
             this.uppy.on('complete', result => {
-                // console.log('successful files:', result.successful)
-                // console.log('failed files:', result.failed)
+
+                let failed = [];
+
+                result.successful.forEach(res => {
+
+                    res.response.body.failed.forEach(file => {
+                        failed.push(file);
+                    });
+                });
+
+                if (failed.length) {
+                    App.ui.notify(['<strong>'+App.i18n.get('Upload failed for:')+'</strong>', failed.join('<br>')].join('<br>'), 'error');
+                }
+
                 this.load();
             })
 
