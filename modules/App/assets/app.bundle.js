@@ -3272,6 +3272,22 @@
 
   let uuid = 0;
 
+  function setHighestZindex(element) {
+
+      let highestZindex = parseInt(window.getComputedStyle(element).zIndex),
+          offsetParent = element.offsetParent || document.body,
+          zIndex;
+
+      offsetParent.children.forEach((node) => {
+          zIndex = parseInt(window.getComputedStyle(node).zIndex) || 0;
+          if (zIndex > highestZindex) highestZindex = zIndex;
+      });
+
+      element.style.zIndex = highestZindex + 1;
+  }
+
+  window.setHighestZindex = setHighestZindex;
+
   var ui = {
 
       notify: function (message, status, timeout) {
@@ -3351,6 +3367,9 @@
               offcanvas.__show();
 
               setTimeout(() => {
+
+                  setHighestZindex(offcanvas);
+
                   let ele = offcanvas.querySelector('[autofocus]');
 
                   if (ele) {
@@ -3393,6 +3412,9 @@
               dialog.__show();
 
               setTimeout(() => {
+
+                  setHighestZindex(dialog);
+
                   let ele = dialog.querySelector('[autofocus]');
 
                   if (ele) {
@@ -3525,6 +3547,9 @@
               popout.__show();
 
               setTimeout(() => {
+
+                  setHighestZindex(popout);
+
                   let ele = popout.querySelector('[autofocus]');
 
                   if (ele) {

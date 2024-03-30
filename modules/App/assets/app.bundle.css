@@ -2666,7 +2666,7 @@ kiss-dialog {
     overflow-y: auto;
     transform: translateZ(0);
     will-change: opacity;
-    z-index: 1000;
+    z-index: var(--kiss-dialog-zIndex, 1000);
 }
 kiss-dialog > kiss-content {
     position: relative;
@@ -2819,9 +2819,9 @@ kiss-offcanvas {
     touch-action: none;
     opacity: 0;
     pointer-events: none;
-    z-index: 1000;
     transform: translateZ(0);
     will-change: opacity;
+    z-index: var(--kiss-offcanvas-zIndex, 1000);
 }
 kiss-offcanvas > kiss-content {
     position: absolute;
@@ -2863,8 +2863,8 @@ kiss-popout {
     overflow-y: auto;
     transform: translateZ(0);
     will-change: opacity;
-    z-index: 10000;
     transition: opacity .3s;
+    z-index: var(--kiss-popout-zIndex, 1000);
 }
 kiss-popout > kiss-content {
     position: relative;
