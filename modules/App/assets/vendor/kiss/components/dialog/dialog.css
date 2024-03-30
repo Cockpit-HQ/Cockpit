@@ -14,7 +14,7 @@ kiss-dialog {
     overflow-y: auto;
     transform: translateZ(0);
     will-change: opacity;
-    z-index: 1000;
+    z-index: var(--kiss-dialog-zIndex, 1000);
 }
 
 kiss-dialog > kiss-content {

@@ -9,9 +9,9 @@ kiss-offcanvas {
     touch-action: none;
     opacity: 0;
     pointer-events: none;
-    z-index: 1000;
     transform: translateZ(0);
     will-change: opacity;
+    z-index: var(--kiss-offcanvas-zIndex, 1000);
 }
 
 kiss-offcanvas > kiss-content {

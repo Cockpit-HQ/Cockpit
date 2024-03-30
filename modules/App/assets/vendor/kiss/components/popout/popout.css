@@ -14,8 +14,8 @@ kiss-popout {
     overflow-y: auto;
     transform: translateZ(0);
     will-change: opacity;
-    z-index: 10000;
     transition: opacity .3s;
+    z-index: var(--kiss-popout-zIndex, 1000);
 }
 
 kiss-popout > kiss-content {

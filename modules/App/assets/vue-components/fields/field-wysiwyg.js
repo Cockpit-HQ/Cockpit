@@ -100,6 +100,8 @@ export default {
                 a { color: ${getComputedStyle(document.documentElement).getPropertyValue('--kiss-color-primary')};}
             `;
 
+            opts.license_key = 'gpl';
+
             opts.setup = (editor) => {
 
                 this.editor = editor;
