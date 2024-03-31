@@ -156,9 +156,6 @@ abstract class AbstractAnnotation implements \JsonSerializable
         $this->_context->logger->warning('Property "' . $property . '" doesn\'t exist in a ' . $this->identity() . ', existing properties: "' . implode('", "', array_keys($properties)) . '" in ' . $this->_context);
     }
 
-    /**
-     * @param mixed $value
-     */
     public function __set(string $property, $value): void
     {
         $fields = get_object_vars($this);
@@ -166,6 +163,16 @@ abstract class AbstractAnnotation implements \JsonSerializable
             unset($fields[$_property]);
         }
         $this->_context->logger->warning('Ignoring unexpected property "' . $property . '" for ' . $this->identity() . ', expecting "' . implode('", "', array_keys($fields)) . '" in ' . $this->_context);
+    }
+
+    /**
+     * Check if one of the given version numbers matches the current OpenAPI version.
+     *
+     * @param string|array $versions One or more version numbers
+     */
+    public function isOpenApiVersion($versions): bool
+    {
+        return $this->_context->isVersion($versions);
     }
 
     /**
@@ -287,9 +294,6 @@ abstract class AbstractAnnotation implements \JsonSerializable
         return $properties;
     }
 
-    /**
-     * @return mixed
-     */
     #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
@@ -356,7 +360,7 @@ abstract class AbstractAnnotation implements \JsonSerializable
         if (isset($data->ref)) {
             // Only specific https://github.com/OAI/OpenAPI-Specification/blob/3.1.0/versions/3.1.0.md#reference-object
             $ref = ['$ref' => $data->ref];
-            if ($this->_context->version === OpenApi::VERSION_3_1_0) {
+            if ($this->isOpenApiVersion(OpenApi::VERSION_3_1_0)) {
                 foreach (['summary', 'description'] as $prop) {
                     if (property_exists($this, $prop)) {
                         if (!Generator::isDefault($this->{$prop})) {
@@ -367,7 +371,7 @@ abstract class AbstractAnnotation implements \JsonSerializable
             }
             if (property_exists($this, 'nullable') && $this->nullable === true) {
                 $ref = ['oneOf' => [$ref]];
-                if ($this->_context->version == OpenApi::VERSION_3_1_0) {
+                if ($this->isOpenApiVersion(OpenApi::VERSION_3_1_0)) {
                     $ref['oneOf'][] = ['type' => 'null'];
                 } else {
                     $ref['nullable'] = $data->nullable;
@@ -387,7 +391,18 @@ abstract class AbstractAnnotation implements \JsonSerializable
             $data = (object) $ref;
         }
 
-        if ($this->_context->version === OpenApi::VERSION_3_1_0) {
+        if ($this->isOpenApiVersion(OpenApi::VERSION_3_0_0)) {
+            if (isset($data->exclusiveMinimum) && is_numeric($data->exclusiveMinimum)) {
+                $data->minimum = $data->exclusiveMinimum;
+                $data->exclusiveMinimum = true;
+            }
+            if (isset($data->exclusiveMaximum) && is_numeric($data->exclusiveMaximum)) {
+                $data->maximum = $data->exclusiveMaximum;
+                $data->exclusiveMaximum = true;
+            }
+        }
+
+        if ($this->isOpenApiVersion(OpenApi::VERSION_3_1_0)) {
             if (isset($data->nullable)) {
                 if (true === $data->nullable) {
                     if (isset($data->oneOf)) {
@@ -545,6 +560,13 @@ abstract class AbstractAnnotation implements \JsonSerializable
             }
         }
         $stack[] = $this;
+
+        if (property_exists($this, 'example') && property_exists($this, 'examples')) {
+            if (!Generator::isDefault($this->example) && !Generator::isDefault($this->examples)) {
+                $valid = false;
+                $this->_context->logger->warning($this->identity() . ': "example" and "examples" are mutually exclusive');
+            }
+        }
 
         return self::_validate($this, $stack, $skip, $ref, $context) ? $valid : false;
     }
@@ -741,8 +763,6 @@ abstract class AbstractAnnotation implements \JsonSerializable
 
     /**
      * Validate array type.
-     *
-     * @param mixed $value
      */
     private function validateArrayType($value): bool
     {
@@ -764,7 +784,6 @@ abstract class AbstractAnnotation implements \JsonSerializable
     /**
      * Wrap the context with a reference to the annotation it is nested in.
      *
-     * @param AbstractAnnotation $annotation
      *
      * @return AbstractAnnotation
      */
