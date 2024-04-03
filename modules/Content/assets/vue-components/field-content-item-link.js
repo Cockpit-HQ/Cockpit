@@ -22,7 +22,7 @@ export default {
                 return 'n/a'
             }
 
-            return `<display-content class="kiss-display-inline-block" model="${field.opts.link}" id="${value._id}" display="${field.opts.display}"><app-loader class="kiss-display-inline-block" size="small" mode="dots"></app-loader></display-content>`;
+            return `<display-content class="kiss-display-inline-block" model="${field.opts.link}" id="${value._id}" display="${field.opts.display || ''}"><app-loader class="kiss-display-inline-block" size="small" mode="dots"></app-loader></display-content>`;
         }
     },
 

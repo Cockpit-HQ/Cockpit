@@ -222,6 +222,8 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionDataZone(array $args = [])
  * @method \Aws\DatabaseMigrationService\DatabaseMigrationServiceClient createDatabaseMigrationService(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionDatabaseMigrationService(array $args = [])
+ * @method \Aws\Deadline\DeadlineClient createDeadline(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionDeadline(array $args = [])
  * @method \Aws\Detective\DetectiveClient createDetective(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionDetective(array $args = [])
  * @method \Aws\DevOpsGuru\DevOpsGuruClient createDevOpsGuru(array $args = [])
@@ -765,7 +767,7 @@ namespace Aws;
  */
 class Sdk
 {
-    const VERSION = '3.302.0';
+    const VERSION = '3.303.0';
 
     /** @var array Arguments for creating clients */
     private $args;
