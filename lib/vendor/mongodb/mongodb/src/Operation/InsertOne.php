@@ -17,6 +17,7 @@
 
 namespace MongoDB\Operation;
 
+use MongoDB\Codec\DocumentCodec;
 use MongoDB\Driver\BulkWrite as Bulk;
 use MongoDB\Driver\Exception\RuntimeException as DriverRuntimeException;
 use MongoDB\Driver\Server;
@@ -37,17 +38,14 @@ use function MongoDB\is_document;
  */
 class InsertOne implements Executable
 {
-    /** @var string */
-    private $databaseName;
+    private string $databaseName;
 
-    /** @var string */
-    private $collectionName;
+    private string $collectionName;
 
     /** @var array|object */
     private $document;
 
-    /** @var array */
-    private $options;
+    private array $options;
 
     /**
      * Constructs an insert command.
@@ -56,6 +54,9 @@ class InsertOne implements Executable
      *
      *  * bypassDocumentValidation (boolean): If true, allows the write to
      *    circumvent document level validation.
+     *
+     *  * codec (MongoDB\Codec\DocumentCodec): Codec used to encode PHP objects
+     *    into BSON.
      *
      *  * comment (mixed): BSON value to attach as a comment to this command.
      *
@@ -73,12 +74,12 @@ class InsertOne implements Executable
      */
     public function __construct(string $databaseName, string $collectionName, $document, array $options = [])
     {
-        if (! is_document($document)) {
-            throw InvalidArgumentException::expectedDocumentType('$document', $document);
-        }
-
         if (isset($options['bypassDocumentValidation']) && ! is_bool($options['bypassDocumentValidation'])) {
             throw InvalidArgumentException::invalidType('"bypassDocumentValidation" option', $options['bypassDocumentValidation'], 'boolean');
+        }
+
+        if (isset($options['codec']) && ! $options['codec'] instanceof DocumentCodec) {
+            throw InvalidArgumentException::invalidType('"codec" option', $options['codec'], DocumentCodec::class);
         }
 
         if (isset($options['session']) && ! $options['session'] instanceof Session) {
@@ -99,7 +100,7 @@ class InsertOne implements Executable
 
         $this->databaseName = $databaseName;
         $this->collectionName = $collectionName;
-        $this->document = $document;
+        $this->document = $this->validateDocument($document, $options['codec'] ?? null);
         $this->options = $options;
     }
 
@@ -119,6 +120,7 @@ class InsertOne implements Executable
         }
 
         $bulk = new Bulk($this->createBulkWriteOptions());
+
         $insertedId = $bulk->insert($this->document);
 
         $writeResult = $server->executeBulkWrite($this->databaseName . '.' . $this->collectionName, $bulk, $this->createExecuteOptions());
@@ -162,5 +164,22 @@ class InsertOne implements Executable
         }
 
         return $options;
+    }
+
+    /**
+     * @param array|object $document
+     * @return array|object
+     */
+    private function validateDocument($document, ?DocumentCodec $codec)
+    {
+        if ($codec) {
+            $document = $codec->encode($document);
+        }
+
+        if (! is_document($document)) {
+            throw InvalidArgumentException::expectedDocumentType('$document', $document);
+        }
+
+        return $document;
     }
 }

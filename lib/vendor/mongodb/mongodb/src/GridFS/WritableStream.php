@@ -46,32 +46,23 @@ class WritableStream
 {
     private const DEFAULT_CHUNK_SIZE_BYTES = 261120;
 
-    /** @var string */
-    private $buffer = '';
+    private string $buffer = '';
 
-    /** @var integer */
-    private $chunkOffset = 0;
+    private int $chunkOffset = 0;
 
-    /** @var integer */
-    private $chunkSize;
+    private int $chunkSize;
 
-    /** @var boolean */
-    private $disableMD5;
+    private bool $disableMD5;
 
-    /** @var CollectionWrapper */
-    private $collectionWrapper;
+    private CollectionWrapper $collectionWrapper;
 
-    /** @var array */
-    private $file;
+    private array $file;
 
-    /** @var HashContext|null */
-    private $hashCtx;
+    private ?HashContext $hashCtx = null;
 
-    /** @var boolean */
-    private $isClosed = false;
+    private bool $isClosed = false;
 
-    /** @var integer */
-    private $length = 0;
+    private int $length = 0;
 
     /**
      * Constructs a writable GridFS stream.
@@ -145,6 +136,8 @@ class WritableStream
             '_id' => $options['_id'],
             'chunkSize' => $this->chunkSize,
             'filename' => $filename,
+            'length' => null,
+            'uploadDate' => null,
         ] + array_intersect_key($options, ['aliases' => 1, 'contentType' => 1, 'metadata' => 1]);
     }
 
@@ -283,7 +276,7 @@ class WritableStream
         $chunk = [
             'files_id' => $this->file['_id'],
             'n' => $this->chunkOffset,
-            'data' => new Binary($data, Binary::TYPE_GENERIC),
+            'data' => new Binary($data),
         ];
 
         if (! $this->disableMD5 && $this->hashCtx) {

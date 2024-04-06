@@ -17,8 +17,11 @@
 
 namespace MongoDB\GridFS;
 
+use Iterator;
+use MongoDB\BSON\Document;
+use MongoDB\Codec\DocumentCodec;
 use MongoDB\Collection;
-use MongoDB\Driver\Cursor;
+use MongoDB\Driver\CursorInterface;
 use MongoDB\Driver\Exception\RuntimeException as DriverRuntimeException;
 use MongoDB\Driver\Manager;
 use MongoDB\Driver\ReadConcern;
@@ -28,13 +31,16 @@ use MongoDB\Exception\InvalidArgumentException;
 use MongoDB\Exception\UnsupportedException;
 use MongoDB\GridFS\Exception\CorruptFileException;
 use MongoDB\GridFS\Exception\FileNotFoundException;
+use MongoDB\GridFS\Exception\LogicException;
 use MongoDB\GridFS\Exception\StreamException;
 use MongoDB\Model\BSONArray;
 use MongoDB\Model\BSONDocument;
 use MongoDB\Operation\Find;
 
 use function array_intersect_key;
+use function array_key_exists;
 use function assert;
+use function explode;
 use function fopen;
 use function get_resource_type;
 use function in_array;
@@ -50,11 +56,15 @@ use function MongoDB\BSON\fromPHP;
 use function MongoDB\BSON\toJSON;
 use function property_exists;
 use function sprintf;
+use function str_contains;
 use function stream_context_create;
 use function stream_copy_to_stream;
 use function stream_get_meta_data;
 use function stream_get_wrappers;
+use function trigger_error;
 use function urlencode;
+
+use const E_USER_DEPRECATED;
 
 /**
  * Bucket provides a public API for interacting with the GridFS files and chunks
@@ -74,35 +84,27 @@ class Bucket
 
     private const STREAM_WRAPPER_PROTOCOL = 'gridfs';
 
-    /** @var CollectionWrapper */
-    private $collectionWrapper;
+    private ?DocumentCodec $codec = null;
 
-    /** @var string */
-    private $databaseName;
+    private CollectionWrapper $collectionWrapper;
 
-    /** @var Manager */
-    private $manager;
+    private string $databaseName;
 
-    /** @var string */
-    private $bucketName;
+    private Manager $manager;
 
-    /** @var boolean */
-    private $disableMD5;
+    private string $bucketName;
 
-    /** @var integer */
-    private $chunkSizeBytes;
+    private bool $disableMD5;
 
-    /** @var ReadConcern */
-    private $readConcern;
+    private int $chunkSizeBytes;
 
-    /** @var ReadPreference */
-    private $readPreference;
+    private ReadConcern $readConcern;
 
-    /** @var array */
-    private $typeMap;
+    private ReadPreference $readPreference;
 
-    /** @var WriteConcern */
-    private $writeConcern;
+    private array $typeMap;
+
+    private WriteConcern $writeConcern;
 
     /**
      * Constructs a GridFS bucket.
@@ -133,6 +135,10 @@ class Bucket
      */
     public function __construct(Manager $manager, string $databaseName, array $options = [])
     {
+        if (isset($options['disableMD5']) && $options['disableMD5'] === false) {
+            @trigger_error('Setting GridFS "disableMD5" option to "false" is deprecated since mongodb/mongodb 1.18 and will not be supported in version 2.0.', E_USER_DEPRECATED);
+        }
+
         $options += [
             'bucketName' => self::DEFAULT_BUCKET_NAME,
             'chunkSizeBytes' => self::DEFAULT_CHUNK_SIZE_BYTES,
@@ -149,6 +155,10 @@ class Bucket
 
         if ($options['chunkSizeBytes'] < 1) {
             throw new InvalidArgumentException(sprintf('Expected "chunkSizeBytes" option to be >= 1, %d given', $options['chunkSizeBytes']));
+        }
+
+        if (isset($options['codec']) && ! $options['codec'] instanceof DocumentCodec) {
+            throw InvalidArgumentException::invalidType('"codec" option', $options['codec'], DocumentCodec::class);
         }
 
         if (! is_bool($options['disableMD5'])) {
@@ -171,16 +181,26 @@ class Bucket
             throw InvalidArgumentException::invalidType('"writeConcern" option', $options['writeConcern'], WriteConcern::class);
         }
 
+        if (isset($options['codec']) && isset($options['typeMap'])) {
+            throw InvalidArgumentException::cannotCombineCodecAndTypeMap();
+        }
+
         $this->manager = $manager;
         $this->databaseName = $databaseName;
         $this->bucketName = $options['bucketName'];
         $this->chunkSizeBytes = $options['chunkSizeBytes'];
+        $this->codec = $options['codec'] ?? null;
         $this->disableMD5 = $options['disableMD5'];
         $this->readConcern = $options['readConcern'] ?? $this->manager->getReadConcern();
         $this->readPreference = $options['readPreference'] ?? $this->manager->getReadPreference();
         $this->typeMap = $options['typeMap'] ?? self::DEFAULT_TYPE_MAP;
         $this->writeConcern = $options['writeConcern'] ?? $this->manager->getWriteConcern();
 
+        /* The codec option is intentionally omitted when constructing the files
+         * and chunks collections so as not to interfere with internal GridFS
+         * operations. Any codec will be manually applied when querying the
+         * files collection (i.e. find, findOne, and getFileDocumentForStream).
+         */
         $collectionOptions = array_intersect_key($options, ['readConcern' => 1, 'readPreference' => 1, 'typeMap' => 1, 'writeConcern' => 1]);
 
         $this->collectionWrapper = new CollectionWrapper($manager, $databaseName, $options['bucketName'], $collectionOptions);
@@ -197,6 +217,7 @@ class Bucket
     {
         return [
             'bucketName' => $this->bucketName,
+            'codec' => $this->codec,
             'databaseName' => $this->databaseName,
             'disableMD5' => $this->disableMD5,
             'manager' => $this->manager,
@@ -215,6 +236,7 @@ class Bucket
      * attempt to delete orphaned chunks.
      *
      * @param mixed $id File ID
+     * @return void
      * @throws FileNotFoundException if no file could be selected
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
@@ -233,6 +255,7 @@ class Bucket
      *
      * @param mixed    $id          File ID
      * @param resource $destination Writable Stream
+     * @return void
      * @throws FileNotFoundException if no file could be selected
      * @throws InvalidArgumentException if $destination is not a stream
      * @throws StreamException if the file could not be uploaded
@@ -240,7 +263,7 @@ class Bucket
      */
     public function downloadToStream($id, $destination)
     {
-        if (! is_resource($destination) || get_resource_type($destination) != "stream") {
+        if (! is_resource($destination) || get_resource_type($destination) != 'stream') {
             throw InvalidArgumentException::invalidType('$destination', $destination, 'resource');
         }
 
@@ -272,6 +295,7 @@ class Bucket
      * @param string   $filename    Filename
      * @param resource $destination Writable Stream
      * @param array    $options     Download options
+     * @return void
      * @throws FileNotFoundException if no file could be selected
      * @throws InvalidArgumentException if $destination is not a stream
      * @throws StreamException if the file could not be uploaded
@@ -279,7 +303,7 @@ class Bucket
      */
     public function downloadToStreamByName(string $filename, $destination, array $options = [])
     {
-        if (! is_resource($destination) || get_resource_type($destination) != "stream") {
+        if (! is_resource($destination) || get_resource_type($destination) != 'stream') {
             throw InvalidArgumentException::invalidType('$destination', $destination, 'resource');
         }
 
@@ -293,6 +317,7 @@ class Bucket
      * Drops the files and chunks collections associated with this GridFS
      * bucket.
      *
+     * @return void
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
     public function drop()
@@ -307,13 +332,17 @@ class Bucket
      * @see Find::__construct() for supported options
      * @param array|object $filter  Query by which to filter documents
      * @param array        $options Additional options
-     * @return Cursor
+     * @return CursorInterface&Iterator
      * @throws UnsupportedException if options are not supported by the selected server
      * @throws InvalidArgumentException for parameter/option parsing errors
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
     public function find($filter = [], array $options = [])
     {
+        if ($this->codec && ! array_key_exists('codec', $options)) {
+            $options['codec'] = $this->codec;
+        }
+
         return $this->collectionWrapper->findFiles($filter, $options);
     }
 
@@ -331,6 +360,10 @@ class Bucket
      */
     public function findOne($filter = [], array $options = [])
     {
+        if ($this->codec && ! array_key_exists('codec', $options)) {
+            $options['codec'] = $this->codec;
+        }
+
         return $this->collectionWrapper->findOneFile($filter, $options);
     }
 
@@ -385,6 +418,10 @@ class Bucket
     public function getFileDocumentForStream($stream)
     {
         $file = $this->getRawFileDocumentForStream($stream);
+
+        if ($this->codec) {
+            return $this->codec->decode(Document::fromPHP($file));
+        }
 
         // Filter the raw document through the specified type map
         return apply_type_map_to_document($file, $this->typeMap);
@@ -566,10 +603,34 @@ class Bucket
     }
 
     /**
+     * Register an alias to enable basic filename access for this bucket.
+     *
+     * For applications that need to interact with GridFS using only a filename
+     * string, a bucket can be registered with an alias. Files can then be
+     * accessed using the following pattern:
+     *
+     *     gridfs://<bucket-alias>/<filename>
+     *
+     * Read operations will always target the most recent revision of a file.
+     *
+     * @param non-empty-string string $alias The alias to use for the bucket
+     */
+    public function registerGlobalStreamWrapperAlias(string $alias): void
+    {
+        if ($alias === '' || str_contains($alias, '/')) {
+            throw new InvalidArgumentException(sprintf('The bucket alias must be a non-empty string without any slash, "%s" given', $alias));
+        }
+
+        // Use a closure to expose the private method into another class
+        StreamWrapper::setContextResolver($alias, fn (string $path, string $mode, array $context) => $this->resolveStreamContext($path, $mode, $context));
+    }
+
+    /**
      * Renames the GridFS file with the specified ID.
      *
      * @param mixed  $id          File ID
      * @param string $newFilename New filename
+     * @return void
      * @throws FileNotFoundException if no file could be selected
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
@@ -621,7 +682,7 @@ class Bucket
      */
     public function uploadFromStream(string $filename, $source, array $options = [])
     {
-        if (! is_resource($source) || get_resource_type($source) != "stream") {
+        if (! is_resource($source) || get_resource_type($source) != 'stream') {
             throw InvalidArgumentException::invalidType('$source', $source, 'resource');
         }
 
@@ -654,7 +715,7 @@ class Bucket
             self::STREAM_WRAPPER_PROTOCOL,
             urlencode($this->databaseName),
             urlencode($this->bucketName),
-            urlencode($id)
+            urlencode($id),
         );
     }
 
@@ -667,7 +728,7 @@ class Bucket
             '%s://%s/%s.files',
             self::STREAM_WRAPPER_PROTOCOL,
             urlencode($this->databaseName),
-            urlencode($this->bucketName)
+            urlencode($this->bucketName),
         );
     }
 
@@ -690,7 +751,7 @@ class Bucket
      */
     private function getRawFileDocumentForStream($stream): object
     {
-        if (! is_resource($stream) || get_resource_type($stream) != "stream") {
+        if (! is_resource($stream) || get_resource_type($stream) != 'stream') {
             throw InvalidArgumentException::invalidType('$stream', $stream, 'resource');
         }
 
@@ -732,5 +793,51 @@ class Bucket
         }
 
         StreamWrapper::register(self::STREAM_WRAPPER_PROTOCOL);
+    }
+
+    /**
+     * Create a stream context from the path and mode provided to fopen().
+     *
+     * @see StreamWrapper::setContextResolver()
+     *
+     * @param string                                                         $path    The full url provided to fopen(). It contains the filename.
+     *                                                                                gridfs://database_name/collection_name.files/file_name
+     * @param array{revision?: int, chunkSizeBytes?: int, disableMD5?: bool} $context The options provided to fopen()
+     *
+     * @return array{collectionWrapper: CollectionWrapper, file: object}|array{collectionWrapper: CollectionWrapper, filename: string, options: array}
+     *
+     * @throws FileNotFoundException
+     * @throws LogicException
+     */
+    private function resolveStreamContext(string $path, string $mode, array $context): array
+    {
+        // Fallback to an empty filename if the path does not contain one: "gridfs://alias"
+        $filename = explode('/', $path, 4)[3] ?? '';
+
+        if ($mode === 'r' || $mode === 'rb') {
+            $file = $this->collectionWrapper->findFileByFilenameAndRevision($filename, $context['revision'] ?? -1);
+
+            if (! is_object($file)) {
+                throw FileNotFoundException::byFilenameAndRevision($filename, $context['revision'] ?? -1, $path);
+            }
+
+            return [
+                'collectionWrapper' => $this->collectionWrapper,
+                'file' => $file,
+            ];
+        }
+
+        if ($mode === 'w' || $mode === 'wb') {
+            return [
+                'collectionWrapper' => $this->collectionWrapper,
+                'filename' => $filename,
+                'options' => $context + [
+                    'chunkSizeBytes' => $this->chunkSizeBytes,
+                    'disableMD5' => $this->disableMD5,
+                ],
+            ];
+        }
+
+        throw LogicException::openModeNotSupported($mode);
     }
 }

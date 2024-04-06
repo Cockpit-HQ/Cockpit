@@ -43,17 +43,14 @@ use function MongoDB\is_document;
  */
 class Count implements Executable, Explainable
 {
-    /** @var string */
-    private $databaseName;
+    private string $databaseName;
 
-    /** @var string */
-    private $collectionName;
+    private string $collectionName;
 
     /** @var array|object */
     private $filter;
 
-    /** @var array */
-    private $options;
+    private array $options;
 
     /**
      * Constructs a count command.
@@ -190,7 +187,7 @@ class Count implements Executable, Explainable
     {
         $cmd = ['count' => $this->collectionName];
 
-        if (! empty($this->filter)) {
+        if ($this->filter !== []) {
             $cmd['query'] = (object) $this->filter;
         }
 

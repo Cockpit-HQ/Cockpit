@@ -17,6 +17,8 @@
 
 namespace MongoDB\Operation;
 
+use MongoDB\BSON\Document;
+use MongoDB\Codec\DocumentCodec;
 use MongoDB\Driver\Command;
 use MongoDB\Driver\Exception\RuntimeException as DriverRuntimeException;
 use MongoDB\Driver\Server;
@@ -27,6 +29,7 @@ use MongoDB\Exception\UnexpectedValueException;
 use MongoDB\Exception\UnsupportedException;
 
 use function array_key_exists;
+use function assert;
 use function current;
 use function is_array;
 use function is_bool;
@@ -54,14 +57,11 @@ class FindAndModify implements Executable, Explainable
 
     private const WIRE_VERSION_FOR_UNSUPPORTED_OPTION_SERVER_SIDE_ERROR = 8;
 
-    /** @var string */
-    private $databaseName;
+    private string $databaseName;
 
-    /** @var string */
-    private $collectionName;
+    private string $collectionName;
 
-    /** @var array */
-    private $options;
+    private array $options;
 
     /**
      * Constructs a findAndModify command.
@@ -70,6 +70,9 @@ class FindAndModify implements Executable, Explainable
      *
      *  * arrayFilters (document array): A set of filters specifying to which
      *    array elements an update should apply.
+     *
+     *  * codec (MongoDB\Codec\DocumentCodec): Codec used to decode documents
+     *    from BSON to PHP objects.
      *
      *  * collation (document): Collation specification.
      *
@@ -140,6 +143,10 @@ class FindAndModify implements Executable, Explainable
             throw InvalidArgumentException::invalidType('"bypassDocumentValidation" option', $options['bypassDocumentValidation'], 'boolean');
         }
 
+        if (isset($options['codec']) && ! $options['codec'] instanceof DocumentCodec) {
+            throw InvalidArgumentException::invalidType('"codec" option', $options['codec'], DocumentCodec::class);
+        }
+
         if (isset($options['collation']) && ! is_document($options['collation'])) {
             throw InvalidArgumentException::expectedDocumentType('"collation" option', $options['collation']);
         }
@@ -208,6 +215,10 @@ class FindAndModify implements Executable, Explainable
             unset($options['writeConcern']);
         }
 
+        if (isset($options['codec']) && isset($options['typeMap'])) {
+            throw InvalidArgumentException::cannotCombineCodecAndTypeMap();
+        }
+
         $this->databaseName = $databaseName;
         $this->collectionName = $collectionName;
         $this->options = $options;
@@ -245,6 +256,16 @@ class FindAndModify implements Executable, Explainable
         }
 
         $cursor = $server->executeWriteCommand($this->databaseName, new Command($this->createCommandDocument()), $this->createOptions());
+
+        if (isset($this->options['codec'])) {
+            $cursor->setTypeMap(['root' => 'bson']);
+            $result = current($cursor->toArray());
+            assert($result instanceof Document);
+
+            $value = $result->get('value');
+
+            return $value === null ? $value : $this->options['codec']->decode($value);
+        }
 
         if (isset($this->options['typeMap'])) {
             $cursor->setTypeMap(create_field_path_type_map($this->options['typeMap'], 'value'));

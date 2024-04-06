@@ -17,9 +17,11 @@
 
 namespace MongoDB\Operation;
 
+use Iterator;
 use MongoDB\BSON\TimestampInterface;
 use MongoDB\ChangeStream;
-use MongoDB\Driver\Cursor;
+use MongoDB\Codec\DocumentCodec;
+use MongoDB\Driver\CursorInterface;
 use MongoDB\Driver\Exception\RuntimeException;
 use MongoDB\Driver\Manager;
 use MongoDB\Driver\Monitoring\CommandFailedEvent;
@@ -36,7 +38,6 @@ use MongoDB\Model\ChangeStreamIterator;
 use function array_intersect_key;
 use function array_key_exists;
 use function array_unshift;
-use function assert;
 use function count;
 use function is_array;
 use function is_bool;
@@ -70,38 +71,29 @@ class Watch implements Executable, /* @internal */ CommandSubscriber
 
     private const WIRE_VERSION_FOR_START_AT_OPERATION_TIME = 7;
 
-    /** @var Aggregate */
-    private $aggregate;
+    private Aggregate $aggregate;
 
-    /** @var array */
-    private $aggregateOptions;
+    private array $aggregateOptions;
 
-    /** @var array */
-    private $changeStreamOptions;
+    private array $changeStreamOptions;
 
-    /** @var string|null */
-    private $collectionName;
+    private ?string $collectionName = null;
 
-    /** @var string */
-    private $databaseName;
+    private string $databaseName;
 
-    /** @var integer */
-    private $firstBatchSize;
+    private int $firstBatchSize = 0;
 
-    /** @var boolean */
-    private $hasResumed = false;
+    private bool $hasResumed = false;
 
-    /** @var Manager */
-    private $manager;
+    private Manager $manager;
 
-    /** @var TimestampInterface */
-    private $operationTime;
+    private ?TimestampInterface $operationTime = null;
 
-    /** @var array */
-    private $pipeline;
+    private array $pipeline;
 
-    /** @var object|null */
-    private $postBatchResumeToken;
+    private ?object $postBatchResumeToken = null;
+
+    private ?DocumentCodec $codec;
 
     /**
      * Constructs an aggregate command for creating a change stream.
@@ -109,6 +101,9 @@ class Watch implements Executable, /* @internal */ CommandSubscriber
      * Supported options:
      *
      *  * batchSize (integer): The number of documents to return per batch.
+     *
+     *  * codec (MongoDB\Codec\DocumentCodec): Codec used to decode documents
+     *    from BSON to PHP objects.
      *
      *  * collation (document): Specifies a collation.
      *
@@ -211,6 +206,14 @@ class Watch implements Executable, /* @internal */ CommandSubscriber
             'readPreference' => new ReadPreference(ReadPreference::PRIMARY),
         ];
 
+        if (isset($options['codec']) && ! $options['codec'] instanceof DocumentCodec) {
+            throw InvalidArgumentException::invalidType('"codec" option', $options['codec'], DocumentCodec::class);
+        }
+
+        if (isset($options['codec']) && isset($options['typeMap'])) {
+            throw InvalidArgumentException::cannotCombineCodecAndTypeMap();
+        }
+
         if (array_key_exists('fullDocument', $options) && ! is_string($options['fullDocument'])) {
             throw InvalidArgumentException::invalidType('"fullDocument" option', $options['fullDocument'], 'string');
         }
@@ -266,8 +269,26 @@ class Watch implements Executable, /* @internal */ CommandSubscriber
         $this->databaseName = $databaseName;
         $this->collectionName = $collectionName;
         $this->pipeline = $pipeline;
+        $this->codec = $options['codec'] ?? null;
 
         $this->aggregate = $this->createAggregate();
+    }
+
+    /**
+     * Execute the operation.
+     *
+     * @see Executable::execute()
+     * @return ChangeStream
+     * @throws UnsupportedException if collation or read concern is used and unsupported
+     * @throws RuntimeException for other driver errors (e.g. connection errors)
+     */
+    public function execute(Server $server)
+    {
+        return new ChangeStream(
+            $this->createChangeStreamIterator($server),
+            fn ($resumeToken, $hasAdvanced): ChangeStreamIterator => $this->resume($resumeToken, $hasAdvanced),
+            $this->codec,
+        );
     }
 
     /** @internal */
@@ -314,24 +335,6 @@ class Watch implements Executable, /* @internal */ CommandSubscriber
     }
 
     /**
-     * Execute the operation.
-     *
-     * @see Executable::execute()
-     * @return ChangeStream
-     * @throws UnsupportedException if collation or read concern is used and unsupported
-     * @throws RuntimeException for other driver errors (e.g. connection errors)
-     */
-    public function execute(Server $server)
-    {
-        return new ChangeStream(
-            $this->createChangeStreamIterator($server),
-            function ($resumeToken, $hasAdvanced): ChangeStreamIterator {
-                return $this->resume($resumeToken, $hasAdvanced);
-            }
-        );
-    }
-
-    /**
      * Create the aggregate command for a change stream.
      *
      * This method is also used to recreate the aggregate command when resuming.
@@ -353,7 +356,7 @@ class Watch implements Executable, /* @internal */ CommandSubscriber
             $this->executeAggregate($server),
             $this->firstBatchSize,
             $this->getInitialResumeToken(),
-            $this->postBatchResumeToken
+            $this->postBatchResumeToken,
         );
     }
 
@@ -362,16 +365,15 @@ class Watch implements Executable, /* @internal */ CommandSubscriber
      *
      * The command will be executed using APM so that we can capture data from
      * its response (e.g. firstBatch size, postBatchResumeToken).
+     *
+     * @return CursorInterface&Iterator
      */
-    private function executeAggregate(Server $server): Cursor
+    private function executeAggregate(Server $server)
     {
         addSubscriber($this);
 
         try {
-            $cursor = $this->aggregate->execute($server);
-            assert($cursor instanceof Cursor);
-
-            return $cursor;
+            return $this->aggregate->execute($server);
         } finally {
             removeSubscriber($this);
         }

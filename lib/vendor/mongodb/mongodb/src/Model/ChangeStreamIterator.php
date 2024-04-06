@@ -17,9 +17,11 @@
 
 namespace MongoDB\Model;
 
+use Iterator;
 use IteratorIterator;
+use MongoDB\BSON\Document;
 use MongoDB\BSON\Serializable;
-use MongoDB\Driver\Cursor;
+use MongoDB\Driver\CursorInterface;
 use MongoDB\Driver\Monitoring\CommandFailedEvent;
 use MongoDB\Driver\Monitoring\CommandStartedEvent;
 use MongoDB\Driver\Monitoring\CommandSubscriber;
@@ -46,36 +48,147 @@ use function MongoDB\is_document;
  * rewind() do not execute getMore commands.
  *
  * @internal
+ * @template TValue of array|object
+ * @template-extends IteratorIterator<int, TValue, CursorInterface<int, TValue>&Iterator<int, TValue>>
  */
 class ChangeStreamIterator extends IteratorIterator implements CommandSubscriber
 {
-    /** @var integer */
-    private $batchPosition = 0;
+    private int $batchPosition = 0;
 
-    /** @var integer */
-    private $batchSize;
+    private int $batchSize;
 
-    /** @var boolean */
-    private $isRewindNop;
+    private bool $isRewindNop;
 
-    /** @var boolean */
-    private $isValid = false;
+    private bool $isValid = false;
 
-    /** @var object|null */
-    private $postBatchResumeToken;
+    private ?object $postBatchResumeToken = null;
 
     /** @var array|object|null */
     private $resumeToken;
 
-    /** @var Server */
-    private $server;
+    private Server $server;
+
+    /**
+     * @see https://php.net/iteratoriterator.current
+     * @return array|object|null
+     * @psalm-return TValue|null
+     */
+    #[ReturnTypeWillChange]
+    public function current()
+    {
+        return $this->valid() ? parent::current() : null;
+    }
+
+    /**
+     * Necessary to let psalm know that we're always expecting a cursor as inner
+     * iterator. This could be side-stepped due to the class not being final,
+     * but it's very much an invalid use-case. This method can be dropped in 2.0
+     * once the class is final.
+     *
+     * @return CursorInterface<int, TValue>&Iterator<int, TValue>
+     */
+    final public function getInnerIterator(): Iterator
+    {
+        $cursor = parent::getInnerIterator();
+        assert($cursor instanceof CursorInterface);
+        assert($cursor instanceof Iterator);
+
+        return $cursor;
+    }
+
+    /**
+     * Returns the resume token for the iterator's current position.
+     *
+     * Null may be returned if no change documents have been iterated and the
+     * server did not include a postBatchResumeToken in its aggregate or getMore
+     * command response.
+     *
+     * @return array|object|null
+     */
+    public function getResumeToken()
+    {
+        return $this->resumeToken;
+    }
+
+    /**
+     * Returns the server the cursor is running on.
+     */
+    public function getServer(): Server
+    {
+        return $this->server;
+    }
+
+    /**
+     * @see https://php.net/iteratoriterator.key
+     * @return int|null
+     */
+    #[ReturnTypeWillChange]
+    public function key()
+    {
+        return $this->valid() ? parent::key() : null;
+    }
+
+    /** @see https://php.net/iteratoriterator.rewind */
+    public function next(): void
+    {
+        /* Determine if advancing the iterator will execute a getMore command
+         * (i.e. we are already positioned at the end of the current batch). If
+         * so, rely on the APM callbacks to reset $batchPosition and update
+         * $batchSize. Otherwise, we can forgo APM and manually increment
+         * $batchPosition after calling next(). */
+        $getMore = $this->isAtEndOfBatch();
+
+        if ($getMore) {
+            addSubscriber($this);
+        }
+
+        try {
+            parent::next();
+
+            $this->onIteration(! $getMore);
+        } finally {
+            if ($getMore) {
+                removeSubscriber($this);
+            }
+        }
+    }
+
+    /** @see https://php.net/iteratoriterator.rewind */
+    public function rewind(): void
+    {
+        if ($this->isRewindNop) {
+            return;
+        }
+
+        parent::rewind();
+
+        $this->onIteration(false);
+    }
+
+    /**
+     * @see https://php.net/iteratoriterator.valid
+     * @psalm-assert-if-true TValue $this->current()
+     */
+    public function valid(): bool
+    {
+        return $this->isValid;
+    }
 
     /**
      * @internal
      * @param array|object|null $initialResumeToken
+     * @psalm-param CursorInterface<int, TValue>&Iterator<int, TValue> $cursor
      */
-    public function __construct(Cursor $cursor, int $firstBatchSize, $initialResumeToken, ?object $postBatchResumeToken)
+    public function __construct(CursorInterface $cursor, int $firstBatchSize, $initialResumeToken, ?object $postBatchResumeToken)
     {
+        if (! $cursor instanceof Iterator) {
+            throw InvalidArgumentException::invalidType(
+                '$cursor',
+                $cursor,
+                CursorInterface::class . '&' . Iterator::class,
+            );
+        }
+
         if (isset($initialResumeToken) && ! is_document($initialResumeToken)) {
             throw InvalidArgumentException::expectedDocumentType('$initialResumeToken', $initialResumeToken);
         }
@@ -127,105 +240,6 @@ class ChangeStreamIterator extends IteratorIterator implements CommandSubscriber
     }
 
     /**
-     * @see https://php.net/iteratoriterator.current
-     * @return mixed
-     */
-    #[ReturnTypeWillChange]
-    public function current()
-    {
-        return $this->isValid ? parent::current() : null;
-    }
-
-    /**
-     * Necessary to let psalm know that we're always expecting a cursor as inner
-     * iterator. This could be side-stepped due to the class not being final,
-     * but it's very much an invalid use-case. This method can be dropped in 2.0
-     * once the class is final.
-     */
-    final public function getInnerIterator(): Cursor
-    {
-        $cursor = parent::getInnerIterator();
-        assert($cursor instanceof Cursor);
-
-        return $cursor;
-    }
-
-    /**
-     * Returns the resume token for the iterator's current position.
-     *
-     * Null may be returned if no change documents have been iterated and the
-     * server did not include a postBatchResumeToken in its aggregate or getMore
-     * command response.
-     *
-     * @return array|object|null
-     */
-    public function getResumeToken()
-    {
-        return $this->resumeToken;
-    }
-
-    /**
-     * Returns the server the cursor is running on.
-     */
-    public function getServer(): Server
-    {
-        return $this->server;
-    }
-
-    /**
-     * @see https://php.net/iteratoriterator.key
-     * @return mixed
-     */
-    #[ReturnTypeWillChange]
-    public function key()
-    {
-        return $this->isValid ? parent::key() : null;
-    }
-
-    /** @see https://php.net/iteratoriterator.rewind */
-    public function next(): void
-    {
-        /* Determine if advancing the iterator will execute a getMore command
-         * (i.e. we are already positioned at the end of the current batch). If
-         * so, rely on the APM callbacks to reset $batchPosition and update
-         * $batchSize. Otherwise, we can forgo APM and manually increment
-         * $batchPosition after calling next(). */
-        $getMore = $this->isAtEndOfBatch();
-
-        if ($getMore) {
-            addSubscriber($this);
-        }
-
-        try {
-            parent::next();
-
-            $this->onIteration(! $getMore);
-        } finally {
-            if ($getMore) {
-                removeSubscriber($this);
-            }
-        }
-    }
-
-    /** @see https://php.net/iteratoriterator.rewind */
-    public function rewind(): void
-    {
-        if ($this->isRewindNop) {
-            return;
-        }
-
-        parent::rewind();
-
-        $this->onIteration(false);
-    }
-
-    /** @see https://php.net/iteratoriterator.valid */
-    public function valid(): bool
-    {
-        return $this->isValid;
-    }
-
-    /**
      * Extracts the resume token (i.e. "_id" field) from a change document.
      *
      * @param array|object $document Change document
@@ -243,9 +257,17 @@ class ChangeStreamIterator extends IteratorIterator implements CommandSubscriber
             return $this->extractResumeToken($document->bsonSerialize());
         }
 
-        $resumeToken = is_array($document)
-            ? ($document['_id'] ?? null)
-            : ($document->_id ?? null);
+        if ($document instanceof Document) {
+            $resumeToken = $document->get('_id');
+
+            if ($resumeToken instanceof Document) {
+                $resumeToken = $resumeToken->toPHP();
+            }
+        } else {
+            $resumeToken = is_array($document)
+                ? ($document['_id'] ?? null)
+                : ($document->_id ?? null);
+        }
 
         if (! isset($resumeToken)) {
             $this->isValid = false;
@@ -282,11 +304,11 @@ class ChangeStreamIterator extends IteratorIterator implements CommandSubscriber
         /* Disable rewind()'s NOP behavior once we advance to a valid position.
          * This will allow the driver to throw a LogicException if rewind() is
          * called after the cursor has advanced past its first element. */
-        if ($this->isRewindNop && $this->isValid) {
+        if ($this->isRewindNop && $this->valid()) {
             $this->isRewindNop = false;
         }
 
-        if ($incrementBatchPosition && $this->isValid) {
+        if ($incrementBatchPosition && $this->valid()) {
             $this->batchPosition++;
         }
 
@@ -298,7 +320,7 @@ class ChangeStreamIterator extends IteratorIterator implements CommandSubscriber
          * from the current document if possible. */
         if ($this->isAtEndOfBatch() && $this->postBatchResumeToken !== null) {
             $this->resumeToken = $this->postBatchResumeToken;
-        } elseif ($this->isValid) {
+        } elseif ($this->valid()) {
             $this->resumeToken = $this->extractResumeToken($this->current());
         }
     }

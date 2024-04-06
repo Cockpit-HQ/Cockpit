@@ -33,33 +33,22 @@ use function call_user_func;
  *
  * @see \MongoDB\Collection::mapReduce()
  * @see https://mongodb.com/docs/manual/reference/command/mapReduce/
+ * @template-implements IteratorAggregate<int, array|object>
+ * @psalm-type MapReduceCallable = callable(): Traversable<int, array|object>
  */
 class MapReduceResult implements IteratorAggregate
 {
-    /** @var callable */
+    /**
+     * @var callable
+     * @psalm-var MapReduceCallable
+     */
     private $getIterator;
 
-    /** @var integer */
-    private $executionTimeMS;
+    private int $executionTimeMS;
 
-    /** @var array */
-    private $counts;
+    private array $counts;
 
-    /** @var array */
-    private $timing;
-
-    /**
-     * @internal
-     * @param callable $getIterator Callback that returns a Traversable for mapReduce results
-     * @param stdClass $result      Result document from the mapReduce command
-     */
-    public function __construct(callable $getIterator, stdClass $result)
-    {
-        $this->getIterator = $getIterator;
-        $this->executionTimeMS = isset($result->timeMillis) ? (integer) $result->timeMillis : 0;
-        $this->counts = isset($result->counts) ? (array) $result->counts : [];
-        $this->timing = isset($result->timing) ? (array) $result->timing : [];
-    }
+    private array $timing;
 
     /**
      * Returns various count statistics from the mapReduce command.
@@ -85,7 +74,7 @@ class MapReduceResult implements IteratorAggregate
      * Return the mapReduce results as a Traversable.
      *
      * @see https://php.net/iteratoraggregate.getiterator
-     * @return Traversable
+     * @return Traversable<int, array|object>
      */
     #[ReturnTypeWillChange]
     public function getIterator()
@@ -104,5 +93,19 @@ class MapReduceResult implements IteratorAggregate
     public function getTiming()
     {
         return $this->timing;
+    }
+
+    /**
+     * @internal
+     * @param callable $getIterator Callback that returns a Traversable for mapReduce results
+     * @param stdClass $result      Result document from the mapReduce command
+     * @psalm-param MapReduceCallable $getIterator
+     */
+    public function __construct(callable $getIterator, stdClass $result)
+    {
+        $this->getIterator = $getIterator;
+        $this->executionTimeMS = isset($result->timeMillis) ? (integer) $result->timeMillis : 0;
+        $this->counts = isset($result->counts) ? (array) $result->counts : [];
+        $this->timing = isset($result->timing) ? (array) $result->timing : [];
     }
 }

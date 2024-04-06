@@ -31,56 +31,25 @@ use function unpack;
 
 /**
  * Iterator for BSON documents.
+ *
+ * @template-implements Iterator<int, mixed>
  */
 class BSONIterator implements Iterator
 {
     private const BSON_SIZE = 4;
 
-    /** @var string */
-    private $buffer;
+    private string $buffer;
 
-    /** @var integer */
-    private $bufferLength;
+    private int $bufferLength;
 
-    /** @var mixed */
-    private $current;
+    /** @var array|object|null */
+    private $current = null;
 
-    /** @var integer */
-    private $key = 0;
+    private int $key = 0;
 
-    /** @var integer */
-    private $position = 0;
+    private int $position = 0;
 
-    /** @var array */
-    private $options;
-
-    /**
-     * Constructs a BSON Iterator.
-     *
-     * Supported options:
-     *
-     *  * typeMap (array): Type map for BSON deserialization.
-     *
-     * @internal
-     * @see https://php.net/manual/en/function.mongodb.bson-tophp.php
-     * @param string $data    Concatenated, valid, BSON-encoded documents
-     * @param array  $options Iterator options
-     * @throws InvalidArgumentException for parameter/option parsing errors
-     */
-    public function __construct(string $data, array $options = [])
-    {
-        if (isset($options['typeMap']) && ! is_array($options['typeMap'])) {
-            throw InvalidArgumentException::invalidType('"typeMap" option', $options['typeMap'], 'array');
-        }
-
-        if (! isset($options['typeMap'])) {
-            $options['typeMap'] = [];
-        }
-
-        $this->buffer = $data;
-        $this->bufferLength = strlen($data);
-        $this->options = $options;
-    }
+    private array $options;
 
     /**
      * @see https://php.net/iterator.current
@@ -94,7 +63,7 @@ class BSONIterator implements Iterator
 
     /**
      * @see https://php.net/iterator.key
-     * @return mixed
+     * @return int
      */
     #[ReturnTypeWillChange]
     public function key()
@@ -132,6 +101,34 @@ class BSONIterator implements Iterator
     public function valid(): bool
     {
         return $this->current !== null;
+    }
+
+    /**
+     * Constructs a BSON Iterator.
+     *
+     * Supported options:
+     *
+     *  * typeMap (array): Type map for BSON deserialization.
+     *
+     * @internal
+     * @see https://php.net/manual/en/function.mongodb.bson-tophp.php
+     * @param string $data    Concatenated, valid, BSON-encoded documents
+     * @param array  $options Iterator options
+     * @throws InvalidArgumentException for parameter/option parsing errors
+     */
+    public function __construct(string $data, array $options = [])
+    {
+        if (isset($options['typeMap']) && ! is_array($options['typeMap'])) {
+            throw InvalidArgumentException::invalidType('"typeMap" option', $options['typeMap'], 'array');
+        }
+
+        if (! isset($options['typeMap'])) {
+            $options['typeMap'] = [];
+        }
+
+        $this->buffer = $data;
+        $this->bufferLength = strlen($data);
+        $this->options = $options;
     }
 
     private function advance(): void

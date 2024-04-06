@@ -41,8 +41,7 @@ class FindOneAndUpdate implements Executable, Explainable
     public const RETURN_DOCUMENT_BEFORE = 1;
     public const RETURN_DOCUMENT_AFTER = 2;
 
-    /** @var FindAndModify */
-    private $findAndModify;
+    private FindAndModify $findAndModify;
 
     /**
      * Constructs a findAndModify command for updating a document.
@@ -54,6 +53,9 @@ class FindOneAndUpdate implements Executable, Explainable
      *
      *  * bypassDocumentValidation (boolean): If true, allows the write to
      *    circumvent document level validation.
+     *
+     *  * codec (MongoDB\Codec\DocumentCodec): Codec used to decode documents
+     *    from BSON to PHP objects.
      *
      *  * collation (document): Collation specification.
      *
@@ -147,7 +149,7 @@ class FindOneAndUpdate implements Executable, Explainable
         $this->findAndModify = new FindAndModify(
             $databaseName,
             $collectionName,
-            ['query' => $filter, 'update' => $update] + $options
+            ['query' => $filter, 'update' => $update] + $options,
         );
     }
 
