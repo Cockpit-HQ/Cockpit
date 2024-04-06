@@ -107,7 +107,14 @@ methods: {
                 this.$close();
             }
 
-        }, rsp => {
+        }, (rsp) => {
+
+            if (rsp?.error === 'APP_LOGIN_SESSION_INVALID') {
+                App.ui.notify('Login session expired.', 'error');
+                setTimeout(() => location.reload() , 600);
+                return;
+            }
+
             this.loading = false;
             App.ui.notify(rsp && (rsp.message || rsp.error) ? (rsp.message || rsp.error) : this.t('Login failed.'), 'error');
         });

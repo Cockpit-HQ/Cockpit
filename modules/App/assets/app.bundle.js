@@ -3735,9 +3735,9 @@
                   }
 
                   if (this.status === 200) {
-                      fulfill(resdata, xhr);
+                      fulfill(resdata);
                   } else {
-                      reject(resdata, xhr);
+                      reject(resdata);
                   }
               };
 

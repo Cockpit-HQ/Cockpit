@@ -67,7 +67,7 @@ class Auth extends Base {
         }
 
         if (!$this->helper('csrf')->isValid('app.login', $this->param('csrf'), true)) {
-            return $this->stop(412);
+            return $this->stop(['error' => 'APP_LOGIN_SESSION_INVALID'], 412);
         }
 
         $auth = [
@@ -83,7 +83,7 @@ class Auth extends Base {
         $user = $this->helper('auth')->authenticate($auth);
 
         if ($user && $user['role'] === 'public') {
-            return $this->stop(412);
+            return $this->stop(401);
         }
 
         if ($user) {
