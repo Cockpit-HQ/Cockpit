@@ -39,6 +39,8 @@ vue-view:not([init="true"]) {
     --app-fieldcontainer-border-color-active: var(--kiss-color-primary);
     --app-fieldcontainer-border-color-inactive: rgba(255, 255, 255, .1);
     --app-scrollbar-color: #000;
+    --app-switch-offcolor: var(--kiss-color-muted);
+    --app-switch-oncolor: var(--kiss-color-primary);
 }
 
 html[data-theme='light'] {
