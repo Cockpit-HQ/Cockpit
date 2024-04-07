@@ -1,6 +1,6 @@
 # Release Notes
 
-## WIP
+## 2.8.3 (2024-04-08)
 
 - Fix: Reflected Cross-Site Scripting via GraphQL Viewer
 - Fix: Stored Cross-Site Scripting in Content Item using text fields
