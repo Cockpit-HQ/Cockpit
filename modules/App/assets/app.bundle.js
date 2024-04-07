@@ -3278,7 +3278,7 @@
           offsetParent = element.offsetParent || document.body,
           zIndex;
 
-      offsetParent.children.forEach((node) => {
+      Array.from(offsetParent.children).forEach((node) => {
           zIndex = parseInt(window.getComputedStyle(node).zIndex) || 0;
           if (zIndex > highestZindex) highestZindex = zIndex;
       });
