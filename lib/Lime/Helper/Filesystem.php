@@ -288,7 +288,7 @@ class FileObject {
     }
 
     public function getBasename(?string $suffix = null): string {
-        return \basename($this->path, $suffix);
+        return \basename($this->path, $suffix ?? '');
     }
 
     public function getSize(): int {
