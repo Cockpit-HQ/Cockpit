@@ -478,6 +478,10 @@ $this->on('restApi.config', function($restApi) {
 
             $items = $app->module('content')->items($model, $options, $process);
 
+            if (count($items)) {
+                $app->trigger('content.api.items', [&$items, $model]);
+            }
+
             if (isset($options['skip'], $options['limit'])) {
                 return [
                     'data' => $items,
@@ -485,10 +489,6 @@ $this->on('restApi.config', function($restApi) {
                         'total' => $app->module('content')->count($model, $options['filter'] ?? [])
                     ]
                 ];
-            }
-
-            if (count($items)) {
-                $app->trigger('content.api.items', [&$items, $model]);
             }
 
             return $items;
