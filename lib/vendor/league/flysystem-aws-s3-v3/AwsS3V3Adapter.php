@@ -68,9 +68,9 @@ class AwsS3V3Adapter implements FilesystemAdapter, PublicUrlGenerator, ChecksumP
         'Tagging',
         'WebsiteRedirectLocation',
         'ChecksumAlgorithm',
-        'CopySSECustomerAlgorithm',
-        'CopySSECustomerKey',
-        'CopySSECustomerKeyMD5',
+        'CopySourceSSECustomerAlgorithm',
+        'CopySourceSSECustomerKey',
+        'CopySourceSSECustomerKeyMD5',
     ];
     /**
      * @var string[]
@@ -431,6 +431,9 @@ class AwsS3V3Adapter implements FilesystemAdapter, PublicUrlGenerator, ChecksumP
             );
         }
 
+        $options = $this->createOptionsFromConfig($config);
+        $options['MetadataDirective'] = $config->get('MetadataDirective', 'COPY');
+
         try {
             $this->client->copy(
                 $this->bucket,
@@ -438,7 +441,7 @@ class AwsS3V3Adapter implements FilesystemAdapter, PublicUrlGenerator, ChecksumP
                 $this->bucket,
                 $this->prefixer->prefixPath($destination),
                 $this->visibility->visibilityToAcl($visibility ?: 'private'),
-                $this->createOptionsFromConfig($config)['params']
+                $options,
             );
         } catch (Throwable $exception) {
             throw UnableToCopyFile::fromLocationTo($source, $destination, $exception);
