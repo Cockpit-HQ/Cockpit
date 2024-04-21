@@ -305,12 +305,13 @@ app-avatar canvas,
 
 .app-field-links-outline li a.inview {
     color: inherit;
-    opacity: 1;
+    opacity: .6;
 }
 
 .app-field-links-outline li a.active {
     font-weight: bold;
     padding-left: 20px;
+    opacity: 1;
 }
 
 .app-field-links-outline li a:before {
