@@ -47,6 +47,8 @@ class Model extends \Lime\Helper {
 
         if ($this->storage === 'database') {
 
+            if (isset($model['_id'])) unset($model['_id']);
+
             $this->app->dataStorage->save('content/models', $model);
 
         } else {

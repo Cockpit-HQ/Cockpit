@@ -1,5 +1,9 @@
 # Release Notes
 
+## WIP
+
+- Fix Content model creation edge case
+
 ## 2.8.3 (2024-04-08)
 
 - Fix: Reflected Cross-Site Scripting via GraphQL Viewer
