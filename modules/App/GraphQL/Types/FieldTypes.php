@@ -71,7 +71,7 @@ class FieldTypes {
                 $def['type'] = Type::boolean();
                 break;
             case 'number':
-                $def['type'] = Type::int();
+                $def['type'] = NumericType::instance();
                 break;
             case 'layout':
                 $def['type'] = JsonType::instance();
