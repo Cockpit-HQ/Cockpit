@@ -61,8 +61,10 @@ class Roles extends App {
 
         $this->app->dataStorage->remove('system/roles', ['_id' => $role['_id']]);
         $this->app->dataStorage->update('system/users', ['role' => $role['appid']], ['role' => 'user']);
+        $this->app->dataStorage->update('system/api_keys', ['role' => $role['appid']], ['role' => null]);
 
         $this->cache();
+        $this->helper('api')->cache();
 
         return ['success' => true];
     }
@@ -128,7 +130,6 @@ class Roles extends App {
 
         return $role;
     }
-
 
     public function load() {
 

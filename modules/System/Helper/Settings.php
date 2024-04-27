@@ -32,7 +32,7 @@ class Settings extends \Lime\Helper {
         ];
 
         $items[] = [
-            'icon' => null,
+            'icon' => 'system:assets/icons/api.svg',
             'route' => '/system/api',
             'label' => 'Api & Security',
             'permission' => 'app/api/manage'
