@@ -5,6 +5,8 @@
 - Fix Content model creation edge case
 - Fix GraphQL queries with float values in number typed fields
 - Update icon font
+- make /api/system/healthcheck available without token
+- Update Vue to 3.4.25
 
 ## 2.8.3 (2024-04-08)
 
