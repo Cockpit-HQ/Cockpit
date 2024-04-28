@@ -115,6 +115,20 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             showAppSearch();
         });
-    })
+    });
+
+    App.assets.require('app:assets/vendor/quicklink.js').then(() => {
+
+        quicklink.listen({
+            priority: true,
+            prerender: true,
+            ignores: [
+                /\/(auth|storage)\/?/,
+                (uri, elem) => elem.hasAttribute('noprefetch') ||
+                                uri.includes('#') ||
+                                uri.includes(App.base('#uploads:'))
+            ]
+        });
+    });
 
 }, false);
