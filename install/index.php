@@ -81,6 +81,13 @@ if (!count($failed)) {
     // check whether cockpit is already installed
     try {
 
+        // check memory config
+        @$app->memory->get('test');
+
+        if (ini_get('session.save_handler') == 'redis') {
+            $connection = @(new MemoryStorage\Client(ini_get('session.save_path')))->get('test');
+        }
+
         if ($app->dataStorage->getCollection('system/users')->count()) {
 
             header('Location: ../'.($APP_SPACE ? ":{$APP_SPACE}" : ""));
@@ -107,8 +114,11 @@ if (!count($failed)) {
 
     } catch(Throwable $e) {
 
-        $failed[] = $e->getMessage();
-
+        if (str_contains(get_class($e), 'MongoDB')) {
+            $failed[] = 'MongoDB connection failed';
+        } else {
+            $failed[] = $e->getMessage();
+        }
     }
 
 }

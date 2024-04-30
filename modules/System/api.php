@@ -27,6 +27,13 @@ $this->bind('/api/system/healthcheck', function() {
         $errors[] = ['resource' => 'datastorage', 'message' => $e->getMessage()];
     }
 
+    // check memory connection
+    try {
+        @$this->memory->get('test');
+    } catch(Throwable $e) {
+        $errors[] = ['resource' => 'memory', 'message' => $e->getMessage()];
+    }
+
     // check filetorage connection
     try {
         $this->fileStorage->listContents('uploads://');
@@ -34,9 +41,24 @@ $this->bind('/api/system/healthcheck', function() {
         $errors[] = ['resource' => 'filestorage', 'message' => $e->getMessage()];
     }
 
+    // check redis config
+    if (ini_get('session.save_handler') == 'redis') {
+        try {
+            $connection = @(new MemoryStorage\Client(ini_get('session.save_path')))->get('test');
+        } catch(Throwable $e) {
+            $errors[] = ['resource' => 'session', 'message' => $e->getMessage()];
+        }
+    }
+
     if (count($errors)) {
+
         $this->response->status = 500;
-        return ['status' => 'error', 'errors' => $errors];
+
+        if ($this->retrieve('debug')) {
+            return ['status' => 'error', 'errors' => $errors];
+        }
+
+        return ['status' => 'error'];
     }
 
     return ['status' => 'ok'];
