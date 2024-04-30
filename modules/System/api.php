@@ -44,7 +44,7 @@ $this->bind('/api/system/healthcheck', function() {
     // check redis config
     if (ini_get('session.save_handler') == 'redis') {
         try {
-            $connection = @(new MemoryStorage\Client(ini_get('session.save_path')))->get('test');
+            @(new MemoryStorage\Client(ini_get('session.save_path')))->get('test');
         } catch(Throwable $e) {
             $errors[] = ['resource' => 'session', 'message' => $e->getMessage()];
         }
