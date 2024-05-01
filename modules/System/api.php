@@ -8,7 +8,6 @@
  * )
  */
 
-
 /**
  * @OA\Get(
  *     path="/system/healthcheck",
@@ -50,6 +49,20 @@ $this->bind('/api/system/healthcheck', function() {
         }
     }
 
+    // check smtp connection
+    if ($this->mailer->getTransport() == 'smtp') {
+
+        try {
+
+            $mailer = $this->mailer->createMailer();
+
+            $mailer->smtpConnect();
+
+        } catch (Exception $e) {
+            $errors[] = ['resource' => 'mailer', 'message' => $e->getMessage()];
+        }
+    }
+
     if (count($errors)) {
 
         $this->response->status = 500;
@@ -58,7 +71,7 @@ $this->bind('/api/system/healthcheck', function() {
             return ['status' => 'error', 'errors' => $errors];
         }
 
-        return ['status' => 'error'];
+        return ['status' => 'error', 'message' => 'Enable debug mode to see detailed error messages'];
     }
 
     return ['status' => 'ok'];

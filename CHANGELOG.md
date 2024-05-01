@@ -7,6 +7,7 @@
 - Update icon font
 - make /api/system/healthcheck available without token
 - Update Vue to 3.4.26
+- Improve system health check
 
 ## 2.8.3 (2024-04-08)
 

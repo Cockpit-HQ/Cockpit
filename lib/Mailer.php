@@ -14,6 +14,10 @@ class Mailer {
         $this->options = $options;
     }
 
+    public function getTransport() {
+        return $this->transport;
+    }
+
     public function mail(mixed $to, string $subject, string $message, array $options = []) {
 
         $options = array_merge($this->options, is_array($options) ? $options: []);
@@ -31,7 +35,7 @@ class Mailer {
         return $message->send();
     }
 
-    public function createMessage(mixed $to, string $subject, string $message, array $options=[]) {
+    public function createMailer(): PHPMailer {
 
         $mail = new PHPMailer(true);
 
@@ -68,6 +72,13 @@ class Mailer {
                 $mail->SMTPOptions = $this->options['smtp'];
             }
         }
+
+        return $mail;
+    }
+
+    public function createMessage(mixed $to, string $subject, string $message, array $options=[]) {
+
+        $mail = $this->createMailer();
 
         $mail->Subject = $subject;
         $mail->Body    = $message;
