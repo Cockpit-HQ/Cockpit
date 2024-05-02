@@ -3,7 +3,6 @@ export default {
     data: function () {
 
         return {
-            agGrid: null,
             api: null,
         }
     },
@@ -49,13 +48,12 @@ export default {
             columnDefs: this.columns,
             rowData: this.rows,
             suppressScrollOnNewData: true,
-            onCellEditingStarted: (e) => e.api.setSuppressRowDrag(true),
-            onCellEditingStopped: (e) => e.api.setSuppressRowDrag(false),
+            onCellEditingStarted: (e) => e.api.setGridOption('suppressRowDrag', true),
+            onCellEditingStopped: (e) => e.api.setGridOption('suppressRowDrag', false),
         }, this.gridOptions || {});
 
         //instantiate Tabulator when element is mounted
-        this.agGrid = new agGrid.Grid(this.$refs.table, opts);
-        this.api = opts.api;
+        this.api = agGrid.createGrid(this.$refs.table, opts);
 
     },
 
