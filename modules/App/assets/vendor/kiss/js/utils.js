@@ -60,9 +60,24 @@ export function isElementOnTop(element) {
     return false;
 }
 
+export function setHighestZindex(element) {
+
+    let highestZindex = parseInt(getComputedStyle(element).zIndex),
+        offsetParent = element.offsetParent || document.body,
+        zIndex;
+
+    Array.from(offsetParent.children).forEach((node) => {
+        zIndex = parseInt(getComputedStyle(node).zIndex) || 0;
+        if (zIndex > highestZindex) highestZindex = zIndex;
+    });
+
+    element.style.zIndex = highestZindex + 1;
+}
+
 
 export default {
     debounce,
     isInViewport,
     isElementOnTop,
+    setHighestZindex,
 }

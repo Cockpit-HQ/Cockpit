@@ -1,5 +1,5 @@
 import { on } from '../../js/events.js';
-import { isElementOnTop } from '../../js/utils.js';
+import { isElementOnTop, setHighestZindex } from '../../js/utils.js';
 
 
 on(document.documentElement, 'keyup', function (e) {
@@ -30,10 +30,15 @@ customElements.define('kiss-dialog', class extends HTMLElement {
             e.preventDefault();
             this.close();
         });
+
+        if (this.getAttribute('open') === 'true') {
+            this.show();
+        }
     }
 
     show() {
 
+        setHighestZindex(this);
         this.setAttribute('open', 'true');
 
         setTimeout(() => {

@@ -801,11 +801,26 @@
       return false;
   }
 
+  function setHighestZindex(element) {
+
+      let highestZindex = parseInt(getComputedStyle(element).zIndex),
+          offsetParent = element.offsetParent || document.body,
+          zIndex;
+
+      Array.from(offsetParent.children).forEach((node) => {
+          zIndex = parseInt(getComputedStyle(node).zIndex) || 0;
+          if (zIndex > highestZindex) highestZindex = zIndex;
+      });
+
+      element.style.zIndex = highestZindex + 1;
+  }
+
 
   var utils$1 = {
       debounce,
       isInViewport,
       isElementOnTop,
+      setHighestZindex,
   };
 
   on$1(document.documentElement, 'keyup', function (e) {
@@ -836,10 +851,15 @@
               e.preventDefault();
               this.close();
           });
+
+          if (this.getAttribute('open') === 'true') {
+              this.show();
+          }
       }
 
       show() {
 
+          setHighestZindex(this);
           this.setAttribute('open', 'true');
 
           setTimeout(() => {
@@ -912,7 +932,6 @@
               }
           });
 
-
           on$1(this, 'click', '[kiss-offcanvas-close]', function(e){
 
               if (this.getAttribute('kiss-offcanvas-close') != 'no-prevent') {
@@ -922,9 +941,13 @@
               $self.close();
           });
 
+          if (this.getAttribute('open') === 'true') {
+              setHighestZindex(this);
+          }
       }
 
       show() {
+          setHighestZindex(this);
           this.setAttribute('open', 'true');
       }
 
@@ -981,6 +1004,10 @@
                   this.close();
               }
           });
+
+          if (this.getAttribute('open') === 'true') {
+              setHighestZindex(this);
+          }
       }
 
       show(ele, position = 'left') {
@@ -1029,6 +1056,7 @@
               }
           }
 
+          setHighestZindex(this);
           this.setAttribute('open', 'true');
       }
 
@@ -3272,22 +3300,6 @@
 
   let uuid = 0;
 
-  function setHighestZindex(element) {
-
-      let highestZindex = parseInt(window.getComputedStyle(element).zIndex),
-          offsetParent = element.offsetParent || document.body,
-          zIndex;
-
-      Array.from(offsetParent.children).forEach((node) => {
-          zIndex = parseInt(window.getComputedStyle(node).zIndex) || 0;
-          if (zIndex > highestZindex) highestZindex = zIndex;
-      });
-
-      element.style.zIndex = highestZindex + 1;
-  }
-
-  window.setHighestZindex = setHighestZindex;
-
   var ui = {
 
       notify: function (message, status, timeout) {
@@ -3368,8 +3380,6 @@
 
               setTimeout(() => {
 
-                  setHighestZindex(offcanvas);
-
                   let ele = offcanvas.querySelector('[autofocus]');
 
                   if (ele) {
@@ -3412,8 +3422,6 @@
               dialog.__show();
 
               setTimeout(() => {
-
-                  setHighestZindex(dialog);
 
                   let ele = dialog.querySelector('[autofocus]');
 
@@ -3547,8 +3555,6 @@
               popout.__show();
 
               setTimeout(() => {
-
-                  setHighestZindex(popout);
 
                   let ele = popout.querySelector('[autofocus]');
 

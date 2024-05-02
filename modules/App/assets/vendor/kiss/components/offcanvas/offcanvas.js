@@ -1,5 +1,5 @@
 import { on, onMutation } from '../../js/events.js';
-import { isElementOnTop } from '../../js/utils.js';
+import { isElementOnTop, setHighestZindex } from '../../js/utils.js';
 
 on(document.documentElement, 'click', '[kiss-offcanvas]', function (e) {
 
@@ -52,7 +52,6 @@ customElements.define('kiss-offcanvas', class extends HTMLElement {
             }
         });
 
-
         on(this, 'click', '[kiss-offcanvas-close]', function(e){
 
             if (this.getAttribute('kiss-offcanvas-close') != 'no-prevent') {
@@ -62,9 +61,13 @@ customElements.define('kiss-offcanvas', class extends HTMLElement {
             $self.close();
         });
 
+        if (this.getAttribute('open') === 'true') {
+            setHighestZindex(this);
+        }
     }
 
     show() {
+        setHighestZindex(this);
         this.setAttribute('open', 'true');
     }
 
