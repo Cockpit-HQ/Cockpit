@@ -3302,7 +3302,7 @@
 
   var ui = {
 
-      notify: function (message, status, timeout) {
+      notify(message, status, timeout) {
 
           if (timeout !== false && !timeout) {
               timeout = 2500;
@@ -3318,18 +3318,18 @@
           }).show();
       },
 
-      block: function (info='', context = 'ui-block') {
+      block(info='', context = 'ui-block') {
 
           document.body.insertAdjacentHTML('beforeend', `
             <app-loader-cover class="${context}" label="${info}"></app-loader-cover>
         `);
       },
 
-      unblock: function (context = 'ui-block') {
+      unblock(context = 'ui-block') {
           document.querySelectorAll(`.${context}`).forEach(node => node.parentNode.removeChild(node));
       },
 
-      offcanvas: function (content, options) {
+      offcanvas(content, options) {
 
           let id = `offcanvas-${uuid++}`,
               size = '';
@@ -3392,7 +3392,7 @@
       },
 
 
-      dialog: function (content, options, dialogtype) {
+      dialog(content, options, dialogtype) {
 
           let id = `dialog-${uuid++}`;
 
@@ -3434,7 +3434,7 @@
           return dialog;
       },
 
-      alert: function (content, options) {
+      alert(content, options) {
 
           options = Object.assign({escape:true}, options || {});
 
@@ -3450,7 +3450,7 @@
           dialog.show();
       },
 
-      confirm: function (text, onconfirm, oncancel, options) {
+      confirm(text, onconfirm, oncancel, options) {
 
           options = Object.assign({escape:true}, options || {});
 
@@ -3477,7 +3477,7 @@
           dialog.show();
       },
 
-      prompt: function (text, value = '', clb, options) {
+      prompt(text, value = '', clb, options) {
 
           options = Object.assign({
               type: 'text',
@@ -3520,7 +3520,7 @@
           setTimeout(() => input.focus(), 300);
       },
 
-      popout: function (content, options) {
+      popout(content, options) {
 
           let id = `popout-${uuid++}`,
           size = '';
