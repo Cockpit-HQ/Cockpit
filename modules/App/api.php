@@ -49,6 +49,7 @@ $this->bind('/api/*', function($params) {
             return ['error' => 'Authentication failed'];
         }
 
+        $apiUser['_id']  = $user['_id'];
         $apiUser['user'] = $user['user'];
         $apiUser['role'] = $user['role'];
 
