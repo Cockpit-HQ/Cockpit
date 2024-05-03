@@ -172,7 +172,7 @@ export default {
 
                         const option = {
                             value: item[mapping.value] ?? item,
-                            label: item[mapping.label] ?? item[mapping.value] ?? item,
+                            label: item[mapping.label] || item[mapping.value] || item,
                             group: item[mapping.group] ?? ''
                         };
 

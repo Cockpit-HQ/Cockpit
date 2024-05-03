@@ -195,7 +195,7 @@ export default {
 
                         options.push({
                             value: item[mapping.value] ?? item,
-                            label: item[mapping.label] ?? item[mapping.value] ?? item,
+                            label: item[mapping.label] || item[mapping.value] || item,
                             id: item[mapping.id] ?? item[mapping.value] ?? idx
                         });
                     });
