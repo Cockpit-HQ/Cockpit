@@ -554,6 +554,7 @@ export default {
                 </div>
                 <select v-model="group">
                     <option :value="null">{{t('All')}}</option>
+                    <hr />
                     <option :selected="group == name" v-for="name in groups">{{ name }}</option>
                 </select>
             </kiss-card>

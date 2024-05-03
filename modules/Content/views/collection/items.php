@@ -40,6 +40,7 @@
                         <icon>expand_more</icon>
                         <select v-model="state">
                             <option :value="false">{{ t('All') }}</option>
+                            <hr />
                             <option :value="1">{{ t('Published') }}</option>
                             <option :value="0">{{ t('Unpublished') }}</option>
                             <option :value="-1">{{ t('Archive') }}</option>

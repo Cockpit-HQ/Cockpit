@@ -98,6 +98,7 @@
                                 <div class="kiss-size-4" :class="{'kiss-color-muted': !group, 'kiss-text-bold': group}">{{ group || t('All groups') }}</div>
                                 <select v-model="group">
                                     <option :value="null">{{t('All')}}</option>
+                                    <hr />
                                     <option :selected="group == name" v-for="name in groups">{{ name }}</option>
                                 </select>
                             </div>

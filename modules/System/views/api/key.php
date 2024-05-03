@@ -43,6 +43,7 @@
                                 <div class="kiss-text-capitalize kiss-text-bold" :class="{'kiss-color-muted': !key.role}">{{ key.role || t('No role set') }}</div>
                                 <select class="kiss-input kiss-select" v-model="key.role">
                                     <option value="">No role</option>
+                                    <hr />
                                     <option v-for="role in roles" :value="role.appid">{{ role.name }}</option>
                                 </select>
                             </div>
