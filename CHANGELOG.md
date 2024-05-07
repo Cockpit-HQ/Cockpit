@@ -1,5 +1,10 @@
 # Release Notes
 
+## WIP
+
+- Update Vue to 3.4.27
+- Fix upload asset modal zIndex issue
+
 ## 2.8.4 (2024-05-05)
 
 - Fix Content model creation edge case

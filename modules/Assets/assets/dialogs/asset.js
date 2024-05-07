@@ -1,3 +1,5 @@
+import {initUppyUploader} from '../js/uppy.js';
+
 export default {
 
     data() {
@@ -21,8 +23,6 @@ export default {
         this.loading = true;
 
         App.assets.require([
-            'assets:assets/vendor/uppy/uppy.js',
-            'assets:assets/css/uppy.css',
             'assets:assets/css/asset.css',
         ]).then(() => {
             this.uppy = true;
@@ -104,34 +104,15 @@ export default {
             };
         },
 
-        uploadAsset() {
+        async uploadAsset() {
 
-            if (!window.Uppy) return;
-
-            this.uppy = new Uppy.Uppy({
-                meta: {
-                    assetId: this.item._id
-                },
-                autoProceed: false,
-                restrictions: {
-                    maxFileSize: App._vars.maxUploadSize || null,
-                    maxNumberOfFiles: 1,
-                    minNumberOfFiles: 1,
-                },
-                allowMultipleUploadBatches: false
-            }).use(Uppy.Dashboard, {
-                showProgressDetails: true,
-                height: 450,
-                browserBackButtonClose: false
-            }).use(Uppy.XHRUpload, {
+            this.uppy = await initUppyUploader({
+                assetId: this.item._id
+            }, {
+                bundle: true,
                 endpoint: App.route('/assets/replace'),
-                headers: {
-                    'X-CSRF-TOKEN': App.csrf
-                },
-                bundle: true
-            }).use(Uppy.Webcam, { target: Uppy.Dashboard, showVideoSourceDropdown: true })
-            .use(Uppy.ScreenCapture, { target: Uppy.Dashboard })
-            .use(Uppy.ImageEditor, { target: Uppy.Dashboard });
+                maxNumberOfFiles: 1,
+            });
 
             this.uppy.on('complete', result => {
                 Object.assign(this.item, result.successful[0].response.body)
@@ -139,7 +120,7 @@ export default {
                 App.ui.notify('Asset file updated!');
             });
 
-            this.uppy.getPlugin('Dashboard').openModal();
+            this.uppy.openModal();
         },
 
         update() {

@@ -1,32 +1,4 @@
-function getUppy(meta = {}, bundle = false) {
-
-    return new Uppy.Uppy({
-        meta,
-        autoProceed: false,
-        restrictions: {
-            maxFileSize: App._vars.maxUploadSize || null,
-            maxNumberOfFiles: bundle ? (App._vars.maxFileUploads || 20) : null,
-            minNumberOfFiles: 1,
-            //allowedFileTypes: ['image/*', 'video/*']
-        },
-        allowMultipleUploadBatches: false
-    }).use(Uppy.Dashboard, {
-        showProgressDetails: true,
-        //note: 'Images and video only, 2–3 files, up to 1 MB',
-        height: 450,
-        browserBackButtonClose: false
-    }).use(Uppy.XHRUpload, {
-        endpoint: App.route('/assets/upload'),
-        headers: {
-            'X-CSRF-TOKEN': App.csrf
-        },
-        bundle,
-    }).use(Uppy.Webcam, { target: Uppy.Dashboard, showVideoSourceDropdown: true })
-    .use(Uppy.ScreenCapture, { target: Uppy.Dashboard })
-    //.use(Uppy.Url, { target: Uppy.Dashboard, companionUrl: 'https://companion.uppy.io' })
-    .use(Uppy.ImageEditor, { target: Uppy.Dashboard });
-}
-
+import {initUppyUploader} from '../js/uppy.js';
 
 export default {
 
@@ -106,14 +78,9 @@ export default {
         this.load();
 
         App.assets.require([
-            'assets:assets/vendor/uppy/uppy.js',
-            'assets:assets/css/uppy.css',
-
             'assets:assets/vendor/spotlight/spotlight.bundle.js',
             'assets:assets/vendor/spotlight/css/spotlight.min.css',
         ]).then(() => {
-
-            this.uppy = true;
 
             if (this.$el.parentNode) {
 
@@ -124,7 +91,10 @@ export default {
                         evt.dataTransfer.items.length > 0 &&
                         evt.dataTransfer.items[0].kind === 'file'
                     ) {
-                        this.upload();
+                        if (!this.uppy) {
+                            this.uppy = true;
+                            this.upload();
+                        }
                     }
                 });
             }
@@ -154,10 +124,14 @@ export default {
 
     methods: {
 
-        upload() {
+        async upload() {
 
-            this.uppy = getUppy({
+            this.uppy = await initUppyUploader({
                 folder: this.folder || ''
+            });
+
+            this.uppy.on('dashboard:modal-closed', () => {
+                this.uppy = null;
             });
 
             this.uppy.on('complete', result => {
@@ -178,7 +152,7 @@ export default {
                 this.load();
             })
 
-            this.uppy.getPlugin('Dashboard').openModal();
+            this.uppy.openModal();
         },
 
         load(page = 1) {
@@ -490,7 +464,7 @@ export default {
             <div class="kiss-flex-1 kiss-margin-right"></div>
             <div class="kiss-button-group kiss-margin-right">
                 <button class="kiss-button" @click="createFolder()">{{ t('Create folder') }}</button>
-                <button class="kiss-button" :disabled="!uppy" @click="upload()">{{ t('Upload asset') }}</button>
+                <button class="kiss-button" @click="upload()">{{ t('Upload asset') }}</button>
             </div>
             <div class="kiss-button-group">
                 <button class="kiss-button" kiss-dialog-close>{{ t('Cancel') }}</button>
@@ -539,7 +513,7 @@ export default {
                     </div>
                     <div class="kiss-button-group">
                         <button class="kiss-button" @click="createFolder()">{{ t('Create folder') }}</button>
-                        <button class="kiss-button kiss-button-primary" :disabled="!uppy" @click="upload()">{{ t('Upload asset') }}</button>
+                        <button class="kiss-button kiss-button-primary" @click="upload()">{{ t('Upload asset') }}</button>
                     </div>
                 </div>
             </kiss-container>
