@@ -4,6 +4,7 @@
 
 - Update Vue to 3.4.27
 - Fix upload asset modal zIndex issue
+- Add color set option to color field type
 
 ## 2.8.4 (2024-05-05)
 
