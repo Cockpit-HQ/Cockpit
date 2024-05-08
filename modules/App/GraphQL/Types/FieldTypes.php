@@ -64,8 +64,14 @@ class FieldTypes {
             case 'datetime':
             case 'wysiwyg':
             case 'time':
-            case 'select':
                 $def['type'] = Type::string();
+                break;
+            case 'select':
+                if (isset($field['opts']['multiple']) && $field['opts']['multiple']) {
+                    $def['type'] = Type::listOf(Type::string());
+                } else {
+                    $def['type'] = Type::string();
+                }
                 break;
             case 'boolean':
                 $def['type'] = Type::boolean();
@@ -75,6 +81,9 @@ class FieldTypes {
                 break;
             case 'layout':
                 $def['type'] = JsonType::instance();
+                break;
+            case 'tags':
+                $def['type'] = Type::listOf(Type::string());
                 break;
             case 'set':
                 $def['type'] = new ObjectType([
