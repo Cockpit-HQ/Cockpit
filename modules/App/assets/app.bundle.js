@@ -803,7 +803,7 @@
 
   function setHighestZindex(element) {
 
-      let highestZindex = parseInt(getComputedStyle(element).zIndex),
+      let highestZindex = parseInt(getComputedStyle(element).zIndex) || 0,
           offsetParent = element.offsetParent || document.body,
           zIndex;
 

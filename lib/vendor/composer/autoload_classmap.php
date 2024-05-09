@@ -52,6 +52,7 @@ return array(
     'Aws\\Api\\Parser\\JsonParser' => $vendorDir . '/aws/aws-sdk-php/src/Api/Parser/JsonParser.php',
     'Aws\\Api\\Parser\\JsonRpcParser' => $vendorDir . '/aws/aws-sdk-php/src/Api/Parser/JsonRpcParser.php',
     'Aws\\Api\\Parser\\MetadataParserTrait' => $vendorDir . '/aws/aws-sdk-php/src/Api/Parser/MetadataParserTrait.php',
+    'Aws\\Api\\Parser\\NonSeekableStreamDecodingEventStreamIterator' => $vendorDir . '/aws/aws-sdk-php/src/Api/Parser/NonSeekableStreamDecodingEventStreamIterator.php',
     'Aws\\Api\\Parser\\PayloadParserTrait' => $vendorDir . '/aws/aws-sdk-php/src/Api/Parser/PayloadParserTrait.php',
     'Aws\\Api\\Parser\\QueryParser' => $vendorDir . '/aws/aws-sdk-php/src/Api/Parser/QueryParser.php',
     'Aws\\Api\\Parser\\RestJsonParser' => $vendorDir . '/aws/aws-sdk-php/src/Api/Parser/RestJsonParser.php',
