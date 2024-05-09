@@ -4,6 +4,8 @@
 
 - Update Vue to 3.4.27
 - Fix upload asset modal zIndex issue
+- Fix Uppy init/creation/cleanup
+- Fix Uppy init on drag'n drop
 - Add color set option to color field type
 - Fix GraphQL query error requesting select type fields with multiple option
 
