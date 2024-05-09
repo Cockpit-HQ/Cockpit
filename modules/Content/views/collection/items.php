@@ -74,32 +74,28 @@
                                 <th class="kiss-position-relative kiss-align-center" width="20">
                                     <div class="kiss-flex kiss-flex-middle">
                                         <span><?= t('State') ?></span>
-                                        <span class="kiss-size-6" v-if="sort._state">
-                                            <icon>{{sort._state == 1 ? 'south':'north'}}</icon><span>
+                                        <span class="kiss-size-6" v-if="sort._state"><icon>{{sort._state == 1 ? 'south':'north'}}</icon></span>
                                     </div>
                                     <a class="kiss-cover" @click="sortItems('_state')"></a>
                                 </th>
                                 <th class="kiss-position-relative" v-for="field in visibleFields">
                                     <div class="kiss-flex kiss-flex-middle">
                                         <span>{{ field.label || field.name}}</span>
-                                        <span class="kiss-size-6" v-if="sort[field.name]">
-                                            <icon>{{sort[field.name] == 1 ? 'south':'north'}}</icon><span>
+                                        <span class="kiss-size-6" v-if="sort[field.name]"><icon>{{sort[field.name] == 1 ? 'south':'north'}}</icon></span>
                                     </div>
                                     <a class="kiss-cover" @click="sortItems(field.name)"></a>
                                 </th>
                                 <th class="kiss-position-relative" width="120">
                                     <div class="kiss-flex kiss-flex-middle">
                                         <span><?= t('Modified') ?></span>
-                                        <span class="kiss-size-6" v-if="sort._modified">
-                                            <icon>{{sort._modified == 1 ? 'south':'north'}}</icon><span>
+                                        <span class="kiss-size-6" v-if="sort._modified"><icon>{{sort._modified == 1 ? 'south':'north'}}</icon></span>
                                     </div>
                                     <a class="kiss-cover" @click="sortItems('_modified')"></a>
                                 </th>
                                 <th class="kiss-position-relative" width="120">
                                     <div class="kiss-flex kiss-flex-middle">
                                         <span><?= t('Created') ?></span>
-                                        <span class="kiss-size-6" v-if="sort._created">
-                                            <icon>{{sort._created == 1 ? 'south':'north'}}</icon><span>
+                                        <span class="kiss-size-6" v-if="sort._created"><icon>{{sort._created == 1 ? 'south':'north'}}</icon></span>
                                     </div>
                                     <a class="kiss-cover" @click="sortItems('_created')"></a>
                                 </th>
