@@ -33,7 +33,7 @@ function ensureWritableStorageFolder($path) {
 
 // misc checks
 $checks = [
-    'Php version >= 8.1.0'                               => (version_compare(PHP_VERSION, '8.1.0') >= 0),
+    'Php version >= 8.1.0'                               => (version_compare(PHP_VERSION, '8.2.0') >= 0),
     'Missing PDO extension with Sqlite support'          => hasSQLiteSupport(),
     'Curl extension not available'                       => extension_loaded('curl'),
     'Fileinfo extension not available'                   => extension_loaded('fileinfo'),
