@@ -33,17 +33,17 @@ function ensureWritableStorageFolder($path) {
 
 // misc checks
 $checks = [
-    'Php version >= 8.1.0'                              => (version_compare(PHP_VERSION, '8.1.0') >= 0),
-    'Missing PDO extension with Sqlite support'         => hasSQLiteSupport(),
-    'Curl extension not available'                      => extension_loaded('curl'),
-    'Fileinfo extension not available'                  => extension_loaded('fileinfo'),
-    'GD extension not available'                        => extension_loaded('gd'),
-    'OpenSSL extension not available'                   => extension_loaded('openssl'),
-    'Data folder is not writable: /storage/data'        => ensureWritableStorageFolder('/data'),
-    'Cache folder is not writable: /storage/cache'      => ensureWritableStorageFolder('/cache'),
-    'Temp folder is not writable: /storage/tmp'         => ensureWritableStorageFolder('/tmp'),
-    'Thumbs folder is not writable: /storage/thumbs'    => ensureWritableStorageFolder('/thumbs'),
-    'Uploads folder is not writable: /storage/uploads'  => ensureWritableStorageFolder('/uploads'),
+    'Php version >= 8.1.0'                               => (version_compare(PHP_VERSION, '8.1.0') >= 0),
+    'Missing PDO extension with Sqlite support'          => hasSQLiteSupport(),
+    'Curl extension not available'                       => extension_loaded('curl'),
+    'Fileinfo extension not available'                   => extension_loaded('fileinfo'),
+    'GD extension not available'                         => extension_loaded('gd'),
+    'OpenSSL extension not available'                    => extension_loaded('openssl'),
+    'Data folder is not writable: /storage/data'         => ensureWritableStorageFolder('/data'),
+    'Cache folder is not writable: /storage/cache'       => ensureWritableStorageFolder('/cache'),
+    'Temp folder is not writable: /storage/tmp'          => ensureWritableStorageFolder('/tmp'),
+    'Thumbs folder is not writable: /storage/tmp/thumbs' => ensureWritableStorageFolder('/tmp/thumbs'),
+    'Uploads folder is not writable: /storage/uploads'   => ensureWritableStorageFolder('/uploads'),
 ];
 
 $failed = [];
