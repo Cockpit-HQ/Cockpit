@@ -33,6 +33,7 @@ class Response {
     304 => 'Not Modified',
     305 => 'Use Proxy',
     307 => 'Temporary Redirect',
+    308 => 'Permanent Redirect',
     // Client Error 4xx
     400 => 'Bad Request',
     401 => 'Unauthorized',
@@ -52,13 +53,24 @@ class Response {
     415 => 'Unsupported Media Type',
     416 => 'Request Range Not Satisfiable',
     417 => 'Expectation Failed',
+    422 => 'Unprocessable Entity',
+    426 => 'Upgrade Required',
+    428 => 'Precondition Required',
+    429 => 'Too Many Requests',
+    431 => 'Request Header Fields Too Large',
+    451 => 'Unavailable For Legal Reasons',
     // Server Error 5xx
     500 => 'Internal Server Error',
     501 => 'Not Implemented',
     502 => 'Bad Gateway',
     503 => 'Service Unavailable',
     504 => 'Gateway Timeout',
-    505 => 'HTTP Version Not Supported'
+    505 => 'HTTP Version Not Supported',
+    506 => 'Variant Also Negotiates',
+    507 => 'Insufficient Storage',
+    508 => 'Loop Detected',
+    510 => 'Not Extended',
+    511 => 'Network Authentication Required'
     ];
 
     /* mime types */
