@@ -20,6 +20,12 @@ $this->on('app.admin.init', function() {
 
 $this->on('app.api.request', function($request) {
 
+    // api rate limiter
+    if ($this->retrieve('api.ratelimit')) {
+        $this->helpers['apiRateLimiter'] = 'App\\Helper\\ApiRateLimiter';
+        $this->helper('apiRateLimiter')->handle($request);
+    }
+
     // simple response cache ?rspc=1
     if ($this->helper('rspc')->handle($request)) {
         return false;

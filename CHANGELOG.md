@@ -9,6 +9,7 @@
 - Add color set option to color field type
 - Fix GraphQL query error requesting select type fields with multiple option
 - Add missing HTTP status codes
+- Add api rate limits config
 
 ## 2.8.4 (2024-05-05)
 
