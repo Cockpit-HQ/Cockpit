@@ -530,7 +530,7 @@ export default {
                     continue;
                 }
 
-                if (KISS.utils.isInViewport(section, 40)) {
+                if (KISS.utils.isInViewport(section, true)) {
                     links[i].classList.add('inview');
 
                     if (section.getAttribute('active') == 'true') {
