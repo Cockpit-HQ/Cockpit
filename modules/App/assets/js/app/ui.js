@@ -38,6 +38,8 @@ export default {
         options = options || {};
 
         switch (options.size) {
+            case 'medium':
+                size = 'kiss-width-1-2@m kiss-width-1-3@xl';
             case 'large':
                 size = 'kiss-width-1-3@m kiss-width-1-4@xl';
                 break;
