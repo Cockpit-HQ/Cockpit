@@ -23,7 +23,7 @@ template: /*html*/`
         <form class="app-login-form animated" :class="{'kiss-disabled': loading}" @submit.prevent="login" v-if="view=='form'">
 
             <div class="kiss-margin">
-                <input class="kiss-input" type="text" :placeholder="t('Username or Email')" :aria-label="t('Username or Email')" v-model="auth.user" :disabled="loading" autocomplete="off" required>
+                <input class="kiss-input" type="text" :placeholder="t('Username or Email')" :aria-label="t('Username or Email')" v-model="auth.user" :disabled="loading" autocomplete="off" autofocus required>
             </div>
 
             <div class="kiss-margin">
