@@ -1,10 +1,8 @@
 <kiss-container class="kiss-margin-large">
 
-    <div class="kiss-flex kiss-flex-middle">
-        <div class="kiss-margin-small-right">
-            <app-avatar size="40" name="<?=$this['user/name']?>">
-                <canvas width="40" height="40"></canvas>
-            </app-avatar>
+    <div class="kiss-flex-inline kiss-flex-middle" gap="small">
+        <div>
+            <app-avatar size="40" name="<?=$this['user/name']?>"></app-avatar>
         </div>
         <div>
             <div class="kiss-text-bold"><?=$this['user/name']?></div>
