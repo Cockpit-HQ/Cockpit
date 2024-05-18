@@ -27,6 +27,11 @@ make also sure that <code>$_SERVER['DOCUMENT_ROOT']</code> exists and is set cor
 4. You're ready to use Cockpit :-)
 
 
+## 🐳 Docker
+
+You can also run Cockpit using Docker. This can simplify the setup and ensure a consistent environment across different deployments.
+For more information and available tags, visit the [Cockpit Docker Hub page](https://hub.docker.com/r/cockpithq/cockpit/tags).
+
 ## 💐 Partners
 
 [![ginetta](https://user-images.githubusercontent.com/321047/132780497-37da444d-d910-4433-a92a-d7629f3a4405.png)](https://www.ginetta.net)<br>
