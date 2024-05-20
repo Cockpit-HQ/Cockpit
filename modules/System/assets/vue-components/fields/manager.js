@@ -14,7 +14,11 @@ let FieldsManager = {
             fieldTypes: null,
             field: null,
 
-            fieldTypeFilter: '',
+            fieldType: {
+                filter: '',
+                selected: null,
+                type: null
+            },
 
             state: {
                 editField: false
@@ -49,6 +53,9 @@ let FieldsManager = {
             handler() { this.update() },
             deep: true
         },
+        field(){
+            this.fieldType = {};
+        },
         modelValue(val) {
             this.fields = Array.isArray(val) ? val : [];
         }
@@ -74,7 +81,7 @@ let FieldsManager = {
 
                 meta = this.fieldTypes[ft]
 
-                if (this.fieldTypeFilter && !`${ft} ${meta.label || ''}`.toLocaleLowerCase().includes(this.fieldTypeFilter.toLocaleLowerCase())) {
+                if (this.fieldType.filter && !`${ft} ${meta.label || ''}`.toLocaleLowerCase().includes(this.fieldType.filter.toLocaleLowerCase())) {
                     return;
                 }
 
@@ -142,6 +149,67 @@ let FieldsManager = {
             if (this.field.type != fieldType) {
                 this.field.opts = {};
                 this.field.type = fieldType;
+            }
+        },
+
+        fieldTypeKeyboardSelect(event) {
+
+            switch (event.keyCode) {
+
+                // close on ESC
+                case 27:
+                    this.fieldType.selected = null;
+                    break;
+                // enter
+                case 13:
+
+                    if (this.fieldType.selected !== null && this.fieldType.type) {
+                        event.preventDefault();
+                        this.setFieldType(this.fieldType.type);
+                        this.$refs.fieldTypeSelectorPopout.close();
+                        return;
+                    }
+
+                    if (Object.keys(this.filteredFieledTypes).length === 1) {
+                        event.preventDefault();
+                        this.setFieldType(Object.keys(this.filteredFieledTypes)[0]);
+                        this.$refs.fieldTypeSelectorPopout.close();
+                        return;
+                    }
+
+                    break;
+
+                // up | down
+                case 38:
+                case 40:
+
+                    const ftypes = Object.keys(this.filteredFieledTypes);
+
+                    if (!ftypes.length) {
+                        return;
+                    }
+
+                    event.preventDefault();
+
+                    if (this.fieldType.selected === null) {
+                        this.fieldType.selected = event.keyCode == 38 ? ftypes.length - 1 : 0;
+                    } else {
+
+                        if (event.keyCode == 38) {
+                            this.fieldType.selected = ftypes[this.fieldType.selected - 1] ? this.fieldType.selected - 1 : ftypes.length - 1 ;
+                        } else {
+                            this.fieldType.selected = ftypes[this.fieldType.selected + 1] ? this.fieldType.selected + 1 : 0 ;
+                        }
+                    }
+
+                    this.fieldType.type = ftypes[this.fieldType.selected];
+
+                    const ele = document.getElementById(`${this.uid}-field-type-picker-${this.fieldType.type}`);
+
+                    if (ele) {
+                        ele.scrollIntoView({behavior: 'smooth', block: 'start'});
+                    }
+                    break;
             }
         },
 
@@ -314,33 +382,32 @@ let FieldsManager = {
                 </kiss-content>
             </kiss-dialog>
 
-            <kiss-popout :id="uid+'-fieldtype-selector'" modal="true">
-                <kiss-content class="kiss-width-1-2@m">
+            <kiss-popout :id="uid+'-fieldtype-selector'" modal="true" ref="fieldTypeSelectorPopout" @popoutclose="fieldType = {}">
+                <kiss-content class="kiss-width-1-3@m">
                         <div class="kiss-size-4 kiss-text-bold">{{ t('Select field type') }}</div>
                         <div class="kiss-margin">
-                            <input class="kiss-input kiss-width-1-1" :placeholder="t('Filter...')" v-model="fieldTypeFilter">
+                            <input class="kiss-input kiss-width-1-1" :placeholder="t('Filter...')" @keydown="fieldTypeKeyboardSelect" @input="fieldType.selected=null" v-model="fieldType.filter">
                         </div>
-                        <kiss-navlist v-if="field">
-                            <kiss-grid class="kiss-margin-top" cols="1@s 2@m 3@l" gap="small">
-                                <kiss-card class="kiss-padding-xsmall" hover="contrast" v-for="(f,fieldType) in filteredFieledTypes">
-                                    <kiss-row class="kiss-position-relative" gap="small" kiss-popout-close="true">
-                                        <div>
-                                            <div class="kiss-padding-small app-border-radius" :style="{background: f.color || 'rgb(255, 248, 214)'}">
-                                                <img :src="$base(f.icon || 'system:assets/icons/edit.svg')" width="20" height="20" :title="fieldType">
-                                            </div>
-                                        </div>
-                                        <div class="kiss-flex-1">
-                                            <strong class="kiss-size-small">{{ f.label || fieldType }}</strong>
-                                            <div class="kiss-color-muted kiss-size-xsmall">{{ f.info || '' }}</div>
-                                        </div>
-                                        <a class="kiss-cover" @click="setFieldType(fieldType)"></a>
-                                    </kiss-row>
-                                </kiss-card>
+                        <kiss-navlist style="height:50vh;overflow:scroll;" v-if="field">
 
-                            </kiss-grid>
+                            <kiss-card :id="uid+'-field-type-picker-'+fieldTypeName" class="kiss-padding-small kiss-margin-xsmall" theme="bordered" hover="contrast shadow" :style="{borderColor: fieldType.type == fieldTypeName ? 'var(--kiss-color-primary)':''}" v-for="(f,fieldTypeName) in filteredFieledTypes">
+                                <kiss-row class="kiss-position-relative" gap="small" kiss-popout-close="true">
+                                    <div>
+                                        <div class="kiss-padding-small app-border-radius" :style="{background: f.color || 'rgb(255, 248, 214)'}">
+                                            <img :src="$base(f.icon || 'system:assets/icons/edit.svg')" width="20" height="20" :title="fieldType">
+                                        </div>
+                                    </div>
+                                    <div class="kiss-flex-1">
+                                        <strong class="kiss-size-small">{{ f.label || fieldTypeName }}</strong>
+                                        <div class="kiss-color-muted kiss-size-xsmall">{{ f.info || '' }}</div>
+                                    </div>
+                                    <a class="kiss-cover" @click="setFieldType(fieldTypeName)"></a>
+                                </kiss-row>
+                            </kiss-card>
+
                         </kiss-navlist>
                         <div class="kiss-margin">
-                            <button type="button" class="kiss-button kiss-button-primary kiss-width-1-1" kiss-popout-close="true">{{ t('Cancel') }}</button>
+                            <button type="button" class="kiss-button kiss-width-1-1" kiss-popout-close="true">{{ t('Cancel') }}</button>
                         </div>
                 </kiss-content>
             </kiss-popout>
