@@ -102,6 +102,16 @@ customElements.define('kiss-popout', class extends HTMLElement {
             }
         }
 
+        setTimeout(() => {
+
+            const focusElement = this.querySelector('[autofocus]') || this.querySelector('a[href]:not([target="_blank"]),button:not([disabled])');
+
+            if (focusElement) {
+                focusElement.focus();
+            }
+
+        }, 100);
+
         setHighestZindex(this);
         this.setAttribute('open', 'true');
     }

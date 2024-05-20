@@ -386,11 +386,11 @@ let FieldsManager = {
                 <kiss-content class="kiss-width-1-3@m">
                         <div class="kiss-size-4 kiss-text-bold">{{ t('Select field type') }}</div>
                         <div class="kiss-margin">
-                            <input class="kiss-input kiss-width-1-1" :placeholder="t('Filter...')" @keydown="fieldTypeKeyboardSelect" @input="fieldType.selected=null" v-model="fieldType.filter">
+                            <input class="kiss-input kiss-width-1-1" :placeholder="t('Filter...')" @keydown="fieldTypeKeyboardSelect" @input="fieldType.selected=null" v-model="fieldType.filter" autofocus>
                         </div>
                         <kiss-navlist style="height:50vh;overflow:scroll;" v-if="field">
 
-                            <kiss-card :id="uid+'-field-type-picker-'+fieldTypeName" class="kiss-padding-small kiss-margin-xsmall" theme="bordered" hover="contrast shadow" :style="{borderColor: fieldType.type == fieldTypeName ? 'var(--kiss-color-primary)':''}" v-for="(f,fieldTypeName) in filteredFieledTypes">
+                            <kiss-card :id="uid+'-field-type-picker-'+fieldTypeName" class="kiss-padding-small kiss-margin-xsmall" theme="bordered" hover="contrast shadow" :style="{borderColor: (fieldType.selected || fieldType.selected == 0) && fieldType.type == fieldTypeName ? 'var(--kiss-color-primary)':''}" v-for="(f,fieldTypeName) in filteredFieledTypes">
                                 <kiss-row class="kiss-position-relative" gap="small" kiss-popout-close="true">
                                     <div>
                                         <div class="kiss-padding-small app-border-radius" :style="{background: f.color || 'rgb(255, 248, 214)'}">
