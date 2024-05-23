@@ -391,7 +391,7 @@ let FieldsManager = {
                         <kiss-navlist style="height:50vh;overflow:scroll;" v-if="field">
 
                             <kiss-card :id="uid+'-field-type-picker-'+fieldTypeName" class="kiss-padding-small kiss-margin-xsmall" theme="bordered" hover="contrast shadow" :style="{borderColor: (fieldType.selected || fieldType.selected == 0) && fieldType.type == fieldTypeName ? 'var(--kiss-color-primary)':''}" v-for="(f,fieldTypeName) in filteredFieledTypes">
-                                <kiss-row class="kiss-position-relative" gap="small" kiss-popout-close="true">
+                                <kiss-row class="kiss-position-relative kiss-flex-middle" gap="small" kiss-popout-close="true">
                                     <div>
                                         <div class="kiss-padding-small app-border-radius" :style="{background: f.color || 'rgb(255, 248, 214)'}">
                                             <img :src="$base(f.icon || 'system:assets/icons/edit.svg')" width="20" height="20" :title="fieldType">

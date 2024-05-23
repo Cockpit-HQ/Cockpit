@@ -69,7 +69,7 @@ $sidePanelContents = $this->block('app-side-panel', ['print' => false]);
                             <?php endforeach ?>
                             <li class="kiss-nav-divider"></li>
                             <li>
-                                <a class="kiss-flex kiss-flex-center" aria-label="<?= t('Search') ?>" kiss-tooltip="right" app-search>
+                                <a class="kiss-flex kiss-flex-center" aria-label="<?= t('Search (Strg + Space)') ?>" kiss-tooltip="right" app-search>
                                     <kiss-svg src="<?= $this->base('system:assets/icons/search.svg') ?>" width="20"><canvas width="20" height="20"></canvas></kiss-svg>
                                 </a>
                             </li>
