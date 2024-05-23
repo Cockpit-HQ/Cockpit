@@ -63,6 +63,9 @@ $this->bind('/api/system/healthcheck', function() {
         }
     }
 
+    // allow addons to do custom health checks
+    $this->trigger('system.api.healthcheck', [&$errors]);
+
     if (count($errors)) {
 
         $this->response->status = 500;
