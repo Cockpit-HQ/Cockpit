@@ -4,11 +4,11 @@ namespace App\Helper;
 
 class ApiRateLimiter extends \Lime\Helper {
 
-    protected int $rateLimitTime = 60;
+    protected int $rateLimitTime;
 
     protected function initialize() {
-
-        $this->rateLimitTime = $this->app->retrieve('api.ratelimit.time', 60);
+        // Retrieve the rate limit time (in seconds) from the configuration
+        $this->rateLimitTime = $this->app->retrieve('api.security.ratelimit.time', 60);
     }
 
     public function handle($request) {
@@ -19,7 +19,13 @@ class ApiRateLimiter extends \Lime\Helper {
             $identifier = $request->getClientIp();
         }
 
-        if ($this->isRateLimitExceeded($identifier, $this->app->retrieve('api.ratelimit', 0))) {
+        $ratelimit = $this->app->retrieve('api.security.ratelimit', 0);
+
+        if (!$ratelimit) {
+            return;
+        }
+
+        if ($this->isRateLimitExceeded($identifier, $ratelimit)) {
             $response = new \Lime\Response();
             $response->status = 429;
             $response->mime = 'json';
