@@ -20,15 +20,39 @@ $this->on('app.admin.init', function() {
 
 $this->on('app.api.request', function($request) {
 
-    // api rate limiter
-    if ($this->retrieve('api.ratelimit')) {
-        $this->helpers['apiRateLimiter'] = 'App\\Helper\\ApiRateLimiter';
-        $this->helper('apiRateLimiter')->handle($request);
+    // check allowed origins
+
+    $allowedOrigins = $this->retrieve('api.security.origins');
+
+    if ($allowedOrigins) {
+
+        $origin = $request->server['HTTP_REFERER'] ?? ($request->server['HTTP_ORIGIN'] ?? '');
+
+        if ($origin) {
+
+            $host = parse_url($origin, \PHP_URL_HOST);
+
+            if ($host && !in_array($host, $allowedOrigins)) {
+
+                $response = new \Lime\Response();
+                $response->status = 412;
+                $response->mime = 'json';
+                $response->body = json_encode(['error' => 'Not allowed']);
+                $response->flush();
+                exit;
+            }
+        }
     }
 
     // simple response cache ?rspc=1
     if ($this->helper('rspc')->handle($request)) {
         return false;
+    }
+
+    // api rate limiter
+    if ($this->retrieve('api.security.ratelimit')) {
+        $this->helpers['apiRateLimiter'] = 'App\\Helper\\ApiRateLimiter';
+        $this->helper('apiRateLimiter')->handle($request);
     }
 
     include(__DIR__.'/api.php');

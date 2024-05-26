@@ -10,6 +10,7 @@
 - Fix GraphQL query error requesting select type fields with multiple option
 - Add missing HTTP status codes
 - Add api rate limits config
+- Add api allowed origins config
 
 ## 2.8.4 (2024-05-05)
 
