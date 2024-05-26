@@ -1,34 +1,32 @@
 
 let checkSessionTimeout = function() {
 
-    let check = function() {
+    if (checkSessionTimeout.idle) {
+        clearTimeout(checkSessionTimeout.idle);
+    }
 
-        let isActive = document.getElementById('app-session-login');
+    let isActive = document.getElementById('app-session-login');
 
-        App.request('/check-session').then(rsp => {
+    App.request('/check-session').then(rsp => {
 
-            App.csrf = rsp.csrf || '';
+        App.csrf = rsp.csrf || '';
 
-            if (rsp && rsp.status && isActive) {
-                isActive.closest('kiss-dialog').close();
-            }
+        if (rsp && rsp.status && isActive) {
+            isActive.closest('kiss-dialog').close();
+        }
 
-            if (rsp && !rsp.status && !isActive) {
-                VueView.ui.modal('/auth/dialog');
-            }
+        if (rsp && !rsp.status && !isActive) {
+            VueView.ui.modal('/auth/dialog');
+        }
 
-        }).catch(rsp => {
-            // todo
-        });
-    };
+    }).catch(rsp => {
+        // todo
+    });
 
-    setInterval(check, 30000);
+    checkSessionTimeout.idle = setTimeout(checkSessionTimeout, 30000);
+};
 
-    document.addEventListener('visibilitychange', function() {
-        if (!document.hidden) check();
-    }, false);
-
-}
+checkSessionTimeout.idle = null;
 
 let showAppSearch = function() {
 
@@ -130,5 +128,16 @@ document.addEventListener('DOMContentLoaded', () => {
             ]
         });
     });
+
+}, false);
+
+document.addEventListener('visibilitychange', function() {
+
+    if (document.hidden) {
+        return
+    }
+
+    checkSessionTimeout();
+    App.storage.load();
 
 }, false);

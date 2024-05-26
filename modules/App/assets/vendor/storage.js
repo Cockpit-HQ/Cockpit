@@ -32,6 +32,12 @@
         })();
     }
 
+    Store.prototype.load = function () {
+        try {
+            this.data = this.adapter.load(this.name);
+        } catch (e) { }
+    };
+
     Store.prototype.store = function () {
         try {
             this.adapter.store(this.name, this.data);

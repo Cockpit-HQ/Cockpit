@@ -12,6 +12,10 @@
     border: 1px var(--kiss-hr-color) solid;
 }
 
+.tox.tox-tinymce-aux:not(:empty) {
+    z-index: 20000;
+}
+
 .tox .tox-dialog__header,
 .tox .tox-dialog__footer {
     background: var(--kiss-base-background-color);
