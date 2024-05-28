@@ -801,7 +801,7 @@
       return false;
   }
 
-  function setHighestZindex(element) {
+  function setHighestZindex(element, max = 19998) {
 
       let highestZindex = parseInt(getComputedStyle(element).zIndex) || 0,
           offsetParent = element.offsetParent || document.body,
@@ -809,8 +809,17 @@
 
       Array.from(offsetParent.children).forEach((node) => {
           zIndex = parseInt(getComputedStyle(node).zIndex) || 0;
+
+          if (max > 0 && zIndex > max) {
+              return;
+          }
+
           if (zIndex > highestZindex) highestZindex = zIndex;
       });
+
+      if (max > 0 && highestZindex >= max) {
+          highestZindex = max;
+      }
 
       element.style.zIndex = highestZindex + 1;
   }

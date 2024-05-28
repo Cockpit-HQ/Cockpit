@@ -11,6 +11,7 @@
 - Add missing HTTP status codes
 - Add api rate limits config
 - Add api allowed origins config
+- Fix zIndex layer issues (admin ui)
 
 ## 2.8.4 (2024-05-05)
 
