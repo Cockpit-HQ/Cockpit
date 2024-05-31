@@ -1,6 +1,6 @@
 # Release Notes
 
-## WIP
+## 2.8.5 (2024-05-31)
 
 - Update Vue to 3.4.27
 - Fix upload asset modal zIndex issue
@@ -11,7 +11,7 @@
 - Add missing HTTP status codes
 - Add api rate limits config
 - Add api allowed origins config
-- Fix zIndex layer issues (admin ui)
+- Fix modal zIndex layer issues (admin ui)
 
 ## 2.8.4 (2024-05-05)
 
