@@ -33,35 +33,35 @@ $this->on('restApi.config', function($restApi) {
      *         in="query",
      *         name="w",
      *         required=false,
-     *         @OA\Schema(type="int")
+     *         @OA\Schema(type="integer")
      *     ),
      *     @OA\Parameter(
      *         description="Height",
      *         in="query",
      *         name="h",
      *         required=false,
-     *         @OA\Schema(type="int")
+     *         @OA\Schema(type="integer")
      *     ),
      *     @OA\Parameter(
      *         description="Quality",
      *         in="query",
      *         name="q",
      *         required=false,
-     *         @OA\Schema(type="int")
+     *         @OA\Schema(type="integer")
      *     ),
      *     @OA\Parameter(
      *         description="Mime type: ['auto','gif','jpeg','png','webp','bmp']",
      *         in="query",
      *         name="mime",
      *         required=false,
-     *         @OA\Schema(type="int")
+     *         @OA\Schema(type="integer")
      *     ),
      *     @OA\Parameter(
      *         description="Auto redirect to generated thumbnail",
      *         in="query",
      *         name="re",
      *         required=false,
-     *         @OA\Schema(type="int")
+     *         @OA\Schema(type="integer")
      *     ),
      *     @OA\Parameter(
      *         description="Time string for cache invalidation - usable for cache invalidation",
@@ -75,9 +75,25 @@ $this->on('restApi.config', function($restApi) {
      *         in="query",
      *         name="o",
      *         required=false,
-     *         @OA\Schema(type="int")
+     *         @OA\Schema(type="integer")
      *     ),
-     *     @OA\Response(response="200", description="Url to generated image or binary if parameter `o=1`"),
+     *     @OA\Response(
+     *          response="200",
+     *          description="Url to generated image or binary if parameter `o=1`",
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *              @OA\Schema(
+     *                  type="string"
+     *              )
+     *          ),
+     *          @OA\MediaType(
+     *              mediaType="application/octet-stream",
+     *              @OA\Schema(
+     *                  type="string",
+     *                  format="binary"
+     *              )
+     *          )
+     *     ),
      *     @OA\Response(response="404", description="Asset not found")
      * )
      */
@@ -154,7 +170,7 @@ $this->on('restApi.config', function($restApi) {
      *         required=true,
      *         @OA\Schema(type="string")
      *     ),
-     *     @OA\Response(response="200", description="Assets data"),
+     *     @OA\Response(response="200", description="Assets data", @OA\JsonContent()),
      *     @OA\Response(response="404", description="Asset not found")
      * )
      */

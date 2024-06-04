@@ -12,7 +12,7 @@
  * @OA\Get(
  *     path="/system/healthcheck",
  *     tags={"system"},
- *     @OA\Response(response="200", description="Get system status")
+ *     @OA\Response(response="200", description="Get system status", @OA\JsonContent())
  * )
  */
 $this->bind('/api/system/healthcheck', function() {

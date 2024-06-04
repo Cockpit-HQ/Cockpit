@@ -35,28 +35,28 @@ $this->on('restApi.config', function($restApi) {
          *         in="query",
          *         name="filter",
          *         required=false,
-         *         @OA\Schema(type="json")
+         *         @OA\Schema(type="string")
          *     ),
          *     @OA\Parameter(
          *         description="Url encoded fields projection as json",
          *         in="query",
          *         name="fields",
          *         required=false,
-         *         @OA\Schema(type="json")
+         *         @OA\Schema(type="string")
          *     ),
          *     @OA\Parameter(
          *         description="Populate item with linked content items.",
          *         in="query",
          *         name="populate",
          *         required=false,
-         *         @OA\Schema(type="int")
+         *         @OA\Schema(type="integer")
          *     ),
          *     @OA\OpenApi(
          *         security={
          *             {"api_key": {}}
          *         }
          *     ),
-         *     @OA\Response(response="200", description="Get model item"),
+         *     @OA\Response(response="200", description="Get model item", @OA\JsonContent()),
          *     @OA\Response(response="404", description="Model not found"),
          *     @OA\Response(response="401", description="Unauthorized")
          * )
@@ -140,7 +140,7 @@ $this->on('restApi.config', function($restApi) {
          *             {"api_key": {}}
          *         }
          *     ),
-         *     @OA\Response(response="200", description="Saved model item"),
+         *     @OA\Response(response="200", description="Saved model item", @OA\JsonContent()),
          *     @OA\Response(response="404", description="Model not found"),
          *     @OA\Response(response="401", description="Unauthorized"),
          *     @OA\Response(response="412", description="Item data is missing")
@@ -232,21 +232,21 @@ $this->on('restApi.config', function($restApi) {
          *         in="query",
          *         name="fields",
          *         required=false,
-         *         @OA\Schema(type="json")
+         *         @OA\Schema(type="string")
          *     ),
          *     @OA\Parameter(
          *         description="Populate item with linked content items.",
          *         in="query",
          *         name="populate",
          *         required=false,
-         *         @OA\Schema(type="int")
+         *         @OA\Schema(type="integer")
          *     ),
          *     @OA\OpenApi(
          *         security={
          *             {"api_key": {}}
          *         }
          *     ),
-         *     @OA\Response(response="200", description="Get content item"),
+         *     @OA\Response(response="200", description="Get content item", @OA\JsonContent()),
          *     @OA\Response(response="404", description="Model not found"),
          *     @OA\Response(response="401", description="Unauthorized")
          * )
@@ -320,7 +320,7 @@ $this->on('restApi.config', function($restApi) {
          *             {"api_key": {}}
          *         }
          *     ),
-         *     @OA\Response(response="200", description="Content item removed"),
+         *     @OA\Response(response="200", description="Content item removed", @OA\JsonContent()),
          *     @OA\Response(response="404", description="Model not found"),
          *     @OA\Response(response="401", description="Unauthorized")
          * )
@@ -374,49 +374,49 @@ $this->on('restApi.config', function($restApi) {
      *         in="query",
      *         name="filter",
      *         required=false,
-     *         @OA\Schema(type="json")
+     *         @OA\Schema(type="string")
      *     ),
      *     @OA\Parameter(
      *         description="Url encoded sort json",
      *         in="query",
      *         name="sort",
      *         required=false,
-     *         @OA\Schema(type="json")
+     *         @OA\Schema(type="string")
      *     ),
      *     @OA\Parameter(
      *         description="Url encoded fields projection as json",
      *         in="query",
      *         name="fields",
      *         required=false,
-     *         @OA\Schema(type="json")
+     *         @OA\Schema(type="string")
      *     ),
      *     @OA\Parameter(
      *         description="Max amount of items to return",
      *         in="query",
      *         name="limit",
      *         required=false,
-     *         @OA\Schema(type="int")
+     *         @OA\Schema(type="integer")
      *     ),
      *     @OA\Parameter(
      *         description="Amount of items to skip",
      *         in="query",
      *         name="skip",
      *         required=false,
-     *         @OA\Schema(type="int")
+     *         @OA\Schema(type="integer")
      *     ),
      *     @OA\Parameter(
      *         description="Populate items with linked content items.",
      *         in="query",
      *         name="populate",
      *         required=false,
-     *         @OA\Schema(type="int")
+     *         @OA\Schema(type="integer")
      *     ),
      *     @OA\OpenApi(
      *         security={
      *             {"api_key": {}}
      *         }
      *     ),
-     *     @OA\Response(response="200", description="Get list of published model items"),
+     *     @OA\Response(response="200", description="Get list of published model items", @OA\JsonContent(type="array", @OA\Items(type="object", additionalProperties=true))),
      *     @OA\Response(response="401", description="Unauthorized"),
      *     @OA\Response(response="404", description="Model not found")
      * )
@@ -511,7 +511,7 @@ $this->on('restApi.config', function($restApi) {
      *         in="query",
      *         name="pipeline",
      *         required=true,
-     *         @OA\Schema(type="json")
+     *         @OA\Schema(type="string")
      *     ),
      *    @OA\Parameter(
      *         description="Return content for specified locale",
@@ -525,14 +525,14 @@ $this->on('restApi.config', function($restApi) {
      *         in="query",
      *         name="populate",
      *         required=false,
-     *         @OA\Schema(type="int")
+     *         @OA\Schema(type="integer")
      *     ),
      *     @OA\OpenApi(
      *         security={
      *             {"api_key": {}}
      *         }
      *     ),
-     *     @OA\Response(response="200", description="Get list of aggregated and published model items"),
+     *     @OA\Response(response="200", description="Get list of aggregated and published model items", @OA\JsonContent(type="array", @OA\Items(type="object", additionalProperties=true))),
      *     @OA\Response(response="401", description="Unauthorized"),
      *     @OA\Response(response="404", description="Model not found")
      * )
@@ -612,21 +612,21 @@ $this->on('restApi.config', function($restApi) {
      *         in="query",
      *         name="fields",
      *         required=false,
-     *         @OA\Schema(type="json")
+     *         @OA\Schema(type="string")
      *     ),
      *     @OA\Parameter(
      *         description="Populate items with linked content items.",
      *         in="query",
      *         name="populate",
      *         required=false,
-     *         @OA\Schema(type="int")
+     *         @OA\Schema(type="integer")
      *     ),
      *     @OA\OpenApi(
      *         security={
      *             {"api_key": {}}
      *         }
      *     ),
-     *     @OA\Response(response="200", description="Get items tree"),
+     *     @OA\Response(response="200", description="Get items tree", @OA\JsonContent(type="array", @OA\Items(type="object", additionalProperties=true))),
      *     @OA\Response(response="401", description="Unauthorized"),
      *     @OA\Response(response="404", description="Model not found")
      * )
