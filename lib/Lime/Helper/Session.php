@@ -9,15 +9,15 @@ class Session extends \Lime\Helper {
 
     protected bool $initialized = false;
     public string $name;
-    protected $session;
+    protected array $session;
 
-    public function init(?string $name = null) {
+    public function init(?string $name = null): void {
 
         if ($this->initialized) return;
 
         if (session_status() != PHP_SESSION_ACTIVE) {
 
-            $this->name = $name ? $name : $this->app->retrieve('session.name');
+            $this->name = $name ?: $this->app->retrieve('session.name');
 
             session_name($this->name);
             session_start();

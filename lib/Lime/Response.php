@@ -152,7 +152,7 @@ class Response {
             \ob_start();
         }
 
-        if (!headers_sent($filename, $linenum)) {
+        if (!headers_sent()) {
 
             $body = $this->body;
             $headers = [];

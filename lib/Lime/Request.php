@@ -84,7 +84,7 @@ class Request {
 
         if ($cast && $value !== null) {
 
-            if (\in_array($cast, ['bool', 'boolean']) && \is_string($value) && \in_array($cast, ['true', 'false'])) {
+            if (\in_array($cast, ['bool', 'boolean']) && \is_string($value) && \in_array($value, ['true', 'false'])) {
                 $value = $value === 'true';
             }
 

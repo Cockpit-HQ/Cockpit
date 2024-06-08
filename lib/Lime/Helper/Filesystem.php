@@ -2,10 +2,12 @@
 
 namespace Lime\Helper;
 
+use SplFileObject;
 
 class Filesystem extends \Lime\Helper {
 
     /**
+     * @param string $path
      * @return ?string
      */
     public function path(string $path): ?string {
@@ -17,7 +19,6 @@ class Filesystem extends \Lime\Helper {
      */
     public function ls(): array {
         $pattern = null;
-        $dir     = null;
 
         $args = \func_get_args();
         $lst  = [];
@@ -25,6 +26,7 @@ class Filesystem extends \Lime\Helper {
         switch(\count($args)) {
             case 0:
                 $dir = \getcwd();
+                break;
             case 1:
                 $dir = (\str_contains($args[0], ':')) ? $this->app->path($args[0]) : $args[0];
                 break;
@@ -190,8 +192,8 @@ class Filesystem extends \Lime\Helper {
     }
 
     /**
-     * @param $path
-     * @param $newpath
+     * @param string $path
+     * @param string $newpath
      * @param bool|true $overwrite
      * @return bool
      * @throws \Exception
@@ -241,7 +243,7 @@ class Filesystem extends \Lime\Helper {
     }
 
     /**
-     * @param $dir
+     * @param string $dir
      * @param bool|false $selfremove
      * @return bool
      */
@@ -255,7 +257,7 @@ class Filesystem extends \Lime\Helper {
                 $empty &= \is_dir($file) && $this->removeEmptySubFolders($file, true);
             }
 
-            return $empty && ($selfremove ? @rmdir($path) : true);
+            return $empty && (!$selfremove || @rmdir($path));
         }
 
         return false;
@@ -268,8 +270,8 @@ class Filesystem extends \Lime\Helper {
 
 class FileObject {
 
-    protected $path;
-    protected $fileObject;
+    protected string $path;
+    protected SplFileObject $fileObject;
 
     public function __construct(string $path) {
         $this->path = $path;

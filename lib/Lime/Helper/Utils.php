@@ -349,7 +349,7 @@ class Utils extends \Lime\Helper {
 
         foreach ($elements as $element) {
 
-            $pid = isset($element[$options['parent_id_column_name']]) ? $element[$options['parent_id_column_name']] : null;
+            $pid = $element[$options['parent_id_column_name']] ?? null;
 
             if ($pid == $parentId) {
 
@@ -368,8 +368,8 @@ class Utils extends \Lime\Helper {
 
             \usort($branch, function ($a, $b) use($options) {
 
-                $_a = isset($a[$options['sort_column_name']]) ? $a[$options['sort_column_name']] : null;
-                $_b = isset($b[$options['sort_column_name']]) ? $b[$options['sort_column_name']] : null;
+                $_a = $a[$options['sort_column_name']] ?? null;
+                $_b = $b[$options['sort_column_name']] ?? null;
 
                 if ($_a == $_b) {
                     return 0;
@@ -399,7 +399,6 @@ class Utils extends \Lime\Helper {
                 $item['_depth'] = $depth;
                 $item['_path'] = $path.$item[$options['id_column_name']];
                 $result[] = $item;
-                $idx = \count($result) - 1;
                 unset($items[$key]);
                 $this->buildTreeList($items, $options, $item[$options['id_column_name']], $result, $depth + 1, "{$path}{$item[$options['id_column_name']]}-");
             }
@@ -407,8 +406,8 @@ class Utils extends \Lime\Helper {
 
         if ($depth == 0) {
 
-            foreach ($result as $i => $item) {
-                $result[$i]['_isParent'] = isset($result[$i+1]) && $result[($i+1)][$options['parent_id_column_name']]===$item[$options['id_column_name']];
+            foreach ($result as $i => $itm) {
+                $result[$i]['_isParent'] = isset($result[$i+1]) && $result[($i+1)][$options['parent_id_column_name']]===$itm[$options['id_column_name']];
             }
         }
 
@@ -438,7 +437,7 @@ class Utils extends \Lime\Helper {
 
         if (!\is_array($input)) {
 
-            if (\is_string($input) && ($input === 'true' || $input === 'false')) {
+            if (($input === 'true' || $input === 'false')) {
                 $input = filter_var($input, FILTER_VALIDATE_BOOLEAN);
             }
             return $input;
@@ -450,7 +449,7 @@ class Utils extends \Lime\Helper {
                 $input[$k] = $this->fixStringBooleanValues($input[$k]);
             }
 
-            if (\is_string($v) && ($v === 'true' || $v === 'false')) {
+            if (($v === 'true' || $v === 'false')) {
                 $v = \filter_var($v, FILTER_VALIDATE_BOOLEAN);
             }
 
@@ -493,10 +492,11 @@ class Utils extends \Lime\Helper {
 
     /**
      * Execute callable with retry if it fails
-     * @param  int $times
-     * @param  callable $fn
-     * @param  int $delay
+     * @param int $times
+     * @param callable $fn
+     * @param int $delay
      * @return null
+     * @throws \Exception
      */
     public function retry(int $times, callable $fn, int $delay = 0): mixed {
 
@@ -525,9 +525,9 @@ class Utils extends \Lime\Helper {
      *
      * @param [type] $expr
      * @param boolean $return
-     * @return void
+     * @return string
      */
-    public function var_export(mixed $expr, bool $return = false): mixed {
+    public function var_export(mixed $expr, bool $return = false): string {
 
         $export = var_export($expr, true);
         $array  = preg_split("/\r\n|\n|\r/", $export);
