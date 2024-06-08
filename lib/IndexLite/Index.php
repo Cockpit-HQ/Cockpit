@@ -405,7 +405,7 @@ class Index {
     }
 }
 
-function uuidv4() {
+function uuidv4(): string {
 
     if (function_exists('random_bytes')) {
         $uuid = bin2hex(random_bytes(16));

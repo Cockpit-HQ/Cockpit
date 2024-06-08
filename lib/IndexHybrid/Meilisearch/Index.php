@@ -2,12 +2,10 @@
 
 namespace IndexHybrid\Meilisearch;
 
-use Exception;
-
 class Index {
 
     protected Manager $manager;
-    private $name;
+    private string $name;
 
     public function __construct(string $name, Manager $manager) {
         $this->name = $name;
@@ -18,7 +16,7 @@ class Index {
         return $this->manager->sendRequest("/indexes/{$this->name}/documents", 'DELETE');
     }
 
-    public function addDocument(mixed $id, array $data, bool $safe = true) {
+    public function addDocument(mixed $id, array $data, bool $safe = true): void {
 
         if ($safe) {
             $this->removeDocument($id);
@@ -87,7 +85,7 @@ class Index {
     }
 }
 
-function uuidv4() {
+function uuidv4(): string {
 
     if (function_exists('random_bytes')) {
         $uuid = bin2hex(random_bytes(16));

@@ -37,10 +37,11 @@ class Thumbhash {
     /**
      * Encodes an RGBA image to a ThumbHash. RGB should not be premultiplied by A.
      *
-     * @param  int  $w  The width of the input image. Must be ≤100px.
-     * @param  int  $h  The height of the input image. Must be ≤100px.
-     * @param  array  $rgba  The pixels in the input image, row-by-row. Must have w*h*4 elements.
+     * @param int $w The width of the input image. Must be ≤100px.
+     * @param int $h The height of the input image. Must be ≤100px.
+     * @param array $rgba The pixels in the input image, row-by-row. Must have w*h*4 elements.
      * @returns array The ThumbHash as an array.
+     * @throws Exception
      */
 
     public static function RGBAToHash(int $w, int $h, array $rgba): array {

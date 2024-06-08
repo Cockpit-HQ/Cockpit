@@ -4,7 +4,7 @@ namespace IndexHybrid;
 
 class Manager {
 
-    protected $manager;
+    protected \IndexLite\Manager|Meilisearch\Manager $manager;
     protected ?string $type = null;
 
     public function __construct(string $server, array $options = []) {
@@ -18,12 +18,12 @@ class Manager {
 
             $server = str_replace('meilisearch://', ($options['https'] ?? true) ? 'https://' : 'http://', $server);
 
-            $this->manager = new \IndexHybrid\Meilisearch\Manager($server, $options);
+            $this->manager = new Meilisearch\Manager($server, $options);
             $this->type = 'meilisearch';
         }
     }
 
-    public function getType() {
+    public function getType(): ?string {
         return $this->type;
     }
 

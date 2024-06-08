@@ -102,11 +102,11 @@ class MongoLite {
 
     public function find(string $collection, array $options = []): ResultSet {
 
-        $filter = isset($options['filter']) ? $options['filter'] : [];
+        $filter = $options['filter'] ?? [];
         $fields = isset($options['fields']) && $options['fields'] ? $options['fields'] : null;
-        $limit  = isset($options['limit'])  ? $options['limit'] : null;
-        $sort   = isset($options['sort'])   ? $options['sort'] : null;
-        $skip   = isset($options['skip'])   ? $options['skip'] : null;
+        $limit  = $options['limit'] ?? null;
+        $sort   = $options['sort'] ?? null;
+        $skip   = $options['skip'] ?? null;
 
         $filter = $this->_fixForMongo($filter, true);
         $cursor = $this->getCollection($collection)->find($filter, $fields);
@@ -115,22 +115,20 @@ class MongoLite {
         if ($sort)  $cursor->sort($sort);
         if ($skip)  $cursor->skip($skip);
 
-        $docs      = $cursor->toArray();
-        $resultSet = new ResultSet($this, $docs);
+        $docs = $cursor->toArray();
 
-        return $resultSet;
+        return new ResultSet($this, $docs);
     }
 
-    public function aggregate(string $collection, array $pipeline) {
+    public function aggregate(string $collection, array $pipeline): ResultSet {
 
-        $cursor    = $this->getCollection($collection)->aggregate($pipeline);
-        $docs      = $cursor->toArray();
-        $resultSet = new ResultSet($this, $docs);
+        $cursor = $this->getCollection($collection)->aggregate($pipeline);
+        $docs   = $cursor->toArray();
 
-        return $resultSet;
+        return new ResultSet($this, $docs);
     }
 
-    public function getFindTermFilter($term) {
+    public function getFindTermFilter($term): \Closure {
 
         $terms = str_getcsv(trim($term), ' ');
 
@@ -145,8 +143,10 @@ class MongoLite {
                 $json = json_encode($doc);
 
                 foreach ($terms as $term) {
-                    return stripos($json, $term) !== false;
+                    if (stripos($json, $term) !== false) return true;
                 }
+
+                return false;
             };
         }
 
@@ -242,7 +242,7 @@ class MongoLite {
 
             if (is_string($v) && str_starts_with($v, '$DATE(')) {
                 $format = trim(substr($v, 6, -1));
-                $v = date($format ? $format : 'Y-m-d');
+                $v = date($format ?: 'Y-m-d');
             }
         }
 

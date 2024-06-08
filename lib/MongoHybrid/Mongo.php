@@ -317,7 +317,7 @@ class Mongo {
 
             if (is_string($v) && str_starts_with($v, '$DATE(')) {
                 $format = trim(substr($v, 6, -1));
-                $v = date($format ? $format : 'Y-m-d');
+                $v = date($format ?: 'Y-m-d');
             }
         }
 

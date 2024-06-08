@@ -24,7 +24,8 @@ class NaturalLanguageToMongoQuery {
         return $this->parseExpression($tokens);
     }
 
-    private function tokenize(string $input) {
+    private function tokenize(string $input): array {
+
         $delimiters = ['(', ')', '>', '<', '=', '!', ' ', '+', '-', '*', '/', ',', "'", '"'];
         $tokens = [];
         $currentToken = '';
@@ -129,7 +130,7 @@ class NaturalLanguageToMongoQuery {
         }
 
         if ($field === 'is') {
-            return [$operator => $isNot ? false : true];
+            return [$operator => !$isNot];
         }
 
         $value = array_shift($tokens);

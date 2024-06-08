@@ -592,7 +592,7 @@ class SVGSanitizer
     protected function isUseTagDirty(\DOMElement $element)
     {
         $xlinks = $element->getAttributeNS('http://www.w3.org/1999/xlink', 'href');
-        if ($xlinks && substr($xlinks, 0, 1) !== '#') {
+        if ($xlinks && !str_starts_with($xlinks, '#')) {
             return true;
         }
 

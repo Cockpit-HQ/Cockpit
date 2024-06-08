@@ -34,12 +34,12 @@ class Manager {
         return $index;
     }
 
-    public function createIndex(string $name, array $fields = [], array $options = []) {
+    public function createIndex(string $name, array $fields = [], array $options = []): Index {
 
         $name = $this->name($name);
 
         if ($this->exists($name)) {
-            throw new \Exception("Index <{$name}> already exists.");
+            throw new Exception("Index <{$name}> already exists.");
         }
 
         $data = array_merge([
@@ -56,7 +56,7 @@ class Manager {
         return $this->index($name);
     }
 
-    public function removeIndex(string $name) {
+    public function removeIndex(string $name): void {
 
         $name = $this->name($name);
 
@@ -70,28 +70,23 @@ class Manager {
     }
 
     public function exists(string $name): bool {
-        return $this->getIndexes($name) !== null ? true : false;
+        return $this->getIndexes($name) !== null;
     }
 
     public function getIndexes(?string $name = null) {
 
         $name = $name ? $this->name($name) : null;
-
+        $rsp = $this->sendRequest("/indexes", 'GET');
         $indexes = [];
 
-        if (!count($indexes)) {
-
-            $rsp = $this->sendRequest("/indexes", 'GET');
-
-            foreach ($rsp['results']as $i => $index) {
-                $indexes[$index['uid']] = $index;
-            }
+        foreach ($rsp['results'] as $index) {
+            $indexes[$index['uid']] = $index;
         }
 
         return $name ? ($indexes[$name] ?? null) : $this->indexes;
     }
 
-    protected function name(string $name) {
+    protected function name(string $name): string {
 
         $name = strtolower($name);
         $name = preg_replace('/[^a-z0-9]+/', ' ', $name);
