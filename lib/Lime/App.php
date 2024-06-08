@@ -157,7 +157,7 @@ class App implements \ArrayAccess {
 
         foreach ($this->events as $name => &$list) {
             foreach ($list as &$meta) {
-                if (\is_object($meta['fn']) && $meta['fn'] instanceof \Closure) {
+                if ($meta['fn'] instanceof \Closure) {
                     $meta['fn'] = $meta['fn']->bindTo($this, $this);
                 }
             }
@@ -166,7 +166,7 @@ class App implements \ArrayAccess {
 
     /**
     * Get App instance
-    * @param  String $name Lime app name
+    * @param  string $name Lime app name
     * @return Object       Lime app object
     */
     public static function instance(string $name, bool $clone = false): self {
@@ -175,7 +175,7 @@ class App implements \ArrayAccess {
 
     /**
     * Returns a closure that stores the result of the given closure
-    * @param  String  $name
+    * @param  string  $name
     * @param  \Closure $callable
     * @return Object
     */
@@ -243,8 +243,8 @@ class App implements \ArrayAccess {
 
     /**
     * Returns link based on the base url of the app
-    * @param  String $path e.g. /js/myscript.js
-    * @return String       Link
+    * @param  string $path e.g. /js/myscript.js
+    * @return string       Link
     */
     public function baseUrl(string $path): string {
 
@@ -276,8 +276,8 @@ class App implements \ArrayAccess {
 
     /**
     * Returns link based on the route url of the app
-    * @param  String $path e.g. /pages/home
-    * @return String       Link
+    * @param  string $path e.g. /pages/home
+    * @return string       Link
     */
     public function routeUrl(string $path): string {
 
@@ -304,7 +304,7 @@ class App implements \ArrayAccess {
 
     /**
     * Redirect to path.
-    * @param  String $path Path redirect to.
+    * @param  string $path Path redirect to.
     * @return void
     */
     public function reroute(string $path): void {
@@ -361,8 +361,8 @@ class App implements \ArrayAccess {
 
     /**
     * Get a value from the Lime registry
-    * @param  String $key
-    * @param  Mixed $default
+    * @param  string $key
+    * @param  mixed $default
     * @return Mixed
     */
     public function retrieve(string $key, mixed $default = null): mixed {
@@ -393,7 +393,7 @@ class App implements \ArrayAccess {
                 if (count($parts)==2) {
                     if (!isset($this->paths[$parts[0]])) return null;
 
-                    foreach ($this->paths[$parts[0]] as &$path) {
+                    foreach ($this->paths[$parts[0]] as $path) {
                         if (\file_exists($path.$parts[1])) {
                             return $path.$parts[1];
                         }
@@ -461,19 +461,17 @@ class App implements \ArrayAccess {
 
         $args = \func_get_args();
 
-        switch(\count($args)) {
-            case 1:
-                return $this->helper('cache')->read($args[0]);
-            case 2:
-                return $this->helper('cache')->write($args[0], $args[1]);
-        }
+        return match (\count($args)) {
+            1 => $this->helper('cache')->read($args[0]),
+            2 => $this->helper('cache')->write($args[0], $args[1]),
+            default => null,
+        };
 
-        return null;
     }
 
     /**
     * Bind an event to closure
-    * @param  String  $event
+    * @param  string  $event
     * @param  \Closure $callback
     * @param  Integer $priority
     * @return App
@@ -482,7 +480,7 @@ class App implements \ArrayAccess {
 
         if (\is_array($event)) {
 
-            foreach ($event as &$evt) {
+            foreach ($event as $evt) {
                 $this->on($evt, $callback, $priority);
             }
             return $this;
@@ -491,7 +489,7 @@ class App implements \ArrayAccess {
         if (!isset($this->events[$event])) $this->events[$event] = [];
 
         // make $this available in closures
-        if (\is_object($callback) && $callback instanceof \Closure) {
+        if ($callback instanceof \Closure) {
             $callback = $callback->bindTo($this, $this);
         }
 
@@ -502,8 +500,8 @@ class App implements \ArrayAccess {
 
     /**
     * Trigger event.
-    * @param  String $event
-    * @param  Array  $params
+    * @param  string $event
+    * @param  array  $params
     * @return Boolean
     */
     public function trigger(string $event, array $params=[]): self {
@@ -539,9 +537,9 @@ class App implements \ArrayAccess {
 
     /**
     * Render view.
-    * @param  String $view Path to view
-    * @param  Array  $slots   Passed variables
-    * @return String Rendered view
+    * @param  string $view Path to view
+    * @param  array  $slots   Passed variables
+    * @return string Rendered view
     */
     public function render(string $view, array $slots = [], bool $print = false): string {
 
@@ -592,9 +590,9 @@ class App implements \ArrayAccess {
 
     /**
     * Start block
-    * @param  String $name
-    * @param  Boolean $reset
-    * @return Null
+    * @param  string $name
+    * @param  boolean $reset
+    * @return null
     */
     public function start(string $name, bool $reset = false): void {
 
@@ -607,8 +605,8 @@ class App implements \ArrayAccess {
 
     /**
     * End block
-    * @param  String $name
-    * @return Null
+    * @param  string $name
+    * @return null
     */
     public function end(string $name): void {
 
@@ -621,9 +619,9 @@ class App implements \ArrayAccess {
 
     /**
     * Get block content
-    * @param  String $name
+    * @param  string $name
     * @param  array  $options
-    * @return String
+    * @return string
     */
     public function block(string $name, array $options=[]): ?string {
 
@@ -644,9 +642,9 @@ class App implements \ArrayAccess {
 
     /**
     * Escape string.
-    * @param  String $string
-    * @param  String $charset
-    * @return String
+    * @param  string $string
+    * @param  string $charset
+    * @return string
     */
     public function escape(?string $string, ?string $charset = null): string {
 
@@ -659,12 +657,10 @@ class App implements \ArrayAccess {
 
     /**
     * Get style inc. markup
-    * @param  Mixed $href
-    * @return String
+    * @param  mixed $href
+    * @return string
     */
     public function style(mixed $href, ?string $version = null): string {
-
-        $output = '';
 
         $type = 'text/css';
         $rel  = 'stylesheet';
@@ -682,12 +678,10 @@ class App implements \ArrayAccess {
 
     /**
     * Get script inc. markup
-    * @param  Mixed $src
-    * @return String
+    * @param  mixed $src
+    * @return string
     */
     public function script(mixed $src, ?string $version = null): string {
-
-        $output = '';
 
         $type = 'text/javascript';
         $load = '';
@@ -704,9 +698,9 @@ class App implements \ArrayAccess {
 
     /**
     * Get assets inc. markup
-    * @param  Array|String $src
-    * @param  Mixed $version
-    * @return String
+    * @param  array|string $src
+    * @param  mixed $version
+    * @return string
     */
     public function assets(mixed $src, ?string $version = null): string {
 
@@ -734,9 +728,9 @@ class App implements \ArrayAccess {
 
     /**
     * Bind GET request to route
-    * @param  String  $path
+    * @param  string  $path
     * @param  \Closure  $callback
-    * @param  Boolean $condition
+    * @param  boolean $condition
     * @return void
     */
     public function get(string $path, mixed $callback, bool $condition = true): void {
@@ -747,9 +741,9 @@ class App implements \ArrayAccess {
 
     /**
     * Bind POST request to route
-    * @param  String  $path
+    * @param  string  $path
     * @param  \Closure  $callback
-    * @param  Boolean $condition
+    * @param  boolean $condition
     * @return void
     */
     public function post(string $path, mixed $callback, bool $condition = true): void {
@@ -760,7 +754,7 @@ class App implements \ArrayAccess {
 
     /**
     * Bind Class to routes
-    * @param  String $class
+    * @param  string $class
     * @return void
     */
     public function bindClass(string $class, ?string $alias = null): void {
@@ -771,7 +765,7 @@ class App implements \ArrayAccess {
         $this->bind("/{$clean}/*", function() use($self, $class, $clean) {
 
             $parts  = \explode('/', \trim(\preg_replace("#$clean#", "", $self->request->route,1),'/'));
-            $action = isset($parts[0]) ? $parts[0]:"index";
+            $action = $parts[0] ?? "index";
             $params = \count($parts)>1 ? \array_slice($parts, 1):[];
 
             return $self->invoke($class, $action, $params);
@@ -783,20 +777,21 @@ class App implements \ArrayAccess {
     }
 
     /**
-    * Bind namespace to routes
-    * @param  String $namespace
-    * @return void
-    */
+     * Bind namespace to routes
+     * @param String $namespace
+     * @param string|null $alias
+     * @return void
+     */
     public function bindNamespace(string $namespace, ?string $alias = null): void {
 
         $self  = $this;
-        $clean = $alias ? $alias : \trim(\strtolower(\str_replace("\\", "/", $namespace)), "\\");
+        $clean = $alias ?: \trim(\strtolower(\str_replace("\\", "/", $namespace)), "\\");
 
         $this->bind('/'.$clean.'/*', function() use($self, $namespace, $clean) {
 
             $parts      = \explode('/', trim(preg_replace("#$clean#","",$self["route"],1),'/'));
             $class      = $namespace.'\\'.$parts[0];
-            $action     = isset($parts[1]) ? $parts[1]:"index";
+            $action     = $parts[1] ?? "index";
             $params     = \count($parts)>2 ? \array_slice($parts, 2):[];
 
             return $self->invoke($class,$action, $params);
@@ -812,9 +807,9 @@ class App implements \ArrayAccess {
 
     /**
     * Bind request to route
-    * @param  String  $path
+    * @param  string  $path
     * @param  \Closure  $callback
-    * @param  Boolean $condition
+    * @param  boolean $condition
     * @return void
     */
     public function bind(string $path, mixed $callback, bool $condition = true): void {
@@ -826,12 +821,12 @@ class App implements \ArrayAccess {
         }
 
         // make $this available in closures
-        if (\is_object($callback) && $callback instanceof \Closure) {
+        if ($callback instanceof \Closure) {
             $callback = $callback->bindTo($this, $this);
         }
 
         // autou-register for /route/* also /route
-        if (\substr($path, -2) == '/*' && !isset($this->routes[\substr($path, 0, -2)])) {
+        if (str_ends_with($path, '/*') && !isset($this->routes[\substr($path, 0, -2)])) {
             $this->bind(\substr($path, 0, -2), $callback, $condition);
         }
 
@@ -840,7 +835,7 @@ class App implements \ArrayAccess {
 
     /**
     * Run Application request
-    * @param  String $route Route to parse
+    * @param  string $route Route to parse
     * @return void
     */
     public function run(?string $route = null, ?Request $request = null, bool $flush = true): Response {
@@ -907,7 +902,7 @@ class App implements \ArrayAccess {
 
     /**
     * Dispatch route
-    * @param  String $path
+    * @param  string $path
     * @return Mixed
     */
     public function dispatch(string $path): mixed {
@@ -926,7 +921,7 @@ class App implements \ArrayAccess {
                     $params = [];
 
                     /* e.g. #\.html$#  */
-                    if (\substr($route,0,1)=='#' && \substr($route,-1)=='#') {
+                    if (str_starts_with($route, '#') && str_ends_with($route, '#')) {
 
                         if (\preg_match($route, $path, $matches)) {
                             $params[':captures'] = \array_slice($matches, 1);
@@ -959,12 +954,12 @@ class App implements \ArrayAccess {
                             $matched = true;
 
                             foreach ($parts_r as $index => $part) {
-                                if (':' === \substr($part,0,1)) {
+                                if (str_starts_with($part, ':')) {
                                     $params[\substr($part,1)] = $parts_p[$index];
                                     continue;
                                 }
 
-                                if ($parts_p[$index] != $parts_r[$index]) {
+                                if ($parts_p[$index] != $part) {
                                     $matched = false;
                                     break;
                                 }
@@ -983,14 +978,12 @@ class App implements \ArrayAccess {
     }
 
     /**
-    * Render dispatched route
-    * @param  [type] $route
-    * @param  array  $params
-    * @return String
-    */
+     * Render dispatched route
+     * @param string $route
+     * @param array $params
+     * @return string
+     */
     protected function render_route(string $route, array $params = []): mixed {
-
-        $output = false;
 
         if (isset($this->routes[$route])) {
 
@@ -1005,17 +998,17 @@ class App implements \ArrayAccess {
             }
         }
 
-        return $output;
+        return false;
     }
 
 
     /**
-    * Invoke Class as controller
-    * @param  String $class
-    * @param  String $action
-    * @param  Array  $params
-    * @return Mixed
-    */
+     * Invoke Class as controller
+     * @param String $class
+     * @param String $action
+     * @param array $params
+     * @return Mixed
+     */
     public function invoke(string $class, string $action='index', array $params=[]): mixed {
 
         $context = compact('action', 'params');
@@ -1040,9 +1033,9 @@ class App implements \ArrayAccess {
 
     /**
     * Get request variables
-    * @param  String $index
-    * @param  Mixed $default
-    * @param  Array $source
+    * @param  string $index
+    * @param  mixed $default
+    * @param  array $source
     * @return Mixed
     */
     public function param(?string $index = null, mixed $default = null, mixed $source = null): mixed {
@@ -1051,16 +1044,16 @@ class App implements \ArrayAccess {
 
     /**
     * Request helper function
-    * @param  String $type
+    * @param  string $type
     * @return Boolean
     */
     public function req_is(string $type): bool {
-        return isset($this->request) ? $this->request->is($type) : false;
+        return isset($this->request) && $this->request->is($type);
     }
 
     /**
     * Get client ip.
-    * @return String
+    * @return string
     */
     public function getClientIp(): string{
         return isset($this->request) ? $this->request->getClientIp() : '';
@@ -1068,7 +1061,7 @@ class App implements \ArrayAccess {
 
     /**
     * Get client language
-    * @return String
+    * @return string
     */
     public function getClientLang(string $default="en"): string {
         return isset($this->request) ? $this->request->getClientLang($default) : $default;
@@ -1076,7 +1069,7 @@ class App implements \ArrayAccess {
 
     /**
     * Get site url
-    * @return String
+    * @return string
     */
     public function getSiteUrl(bool $withpath = false): string {
         return isset($this->request) ? $this->request->getSiteUrl($withpath) : '';
@@ -1084,7 +1077,7 @@ class App implements \ArrayAccess {
 
     /**
     * Create Hash
-    * @return String
+    * @return string
     */
     public function hash(string $text, mixed $algo = PASSWORD_BCRYPT): string {
         return \password_hash($text, $algo);
@@ -1092,10 +1085,10 @@ class App implements \ArrayAccess {
 
     /**
      * RC4 encryption
-     * @param  String  $data
-     * @param  String  $pwd
+     * @param  string  $data
+     * @param  string  $pwd
      * @param  boolean $base64encoded
-     * @return String
+     * @return string
      */
     public function encode(string $data, string $pwd, bool $base64encoded = false): string {
 
@@ -1130,9 +1123,9 @@ class App implements \ArrayAccess {
 
     /**
      * Decode RC4 encrypted text
-     * @param  String $data
-     * @param  String $pwd
-     * @return String
+     * @param  string $data
+     * @param  string $pwd
+     * @return string
      */
     public function decode(string $data, string $pwd): string {
         return $this->encode($data, $pwd);
@@ -1174,7 +1167,7 @@ class App implements \ArrayAccess {
         return $this->registry['modules'][$name];
     }
 
-    public function loadModule($path, $prefix = null) {
+    public function loadModule($path, $prefix = null): bool {
 
         if (is_array($path)) {
             foreach ($path as $p) $this->loadModule($p);
@@ -1246,7 +1239,7 @@ class App implements \ArrayAccess {
             return ($value instanceof \Closure) ? $value($this) : $value;
         }
 
-        return $value;
+        return null;
     }
 
     public function offsetExists($key): bool {
@@ -1258,7 +1251,7 @@ class App implements \ArrayAccess {
     }
 
     // Invoke call
-    public function __invoke($helper) {
+    public function __invoke($helper): Helper {
 
         return $this->helper($helper);
     }
@@ -1331,7 +1324,7 @@ class Module extends AppAware {
         }
     }
 
-    public function bindApp(App $app) {
+    public function bindApp(App $app): void {
 
         $this->app = $app;
 
@@ -1380,7 +1373,7 @@ include(__DIR__.'/Helper/Cache.php');
 
 // helper functions
 
-function fetch_from_array(array &$array, ?string $index = null, mixed $default = null) {
+function fetch_from_array(array $array, ?string $index = null, mixed $default = null) {
 
     if (is_null($index)) {
 

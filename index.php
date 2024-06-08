@@ -31,7 +31,7 @@ if (PHP_SAPI == 'cli-server') {
     /* "dot" routes (see: https://bugs.php.net/bug.php?id=61286) */
     $_SERVER['PATH_INFO'] = explode('?', $_SERVER['REQUEST_URI'] ?? '')[0];
 
-    /* static files (eg. assets/app/css/style.css) */
+    /* static files (e.g. assets/app/css/style.css) */
     if (is_file($file) && $path['extension'] != 'php') {
         return false;
     }
@@ -43,7 +43,7 @@ if (PHP_SAPI == 'cli-server') {
     }
 
     // handle static space storage files
-    if (substr($_SERVER['PATH_INFO'], 0, 2) == '/:' && str_contains($_SERVER['PATH_INFO'], '/storage/')) {
+    if (str_starts_with($_SERVER['PATH_INFO'], '/:') && str_contains($_SERVER['PATH_INFO'], '/storage/')) {
 
         $spaceFilePath = APP_SPACES_DIR.'/'.trim(substr($_SERVER['PATH_INFO'], 2), '/');
         $path  = pathinfo($spaceFilePath);
@@ -88,7 +88,7 @@ if (PHP_SAPI == 'cli-server') {
 $APP_SPACE = null;
 
 // support /:space/* to load custom cockpit instance from /.spaces/*
-if ($APP_ROUTE && substr($APP_ROUTE, 0, 2) == '/:') {
+if ($APP_ROUTE && str_starts_with($APP_ROUTE, '/:')) {
 
     $parts    = explode('/', $APP_ROUTE);
     $space    = substr($parts[1], 1);

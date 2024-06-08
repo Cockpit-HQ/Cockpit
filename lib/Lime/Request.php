@@ -50,9 +50,7 @@ class Request {
             }
         }
 
-        $request = new self($config);
-
-        return $request;
+        return new self($config);
     }
 
     public function __construct(array $config = []) {
@@ -75,7 +73,7 @@ class Request {
 
     public function param(?string $index = null, mixed $default = null, mixed $source = null): mixed {
 
-        $src = $source ? $source : $this->request;
+        $src = $source ?: $this->request;
         $cast = null;
 
         if (\str_contains($index, ':')) {
@@ -87,7 +85,7 @@ class Request {
         if ($cast && $value !== null) {
 
             if (\in_array($cast, ['bool', 'boolean']) && \is_string($value) && \in_array($cast, ['true', 'false'])) {
-                $value = $value == 'true' ? true : false;
+                $value = $value === 'true';
             }
 
             \settype($value, $cast);
@@ -130,7 +128,7 @@ class Request {
 
             $path = dirname($this->server['SCRIPT_NAME']);
 
-            if ($path == '/' || \substr($url, -1 * \strlen($path)) === $path) {
+            if ($path == '/' || str_ends_with($url, $path)) {
                 $path = '';
             }
 
@@ -149,42 +147,34 @@ class Request {
                     (isset($this->server['CONTENT_TYPE']) && \stripos($this->server['CONTENT_TYPE'],'application/json')!==false)           ||
                     (isset($this->server['HTTP_CONTENT_TYPE']) && \stripos($this->server['HTTP_CONTENT_TYPE'],'application/json')!==false)
                 );
-                break;
 
             case 'mobile':
 
                 $mobileDevices = [
-                    'midp','240x320','blackberry','netfront','nokia','panasonic','portalmmm','sharp','sie-','sonyericsson',
-                    'symbian','windows ce','benq','mda','mot-','opera mini','philips','pocket pc','sagem','samsung',
-                    'sda','sgh-','vodafone','xda','iphone', 'ipod','android'
+                    'android', 'iphone', 'ipod', 'ipad', 'windows phone',
+                    'blackberry', 'webos', 'kindle', 'samsung', 'huawei',
+                    'zte-', 'lg-', 'googlebot-mobile'
                 ];
 
                 return \preg_match('/(' . \implode('|', $mobileDevices). ')/i', \strtolower($this->server['HTTP_USER_AGENT']));
-                break;
 
             case 'post':
                 return (isset($this->server['REQUEST_METHOD']) && \strtolower($this->server['REQUEST_METHOD']) == 'post');
-                break;
 
             case 'get':
                 return (isset($this->server['REQUEST_METHOD']) && \strtolower($this->server['REQUEST_METHOD']) == 'get');
-                break;
 
             case 'put':
                 return (isset($this->server['REQUEST_METHOD']) && \strtolower($this->server['REQUEST_METHOD']) == 'put');
-                break;
 
             case 'delete':
                 return (isset($this->server['REQUEST_METHOD']) && \strtolower($this->server['REQUEST_METHOD']) == 'delete');
-                break;
 
             case 'ssl':
                 return (!empty($this->server['HTTPS']) && $this->server['HTTPS'] !== 'off');
-                break;
 
             case 'preflight':
                 return (isset($this->server['REQUEST_METHOD']) && \strtolower($this->server['REQUEST_METHOD']) == 'options');
-                break;
 
             case 'cors':
 
@@ -193,7 +183,6 @@ class Request {
                 }
 
                 return $this->headers['Origin'] == $this->getSiteUrl();
-                break;
         }
 
         return false;
@@ -243,7 +232,7 @@ class Request {
         ];
 
         foreach ($server as $key => $value) {
-            if (substr($key, 0, 5) === 'HTTP_') {
+            if (str_starts_with($key, 'HTTP_')) {
                 $key = substr($key, 5);
                 if (!isset($copy_server[$key]) || !isset($server[$key])) {
                     $key = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', $key))));
@@ -258,7 +247,7 @@ class Request {
             if (isset($server['REDIRECT_HTTP_AUTHORIZATION'])) {
                 $headers['Authorization'] = $server['REDIRECT_HTTP_AUTHORIZATION'];
             } elseif (isset($server['PHP_AUTH_USER'])) {
-                $basic_pass = isset($server['PHP_AUTH_PW']) ? $server['PHP_AUTH_PW'] : '';
+                $basic_pass = $server['PHP_AUTH_PW'] ?? '';
                 $headers['Authorization'] = 'Basic ' . base64_encode($server['PHP_AUTH_USER'] . ':' . $basic_pass);
             } elseif (isset($server['PHP_AUTH_DIGEST'])) {
                 $headers['Authorization'] = $server['PHP_AUTH_DIGEST'];

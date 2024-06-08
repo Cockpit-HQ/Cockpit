@@ -107,7 +107,7 @@ class DotEnv {
         return $str;
     }
 
-    public static function resolveEnvsInArray(&$array) {
+    public static function resolveEnvsInArray(&$array): void {
 
         foreach ($array as &$value) {
             if (is_string($value)) {
