@@ -59,17 +59,17 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.312.0",
-            "version_normalized": "3.312.0.0",
+            "version": "3.314.2",
+            "version_normalized": "3.314.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "53b233072f707d2abfd62b0df4bc2dc27caf3274"
+                "reference": "1f5ccf9c73a66fb85c7c5de8f11ed69e44c636ef"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/53b233072f707d2abfd62b0df4bc2dc27caf3274",
-                "reference": "53b233072f707d2abfd62b0df4bc2dc27caf3274",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/1f5ccf9c73a66fb85c7c5de8f11ed69e44c636ef",
+                "reference": "1f5ccf9c73a66fb85c7c5de8f11ed69e44c636ef",
                 "shasum": ""
             },
             "require": {
@@ -110,7 +110,7 @@
                 "ext-openssl": "Allows working with CloudFront private distributions and verifying received SNS messages",
                 "ext-sockets": "To use client-side monitoring"
             },
-            "time": "2024-06-10T18:04:10+00:00",
+            "time": "2024-06-14T18:11:34+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -151,7 +151,7 @@
             "support": {
                 "forum": "https://forums.aws.amazon.com/forum.jspa?forumID=80",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.312.0"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.314.2"
             },
             "install-path": "../aws/aws-sdk-php"
         },
@@ -1442,17 +1442,17 @@
         },
         {
             "name": "mongodb/mongodb",
-            "version": "1.19.0",
-            "version_normalized": "1.19.0.0",
+            "version": "1.19.1",
+            "version_normalized": "1.19.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mongodb/mongo-php-library.git",
-                "reference": "cbc8104c0b2c32b7cf572ff759324c872e8dc63a"
+                "reference": "afe425b629075fa597fa2d5645045cb20dc93d95"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mongodb/mongo-php-library/zipball/cbc8104c0b2c32b7cf572ff759324c872e8dc63a",
-                "reference": "cbc8104c0b2c32b7cf572ff759324c872e8dc63a",
+                "url": "https://api.github.com/repos/mongodb/mongo-php-library/zipball/afe425b629075fa597fa2d5645045cb20dc93d95",
+                "reference": "afe425b629075fa597fa2d5645045cb20dc93d95",
                 "shasum": ""
             },
             "require": {
@@ -1467,12 +1467,12 @@
             },
             "require-dev": {
                 "doctrine/coding-standard": "^12.0",
-                "rector/rector": "^0.19",
+                "rector/rector": "^1.1",
                 "squizlabs/php_codesniffer": "^3.7",
                 "symfony/phpunit-bridge": "^5.2",
                 "vimeo/psalm": "^5.13"
             },
-            "time": "2024-05-10T19:49:08+00:00",
+            "time": "2024-06-13T14:30:04+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1516,7 +1516,7 @@
             ],
             "support": {
                 "issues": "https://github.com/mongodb/mongo-php-library/issues",
-                "source": "https://github.com/mongodb/mongo-php-library/tree/1.19.0"
+                "source": "https://github.com/mongodb/mongo-php-library/tree/1.19.1"
             },
             "install-path": "../mongodb/mongodb"
         },
@@ -3329,17 +3329,17 @@
         },
         {
             "name": "webonyx/graphql-php",
-            "version": "v15.12.0",
-            "version_normalized": "15.12.0.0",
+            "version": "v15.12.2",
+            "version_normalized": "15.12.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webonyx/graphql-php.git",
-                "reference": "06720d48bfa436bfe68285e4588c6f15f99f893b"
+                "reference": "21bc031e4b0c2035e4d4ddb88ffef98e2f11c97f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webonyx/graphql-php/zipball/06720d48bfa436bfe68285e4588c6f15f99f893b",
-                "reference": "06720d48bfa436bfe68285e4588c6f15f99f893b",
+                "url": "https://api.github.com/repos/webonyx/graphql-php/zipball/21bc031e4b0c2035e4d4ddb88ffef98e2f11c97f",
+                "reference": "21bc031e4b0c2035e4d4ddb88ffef98e2f11c97f",
                 "shasum": ""
             },
             "require": {
@@ -3352,7 +3352,7 @@
                 "amphp/http-server": "^2.1",
                 "dms/phpunit-arraysubset-asserts": "dev-master",
                 "ergebnis/composer-normalize": "^2.28",
-                "friendsofphp/php-cs-fixer": "3.57.1",
+                "friendsofphp/php-cs-fixer": "3.58.1",
                 "mll-lab/php-cs-fixer-config": "^5",
                 "nyholm/psr7": "^1.5",
                 "phpbench/phpbench": "^1.2",
@@ -3374,7 +3374,7 @@
                 "psr/http-message": "To use standard GraphQL server",
                 "react/promise": "To leverage async resolving on React PHP platform"
             },
-            "time": "2024-06-10T09:55:16+00:00",
+            "time": "2024-06-13T07:28:14+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -3394,7 +3394,7 @@
             ],
             "support": {
                 "issues": "https://github.com/webonyx/graphql-php/issues",
-                "source": "https://github.com/webonyx/graphql-php/tree/v15.12.0"
+                "source": "https://github.com/webonyx/graphql-php/tree/v15.12.2"
             },
             "funding": [
                 {
