@@ -60,6 +60,8 @@ class Auth extends Base {
             $this->app->reroute('/');
         }
 
+        $this->helper('theme')->pageClass('magiclink-page');
+
         if ($this->param('email')) {
 
             if (!$this->helper('csrf')->isValid('app.magiclink', $this->param('csrf'), true)) {
@@ -111,7 +113,25 @@ class Auth extends Base {
                     return false;
                 }
 
-                $user = $this->setSessionUser($user);
+                if (isset($user['twofa']['enabled']) && $user['twofa']['enabled']) {
+
+                    $user = [
+                        'name' => $user['name'],
+                        'user' => $user['user'],
+                        'email' => $user['email'],
+                        'twofa' => $this->helper('jwt')->create([
+                            '_id'   => $user['_id'],
+                            'user'  => $user['user'],
+                            'name'  => $user['name'],
+                            'email' => $user['email'],
+                            'role'  => $user['role'],
+                        ])
+                    ];
+
+                    return $this->render('app:views/auth/magiclink.twofa.php', ['user' => $user]);
+                }
+
+                $this->setSessionUser($user);
 
                 $this->app->reroute('/');
 
@@ -123,8 +143,6 @@ class Auth extends Base {
         if ($this->app->mailer->getTransport() === 'mail') {
             $this->app->reroute('/auth/login');
         }
-
-        $this->helper('theme')->pageClass('magiclink-page');
 
         $csrfToken = $this->helper('csrf')->token('app.magiclink');
 
