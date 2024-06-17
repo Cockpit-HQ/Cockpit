@@ -69,12 +69,12 @@ class Auth extends Base {
             $email = $this->param('email');
 
             if (!$this->helper('utils')->isEmail($email)) {
-                $this->stop(['error' => 'APP_LOGIN_SESSION_INVALID'], 412);
+                $this->stop(['error' => 'APP_LOGIN_EMAIL_INVALID'], 412);
             }
 
-            $user = $this->app->dataStorage->findOne('system/users', ['email' => $email]);
+            $user = $this->app->dataStorage->findOne('system/users', ['email' => $email, 'active' => true]);
 
-            if (!$user || !$user['active']) {
+            if (!$user) {
                 return ['success' => true];
             }
 
@@ -105,9 +105,9 @@ class Auth extends Base {
                     return false;
                 }
 
-                $user = $this->app->dataStorage->findOne('system/users', ['email' => $payload['email']]);
+                $user = $this->app->dataStorage->findOne('system/users', ['email' => $payload['email'], 'active' => true]);
 
-                if (!$user || !$user['active'] || !password_verify($user['_id'], $payload['check'])) {
+                if (!$user || !password_verify($user['_id'], $payload['check'])) {
                     return false;
                 }
 
