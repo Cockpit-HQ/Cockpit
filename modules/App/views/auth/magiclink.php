@@ -27,8 +27,9 @@
 
             </form>
 
-            <kiss-card class="kiss-padding kiss-align-center kiss-text-bold animated fadeIn" theme="shadowed contrast" v-if="sent">
-                <?=t('Check your inbox')?>
+            <kiss-card class="kiss-padding kiss-align-center animated fadeIn" theme="shadowed contrast" v-if="sent">
+                <icon class="kiss-size-xlarge kiss-color-primary animated slideInLeft slow">forward_to_inbox</icon>
+                <div class="kiss-text-bold kiss-margin-small"><?=t('Check your inbox')?></div>
             </kiss-card>
 
             <app-loader class="kiss-margin-top" :class="{'kiss-invisible': !loading}"></app-loader>
@@ -60,6 +61,8 @@
                         csrf: "<?= $csrfToken ?>"
                     }).then(() => {
                         this.sent = true;
+                    }).catch(rsp => {
+                        App.ui.notify(rsp.error || 'Sending failed!', 'error');
                     }).finally(() => {
                         this.loading = false;
                     });

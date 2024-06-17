@@ -82,7 +82,7 @@ class Auth extends Base {
                 'email' => $email,
                 'check' => $this->app->hash($user['_id']),
                 'iat' => time(),
-                'exp' => strtotime('+1 hour'),
+                'exp' => strtotime('+15 minutes'),
             ]);
 
             // send link with magic link

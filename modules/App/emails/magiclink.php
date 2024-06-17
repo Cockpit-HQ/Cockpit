@@ -1,3 +1,6 @@
+<p>
+    Dear <?=ucfirst($user['name'] ? $user['name'] : $user['user'])?>,
+</p>
 
 <p>
     You recently requested a magic link to log in to your account on <a href="<?=$this->getSiteUrl(true)?>"><?=$this->retrieve('app.name')?></a>.
@@ -12,6 +15,10 @@
 </div>
 
 <br>
+
+<p>
+    This magic link is valid for the next 15 minutes. After that, it will expire, and you'll need to request a new one.
+</p>
 
 <p>
     If you didn't request this magic link, please ignore this email, and your account will remain secure.
