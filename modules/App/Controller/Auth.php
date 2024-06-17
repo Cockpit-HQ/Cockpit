@@ -233,14 +233,7 @@ class Auth extends Base {
 
         if ($user && $this->helper('twfa')->verifyCode($user['twofa']['secret'], $code)) {
 
-            unset($user['twofa']);
-
-            $this->app->trigger('app.user.disguise', [&$user]);
-
-            $this->helper('auth')->setUser($user);
-            $this->helper('session')->write('app.session.start', time());
-
-            $this->app->trigger('app.user.login', [&$user]);
+            $user = $this->setSessionUser($user);
 
             return ['success' => true, 'user' => $user, 'csrf' => $this->helper('csrf')->token('app.csrf')];
         }
