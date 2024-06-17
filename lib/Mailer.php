@@ -14,7 +14,7 @@ class Mailer {
         $this->options = $options;
     }
 
-    public function getTransport() {
+    public function getTransport(): string {
         return $this->transport;
     }
 

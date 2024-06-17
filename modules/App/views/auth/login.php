@@ -31,7 +31,7 @@
 
                 </form>
 
-                <kiss-card class="animated fadeIn"v-if="!loading && view=='success' && !user.twofa">
+                <kiss-card class="animated fadeIn" v-if="!loading && view=='success' && !user.twofa">
 
                     <kiss-row class="kiss-flex-middle">
                         <div><app-avatar size="50" :name="user.name"></app-avatar></div>

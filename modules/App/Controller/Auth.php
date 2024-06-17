@@ -54,6 +54,83 @@ class Auth extends Base {
         }
     }
 
+    public function magiclink() {
+
+        if ($this->helper('auth')->getUser()) {
+            $this->app->reroute('/');
+        }
+
+        if ($this->param('email')) {
+
+            if (!$this->helper('csrf')->isValid('app.magiclink', $this->param('csrf'), true)) {
+                return $this->stop(['error' => 'APP_MAGICLINK_SESSION_INVALID'], 412);
+            }
+
+            $email = $this->param('email');
+
+            if (!$this->helper('utils')->isEmail($email)) {
+                $this->stop(['error' => 'APP_LOGIN_SESSION_INVALID'], 412);
+            }
+
+            $user = $this->app->dataStorage->findOne('system/users', ['email' => $email]);
+
+            if (!$user || !$user['active']) {
+                return ['success' => true];
+            }
+
+            $token = $this->helper('jwt')->create([
+                'email' => $email,
+                'check' => $this->app->hash($user['_id']),
+                'iat' => time(),
+                'exp' => strtotime('+1 hour'),
+            ]);
+
+            // send link with magic link
+            $this->app->mailer->mail(
+                $email,
+                'Login: '.$this->app->retrieve('app.name'),
+                $this->app->render('app:emails/magiclink.php with app:layouts/email.php', compact('token', 'email', 'user'))
+            );
+
+            return ['success' => true];
+        }
+
+        if ($this->param('token')) {
+
+            try {
+
+                $payload = (array) $this->app->helper('jwt')->decode($this->param('token'));
+
+                if (!isset($payload['email'], $payload['check'])) {
+                    return false;
+                }
+
+                $user = $this->app->dataStorage->findOne('system/users', ['email' => $payload['email']]);
+
+                if (!$user || !$user['active'] || !password_verify($user['_id'], $payload['check'])) {
+                    return false;
+                }
+
+                $user = $this->setSessionUser($user);
+
+                $this->app->reroute('/');
+
+            } catch(\Exception $e) {
+                return false;
+            }
+        }
+
+        if ($this->app->mailer->getTransport() === 'mail') {
+            $this->app->reroute('/auth/login');
+        }
+
+        $this->helper('theme')->pageClass('magiclink-page');
+
+        $csrfToken = $this->helper('csrf')->token('app.magiclink');
+
+        return $this->render('app:views/auth/magiclink.php', compact('csrfToken'));
+    }
+
     public function check() {
 
         if ($this->helper('auth')->getUser()) {
@@ -107,15 +184,7 @@ class Auth extends Base {
                 ];
             }
 
-            // remove 2FA settings from user session
-            unset($user['twofa']);
-
-            $this->app->trigger('app.user.disguise', [&$user]);
-
-            $this->helper('auth')->setUser($user);
-            $this->helper('session')->write('app.session.start', time());
-
-            $this->app->trigger('app.user.login', [$user]);
+            $user = $this->setSessionUser($user);
 
             return ['success' => true, 'user' => $user, 'csrf' => $this->helper('csrf')->token('app.csrf')];
         }
@@ -160,5 +229,20 @@ class Auth extends Base {
 
         return $this->stop(412);
 
+    }
+
+    private function setSessionUser($user) {
+
+        // remove 2FA settings from user session
+        unset($user['twofa'], $user['password']);
+
+        $this->app->trigger('app.user.disguise', [&$user]);
+
+        $this->helper('auth')->setUser($user);
+        $this->helper('session')->write('app.session.start', time());
+
+        $this->app->trigger('app.user.login', [$user]);
+
+        return $user;
     }
 }

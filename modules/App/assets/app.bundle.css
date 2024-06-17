@@ -3941,6 +3941,7 @@ td.kiss-text-truncate { max-width: 0; }
 
     --kiss-input-border-color: rgba(255,255,255,.1);
     --kiss-input-background: rgba(255,255,255,.05);
+    --kiss-form-large-padding-horizontal: .6em;
 
     --kiss-badge-bgcolor: var(--kiss-color-primary);
 
@@ -4348,6 +4349,7 @@ html[data-theme='light'] [src$="App/assets/logo.svg"] {
 html[data-theme='light'] kiss-offcanvas kiss-content {
     --kiss-color-contrast: #fff;
 }
+html[data-theme='light'].magiclink-page,
 html[data-theme='light'].login-page {
     background-image: url(img/bg-light.svg);
 }
@@ -4538,7 +4540,8 @@ label {
     margin-bottom: 5px;
     color: var(--kiss-color-muted);
 }
-.login-page {
+.login-page,
+.magiclink-page {
     background-image: url(img/bg-dark.svg);
     background-position: 50%;
     background-attachment: scroll;
