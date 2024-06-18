@@ -21,7 +21,7 @@
                 <div>
                     <button type="submit" class="kiss-button kiss-button-primary kiss-width-expand"><?=t('Send link')?></button>
                     <div class="kiss-align-center kiss-margin">
-                        <a class="kiss-size-small kiss-color-muted" href="<?=$this->route('/auth/login')?>"><?=t('Back to normal login')?></a>
+                        <a class="kiss-size-small kiss-text-caption kiss-color-muted" href="<?=$this->route('/auth/login')?>"><?=t('Back to password login')?></a>
                     </div>
                 </div>
 

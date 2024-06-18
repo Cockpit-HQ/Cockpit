@@ -70,6 +70,12 @@
 
             </div>
 
+            <?php if ($this->mailer->getTransport() !== 'mail'): ?>
+            <div class="kiss-align-center kiss-margin" v-if="view=='form'">
+                <a class="kiss-size-small kiss-text-caption kiss-color-muted" href="<?=$this->route('/auth/magiclink')?>"><?=t('Login via Magic Link')?></a>
+            </div>
+            <?php endif ?>
+
         </kiss-container>
 
         <app-loader class="animated fadeIn kiss-margin-top" v-if="loading"></app-loader>
