@@ -151,7 +151,9 @@ $this->on('app.admin.request', function(Lime\Request $request) {
 $this->on('after', function() {
 
     // prevent possible clickjacking via iframe layer
-    $this->response->headers['X-Frame-Options'] = 'SAMEORIGIN';
+    if ($this->response->mime === 'html') {
+        $this->response->headers['X-Frame-Options'] = 'SAMEORIGIN';
+    }
 
     // handle error pages
     switch ($this->response->status) {
