@@ -168,7 +168,7 @@ export default {
         },
 
         download(file) {
-            window.open(this.$route(`/finder/uploads/api?cmd=download&path=${file.path}`));
+            window.open(this.$routeUrl(`/finder/uploads/api?cmd=download&path=${file.path}`));
         },
 
         createFolder() {
@@ -295,7 +295,7 @@ export default {
 
         <div class="animated fadeIn kiss-height-30vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted kiss-margin-large" v-if="!loading && !folders.length && !files.length">
             <div>
-                <kiss-svg class="kiss-margin-auto" :src="$base('finder:icon.svg')" width="40" height="40"><canvas width="40" height="40"></canvas></kiss-svg>
+                <kiss-svg class="kiss-margin-auto" :src="$baseUrl('finder:icon.svg')" width="40" height="40"><canvas width="40" height="40"></canvas></kiss-svg>
                 <p class="kiss-size-large kiss-text-bold kiss-margin-small-top">{{ t('Empty') }}</p>
             </div>
         </div>

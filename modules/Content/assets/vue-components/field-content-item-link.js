@@ -113,14 +113,14 @@ export default {
             <div v-if="link && model">
 
                 <kiss-card class="kiss-padding-larger kiss-color-muted kiss-align-center kiss-margin-small kiss-position-relative" theme="contrast" v-if="!val">
-                    <kiss-svg :src="$base('content:assets/icons/reference.svg')" width="40" height="40"></kiss-svg>
+                    <kiss-svg :src="$baseUrl('content:assets/icons/reference.svg')" width="40" height="40"></kiss-svg>
                     <div class="kiss-margin-small kiss-size-small">{{ t('No content item linked' )}}</div>
                     <a class="kiss-cover" @click="pickItem()"></a>
                 </kiss-card>
 
                 <div class="kiss-margin-small kiss-position-relative" v-if="val && val._id">
                     <div class="kiss-size-small" v-html="getDisplay()"></div>
-                    <a class="kiss-cover" :href="$route('/content/'+model.type+'/item/'+model.name+'/'+val._id)" target="_blank" rel="noopener"></a>
+                    <a class="kiss-cover" :href="$routeUrl('/content/'+model.type+'/item/'+model.name+'/'+val._id)" target="_blank" rel="noopener"></a>
                 </div>
 
                 <button type="button" class="kiss-button kiss-button-small" @click="pickItem()">

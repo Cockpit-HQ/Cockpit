@@ -48,7 +48,7 @@
                         <?=t('Public API access permissions for unauthenticated requests.')?>
                     </div>
                 </div>
-                <div class="kiss-margin-small-left kiss-width-1-5"><a class="kiss-button kiss-button-small kiss-width-1-1" :href="$route('/system/api/public')"><?=t('Configure')?></a></div>
+                <div class="kiss-margin-small-left kiss-width-1-5"><a class="kiss-button kiss-button-small kiss-width-1-1" :href="$routeUrl('/system/api/public')"><?=t('Configure')?></a></div>
             </kiss-card>
 
             <app-loader class="kiss-margin-large" v-if="loading"></app-loader>
@@ -71,7 +71,7 @@
                             <div class="kiss-margin-small-right"><icon>vpn_key</icon></div>
                             <div class="kiss-size-5 kiss-position-relative">
                                 <strong>{{key.name}}</strong>
-                                <a class="kiss-cover" :href="$route('/system/api/key/'+key._id)"></a>
+                                <a class="kiss-cover" :href="$routeUrl('/system/api/key/'+key._id)"></a>
                             </div>
                             <div class="kiss-flex-1 kiss-margin-left kiss-align-right kiss-text-monospace kiss-color-muted">*****{{ key.key.substr(-5, 5)}}</div>
                             <a class="kiss-margin-left" href="#" @click="copyApiKey(key.key)"><icon>content_copy</icon></a>
@@ -152,7 +152,7 @@
 
                     showApiViewer(apiKey = null) {
                         VueView.ui.offcanvas('system:assets/dialogs/api-viewer.js', {
-                            openApiUrl: this.$route('/system/api/openapi'),
+                            openApiUrl: this.$routeUrl('/system/api/openapi'),
                             apiKey
                         }, {}, {flip: true, size: 'xxlarge'})
                     },

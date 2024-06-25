@@ -194,7 +194,7 @@ let FieldRenderer = {
             <div v-if="field.multiple">
 
                 <kiss-card class="kiss-padding-larger kiss-align-center kiss-size-small kiss-color-muted" theme="contrast" v-show="!val || !Array.isArray(val) || !val.length">
-                    <kiss-svg :src="$base('system:assets/icons/list-items.svg')" width="30" height="30"><canvas width="30" height="30"></canvas></kiss-svg>
+                    <kiss-svg :src="$baseUrl('system:assets/icons/list-items.svg')" width="30" height="30"><canvas width="30" height="30"></canvas></kiss-svg>
                     <div class="kiss-margin-small kiss-size-small">{{ t('No items') }}</div>
                 </kiss-card>
 
@@ -249,7 +249,7 @@ let FieldRenderer = {
 
                     <div class="kiss-flex kiss-flex-middle">
                         <div>
-                            <kiss-svg class="kiss-color-primary" :src="$base(fieldItem.meta.icon || 'system:assets/icons/edit.svg')" width="50" height="50"></kiss-svg>
+                            <kiss-svg class="kiss-color-primary" :src="$baseUrl(fieldItem.meta.icon || 'system:assets/icons/edit.svg')" width="50" height="50"></kiss-svg>
                         </div>
                         <div class="kiss-flex-1 kiss-margin-left">
                             <span class="kiss-size-xsmall kiss-color-muted kiss-text-upper">{{ fieldItem.field.type }}</span>

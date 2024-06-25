@@ -113,7 +113,7 @@ export default {
 
                 <div class="kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted kiss-height-50vh" v-if="!loading && !items.length">
                     <div>
-                        <kiss-svg class="kiss-margin-auto" :src="$base('content:assets/icons/collection.svg')" width="40" height="40"><canvas width="40" height="40"></canvas></kiss-svg>
+                        <kiss-svg class="kiss-margin-auto" :src="$baseUrl('content:assets/icons/collection.svg')" width="40" height="40"><canvas width="40" height="40"></canvas></kiss-svg>
                         <p class="kiss-size-large kiss-text-bold kiss-margin-small-top">{{ t('No items') }}</p>
                     </div>
                 </div>

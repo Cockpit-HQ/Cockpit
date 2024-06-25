@@ -262,11 +262,11 @@
                           return App.i18n.get(key);
                       },
 
-                      $route(url) {
+                      $routeUrl(url) {
                           return App.route(url);
                       },
 
-                      $base(url) {
+                      $baseUrl(url) {
                           return App.base(url);
                       },
 

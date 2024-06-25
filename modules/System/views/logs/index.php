@@ -40,7 +40,7 @@
                 <div class="kiss-flex-1">
 
                     <div class="kiss-flex kiss-flex-middle kiss-margin-bottom">
-                        <div class="kiss-margin-small-right" v-if="selectedChannel"><kiss-svg class="kiss-color-muted" :src="$base(channels[selectedChannel].icon)" width="25" height="25"><canvas width="20" height="20"></canvas></kiss-svg></div>
+                        <div class="kiss-margin-small-right" v-if="selectedChannel"><kiss-svg class="kiss-color-muted" :src="$baseUrl(channels[selectedChannel].icon)" width="25" height="25"><canvas width="20" height="20"></canvas></kiss-svg></div>
                         <div class="kiss-size-4 kiss-text-light kiss-flex-1">{{ (selectedChannel && channels[selectedChannel].label) || 'All' }}</div>
                     </div>
 
@@ -104,7 +104,7 @@
                                 <kiss-card class="kiss-flex kiss-flex-middle kiss-padding-small" :theme="selectedChannel == channel.name && 'bordered contrast'">
                                     <a class="kiss-flex-1" @click="selectedChannel = channel.name" :class="selectedChannel == channel.name ? 'kiss-text-bold kiss-color-primary':'kiss-color-muted'">{{ channel.label}}</a>
                                     <div class="kiss-margin-xsmall-left" v-if="selectedChannel == channel.name">
-                                        <kiss-svg class="kiss-color-muted" :src="$base(channel.icon)" width="20" height="20"><canvas width="20" height="20"></canvas></kiss-svg>
+                                        <kiss-svg class="kiss-color-muted" :src="$baseUrl(channel.icon)" width="20" height="20"><canvas width="20" height="20"></canvas></kiss-svg>
                                     </div>
                                 </kiss-card>
                             </li>

@@ -46,7 +46,7 @@
                             </tr>
                             <tr>
                                 <td width="30%" class="kiss-size-xsmall">Assets url</td>
-                                <td class="kiss-size-small kiss-text-monospace kiss-color-muted kiss-text-truncate">{{ $base('#uploads:') }}</td>
+                                <td class="kiss-size-small kiss-text-monospace kiss-color-muted kiss-text-truncate">{{ $baseUrl('#uploads:') }}</td>
                             </tr>
                             <tr>
                                 <td width="30%" class="kiss-size-xsmall">Datastorage</td>

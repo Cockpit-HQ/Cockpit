@@ -137,7 +137,7 @@ export default {
         },
 
         createItem(pid = null) {
-            location.href = this.$route(`/content/tree/item/${this.model.name}?pid=${pid}`);
+            location.href = this.$routeUrl(`/content/tree/item/${this.model.name}?pid=${pid}`);
         },
 
         onMove() {
@@ -216,7 +216,7 @@ export default {
                             </a>
                             <div class="kiss-position-relative kiss-flex-1">
                                 <tree-item :model="model" :item="element"></tree-item>
-                                <a class="kiss-cover" :href="$route('/content/tree/item/'+model.name+'/'+element._id)"></a>
+                                <a class="kiss-cover" :href="$routeUrl('/content/tree/item/'+model.name+'/'+element._id)"></a>
                             </div>
                             <a class="kiss-margin-small-left" @click="toggleActionItemActions(element)"><icon>more_horiz</icon></a>
                         </kiss-card>
@@ -237,7 +237,7 @@ export default {
                                 <div class="kiss-color-muted kiss-text-truncate kiss-margin-small-bottom">{{ t('Item actions')}}</div>
                             </li>
                             <li>
-                                <a class="kiss-flex kiss-flex-middle" :href="$route('/content/tree/item/'+model.name+'/'+actionItem.item._id)">
+                                <a class="kiss-flex kiss-flex-middle" :href="$routeUrl('/content/tree/item/'+model.name+'/'+actionItem.item._id)">
                                     <icon class="kiss-margin-small-right" size="larger">create</icon>
                                     {{ t('Edit') }}
                                 </a>

@@ -27,7 +27,7 @@ export default {
 
         <div class="app-offcanvas-container">
             <kiss-row class="kiss-flex-middle kiss-padding kiss-text-bold" gap="small">
-                <kiss-svg :src="$base(icon || 'system:assets/icons/settings.svg')" width="30" height="30"></kiss-svg>
+                <kiss-svg :src="$baseUrl(icon || 'system:assets/icons/settings.svg')" width="30" height="30"></kiss-svg>
                 <div class="kiss-flex-1">{{ caption || t('Form') }}</div>
             </kiss-row>
             <div class="app-offcanvas-content kiss-padding kiss-bgcolor-contrast kiss-flex-1">

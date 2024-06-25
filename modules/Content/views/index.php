@@ -46,14 +46,14 @@
                         <div class="kiss-position-relative kiss-padding-small kiss-bgcolor-contrast">
                             <canvas width="40" height="40"></canvas>
                             <div class="kiss-cover kiss-flex kiss-padding-small kiss-flex-middle kiss-flex-center">
-                                <div :style="{color: model.color || 'inherit' }"><kiss-svg :src="$base(model.icon || 'content:assets/icons/singleton.svg')" width="30" height="30"></kiss-svg></div>
+                                <div :style="{color: model.color || 'inherit' }"><kiss-svg :src="$baseUrl(model.icon || 'content:assets/icons/singleton.svg')" width="30" height="30"></kiss-svg></div>
                             </div>
-                            <a class="kiss-cover" :href="$route(`/content/singleton/item/${model.name}`)"></a>
+                            <a class="kiss-cover" :href="$routeUrl(`/content/singleton/item/${model.name}`)"></a>
                         </div>
                         <div class="kiss-padding-small kiss-flex-1 kiss-position-relative">
                             <div class="kiss-size-small kiss-text-bold kiss-text-truncate">{{ model.label || model.name }}</div>
                             <div class="kiss-margin-xsmall-top kiss-color-muted kiss-size-xsmall kiss-text-truncate">{{model.info || t('Singleton')}}</div>
-                            <a class="kiss-cover" :href="$route(`/content/singleton/item/${model.name}`)" :aria-label="model.label || model.name"></a>
+                            <a class="kiss-cover" :href="$routeUrl(`/content/singleton/item/${model.name}`)" :aria-label="model.label || model.name"></a>
                         </div>
                         <a class="kiss-padding-small" @click="toggleModelActions(model)">
                             <icon>more_horiz</icon>
@@ -70,14 +70,14 @@
                         <div class="kiss-position-relative kiss-padding-small kiss-bgcolor-contrast">
                             <canvas width="40" height="40"></canvas>
                             <div class="kiss-cover kiss-flex kiss-flex-middle kiss-flex-center">
-                                <div :style="{color: model.color || 'inherit' }"><kiss-svg :src="$base(model.icon || 'content:assets/icons/'+model.type+'.svg')" width="30" height="30"></kiss-svg></div>
+                                <div :style="{color: model.color || 'inherit' }"><kiss-svg :src="$baseUrl(model.icon || 'content:assets/icons/'+model.type+'.svg')" width="30" height="30"></kiss-svg></div>
                             </div>
-                            <a class="kiss-cover" :href="$route(`/content/${model.type}/items/${model.name}`)" :aria-label="model.label || model.name"></a>
+                            <a class="kiss-cover" :href="$routeUrl(`/content/${model.type}/items/${model.name}`)" :aria-label="model.label || model.name"></a>
                         </div>
                         <div class="kiss-padding-small kiss-flex-1 kiss-position-relative">
                             <div class="kiss-size-small kiss-text-bold kiss-text-truncate">{{ model.label || model.name }}</div>
                             <div class="kiss-margin-xsmall-top kiss-color-muted kiss-size-xsmall kiss-text-truncate">{{model.info || model.type}}</div>
-                            <a class="kiss-cover" :href="$route(`/content/${model.type}/items/${model.name}`)" :aria-label="model.label || model.name"></a>
+                            <a class="kiss-cover" :href="$routeUrl(`/content/${model.type}/items/${model.name}`)" :aria-label="model.label || model.name"></a>
                         </div>
                         <a class="kiss-padding-small" @click="toggleModelActions(model)">
                             <icon>more_horiz</icon>
@@ -118,7 +118,7 @@
                         <ul>
                             <li class="kiss-nav-header">{{ actionModel.label || actionModel.name }}</li>
                             <li>
-                                <a class="kiss-flex kiss-flex-middle" :href="$route(`/content/models/edit/${actionModel.name}`)">
+                                <a class="kiss-flex kiss-flex-middle" :href="$routeUrl(`/content/models/edit/${actionModel.name}`)">
                                     <icon class="kiss-margin-small-right">create</icon>
                                     <?= t('Edit') ?>
                                 </a>
@@ -131,7 +131,7 @@
                                 </a>
                             </li>
                             <li v-if="actionModel.type=='collection'">
-                                <a class="kiss-flex kiss-flex-middle" :href="$route(`/content/collection/item/${actionModel.name}`)">
+                                <a class="kiss-flex kiss-flex-middle" :href="$routeUrl(`/content/collection/item/${actionModel.name}`)">
                                     <icon class="kiss-margin-small-right">add_circle</icon>
                                     <?= t('Create item') ?>
                                 </a>

@@ -375,7 +375,7 @@ export default {
 
             <div class="animated fadeIn kiss-margin-large kiss-color-muted kiss-align-center" :class="{'kiss-height-30vh kiss-flex kiss-flex-middle kiss-flex-center': !modal}" v-if="!loading && !assets.length">
                 <div>
-                    <kiss-svg :src="$base('assets:icon.svg')" width="40" height="40"><canvas width="40" height="40"></canvas></kiss-svg>
+                    <kiss-svg :src="$baseUrl('assets:icon.svg')" width="40" height="40"><canvas width="40" height="40"></canvas></kiss-svg>
                     <p class="kiss-margin-small-top kiss-size-large">{{ t('No assets') }}</p>
                 </div>
             </div>
@@ -388,7 +388,7 @@ export default {
                             <div class="kiss-cover kiss-padding kiss-flex kiss-flex-middle kiss-flex-center">
                                 <div><asset-preview :asset="asset"></asset-preview></div>
                             </div>
-                            <a class="kiss-cover spotlight" :href="$base('#uploads:'+asset.path)" :data-media="asset.type" :data-title="asset.title" :aria-label="asset.title" v-if="['image', 'video'].indexOf(asset.type) > -1"></a>
+                            <a class="kiss-cover spotlight" :href="$baseUrl('#uploads:'+asset.path)" :data-media="asset.type" :data-title="asset.title" :aria-label="asset.title" v-if="['image', 'video'].indexOf(asset.type) > -1"></a>
                             <a class="kiss-cover" @click="toggleSelect(asset)" :aria-label="asset.title" v-if="modal"></a>
                         </div>
                         <div class="kiss-padding kiss-flex kiss-flex-middle" gap="small">
@@ -416,7 +416,7 @@ export default {
                         <td v-if="!modal || selectMultiple"><input class="kiss-checkbox" type="checkbox" v-model="selected" :value="asset._id"></td>
                         <td class="kiss-position-relative kiss-padding-small">
                             <asset-preview :asset="asset" max-height="30px"></asset-preview>
-                            <a class="kiss-cover spotlight" :href="$base('#uploads:'+asset.path)" :data-media="asset.type" :data-title="asset.title" :aria-label="asset.title" v-if="!modal && ['image', 'video'].indexOf(asset.type) > -1"></a>
+                            <a class="kiss-cover spotlight" :href="$baseUrl('#uploads:'+asset.path)" :data-media="asset.type" :data-title="asset.title" :aria-label="asset.title" v-if="!modal && ['image', 'video'].indexOf(asset.type) > -1"></a>
                         </td>
                         <td class="kiss-text-truncate" :class="{'kiss-color-primary': isSelected(asset)}"><a class="kiss-link-muted" @click="modal ? toggleSelect(asset) : edit(asset)">{{ asset.title }}</a></td>
                         <td class="kiss-color-muted kiss-text-monospace">{{ App.utils.formatSize(asset.size) }}</td>
@@ -542,7 +542,7 @@ export default {
                                 </a>
                             </li>
                             <li>
-                                <a class="kiss-flex kiss-flex-middle" :href="actionAsset && $base('#uploads:'+actionAsset.path)" target="_blank" rel="noopener" download>
+                                <a class="kiss-flex kiss-flex-middle" :href="actionAsset && $baseUrl('#uploads:'+actionAsset.path)" target="_blank" rel="noopener" download>
                                     <icon class="kiss-margin-small-right" size="larger">cloud_download</icon>
                                     {{ t('Download') }}
                                 </a>

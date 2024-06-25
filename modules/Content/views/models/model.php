@@ -170,9 +170,9 @@
                         <div class="kiss-flex kiss-flex-middle kiss-flex-right">
 
                             <div class="kiss-flex-1" v-if="isUpdate">
-                                <a class="kiss-button" :href="$route(`/content/tree/items/${model.name}`)" v-if="model.type == 'tree'"><?=t('Goto items')?></a>
-                                <a class="kiss-button" :href="$route(`/content/collection/items/${model.name}`)" v-if="model.type == 'collection'"><?=t('Goto items')?></a>
-                                <a class="kiss-button" :href="$route(`/content/singleton/item/${model.name}`)" v-if="model.type == 'singleton'"><?=t('Goto form')?></a>
+                                <a class="kiss-button" :href="$routeUrl(`/content/tree/items/${model.name}`)" v-if="model.type == 'tree'"><?=t('Goto items')?></a>
+                                <a class="kiss-button" :href="$routeUrl(`/content/collection/items/${model.name}`)" v-if="model.type == 'collection'"><?=t('Goto items')?></a>
+                                <a class="kiss-button" :href="$routeUrl(`/content/singleton/item/${model.name}`)" v-if="model.type == 'singleton'"><?=t('Goto form')?></a>
                             </div>
 
                             <div class="kiss-button-group">

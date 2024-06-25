@@ -111,7 +111,7 @@
                                 <td fixed="left" class="kiss-align-center">
                                     <div class="kiss-flex kiss-flex-middle">
                                         <input class="kiss-checkbox" type="checkbox" v-model="selected" :value="item._id">
-                                        <a class="kiss-badge kiss-link-muted kiss-margin-small-left" :href="$route(`/content/collection/item/${model.name}/${item._id}`)" :title="item._id">
+                                        <a class="kiss-badge kiss-link-muted kiss-margin-small-left" :href="$routeUrl(`/content/collection/item/${model.name}/${item._id}`)" :title="item._id">
                                             <icon>edit</icon>...{{ item._id.substr(-5) }}
                                         </a>
                                     </div>
@@ -185,13 +185,13 @@
                             <ul>
                                 <li class="kiss-nav-header">{{ t('Item actions') }}</li>
                                 <li>
-                                    <a class="kiss-flex kiss-flex-middle" :href="$route(`/content/collection/item/${model.name}/${actionItem._id}`)">
+                                    <a class="kiss-flex kiss-flex-middle" :href="$routeUrl(`/content/collection/item/${model.name}/${actionItem._id}`)">
                                         <icon class="kiss-margin-small-right">create</icon>
                                         <?= t('Edit') ?>
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="kiss-flex kiss-flex-middle" :href="$route(`/content/collection/clone/${model.name}/${actionItem._id}`)">
+                                    <a class="kiss-flex kiss-flex-middle" :href="$routeUrl(`/content/collection/clone/${model.name}/${actionItem._id}`)">
                                         <icon class="kiss-margin-small-right">control_point_duplicate</icon>
                                         <?= t('Clone') ?>
                                     </a>

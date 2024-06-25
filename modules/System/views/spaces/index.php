@@ -30,7 +30,7 @@
 
             <div class="animated fadeIn kiss-height-50vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted" v-if="spaces && !spaces.length">
                 <div>
-                    <kiss-svg :src="$base('system:assets/icons/spaces.svg')" width="40" height="40"></kiss-svg>
+                    <kiss-svg :src="$baseUrl('system:assets/icons/spaces.svg')" width="40" height="40"></kiss-svg>
                     <p class="kiss-size-large kiss-margin-small-top"><?=t('No spaces')?></p>
                 </div>
             </div>
@@ -43,7 +43,7 @@
 
                 <div class="animated fadeIn kiss-height-50vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted" v-if="!filtered.length">
                     <div>
-                        <kiss-svg :src="$base('system:assets/icons/spaces.svg')" width="40" height="40"></kiss-svg>
+                        <kiss-svg :src="$baseUrl('system:assets/icons/spaces.svg')" width="40" height="40"></kiss-svg>
                         <p class="kiss-size-large kiss-margin-small-top"><?=t('No spaces')?></p>
                     </div>
                 </div>
@@ -53,7 +53,7 @@
                         <div class="kiss-position-relative kiss-padding-small kiss-bgcolor-contrast">
                             <canvas width="40" height="40"></canvas>
                             <div class="kiss-cover kiss-flex kiss-flex-middle kiss-flex-center">
-                                <div><kiss-svg :src="$base('system:assets/icons/spaces.svg')" width="30" height="30"></kiss-svg></div>
+                                <div><kiss-svg :src="$baseUrl('system:assets/icons/spaces.svg')" width="30" height="30"></kiss-svg></div>
                             </div>
                             <a class="kiss-cover" :href="space.url" target="_blank" rel="noopener noreferrer"></a>
                         </div>

@@ -173,7 +173,7 @@ export default {
         <div field="asset">
 
             <kiss-card class="kiss-flex kiss-flex-column kiss-flex-center kiss-padding-larger kiss-margin-small kiss-align-center kiss-color-muted kiss-position-relative" theme="contrast" style="height:150px" v-if="!val">
-                <kiss-svg :src="$base('assets:icon.svg')" width="30" height="30"><canvas width="30" height="30"></canvas></kiss-svg>
+                <kiss-svg :src="$baseUrl('assets:icon.svg')" width="30" height="30"><canvas width="30" height="30"></canvas></kiss-svg>
                 <div class="kiss-margin-small kiss-size-small">{{ t('No asset selected') }}</div>
                 <a class="kiss-cover" @click="pickAsset()"></a>
             </kiss-card>
@@ -183,7 +183,7 @@ export default {
                 <div class="kiss-bgcolor-contrast kiss-position-relative kiss-padding" :class="{'kiss-bgcolor-transparentimage': val.type == 'image'}">
                     <canvas width="400" height="150"></canvas>
                     <div class="kiss-cover kiss-align-center kiss-flex kiss-flex-middle kiss-flex-center"><asset-preview :asset="val"></asset-preview></div>
-                    <a class="kiss-cover" :href="$base('#uploads:'+val.path)" target="_blank" rel="noopener"></a>
+                    <a class="kiss-cover" :href="$baseUrl('#uploads:'+val.path)" target="_blank" rel="noopener"></a>
                     <div class="kiss-position-top-right kiss-padding-small">
                         <div class="kiss-button-group">
                             <button type="button" class="kiss-button kiss-button-small" :title="t('Edit asset')" v-if="val" @click="edit()">

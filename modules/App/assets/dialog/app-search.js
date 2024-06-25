@@ -119,13 +119,13 @@ export default {
         <form id="app-search" role="search">
             <div class="kiss-flex kiss-flex-middle kiss-margin-small">
                 <div class="kiss-color-muted kiss-margin-small-right">
-                    <kiss-svg :src="$base('system:assets/icons/search.svg')" width="25"><canvas width="25" height="25"></canvas></kiss-svg>
+                    <kiss-svg :src="$baseUrl('system:assets/icons/search.svg')" width="25"><canvas width="25" height="25"></canvas></kiss-svg>
                 </div>
                 <div class="kiss-flex-1 kiss-margin-small-right">
                     <input autofocus class="kiss-input kiss-input-blank kiss-form-large kiss-width-1-1" :class="{'kiss-disabled': loading}" type="search" v-model="search" :placeholder="t('Search...')" :aria-label="t('Search...')" :disabled="loading" @keydown="keydown" @input="selected=null" ref="searchInput" style="font-size:25px;padding:0;">
                 </div>
                 <button type="button" :aria-label="t('Close')" class="kiss-input-blank" kiss-dialog-close>
-                    <kiss-svg class="kiss-color-muted" :src="$base('system:assets/icons/close.svg')" width="20"><canvas width="20" height="20"></canvas></kiss-svg>
+                    <kiss-svg class="kiss-color-muted" :src="$baseUrl('system:assets/icons/close.svg')" width="20"><canvas width="20" height="20"></canvas></kiss-svg>
                 </button>
             </div>
 
@@ -143,7 +143,7 @@ export default {
                     <kiss-card class="kiss-padding-small" :theme="idx == this.selected && 'contrast'" v-for="finding, idx in findings">
                         <a :href="finding.route" class="kiss-flex kiss-flex-middle" :class="{'kiss-color-primary': idx == this.selected, 'kiss-color-muted': idx != this.selected}">
                             <div class="kiss-margin-small-right">
-                                <kiss-svg :src="$base(finding.icon || 'system:assets/icons/link.svg')" width="20" height="20"></kiss-svg>
+                                <kiss-svg :src="$baseUrl(finding.icon || 'system:assets/icons/link.svg')" width="20" height="20"></kiss-svg>
                             </div>
                             <div class="kiss-flex-1">
                                 {{ finding.title }}

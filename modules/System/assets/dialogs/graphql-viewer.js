@@ -23,7 +23,7 @@ export default {
             let primaryColor = computedStyle.getPropertyValue('--kiss-color-primary').trim().replace('#', '%23');
             let textColor = computedStyle.getPropertyValue('--kiss-base-text-color').trim().replace('#', '%23');
 
-            return this.$route(`/system/api/graphqlViewer?bgColor=${bgColor}&primaryColor=${primaryColor}&textColor=${textColor}&apiKey=${apiKey}`);
+            return this.$routeUrl(`/system/api/graphqlViewer?bgColor=${bgColor}&primaryColor=${primaryColor}&textColor=${textColor}&apiKey=${apiKey}`);
         }
     },
 

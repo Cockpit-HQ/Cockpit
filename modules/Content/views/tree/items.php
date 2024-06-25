@@ -59,7 +59,7 @@
                     <kiss-card class="kiss-padding-small kiss-flex kiss-flex-middle kiss-margin-xsmall" theme="bordered contrast">
                         <div class="kiss-position-relative kiss-flex-1">
                             <tree-item :model="model" :item="item"></tree-item>
-                            <a class="kiss-cover" :href="$route('/content/tree/item/'+model.name+'/'+item._id)"></a>
+                            <a class="kiss-cover" :href="$routeUrl('/content/tree/item/'+model.name+'/'+item._id)"></a>
                         </div>
                         <a class="kiss-margin-small-left" @click="createItem(item._id)"><icon>create_new_folder</icon></a>
                         <a class="kiss-margin-small-left kiss-color-danger" @click="remove(item)"><icon>delete</icon></a>
@@ -206,7 +206,7 @@
                     },
 
                     createItem(pid = null) {
-                        location.href = this.$route(`/content/tree/item/${this.model.name}?pid=${pid}`);
+                        location.href = this.$routeUrl(`/content/tree/item/${this.model.name}?pid=${pid}`);
                     }
                 }
             }

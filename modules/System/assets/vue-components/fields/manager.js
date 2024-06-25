@@ -241,7 +241,7 @@ let FieldsManager = {
                             <a class="fm-handle kiss-margin-small-right kiss-color-muted"><icon>drag_handle</icon></a>
                             <div class="kiss-margin-right">
                                 <div class="kiss-padding-small app-border-radius" :style="{background: _.get(fieldTypes, element.type+'.color', 'rgb(255, 248, 214)')}">
-                                    <img :src="$base(_.get(fieldTypes, element.type+'.icon', 'system:assets/icons/edit.svg'))" width="20" height="20" style="opacity:.6" :title="element.type">
+                                    <img :src="$baseUrl(_.get(fieldTypes, element.type+'.icon', 'system:assets/icons/edit.svg'))" width="20" height="20" style="opacity:.6" :title="element.type">
                                 </div>
                             </div>
                             <div class="kiss-flex-1">
@@ -293,7 +293,7 @@ let FieldsManager = {
 
                             <kiss-card class="kiss-padding-small kiss-flex kiss-flex-middle kiss-position-relative" theme="bordered">
                                 <div class="kiss-padding-small app-border-radius kiss-margin-right" :style="{background: _.get(fieldTypes, field.type+'.color', 'rgb(255, 248, 214)')}">
-                                    <img :src="$base(_.get(fieldTypes, field.type+'.icon', 'system:assets/icons/edit.svg'))" width="20" height="20">
+                                    <img :src="$baseUrl(_.get(fieldTypes, field.type+'.icon', 'system:assets/icons/edit.svg'))" width="20" height="20">
                                 </div>
                                 <div>
                                     <div class="kiss-text-bold kiss-size-small">{{ _.get(fieldTypes, field.type+'.label', field.type) }}</div>
@@ -394,7 +394,7 @@ let FieldsManager = {
                                 <kiss-row class="kiss-position-relative kiss-flex-middle" gap="small" kiss-popout-close="true">
                                     <div>
                                         <div class="kiss-padding-small app-border-radius" :style="{background: f.color || 'rgb(255, 248, 214)'}">
-                                            <img :src="$base(f.icon || 'system:assets/icons/edit.svg')" width="20" height="20" :title="fieldType">
+                                            <img :src="$baseUrl(f.icon || 'system:assets/icons/edit.svg')" width="20" height="20" :title="fieldType">
                                         </div>
                                     </div>
                                     <div class="kiss-flex-1">

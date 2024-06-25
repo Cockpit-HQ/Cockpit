@@ -95,7 +95,7 @@ export default {
 
         captureVideoThumbnail() {
 
-            let videoURL = this.$base(`#uploads:${this.asset.path}`);
+            let videoURL = this.$baseUrl(`#uploads:${this.asset.path}`);
             let timeInSeconds = 2;
 
             const finalize = (img) => {
@@ -182,10 +182,10 @@ export default {
                 <canvas class="kiss-margin-auto kiss-responsive-height" style="opacity:.5" :style="{height: maxHeight}"></canvas>
                 <div class="kiss-cover kiss-flex kiss-flex-middle kiss-flex-center">
                     <app-loader size="small" v-if="loading"></app-loader>
-                    <kiss-svg :src="$base('assets:assets/icons/video.svg')" width="80" height="80" style="max-width:50%" v-if="!loading"></kiss-svg>
+                    <kiss-svg :src="$baseUrl('assets:assets/icons/video.svg')" width="80" height="80" style="max-width:50%" v-if="!loading"></kiss-svg>
                 </div>
             </div>
-            <kiss-svg :src="$base('assets:assets/icons/file.svg')" width="80" height="80" v-else></kiss-svg>
+            <kiss-svg :src="$baseUrl('assets:assets/icons/file.svg')" width="80" height="80" v-else></kiss-svg>
         </div>
     `
 }

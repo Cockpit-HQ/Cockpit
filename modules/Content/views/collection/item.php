@@ -141,10 +141,10 @@
             <kiss-container>
                 <div class="kiss-flex kiss-flex-middle">
                     <div class="kiss-button-group" v-if="item._id">
-                        <a class="kiss-button" :href="$route(`/content/collection/item/${model.name}`)">
+                        <a class="kiss-button" :href="$routeUrl(`/content/collection/item/${model.name}`)">
                             <?=t('Create new item')?>
                         </a>
-                        <a class="kiss-button" :href="$route(`/content/collection/clone/${model.name}/${item._id}`)">
+                        <a class="kiss-button" :href="$routeUrl(`/content/collection/clone/${model.name}/${item._id}`)">
                             <?=t('Clone item')?>
                         </a>
                     </div>
@@ -209,13 +209,13 @@
                             </a>
                         </li>
                         <li v-if="item._id">
-                            <a class="kiss-flex kiss-flex-middle" :href="$route(`/content/collection/item/${model.name}`)">
+                            <a class="kiss-flex kiss-flex-middle" :href="$routeUrl(`/content/collection/item/${model.name}`)">
                                 <icon class="kiss-margin-small-right">add_circle</icon>
                                 <?=t('Create new item')?>
                             </a>
                         </li>
                         <li v-if="item._id">
-                            <a class="kiss-flex kiss-flex-middle" :href="$route(`/content/collection/clone/${model.name}/${item._id}`)">
+                            <a class="kiss-flex kiss-flex-middle" :href="$routeUrl(`/content/collection/clone/${model.name}/${item._id}`)">
                                 <icon class="kiss-margin-small-right">control_point_duplicate</icon>
                                 <?=t('Clone item')?>
                             </a>
