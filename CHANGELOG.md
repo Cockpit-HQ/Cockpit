@@ -3,7 +3,7 @@
 ## WIP
 
 - Add missing response schema to OpenApi config
-- Update Vue to 3.4.30
+- Update Vue to 3.4.31
 - Change internal $route, $base to $routeUrl, $baseUrl
 
 ## 2.8.5 (2024-05-31)
