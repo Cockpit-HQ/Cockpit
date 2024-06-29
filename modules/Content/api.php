@@ -497,6 +497,134 @@ $this->on('restApi.config', function($restApi) {
 
     /**
      * @OA\Get(
+     *     path="/content/items",
+     *     tags={"content"},
+     *    @OA\Parameter(
+     *         description="Models query as json {model1:{filter:{...}}, model2:{...}}",
+     *         in="query",
+     *         name="models",
+     *         required=false,
+     *         @OA\Schema(type="string")
+     *     ),
+     *    @OA\Parameter(
+     *         description="Return content for specified locale",
+     *         in="query",
+     *         name="locale",
+     *         required=false,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         description="Populate items with linked content items.",
+     *         in="query",
+     *         name="populate",
+     *         required=false,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\OpenApi(
+     *         security={
+     *             {"api_key": {}}
+     *         }
+     *     ),
+     *     @OA\Response(response="200", description="Get list of published model items", @OA\JsonContent(type="array", @OA\Items(type="object", additionalProperties=true))),
+     *     @OA\Response(response="401", description="Unauthorized"),
+     * )
+     */
+    $restApi->addEndPoint('/content/items', [
+
+        'GET' => function($params, $app) {
+
+            $models = $app->param('models:string', null);
+
+            if (!$models) {
+                $app->response->status = 412;
+                return ['error' => '<models> parameter is missing'];
+            }
+
+            try {
+                $models = json5_decode($models, true);
+            } catch(\Throwable $e) {
+                $app->response->status = 412;
+                return ['error' => '<models> is not valid json'];
+            }
+
+            $content = $app->module('content');
+            $acl = $app->helper('acl');
+            $auth = $app->helper('auth');
+
+            $user = $auth->getUser();
+            $locale = $app->param('locale', 'default');
+            $populate = $app->param('populate:int', null);
+
+            $return = [];
+
+            foreach ($models as $model => $opts) {
+
+                $m = $opts['model'] ?? $model;
+                $meta = $content->model($m);
+
+                if (!$meta || !$acl->isAllowed("content/{$m}/read", $user['role'] ?? null)) {
+                    continue;
+                }
+
+                $options = [];
+                $process = ['locale' => $opts['locale'] ?? $locale];
+
+                if (isset($opts['filter'])) $options['filter'] = $opts['filter'];
+                if (isset($opts['sort'])) $options['sort'] = $opts['sort'];
+                if (isset($opts['fields'])) $options['fields'] = $opts['fields'];
+                if (isset($opts['limit'])) $options['limit'] = $opts['limit'];
+                if (isset($opts['skip'])) $options['skip'] = $opts['skip'];
+
+                if ($populate || isset($opts['populate'])) {
+                    $process['populate'] = intval($opts['populate'] ?? $populate);
+                    $process['user'] = $user;
+                }
+
+                if (!isset($options['filter']) || !is_array($options['filter'])) {
+                    $options['filter'] = [];
+                }
+
+                // only published items
+                $options['filter']['_state'] = 1;
+
+                // is model singleton?
+                if ($meta['type'] == 'singleton') {
+
+                    $item = $app->module('content')->item($m, $options['filter'], $options['fields'] ?? null, $process);
+
+                    if ($item) {
+                        $app->trigger('content.api.item', [&$item, $m]);
+                    }
+
+                    $return[$model] = $item;
+
+                    continue;
+                }
+
+                $items = $content->items($m, $options, $process);
+
+                if (count($items)) {
+                    $app->trigger('content.api.items', [&$items, $m]);
+                }
+
+                if (isset($options['skip'], $options['limit'])) {
+                    $return[$model] = [
+                        'data' => $items,
+                        'meta' => [
+                            'total' => $content->count($m, $options['filter'] ?? [])
+                        ]
+                    ];
+                } else {
+                    $return[$model] = $items;
+                }
+            }
+
+            return $return;
+        }
+    ]);
+
+    /**
+     * @OA\Get(
      *     path="/content/aggregate/{model}",
      *     tags={"content"},
      *     @OA\Parameter(

@@ -5,6 +5,7 @@
 - Add missing response schema to OpenApi config
 - Update Vue to 3.4.31
 - Change internal $route, $base to $routeUrl, $baseUrl
+- Add /content/items endpoint to batch collect content from multiple models 
 
 ## 2.8.5 (2024-05-31)
 
