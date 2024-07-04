@@ -102,12 +102,19 @@ $this->on('restApi.config', function($restApi) {
                 }
             }
 
+            if (!isset($filter) || !is_array($filter)) {
+                $filter = [];
+            }
+
+            // only published items
+            $filter['_state'] = 1;
+
             if ($populate) {
                 $process['populate'] = $populate;
                 $process['user'] = $app->helper('auth')->getUser();
             }
 
-            $item = $app->module('content')->item($model, $filter ? $filter : [], $fields, $process);
+            $item = $app->module('content')->item($model, $filter, $fields, $process);
 
             if ($item) {
                 $app->trigger('content.api.item', [&$item, $model]);
@@ -270,7 +277,7 @@ $this->on('restApi.config', function($restApi) {
                 'locale' => $app->param('locale:string', 'default')
             ];
 
-            $filter = ['_id' => $params['id']];
+            $filter = ['_id' => $params['id'], '_state' => 1];
             $fields = $app->param('fields:string', null);
             $populate = $app->param('populate:int', null);
 
@@ -288,7 +295,7 @@ $this->on('restApi.config', function($restApi) {
                 $process['user'] = $app->helper('auth')->getUser();
             }
 
-            $item = $app->module('content')->item($model, $filter ? $filter : [], $fields, $process);
+            $item = $app->module('content')->item($model, $filter, $fields, $process);
 
             if ($item) {
                 $app->trigger('content.api.item', [&$item, $model]);
