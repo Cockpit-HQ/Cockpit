@@ -219,12 +219,24 @@ class Generator
                 $value = 'true' == $value;
             }
 
+            if ($isList = ('[]' == substr($key, -2))) {
+                $key = substr($key, 0, -2);
+            }
             $token = explode('.', $key);
             if (2 == count($token)) {
                 // 'operationId.hash' => false
-                $normalised[$token[0]][$token[1]] = $value;
+                // namespaced / processor
+                if ($isList) {
+                    $normalised[$token[0]][$token[1]][] = $value;
+                } else {
+                    $normalised[$token[0]][$token[1]] = $value;
+                }
             } else {
-                $normalised[$key] = $value;
+                if ($isList) {
+                    $normalised[$key][] = $value;
+                } else {
+                    $normalised[$key] = $value;
+                }
             }
         }
 
@@ -263,7 +275,10 @@ class Generator
                 new Processors\MergeJsonContent(),
                 new Processors\MergeXmlContent(),
                 new Processors\OperationId(),
+                new Processors\AugmentTags(),
                 new Processors\CleanUnmerged(),
+                new Processors\PathFilter(),
+                new Processors\CleanUnusedComponents(),
             ]);
         }
 
@@ -422,6 +437,7 @@ class Generator
                 'analysis' => null,
                 'processor' => null,
                 'processors' => null,
+                'config' => [],
                 'logger' => null,
                 'validate' => true,
                 'version' => null,
@@ -436,6 +452,7 @@ class Generator
             ->setNamespaces($config['namespaces'])
             ->setAnalyser($config['analyser'])
             ->setProcessorPipeline($processorPipeline)
+            ->setConfig($config['config'])
             ->generate($sources, $config['analysis'], $config['validate']);
     }
 
