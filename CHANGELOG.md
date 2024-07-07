@@ -7,6 +7,7 @@
 - Change internal $route, $base to $routeUrl, $baseUrl
 - Add /content/items endpoint to batch collect content from multiple models
 - Fix publish state check on single content item api
+- Add magiclink login option (if smtp config available)
 
 ## 2.8.5 (2024-05-31)
 

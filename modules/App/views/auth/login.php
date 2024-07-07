@@ -70,7 +70,7 @@
 
             </div>
 
-            <?php if ($this->mailer->getTransport() !== 'mail'): ?>
+            <?php if ($this->retrieve('auth.login.magiclink', true) && $this->mailer->getTransport() !== 'mail'): ?>
             <div class="kiss-align-center kiss-margin" v-if="view=='form'">
                 <a class="kiss-size-small kiss-text-caption kiss-color-muted" href="<?=$this->route('/auth/magiclink')?>"><?=t('Login via Magic Link')?></a>
             </div>

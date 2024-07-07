@@ -60,6 +60,10 @@ class Auth extends Base {
             $this->app->reroute('/');
         }
 
+        if (!$this->app->retrieve('auth.login.magiclink', true)) {
+            return false;
+        }
+
         $this->helper('theme')->pageClass('magiclink-page');
 
         if ($this->param('email')) {
