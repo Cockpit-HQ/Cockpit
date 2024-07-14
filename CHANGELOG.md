@@ -1,6 +1,6 @@
 # Release Notes
 
-## WIP
+## 2.8.6 (2024-07-14)
 
 - Add missing response schema to OpenApi config
 - Update Vue to 3.4.31
