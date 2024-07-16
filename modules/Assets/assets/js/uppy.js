@@ -48,7 +48,7 @@ export const initUppyUploader = function(meta = {}, options = {}) {
         };
 
         _uppy.on('dashboard:modal-closed', () => {
-            _uppy.close();
+            _uppy.destroy();
             _uppy = null;
         });
 

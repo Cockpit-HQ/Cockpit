@@ -1,5 +1,9 @@
 # Release Notes
 
+## WIP
+
+- Update Uppy to 4.0.4
+
 ## 2.8.6 (2024-07-14)
 
 - Add missing response schema to OpenApi config
