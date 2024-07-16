@@ -82,14 +82,14 @@ export default {
             let cols = [
                 {
                     rowDrag: true,
-                    width: 0,
+                    width: 50,
                     pinned: 'left',
                 },
                 {
                     headerCheckboxSelection: true,
                     checkboxSelection: true,
                     showDisabledCheckboxes: true,
-                    width: 0,
+                    width: 50,
                     pinned: 'left',
                 }
             ];
