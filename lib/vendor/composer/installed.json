@@ -3484,17 +3484,17 @@
         },
         {
             "name": "zircote/swagger-php",
-            "version": "4.10.4",
-            "version_normalized": "4.10.4.0",
+            "version": "4.10.5",
+            "version_normalized": "4.10.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zircote/swagger-php.git",
-                "reference": "88895afcfaac955ed061489a2b19a431bf58b3e2"
+                "reference": "0840dad40fd6759912485f34bfccf13b49b29226"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zircote/swagger-php/zipball/88895afcfaac955ed061489a2b19a431bf58b3e2",
-                "reference": "88895afcfaac955ed061489a2b19a431bf58b3e2",
+                "url": "https://api.github.com/repos/zircote/swagger-php/zipball/0840dad40fd6759912485f34bfccf13b49b29226",
+                "reference": "0840dad40fd6759912485f34bfccf13b49b29226",
                 "shasum": ""
             },
             "require": {
@@ -3516,7 +3516,7 @@
             "suggest": {
                 "doctrine/annotations": "^1.7 || ^2.0"
             },
-            "time": "2024-07-10T02:06:32+00:00",
+            "time": "2024-07-16T03:13:27+00:00",
             "bin": [
                 "bin/openapi"
             ],
@@ -3562,7 +3562,7 @@
             ],
             "support": {
                 "issues": "https://github.com/zircote/swagger-php/issues",
-                "source": "https://github.com/zircote/swagger-php/tree/4.10.4"
+                "source": "https://github.com/zircote/swagger-php/tree/4.10.5"
             },
             "install-path": "../zircote/swagger-php"
         }
