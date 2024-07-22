@@ -3,7 +3,7 @@
 ## WIP
 
 - Update Uppy to 4.0.4
-- Update Vue to v3.4.32
+- Update Vue to v3.4.33
 
 ## 2.8.6 (2024-07-14)
 
