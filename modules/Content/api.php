@@ -423,7 +423,24 @@ $this->on('restApi.config', function($restApi) {
      *             {"api_key": {}}
      *         }
      *     ),
-     *     @OA\Response(response="200", description="Get list of published model items", @OA\JsonContent(type="array", @OA\Items(type="object", additionalProperties=true))),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Get list of published model items",
+     *         @OA\JsonContent(
+     *             oneOf={
+     *                 @OA\Schema(type="array", @OA\Items(type="object", additionalProperties=true)),
+     *                 @OA\Schema(
+     *                     type="object",
+     *                     @OA\Property(property="data", type="array", @OA\Items(type="object", additionalProperties=true)),
+     *                     @OA\Property(
+     *                         property="meta",
+     *                         type="object",
+     *                         @OA\Property(property="total", type="integer")
+     *                     )
+     *                 )
+     *             }
+     *         )
+     *     ),
      *     @OA\Response(response="401", description="Unauthorized"),
      *     @OA\Response(response="404", description="Model not found")
      * )
@@ -532,7 +549,24 @@ $this->on('restApi.config', function($restApi) {
      *             {"api_key": {}}
      *         }
      *     ),
-     *     @OA\Response(response="200", description="Get list of published model items", @OA\JsonContent(type="array", @OA\Items(type="object", additionalProperties=true))),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Get list of published model items",
+     *         @OA\JsonContent(
+     *             oneOf={
+     *                 @OA\Schema(type="array", @OA\Items(type="object", additionalProperties=true)),
+     *                 @OA\Schema(
+     *                     type="object",
+     *                     @OA\Property(property="data", type="array", @OA\Items(type="object", additionalProperties=true)),
+     *                     @OA\Property(
+     *                         property="meta",
+     *                         type="object",
+     *                         @OA\Property(property="total", type="integer")
+     *                     )
+     *                 )
+     *             }
+     *         )
+     *     ),
      *     @OA\Response(response="401", description="Unauthorized"),
      * )
      */
