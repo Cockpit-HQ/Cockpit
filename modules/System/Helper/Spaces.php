@@ -153,6 +153,8 @@ class Spaces extends \Lime\Helper {
         $instance->dataStorage->save('system/users', $user);
         $instance->trigger('app.system.install');
 
+        $this->app->trigger('spaces.spaces.created', [$name, $spaceConfig]);
+
         return [
             'name' => $name,
             'url' => rtrim($this->app->routeUrl('/'), '/')."/:{$name}"

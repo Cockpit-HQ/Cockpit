@@ -4,6 +4,7 @@
 
 - Update Uppy to 4.0.4
 - Update Vue to v3.4.34
+- Add spaces.spaces.created event
 
 ## 2.8.6 (2024-07-14)
 
