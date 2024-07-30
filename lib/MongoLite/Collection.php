@@ -168,7 +168,7 @@ class Collection {
      */
     public function remove(mixed $criteria): mixed {
 
-        $sql = 'DELETE FROM `'.$this->name.'` WHERE document_criteria("'.$this->database->registerCriteriaFunction($criteria).'", document)';
+        $sql = "DELETE FROM `{$this->name}` WHERE document_criteria('".$this->database->registerCriteriaFunction($criteria)."', document)";
 
         return $this->database->connection->exec($sql);
     }

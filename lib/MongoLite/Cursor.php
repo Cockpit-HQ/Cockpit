@@ -164,8 +164,7 @@ class Cursor implements \Iterator {
         $sql = ['SELECT document FROM '.$conn->quote($this->collection->name)];
 
         if ($this->criteria) {
-
-            $sql[] = 'WHERE document_criteria("'.$this->criteria.'", document)';
+            $sql[] = "WHERE document_criteria('{$this->criteria}', document)";
         }
 
         if ($this->sort) {
