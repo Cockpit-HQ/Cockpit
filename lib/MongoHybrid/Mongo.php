@@ -4,6 +4,7 @@ namespace MongoHybrid;
 
 use MongoDB\Client as MongoDBClient;
 use MongoDB\BSON\ObjectID;
+use MongoDB\Driver\Command;
 
 class Mongo {
 
