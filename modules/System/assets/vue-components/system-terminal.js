@@ -49,6 +49,17 @@ export default {
                             }
                         }
                         break;
+
+                    case '\x1b[D': // Left arrow
+                        if (this.terminal._core.buffer.x > 2) {
+                            this.terminal.write('\x1b[D'); // Move cursor left
+                        }
+                        break;
+
+                    case '\x1b[C': // Right arrow
+                        this.terminal.write('\x1b[C'); // Move cursor right
+                        break;
+
                     default: // Print all other characters
                         if (e >= String.fromCharCode(0x20) && e <= String.fromCharCode(0x7E) || e >= '\u00a0') {
                         this.command += e;
