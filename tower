@@ -77,6 +77,6 @@ $GLOBALS['APP'] = $app;
 
 $app->trigger('app.cli.init', [$cli]);
 
-$output->writeln("<info>{$app['app.name']} Tower</info> <comment>{$app['app.version']}</comment>");
+//$output->writeln("<info>{$app['app.name']} Tower</info> <comment>{$app['app.version']}</comment>");
 
 $cli->run(null, $output);
