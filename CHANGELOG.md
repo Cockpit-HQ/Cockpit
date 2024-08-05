@@ -7,6 +7,7 @@
 - Add spaces.spaces.created event
 - Fix SQLite double-quoted string literals issue #194
 - Add content:index:list, content:index:create and content:index:remove tower commands
+- Add $near operator support for MongoLite queries
 
 ## 2.8.6 (2024-07-14)
 

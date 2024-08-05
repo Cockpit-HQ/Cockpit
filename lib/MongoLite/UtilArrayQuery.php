@@ -241,6 +241,35 @@ class UtilArrayQuery {
                 $r = $b ? !\is_null($a) : \is_null($a);
                 break;
 
+            case '$near':
+
+                if (!isset($a['coordinates'], $b['$geometry']['coordinates'])) {
+                    return false;
+                }
+
+                // [lng, lat]
+                if (!is_array($a['coordinates']) || !is_array($b['$geometry']['coordinates'])) {
+                    return false;
+                }
+
+                if (!isset($b['$maxDistance']) || !isset($b['$minDistance'])) {
+                    return false;
+                }
+
+                $distance = calculateDistanceInMeters($a['coordinates'], $b['$geometry']['coordinates']);
+
+                if (isset($b['$maxDistance']) && is_numeric($b['$maxDistance']) && $distance > $b['$maxDistance']) {
+                    return false;
+                }
+
+                if (isset($b['$minDistance']) && is_numeric($b['$minDistance']) && $distance < $b['$minDistance']) {
+                    return false;
+                }
+
+                $r = true;
+
+                break;
+
             case '$fuzzy':
             case '$text':
 
@@ -320,3 +349,28 @@ function fuzzy_search(string $search, string $text, $distance = 3): float {
     return $score / \count($needles);
 }
 
+function calculateDistanceInMeters($fromPoint, $toPoint) {
+    // Earth's radius in meters
+    $earthRadius = 6371000;
+
+    // Convert latitude and longitude to radians
+    $lng1 = deg2rad($fromPoint[0]);
+    $lat1 = deg2rad($fromPoint[1]);
+    $lng2 = deg2rad($toPoint[0]);
+    $lat2 = deg2rad($toPoint[1]);
+
+    // Calculate differences
+    $latDiff = $lat2 - $lat1;
+    $lngDiff = $lng2 - $lng1;
+
+    // Haversine formula
+    $a = sin($latDiff / 2) * sin($latDiff / 2) +
+         cos($lat1) * cos($lat2) *
+         sin($lngDiff / 2) * sin($lngDiff / 2);
+    $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+
+    // Calculate the distance
+    $distance = $earthRadius * $c;
+
+    return $distance;
+}
