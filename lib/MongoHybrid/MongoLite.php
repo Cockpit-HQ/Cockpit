@@ -88,6 +88,18 @@ class MongoLite {
         return true;
     }
 
+    public function createIndex(string $collectionName, array $key, array $options = []) {
+        return uniqid('index.');
+    }
+
+    public function dropIndex(string $collectionName, string $indexName, array $options = []) {
+        return [];
+    }
+
+    public function lstIndexes(string $collectionName, array $options = []): array {
+        return [];
+    }
+
     public function findOne(string $collection, ?array $filter = null, ?array $projection = null): ?array {
         if (!$filter) $filter = [];
 

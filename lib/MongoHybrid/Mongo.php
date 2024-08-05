@@ -85,6 +85,54 @@ class Mongo {
         return true;
     }
 
+    public function createIndex(string $collectionName, array $key, array $options = []) {
+
+        $col = $this->getCollection($collectionName);
+
+        return $col->createIndex($key, $options);
+    }
+
+    public function dropIndex(string $collectionName, string $indexName, array $options = []) {
+
+        $col = $this->getCollection($collectionName);
+
+        if ($indexName === '*') {
+            return $col->dropIndexes($options);
+        }
+
+        return $col->dropIndex($indexName, $options);
+    }
+
+    public function lstIndexes(string $collectionName, array $options = []): array {
+
+        $indexes = [];
+
+        $col = $this->getCollection($collectionName);
+        $idxs = $col->listIndexes($options);
+
+        foreach ($idxs as $idx) {
+
+            $type = null;
+
+            if ($idx->isText()) {
+                $type = 'text';
+            } elseif ($idx->is2dSphere()) {
+                $type = '2dsphere';
+            }
+
+            $indexes[] = [
+                'name' => $idx->getName(),
+                'type' => $type,
+                'unique' => $idx->isUnique(),
+                'ttl' => $idx->isTtl(),
+                'sparse' => $idx->isSparse(),
+            ];
+        }
+
+        return $indexes;
+    }
+
+
     public function findOneById(string $collection, mixed $id): ?array {
 
         if (is_string($id)) $id = new ObjectID($id);
