@@ -1815,7 +1815,13 @@
 
               local: {
                   load: function (name) {
-                      let data = global.localStorage[`jsonstorage.${name}`] ? JSON.parse(global.localStorage[`jsonstorage.${name}`]) : {};
+
+                      let data = {};
+
+                      try {
+                          data = global.localStorage[`jsonstorage.${name}`] ? JSON.parse(global.localStorage[`jsonstorage.${name}`]) : {};
+                      } catch (e) {}
+
                       data.__ex = data.__ex || {};
                       return data;
                   },
@@ -1826,7 +1832,13 @@
 
               session: {
                   load: function (name) {
-                      let data = global.sessionStorage[`jsonstorage.${name}`] ? JSON.parse(global.sessionStorage[`jsonstorage.${name}`]) : {};
+
+                      let data = {};
+
+                      try {
+                          data = global.sessionStorage[`jsonstorage.${name}`] ? JSON.parse(global.sessionStorage[`jsonstorage.${name}`]) : {};
+                      } catch (e) {}
+
                       data.__ex = data.__ex || {};
                       return data;
                   },
