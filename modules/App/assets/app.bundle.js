@@ -1522,7 +1522,9 @@
 
       Store.prototype.get = function (key, def) {
 
-          if (!this.data) return def;
+          if (!this.data) {
+              return def;
+          }
 
           if (this.data.__ex[key] && this.data.__ex[key] < (new Date()).getTime()) {
               delete this.data[key];

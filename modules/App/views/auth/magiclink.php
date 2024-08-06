@@ -2,7 +2,7 @@
 <vue-view class="kiss-cover kiss-flex kiss-flex kiss-flex-middle kiss-flex-center">
 
     <template>
-        <div class="animated pulse kiss-width-3-4 kiss-width-1-2@m kiss-width-1-4@xl">
+        <div class="animated pulse kiss-width-3-4 kiss-width-1-2@m kiss-width-1-4@xl" style="max-width: 500px;">
 
             <div class="kiss-flex kiss-flex-middle kiss-margin-large" gap>
                 <div><img class="app-logo" src="<?= $this->helper('theme')->logo() ?>" style="height:40px;width:auto;" alt="Logo"></div>
