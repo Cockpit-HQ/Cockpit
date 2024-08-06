@@ -1522,16 +1522,22 @@
 
       Store.prototype.get = function (key, def) {
 
-          if (!this.data) {
+          try {
+
+              if (!this.data) {
+                  return def;
+              }
+
+              if (this.data.__ex && this.data.__ex[key] && this.data.__ex[key] < (new Date()).getTime()) {
+                  delete this.data[key];
+                  delete this.data.__ex[key];
+              }
+
+              return this.data[key] !== undefined ? this.data[key] : def;
+
+          } catch (e) {
               return def;
           }
-
-          if (this.data.__ex[key] && this.data.__ex[key] < (new Date()).getTime()) {
-              delete this.data[key];
-              delete this.data.__ex[key];
-          }
-
-          return this.data[key] !== undefined ? this.data[key] : def;
       };
 
       Store.prototype.set = function (key, value) {
@@ -1797,7 +1803,9 @@
 
                   return {
                       load: function (name) {
-                          return dbs[name] || {};
+                          let data = dbs[name] || {};
+                          data.__ex = data.__ex || {};
+                          return data;
                       },
                       store: function (name, data) {
                           dbs[name] = data;
@@ -1807,7 +1815,9 @@
 
               local: {
                   load: function (name) {
-                      return global.localStorage[`jsonstorage.${name}`] ? JSON.parse(global.localStorage[`jsonstorage.${name}`]) : {};
+                      let data = global.localStorage[`jsonstorage.${name}`] ? JSON.parse(global.localStorage[`jsonstorage.${name}`]) : {};
+                      data.__ex = data.__ex || {};
+                      return data;
                   },
                   store: function (name, data) {
                       global.localStorage[`jsonstorage.${name}`] = JSON.stringify(data);
@@ -1816,7 +1826,9 @@
 
               session: {
                   load: function (name) {
-                      return global.sessionStorage[`jsonstorage.${name}`] ? JSON.parse(global.sessionStorage[`jsonstorage.${name}`]) : {};
+                      let data = global.sessionStorage[`jsonstorage.${name}`] ? JSON.parse(global.sessionStorage[`jsonstorage.${name}`]) : {};
+                      data.__ex = data.__ex || {};
+                      return data;
                   },
                   store: function (name, data) {
                       global.sessionStorage[`jsonstorage.${name}`] = JSON.stringify(data);
