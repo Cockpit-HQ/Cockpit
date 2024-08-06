@@ -15,7 +15,10 @@
         this.name = name;
         this.adapter = adapter;
         this.data = adapter.load(name);
-        this.data.__ex = this.data.__ex || {}; // expires data container
+
+        if (!this.data.__ex) {
+            this.data.__ex = {}; // expires data container
+        }
 
         // cleanup expires data
         (function () {
