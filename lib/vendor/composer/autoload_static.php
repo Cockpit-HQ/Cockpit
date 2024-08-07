@@ -560,6 +560,7 @@ class ComposerStaticInitfb114fa4d291ebdea911cfa961c2cd9b
         'Aws\\S3\\Exception\\PermanentRedirectException' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/S3/Exception/PermanentRedirectException.php',
         'Aws\\S3\\Exception\\S3Exception' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/S3/Exception/S3Exception.php',
         'Aws\\S3\\Exception\\S3MultipartUploadException' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/S3/Exception/S3MultipartUploadException.php',
+        'Aws\\S3\\ExpiresParsingMiddleware' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/S3/ExpiresParsingMiddleware.php',
         'Aws\\S3\\GetBucketLocationParser' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/S3/GetBucketLocationParser.php',
         'Aws\\S3\\MultipartCopy' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/S3/MultipartCopy.php',
         'Aws\\S3\\MultipartUploader' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/S3/MultipartUploader.php',

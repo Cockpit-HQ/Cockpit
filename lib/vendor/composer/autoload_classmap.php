@@ -265,6 +265,7 @@ return array(
     'Aws\\S3\\Exception\\PermanentRedirectException' => $vendorDir . '/aws/aws-sdk-php/src/S3/Exception/PermanentRedirectException.php',
     'Aws\\S3\\Exception\\S3Exception' => $vendorDir . '/aws/aws-sdk-php/src/S3/Exception/S3Exception.php',
     'Aws\\S3\\Exception\\S3MultipartUploadException' => $vendorDir . '/aws/aws-sdk-php/src/S3/Exception/S3MultipartUploadException.php',
+    'Aws\\S3\\ExpiresParsingMiddleware' => $vendorDir . '/aws/aws-sdk-php/src/S3/ExpiresParsingMiddleware.php',
     'Aws\\S3\\GetBucketLocationParser' => $vendorDir . '/aws/aws-sdk-php/src/S3/GetBucketLocationParser.php',
     'Aws\\S3\\MultipartCopy' => $vendorDir . '/aws/aws-sdk-php/src/S3/MultipartCopy.php',
     'Aws\\S3\\MultipartUploader' => $vendorDir . '/aws/aws-sdk-php/src/S3/MultipartUploader.php',
