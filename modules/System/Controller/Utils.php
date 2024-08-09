@@ -133,7 +133,11 @@ class Utils extends App {
             return $this->stop(['error' => 'Permission denied'], 401);
         }
 
-        return ['env' => getenv()];
+        $env = getenv();
+
+        ksort($env);
+
+        return compact('env');
     }
 
 }

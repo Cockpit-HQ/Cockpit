@@ -1,5 +1,9 @@
 # Release Notes
 
+## WIP
+
+- Sort env variables by name
+
 ## 2.9.0 (2024-08-08)
 
 - Update Uppy to 4.0.4
