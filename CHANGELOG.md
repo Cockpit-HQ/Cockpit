@@ -3,6 +3,7 @@
 ## WIP
 
 - Sort env variables by name
+- Update Vue to v3.4.37
 
 ## 2.9.0 (2024-08-08)
 
