@@ -3922,6 +3922,7 @@ td.kiss-text-truncate { max-width: 0; }
     --kiss-hr-color: rgba(255,255,255,.1);
     --kiss-link-color: var(--kiss-color-primary);
     --kiss-link-hover-color: #1994ff;
+    --kiss-link-focus-color: var(--kiss-link-hover-color);
 
     --kiss-block-element-margin: 1.5rem;
 
