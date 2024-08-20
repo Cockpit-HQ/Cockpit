@@ -34,7 +34,7 @@ export default {
 
         <div class="app-offcanvas-container">
             <div class="kiss-padding kiss-text-bold">
-                {{ t('Rest-Api Viewer') }}
+                {{ t('REST-API Viewer') }}
             </div>
             <div class="app-offcanvas-content kiss-position-relative kiss-bgcolor-contrast kiss-flex-1 kiss-flex kiss-flex-middle kiss-flex-center">
                 <div v-if="!loaded"><app-loader></app-loader></div>

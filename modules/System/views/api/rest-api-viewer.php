@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-    <title>REST - Api</title>
+    <title>REST - API</title>
 </head>
 <body>
     <rapi-doc
