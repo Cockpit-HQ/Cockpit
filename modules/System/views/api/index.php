@@ -56,13 +56,13 @@
             <div class="animated fadeIn kiss-height-50vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted" v-if="keys && !keys.length">
                 <div>
                     <icon class="kiss-size-xlarge">vpn_key</icon>
-                    <p class="kiss-size-large"><?=t('No api keys')?></p>
+                    <p class="kiss-size-large"><?=t('No API keys')?></p>
                 </div>
             </div>
 
             <kiss-card class="animated fadeIn kiss-padding kiss-margin" theme="bordered" v-if="keys && keys.length">
 
-                <div class="kiss-margin kiss-text-caption"><strong><?=t('Api keys')?></strong></div>
+                <div class="kiss-margin kiss-text-caption"><strong><?=t('API keys')?></strong></div>
 
                 <ul class="app-list-items">
 

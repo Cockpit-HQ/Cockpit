@@ -24,7 +24,7 @@ $this->on('app.layout.init', function() {
     }
 
     $this->helper('menus')->addLink('modules', [
-        'label'  => 'Api',
+        'label'  => 'API & Security',
         'icon'   => 'system:assets/icons/api.svg',
         'route'  => '/system/api',
         'active' => false

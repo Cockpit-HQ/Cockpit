@@ -21,7 +21,7 @@ $this->service('gql', function() use($app) {
     return $gql;
 });
 
-// Rest Api service
+// Rest API service
 $this->service('restApi', function() use($app) {
     $restApi = new App\RestApi\Query($app);
     return $restApi;
