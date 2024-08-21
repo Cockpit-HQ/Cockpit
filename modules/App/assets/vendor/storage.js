@@ -14,11 +14,8 @@
 
         this.name = name;
         this.adapter = adapter;
-        this.data = adapter.load(name);
 
-        if (!this.data.__ex) {
-            this.data.__ex = {}; // expires data container
-        }
+        this.load();
 
         // cleanup expires data
         (function () {
@@ -36,9 +33,16 @@
     }
 
     Store.prototype.load = function () {
+
         try {
             this.data = this.adapter.load(this.name);
-        } catch (e) { }
+        } catch (e) {
+            this.data = {};
+        }
+
+        if (!this.data.__ex) {
+            this.data.__ex = {}; // expires data container
+        }
     };
 
     Store.prototype.store = function () {
@@ -65,7 +69,11 @@
         return true;
     };
 
-    Store.prototype.get = function (key, def) {
+    Store.prototype.get = function (key, def, reload) {
+
+        if (reload) {
+            this.load();
+        }
 
         try {
 
