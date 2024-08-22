@@ -3,7 +3,8 @@
 ## WIP
 
 - Sort env variables by name
-- Update Vue to v3.4.37
+- Update Vue to v3.4.38
+- Update Uppy to 4.2.0
 
 ## 2.9.0 (2024-08-08)
 
