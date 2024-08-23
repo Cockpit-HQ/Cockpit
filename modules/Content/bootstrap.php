@@ -179,8 +179,13 @@ $this->module('content')->extend([
             foreach ($fields as $f => $v) {
 
                 if (!str_starts_with($f, '..')) continue;
+
                 $postPopulateProjection[substr($f, 2)] = $v;
-                $fields[explode('.', substr($f, 2))[0]] = 1;
+
+                if ($v === 1) {
+                    $fields[explode('.', substr($f, 2))[0]] = 1;
+                }
+
                 unset($fields[$f]);
             }
         }
@@ -249,8 +254,13 @@ $this->module('content')->extend([
             foreach ($options['fields'] as $f => $v) {
 
                 if (!str_starts_with($f, '..')) continue;
+
                 $postPopulateProjection[substr($f, 2)] = $v;
-                $options['fields'][explode('.', substr($f, 2))[0]] = 1;
+
+                if ($v === 1) {
+                    $options['fields'][explode('.', substr($f, 2))[0]] = 1;
+                }
+
                 unset($options['fields'][$f]);
             }
         }

@@ -6,16 +6,14 @@ class Projection {
 
     public static function onDocuments(array $documents, array $fields): array {
 
-        $vals = array_values($fields);
-        $isInclusion = in_array(1, $vals) ? true : false;
-
-        if (!$isInclusion && !in_array(0, $vals)) {
-            $isInclusion = true;
-        }
-
+        $isInclusion = self::determineProjectionType($fields);
         $projection = self::normalizeProjection($fields);
 
         foreach ($documents as &$document) {
+
+            if (!is_array($document)) {
+                continue;
+            }
 
             $id = $document['_id'] ?? null;
             $document = self::process($document, $projection, $isInclusion);
@@ -54,7 +52,12 @@ class Projection {
 
         if (self::is_sequential($document)) {
             foreach ($document as $key => $value) {
-                $result[] = self::process($value, $fields, $isInclusion);
+
+                if (is_array($value)) {
+                    $result[] = self::process($value, $fields, $isInclusion);
+                } else {
+                    $result[] = $value;
+                }
             }
             return $result;
         }
@@ -63,7 +66,11 @@ class Projection {
 
             if (is_array($value) && isset($fields[$field]) && is_array($fields[$field])) {
 
-                $result[$field] = self::process($value, $fields[$field], $isInclusion);
+                if (is_array($fields[$field])) {
+                    $result[$field] = self::process($value, $fields[$field], $isInclusion);
+                } else {
+                    $result[$field] = $value;
+                }
 
             } else {
 
@@ -102,5 +109,30 @@ class Projection {
         }
 
         return true;
+    }
+
+    protected static function determineProjectionType(array $fields): bool {
+        $hasInclusion = false;
+        $hasExclusion = false;
+
+        $stack = [$fields];
+        while (!empty($stack)) {
+            $current = array_pop($stack);
+            foreach ($current as $value) {
+                if (is_array($value)) {
+                    $stack[] = $value;
+                } elseif ($value === 1) {
+                    $hasInclusion = true;
+                } elseif ($value === 0) {
+                    $hasExclusion = true;
+                }
+
+                if ($hasInclusion && $hasExclusion) {
+                    throw new \InvalidArgumentException("Projection cannot have a mix of inclusion and exclusion.");
+                }
+            }
+        }
+
+        return $hasInclusion || !$hasExclusion;
     }
 }
