@@ -20,10 +20,10 @@ class License extends \Lime\Helper {
 
         $this->license = false;
 
-        $file = $this->app->path('#app:license.lic');
+        $file = $this->app->path('#app:config/license.lic');
 
         if (!$file) {
-            $file = $this->app->path('#app:config/license.lic');
+            $file = $this->app->path('#app:license.lic');
         }
 
         if (!$file) {
