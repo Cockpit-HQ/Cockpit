@@ -537,14 +537,19 @@
                             process,
                             state
                         }).then(rsp => {
+
                             this.items = rsp.items;
                             this.page = rsp.page;
                             this.pages = rsp.pages;
                             this.count = rsp.count;
 
-                            this.loading = false;
                             this.fixTableContainerWidth();
-                        })
+
+                        }).catch(rsp => {
+                            App.ui.notify(rsp.error || 'Loading failed!', 'error');
+                        }).finally(() => {
+                            this.loading = false;
+                        });
                     },
 
                     toggleItemActions(item) {
