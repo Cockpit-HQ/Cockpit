@@ -87,7 +87,7 @@ class Cockpit {
             'paths' => [
                 '#app'     => __DIR__,
                 '#root'    => $envDir,
-                '#config'  => $envDir.'/config',
+                '#config'   => $envDir.'/config',
                 '#modules' => $envDir.'/modules',
                 '#addons'  => $envDir.'/addons',
                 '#storage' => $envDir.'/storage',
