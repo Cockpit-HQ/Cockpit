@@ -182,7 +182,7 @@ $this->module('content')->extend([
 
                 $postPopulateProjection[substr($f, 2)] = $v;
 
-                if ($v === 1) {
+                if ($v === 1 || (is_array($v) && \MongoLite\Projection::hasInclusion($v))) {
                     $fields[explode('.', substr($f, 2))[0]] = 1;
                 }
 
@@ -257,7 +257,7 @@ $this->module('content')->extend([
 
                 $postPopulateProjection[substr($f, 2)] = $v;
 
-                if ($v === 1) {
+                if ($v === 1 || (is_array($v) && \MongoLite\Projection::hasInclusion($v))) {
                     $options['fields'][explode('.', substr($f, 2))[0]] = 1;
                 }
 

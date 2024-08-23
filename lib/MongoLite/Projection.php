@@ -6,7 +6,7 @@ class Projection {
 
     public static function onDocuments(array $documents, array $fields): array {
 
-        $isInclusion = self::determineProjectionType($fields);
+        $hasInclusion = self::hasInclusion($fields);
         $projection = self::normalizeProjection($fields);
 
         foreach ($documents as &$document) {
@@ -16,7 +16,7 @@ class Projection {
             }
 
             $id = $document['_id'] ?? null;
-            $document = self::process($document, $projection, $isInclusion);
+            $document = self::process($document, $projection, $hasInclusion);
 
             if ($id && ($fields['_id'] ?? true)) {
                 $document['_id'] = $id;
@@ -28,6 +28,31 @@ class Projection {
 
     public static function onDocument(array $document, array $fields): array {
         return self::onDocuments([$document], $fields)[0];
+    }
+
+    public static function hasInclusion(array $fields): bool {
+        $hasInclusion = false;
+        $hasExclusion = false;
+
+        $stack = [$fields];
+        while (!empty($stack)) {
+            $current = array_pop($stack);
+            foreach ($current as $value) {
+                if (is_array($value)) {
+                    $stack[] = $value;
+                } elseif ($value === 1) {
+                    $hasInclusion = true;
+                } elseif ($value === 0) {
+                    $hasExclusion = true;
+                }
+
+                if ($hasInclusion && $hasExclusion) {
+                    throw new \InvalidArgumentException("Projection cannot have a mix of inclusion and exclusion.");
+                }
+            }
+        }
+
+        return $hasInclusion || !$hasExclusion;
     }
 
     protected static function normalizeProjection($fields): array {
@@ -46,7 +71,7 @@ class Projection {
         return $projection;
     }
 
-    protected static function process(array $document, array $fields, bool $isInclusion): array {
+    protected static function process(array $document, array $fields, bool $hasInclusion): array {
 
         $result = [];
 
@@ -54,7 +79,7 @@ class Projection {
             foreach ($document as $key => $value) {
 
                 if (is_array($value)) {
-                    $result[] = self::process($value, $fields, $isInclusion);
+                    $result[] = self::process($value, $fields, $hasInclusion);
                 } else {
                     $result[] = $value;
                 }
@@ -67,16 +92,16 @@ class Projection {
             if (is_array($value) && isset($fields[$field]) && is_array($fields[$field])) {
 
                 if (is_array($fields[$field])) {
-                    $result[$field] = self::process($value, $fields[$field], $isInclusion);
+                    $result[$field] = self::process($value, $fields[$field], $hasInclusion);
                 } else {
                     $result[$field] = $value;
                 }
 
             } else {
 
-                if ($isInclusion && isset($fields[$field]) && $fields[$field] == 1) {
+                if ($hasInclusion && isset($fields[$field]) && $fields[$field] == 1) {
                     $result[$field] = $value;
-                } elseif (!$isInclusion && (!isset($fields[$field]) || $fields[$field] != 0)) {
+                } elseif (!$hasInclusion && (!isset($fields[$field]) || $fields[$field] != 0)) {
                     $result[$field] = $value;
                 }
             }
@@ -109,30 +134,5 @@ class Projection {
         }
 
         return true;
-    }
-
-    protected static function determineProjectionType(array $fields): bool {
-        $hasInclusion = false;
-        $hasExclusion = false;
-
-        $stack = [$fields];
-        while (!empty($stack)) {
-            $current = array_pop($stack);
-            foreach ($current as $value) {
-                if (is_array($value)) {
-                    $stack[] = $value;
-                } elseif ($value === 1) {
-                    $hasInclusion = true;
-                } elseif ($value === 0) {
-                    $hasExclusion = true;
-                }
-
-                if ($hasInclusion && $hasExclusion) {
-                    throw new \InvalidArgumentException("Projection cannot have a mix of inclusion and exclusion.");
-                }
-            }
-        }
-
-        return $hasInclusion || !$hasExclusion;
     }
 }
