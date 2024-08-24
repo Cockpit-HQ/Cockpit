@@ -3466,10 +3466,20 @@ small,
  * paddings
  */
 .kiss-padding { padding: var(--kiss-padding, 1rem); }
+.kiss-padding-left { padding-left: var(--kiss-padding, 1rem) !important; }
+.kiss-padding-right { padding-right: var(--kiss-padding, 1rem) !important; }
 .kiss-padding-small { padding: var(--kiss-padding-small, .6rem); }
+.kiss-padding-small-left { padding-left: var(--kiss-padding-small, .6rem) !important; }
+.kiss-padding-small-right { padding-right: var(--kiss-padding-small, .6rem) !important; }
 .kiss-padding-xsmall { padding: var(--kiss-padding-xsmall, .3rem); }
+.kiss-padding-xsmall-left { padding-left: var(--kiss-padding-xsmall, .3rem) !important; }
+.kiss-padding-xsmall-right { padding-right: var(--kiss-padding-xsmall, .3rem) !important; }
 .kiss-padding-larger { padding: var(--kiss-padding-larger, 2rem); }
+.kiss-padding-larger-left { padding-left: var(--kiss-padding-larger, 2rem) !important; }
+.kiss-padding-larger-right { padding-right: var(--kiss-padding-larger, 2rem) !important; }
 .kiss-padding-large { padding: var(--kiss-padding-large, 3rem); }
+.kiss-padding-large-left { padding-left: var(--kiss-padding-large, 3rem) !important; }
+.kiss-padding-large-right { padding-right: var(--kiss-padding-large, 3rem) !important; }
 .kiss-padding-remove { padding: 0 !important; }
 .kiss-padding-remove-top { padding-top: 0 !important; }
 .kiss-padding-remove-bottom { padding-bottom: 0 !important; }

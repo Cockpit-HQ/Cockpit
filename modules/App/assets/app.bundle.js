@@ -709,6 +709,19 @@
 
     });
 
+    on$1(document.documentElement, 'keyup', function (e) {
+
+        if (!['Esc', 'Escape'].includes(e.key)) {
+            return;
+        }
+
+        let elements = document.querySelectorAll('kiss-dropdown[open="true"]');
+
+        for (let i = 0; i < elements.length; i++) {
+            elements[i].close();
+        }
+    });
+
     customElements.define('kiss-dropdown', class extends HTMLElement {
 
         connectedCallback() {
