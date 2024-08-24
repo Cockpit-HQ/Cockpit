@@ -23,7 +23,7 @@
                 <span class="kiss-badge kiss-badge-outline kiss-color-primary kiss-margin-small-right" v-if="!item._id">
                     <?=t('New Item')?>
                 </span>
-                <a class="kiss-size-large kiss-margin-small-right" kiss-popout="#model-item-menu-actions"><icon>more_horiz</icon></a>
+                <a class="kiss-size-large kiss-margin-small-right" href kiss-popout="#model-item-menu-actions"><icon>more_horiz</icon></a>
             </div>
         </kiss-container>
 
@@ -196,7 +196,7 @@
                     <ul>
                         <li class="kiss-nav-header"><?=t('Actions')?></li>
                         <li>
-                            <a class="kiss-flex kiss-flex-middle" @click="showJSON()">
+                            <a class="kiss-flex kiss-flex-middle" href @click.prevent="showJSON()">
                                 <icon class="kiss-margin-small-right">manage_search</icon>
                                 <?=t('JSON Object')?>
                             </a>

@@ -15,7 +15,7 @@
             <div class="kiss-size-5 kiss-text-bold"><?=$this->escape($model['label'] ? $model['label'] : $model['name'])?></div>
         </div>
         <div>
-            <a class="kiss-size-large" kiss-popout="#model-item-menu-actions"><icon>more_horiz</icon></a>
+            <a class="kiss-size-large" href kiss-popout="#model-item-menu-actions"><icon>more_horiz</icon></a>
         </div>
     </div>
 
@@ -150,7 +150,7 @@
                         <ul>
                             <li class="kiss-nav-header"><?=t('Model actions')?></li>
                             <li>
-                                <a class="kiss-flex kiss-flex-middle" @click="showJSON()">
+                                <a class="kiss-flex kiss-flex-middle" href @click.prevent="showJSON()">
                                     <icon class="kiss-margin-small-right">manage_search</icon>
                                     <?=t('JSON Object')?>
                                 </a>
