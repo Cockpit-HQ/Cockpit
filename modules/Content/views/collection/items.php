@@ -10,13 +10,31 @@
 
             <div class="kiss-flex kiss-flex-middle kiss-margin-bottom" gap="small">
 
-                <kiss-card class="kiss-flex kiss-flex-middle kiss-overlay-input kiss-padding-small" gap="small" theme="contrast shadowed" v-if="hasLocalization">
+                <kiss-card class="kiss-flex kiss-flex-middle kiss-overlay-input kiss-padding-small kiss-padding-left kiss-padding-right" gap="small" theme="contrast shadowed" v-if="hasLocalization">
                     <icon size="larger">language</icon>
                     <span class="kiss-size-small kiss-text-caption kiss-text-bolder">{{ App._locales[this.locale] }}</span>
                     <select v-model="locale">
                         <option :value="i18n" v-for="(label,i18n) in App._locales">{{label}}</option>
                     </select>
                 </kiss-card>
+
+                <kiss-dropdown>
+                    <kiss-card class="kiss-flex kiss-flex-middle kiss-cursor-pointer kiss-padding-small kiss-padding-left kiss-padding-right" theme="contrast shadowed">
+                        <icon size="larger">display_settings</icon>
+                        <span class="kiss-size-small kiss-text-caption kiss-text-bolder">{{ t('View') }}</span>
+                    </kiss-card>
+                    <kiss-dropdownbox pos="left">
+                        <kiss-navlist>
+                            <ul>
+                                <li class="kiss-nav-header">{{ t('View actions') }}</li>
+                                <li :class="{'kiss-disabled': !isCustomView}"><a class="kiss-flex kiss-flex-middle" gap="xsmall"><icon>save</icon>{{ t('Update current view') }}</a></li>
+                                <li :class="{'kiss-disabled': !filter}"><a class="kiss-flex kiss-flex-middle" gap="xsmall"><icon>add</icon>{{ t('Create new view') }}</a></li>
+                                <li class="kiss-nav-divider"></li>
+                                <li :class="{'kiss-disabled': !selectedView}"><a class="kiss-flex kiss-flex-middle" gap="xsmall" @click="selectView(selectedView)"><icon>delete</icon>{{ t('Clear changes') }}</a></li>
+                            </ul>
+                        </kiss-navlist>
+                    </kiss-dropdownbox>
+                </kiss-dropdown>
 
             </div>
 
@@ -486,6 +504,10 @@
                         return this.model.fields.filter(field => {
                             return field.i18n === true;
                         }).length > 0;
+                    },
+
+                    isCustomView() {
+                        return this.selectedView && !['created-by-me', 'updated-by-me'].includes(this.selectedView);
                     }
                 },
 
@@ -658,6 +680,7 @@
                         this.sort = this.views[name].sort ?? {
                             _created: -1
                         };
+
                         this.filter = this.views[name].filter ?? '';
                         this.locale = this.views[name].locale ?? 'default';
                         this.state = this.views[name].state ?? false;
