@@ -152,7 +152,7 @@
                             <li>
                                 <a class="kiss-flex kiss-flex-middle" @click="showJSON()">
                                     <icon class="kiss-margin-small-right">manage_search</icon>
-                                    <?=t('Json Object')?>
+                                    <?=t('JSON Object')?>
                                 </a>
                             </li>
                             <li class="kiss-nav-divider"></li>
