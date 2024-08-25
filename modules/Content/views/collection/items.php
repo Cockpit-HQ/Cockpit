@@ -329,8 +329,8 @@
                 <kiss-navlist>
                     <ul>
                         <li>
-                            <a class="kiss-link-muted kiss-flex kiss-flex-middle" :class="!selectedView ? 'kiss-text-bold':'kiss-color-muted'" gap="xsmall" @click="selectView(null)">
-                                <icon class="kiss-color-primary" v-if="!selectedView">arrow_right</icon> <?= t('All items') ?>
+                            <a class="kiss-link-muted kiss-flex kiss-flex-middle" :class="!selectedView ? 'kiss-text-bolder':'kiss-color-muted'" gap="xsmall" @click="selectView(null)">
+                                <span class="kiss-color-primary" v-if="!selectedView">&mdash;</span> <?= t('All items') ?>
                             </a>
                         </li>
                     </ul>
@@ -340,21 +340,21 @@
                     <ul>
                         <li class="kiss-nav-header"><?= t('My views') ?></li>
                         <li>
-                            <a class="kiss-link-muted kiss-flex kiss-flex-middle" :class="selectedView == 'created-by-me' ? 'kiss-text-bold':'kiss-color-muted'" gap="xsmall" @click="selectView('created-by-me')">
-                                <icon class="kiss-color-primary" v-if="selectedView == 'created-by-me'">arrow_right</icon>
+                            <a class="kiss-link-muted kiss-flex kiss-flex-middle" :class="selectedView == 'created-by-me' ? 'kiss-text-bolder':'kiss-color-muted'" gap="xsmall" @click="selectView('created-by-me')">
+                                <span class="kiss-color-primary" v-if="selectedView == 'created-by-me'">&mdash;</span>
                                 <span class="kiss-flex-1 kiss-text-truncate">{{ views['created-by-me'].name }}</span>
                             </a>
                         </li>
                         <li>
-                            <a class="kiss-link-muted kiss-flex kiss-flex-middle" :class="selectedView == 'updated-by-me' ? 'kiss-text-bold':'kiss-color-muted'" gap="xsmall" @click="selectView('updated-by-me')">
-                                <icon class="kiss-color-primary" v-if="selectedView == 'updated-by-me'">arrow_right</icon>
+                            <a class="kiss-link-muted kiss-flex kiss-flex-middle" :class="selectedView == 'updated-by-me' ? 'kiss-text-bolder':'kiss-color-muted'" gap="xsmall" @click="selectView('updated-by-me')">
+                                <span class="kiss-color-primary" v-if="selectedView == 'updated-by-me'">&mdash;</span>
                                 <span class="kiss-flex-1 kiss-text-truncate">{{ views['updated-by-me'].name }}</span>
                             </a>
                         </li>
                         <li class="kiss-nav-divider" v-if="myViews.length"></li>
                         <li v-for="view in myViews">
-                            <a class="kiss-link-muted kiss-flex kiss-flex-middle" :class="selectedView == view ? 'kiss-text-bold':'kiss-color-muted'" gap="xsmall" @click="selectView(view)">
-                                <icon class="kiss-color-primary" v-if="selectedView == view">arrow_right</icon>
+                            <a class="kiss-link-muted kiss-flex kiss-flex-middle" :class="selectedView == view ? 'kiss-text-bolder':'kiss-color-muted'" gap="xsmall" @click="selectView(view)">
+                                <span class="kiss-color-primary" v-if="selectedView == view">&mdash;</span>
                                 <span class="kiss-flex-1 kiss-text-truncate">{{ views[view].name }}</span>
                             </a>
                         </li>
@@ -365,8 +365,8 @@
                     <ul>
                         <li class="kiss-nav-header"><?= t('Shared views') ?></li>
                         <li v-for="view in sharedViews">
-                            <a class="kiss-link-muted kiss-flex kiss-flex-middle" :class="selectedView == view ? 'kiss-text-bold':'kiss-color-muted'" gap="xsmall" @click="selectView(view)">
-                                <icon class="kiss-color-primary" v-if="selectedView == view">arrow_right</icon>
+                            <a class="kiss-link-muted kiss-flex kiss-flex-middle" :class="selectedView == view ? 'kiss-text-bolder':'kiss-color-muted'" gap="xsmall" @click="selectView(view)">
+                                <span class="kiss-color-primary" v-if="selectedView == view">&mdash;</span>
                                 <span class="kiss-flex-1 kiss-text-truncate">{{ views[view].name }}</span>
                             </a>
                         </li>

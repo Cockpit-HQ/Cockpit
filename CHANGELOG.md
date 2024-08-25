@@ -6,6 +6,7 @@
 - Update Vue to v3.4.38
 - Update Uppy to 4.2.0
 - Fix late fields projection used on populated fields
+- Add collection content views
 
 ## 2.9.0 (2024-08-08)
 
