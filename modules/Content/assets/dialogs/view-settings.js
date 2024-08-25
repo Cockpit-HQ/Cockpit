@@ -21,18 +21,13 @@ export default {
         }
     },
 
-    mounted() {
-
-
-    },
-
     methods: {
 
         save() {
 
             const isUpdate = this.val._id ? true : false;
 
-            this.$request(`/content/collection/saveView/`, {view:this.val}).then(rsp => {
+            this.$request('/content/collection/saveView', {view:this.val}).then(rsp => {
                 this.val = rsp.view;
 
                 this.$call('viewUpdate', this.val);
