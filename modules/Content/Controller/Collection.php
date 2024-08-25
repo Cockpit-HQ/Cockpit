@@ -343,34 +343,60 @@ class Collection extends App {
 
     public function saveView() {
 
-            $this->helper('session')->close();
-            $this->hasValidCsrfToken(true);
+        $this->helper('session')->close();
+        $this->hasValidCsrfToken(true);
 
-            $view = $this->param('view');
+        $view = $this->param('view');
 
-            if (!$view || !isset($view['model']) || !isset($view['name'])) {
-                return $this->stop(404);
-            }
+        if (!$view || !isset($view['model']) || !isset($view['name'])) {
+            return $this->stop(404);
+        }
 
-            $model = $this->module('content')->model($view['model']);
+        $model = $this->module('content')->model($view['model']);
 
-            if (!$model || $model['type'] !== 'collection') {
-                return $this->stop(404);
-            }
+        if (!$model || $model['type'] !== 'collection') {
+            return $this->stop(404);
+        }
 
-            if (!$this->isAllowed("content/{$model['name']}/read")) {
-                return $this->stop(401);
-            }
+        if (!$this->isAllowed("content/{$model['name']}/read")) {
+            return $this->stop(401);
+        }
 
-            $view['_mby'] = $this->user['_id'];
+        $view['_mby'] = $this->user['_id'];
 
-            if (!isset($view['_id'])) {
-                $view['_cby'] = $view['_mby'];
-            }
+        if (!isset($view['_id'])) {
+            $view['_cby'] = $view['_mby'];
+        }
 
-            $this->app->dataStorage->save('content/views', $view);
+        $this->app->dataStorage->save('content/views', $view);
 
-            return ['success' => true, 'view' => $view];
+        return ['success' => true, 'view' => $view];
+    }
+
+    public function removeView() {
+
+        $this->helper('session')->close();
+        $this->hasValidCsrfToken(true);
+
+        $view = $this->param('view');
+
+        if (!$view || !isset($view['_id'])) {
+            return $this->stop(404);
+        }
+
+        $view = $this->app->dataStorage->findOne('content/views', ['_id' => $view['_id']]);
+
+        if (!$view) {
+            return $this->stop(404);
+        }
+
+        if (!$this->helper('acl')->isSuperAdmin() && $view['_cby'] != $this->user['_id']) {
+            return $this->stop(401);
+        }
+
+        $this->app->dataStorage->remove('content/views', ['_id' => $view['_id']]);
+
+        return ['success' => true];
     }
 
 }

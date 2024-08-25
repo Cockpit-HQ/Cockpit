@@ -27,10 +27,13 @@
                         <kiss-navlist>
                             <ul>
                                 <li class="kiss-nav-header">{{ t('View actions') }}</li>
-                                <li :class="{'kiss-disabled': !isCustomView}"><a class="kiss-flex kiss-flex-middle" gap="xsmall" @click="viewSettings(selectedView)"><icon>save</icon>{{ t('Update current view') }}</a></li>
                                 <li :class="{'kiss-disabled': !filter}"><a class="kiss-flex kiss-flex-middle" gap="xsmall" @click="viewSettings(null)"><icon>add</icon>{{ t('Create new view') }}</a></li>
-                                <li class="kiss-nav-divider"></li>
-                                <li :class="{'kiss-disabled': !selectedView}"><a class="kiss-flex kiss-flex-middle" gap="xsmall" @click="selectView(selectedView)"><icon>delete</icon>{{ t('Clear changes') }}</a></li>
+                                <li class="kiss-nav-divider" v-if="isCustomView"></li>
+                                <li v-if="isCustomView"><a class="kiss-flex kiss-flex-middle" gap="xsmall" @click="updateView()"><icon>save</icon>{{ t('Update view') }}</a></li>
+                                <li v-if="isCustomView"><a class="kiss-flex kiss-flex-middle" gap="xsmall" @click="selectView(selectedView)"><icon>refresh</icon>{{ t('Clear changes') }}</a></li>
+                                <li class="kiss-nav-divider" v-if="isCustomView"></li>
+                                <li v-if="isCustomView"><a class="kiss-flex kiss-flex-middle" gap="xsmall" @click="viewSettings(selectedView)"><icon>edit</icon>{{ t('Edit view') }}</a></li>
+                                <li v-if="isCustomView"><a class="kiss-flex kiss-flex-middle kiss-color-danger" gap="xsmall" @click="removeView()"><icon>delete</icon>{{ t('Delete view') }}</a></li>
                             </ul>
                         </kiss-navlist>
                     </kiss-dropdownbox>
@@ -726,7 +729,7 @@
                         };
 
                         if (view && this.views[view]) {
-                            Objec.assign(data, this.views[view]);
+                            Object.assign(data, this.views[view]);
                         }
 
                         data = JSON.parse(JSON.stringify(data));
@@ -736,6 +739,44 @@
                                 this.views[updatedView._id] = updatedView;
                             }
                         }, {sizer: 'xlarge'});
+                    },
+
+                    removeView() {
+
+                        if (!this.selectedView) return;
+
+                        App.ui.confirm('Are you sure?', () => {
+
+                            this.$request('/content/collection/removeView', {
+                                view: this.views[this.selectedView]
+                            }).then(res => {
+                                delete this.views[this.selectedView];
+                                this.selectView(null);
+                                App.ui.notify('View removed!');
+                            }).catch(() => {
+                                App.ui.notify('Removing view failed!', 'error');
+                            });
+                        });
+                    },
+
+                    updateView() {
+
+                        if (!this.selectedView) return;
+
+                        let data = Object.assign({}, this.views[this.selectedView], {
+                            model: this.model.name,
+                            filter: this.filter,
+                            locale: this.locale,
+                            state: this.state,
+                            sort: this.sort,
+                        });
+
+                        this.$request('/content/collection/saveView', {view:data}).then(rsp => {
+                            this.views[this.selectedView] = rsp.view;
+                            App.ui.notify('View updated!', 'info');
+                        }).catch(res => {
+                            App.ui.notify(res.error || 'Updating view failed!', 'error');
+                        });
                     },
 
                     // fix browser behaviour if table is too long

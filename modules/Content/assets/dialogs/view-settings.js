@@ -27,6 +27,8 @@ export default {
 
             const isUpdate = this.val._id ? true : false;
 
+            this.loading = true;
+
             this.$request('/content/collection/saveView', {view:this.val}).then(rsp => {
                 this.val = rsp.view;
 
@@ -48,7 +50,7 @@ export default {
     },
 
     template: /*html*/`
-        <div>
+        <div :class="{'kiss-disabled': loading}">
 
             <div class="kiss-size-4 kiss-text-bold">
                 {{ t(val._id ? 'Update view' : 'Create view') }}

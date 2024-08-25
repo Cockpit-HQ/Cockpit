@@ -146,7 +146,12 @@ class Model extends \Lime\Helper {
         if ($model['type'] == 'singleton') {
             $this->app->dataStorage->remove('content/singletons', ['_model' => $name]);
         } elseif (in_array($model['type'], ['collection', 'tree'])) {
+
             $this->app->dataStorage->dropCollection("content/collections/{$name}");
+
+            if ($model['type'] == 'collection') {
+                $this->app->dataStorage->remove('content/views', ['model' => $name]);
+            }
         }
 
         $this->app->trigger('content.remove.model', [$name, $model]);
