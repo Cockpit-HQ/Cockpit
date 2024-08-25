@@ -35,9 +35,28 @@ class Collection extends App {
             $locales[0]['visible'] = true;
         }
 
+        // get all model views
+        $_views = $this->app->dataStorage->find('content/views', [
+            'filter' => [
+                'model' => $model['name'],
+                '$or' => [
+                    ['_cby' => $this->user['_id']],
+                    ['private' => false]
+                ]
+            ],
+            'sort' => ['name' => 1]
+        ]);
+
+        $views = new ArrayObject([]);
+
+        // index by _id
+        foreach ($_views as $view) {
+            $views[$view['_id']] = $view;
+        }
+
         $this->helper('theme')->favicon(isset($model['icon']) && $model['icon'] ? $model['icon'] : 'content:assets/icons/collection.svg', $model['color'] ?? '#000');
 
-        return $this->render('content:views/collection/items.php', compact('model', 'fields', 'locales'));
+        return $this->render('content:views/collection/items.php', compact('model', 'fields', 'locales', 'views'));
 
     }
 
@@ -320,6 +339,38 @@ class Collection extends App {
         $this->app->dataStorage->update("content/collections/{$model['name']}", $filter, $data);
 
         return ['success' => true];
+    }
+
+    public function saveView() {
+
+            $this->helper('session')->close();
+            $this->hasValidCsrfToken(true);
+
+            $view = $this->param('view');
+
+            if (!$view || !isset($view['model']) || !isset($view['name'])) {
+                return $this->stop(404);
+            }
+
+            $model = $this->module('content')->model($view['model']);
+
+            if (!$model || $model['type'] !== 'collection') {
+                return $this->stop(404);
+            }
+
+            if (!$this->isAllowed("content/{$model['name']}/read")) {
+                return $this->stop(401);
+            }
+
+            $view['_mby'] = $this->user['_id'];
+
+            if (!isset($view['_id'])) {
+                $view['_cby'] = $view['_mby'];
+            }
+
+            $this->app->dataStorage->save('content/views', $view);
+
+            return ['success' => true, 'view' => $view];
     }
 
 }

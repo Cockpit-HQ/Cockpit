@@ -27,8 +27,8 @@
                         <kiss-navlist>
                             <ul>
                                 <li class="kiss-nav-header">{{ t('View actions') }}</li>
-                                <li :class="{'kiss-disabled': !isCustomView}"><a class="kiss-flex kiss-flex-middle" gap="xsmall"><icon>save</icon>{{ t('Update current view') }}</a></li>
-                                <li :class="{'kiss-disabled': !filter}"><a class="kiss-flex kiss-flex-middle" gap="xsmall"><icon>add</icon>{{ t('Create new view') }}</a></li>
+                                <li :class="{'kiss-disabled': !isCustomView}"><a class="kiss-flex kiss-flex-middle" gap="xsmall" @click="viewSettings(selectedView)"><icon>save</icon>{{ t('Update current view') }}</a></li>
+                                <li :class="{'kiss-disabled': !filter}"><a class="kiss-flex kiss-flex-middle" gap="xsmall" @click="viewSettings(null)"><icon>add</icon>{{ t('Create new view') }}</a></li>
                                 <li class="kiss-nav-divider"></li>
                                 <li :class="{'kiss-disabled': !selectedView}"><a class="kiss-flex kiss-flex-middle" gap="xsmall" @click="selectView(selectedView)"><icon>delete</icon>{{ t('Clear changes') }}</a></li>
                             </ul>
@@ -339,13 +339,32 @@
                         <li>
                             <a class="kiss-link-muted kiss-flex kiss-flex-middle" :class="selectedView == 'created-by-me' ? 'kiss-text-bold':'kiss-color-muted'" gap="xsmall" @click="selectView('created-by-me')">
                                 <icon :class="{'kiss-color-primary':selectedView == 'created-by-me'}">radio_button_checked</icon>
-                                <span class="kiss-flex-1 kiss-text-truncate"><?= t('Created by me') ?></span>
+                                <span class="kiss-flex-1 kiss-text-truncate">{{ views['created-by-me'].name }}</span>
                             </a>
                         </li>
                         <li>
                             <a class="kiss-link-muted kiss-flex kiss-flex-middle" :class="selectedView == 'updated-by-me' ? 'kiss-text-bold':'kiss-color-muted'" gap="xsmall" @click="selectView('updated-by-me')">
                                 <icon :class="{'kiss-color-primary':selectedView == 'updated-by-me'}">radio_button_checked</icon>
-                                <span class="kiss-flex-1 kiss-text-truncate"><?= t('Updated by me') ?></span>
+                                <span class="kiss-flex-1 kiss-text-truncate">{{ views['updated-by-me'].name }}</span>
+                            </a>
+                        </li>
+                        <li class="kiss-nav-divider" v-if="myViews.length"></li>
+                        <li v-for="view in myViews">
+                            <a class="kiss-link-muted kiss-flex kiss-flex-middle" :class="selectedView == view ? 'kiss-text-bold':'kiss-color-muted'" gap="xsmall" @click="selectView(view)">
+                                <icon :class="{'kiss-color-primary':selectedView == view}">radio_button_checked</icon>
+                                <span class="kiss-flex-1 kiss-text-truncate">{{ views[view].name }}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </kiss-navlist>
+
+                <kiss-navlist class="kiss-margin-small" v-if="sharedViews.length">
+                    <ul>
+                        <li class="kiss-nav-header"><?= t('Shared views') ?></li>
+                        <li v-for="view in sharedViews">
+                            <a class="kiss-link-muted kiss-flex kiss-flex-middle" :class="selectedView == view ? 'kiss-text-bold':'kiss-color-muted'" gap="xsmall" @click="selectView(view)">
+                                <icon :class="{'kiss-color-primary':selectedView == view}">radio_button_checked</icon>
+                                <span class="kiss-flex-1 kiss-text-truncate">{{ views[view].name }}</span>
                             </a>
                         </li>
                     </ul>
@@ -393,16 +412,18 @@
                         },
 
                         selectedView: null,
-                        views: {
+                        views: Object.assign({
                             'created-by-me': {
+                                name: App.i18n.get('Created by me'),
                                 filter: `: _cby=${App.user._id}`,
                                 private: true
                             },
                             'updated-by-me': {
+                                name: App.i18n.get('Updated by me'),
                                 filter: `: _mby=${App.user._id}`,
                                 private: true
                             }
-                        }
+                        }, <?= json_encode($views) ?>)
                     }
                 },
 
@@ -508,6 +529,12 @@
 
                     isCustomView() {
                         return this.selectedView && !['created-by-me', 'updated-by-me'].includes(this.selectedView);
+                    },
+                    myViews() {
+                        return Object.keys(this.views).filter(view => this.views[view].private && !['created-by-me', 'updated-by-me'].includes(view));
+                    },
+                    sharedViews() {
+                        return Object.keys(this.views).filter(view => !this.views[view].private);
                     }
                 },
 
@@ -686,6 +713,29 @@
                         this.state = this.views[name].state ?? false;
 
                         this.selectedView = name;
+                    },
+
+                    viewSettings(view) {
+
+                        let data = {
+                            model: this.model.name,
+                            filter: this.filter,
+                            locale: this.locale,
+                            state: this.state,
+                            sort: this.sort,
+                        };
+
+                        if (view && this.views[view]) {
+                            Objec.assign(data, this.views[view]);
+                        }
+
+                        data = JSON.parse(JSON.stringify(data));
+
+                        VueView.ui.modal('content:assets/dialogs/view-settings.js', {view: data}, {
+                            viewUpdate: (updatedView) => {
+                                this.views[updatedView._id] = updatedView;
+                            }
+                        }, {sizer: 'xlarge'});
                     },
 
                     // fix browser behaviour if table is too long
