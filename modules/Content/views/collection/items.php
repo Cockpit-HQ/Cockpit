@@ -737,6 +737,7 @@
                         VueView.ui.modal('content:assets/dialogs/view-settings.js', {view: data}, {
                             viewUpdate: (updatedView) => {
                                 this.views[updatedView._id] = updatedView;
+                                this.selectedView = updatedView._id;
                             }
                         }, {sizer: 'xlarge'});
                     },
