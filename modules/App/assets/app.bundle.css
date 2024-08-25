@@ -3822,6 +3822,18 @@ td.kiss-text-truncate { max-width: 0; }
 .kiss-display-block { display: block !important; }
 .kiss-display-inline { display: inline !important; }
 .kiss-display-inline-block { display: inline-block !important; }
+.kiss-opacity-0 { opacity: 0 !important; }
+.kiss-opacity-1 { opacity: .1 !important; }
+.kiss-opacity-2 { opacity: .2 !important; }
+.kiss-opacity-3 { opacity: .3 !important; }
+.kiss-opacity-4 { opacity: .4 !important; }
+.kiss-opacity-5 { opacity: .5 !important; }
+.kiss-opacity-6 { opacity: .6 !important; }
+.kiss-opacity-7 { opacity: .7 !important; }
+.kiss-opacity-8 { opacity: .8 !important; }
+.kiss-opacity-9 { opacity: .9 !important; }
+.kiss-opacity-1 { opacity: 1 !important; }
+.kiss-transition { transition: all .3s ease; }
 .kiss-cursor-pointer { cursor: pointer;}
 .kiss-border-circle { border-radius: 50%; }
 .kiss-svg,
