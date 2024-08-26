@@ -4,7 +4,7 @@ namespace Content\Controller;
 
 use App\Controller\App;
 use ArrayObject;
-use MongoHybrid\NaturalLanguageToMongoQuery;
+use MongoHybrid\SQLToMongoQuery;
 
 class Collection extends App {
 
@@ -184,7 +184,7 @@ class Collection extends App {
                 if (is_string($f)) {
 
                     if ($f && $f[0] === ':') {
-                        $_filter = NaturalLanguageToMongoQuery::translate(substr($f, 1));
+                        $_filter = SQLToMongoQuery::translate(substr($f, 1));
                     } elseif (\preg_match('/^\{(.*)\}$/', $f)) {
 
                         try {

@@ -5,7 +5,7 @@ namespace Assets\Controller;
 use App\Controller\App;
 use ArrayObject;
 
-use MongoHybrid\NaturalLanguageToMongoQuery;
+use MongoHybrid\SQLToMongoQuery;
 
 class Assets extends App {
 
@@ -44,7 +44,7 @@ class Assets extends App {
                 }
 
                 if ($f && $f[0] === ':') {
-                    $filter[] = NaturalLanguageToMongoQuery::translate(substr($f, 1));
+                    $filter[] = SQLToMongoQuery::translate(substr($f, 1));
                     continue;
                 }
 
