@@ -149,7 +149,7 @@ $this->module('assets')->extend([
             // clean filename
             $filename = pathinfo($file, PATHINFO_FILENAME);
             $ext = pathinfo($file, PATHINFO_EXTENSION);
-            $cleanFilename = preg_replace('/[^a-zA-Z0-9-_\.]/','', str_replace(' ', '-', $filename));
+            $cleanFilename = $this->app->helper('utils')->sluggify($filename);
             $clean = $cleanFilename.uniqid("_uid_").'.'.$ext;
             $path  = '/'.date('Y/m/d').'/'.$clean;
 
