@@ -149,7 +149,9 @@ $this->module('assets')->extend([
             // clean filename
             $filename = pathinfo($file, PATHINFO_FILENAME);
             $ext = pathinfo($file, PATHINFO_EXTENSION);
-            $cleanFilename = preg_replace('/[^a-zA-Z0-9-_\.]/','', str_replace(' ', '-', $filename));
+            setlocale(LC_ALL, "en-US.utf8"); // set correct locale for iconv
+            $cleanFilename = iconv('utf-8', 'us-ascii//TRANSLIT', $filename);
+            $cleanFilename = preg_replace('/[^a-zA-Z0-9-_\.]/', '', str_replace(' ', '-', $cleanFilename));
             $clean = $cleanFilename.uniqid("_uid_").'.'.$ext;
             $path  = '/'.date('Y/m/d').'/'.$clean;
 
