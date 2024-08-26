@@ -31,16 +31,18 @@ class Locales extends \Lime\Helper {
         return $locales;
     }
 
-    public function applyLocales($obj, $locale = 'default') {
-
-        static $locales;
+    public function applyLocales($obj, $locale = 'default', ?array $locales = null) {
 
         if (!is_array($obj)) {
             return $obj;
         }
 
-        if (null === $locales) {
-            $locales = array_keys($this->locales(true));
+        if (!isset($locales)) {
+            $locales = array_keys($this->locales);
+        }
+
+        if (!count($locales)) {
+            return $obj;
         }
 
         $apply = function($obj) use($locales, $locale) {
@@ -77,7 +79,7 @@ class Locales extends \Lime\Helper {
                 }
 
                 if (isset($obj[$key]) && is_array($obj[$key])) {
-                    $obj[$key] = $this->applyLocales($obj[$key], $locale);
+                    $obj[$key] = $this->applyLocales($obj[$key], $locale, $locales);
                 }
             }
 
@@ -124,6 +126,8 @@ class Locales extends \Lime\Helper {
         if ($locales && $persistent) {
             $this->app->memory->set('app.locales', $cache);
         }
+
+        $this->locales = $cache;
 
         return $cache;
     }
