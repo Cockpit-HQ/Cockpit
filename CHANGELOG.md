@@ -1,6 +1,6 @@
 # Release Notes
 
-## WIP
+## 2.9.1 (2024-08-26)
 
 - Sort env variables by name
 - Update Vue to v3.4.38
