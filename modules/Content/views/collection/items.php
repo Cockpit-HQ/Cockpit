@@ -45,7 +45,9 @@
 
                 <form class="kiss-flex kiss-flex-middle" @submit.prevent="filter = txtFilter">
 
-                    <input type="text" class="kiss-input kiss-flex-1 kiss-margin-xsmall-right" :placeholder="t('Filter items...')" v-model="txtFilter">
+                    <app-textcomplete class="kiss-flex-1 kiss-margin-xsmall-right" :items="model.fields.map(f => f.name)" trigger="@">
+                        <input type="text" class="kiss-input" :placeholder="t('Filter items...')" v-model="txtFilter">
+                    </app-textcomplete>
 
                     <div class="kiss-button-group kiss-margin-small-left">
                         <button type="button" class="kiss-button" @click="filter = ''" v-if="filter"><?= t('Reset') ?></button>

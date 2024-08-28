@@ -10,6 +10,7 @@
 @import "../components/app-frame/app-frame.css";
 @import "../components/app-loader/app-loader.css";
 @import "../components/app-scrollcontainer/app-scrollcontainer.css";
+@import "../components/app-textcomplete/app-textcomplete.css";
 
 @import "../vendor/kiss/lib.css";
 @import "./vendor/kiss.css";
@@ -41,6 +42,10 @@ vue-view:not([init="true"]) {
     --app-scrollbar-color: #000;
     --app-switch-offcolor: var(--kiss-color-muted);
     --app-switch-oncolor: var(--kiss-color-primary);
+
+    --app-textcomplete-bgcolor: var(--kiss-dropdown-background);
+    --app-textcomplete-bgcolor-hover: var(--kiss-table-row-hover-color);
+    --app-textcomplete-bgcolor-active: var(--app-textcomplete-bgcolor-hover);
 }
 
 html[data-theme='light'] {
@@ -469,6 +474,33 @@ app-pagination {
     background-color: var(--kiss-color-contrast);
     font-size: var(--kiss-font-size-small, var(--kiss-font-size-6, 0.875rem));
     border-radius: var(--app-border-radius);
+}
+
+app-textcomplete .autocomplete-list {
+    font-family: ui-monospace,
+    Menlo, Monaco,
+    "Cascadia Mono", "Segoe UI Mono",
+    "Roboto Mono",
+    "Oxygen Mono",
+    "Ubuntu Monospace",
+    "Source Code Pro",
+    "Fira Mono",
+    "Droid Sans Mono",
+    "Courier New", Courier, monospace;
+    font-size: .9rem;
+    border-radius: var(--app-border-radius);
+    box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.034),
+    0 6.7px 5.3px rgba(0, 0, 0, 0.048),
+    0 12.5px 10px rgba(0, 0, 0, 0.06),
+    0 22.3px 17.9px rgba(0, 0, 0, 0.072),
+    0 41.8px 33.4px rgba(0, 0, 0, 0.086),
+    0 100px 80px rgba(0, 0, 0, 0.12);
+    margin-top: 4px;
+}
+
+app-textcomplete .autocomplete-item.active {
+    font-weight: bolder;
+    color: var(--kiss-color-primary);
 }
 
 .table-scroll {
