@@ -1013,6 +1013,21 @@
 
     customElements.define('kiss-popout', class extends HTMLElement {
 
+        static get observedAttributes() {
+            return ['open'];
+        }
+
+        attributeChangedCallback(name, oldValue, newValue) {
+
+            if (name == 'open') {
+                if (newValue === 'true') {
+                    setHighestZindex(this);
+                } else {
+                    this.style.zIndex = '';
+                }
+            }
+        }
+
         connectedCallback() {
 
             on$1(this, 'click', e => {
@@ -1087,7 +1102,6 @@
 
             }, 100);
 
-            setHighestZindex(this);
             this.setAttribute('open', 'true');
         }
 

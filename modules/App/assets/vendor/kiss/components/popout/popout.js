@@ -38,6 +38,21 @@ on(document.documentElement, 'keyup', function (e) {
 
 customElements.define('kiss-popout', class extends HTMLElement {
 
+    static get observedAttributes() {
+        return ['open'];
+    }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+
+        if (name == 'open') {
+            if (newValue === 'true') {
+                setHighestZindex(this);
+            } else {
+                this.style.zIndex = '';
+            }
+        }
+    }
+
     connectedCallback() {
 
         on(this, 'click', e => {
@@ -112,7 +127,6 @@ customElements.define('kiss-popout', class extends HTMLElement {
 
         }, 100);
 
-        setHighestZindex(this);
         this.setAttribute('open', 'true');
     }
 
