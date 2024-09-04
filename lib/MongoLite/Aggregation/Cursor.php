@@ -166,7 +166,7 @@ class Cursor implements \Iterator {
             } elseif (is_string($groupDefinition['_id']) && str_starts_with($groupDefinition['_id'], '$')) {
                 // Single field group definition (e.g. "$category")
                 $fieldName = trim($groupDefinition['_id'], '$');
-                $key = isset($document[$fieldName]) ? $document[$fieldName] : "";
+                $key = $document[$fieldName] ?? '';
             }
 
             if (!isset($groups[$key])) {

@@ -149,7 +149,7 @@ class Collection {
         foreach ($result as &$doc) {
 
             $_doc            = \json_decode($doc['document'], true);
-            $document        = $merge ? \array_merge($_doc, isset($data['$set']) ? $data['$set'] : []) : $data;
+            $document        = $merge ? \array_merge($_doc, $data['$set'] ?? []) : $data;
             $document['_id'] = $_doc['_id'];
 
             $sql = "UPDATE `{$this->name}` SET document=".$conn->quote(json_encode($document, JSON_UNESCAPED_UNICODE))." WHERE id={$doc['id']}";
@@ -227,8 +227,7 @@ class Collection {
 
         if (!in_array($newname, $this->database->getCollectionNames())) {
 
-            $this->database->connection->exec('ALTER TABLE `'.$this->name.'` RENAME TO `'.$newname.'`');
-
+            $this->database->connection->exec("ALTER TABLE `{$this->name}` RENAME TO `{$newname}`");
             $this->name = $newname;
 
             return true;

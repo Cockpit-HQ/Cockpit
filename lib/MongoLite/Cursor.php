@@ -2,6 +2,8 @@
 
 namespace MongoLite;
 
+use PDO;
+
 /**
  * Cursor object.
  */
@@ -74,16 +76,16 @@ class Cursor implements \Iterator {
 
             $sql = ['SELECT COUNT(*) AS C FROM '.$this->collection->database->connection->quote($this->collection->name)];
 
-            $sql[] = 'WHERE document_criteria("'.$this->criteria.'", document)';
+            $sql[] = "WHERE document_criteria('".$this->criteria."', document)";
 
             if ($this->limit) {
-                $sql[] = 'LIMIT '.$this->limit;
+            $sql[] = "LIMIT {$this->limit}";
             }
 
             $stmt = $this->collection->database->connection->query(\implode(' ', $sql));
         }
 
-        $res  = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $res  = $stmt->fetch(PDO::FETCH_ASSOC);
 
         return intval(isset($res['C']) ? $res['C']:0);
     }
@@ -179,15 +181,15 @@ class Cursor implements \Iterator {
         }
 
         if ($this->limit) {
-            $sql[] = 'LIMIT '.$this->limit;
+            $sql[] = "LIMIT {$this->limit}";
 
-            if ($this->skip) { $sql[] = 'OFFSET '.$this->skip; }
+            if ($this->skip) { $sql[] = "OFFSET {$this->skip}"; }
         }
 
         $sql = implode(' ', $sql);
 
         $stmt      = $conn->query($sql);
-        $result    = $stmt->fetchAll( \PDO::FETCH_ASSOC);
+        $result    = $stmt->fetchAll( PDO::FETCH_ASSOC);
         $documents = [];
 
         foreach ($result as &$doc) {
