@@ -4,10 +4,10 @@ namespace MongoLite;
 
 class UtilArrayQuery {
 
-    protected static $closures = [];
+    protected static array $closures = [];
 
-    public static function closureCall(string $uid, mixed $doc) {
-        return call_user_func_array(self::$closures[$uid], [$doc]);
+    public static function closureCall(string $uid, mixed $doc): mixed {
+        return self::$closures[$uid]($doc);
     }
 
     public static function buildCondition(mixed $criteria, string $concat = ' && '): string {
@@ -106,13 +106,11 @@ class UtilArrayQuery {
 
     public static function check(mixed $value, array $condition): bool {
 
-        $keys = \array_keys($condition);
-
-        foreach ($keys as &$key) {
+        foreach ($condition as $key => $conditionValue) {
 
             if ($key == '$options') continue;
 
-            if (!self::evaluate($key, $value, $condition[$key])) {
+            if (!self::evaluate($key, $value, $conditionValue)) {
                 return false;
             }
         }
@@ -369,8 +367,6 @@ function calculateDistanceInMeters($fromPoint, $toPoint) {
          sin($lngDiff / 2) * sin($lngDiff / 2);
     $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
 
-    // Calculate the distance
-    $distance = $earthRadius * $c;
-
-    return $distance;
+    // distance
+    return $earthRadius * $c;
 }
