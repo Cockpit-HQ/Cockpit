@@ -4,7 +4,7 @@
 
 - Improve clean file name generation on upload
 - Fix SQLSTATE[HY000] error on update items with newer SQLite versions
-- Update Vue to v3.5.1
+- Update Vue to v3.5.2
 
 ## 2.9.1 (2024-08-26)
 
