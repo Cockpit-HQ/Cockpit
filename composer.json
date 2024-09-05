@@ -56,7 +56,8 @@
         "optimize-autoloader": true,
         "prefer-dist": true,
         "lock": false,
-        "ignore-platform-reqs": true
+        "ignore-platform-reqs": true,
+        "no-dev": true
     },
 
     "autoload": {
