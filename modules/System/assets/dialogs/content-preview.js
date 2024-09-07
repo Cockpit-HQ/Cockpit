@@ -44,8 +44,27 @@ export default {
     },
 
     computed: {
+
         url() {
-            return this.uri;
+
+            let url = this.uri;
+
+            // Replace field placeholders
+            this.fields.forEach(field => {
+                const fieldName = field.i18n && this.locale?.i18n !== 'default' ? `${field.name}_${this.locale.i18n}` : field.name;
+                const regex = new RegExp(`{${fieldName}}`, 'g');
+                url = url.replace(regex, this.data[fieldName] || '');
+            });
+
+            // Replace locale placeholder
+            url = url.replace(/{locale}/g, this.locale?.i18n || 'default');
+
+            // replace id
+            if (this.data._id) {
+                url = url.replace(/{(id|_id)}/g, this.data._id);
+            }
+
+            return url;
         }
     },
 
@@ -60,6 +79,41 @@ export default {
         },
         locale() {
             this.updateIframe();
+        }
+    },
+
+    methods: {
+
+        iframeReady() {
+            this.previewLoaded = true;
+            this.updateIframe();
+        },
+
+        updateIframe() {
+
+            if (!this.$refs.iframe) return;
+
+            let evtData = JSON.parse(JSON.stringify({
+                event: 'cockpit:content.preview',
+                data: this.data,
+                context: this.context,
+                locale: (this.locale && this.locale.i18n) || 'default'
+            }));
+
+            const update = (data) => {
+                this.$refs.iframe.contentWindow.postMessage(JSON.parse(JSON.stringify(data)), '*');
+            }
+
+            if (this.resolver) {
+                this.resolver(evtData, update);
+            } else {
+                update(evtData);
+            }
+        },
+
+        updateClose() {
+            this.$call('update', this.data);
+            this.$close()
         }
     },
 
@@ -121,39 +175,4 @@ export default {
             </kiss-popout>
         </teleport>
     `,
-
-    methods: {
-
-        iframeReady() {
-            this.previewLoaded = true;
-            this.updateIframe();
-        },
-
-        updateIframe() {
-
-            if (!this.$refs.iframe) return;
-
-            let evtData = JSON.parse(JSON.stringify({
-                event: 'cockpit:content.preview',
-                data: this.data,
-                context: this.context,
-                locale: (this.locale && this.locale.i18n) || 'default'
-            }));
-
-            const update = (data) => {
-                this.$refs.iframe.contentWindow.postMessage(JSON.parse(JSON.stringify(data)), '*');
-            }
-
-            if (this.resolver) {
-                this.resolver(evtData, update);
-            } else {
-                update(evtData);
-            }
-        },
-
-        updateClose() {
-            this.$call('update', this.data);
-            this.$close()
-        }
-    }
 }
