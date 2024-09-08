@@ -14,7 +14,8 @@ customElements.define('app-textcomplete', class extends HTMLElement {
     }
 
     connectedCallback() {
-        this.input = this.querySelector('input');
+        this.input = this.querySelector('input, textarea');
+
         if (!this.input) {
             this.input = document.createElement('input');
             this.input.type = 'text';
@@ -87,11 +88,13 @@ customElements.define('app-textcomplete', class extends HTMLElement {
 
         this.autocompleteList.style.display = 'block';
         this.isAutocompleteActive = true;
+        this.setAttribute('active', 'true');
     }
 
     hideItems() {
         this.autocompleteList.style.display = 'none';
         this.isAutocompleteActive = false;
+        this.setAttribute('active', '');
     }
 
     selectItem(item) {
@@ -135,6 +138,7 @@ customElements.define('app-textcomplete', class extends HTMLElement {
             const activeItem = this.autocompleteList.querySelector('.autocomplete-item.active');
             if (activeItem) {
                 e.preventDefault();
+                e.stopImmediatePropagation();
                 this.selectItem(activeItem.textContent);
             }
         } else if (e.key === ' ' || e.key === 'Escape') {
