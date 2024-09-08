@@ -6,6 +6,7 @@
 - Fix SQLSTATE[HY000] error on update items with newer SQLite versions
 - Update Vue to v3.5.3
 - Replace placeholders in preview urls (id, locale, field value)
+- Mark unpublished linked content items
 
 ## 2.9.1 (2024-08-26)
 

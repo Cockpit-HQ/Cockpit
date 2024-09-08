@@ -91,7 +91,7 @@ customElements.define('display-content', class extends HTMLElement {
                 } catch(e) {}
 
 
-                this.innerHTML = html;
+                this.innerHTML = `<div class="kiss-flex kiss-flex-middle" gap="xsmall">${item._state !== 1 ? '<icon size="larger" class="kiss-color-danger">error</icon>':''}<div class="kiss-flex-1">${html}</div></div>`;
             });
 
         });
