@@ -12,36 +12,48 @@
  * @OA\Get(
  *     path="/system/healthcheck",
  *     tags={"system"},
+ *    @OA\Parameter(
+ *         description="Comma seperated list of checks to perform. Default: db, memory, fs, redis, smtp, custom",
+ *         in="query",
+ *         name="checks",
+ *         required=false,
+ *         @OA\Schema(type="string")
+ *     ),
  *     @OA\Response(response="200", description="Get system status", @OA\JsonContent())
  * )
  */
 $this->bind('/api/system/healthcheck', function() {
 
+    $checks = array_map(
+        'trim',
+        explode(',', $this->param('checks:string', 'db, memory, fs, redis, smtp, custom'))
+    );
+
     $errors = [];
 
     // check datastorage connection
     try {
-        $this->dataStorage->getCollection('system/users')->count();
+        if (in_array('db', $checks)) $this->dataStorage->getCollection('system/users')->count();
     } catch(Throwable $e) {
         $errors[] = ['resource' => 'datastorage', 'message' => $e->getMessage()];
     }
 
     // check memory connection
     try {
-        @$this->memory->get('test');
+        if (in_array('memory', $checks)) @$this->memory->get('test');
     } catch(Throwable $e) {
         $errors[] = ['resource' => 'memory', 'message' => $e->getMessage()];
     }
 
     // check filetorage connection
     try {
-        $this->fileStorage->listContents('uploads://');
+        if (in_array('fs', $checks)) $this->fileStorage->listContents('uploads://');
     } catch(Throwable $e) {
         $errors[] = ['resource' => 'filestorage', 'message' => $e->getMessage()];
     }
 
     // check redis config
-    if (ini_get('session.save_handler') == 'redis') {
+    if (in_array('redis', $checks) && ini_get('session.save_handler') == 'redis') {
         try {
             @(new MemoryStorage\Client(ini_get('session.save_path')))->get('test');
         } catch(Throwable $e) {
@@ -50,12 +62,11 @@ $this->bind('/api/system/healthcheck', function() {
     }
 
     // check smtp connection
-    if ($this->mailer->getTransport() == 'smtp') {
+    if (in_array('smtp', $checks) && $this->mailer->getTransport() == 'smtp') {
 
         try {
 
             $mailer = $this->mailer->createMailer();
-
             $mailer->smtpConnect();
 
         } catch (Exception $e) {
@@ -64,7 +75,7 @@ $this->bind('/api/system/healthcheck', function() {
     }
 
     // allow addons to do custom health checks
-    $this->trigger('system.api.healthcheck', [&$errors]);
+    if (in_array('custom', $checks)) $this->trigger('system.api.healthcheck', [&$errors, $checks]);
 
     if (count($errors)) {
 
