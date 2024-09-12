@@ -162,8 +162,17 @@ html {
 }
 
 body {
+    accent-color: var(--kiss-color-primary);
     font-weight: 400;
     min-height: 100vh;
+}
+
+@media (prefers-reduced-motion) {
+    *, *::before, *::after {
+        animation-duration: 0s !important;
+        transition: none !important;
+        scroll-behavior: auto !important;
+    }
 }
 
 ins,
