@@ -120,7 +120,7 @@ html[data-theme='light'] kiss-offcanvas kiss-content {
 
 html[data-theme='light'].magiclink-page,
 html[data-theme='light'].login-page {
-    background-image: url(../img/bg-light.svg);
+    background-image: radial-gradient(#00000033 1px, transparent 0);
 }
 
 @media (prefers-color-scheme: light) {
@@ -357,27 +357,26 @@ label {
 
 .login-page,
 .magiclink-page {
-    background-image: url(../img/bg-dark.svg);
+    background-image: radial-gradient(#ffffff22 1px, transparent 0);
+    background-size: 40px 40px;
     background-position: 50%;
     background-attachment: scroll;
-    background-size: auto;
     background-repeat: repeat;
     overflow: hidden;
 }
 
-.login-wrapper {
+.auth-wrapper {
     position: relative;
     width: 500px;
     max-width: 90%;
     margin-top: 20vh;
 }
 
-.login-dialog {
+.auth-dialog {
     padding: var(--kiss-padding-large, 3rem);
     border-radius: 10px;
     background: var(--kiss-base-background-color);
     z-index: -1;
-    opacity: .8;
 
     box-shadow:
         0 2.8px 2.2px rgba(0, 0, 0, 0.034),
