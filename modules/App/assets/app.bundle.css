@@ -4016,6 +4016,7 @@ td.kiss-text-truncate { max-width: 0; }
 
     --kiss-card-shadowed-color: rgba(0, 0, 0, 0.85);
     --kiss-card-bordered-color: rgb(106, 85, 85, .15);
+    --kiss-card-theme-contrast-color: #171d28;
 
     --kiss-breadcrumbs-size: 11px;
     --kiss-table-heading-background-color: #171b24;
@@ -4165,8 +4166,7 @@ kiss-card[hover="shadow"]:hover {
 }
 kiss-card[theme*="contrast"],
 kiss-card[hover*="contrast"]:hover {
-    background: var(--kiss-card-theme-contrast-color, #141923);
-    background: var(--kiss-card-theme-contrast-color, #171d28);
+    background: var(--kiss-card-theme-contrast-color);
 }
 .kiss-button:active {
     transform: scale(.99);
@@ -4489,7 +4489,7 @@ del {
     flex-direction: column;
     width: 280px;
     height: calc(100vh - 30px);
-    background: var(--kiss-card-theme-contrast-color, #171d28);
+    background: var(--kiss-card-theme-contrast-color);
     border-radius: 8px;
     box-shadow: 0 0 10px rgb(0 0 0 / 10%);
     overflow: auto;

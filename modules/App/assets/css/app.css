@@ -226,7 +226,7 @@ del {
     flex-direction: column;
     width: 280px;
     height: calc(100vh - 30px);
-    background: var(--kiss-card-theme-contrast-color, #171d28);
+    background: var(--kiss-card-theme-contrast-color);
     border-radius: 8px;
     box-shadow: 0 0 10px rgb(0 0 0 / 10%);
     overflow: auto;

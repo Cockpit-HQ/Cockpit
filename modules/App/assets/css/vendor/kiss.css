@@ -58,6 +58,7 @@
 
     --kiss-card-shadowed-color: rgba(0, 0, 0, 0.85);
     --kiss-card-bordered-color: rgb(106, 85, 85, .15);
+    --kiss-card-theme-contrast-color: #171d28;
 
     --kiss-breadcrumbs-size: 11px;
     --kiss-table-heading-background-color: #171b24;
@@ -236,8 +237,7 @@ kiss-card[hover="shadow"]:hover {
 
 kiss-card[theme*="contrast"],
 kiss-card[hover*="contrast"]:hover {
-    background: var(--kiss-card-theme-contrast-color, #141923);
-    background: var(--kiss-card-theme-contrast-color, #171d28);
+    background: var(--kiss-card-theme-contrast-color);
 }
 
 
