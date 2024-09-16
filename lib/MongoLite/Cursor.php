@@ -2,12 +2,13 @@
 
 namespace MongoLite;
 
+use Iterator;
 use PDO;
 
 /**
  * Cursor object.
  */
-class Cursor implements \Iterator {
+class Cursor implements Iterator {
 
     /**
      * @var boolean|integer
@@ -76,13 +77,13 @@ class Cursor implements \Iterator {
 
             $sql = ['SELECT COUNT(*) AS C FROM '.$this->collection->database->connection->quote($this->collection->name)];
 
-            $sql[] = "WHERE document_criteria('".$this->criteria."', document)";
+            $sql[] = "WHERE document_criteria('{$this->criteria}', document)";
 
             if ($this->limit) {
             $sql[] = "LIMIT {$this->limit}";
             }
 
-            $stmt = $this->collection->database->connection->query(\implode(' ', $sql));
+            $stmt = $this->collection->database->connection->query(implode(' ', $sql));
         }
 
         $res  = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -177,7 +178,7 @@ class Cursor implements \Iterator {
                 $orders[] = 'document_key('.$conn->quote($field).', document) '.($direction==-1 ? 'DESC':'ASC');
             }
 
-            $sql[] = 'ORDER BY '.\implode(',', $orders);
+            $sql[] = 'ORDER BY '. implode(',', $orders);
         }
 
         if ($this->limit) {
@@ -193,7 +194,7 @@ class Cursor implements \Iterator {
         $documents = [];
 
         foreach ($result as &$doc) {
-            $documents[] = \json_decode($doc['document'], true);
+            $documents[] = json_decode($doc['document'], true);
         }
 
         if (is_array($this->projection)) {

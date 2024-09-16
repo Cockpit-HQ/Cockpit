@@ -84,7 +84,7 @@ class License extends \Lime\Helper {
     }
 
     public function isProprietary() {
-        return (json_decode(file_get_contents(APP_DIR.'/composer.json'), true)['license'] === 'proprietary');
+        return ((json_decode(file_get_contents(APP_DIR.'/composer.json'), true)['license'] ?? '') === 'proprietary');
     }
 
     public function isValidDomain() {
