@@ -8,6 +8,7 @@
 - Replace placeholders in preview urls (id, locale, field value)
 - Mark unpublished linked content items
 - Pass a list of checks to perform on system healthcheck route (db, memory, fs, redis, smtp, custom)
+- Improve locale editing ui
 
 ## 2.9.1 (2024-08-26)
 

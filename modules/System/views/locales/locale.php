@@ -1,3 +1,7 @@
+<script>
+    window.TMP_LOCALES_LIST = <?= json_encode(include($this->path('system:data/locales.php'))) ?>;
+</script>
+
 <kiss-container class="kiss-margin" size="small">
 
     <ul class="kiss-breadcrumbs">
@@ -17,12 +21,18 @@
 
                 <div class="kiss-margin" :class="{'kiss-disabled': locale._id}">
                     <label><?=t('i18n')?></label>
-                    <input class="kiss-input" type="text" pattern="[a-zA-Z0-9_]+" v-model="locale.i18n" :disabled="locale._id" required>
+                    <input class="kiss-input" type="text" list="lst-locales" pattern="[a-zA-Z0-9_]+" v-model="locale.i18n" :disabled="locale._id" required>
+                    <datalist id="lst-locales">
+                        <option v-for="(meta, locale) in lstLocales">{{ locale }}</option>
+                    </datalist>
                 </div>
 
                 <div class="kiss-margin">
                     <label><?=t('Name')?></label>
                     <input class="kiss-input" type="text" v-model="locale.name" required>
+                    <div class="kiss-size-xsmall kiss-color-muted kiss-margin-small" v-if="nameSuggestion">
+                        {{ t('Suggestion for name') }}: <a @click="locale.name = nameSuggestion.name">{{nameSuggestion.name}}</a>, <a @click="locale.name = nameSuggestion.native">{{nameSuggestion.native}}</a>
+                    </div>
                 </div>
 
                 <div class="kiss-margin">
@@ -60,8 +70,26 @@
 
                     return {
                         saving: false,
-                        locale: <?=json_encode($locale)?>
+                        locale: <?=json_encode($locale)?>,
+                        lstLocales: TMP_LOCALES_LIST
                     };
+                },
+
+                computed: {
+                    nameSuggestion() {
+
+                        const loc = (this.locale.i18n || '').trim();
+
+                        if (!loc) return null;
+
+                        let locale = this.lstLocales[loc] || null;
+
+                        if (locale && locale.name !== this.locale.name && locale.native !== this.locale.name) {
+                            return locale;
+                        }
+
+                        return null;
+                    }
                 },
 
                 methods: {
