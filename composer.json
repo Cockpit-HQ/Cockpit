@@ -18,7 +18,8 @@
         "serve": [
             "Composer\\Config::disableProcessTimeout",
             "php -S localhost:8080 index.php"
-        ]
+        ],
+        "git-pull-all-rebase": "find . -type d -name .git -execdir sh -c 'echo \"\\n=== $(basename $(pwd)) ===\"; git pull --rebase' \\;"
     },
 
     "require": {
