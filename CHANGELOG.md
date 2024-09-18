@@ -1,6 +1,6 @@
 # Release Notes
 
-## WIP
+## 2.9.2 (2024-09-19)
 
 - Improve clean file name generation on upload
 - Fix SQLSTATE[HY000] error on update items with newer SQLite versions
