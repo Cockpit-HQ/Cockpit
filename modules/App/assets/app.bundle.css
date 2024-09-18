@@ -3941,7 +3941,7 @@ td.kiss-text-truncate { max-width: 0; }
     pointer-events: none;
 }
 .kiss-visible-toggle:not(:hover):not(:focus) .kiss-hidden-hover:not(:focus-within) {
-    display: none;
+    display: none !important;
 }
 .kiss-visible-toggle:not(:hover):not(:focus) .kiss-invisible-hover:not(:focus-within) {
     opacity: 0 !important;
