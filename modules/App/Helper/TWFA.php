@@ -3,18 +3,15 @@
 namespace App\Helper;
 
 use RobThree\Auth\TwoFactorAuth;
-use RobThree\Auth\Providers\Qr\IQRCodeProvider;
-use BaconQrCode\Renderer\ImageRenderer;
-use BaconQrCode\Renderer\Image\SvgImageBackEnd;
-use BaconQrCode\Renderer\RendererStyle\RendererStyle;
-use BaconQrCode\Writer;
+use RobThree\Auth\Providers\Qr\BaconQrCodeProvider;
+use RobThree\Auth\Algorithm;
 
 class TWFA extends \Lime\Helper {
 
     protected TwoFactorAuth $tfa;
 
     protected function initialize() {
-        $this->tfa = new TwoFactorAuth($this->app['app.name'], 6, 30, 'sha1', new TWFAQRCodeRenderer());
+        $this->tfa = new TwoFactorAuth(new BaconQrCodeProvider(borderWidth: 0, format: 'svg'), $this->app['app.name'], 6, 30, Algorithm::Sha1);
     }
 
     public function createSecret(int $length = 160) {
@@ -33,24 +30,5 @@ class TWFA extends \Lime\Helper {
 
     public function verifyCode(string $secret, string $code): bool {
         return $this->tfa->verifyCode($secret, $code);
-    }
-}
-
-class TWFAQRCodeRenderer implements IQRCodeProvider {
-
-    public function getMimeType(): string {
-        return 'image/svg+xml';
-    }
-
-    public function getQRCodeImage($qrtext, $size = 200, $margin = 0): string {
-
-        $renderer = new ImageRenderer(
-            new RendererStyle($size, $margin),
-            new SvgImageBackEnd()
-        );
-
-        $writer = new Writer($renderer);
-
-        return $writer->writeString($qrtext); // Return image
     }
 }
