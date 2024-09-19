@@ -1,5 +1,9 @@
 # Release Notes
 
+## 2.9.3 (2024-09-20)
+
+- Fix adding users error due to uncomplete 2FA lib
+
 ## 2.9.2 (2024-09-19)
 
 - Improve clean file name generation on upload
