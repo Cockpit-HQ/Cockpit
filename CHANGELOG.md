@@ -1,5 +1,10 @@
 # Release Notes
 
+## WIP
+
+- Update Vue to v3.5.7
+- Fix debug error view
+
 ## 2.9.3 (2024-09-20)
 
 - Fix adding users error due to uncomplete 2FA lib
