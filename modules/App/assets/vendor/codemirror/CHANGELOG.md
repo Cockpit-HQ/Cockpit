@@ -1,3 +1,17 @@
+## 5.65.18 (2024-09-20)
+
+### Bug fixes
+
+[dart mode](https://codemirror.net/5/mode/dart/index.html): Handle numeric separators.
+
+[groovy mode](https://codemirror.net/5/mode/groovy/index.html): Fix a bug in highlighting interpolated variable names.
+
+## 5.65.17 (2024-07-20)
+
+### Bug fixes
+
+[crystal mode](https://codemirror.net/5/mode/crystal/index.html): Fix an infinite loop bug when tokenizing heredoc strings.
+
 ## 5.65.16 (2023-11-20)
 
 ### Bug fixes
