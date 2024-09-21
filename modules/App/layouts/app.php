@@ -117,7 +117,7 @@ $sidePanelContents = $this->block('app-side-panel', ['print' => false]);
                     <app-license></app-license>
                     <div class="kiss-flex-1 kiss-margin-left"></div>
                     <?php $this->block('app.layout.header') ?>
-                    <a class="kiss-margin-left" href="#app-account-menu" kiss-popout>
+                    <a class="kiss-margin-left" href="#app-account-menu" aria-label="<?=t('Account')?>" kiss-popout>
                         <app-avatar size="30" name="<?= $this['user/name'] ?>"></app-avatar>
                     </a>
                 </kiss-container>
