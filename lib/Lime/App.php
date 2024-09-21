@@ -506,6 +506,10 @@ class App implements \ArrayAccess {
     */
     public function trigger(string $event, array $params=[]): self {
 
+        if ($event !== '*' && isset($this->events['*']) && count($this->events['*'])) {
+            $this->trigger('*', [$event, $params]);
+        }
+
         if (!isset($this->events[$event])) {
             return $this;
         }
