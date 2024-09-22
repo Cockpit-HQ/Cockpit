@@ -4,8 +4,12 @@
 .DS_Store
 .project
 .settings
+.fleet
 .idea
+*.sublime-workspace
+*.sublime-project
 .vscode
+.zed
 .env
 composer.lock
 composer.phar
@@ -29,12 +33,10 @@ package-lock.json
 /config/*
 /tests/*
 /node_modules
+npm-debug.log
+yarn-error.log
 addons/
 !.gitignore
 !.gitkeep
 !/storage/*/index.html
 !/storage/*/.htaccess
-# Sublime Text
-*.sublime-workspace
-*.sublime-project
-license.lic
