@@ -14,7 +14,7 @@
             <kiss-card class="kiss-padding kiss-margin-large" theme="bordered contrast shadowed">
 
                 <kiss-row class="kiss-flex-middle">
-                    <div><kiss-svg src="<?=$this->baseUrl('app:assets/logo.svg')?>" width="60" height="60"></kiss-svg></div>
+                    <div><kiss-svg src="<?=$this->baseUrl('app:assets/img/logo.svg')?>" width="60" height="60"></kiss-svg></div>
                     <div class="kiss-flex-1">
                         <div class="kiss-size-4 kiss-text-bold">Cockpit</div>
                         <div class="kiss-text-caption kiss-margin-small kiss-color-muted">
@@ -71,9 +71,7 @@
                     </div>
 
                     <kiss-grid cols="4@m 6@xl" gap="small">
-                        <?php
-
-                        foreach($addons as $name): $icon = $this->path("{$name}:icon.svg"); ?>
+                        <?php foreach($addons as $name): $icon = $this->path("{$name}:icon.svg"); ?>
                         <kiss-card class="kiss-padding kiss-size-small kiss-text-capitalize kiss-flex kiss-flex-middle" theme="shadowed contrast">
                             <div class="kiss-margin-small-right"><kiss-svg src="<?=$this->base($icon ? "{$name}:icon.svg" : 'system:assets/icons/module.svg')?>" width="30" height="30"></kiss-svg></div>
                             <div><?=$name?></div>
@@ -86,24 +84,46 @@
                         <?=('License')?>
                     </div>
 
-                    <?php if ($license): ?>
-                    <kiss-card class="kiss-padding kiss-margin kiss-text-monospace" theme="contrast shadowed">
+                    <kiss-row match="true">
+                        <?php if ($license): ?>
+                        <div class="kiss-width-1-1 kiss-width-1-2@m kiss-width-1-3@l">
+                            <kiss-card class="kiss-padding-larger kiss-text-monospace" theme="contrast shadowed">
 
-                        <div class="kiss-text-bold"><?=($license['company'] ? $license['company'] : $license['name'])?></div>
+                                <div class="kiss-flex kiss-flex-middle" gap="small">
+                                    <div><icon class="kiss-size-1 kiss-color-primary" size="larger">developer_board</icon></div>
+                                    <div class="kiss-flex-1"><span class="kiss-badge kiss-text-upper"><?=($license['model'] ?? 'pro')?></span></div>
+                                    <div>
+                                        <kiss-svg src="<?=$this->baseUrl('app:assets/img/ag.svg')?>" width="30"></kiss-svg>
+                                    </div>
+                                </div>
 
-                        <div class="kiss-color-muted kiss-size-small kiss-margin-small-top">
-                            <div class="kiss-text-caption"><?=t('Licensed domain')?></div>
-                            <div><?=$license['domain']?></div>
+                                <div class="kiss-text-bold kiss-margin-large"><?=($license['company'] ? $license['company'] : $license['name'])?></div>
+
+                                <div class="kiss-flex" gap="large">
+
+                                    <div class="kiss-color-muted kiss-size-small kiss-margin-small-top">
+                                        <div class="kiss-text-caption"><?=t('Licensed domain')?></div>
+                                        <div class="kiss-margin-xsmall-top kiss-text-truncate" title="<?=$license['domain']?>"><?=$license['domain']?></div>
+                                    </div>
+
+                                    <div class="kiss-color-muted kiss-size-small kiss-margin-small-top">
+                                        <div class="kiss-text-caption"><?=t('License key')?></div>
+                                        <div class="kiss-margin-xsmall-top kiss-text-truncate" title="<?=$license['key']?>"><?=$license['key']?></div>
+                                    </div>
+
+
+                                </div>
+
+                            </kiss-card>
                         </div>
+                        <?php endif ?>
 
-                    </kiss-card>
-                    <?php endif ?>
-
-                    <kiss-card class="kiss-padding kiss-bgcolor-contrast">
-                        <div class="kiss-text-monospace kiss-size-small kiss-color-muted" style="max-height:200px;overflow:auto;">
-                            <?=($this->path('#app:LICENSE') ? nl2br($this->helper('fs')->read('#app:LICENSE')) : '!!! LICENSE IS MISSING !!!')?>
-                        </div>
-                    </kiss-card>
+                        <kiss-card class="kiss-padding kiss-bgcolor-contrast kiss-flex-1" theme="shadowed">
+                            <div class="kiss-text-monospace kiss-size-small kiss-color-muted" style="max-height:200px;overflow:auto;">
+                                <?=($this->path('#app:LICENSE') ? nl2br($this->helper('fs')->read('#app:LICENSE')) : '!!! LICENSE IS MISSING !!!')?>
+                            </div>
+                        </kiss-card>
+                    </kiss-row>
 
                 </tab>
 
