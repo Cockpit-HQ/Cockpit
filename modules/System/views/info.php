@@ -90,7 +90,7 @@
                             <kiss-card class="kiss-padding-larger kiss-text-monospace" theme="contrast shadowed">
 
                                 <div class="kiss-flex kiss-flex-middle" gap="small">
-                                    <div><icon class="kiss-size-1 kiss-color-primary" size="larger">developer_board</icon></div>
+                                    <div><icon class="kiss-size-1 kiss-color-muted" size="larger">developer_board</icon></div>
                                     <div class="kiss-flex-1"><span class="kiss-badge kiss-text-upper"><?=($license['model'] ?? 'pro')?></span></div>
                                     <div>
                                         <kiss-svg src="<?=$this->baseUrl('app:assets/img/ag.svg')?>" width="30"></kiss-svg>
