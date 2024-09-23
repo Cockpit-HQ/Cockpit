@@ -11,7 +11,7 @@
     <vue-view>
         <template>
 
-            <kiss-card class="kiss-padding kiss-margin-large" theme="bordered contrast shadowed">
+            <kiss-card class="kiss-margin-large">
 
                 <kiss-row class="kiss-flex-middle">
                     <div><kiss-svg src="<?=$this->baseUrl('app:assets/img/logo.svg')?>" width="60" height="60"></kiss-svg></div>
@@ -87,7 +87,7 @@
                     <kiss-row match="true">
                         <?php if ($license): ?>
                         <div class="kiss-width-1-1 kiss-width-1-2@m kiss-width-1-3@l">
-                            <kiss-card class="kiss-padding-larger kiss-text-monospace" theme="contrast shadowed">
+                            <kiss-card class="kiss-padding-larger kiss-text-monospace" theme="contrast shadowed" style="border-top: 2px var(--kiss-color-primary) solid">
 
                                 <div class="kiss-flex kiss-flex-middle" gap="small">
                                     <div><icon class="kiss-size-1 kiss-color-muted" size="larger">developer_board</icon></div>
