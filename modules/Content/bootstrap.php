@@ -293,7 +293,7 @@ $this->module('content')->extend([
             $items = $this->populate($items, $process['populate'], 0, $process);
 
             if (count($postPopulateProjection)) {
-                $items = \MongoLite\Projection::onDocuments($items, $postPopulateProjection);
+                $items = \MongoLite\Projection::onDocuments($items, array_merge($options['fields'], $postPopulateProjection));
             }
         }
 
