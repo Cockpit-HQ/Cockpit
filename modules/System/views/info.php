@@ -97,20 +97,19 @@
                                     </div>
                                 </div>
 
-                                <div class="kiss-text-bold kiss-margin-large"><?=($license['company'] ? $license['company'] : $license['name'])?></div>
+                                <div class="kiss-text-bold kiss-text-truncate kiss-margin-large"><?=($license['company'] ? $license['company'] : $license['name'])?></div>
 
                                 <div class="kiss-flex" gap="large">
 
-                                    <div class="kiss-color-muted kiss-size-small kiss-margin-small-top">
+                                    <div class="kiss-width-1-2 kiss-width-1-3@m kiss-color-muted kiss-size-small kiss-margin-small-top">
                                         <div class="kiss-text-caption"><?=t('Licensed domain')?></div>
-                                        <div class="kiss-margin-xsmall-top kiss-text-truncate" title="<?=$license['domain']?>"><?=$license['domain']?></div>
+                                        <div class="kiss-margin-xsmall-top kiss-text-truncate kiss-size-xsmall" title="<?=$license['domain']?>"><?=$license['domain']?></div>
                                     </div>
 
                                     <div class="kiss-color-muted kiss-size-small kiss-margin-small-top">
                                         <div class="kiss-text-caption"><?=t('License key')?></div>
-                                        <div class="kiss-margin-xsmall-top kiss-text-truncate" title="<?=$license['key']?>"><?=$license['key']?></div>
+                                        <div class="kiss-margin-xsmall-top kiss-text-truncate kiss-size-xsmall" title="<?=$license['key']?>"><?=$license['key']?></div>
                                     </div>
-
 
                                 </div>
 
