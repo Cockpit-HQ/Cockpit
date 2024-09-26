@@ -79,7 +79,7 @@ if (PHP_SAPI == 'cli-server') {
 
 } else {
 
-    $APP_BASE        = trim(str_replace($APP_DOCUMENT_ROOT, '', $APP_DIR), "/");
+    $APP_BASE        = ltrim(trim(str_replace($APP_DOCUMENT_ROOT, '', $APP_DIR), "/"), "\\");
     $APP_BASE_URL    = strlen($APP_BASE) ? "/{$APP_BASE}": $APP_BASE;
     $APP_BASE_ROUTE  = $APP_BASE_URL;
     $APP_ROUTE       = preg_replace('#'.preg_quote($APP_BASE_URL, '#').'#', '', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), 1);
