@@ -2,7 +2,7 @@
 
 ## WIP
 
-- Update Vue to v3.5.8
+- Update Vue to v3.5.9
 - Fix debug error view
 - Fix delayed field projection on populated fields
 
