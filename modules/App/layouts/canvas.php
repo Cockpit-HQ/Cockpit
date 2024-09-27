@@ -1,4 +1,24 @@
-<!DOCTYPE html>
+<?php
+
+    $paths = [
+        '#config' => $this->baseUrl("#config:"),
+        '#uploads' => $this->fileStorage->getURL('uploads://'),
+    ];
+
+    $importmap = [];
+
+    foreach ($this['modules'] as $name => $module) {
+        $paths[$name] = $this->baseUrl("{$name}:");
+        $importmap["module-{$name}/"] = rtrim($paths[$name], '/').'/';
+    }
+
+    $locales = [];
+
+    foreach ($this->helper('locales')->locales(true) as $i18n => $loc) {
+        $locales[$i18n] = $loc['name'] ? $loc['name']  : $i18n;
+    }
+
+?><!DOCTYPE html>
 <html
     lang="en"
     class="<?=$this->helper('theme')->pageClass()?>"
@@ -13,8 +33,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex,nofollow">
     <title><?=$this->helper('theme')->title()?></title>
-
     <link rel="icon" href="<?=$this->helper('theme')->favicon()?>">
+
+    <script type="importmap"><?=json_encode(['imports' => $importmap], JSON_PRETTY_PRINT);?></script>
 
     <?=$this->helper('theme')->assets([], 'canvas')?>
 
@@ -37,25 +58,6 @@
     <?php $this->block('app.layout.footer') ?>
 
     <script type="module">
-
-        <?php
-
-            $paths = [
-                '#config' => $this->baseUrl("#config:"),
-                '#uploads' => $this->fileStorage->getURL('uploads://'),
-            ];
-
-            foreach ($this['modules'] as $name => $module) {
-                $paths[$name] = $this->baseUrl("{$name}:");
-            }
-
-            $locales = [];
-
-            foreach ($this->helper('locales')->locales(true) as $i18n => $loc) {
-                $locales[$i18n] = $loc['name'] ? $loc['name']  : $i18n;
-            }
-
-        ?>
 
         Object.assign(App, {
             _paths   : Object.freeze(<?=json_encode($paths)?>),

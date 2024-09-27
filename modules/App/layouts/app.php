@@ -1,8 +1,26 @@
 <?php
 
-$this->trigger('app.layout.init');
+    $this->trigger('app.layout.init');
 
-$sidePanelContents = $this->block('app-side-panel', ['print' => false]);
+    $sidePanelContents = $this->block('app-side-panel', ['print' => false]);
+
+    $paths = [
+        '#config' => $this->baseUrl("#config:"),
+        '#uploads' => $this->fileStorage->getURL('uploads://'),
+    ];
+
+    $importmap = [];
+
+    foreach ($this['modules'] as $name => $module) {
+        $paths[$name] = $this->baseUrl("{$name}:");
+        $importmap["module-{$name}/"] = rtrim($paths[$name], '/').'/';
+    }
+
+    $locales = [];
+
+    foreach ($this->helper('locales')->locales(true) as $i18n => $loc) {
+        $locales[$i18n] = $loc['name'] ? $loc['name']  : $i18n;
+    }
 
 ?>
 <!DOCTYPE html>
@@ -20,15 +38,18 @@ $sidePanelContents = $this->block('app-side-panel', ['print' => false]);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex,nofollow">
     <title><?= $this->helper('theme')->title() ?></title>
-
     <link rel="icon" href="<?= $this->helper('theme')->favicon() ?>">
 
-    <?= $this->helper('theme')->assets([['src' => 'app:assets/js/admin.js', 'type' => 'module']], 'app') ?>
+    <script type="importmap"><?=json_encode(['imports' => $importmap], JSON_PRETTY_PRINT);?></script>
+
+    <?=$this->helper('theme')->assets([['src' => 'app:assets/js/admin.js', 'type' => 'module']], 'app')?>
 
     <script src="<?= $this->route('/app.i18n.data.js') ?>" type="module"></script>
 
-    <?php $this->trigger('app.layout.head') ?>
-    <?php $this->block('app.layout.head') ?>
+    <?php
+        $this->trigger('app.layout.head');
+        $this->block('app.layout.head');
+    ?>
 
     <?php if ($this->helper('theme')->theme() == 'auto') : ?>
     <script>
@@ -227,24 +248,6 @@ $sidePanelContents = $this->block('app-side-panel', ['print' => false]);
     <?php $this->trigger('app.layout.footer') ?>
 
     <script type="module">
-        <?php
-
-        $paths = [
-            '#config' => $this->baseUrl("#config:"),
-            '#uploads' => $this->fileStorage->getURL('uploads://'),
-        ];
-
-        foreach ($this['modules'] as $name => $module) {
-            $paths[$name] = $this->baseUrl("{$name}:");
-        }
-
-        $locales = [];
-
-        foreach ($this->helper('locales')->locales(true) as $i18n => $loc) {
-            $locales[$i18n] = $loc['name'] ? $loc['name']  : $i18n;
-        }
-
-        ?>
 
         Object.assign(App, {
             _paths: Object.freeze(<?= json_encode($paths) ?>),
@@ -252,6 +255,7 @@ $sidePanelContents = $this->block('app-side-panel', ['print' => false]);
             _vars: Object.freeze(<?= json_encode($this->helper('theme')->vars()) ?>),
             user: Object.freeze(<?= json_encode($this->retrieve('user')) ?>),
         });
+
     </script>
 
     <?php $this->trigger('app.layout.footer') ?>
