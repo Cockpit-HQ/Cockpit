@@ -32,6 +32,7 @@ for which ever storage is right for you.
 * **[AsyncAws S3](https://flysystem.thephpleague.com/docs/adapter/async-aws-s3/)**
 * **[Google Cloud Storage](https://flysystem.thephpleague.com/docs/adapter/google-cloud-storage/)**
 * **[Azure Blob Storage](https://flysystem.thephpleague.com/docs/adapter/azure-blob-storage/)**
+* **[MongoDB GridFS](https://flysystem.thephpleague.com/docs/adapter/gridfs/)**
 * **[WebDAV](https://flysystem.thephpleague.com/docs/adapter/webdav/)**
 * **[ZipArchive](https://flysystem.thephpleague.com/docs/adapter/zip-archive/)**
 

@@ -748,8 +748,6 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionWellArchitected(array $args = [])
  * @method \Aws\WorkDocs\WorkDocsClient createWorkDocs(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionWorkDocs(array $args = [])
- * @method \Aws\WorkLink\WorkLinkClient createWorkLink(array $args = [])
- * @method \Aws\MultiRegionClient createMultiRegionWorkLink(array $args = [])
  * @method \Aws\WorkMail\WorkMailClient createWorkMail(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionWorkMail(array $args = [])
  * @method \Aws\WorkMailMessageFlow\WorkMailMessageFlowClient createWorkMailMessageFlow(array $args = [])
@@ -779,7 +777,7 @@ namespace Aws;
  */
 class Sdk
 {
-    const VERSION = '3.322.6';
+    const VERSION = '3.322.7';
 
     /** @var array Arguments for creating clients */
     private $args;
