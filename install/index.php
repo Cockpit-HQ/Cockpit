@@ -154,7 +154,7 @@ if (!count($failed)) {
             <div>
                 <div class="kiss-flex kiss-margin">
                     <div class="kiss-margin-right">
-                        <img src="../modules/App/assets/logo.svg" width="30" height="30"alt="logo">
+                        <img src="../modules/App/assets/img/logo.svg" width="30" height="30"alt="logo">
                     </div>
                     <div class="kiss-flex-1 kiss-size-xsmall">
                         <strong>Cockpit</strong>
