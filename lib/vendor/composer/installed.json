@@ -59,17 +59,17 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.322.7",
-            "version_normalized": "3.322.7.0",
+            "version": "3.322.9",
+            "version_normalized": "3.322.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "ea3563a7f10fa562796f712fa306c1dca41a45d7"
+                "reference": "0bd7513a7dd9b5330cb92575da99d9057f79b39c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/ea3563a7f10fa562796f712fa306c1dca41a45d7",
-                "reference": "ea3563a7f10fa562796f712fa306c1dca41a45d7",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/0bd7513a7dd9b5330cb92575da99d9057f79b39c",
+                "reference": "0bd7513a7dd9b5330cb92575da99d9057f79b39c",
                 "shasum": ""
             },
             "require": {
@@ -110,7 +110,7 @@
                 "ext-openssl": "Allows working with CloudFront private distributions and verifying received SNS messages",
                 "ext-sockets": "To use client-side monitoring"
             },
-            "time": "2024-09-27T18:34:08+00:00",
+            "time": "2024-10-01T18:23:10+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -154,23 +154,23 @@
             "support": {
                 "forum": "https://forums.aws.amazon.com/forum.jspa?forumID=80",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.322.7"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.322.9"
             },
             "install-path": "../aws/aws-sdk-php"
         },
         {
             "name": "bacon/bacon-qr-code",
-            "version": "v3.0.0",
-            "version_normalized": "3.0.0.0",
+            "version": "v3.0.1",
+            "version_normalized": "3.0.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Bacon/BaconQrCode.git",
-                "reference": "510de6eca6248d77d31b339d62437cc995e2fb41"
+                "reference": "f9cc1f52b5a463062251d666761178dbdb6b544f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Bacon/BaconQrCode/zipball/510de6eca6248d77d31b339d62437cc995e2fb41",
-                "reference": "510de6eca6248d77d31b339d62437cc995e2fb41",
+                "url": "https://api.github.com/repos/Bacon/BaconQrCode/zipball/f9cc1f52b5a463062251d666761178dbdb6b544f",
+                "reference": "f9cc1f52b5a463062251d666761178dbdb6b544f",
                 "shasum": ""
             },
             "require": {
@@ -187,7 +187,7 @@
             "suggest": {
                 "ext-imagick": "to generate QR code images"
             },
-            "time": "2024-04-18T11:16:25+00:00",
+            "time": "2024-10-01T13:55:55+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -211,7 +211,7 @@
             "homepage": "https://github.com/Bacon/BaconQrCode",
             "support": {
                 "issues": "https://github.com/Bacon/BaconQrCode/issues",
-                "source": "https://github.com/Bacon/BaconQrCode/tree/v3.0.0"
+                "source": "https://github.com/Bacon/BaconQrCode/tree/v3.0.1"
             },
             "install-path": "../bacon/bacon-qr-code"
         },
@@ -1445,24 +1445,24 @@
         },
         {
             "name": "mongodb/mongodb",
-            "version": "1.19.1",
-            "version_normalized": "1.19.1.0",
+            "version": "1.20.0",
+            "version_normalized": "1.20.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mongodb/mongo-php-library.git",
-                "reference": "afe425b629075fa597fa2d5645045cb20dc93d95"
+                "reference": "75da9ea3b63d97b05e0e8648d8c09a17bc54c0b6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mongodb/mongo-php-library/zipball/afe425b629075fa597fa2d5645045cb20dc93d95",
-                "reference": "afe425b629075fa597fa2d5645045cb20dc93d95",
+                "url": "https://api.github.com/repos/mongodb/mongo-php-library/zipball/75da9ea3b63d97b05e0e8648d8c09a17bc54c0b6",
+                "reference": "75da9ea3b63d97b05e0e8648d8c09a17bc54c0b6",
                 "shasum": ""
             },
             "require": {
                 "composer-runtime-api": "^2.0",
                 "ext-hash": "*",
                 "ext-json": "*",
-                "ext-mongodb": "^1.18.0",
+                "ext-mongodb": "^1.20.0",
                 "php": "^7.4 || ^8.0",
                 "psr/log": "^1.1.4|^2|^3",
                 "symfony/polyfill-php80": "^1.27",
@@ -1475,7 +1475,7 @@
                 "symfony/phpunit-bridge": "^5.2",
                 "vimeo/psalm": "^5.13"
             },
-            "time": "2024-06-13T14:30:04+00:00",
+            "time": "2024-09-25T12:54:08+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1519,7 +1519,7 @@
             ],
             "support": {
                 "issues": "https://github.com/mongodb/mongo-php-library/issues",
-                "source": "https://github.com/mongodb/mongo-php-library/tree/1.19.1"
+                "source": "https://github.com/mongodb/mongo-php-library/tree/1.20.0"
             },
             "install-path": "../mongodb/mongodb"
         },
