@@ -277,6 +277,24 @@ class Cockpit {
                     } catch (\Throwable $e) {}
                 }
             });
+
+            set_error_handler(function($errno, $errstr, $errfile, $errline) use($app, $config)  {
+
+                if (!isset($app->request)) {
+                    return false;
+                }
+
+                if (!$config['debug']) return true;
+
+                switch ($errno) {
+                    case E_WARNING:
+                    case E_USER_WARNING:
+                    case E_USER_ERROR:
+                        throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
+                    default:
+                        return false;
+                }
+            });
         }
 
         // load config global bootstrap file
