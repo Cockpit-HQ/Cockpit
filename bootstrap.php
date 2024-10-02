@@ -280,10 +280,7 @@ class Cockpit {
 
             set_error_handler(function($errno, $errstr, $errfile, $errline) use($app, $config)  {
 
-                if (!isset($app->request)) {
-                    return false;
-                }
-
+                if (!isset($app->request)) return false;
                 if (!$config['debug']) return true;
 
                 switch ($errno) {
