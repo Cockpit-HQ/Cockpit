@@ -18,14 +18,12 @@
 namespace MongoDB\Model;
 
 use Iterator;
-use MongoDB\BSON\Document;
 use MongoDB\Exception\InvalidArgumentException;
 use MongoDB\Exception\UnexpectedValueException;
 use ReturnTypeWillChange;
 
-use function assert;
 use function is_array;
-use function is_int;
+use function MongoDB\BSON\toPHP;
 use function sprintf;
 use function strlen;
 use function substr;
@@ -51,7 +49,6 @@ class BSONIterator implements Iterator
 
     private int $position = 0;
 
-    /** @var array{typeMap: array, ...} */
     private array $options;
 
     /**
@@ -145,13 +142,12 @@ class BSONIterator implements Iterator
         }
 
         [, $documentLength] = unpack('V', substr($this->buffer, $this->position, self::BSON_SIZE));
-        assert(is_int($documentLength));
 
         if ($this->bufferLength - $this->position < $documentLength) {
             throw new UnexpectedValueException(sprintf('Expected %d bytes; %d remaining', $documentLength, $this->bufferLength - $this->position));
         }
 
-        $this->current = Document::fromBSON(substr($this->buffer, $this->position, $documentLength))->toPHP($this->options['typeMap']);
+        $this->current = toPHP(substr($this->buffer, $this->position, $documentLength), $this->options['typeMap']);
         $this->position += $documentLength;
     }
 }

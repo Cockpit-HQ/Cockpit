@@ -43,6 +43,8 @@ use function get_object_vars;
 use function is_array;
 use function is_object;
 use function is_string;
+use function MongoDB\BSON\fromPHP;
+use function MongoDB\BSON\toPHP;
 use function str_ends_with;
 use function substr;
 
@@ -113,7 +115,7 @@ function apply_type_map_to_document($document, array $typeMap)
         throw InvalidArgumentException::expectedDocumentType('$document', $document);
     }
 
-    return Document::fromPHP($document)->toPHP($typeMap);
+    return toPHP(fromPHP($document), $typeMap);
 }
 
 /**

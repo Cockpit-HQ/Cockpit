@@ -33,6 +33,7 @@ use MongoDB\Exception\UnsupportedException;
 use MongoDB\Model\BSONArray;
 use MongoDB\Model\BSONDocument;
 use MongoDB\Model\IndexInfo;
+use MongoDB\Model\IndexInfoIterator;
 use MongoDB\Operation\Aggregate;
 use MongoDB\Operation\BulkWrite;
 use MongoDB\Operation\Count;
@@ -370,8 +371,8 @@ class Collection
      *
      * @see https://www.mongodb.com/docs/manual/reference/command/createSearchIndexes/
      * @see https://mongodb.com/docs/manual/reference/method/db.collection.createSearchIndex/
-     * @param array|object                                         $definition Atlas Search index mapping definition
-     * @param array{comment?: mixed, name?: string, type?: string} $options    Index and command options
+     * @param array|object                          $definition Atlas Search index mapping definition
+     * @param array{name?: string, comment?: mixed} $options    Command options
      * @return string The name of the created search index
      * @throws UnsupportedException if options are not supported by the selected server
      * @throws InvalidArgumentException for parameter/option parsing errors
@@ -379,13 +380,13 @@ class Collection
      */
     public function createSearchIndex($definition, array $options = []): string
     {
-        $indexOptionKeys = ['name' => 1, 'type' => 1];
-        /** @psalm-var array{name?: string, type?: string} */
-        $indexOptions = array_intersect_key($options, $indexOptionKeys);
-        /** @psalm-var array{comment?: mixed} */
-        $operationOptions = array_diff_key($options, $indexOptionKeys);
+        $index = ['definition' => $definition];
+        if (isset($options['name'])) {
+            $index['name'] = $options['name'];
+            unset($options['name']);
+        }
 
-        $names = $this->createSearchIndexes([['definition' => $definition] + $indexOptions], $operationOptions);
+        $names = $this->createSearchIndexes([$index], $options);
 
         return current($names);
     }
@@ -399,7 +400,7 @@ class Collection
      * For example:
      *
      *     $indexes = [
-     *         // Create a search index with the default name on a single field
+     *         // Create a search index with the default name, on
      *         ['definition' => ['mappings' => ['dynamic' => false, 'fields' => ['title' => ['type' => 'string']]]]],
      *         // Create a named search index on all fields
      *         ['name' => 'search_all', 'definition' => ['mappings' => ['dynamic' => true]]],
@@ -407,8 +408,8 @@ class Collection
      *
      * @see https://www.mongodb.com/docs/manual/reference/command/createSearchIndexes/
      * @see https://mongodb.com/docs/manual/reference/method/db.collection.createSearchIndex/
-     * @param list<array{definition: array|object, name?: string, type?: string}> $indexes List of search index specifications
-     * @param array{comment?: mixed}                                              $options Command options
+     * @param list<array{name?: string, definition: array|object}> $indexes List of search index specifications
+     * @param array{comment?: string}                              $options Command options
      * @return string[] The names of the created search indexes
      * @throws UnsupportedException if options are not supported by the selected server
      * @throws InvalidArgumentException for parameter/option parsing errors
@@ -881,7 +882,7 @@ class Collection
      * Returns information for all indexes for the collection.
      *
      * @see ListIndexes::__construct() for supported options
-     * @return Iterator<int, IndexInfo>
+     * @return IndexInfoIterator
      * @throws InvalidArgumentException for parameter/option parsing errors
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */

@@ -59,17 +59,17 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.322.9",
-            "version_normalized": "3.322.9.0",
+            "version": "3.323.0",
+            "version_normalized": "3.323.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "0bd7513a7dd9b5330cb92575da99d9057f79b39c"
+                "reference": "058611bd22a81c873b1399892672861848e1d466"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/0bd7513a7dd9b5330cb92575da99d9057f79b39c",
-                "reference": "0bd7513a7dd9b5330cb92575da99d9057f79b39c",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/058611bd22a81c873b1399892672861848e1d466",
+                "reference": "058611bd22a81c873b1399892672861848e1d466",
                 "shasum": ""
             },
             "require": {
@@ -110,7 +110,7 @@
                 "ext-openssl": "Allows working with CloudFront private distributions and verifying received SNS messages",
                 "ext-sockets": "To use client-side monitoring"
             },
-            "time": "2024-10-01T18:23:10+00:00",
+            "time": "2024-10-03T18:06:26+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -154,7 +154,7 @@
             "support": {
                 "forum": "https://forums.aws.amazon.com/forum.jspa?forumID=80",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.322.9"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.323.0"
             },
             "install-path": "../aws/aws-sdk-php"
         },
@@ -1445,24 +1445,24 @@
         },
         {
             "name": "mongodb/mongodb",
-            "version": "1.20.0",
-            "version_normalized": "1.20.0.0",
+            "version": "1.19.1",
+            "version_normalized": "1.19.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mongodb/mongo-php-library.git",
-                "reference": "75da9ea3b63d97b05e0e8648d8c09a17bc54c0b6"
+                "reference": "afe425b629075fa597fa2d5645045cb20dc93d95"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mongodb/mongo-php-library/zipball/75da9ea3b63d97b05e0e8648d8c09a17bc54c0b6",
-                "reference": "75da9ea3b63d97b05e0e8648d8c09a17bc54c0b6",
+                "url": "https://api.github.com/repos/mongodb/mongo-php-library/zipball/afe425b629075fa597fa2d5645045cb20dc93d95",
+                "reference": "afe425b629075fa597fa2d5645045cb20dc93d95",
                 "shasum": ""
             },
             "require": {
                 "composer-runtime-api": "^2.0",
                 "ext-hash": "*",
                 "ext-json": "*",
-                "ext-mongodb": "^1.20.0",
+                "ext-mongodb": "^1.18.0",
                 "php": "^7.4 || ^8.0",
                 "psr/log": "^1.1.4|^2|^3",
                 "symfony/polyfill-php80": "^1.27",
@@ -1475,7 +1475,7 @@
                 "symfony/phpunit-bridge": "^5.2",
                 "vimeo/psalm": "^5.13"
             },
-            "time": "2024-09-25T12:54:08+00:00",
+            "time": "2024-06-13T14:30:04+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1519,7 +1519,7 @@
             ],
             "support": {
                 "issues": "https://github.com/mongodb/mongo-php-library/issues",
-                "source": "https://github.com/mongodb/mongo-php-library/tree/1.20.0"
+                "source": "https://github.com/mongodb/mongo-php-library/tree/1.19.1"
             },
             "install-path": "../mongodb/mongodb"
         },
@@ -3498,17 +3498,17 @@
         },
         {
             "name": "zircote/swagger-php",
-            "version": "4.10.6",
-            "version_normalized": "4.10.6.0",
+            "version": "4.10.7",
+            "version_normalized": "4.10.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zircote/swagger-php.git",
-                "reference": "e462ff5269ea0ec91070edd5d51dc7215bdea3b6"
+                "reference": "589821f0f1e2c083443749b52a31f077c524dbe6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zircote/swagger-php/zipball/e462ff5269ea0ec91070edd5d51dc7215bdea3b6",
-                "reference": "e462ff5269ea0ec91070edd5d51dc7215bdea3b6",
+                "url": "https://api.github.com/repos/zircote/swagger-php/zipball/589821f0f1e2c083443749b52a31f077c524dbe6",
+                "reference": "589821f0f1e2c083443749b52a31f077c524dbe6",
                 "shasum": ""
             },
             "require": {
@@ -3522,7 +3522,7 @@
             "require-dev": {
                 "composer/package-versions-deprecated": "^1.11",
                 "doctrine/annotations": "^1.7 || ^2.0",
-                "friendsofphp/php-cs-fixer": "^2.17 || ^3.47.1",
+                "friendsofphp/php-cs-fixer": "^2.17 || 3.62.0",
                 "phpstan/phpstan": "^1.6",
                 "phpunit/phpunit": ">=8",
                 "vimeo/psalm": "^4.23"
@@ -3530,7 +3530,7 @@
             "suggest": {
                 "doctrine/annotations": "^1.7 || ^2.0"
             },
-            "time": "2024-07-26T03:04:43+00:00",
+            "time": "2024-10-02T01:43:50+00:00",
             "bin": [
                 "bin/openapi"
             ],
@@ -3576,7 +3576,7 @@
             ],
             "support": {
                 "issues": "https://github.com/zircote/swagger-php/issues",
-                "source": "https://github.com/zircote/swagger-php/tree/4.10.6"
+                "source": "https://github.com/zircote/swagger-php/tree/4.10.7"
             },
             "install-path": "../zircote/swagger-php"
         }

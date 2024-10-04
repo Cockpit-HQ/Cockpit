@@ -17,9 +17,10 @@
 
 namespace MongoDB\GridFS\Exception;
 
-use MongoDB\BSON\Document;
 use MongoDB\Exception\RuntimeException;
 
+use function MongoDB\BSON\fromPHP;
+use function MongoDB\BSON\toJSON;
 use function sprintf;
 
 class FileNotFoundException extends RuntimeException
@@ -57,7 +58,7 @@ class FileNotFoundException extends RuntimeException
      */
     public static function byId($id, string $namespace)
     {
-        $json = Document::fromPHP(['_id' => $id])->toRelaxedExtendedJSON();
+        $json = toJSON(fromPHP(['_id' => $id]));
 
         return new self(sprintf('File "%s" not found in "%s"', $json, $namespace));
     }
