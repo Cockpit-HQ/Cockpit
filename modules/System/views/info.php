@@ -161,14 +161,24 @@
                         <button type="button" class="kiss-button" @click="getEnvVars()">{{ t('Load environment variables') }}</button>
                     </div>
 
-                    <table class="kiss-table" style="word-break: break-all;" v-if="env">
-                        <tbody>
-                            <tr v-for="(val, key) in env">
-                                <td width="30%" class="kiss-size-small"><div class="kiss-size-xsmall">{{ key }}</div></td>
-                                <td width="70%" class="kiss-text-monospace kiss-color-muted"><div class="kiss-size-xsmall">{{ val }}</div></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div v-if="env">
+
+                        <input type="text" class="kiss-input kiss-width-1-1" :placeholder="t('Filter env vars...')" v-model="envfilter">
+
+                        <div class="kiss-color-muted kiss-text-light kiss-align-center kiss-size-3 kiss-margin-large" v-if="!Object.keys(filteredEnvVars).length">
+                            {{ t('No vars found') }}
+                        </div>
+
+                        <table class="kiss-table kiss-margin" style="word-break: break-all;" v-else>
+                            <tbody>
+                                <tr v-for="(val, key) in filteredEnvVars">
+                                    <td width="30%" class="kiss-size-small"><div class="kiss-size-xsmall">{{ key }}</div></td>
+                                    <td width="70%" class="kiss-text-monospace kiss-color-muted"><div class="kiss-size-xsmall">{{ val }}</div></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
 
                 </tab>
                 <?php endif ?>
@@ -184,7 +194,23 @@
                 data() {
                     return {
                         env: null,
+                        envfilter: '',
                         loadingEnv: false
+                    }
+                },
+
+                computed: {
+                    filteredEnvVars() {
+
+                        if (!this.envfilter) return this.env;
+
+                        let env = {}, filter = this.envfilter.toLowerCase();
+
+                        Object.keys(this.env).forEach(name => {
+                            if (name.toLowerCase().includes(filter)) env[name] = this.env[name];
+                        });
+
+                        return env;
                     }
                 },
 
