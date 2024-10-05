@@ -83,9 +83,18 @@ class Database {
             return $database->callCriteriaFunction($funcid, $document);
         }, 2);
 
-        $this->connection->exec('PRAGMA journal_mode = MEMORY');
-        $this->connection->exec('PRAGMA synchronous = OFF');
-        $this->connection->exec('PRAGMA PAGE_SIZE = 4096');
+        $pragma = [
+            'journal_mode'  => $options['journal_mode'] ??  'WAL',
+            'journal_size_limit' => $options['journal_size_limit'] ?? '27103364',
+            'synchronous'   => $options['synchronous'] ?? 'NORMAL',
+            'mmap_size'     => $options['mmap_size'] ?? '134217728',
+            'cache_size'    => $options['cache_size'] ?? '2000',
+            'page_size'     => $options['page_size'] ?? '4096',
+        ];
+
+        foreach ($pragma as $key => $value) {
+            $this->connection->exec("PRAGMA {$key} = {$value}");
+        }
     }
 
     /**
