@@ -24,7 +24,7 @@ class System extends \Lime\Helper {
         // to be implemented
     }
 
-    public function flushCache() {
+    public function flushCache(): void {
 
         $dirs = ['#cache:','#tmp:'];
         $fs = $this->app->helper('fs');
@@ -46,6 +46,7 @@ class System extends \Lime\Helper {
 
         $this->app->memory->flush();
         $this->app->trigger('app.system.cache.flush');
+        $this->vacuumSQLite();
 
         if (function_exists('opcache_reset')) {
             opcache_reset();
@@ -84,6 +85,37 @@ class System extends \Lime\Helper {
         }
 
         return $format ? $this->app->helper('utils')->formatSize($size) : $size;;
+    }
+
+    public function vacuumSQLite(): void {
+
+        $validExt = ['db', 'idx', 'sqlite', 'sqlite3'];
+
+        try {
+
+            $iterator = new \DirectoryIterator($this->app->path('#storage:data'));
+
+            foreach ($iterator as $finfo) {
+
+                if (!$finfo->isFile() || !in_array($finfo->getExtension(), $validExt)) continue;
+
+                $file = $finfo->getRealPath();
+
+                try {
+                    $db = new \PDO("sqlite:$file");
+                    $db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+                    $db->exec('VACUUM');
+                    $db = null; // Close the connection
+                } catch (\PDOException $e) {
+                    // log!?
+                }
+
+            }
+
+        } catch (\UnexpectedValueException $e) {
+            // log !?
+        }
+
     }
 
 }

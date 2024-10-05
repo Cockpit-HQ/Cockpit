@@ -7,6 +7,7 @@
 - Fix delayed field projection on populated fields
 - Catch + debug warnings
 - Add filter env vars
+- VACUUM all sqlite dbs on clear cache
 
 ## 2.9.3 (2024-09-20)
 
