@@ -24,8 +24,7 @@ customElements.define('app-textcomplete', class extends HTMLElement {
         }
 
         this.autocompleteList = document.createElement('div');
-        this.autocompleteList.className = 'autocomplete-list';
-        this.appendChild(this.autocompleteList);
+        this.autocompleteList.className = 'app-textcomplete-autocomplete-list';
 
         this.input.addEventListener('input', this.handleInput.bind(this));
         this.input.addEventListener('keydown', this.handleKeyDown.bind(this));
@@ -72,11 +71,24 @@ customElements.define('app-textcomplete', class extends HTMLElement {
     }
 
     showItems(items) {
+
         this.autocompleteList.innerHTML = '';
+
         if (items.length === 0) {
             this.hideItems();
             return;
         }
+
+        // Append autocomplete list to body
+        document.body.appendChild(this.autocompleteList);
+
+        const rect = this.input.getBoundingClientRect();
+
+        Object.assign(this.autocompleteList.style, {
+            top: `${rect.bottom + window.scrollY}px`,
+            left: `${rect.left + window.scrollX}px`,
+            width: `${rect.width}px`,
+        });
 
         items.forEach(item => {
             const div = document.createElement('div');
@@ -95,6 +107,10 @@ customElements.define('app-textcomplete', class extends HTMLElement {
         this.autocompleteList.style.display = 'none';
         this.isAutocompleteActive = false;
         this.setAttribute('active', '');
+
+        if (this.autocompleteList.parentNode) {
+            this.autocompleteList.parentNode.removeChild(this.autocompleteList);
+        }
     }
 
     selectItem(item) {

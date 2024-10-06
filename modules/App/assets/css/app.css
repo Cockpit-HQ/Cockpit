@@ -484,7 +484,7 @@ app-pagination {
     border-radius: var(--app-border-radius);
 }
 
-app-textcomplete .autocomplete-list {
+.app-textcomplete-autocomplete-list {
     font-family: ui-monospace,
     Menlo, Monaco,
     "Cascadia Mono", "Segoe UI Mono",
@@ -506,7 +506,7 @@ app-textcomplete .autocomplete-list {
     margin-top: 4px;
 }
 
-app-textcomplete .autocomplete-item.active {
+.app-textcomplete-autocomplete-list .autocomplete-item.active {
     font-weight: bolder;
     color: var(--kiss-color-primary);
 }
