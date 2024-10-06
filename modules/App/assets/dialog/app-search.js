@@ -25,7 +25,7 @@ export default {
 
     watch: {
         search: {
-            handler: _.debounce(function() {
+            handler: KISS.utils.debounce(function() {
                 this.query();
             }, 350)
         }

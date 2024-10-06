@@ -70,7 +70,7 @@ let FieldsManager = {
                 if (f.group && f.group.trim() && this.field !==  f) groups.push(f.group);
             })
 
-            return _.uniq(groups).sort();
+            return [...new Set(groups)].sort();
         },
 
         filteredFieledTypes() {
@@ -240,8 +240,8 @@ let FieldsManager = {
                         <kiss-card class="kiss-padding-small kiss-flex kiss-flex-middle" theme="bordered contrast">
                             <a class="fm-handle kiss-margin-small-right kiss-color-muted"><icon>drag_handle</icon></a>
                             <div class="kiss-margin-right">
-                                <div class="kiss-padding-small app-border-radius" :style="{background: _.get(fieldTypes, element.type+'.color', 'rgb(255, 248, 214)')}">
-                                    <img :src="$baseUrl(_.get(fieldTypes, element.type+'.icon', 'system:assets/icons/edit.svg'))" width="20" height="20" style="opacity:.6" :title="element.type">
+                                <div class="kiss-padding-small app-border-radius" :style="{background: fieldTypes?.[element.type]?.color ?? 'rgb(255, 248, 214)'}">
+                                    <img :src="$baseUrl(fieldTypes?.[element.type]?.icon ?? 'system:assets/icons/edit.svg')" width="20" height="20" style="opacity:.6" :title="element.type">
                                 </div>
                             </div>
                             <div class="kiss-flex-1">
@@ -292,12 +292,12 @@ let FieldsManager = {
                             <label>{{t('Type')}}</label>
 
                             <kiss-card class="kiss-padding-small kiss-flex kiss-flex-middle kiss-position-relative" theme="bordered">
-                                <div class="kiss-padding-small app-border-radius kiss-margin-right" :style="{background: _.get(fieldTypes, field.type+'.color', 'rgb(255, 248, 214)')}">
-                                    <img :src="$baseUrl(_.get(fieldTypes, field.type+'.icon', 'system:assets/icons/edit.svg'))" width="20" height="20">
+                                <div class="kiss-padding-small app-border-radius kiss-margin-right" :style="{background: fieldTypes?.[field.type]?.color ?? 'rgb(255, 248, 214)'}">
+                                    <img :src="$baseUrl(fieldTypes?.[field.type]?.icon ?? 'system:assets/icons/edit.svg')" width="20" height="20">
                                 </div>
                                 <div>
-                                    <div class="kiss-text-bold kiss-size-small">{{ _.get(fieldTypes, field.type+'.label', field.type) }}</div>
-                                    <div class="kiss-color-muted kiss-size-xsmall">{{ _.get(fieldTypes, field.type+'.info', '') }}</div>
+                                    <div class="kiss-text-bold kiss-size-small">{{ fieldTypes?.[field.type]?.label ?? field.type }}</div>
+                                    <div class="kiss-color-muted kiss-size-xsmall">{{ fieldTypes?.[field.type]?.info ?? '' }}</div>
                                 </div>
                                 <a class="kiss-cover" :kiss-popout="'#'+uid+'-fieldtype-selector'"></a>
                             </kiss-card>

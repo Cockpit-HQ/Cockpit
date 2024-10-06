@@ -2,7 +2,7 @@ let editItem = {
 
     data() {
 
-        let data = _.cloneDeep(this.item);
+        let data = JSON.parse(JSON.stringify(this.item));
 
         if (!data.meta || Array.isArray(data.meta)) {
             data.meta = {};
