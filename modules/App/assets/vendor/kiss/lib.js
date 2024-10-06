@@ -8,6 +8,7 @@ import "./components/parallax/parallax.js";
 import "./components/sticky/sticky.js";
 import "./components/svg/svg.js";
 import "./components/tabs/tabs.js";
+import "./components/toast/toast.js";
 import "./components/tooltip/tooltip.js";
 import events from "./js/events.js";
 import utils from "./js/utils.js";

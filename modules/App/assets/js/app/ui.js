@@ -3,20 +3,16 @@ let uuid = 0;
 
 export default {
 
-    notify(message, status, timeout) {
+    notify(message, type, timeout) {
 
         if (timeout !== false && !timeout) {
             timeout = 2500
         }
 
-        new Noty({
-            type: status || 'info',
-            text: message,
-            timeout: timeout,
-            layout: 'topCenter',
-            theme: 'app',
-            progressBar: true
-        }).show();
+        KissToast.notify(message,{
+            type,
+            timeout
+        });
     },
 
     block(info='', context = 'ui-block') {

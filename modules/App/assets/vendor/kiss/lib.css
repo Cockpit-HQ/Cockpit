@@ -18,6 +18,7 @@
 @import "components/sticky/sticky.css";
 @import "components/svg/svg.css";
 @import "components/tabs/tabs.css";
+@import "components/toast/toast.css";
 @import "components/tooltip/tooltip.css";
 
 @import "css/color.css";
