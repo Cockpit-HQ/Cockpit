@@ -1,18 +1,19 @@
 class Toast {
     constructor() {
         this.container = null;
-        this.createContainer();
     }
 
-    createContainer() {
+    getContainer() {
 
-        if (document.querySelector('.kiss-toast-containe')) {
-            return;
+        let container = document.querySelector('.kiss-toast-container');
+
+        if (!container) {
+            container = document.createElement('div');
+            container.classList.add('kiss-toast-container');
+            document.body.appendChild(container);
         }
 
-        this.container = document.createElement('div');
-        this.container.classList.add('kiss-toast-container');
-        document.body.appendChild(this.container);
+        return container;
     }
 
     show(message, options = {}) {
@@ -23,6 +24,7 @@ class Toast {
             info = '',
         } = options;
 
+        const container = this.getContainer();
         const toast = document.createElement('div');
         const contentDiv = document.createElement('div');
         const messageElement = document.createElement('div');
@@ -46,12 +48,12 @@ class Toast {
         const release = () => {
             toast.removeAttribute('show');
             setTimeout(() => {
-                this.container.removeChild(toast);
+                container.removeChild(toast);
             }, 300);
         };
 
         toast.appendChild(contentDiv);
-        this.container.insertBefore(toast, this.container.firstChild);
+        container.insertBefore(toast, container.firstChild);
 
         // Trigger reflow to enable transition
         toast.offsetHeight;
