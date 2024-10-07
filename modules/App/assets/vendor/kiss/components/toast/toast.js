@@ -73,10 +73,8 @@ class Toast {
     }
 }
 
-let toaster = new Toast();
-
 Toast.notify = function (message, options = {}) {
-    toaster.show(message, options);
+    new Toast().show(message, options);
 }
 
 window.KissToast = Toast;
