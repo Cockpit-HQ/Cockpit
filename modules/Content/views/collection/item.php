@@ -342,7 +342,7 @@
                         context: {
                             model: this.model.name
                         },
-                        resolver: _.debounce((data, update) => {
+                        resolver: KISS.utils.debounce((data, update) => {
 
                             this.$request(`/content/populate`, {data: data.data, locale: data.locale}).then(resolvedData => {
                                 update(Object.assign(data, {data: resolvedData}));
