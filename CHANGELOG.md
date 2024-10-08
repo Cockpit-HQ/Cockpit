@@ -1,5 +1,9 @@
 # Release Notes
 
+## WIP
+
+- Fix request param casting (array to string)
+
 ## 2.9.4 (2024-10-07)
 
 - Update Vue to v3.5.11

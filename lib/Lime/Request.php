@@ -84,8 +84,16 @@ class Request {
 
         if ($cast && $value !== null) {
 
+            if (!in_array($cast, ['string', 'bool', 'boolean', 'int', 'integer', 'float', 'double', 'array', 'object'])) {
+                return null;
+            }
+
             if (\in_array($cast, ['bool', 'boolean']) && \is_string($value) && \in_array($value, ['true', 'false'])) {
                 $value = $value === 'true';
+            }
+
+            if ($cast === 'string' && (is_array($value) || is_object($value))) {
+                $value = json_encode($value);
             }
 
             \settype($value, $cast);
