@@ -41,8 +41,8 @@ class Request {
 
         // check for php://input and merge with $_REQUEST
         if (
-            (isset($_SERVER['CONTENT_TYPE']) && \stripos($_SERVER['CONTENT_TYPE'],'application/json')!==false) ||
-            (isset($_SERVER['HTTP_CONTENT_TYPE']) && \stripos($_SERVER['HTTP_CONTENT_TYPE'],'application/json')!==false) // PHP build in Webserver !?
+            (isset($_SERVER['CONTENT_TYPE']) && stripos($_SERVER['CONTENT_TYPE'],'application/json')!==false) ||
+            (isset($_SERVER['HTTP_CONTENT_TYPE']) && stripos($_SERVER['HTTP_CONTENT_TYPE'],'application/json')!==false) // PHP build in Webserver !?
         ) {
             if ($json = json_decode(@\file_get_contents('php://input'), true)) {
                 $config['body'] = $json;
@@ -76,7 +76,7 @@ class Request {
         $src = $source ?: $this->request;
         $cast = null;
 
-        if (\str_contains($index, ':')) {
+        if (str_contains($index, ':')) {
             list($index, $cast) = \explode(':', $index, 2);
         }
 
@@ -88,7 +88,7 @@ class Request {
                 return null;
             }
 
-            if (\in_array($cast, ['bool', 'boolean']) && \is_string($value) && \in_array($value, ['true', 'false'])) {
+            if (in_array($cast, ['bool', 'boolean']) && is_string($value) && in_array($value, ['true', 'false'])) {
                 $value = $value === 'true';
             }
 
@@ -96,7 +96,7 @@ class Request {
                 $value = json_encode($value);
             }
 
-            \settype($value, $cast);
+            settype($value, $cast);
         }
 
         return $value;
@@ -125,7 +125,7 @@ class Request {
         if (!isset($this->server['HTTP_ACCEPT_LANGUAGE'])) {
             return $default;
         }
-        return \strtolower(\substr($this->server['HTTP_ACCEPT_LANGUAGE'], 0, 2));
+        return strtolower(substr($this->server['HTTP_ACCEPT_LANGUAGE'], 0, 2));
     }
 
     public function getSiteUrl(bool $withpath = false): string {
@@ -148,12 +148,12 @@ class Request {
 
     public function is(string $type): bool {
 
-        switch (\strtolower($type)){
+        switch (strtolower($type)){
             case 'ajax':
                 return (
                     (isset($this->server['HTTP_X_REQUESTED_WITH']) && ($this->server['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'))        ||
-                    (isset($this->server['CONTENT_TYPE']) && \stripos($this->server['CONTENT_TYPE'],'application/json')!==false)           ||
-                    (isset($this->server['HTTP_CONTENT_TYPE']) && \stripos($this->server['HTTP_CONTENT_TYPE'],'application/json')!==false)
+                    (isset($this->server['CONTENT_TYPE']) && stripos($this->server['CONTENT_TYPE'],'application/json')!==false)           ||
+                    (isset($this->server['HTTP_CONTENT_TYPE']) && stripos($this->server['HTTP_CONTENT_TYPE'],'application/json')!==false)
                 );
 
             case 'mobile':
@@ -164,25 +164,25 @@ class Request {
                     'zte-', 'lg-', 'googlebot-mobile'
                 ];
 
-                return \preg_match('/(' . \implode('|', $mobileDevices). ')/i', \strtolower($this->server['HTTP_USER_AGENT']));
+                return \preg_match('/(' . \implode('|', $mobileDevices). ')/i', strtolower($this->server['HTTP_USER_AGENT']));
 
             case 'post':
-                return (isset($this->server['REQUEST_METHOD']) && \strtolower($this->server['REQUEST_METHOD']) == 'post');
+                return (isset($this->server['REQUEST_METHOD']) && strtolower($this->server['REQUEST_METHOD']) == 'post');
 
             case 'get':
-                return (isset($this->server['REQUEST_METHOD']) && \strtolower($this->server['REQUEST_METHOD']) == 'get');
+                return (isset($this->server['REQUEST_METHOD']) && strtolower($this->server['REQUEST_METHOD']) == 'get');
 
             case 'put':
-                return (isset($this->server['REQUEST_METHOD']) && \strtolower($this->server['REQUEST_METHOD']) == 'put');
+                return (isset($this->server['REQUEST_METHOD']) && strtolower($this->server['REQUEST_METHOD']) == 'put');
 
             case 'delete':
-                return (isset($this->server['REQUEST_METHOD']) && \strtolower($this->server['REQUEST_METHOD']) == 'delete');
+                return (isset($this->server['REQUEST_METHOD']) && strtolower($this->server['REQUEST_METHOD']) == 'delete');
 
             case 'ssl':
                 return (!empty($this->server['HTTPS']) && $this->server['HTTPS'] !== 'off');
 
             case 'preflight':
-                return (isset($this->server['REQUEST_METHOD']) && \strtolower($this->server['REQUEST_METHOD']) == 'options');
+                return (isset($this->server['REQUEST_METHOD']) && strtolower($this->server['REQUEST_METHOD']) == 'options');
 
             case 'cors':
 
@@ -203,21 +203,21 @@ class Request {
         $server  = $this->server;
 
         if (isset($server['Authorization'])) {
-            $headers = \trim($server['Authorization']);
+            $headers = trim($server['Authorization']);
         } elseif (isset($server['HTTP_AUTHORIZATION'])) { //Nginx or fast CGI
-            $headers = \trim($server['HTTP_AUTHORIZATION']);
+            $headers = trim($server['HTTP_AUTHORIZATION']);
         } else {
             $requestHeaders = $this->headers;
             // Server-side fix for bug in old Android versions (a nice side-effect of this fix means we don't care about capitalization for Authorization)
-            $requestHeaders = \array_combine(\array_map('ucwords', \array_keys($requestHeaders)), \array_values($requestHeaders));
+            $requestHeaders = array_combine(array_map('ucwords', array_keys($requestHeaders)), array_values($requestHeaders));
             if (isset($requestHeaders['Authorization'])) {
-                $headers = \trim($requestHeaders['Authorization']);
+                $headers = trim($requestHeaders['Authorization']);
             }
         }
 
         // HEADER: Get the access token from the header
         if ($headers) {
-            if (\preg_match('/Bearer\s(\S+)/', $headers, $matches)) {
+            if (preg_match('/Bearer\s(\S+)/', $headers, $matches)) {
                 $token = $matches[1];
             }
         }
