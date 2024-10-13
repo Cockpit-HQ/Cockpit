@@ -1453,6 +1453,7 @@ return array(
     'ZipStream\\Test\\LocalFileHeaderTest' => $vendorDir . '/maennchen/zipstream-php/test/LocalFileHeaderTest.php',
     'ZipStream\\Test\\PackFieldTest' => $vendorDir . '/maennchen/zipstream-php/test/PackFieldTest.php',
     'ZipStream\\Test\\ResourceStream' => $vendorDir . '/maennchen/zipstream-php/test/ResourceStream.php',
+    'ZipStream\\Test\\Tempfile' => $vendorDir . '/maennchen/zipstream-php/test/Tempfile.php',
     'ZipStream\\Test\\TimeTest' => $vendorDir . '/maennchen/zipstream-php/test/TimeTest.php',
     'ZipStream\\Test\\Util' => $vendorDir . '/maennchen/zipstream-php/test/Util.php',
     'ZipStream\\Test\\Zip64\\DataDescriptorTest' => $vendorDir . '/maennchen/zipstream-php/test/Zip64/DataDescriptorTest.php',

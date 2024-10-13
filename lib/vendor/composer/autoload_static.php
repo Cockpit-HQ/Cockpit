@@ -1748,6 +1748,7 @@ class ComposerStaticInit31271496217d24f755014bacdfefaaf2
         'ZipStream\\Test\\LocalFileHeaderTest' => __DIR__ . '/..' . '/maennchen/zipstream-php/test/LocalFileHeaderTest.php',
         'ZipStream\\Test\\PackFieldTest' => __DIR__ . '/..' . '/maennchen/zipstream-php/test/PackFieldTest.php',
         'ZipStream\\Test\\ResourceStream' => __DIR__ . '/..' . '/maennchen/zipstream-php/test/ResourceStream.php',
+        'ZipStream\\Test\\Tempfile' => __DIR__ . '/..' . '/maennchen/zipstream-php/test/Tempfile.php',
         'ZipStream\\Test\\TimeTest' => __DIR__ . '/..' . '/maennchen/zipstream-php/test/TimeTest.php',
         'ZipStream\\Test\\Util' => __DIR__ . '/..' . '/maennchen/zipstream-php/test/Util.php',
         'ZipStream\\Test\\Zip64\\DataDescriptorTest' => __DIR__ . '/..' . '/maennchen/zipstream-php/test/Zip64/DataDescriptorTest.php',
