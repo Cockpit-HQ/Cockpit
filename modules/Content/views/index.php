@@ -42,7 +42,7 @@
 
                 <kiss-grid cols="2@m 4@xl" class="kiss-margin" gap="small" v-if="singletons.length">
 
-                    <kiss-card class="animated fadeIn kiss-flex" theme="shadowed contrast" hover="shadow" v-for="model in singletons">
+                    <kiss-card class="animated fadeIn kiss-flex" theme="shadowed contrast" hover="shadow bordered-primary" v-for="model in singletons">
                         <div class="kiss-position-relative kiss-padding-small kiss-bgcolor-contrast">
                             <canvas width="40" height="40"></canvas>
                             <div class="kiss-cover kiss-flex kiss-padding-small kiss-flex-middle kiss-flex-center">
@@ -66,7 +66,7 @@
 
                     <div class="kiss-margin kiss-text-caption kiss-text-bold kiss-color-muted kiss-size-small"><?= t('Lists') ?></div>
 
-                    <kiss-card class="kiss-margin-small kiss-flex animated fadeIn" theme="shadowed contrast" hover="shadow" v-for="model in lists">
+                    <kiss-card class="kiss-margin-small kiss-flex animated fadeIn" theme="shadowed contrast" hover="shadow bordered-primary" v-for="model in lists">
                         <div class="kiss-position-relative kiss-padding-small kiss-bgcolor-contrast">
                             <canvas width="40" height="40"></canvas>
                             <div class="kiss-cover kiss-flex kiss-flex-middle kiss-flex-center">

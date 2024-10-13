@@ -2271,11 +2271,23 @@ kiss-card[hover] {
     transition: all 250ms;
     z-index: 2;
 }
+kiss-card[hover*="bordered"] {
+    border: 1px solid transparent;
+    z-index: 2;
+}
 kiss-card[hover]:hover {
     z-index: 3;
 }
 kiss-card[hover*="shadow"]:hover {
     box-shadow: 0 25px 80px rgba(0,0,0,0.12), 0 3px 12px rgba(0,0,0,0.05);
+}
+kiss-card[hover*="bordered"]:hover {
+
+    &[hover~="bordered-primary"] {
+        --kiss-card-bordered-color: var(--kiss-color-primary);
+    }
+
+    border-color: var(--kiss-card-bordered-color, rgba(0,0,0,0.22));
 }
 kiss-carousel,
 kiss-slides {
