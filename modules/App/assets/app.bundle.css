@@ -4093,14 +4093,6 @@ kiss-card[hover*="contrast"]:hover {
 .kiss-dialog-overflow[expand="true"] {
     height: 60vh;
 }
-[field="wysiwyg"] .tiptap-content-wrapper {
-
-    overflow: scroll;
-
-    &:focus, .tiptap:focus {
-        outline: none;
-    }
-}
 [data-theme="dark"] .app-icon-preview img {
     filter: invert(100%);
 }

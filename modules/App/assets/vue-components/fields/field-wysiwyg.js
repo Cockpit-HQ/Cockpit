@@ -1,7 +1,8 @@
 let ready = new Promise(function(resolve) {
 
     App.assets.require([
-        'app:assets/vendor/vue/components/vue-tiptap.js'
+        'app:assets/vendor/vue/components/vue-tiptap.js',
+        'app:assets/css/vendor/tiptap.css',
     ], () => {
         resolve(window.VueTiptap);
     });
