@@ -55,7 +55,38 @@ class EditorActions {
                 icon: 'format_align_justify',
                 action: (editor) => editor.chain().focus().setTextAlign('justify').run(),
                 isActive: (editor) => editor.isActive({ textAlign: 'justify' })
-            }
+            },
+            image: {
+                icon: 'image',
+                action: (editor) => {
+                    const url = window.prompt('URL')
+                    if (url) {
+                        editor.chain().focus().setImage({ src: url }).run()
+                    }
+                },
+            },
+            link: {
+                icon: 'link',
+                action: (editor) => {
+                    const previousUrl = editor.getAttributes('link').href
+                    const url = window.prompt('URL', previousUrl)
+
+                    // cancelled
+                    if (url === null) {
+                        return
+                    }
+
+                    // empty
+                    if (url === '') {
+                        editor.chain().focus().extendMarkRange('link').unsetLink().run()
+                        return
+                    }
+
+                    // update link
+                    editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run()
+                },
+                isActive: (editor) => editor.isActive('link')
+            },
         };
     }
 
@@ -164,7 +195,7 @@ export default {
 
         toolbar: {
             type: String,
-            default: 'bold italic strikethrough underline | alignLeft alignCenter alignRight alignJustify'
+            default: 'bold italic strikethrough underline | alignLeft alignCenter alignRight alignJustify | link image'
         }
     },
 
@@ -203,7 +234,9 @@ export default {
                     VueTiptap.extensions.TextAlign.configure({
                         types: ['heading', 'paragraph'],
                     }),
-                    VueTiptap.extensions.Underline
+                    VueTiptap.extensions.Underline,
+                    VueTiptap.extensions.Link,
+                    VueTiptap.extensions.Image,
                 ],
 
                 onUpdate: ({ editor }) => {
