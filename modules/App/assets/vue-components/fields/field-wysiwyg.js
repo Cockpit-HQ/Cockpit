@@ -1,13 +1,128 @@
 let ready = new Promise(function(resolve) {
 
     App.assets.require([
-        'app:assets/vendor/tinymce/tinymce.min.js'
-    ], function() {
-        resolve(window.tinymce);
+        'app:assets/vendor/vue/components/vue-tiptap.js'
+    ], () => {
+        resolve(window.VueTiptap);
     });
 });
 
 let instanceCount = 0;
+
+class EditorActions {
+
+    constructor(editor) {
+
+        this.editor = editor;
+
+        this.actions = {
+            bold: {
+                icon: 'format_bold',
+                action: (editor) => editor.chain().focus().toggleBold().run(),
+                isActive: (editor) => editor.isActive('bold')
+            },
+            italic: {
+                icon: 'format_italic',
+                action: (editor) => editor.chain().focus().toggleItalic().run(),
+                isActive: (editor) => editor.isActive('italic')
+            },
+            strikethrough: {
+                icon: 'format_strikethrough',
+                action: (editor) => editor.chain().focus().toggleStrike().run(),
+                isActive: (editor) => editor.isActive('strike')
+            },
+            underline: {
+                icon: 'format_underlined',
+                action: (editor) => editor.chain().focus().toggleUnderline().run(),
+                isActive: (editor) => editor.isActive('underline')
+            },
+            alignLeft: {
+                icon: 'format_align_left',
+                action: (editor) => editor.chain().focus().setTextAlign('left').run(),
+                isActive: (editor) => editor.isActive({ textAlign: 'left' })
+            },
+            alignCenter: {
+                icon: 'format_align_center',
+                action: (editor) => editor.chain().focus().setTextAlign('center').run(),
+                isActive: (editor) => editor.isActive({ textAlign: 'center' })
+            },
+            alignRight: {
+                icon: 'format_align_right',
+                action: (editor) => editor.chain().focus().setTextAlign('right').run(),
+                isActive: (editor) => editor.isActive({ textAlign: 'right' })
+            },
+            alignJustify: {
+                icon: 'format_align_justify',
+                action: (editor) => editor.chain().focus().setTextAlign('justify').run(),
+                isActive: (editor) => editor.isActive({ textAlign: 'justify' })
+            }
+        };
+    }
+
+    action(name) {
+        return this.actions[name] || null;
+    }
+
+    isActive(name) {
+        return this.actions[name]?.isActive ? this.actions[name].isActive(this.editor) : false;
+    }
+}
+
+let MenuBar = {
+    data() {
+
+        let actions = new EditorActions(this.editor);
+
+        return {
+            actions: actions
+        }
+    },
+
+    props: {
+        editor: {
+            type: Object,
+            default: null
+        },
+        toolbar: {
+            type: String,
+            default: null
+        }
+    },
+
+    computed: {
+        groups() {
+            let groups = [];
+
+            if (!this.toolbar) return false;
+
+            this.toolbar.split(' | ').forEach(item => {
+
+                let group = [];
+
+                item.split(' ').forEach(itm => {
+
+                    itm = itm.trim();
+
+                    if (!itm || !this.actions.actions[itm]) return;
+                    group.push(itm);
+                });
+
+                if (group.length) groups.push(group);
+            });
+
+            return groups.length ? groups : false;
+        }
+    },
+
+    template: /*html*/`
+        <div class="kiss-margin-small kiss-flex" gap="small" v-if="groups">
+            <div class="kiss-button-group" v-for="group in groups">
+                <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-button-primary': actions.isActive(action)}" @click="actions.action(action).action(editor)" v-for="action in group"><icon>{{ actions.action(action).icon }}</icon></button>
+            </div>
+        </div>
+    `
+}
+
 
 export default {
 
@@ -31,7 +146,8 @@ export default {
 
     data() {
         return {
-            id: ++instanceCount
+            id: ++instanceCount,
+            editor: null
         }
     },
 
@@ -41,120 +157,76 @@ export default {
             default: false
         },
 
-        tinymce: {
-            type: Object,
-            default: {}
+        height: {
+            type: String,
+            default: '500px'
+        },
+
+        toolbar: {
+            type: String,
+            default: 'bold italic strikethrough underline | alignLeft alignCenter alignRight alignJustify'
         }
+    },
+
+    components: {
+        MenuBar,
+        EditorContent: Vue.defineAsyncComponent(() => {
+            return new Promise(resolve => {
+                ready.then(() => resolve(window.VueTiptap.EditorContent));
+            })
+        })
     },
 
     watch: {
         modelValue() {
             if (this.editor && !this.editor.isFocused) {
-                this.editor.setContent(this.modelValue || '');
+                setTimeout(() => {
+                    //this.editor.commands.setContent(this.modelValue || '', false)
+                }, 100);
             }
         }
     },
 
     beforeUnmount() {
-
-        if (this.editor) {
-            tinymce.remove(this.editor)
-        }
+        if (this.editor) this.editor.destroy();
     },
 
     mounted() {
 
+        let $this = this;
+
         ready.then(() => {
 
-            let opts = Object.assign({
-                deprecation_warnings: false,
-                target: this.$el.querySelector('.wysiwyg-container'),
-                menubar: false,
-                plugins: [
-                    'advlist autolink lists link image preview anchor',
-                    'searchreplace visualblocks code fullscreen',
-                    'insertdatetime media table code wordcount'
-                ].join(' '),
-                toolbar: [
-                    'undo redo | blocks',
-                    'bold italic | alignleft aligncenter',
-                    'alignright alignjustify | bullist numlist outdent indent',
-                    'removeformat | hr image link table'
-                ].join(' | '),
+            this.editor = new VueTiptap.Editor({
+                extensions: [
+                    VueTiptap.extensions.StarterKit,
+                    VueTiptap.extensions.TextAlign.configure({
+                        types: ['heading', 'paragraph'],
+                    }),
+                    VueTiptap.extensions.Underline
+                ],
 
-                height: 400,
-
-                content_style: '',
-
-                skin_url: App.base('app:assets/css/vendor/tinymce'),
-                relative_urls : false,
-                paste_as_text: true,
-
-            }, this.tinymce || {});
-
-            opts.content_style += `
-                html,body {
-                    background-color: ${getComputedStyle(document.documentElement).getPropertyValue('background-color')};
-                    color: ${getComputedStyle(document.documentElement).getPropertyValue('color')};
+                onUpdate: ({ editor }) => {
+                    $this.update()
                 }
-                a { color: ${getComputedStyle(document.documentElement).getPropertyValue('--kiss-color-primary')};}
-            `;
+            });
 
-            opts.license_key = 'gpl';
-
-            opts.setup = (editor) => {
-
-                this.editor = editor;
-
-                editor.on('init', e => {
-
-                    editor.setContent(this.modelValue || '');
-
-                    editor.on('change input undo redo ExecCommand', e => {
-                        this.$emit('update:modelValue', editor.getContent())
-                    });
-
-                    editor.on('focus blur input', e => {
-
-                        if (e.type == 'input') {
-                            editor.isFocused = true;
-                            return;
-                        }
-
-                        editor.isFocused = e.type == 'focus';
-                        this.$el.dispatchEvent(new Event(editor.isFocused ? 'focusin':'focusout', { bubbles: true, cancelable: true }));
-                    });
-                });
-
-                App.trigger('field-wysiwyg-setup', [editor]);
-
-                let observer = new MutationObserver(mutations => {
-
-                    if (!document.body.contains(this.$el) && this.editor) {
-                        tinymce.remove(this.editor)
-                        observer.disconnect();
-                    }
-                });
-
-                observer.observe(document.body, {childList: true, subtree: true});
-            };
-
-            App.trigger('field-wysiwyg-init', [opts]);
-
-            tinymce.init(opts);
-
+            this.editor.commands.setContent(this.modelValue || '', false);
         });
     },
 
     methods: {
         update() {
-            this.$emit('update:modelValue', this.editor.getContent())
+            this.$emit('update:modelValue', this.editor.getHTML())
         }
     },
 
     template: /*html*/`
-        <div field="wysiwyg">
-            <div :id="'mce-field-'+id" class="wysiwyg-container"></div>
+        <div field="wysiwyg" v-if="editor">
+            <kiss-card class="kiss-padding-small" theme="contrast bordered">
+                <menu-bar :editor="editor" :toolbar="toolbar" />
+                <editor-content :id="'tiptap-editor-'+id" class="tiptap-content-wrapper" :editor="editor" :style="{minHeight:'200px', maxHeight: height}" />
+            </kiss-card>
         </div>
     `
 }

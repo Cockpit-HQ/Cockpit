@@ -24,7 +24,7 @@ postcss()
         fs.writeFileSync(__dirname + '/app.bundle.css', result.css)
     })
 
-exec(`rollup ${__dirname}/js/app.js --file ${__dirname}/app.bundle.js --format iife`, (err, stdout, stderr) => {
+exec(`rollup ${__dirname}/js/app.js --file ${__dirname}/app.bundle.js  --plugin @rollup/plugin-terser --format iife`, (err, stdout, stderr) => {
 
     if (err) {
         console.log(err)

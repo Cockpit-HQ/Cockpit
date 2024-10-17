@@ -5,6 +5,10 @@
         "build-bundle": "node modules/App/assets/build.bundle.js"
     },
     "devDependencies": {
+        "@rollup/plugin-commonjs": "^28.0.0",
+        "@rollup/plugin-node-resolve": "^15.3.0",
+        "@rollup/plugin-replace": "^6.0.1",
+        "@rollup/plugin-terser": "^0.4.4",
         "postcss": "^8.2.13",
         "postcss-import": "^14.0.1",
         "postcss-url": "^10.1.3",

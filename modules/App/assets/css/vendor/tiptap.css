@@ -1,0 +1,8 @@
+[field="wysiwyg"] .tiptap-content-wrapper {
+
+    overflow: scroll;
+
+    &:focus, .tiptap:focus {
+        outline: none;
+    }
+}
