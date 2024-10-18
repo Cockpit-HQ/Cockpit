@@ -68,8 +68,9 @@ export default {
         modelValue() {
             if (this.editor && !this.editor.isFocused) {
                 setTimeout(() => {
+                    if (this.editor.isFocused) return;
                     this.editor.commands.setContent(this.modelValue || '', false)
-                }, 100);
+                }, 300);
             }
         }
     },
