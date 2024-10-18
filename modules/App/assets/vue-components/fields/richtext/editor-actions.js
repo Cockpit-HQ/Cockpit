@@ -5,6 +5,9 @@ class EditorActions {
         this.editor = editor;
 
         this.actions = {
+            format: {
+                component: Vue.defineAsyncComponent(() => App.utils.import('app:assets/vue-components/fields/richtext/components/format.js'))
+            },
             bold: {
                 icon: 'format_bold',
                 action: (editor) => editor.chain().focus().toggleBold().run(),
@@ -121,6 +124,15 @@ class EditorActions {
 
     isActive(name) {
         return this.actions[name]?.isActive ? this.actions[name].isActive(this.editor) : false;
+    }
+
+    call(name) {
+
+        if (!this.actions[name]?.action) {
+            return;
+        }
+
+        this.actions[name].action(this.editor);
     }
 }
 

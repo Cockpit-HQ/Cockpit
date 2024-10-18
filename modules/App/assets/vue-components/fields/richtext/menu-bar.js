@@ -47,15 +47,21 @@ export default {
     },
 
     methods: {
+        isActive(action) {
+            return this.actions.isActive(action);
+        },
         call(action) {
-            this.actions.action(action).action(this.editor);
+            this.actions.call(action);
         }
     },
 
     template: /*html*/`
         <div class="kiss-margin-small kiss-flex" gap="small" v-if="groups">
             <div class="kiss-button-group" v-for="group in groups">
-                <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-button-primary': actions.isActive(action)}" @click="call(action)" v-for="action in group"><icon>{{ actions.action(action).icon }}</icon></button>
+                <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-button-primary': isActive(action)}" @click="call(action)" v-for="action in group">
+                    <component v-if="actions.action(action).component" :is="actions.action(action).component" :editor="editor" />
+                    <icon v-else>{{ actions.action(action).icon }}</icon>
+                </button>
             </div>
         </div>
     `
