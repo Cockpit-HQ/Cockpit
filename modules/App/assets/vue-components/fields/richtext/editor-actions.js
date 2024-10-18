@@ -70,22 +70,28 @@ class EditorActions {
             link: {
                 icon: 'link',
                 action: (editor) => {
-                    const previousUrl = editor.getAttributes('link').href
-                    const url = window.prompt('URL', previousUrl)
+                    const attr = editor.getAttributes('link');
 
-                    // cancelled
-                    if (url === null) {
-                        return
+                    let meta = {
+                        href: attr.href,
+                        title: attr.title,
+                        target: attr.target,
                     }
 
-                    // empty
-                    if (url === '') {
-                        editor.chain().focus().extendMarkRange('link').unsetLink().run()
-                        return
-                    }
+                    VueView.ui.modal('app:assets/vue-components/fields/richtext/dialogs/link.js', {meta}, {
 
-                    // update link
-                    editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run()
+                        save: meta => {
+
+                            if (meta.href) {
+                                editor.chain().focus().extendMarkRange('link').setLink(meta).run()
+                            }
+
+                            if (!meta.href) {
+                                editor.chain().focus().extendMarkRange('link').unsetLink().run()
+                            }
+                        }
+                    }, {size: 'medium'});
+
                 },
                 isActive: (editor) => editor.isActive('link')
             },
