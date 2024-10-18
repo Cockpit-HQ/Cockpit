@@ -45,6 +45,16 @@ class EditorActions {
                 action: (editor) => editor.chain().focus().setTextAlign('justify').run(),
                 isActive: (editor) => editor.isActive({ textAlign: 'justify' })
             },
+            listBullet: {
+                icon: 'format_list_bulleted',
+                action: (editor) => editor.chain().focus().toggleBulletList().run(),
+                isActive: (editor) => editor.isActive('bulletList')
+            },
+            listOrdered: {
+                icon: 'format_list_numbered',
+                action: (editor) => editor.chain().focus().toggleOrderedList().run(),
+                isActive: (editor) => editor.isActive('orderedList')
+            },
             image: {
                 icon: 'image',
                 action: (editor) => {

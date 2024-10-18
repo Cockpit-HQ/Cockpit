@@ -51,7 +51,7 @@ export default {
 
         toolbar: {
             type: String,
-            default: 'bold italic strikethrough underline | alignLeft alignCenter alignRight alignJustify | link image hr'
+            default: 'bold italic strikethrough underline | alignLeft alignCenter alignRight alignJustify | link image | listBullet listOrdered | hr'
         }
     },
 
@@ -120,7 +120,9 @@ export default {
         <div field="wysiwyg" v-if="editor">
             <kiss-card class="kiss-padding-small" theme="contrast bordered">
                 <menu-bar :editor="editor" :toolbar="toolbar" />
-                <editor-content :id="'tiptap-editor-'+id" class="tiptap-content-wrapper" :editor="editor" :style="{minHeight:'200px', maxHeight: height}" />
+                <div class="kiss-padding-small" :style="{minHeight:'200px', maxHeight: height, overflow: 'scroll'}">
+                    <editor-content :id="'tiptap-editor-'+id" class="tiptap-content-wrapper" :editor="editor"  />
+                </div>
             </kiss-card>
         </div>
     `

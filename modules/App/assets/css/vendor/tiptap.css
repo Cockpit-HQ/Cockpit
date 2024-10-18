@@ -1,8 +1,19 @@
 [field="wysiwyg"] .tiptap-content-wrapper {
 
-    overflow: scroll;
-
     &:focus, .tiptap:focus {
         outline: none;
+    }
+
+    ul, ol {
+        li p {
+            all: unset;
+            margin-top: 0.25em;
+            margin-bottom: 0.25em;
+        }
+    }
+
+    hr.ProseMirror-selectednode,
+    img.ProseMirror-selectednode {
+        outline: 3px solid var(--kiss-color-primary);
     }
 }
