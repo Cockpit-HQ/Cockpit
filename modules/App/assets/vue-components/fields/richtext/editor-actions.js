@@ -49,11 +49,13 @@ class EditorActions {
                 icon: 'image',
                 action: (editor) => {
 
+                    const attr = editor.getAttributes('image');
+
                     let meta = {
-                        src: '',
-                        alt: '',
-                        width: '',
-                        height: ''
+                        src: attr.src || '',
+                        alt: attr.alt || '',
+                        width: attr.width || '',
+                        height: attr.height || ''
                     };
 
                     VueView.ui.modal('app:assets/vue-components/fields/richtext/dialogs/image.js', {meta}, {
@@ -66,6 +68,7 @@ class EditorActions {
                         }
                     }, {size: 'medium'});
                 },
+                isActive: (editor) => editor.isActive('image')
             },
             link: {
                 icon: 'link',
