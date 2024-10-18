@@ -46,4 +46,4 @@ VueView.component('field-table', 'app:assets/vue-components/fields/field-table.j
 VueView.component('field-tags', 'app:assets/vue-components/fields/field-tags.js');
 VueView.component('field-text', 'app:assets/vue-components/fields/field-text.js');
 VueView.component('field-time', 'app:assets/vue-components/fields/field-time.js');
-VueView.component('field-wysiwyg', 'app:assets/vue-components/fields/field-wysiwyg.js');
+VueView.component('field-wysiwyg', 'app:assets/vue-components/fields/richtext/field-richtext.js');
