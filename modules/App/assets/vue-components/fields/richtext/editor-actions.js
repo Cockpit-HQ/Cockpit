@@ -28,6 +28,16 @@ class EditorActions {
                 action: (editor) => editor.chain().focus().toggleUnderline().run(),
                 isActive: (editor) => editor.isActive('underline')
             },
+            subscript: {
+                icon: 'subscript',
+                action: (editor) => editor.chain().focus().toggleSubscript().run(),
+                isActive: (editor) => editor.isActive('subscript')
+            },
+            superscript: {
+                icon: 'superscript',
+                action: (editor) => editor.chain().focus().toggleSuperscript().run(),
+                isActive: (editor) => editor.isActive('superscript')
+            },
             alignLeft: {
                 icon: 'format_align_left',
                 action: (editor) => editor.chain().focus().setTextAlign('left').run(),

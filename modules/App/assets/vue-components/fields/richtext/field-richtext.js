@@ -51,7 +51,7 @@ export default {
 
         toolbar: {
             type: String,
-            default: 'format | bold italic underline | alignLeft alignCenter alignRight | link image | listBullet listOrdered | hr'
+            default: 'format | alignLeft alignCenter alignRight | link image | listBullet listOrdered | hr'
         }
     },
 
@@ -60,6 +60,11 @@ export default {
         EditorContent: Vue.defineAsyncComponent(() => {
             return new Promise(resolve => {
                 ready.then(() => resolve(window.VueTiptap.EditorContent));
+            })
+        }),
+        BubbleMenu: Vue.defineAsyncComponent(() => {
+            return new Promise(resolve => {
+                ready.then(() => resolve(window.VueTiptap.BubbleMenu));
             })
         })
     },
@@ -88,6 +93,8 @@ export default {
             this.editor = new VueTiptap.Editor({
                 extensions: [
                     VueTiptap.extensions.StarterKit,
+                    VueTiptap.extensions.Subscript,
+                    VueTiptap.extensions.Superscript,
                     VueTiptap.extensions.TextAlign.configure({
                         types: ['heading', 'paragraph'],
                     }),
@@ -123,6 +130,15 @@ export default {
                 <div class="kiss-padding-small" :style="{minHeight:'200px', maxHeight: height, overflow: 'scroll'}">
                     <editor-content :id="'tiptap-editor-'+id" class="tiptap-content-wrapper" :editor="editor"  />
                 </div>
+                <bubble-menu :editor="editor" :tippy-options="{ duration: 100 }" v-if="editor">
+                    <kiss-card class="kiss-button-group" theme="shadowed" hover="bordered-primary">
+                        <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-button-primary': editor.isActive('bold')}" @click="editor.chain().focus().toggleBold().run()"><icon>format_bold</icon></button>
+                        <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-button-primary': editor.isActive('italic')}" @click="editor.chain().focus().toggleItalic().run()"><icon>format_italic</icon></button>
+                        <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-button-primary': editor.isActive('underline')}" @click="editor.chain().focus().toggleUnderline().run()"><icon>format_underlined</icon></button>
+                        <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-button-primary': editor.isActive('subscript')}" @click="editor.chain().focus().toggleSubscript().run()"><icon>subscript</icon></button>
+                        <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-button-primary': editor.isActive('superscript')}" @click="editor.chain().focus().toggleSuperscript().run()"><icon>superscript</icon></button>
+                    </kiss-card>
+                </bubble-menu>
             </kiss-card>
         </div>
     `
