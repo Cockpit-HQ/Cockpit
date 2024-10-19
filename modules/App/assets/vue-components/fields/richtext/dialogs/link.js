@@ -4,7 +4,8 @@ export default {
         return {
             href: this.meta.href || '',
             title: this.meta.title || '',
-            target: this.meta.target || ''
+            target: this.meta.target || '',
+            sources: {}
         }
     },
 
@@ -15,12 +16,16 @@ export default {
         }
     },
 
+    mounted() {
+        App.trigger('field-richtext-link-sources', [this]);
+    },
+
     methods: {
         save() {
             this.$call('save', {
                 href: this.href,
                 title: this.title,
-                target: this.target,
+                target: this.target
             });
 
             this.$close();
@@ -34,6 +39,10 @@ export default {
             <div class="kiss-margin">
                 <label class="kiss-text-capitalize">{{ t('Url') }}</label>
                 <input class="kiss-input" type="text" v-model="href">
+                <div class="kiss-margin-small kiss-flex kiss-flex-middle" gap="small" v-if="Object.keys(sources).length">
+                    <icon>folder_data</icon>
+                    <a class="kiss-size-small" v-for="(clb, name) in sources" @click="() => clb()">{{ name }}</a>
+                </div>
             </div>
 
             <img class="kiss-margin" :src="src" v-if="src">

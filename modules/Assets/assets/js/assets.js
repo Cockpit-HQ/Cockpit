@@ -4,41 +4,34 @@ import "../components/display-image.js";
 VueView.component('asset-preview', 'assets:assets/vue-components/asset-preview.js');
 VueView.component('field-asset', 'assets:assets/vue-components/field-asset.js');
 
-App.on('field-wysiwyg-init', evt => {
-    let opts = evt.params[0];
-    opts.toolbar += ` | insertAssetButton`;
+App.on('field-richtext-image-sources', evt => {
+    let img = evt.params[0];
+
+    img.sources['Assets'] = () => {
+
+        VueView.ui.modal('assets:assets/dialogs/asset-picker.js', {}, {
+
+            onSelect: (asset) => {
+                img.src = App.base(`#uploads:${asset.path}`);
+            }
+
+        }, {size: 'xlarge'})
+    };
 });
 
-App.on('field-wysiwyg-setup', evt => {
+App.on('field-richtext-link-sources', evt => {
+    let link = evt.params[0];
 
-    let editor = evt.params[0];
+    link.sources['Assets'] = () => {
 
-    if (editor.getParam('assetsPicker') === false) {
-        return;
-    }
+        VueView.ui.modal('assets:assets/dialogs/asset-picker.js', {}, {
 
-    editor.ui.registry.addButton("insertAssetButton", {
-        text: 'Asset',
-        onAction: function () {
+            onSelect: (asset) => {
+                link.href = location.origin + App.route(`/assets/link/${asset._id}`);
+            }
 
-            VueView.ui.modal('assets:assets/dialogs/asset-picker.js', {}, {
-
-                onSelect: (asset) => {
-
-                    let content, url = App.base(`#uploads:${asset.path}`);
-
-                    if (/^image\//.test(asset.mime)) {
-                        content = `<img src="${url}" alt="${asset.title}">`;
-                    } else {
-                        content = `<a href="${url}">${asset.title}</a>`;
-                    }
-
-                    editor.insertContent(content);
-                }
-
-            }, {size: 'xlarge'})
-        }
-    });
+        }, {size: 'xlarge'})
+    };
 });
 
 App.utils.$interpolate.fns.$image = function(asset, w = 25, h = 25, mode = 'bestFit', q = 80) {

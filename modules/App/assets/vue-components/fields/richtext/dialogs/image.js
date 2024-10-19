@@ -6,6 +6,7 @@ export default {
             alt: this.meta.alt || '',
             width: this.meta.width || '',
             height: this.meta.height || '',
+            sources: {}
         }
     },
 
@@ -14,6 +15,10 @@ export default {
             type: Object,
             default: {}
         }
+    },
+
+    mounted() {
+        App.trigger('field-richtext-image-sources', [this]);
     },
 
     methods: {
@@ -36,6 +41,10 @@ export default {
             <div class="kiss-margin">
                 <label class="kiss-text-capitalize">{{ t('Source') }}</label>
                 <input class="kiss-input" type="text" v-model="src">
+                <div class="kiss-margin-small kiss-flex kiss-flex-middle" gap="small" v-if="Object.keys(sources).length">
+                    <icon>folder_data</icon>
+                    <a class="kiss-size-small" v-for="(clb, name) in sources" @click="() => clb()">{{ name }}</a>
+                </div>
             </div>
 
             <img class="kiss-margin" :src="src" v-if="src">
