@@ -75,7 +75,7 @@ export default {
                 setTimeout(() => {
                     if (this.editor.isFocused) return;
                     this.editor.commands.setContent(this.modelValue || '', false)
-                }, 300);
+                }, 150);
             }
         }
     },
@@ -95,13 +95,24 @@ export default {
                     VueTiptap.extensions.StarterKit,
                     VueTiptap.extensions.Subscript,
                     VueTiptap.extensions.Superscript,
+                    VueTiptap.extensions.Underline,
+                    VueTiptap.extensions.ListKeymap,
+                    VueTiptap.extensions.Placeholder.configure({
+                        emptyNodeClass: 'tiptap-node-is-empty',
+                        placeholder: ({ node }) => {
+                            if (node.type.name === 'heading') {
+                                return App.i18n.get('Heading...')
+                            }
+
+                            return $this.modelValue ? App.i18n.get('Text...') : '';
+                        }
+                    }),
                     VueTiptap.extensions.TextAlign.configure({
                         types: ['heading', 'paragraph'],
                     }),
                     VueTiptap.extensions.Link.configure({
                         openOnClick: false,
                     }),
-                    VueTiptap.extensions.Underline,
                     VueTiptap.extensions.Image.configure({
                         inline: true,
                         allowBase64: true,

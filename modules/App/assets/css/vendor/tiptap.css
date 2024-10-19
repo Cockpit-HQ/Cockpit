@@ -16,4 +16,13 @@
     img.ProseMirror-selectednode {
         outline: 3px solid var(--kiss-color-primary);
     }
+
+    .tiptap-node-is-empty::before {
+        color: var(--kiss-color-muted);
+        content: attr(data-placeholder);
+        float: left;
+        height: 0;
+        pointer-events: none;
+    }
+
 }
