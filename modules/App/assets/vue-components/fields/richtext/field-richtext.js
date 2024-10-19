@@ -51,7 +51,7 @@ export default {
 
         toolbar: {
             type: String,
-            default: 'format | bold italic strikethrough underline | alignLeft alignCenter alignRight alignJustify | link image | listBullet listOrdered | hr'
+            default: 'format | bold italic underline | alignLeft alignCenter alignRight | link image | listBullet listOrdered | hr'
         }
     },
 
