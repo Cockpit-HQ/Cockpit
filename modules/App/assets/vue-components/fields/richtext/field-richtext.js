@@ -46,7 +46,7 @@ export default {
 
         height: {
             type: String,
-            default: '500px'
+            default: '400px'
         },
 
         toolbar: {
@@ -65,6 +65,11 @@ export default {
         BubbleMenu: Vue.defineAsyncComponent(() => {
             return new Promise(resolve => {
                 ready.then(() => resolve(window.VueTiptap.BubbleMenu));
+            })
+        }),
+        FloatingMenu: Vue.defineAsyncComponent(() => {
+            return new Promise(resolve => {
+                ready.then(() => resolve(window.VueTiptap.FloatingMenu));
             })
         })
     },
@@ -99,12 +104,9 @@ export default {
                     VueTiptap.extensions.ListKeymap,
                     VueTiptap.extensions.Placeholder.configure({
                         emptyNodeClass: 'tiptap-node-is-empty',
+                        showOnlyCurrent: false,
                         placeholder: ({ node }) => {
-                            if (node.type.name === 'heading') {
-                                return App.i18n.get('Heading...')
-                            }
-
-                            return $this.modelValue ? App.i18n.get('Text...') : '';
+                            return $this.modelValue ? '...' : '';
                         }
                     }),
                     VueTiptap.extensions.TextAlign.configure({
@@ -136,9 +138,9 @@ export default {
 
     template: /*html*/`
         <div field="wysiwyg" v-if="editor">
-            <kiss-card class="kiss-padding-small" theme="contrast bordered">
+            <kiss-card class="kiss-padding-small kiss-flex kiss-flex-column" theme="contrast bordered" :style="{height}">
                 <menu-bar :editor="editor" :toolbar="toolbar" />
-                <div class="kiss-padding-small" :style="{minHeight:'200px', maxHeight: height, overflow: 'scroll'}">
+                <div class="kiss-padding-small kiss-flex-1" :style="{overflow: 'scroll'}">
                     <editor-content :id="'tiptap-editor-'+id" class="tiptap-content-wrapper" :editor="editor"  />
                 </div>
                 <bubble-menu :editor="editor" :tippy-options="{ duration: 100 }" v-if="editor">
