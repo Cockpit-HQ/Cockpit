@@ -8,6 +8,18 @@ class EditorActions {
             format: {
                 component: Vue.defineAsyncComponent(() => App.utils.import('app:assets/vue-components/fields/richtext/components/format.js'))
             },
+            table: {
+                component: Vue.defineAsyncComponent(() => App.utils.import('app:assets/vue-components/fields/richtext/components/table.js')),
+                isActive: (editor) => editor.isActive('table')
+            },
+            undo: {
+                icon: 'undo',
+                action: (editor) => editor.chain().focus().undo().run(),
+            },
+            redo: {
+                icon: 'redo',
+                action: (editor) => editor.chain().focus().redo().run(),
+            },
             bold: {
                 icon: 'format_bold',
                 action: (editor) => editor.chain().focus().toggleBold().run(),

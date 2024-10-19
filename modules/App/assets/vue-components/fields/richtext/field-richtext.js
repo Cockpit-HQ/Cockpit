@@ -51,7 +51,7 @@ export default {
 
         toolbar: {
             type: String,
-            default: 'format | alignLeft alignCenter alignRight | link image | listBullet listOrdered | hr'
+            default: 'undo redo | format | alignLeft alignCenter alignRight | link image | listBullet listOrdered | table hr'
         }
     },
 
@@ -102,6 +102,17 @@ export default {
                     VueTiptap.extensions.Superscript,
                     VueTiptap.extensions.Underline,
                     VueTiptap.extensions.ListKeymap,
+
+                    VueTiptap.extensions.Table.configure({
+                        resizable: true,
+                        HTMLAttributes: {
+                            class: 'kiss-table',
+                        },
+                    }),
+                    VueTiptap.extensions.TableRow,
+                    VueTiptap.extensions.TableHeader,
+                    VueTiptap.extensions.TableCell,
+
                     VueTiptap.extensions.Placeholder.configure({
                         emptyNodeClass: 'tiptap-node-is-empty',
                         showOnlyCurrent: false,
