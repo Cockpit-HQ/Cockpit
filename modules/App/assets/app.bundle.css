@@ -3,7 +3,7 @@
     font-family: 'Material Icons Outlined';
     font-style: normal;
     font-weight: 400;
-    src: url(fonts/material-icons/material-outline.woff2?v=2.6.4) format('woff2');
+    src: url(fonts/material-icons/material-outline.woff2?v=2024-10-20) format('woff2');
 }
 icon {
     display: inline-block;
@@ -2282,6 +2282,9 @@ kiss-card[hover*="shadow"]:hover {
 }
 kiss-card[hover~="scale"]:hover {
     transform: scale(1.05);
+}
+kiss-card[hover~="scale-small"]:hover {
+    transform: scale(1.02);
 }
 kiss-card[hover*="bordered"]:hover {
 

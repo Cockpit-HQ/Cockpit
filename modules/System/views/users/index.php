@@ -27,7 +27,7 @@
 
                     <li v-for="(user, idx) in users" :class="{'kiss-inactive': !user.active}">
 
-                        <div class="kiss-margin kiss-flex">
+                        <kiss-card class="kiss-margin kiss-padding-small kiss-flex" hover="contrast scale-small bordered-primary">
                             <div class="kiss-margin-right kiss-position-relative">
                                 <app-avatar size="50" :name="user.name"></app-avatar>
                                 <a class="kiss-cover" :href="$routeUrl('/system/users/user/'+user._id)"></a>
@@ -44,7 +44,7 @@
                                     <icon class="kiss-size-large">delete</icon>
                                 </a>
                             </div>
-                        </div>
+                        </kiss-card>
 
                     </li>
 

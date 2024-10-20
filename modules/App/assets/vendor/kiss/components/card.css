@@ -32,6 +32,10 @@ kiss-card[hover~="scale"]:hover {
     transform: scale(1.05);
 }
 
+kiss-card[hover~="scale-small"]:hover {
+    transform: scale(1.02);
+}
+
 kiss-card[hover*="bordered"]:hover {
 
     &[hover~="bordered-primary"] {
