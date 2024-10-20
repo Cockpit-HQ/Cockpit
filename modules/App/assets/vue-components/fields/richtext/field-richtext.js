@@ -160,22 +160,10 @@ export default {
     template: /*html*/`
         <div field="wysiwyg" v-if="editor">
             <kiss-card class="kiss-padding-small kiss-flex kiss-flex-column" theme="contrast bordered" :style="{height}">
-                <menu-bar :editor="editor" :toolbar="toolbar" />
+                <menu-bar :euid="uid" :editor="editor" :toolbar="toolbar" />
                 <div class="kiss-padding-small kiss-flex-1" :style="{overflow: 'scroll'}">
                     <editor-content :id="uid" class="tiptap-content-wrapper" :editor="editor"  />
                 </div>
-                <bubble-menu :editor="editor" :tippy-options="{ duration: 100, placement: 'bottom-start', offset: [0, 20] }" :should-show="() => editor.state.selection.empty && editor.isActive('table')" v-if="editor">
-                    <kiss-card class="kiss-button-group kiss-margin-small-right" theme="shadowed" hover="bordered-primary">
-                        <button type="button" class="kiss-button kiss-button-small" @click="editor.chain().focus().addRowBefore().run()"><icon>add_row_above</icon></button>
-                        <button type="button" class="kiss-button kiss-button-small" @click="editor.chain().focus().addRowAfter().run()"><icon>add_row_below</icon></button>
-                        <button type="button" class="kiss-button kiss-button-small kiss-button-danger" @click="editor.chain().focus().deleteRow().run()"><icon>delete</icon></button>
-                    </kiss-card>
-                    <kiss-card class="kiss-button-group" theme="shadowed" hover="bordered-primary">
-                        <button type="button" class="kiss-button kiss-button-small" @click="editor.chain().focus().addColumnBefore().run()"><icon>add_column_left</icon></button>
-                        <button type="button" class="kiss-button kiss-button-small" @click="editor.chain().focus().addColumnAfter().run()"><icon>add_column_right</icon></button>
-                        <button type="button" class="kiss-button kiss-button-small kiss-button-danger" @click="editor.chain().focus().deleteColumn().run()"><icon>delete</icon></button>
-                    </kiss-card>
-                </bubble-menu>
                 <bubble-menu :editor="editor" :tippy-options="{ duration: 100 }" :should-show="shouldBubbleMenuTextShow" v-if="editor">
                     <kiss-card class="kiss-button-group" theme="shadowed" hover="bordered-primary">
                         <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-button-primary': editor.isActive('bold')}" @click="editor.chain().focus().toggleBold().run()"><icon>format_bold</icon></button>

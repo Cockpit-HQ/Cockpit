@@ -18,6 +18,10 @@ export default {
         toolbar: {
             type: String,
             default: null
+        },
+        euid: {
+            type: String,
+            default: null
         }
     },
 
@@ -62,6 +66,24 @@ export default {
                     <component v-if="actions.action(action).component" :is="actions.action(action).component" :editor="editor" />
                     <icon v-else>{{ actions.action(action).icon }}</icon>
                 </button>
+            </div>
+            <div class="kiss-flex-1"></div>
+            <div :id="euid+'-submenu'">
+
+                <div class="kiss-flex" gap="small" v-if="editor.state.selection.empty && editor.isActive('table')">
+                    <div class="kiss-button-group">
+                        <button type="button" class="kiss-button kiss-button-small" @click="editor.chain().focus().addRowBefore().run()"><icon>add_row_above</icon></button>
+                        <button type="button" class="kiss-button kiss-button-small" @click="editor.chain().focus().addRowAfter().run()"><icon>add_row_below</icon></button>
+                        <button type="button" class="kiss-button kiss-button-small" @click="editor.chain().focus().deleteRow().run()"><icon>delete</icon></button>
+                    </div>
+                    <div class="kiss-button-group">
+                        <button type="button" class="kiss-button kiss-button-small" @click="editor.chain().focus().addColumnBefore().run()"><icon>add_column_left</icon></button>
+                        <button type="button" class="kiss-button kiss-button-small" @click="editor.chain().focus().addColumnAfter().run()"><icon>add_column_right</icon></button>
+                        <button type="button" class="kiss-button kiss-button-small" @click="editor.chain().focus().deleteColumn().run()"><icon>delete</icon></button>
+                    </div>
+                    <button type="button" class="kiss-button kiss-button-small kiss-button-danger" @click="editor.chain().focus().deleteTable().run()"><icon>delete</icon></button>
+                </div>
+
             </div>
         </div>
     `
