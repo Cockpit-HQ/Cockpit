@@ -9,8 +9,12 @@ class EditorActions {
                 component: Vue.defineAsyncComponent(() => App.utils.import('app:assets/vue-components/fields/richtext/components/format.js'))
             },
             table: {
-                component: Vue.defineAsyncComponent(() => App.utils.import('app:assets/vue-components/fields/richtext/components/table.js')),
-                isActive: (editor) => editor.isActive('table')
+                icon: 'table',
+                action: (editor) => {
+                    if (editor.isActive('table')) return;
+                    editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()
+                },
+                isActive: (editor) => editor.isActive('table'),
             },
             undo: {
                 icon: 'undo',
