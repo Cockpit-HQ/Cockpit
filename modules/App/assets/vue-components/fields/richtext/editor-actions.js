@@ -98,7 +98,7 @@ class EditorActions {
                         save: meta => {
 
                             if (meta && meta.src) {
-                                editor.chain().focus().setImage(meta).run()
+                                editor.chain().focus().setImage(meta).run();
                             }
                         }
                     }, {size: 'medium'});

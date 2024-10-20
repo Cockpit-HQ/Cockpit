@@ -9,7 +9,7 @@ App.on('field-richtext-image-sources', evt => {
 
     img.sources['Assets'] = () => {
 
-        VueView.ui.modal('assets:assets/dialogs/asset-picker.js', {}, {
+        VueView.ui.modal('assets:assets/dialogs/asset-picker.js', {filter: {type: 'image'}}, {
 
             onSelect: (asset) => {
                 img.src = App.base(`#uploads:${asset.path}`);

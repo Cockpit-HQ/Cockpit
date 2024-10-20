@@ -33,7 +33,7 @@ export default {
 
     data() {
         return {
-            id: ++instanceCount,
+            uid: `tiptap-editor-${++instanceCount}`,
             editor: null
         }
     },
@@ -51,7 +51,7 @@ export default {
 
         toolbar: {
             type: String,
-            default: 'undo redo | format | alignLeft alignCenter alignRight | link image | listBullet listOrdered | table hr'
+            default: 'format | alignLeft alignCenter alignRight | link image | listBullet listOrdered | table hr'
         }
     },
 
@@ -127,7 +127,7 @@ export default {
                         openOnClick: false,
                     }),
                     VueTiptap.extensions.Image.configure({
-                        inline: true,
+                        inline: false,
                         allowBase64: true,
                     }),
                 ],
@@ -144,6 +144,16 @@ export default {
     methods: {
         update() {
             this.$emit('update:modelValue', this.editor.getHTML())
+        },
+
+        shouldBubbleMenuTextShow() {
+
+            let selection = this.editor.state.selection;
+
+            if (selection.empty) return false;
+            if (selection.node?.type.name === 'image') return false;
+
+            return ['paragraph', 'heading', 'listItem', 'tableCell'].some(n => this.editor.isActive(n))
         }
     },
 
@@ -152,9 +162,9 @@ export default {
             <kiss-card class="kiss-padding-small kiss-flex kiss-flex-column" theme="contrast bordered" :style="{height}">
                 <menu-bar :editor="editor" :toolbar="toolbar" />
                 <div class="kiss-padding-small kiss-flex-1" :style="{overflow: 'scroll'}">
-                    <editor-content :id="'tiptap-editor-'+id" class="tiptap-content-wrapper" :editor="editor"  />
+                    <editor-content :id="uid" class="tiptap-content-wrapper" :editor="editor"  />
                 </div>
-                <bubble-menu :editor="editor" :tippy-options="{ duration: 100 }" v-if="editor">
+                <bubble-menu :editor="editor" :tippy-options="{ duration: 100 }" :should-show="shouldBubbleMenuTextShow" v-if="editor">
                     <kiss-card class="kiss-button-group" theme="shadowed" hover="bordered-primary">
                         <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-button-primary': editor.isActive('bold')}" @click="editor.chain().focus().toggleBold().run()"><icon>format_bold</icon></button>
                         <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-button-primary': editor.isActive('italic')}" @click="editor.chain().focus().toggleItalic().run()"><icon>format_italic</icon></button>

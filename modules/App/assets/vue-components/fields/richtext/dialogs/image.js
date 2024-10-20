@@ -54,6 +54,7 @@ export default {
                 <input class="kiss-input" type="text" v-model="alt">
             </div>
 
+            <!--
             <kiss-grid cols="2@m" class="kiss-margin">
                 <div>
                     <label class="kiss-text-capitalize">{{ t('Width') }}</label>
@@ -64,6 +65,7 @@ export default {
                     <input class="kiss-input" type="text" v-model="height">
                 </div>
             </kiss-grid>
+            -->
 
             <div class="kiss-margin-top kiss-flex kiss-flex-middle kiss-button-group">
                 <button type="button" class="kiss-button kiss-flex-1" @click="$close()">{{ t('Cancel') }}</button>
