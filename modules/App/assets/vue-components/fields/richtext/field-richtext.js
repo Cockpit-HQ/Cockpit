@@ -166,11 +166,11 @@ export default {
                 </div>
                 <bubble-menu :editor="editor" :tippy-options="{ duration: 100 }" :should-show="shouldBubbleMenuTextShow" v-if="editor">
                     <kiss-card class="kiss-button-group" theme="shadowed" hover="bordered-primary">
-                        <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-button-primary': editor.isActive('bold')}" @click="editor.chain().focus().toggleBold().run()"><icon>format_bold</icon></button>
-                        <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-button-primary': editor.isActive('italic')}" @click="editor.chain().focus().toggleItalic().run()"><icon>format_italic</icon></button>
-                        <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-button-primary': editor.isActive('underline')}" @click="editor.chain().focus().toggleUnderline().run()"><icon>format_underlined</icon></button>
-                        <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-button-primary': editor.isActive('subscript')}" @click="editor.chain().focus().toggleSubscript().run()"><icon>subscript</icon></button>
-                        <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-button-primary': editor.isActive('superscript')}" @click="editor.chain().focus().toggleSuperscript().run()"><icon>superscript</icon></button>
+                        <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-button-primary': editor.isActive('bold')}" @click="editor.chain().focus().toggleBold().run()" :title="t('Bold')"><icon>format_bold</icon></button>
+                        <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-button-primary': editor.isActive('italic')}" @click="editor.chain().focus().toggleItalic().run()" :title="t('Italic')"><icon>format_italic</icon></button>
+                        <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-button-primary': editor.isActive('underline')}" @click="editor.chain().focus().toggleUnderline().run()" :title="t('Underline')"><icon>format_underlined</icon></button>
+                        <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-button-primary': editor.isActive('subscript')}" @click="editor.chain().focus().toggleSubscript().run()" :title="t('Subscript')"><icon>subscript</icon></button>
+                        <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-button-primary': editor.isActive('superscript')}" @click="editor.chain().focus().toggleSuperscript().run()" :title="t('Superscript')"><icon>superscript</icon></button>
                     </kiss-card>
                 </bubble-menu>
             </kiss-card>
