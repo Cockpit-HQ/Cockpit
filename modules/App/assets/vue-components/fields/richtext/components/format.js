@@ -85,7 +85,7 @@ export default {
                             {{ format.title }}
                         </div>
                         <hr>
-                        <ul class="kiss-color-muted" style="overflow:scroll;max-height: 200px">
+                        <ul class="kiss-color-muted" style="overflow:auto;max-height: 200px">
                             <li><a class="kiss-flex kiss-flex-middle" gap="small" @click="changeFormat('paragraph')"><icon class="kiss-color-primary">format_paragraph</icon> Paragraph</a></li>
                             <li><a class="kiss-flex kiss-flex-middle" gap="small" @click="changeFormat('code')"><icon class="kiss-color-primary">data_object</icon> Code</a></li>
                             <li v-for="i in [1,2,3,4,5,6]"><a class="kiss-flex kiss-flex-middle" gap="small" @click="changeFormat('h'+i)"><icon class="kiss-color-primary">format_h{{i}}</icon> Heading {{ i }}</a></li>

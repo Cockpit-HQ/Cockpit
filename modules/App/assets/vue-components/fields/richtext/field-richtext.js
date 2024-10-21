@@ -161,7 +161,7 @@ export default {
         <div field="wysiwyg" v-if="editor">
             <kiss-card class="kiss-padding-small kiss-flex kiss-flex-column" theme="contrast bordered" :style="{height}">
                 <menu-bar :euid="uid" :editor="editor" :toolbar="toolbar" />
-                <div class="kiss-padding-small kiss-flex-1" :style="{overflow: 'scroll'}">
+                <div class="kiss-padding-small kiss-flex-1" :style="{overflow: 'auto'}">
                     <editor-content :id="uid" class="tiptap-content-wrapper" :editor="editor"  />
                 </div>
                 <bubble-menu :editor="editor" :tippy-options="{ duration: 100 }" :should-show="shouldBubbleMenuTextShow" v-if="editor">
