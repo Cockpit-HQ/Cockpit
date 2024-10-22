@@ -20,6 +20,7 @@ kiss-dialog {
 kiss-dialog > kiss-content {
     position: relative;
     display: flow-root;
+    box-sizing: border-box;
     margin-top: auto;
     margin-bottom: auto;
     margin-left: auto;
@@ -33,9 +34,9 @@ kiss-dialog > kiss-content {
     width: var(--kiss-dialog-width, 350px);
     max-width: calc(100% - 0.01px) !important;
 
-    transform: translateZ(0);
-
-    box-sizing: border-box;
+    transform: translateY(20px) translateZ(0);
+    transition: transform 250ms;
+    will-change: transform;
 }
 
 kiss-dialog[size="medium"] > kiss-content {
@@ -53,4 +54,8 @@ kiss-dialog[size="xlarge"] > kiss-content {
 kiss-dialog[open] {
     opacity: 1;
     pointer-events: auto;
+
+    & > kiss-content {
+        transform: translateY(0) translateZ(0);
+    }
 }

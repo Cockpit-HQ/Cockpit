@@ -18,13 +18,14 @@ kiss-offcanvas > kiss-content {
     position: absolute;
     top: 0;
     bottom: 0;
+    box-sizing: border-box;
     background: var(--kiss-offcanvas-content-background, #000);
     color: var(--kiss-offcanvas-content-color,  #fff);
     min-width: 300px;
     overflow-y: auto;
-    box-sizing: border-box;
     transform: translateX(-100%) translateZ(0);
     transition: transform 0.3s ease-in-out;
+    will-change: transform;
 }
 
 kiss-offcanvas[flip="true"] > kiss-content {
@@ -36,8 +37,8 @@ kiss-offcanvas[open] {
     opacity: 1;
     pointer-events: auto;
     transition: opacity 0.3s ease-in-out;
-}
 
-kiss-offcanvas[open] > kiss-content {
-    transform: translateX(0) translateZ(0);
+    & > kiss-content {
+        transform: translateX(0) translateZ(0);
+    }
 }

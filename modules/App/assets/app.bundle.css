@@ -2428,6 +2428,7 @@ kiss-dialog {
 kiss-dialog > kiss-content {
     position: relative;
     display: flow-root;
+    box-sizing: border-box;
     margin-top: auto;
     margin-bottom: auto;
     margin-left: auto;
@@ -2441,9 +2442,9 @@ kiss-dialog > kiss-content {
     width: var(--kiss-dialog-width, 350px);
     max-width: calc(100% - 0.01px) !important;
 
-    transform: translateZ(0);
-
-    box-sizing: border-box;
+    transform: translateY(20px) translateZ(0);
+    transition: transform 250ms;
+    will-change: transform;
 }
 kiss-dialog[size="medium"] > kiss-content {
     width: var(--kiss-dialog-medium-width, 500px);
@@ -2457,6 +2458,10 @@ kiss-dialog[size="xlarge"] > kiss-content {
 kiss-dialog[open] {
     opacity: 1;
     pointer-events: auto;
+
+    & > kiss-content {
+        transform: translateY(0) translateZ(0);
+    }
 }
 kiss-grid {
     --grid-gap: var(--kiss-grid-gap, 20px);
@@ -2584,13 +2589,14 @@ kiss-offcanvas > kiss-content {
     position: absolute;
     top: 0;
     bottom: 0;
+    box-sizing: border-box;
     background: var(--kiss-offcanvas-content-background, #000);
     color: var(--kiss-offcanvas-content-color,  #fff);
     min-width: 300px;
     overflow-y: auto;
-    box-sizing: border-box;
     transform: translateX(-100%) translateZ(0);
     transition: transform 0.3s ease-in-out;
+    will-change: transform;
 }
 kiss-offcanvas[flip="true"] > kiss-content {
     right: 0;
@@ -2600,9 +2606,10 @@ kiss-offcanvas[open] {
     opacity: 1;
     pointer-events: auto;
     transition: opacity 0.3s ease-in-out;
-}
-kiss-offcanvas[open] > kiss-content {
-    transform: translateX(0) translateZ(0);
+
+    & > kiss-content {
+        transform: translateX(0) translateZ(0);
+    }
 }
 kiss-popout {
     display: flex;
@@ -2626,6 +2633,8 @@ kiss-popout {
 kiss-popout > kiss-content {
     position: relative;
     display: flow-root;
+    box-sizing: border-box;
+
     margin-top: auto;
     margin-bottom: auto;
     margin-left: auto;
@@ -2639,10 +2648,9 @@ kiss-popout > kiss-content {
     min-width: var(--kiss-popout-width, 250px);
     max-width: calc(100% - 0.01px) !important;
 
-    box-sizing: border-box;
-
     transform: translateY(20px);
-    transition: all 200ms;
+    transition: transform 200ms;
+    will-change: transform;
 }
 kiss-popout[size="large"] > kiss-content {
     width: var(--kiss-popout-large-width, 600px);
@@ -2650,9 +2658,10 @@ kiss-popout[size="large"] > kiss-content {
 kiss-popout[open] {
     opacity: 1;
     pointer-events: auto;
-}
-kiss-popout[open] > kiss-content {
-    transform: translateY(10px);
+
+    & > kiss-content {
+        transform: translateY(10px);
+    }
 }
 kiss-popout kiss-navlist a {
     color: var(--kiss-popout-color, inherit);

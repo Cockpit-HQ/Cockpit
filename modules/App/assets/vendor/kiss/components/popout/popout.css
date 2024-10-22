@@ -21,6 +21,8 @@ kiss-popout {
 kiss-popout > kiss-content {
     position: relative;
     display: flow-root;
+    box-sizing: border-box;
+
     margin-top: auto;
     margin-bottom: auto;
     margin-left: auto;
@@ -34,10 +36,9 @@ kiss-popout > kiss-content {
     min-width: var(--kiss-popout-width, 250px);
     max-width: calc(100% - 0.01px) !important;
 
-    box-sizing: border-box;
-
     transform: translateY(20px);
-    transition: all 200ms;
+    transition: transform 200ms;
+    will-change: transform;
 }
 
 kiss-popout[size="large"] > kiss-content {
@@ -47,9 +48,10 @@ kiss-popout[size="large"] > kiss-content {
 kiss-popout[open] {
     opacity: 1;
     pointer-events: auto;
-}
-kiss-popout[open] > kiss-content {
-    transform: translateY(10px);
+
+    & > kiss-content {
+        transform: translateY(10px);
+    }
 }
 
 kiss-popout kiss-navlist a {
