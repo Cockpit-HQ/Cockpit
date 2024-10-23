@@ -247,7 +247,7 @@ class MongoLite {
 
             if ($k === '_id') {
 
-                if (is_string($v) && $v[0] === '@') {
+                if (is_string($v) && isset($v[0]) && $v[0] === '@') {
                     $v = \substr($v, 1);
                 }
             }

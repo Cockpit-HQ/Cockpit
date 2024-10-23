@@ -35,7 +35,7 @@ class Toast {
         contentDiv.classList.add('kiss-toast-content');
 
         messageElement.classList.add('kiss-toast-message');
-        messageElement.textContent = message;
+        messageElement.innerHTML = message;
         contentDiv.appendChild(messageElement);
 
         if (info) {

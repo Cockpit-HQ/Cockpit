@@ -5,6 +5,7 @@
 - Update Vue to v3.5.12
 - Fix request param casting (array to string)
 - Replace TinyMCE with Tiptap
+- Fix verbose required field error messages
 
 ## 2.9.4 (2024-10-07)
 
