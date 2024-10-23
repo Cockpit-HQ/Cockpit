@@ -334,7 +334,7 @@ class Mongo {
 
             if ($k === '_id') {
 
-                if (is_string($v)) {
+                if (is_string($v) && isset($v[0])) {
                     $v = $v[0] === '@' ? \substr($v, 1) : $this->getObjectID($v);
                 } elseif (is_array($v)) {
 
