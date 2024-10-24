@@ -176,6 +176,8 @@ $this->module('content')->extend([
 
         if (isset($fields)) {
 
+            $this->app->helper('content')->resolveLocalesInProjectionOptions($fields);
+
             foreach ($fields as $f => $v) {
 
                 if (!str_starts_with($f, '..')) continue;
@@ -188,6 +190,7 @@ $this->module('content')->extend([
 
                 unset($fields[$f]);
             }
+
         }
 
         if ($model['type'] == 'singleton') {
@@ -202,10 +205,7 @@ $this->module('content')->extend([
 
         } elseif (in_array($model['type'], ['collection', 'tree'])) {
 
-            $this->app->helper('content')->replaceLocaleInArrayKeys(
-                $filter,
-                !isset($process['locale']) || $process['locale'] == 'default'  ? '' : $process['locale']
-            );
+            $this->app->helper('content')->replaceLocaleInArrayKeys($filter, $process['locale'] ?? '');
 
             $collection = "content/collections/{$modelName}";
             $item = $this->app->dataStorage->findOne($collection, $filter, $fields);
@@ -245,11 +245,7 @@ $this->module('content')->extend([
 
         if (isset($options['fields'])) {
 
-            $this->app->helper('content')->replaceLocaleInArrayKeys(
-                $options['fields'],
-                !isset($process['locale']) || $process['locale'] == 'default'  ? '' : $process['locale'],
-                true
-            );
+            $this->app->helper('content')->resolveLocalesInProjectionOptions($options['fields']);
 
             foreach ($options['fields'] as $f => $v) {
 
@@ -263,23 +259,16 @@ $this->module('content')->extend([
 
                 unset($options['fields'][$f]);
             }
+
         }
 
         // replace {field}:locale keys with locale defined in $process
         if (isset($options['filter'])) {
-
-            $this->app->helper('content')->replaceLocaleInArrayKeys(
-                $options['filter'],
-                !isset($process['locale']) || $process['locale'] == 'default'  ? '' : $process['locale']
-            );
+            $this->app->helper('content')->replaceLocaleInArrayKeys($options['filter'], $process['locale'] ?? '');
         }
 
         if (isset($options['sort'])) {
-
-            $this->app->helper('content')->replaceLocaleInArrayKeys(
-                $options['sort'],
-                !isset($process['locale']) || $process['locale'] == 'default'  ? '' : $process['locale']
-            );
+            $this->app->helper('content')->replaceLocaleInArrayKeys($options['sort'], $process['locale'] ?? '');
         }
 
         $items = (array) $this->app->dataStorage->find($collection, $options);
@@ -312,10 +301,7 @@ $this->module('content')->extend([
             return [];
         }
 
-        $this->app->helper('content')->replaceLocaleInArrayKeys(
-            $pipeline,
-            !isset($process['locale']) || $process['locale'] == 'default'  ? '' : $process['locale']
-        );
+        $this->app->helper('content')->replaceLocaleInArrayKeys($pipeline, $process['locale'] ?? '');
 
         $collection = "content/collections/{$modelName}";
 

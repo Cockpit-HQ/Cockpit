@@ -39,23 +39,54 @@ class Content extends \Lime\Helper {
 
     public function replaceLocaleInArrayKeys(array &$array, string $locale = '', $keepDefault = false) {
 
+        $locale = trim($locale);
+
+        if ($locale === 'default') {
+            $locale = '';
+        }
+
         foreach ($array as $key => &$value) {
 
             if (str_contains($key, ':locale')) {
 
-                $newKey = str_replace(':locale', $locale ? "_{$locale}" : '', $key);
+                $defKey = str_replace(':locale', '', $key);
+                $newKey = $defKey.($locale ? "_{$locale}" : '');
                 $array[$newKey] = &$value;
 
                 if ($keepDefault) {
-                    $newKey = str_replace(':locale', '', $key);
-                    $array[$newKey] = &$value;
+                    $array[$defKey] = &$value;
                 }
 
                 unset($array[$key]);
             }
 
             if (is_array($value)) {
-                $this->replaceLocaleInArrayKeys($value, $locale);
+                $this->replaceLocaleInArrayKeys($value, $locale, $keepDefault);
+            }
+        }
+    }
+
+    public function resolveLocalesInProjectionOptions(array &$fields) {
+
+        $locales = array_keys($this->app->helper('locales')->locales(true));
+
+        foreach ($fields as $key => &$value) {
+
+            if (str_contains($key, ':locale')) {
+
+                $defKey = str_replace(':locale', '', $key);
+                $fields[$defKey] = &$value;
+
+                foreach ($locales as $locale) {
+                    if ($locale === 'default') continue;
+                    $fields["{$defKey}_{$locale}"] = &$value;
+                }
+
+                unset($fields[$key]);
+            }
+
+            if (is_array($value)) {
+                $this->resolveLocalesInProjectionOptions($value);
             }
         }
     }
