@@ -39,6 +39,7 @@ use GraphQL\Validator\DocumentValidator;
 
 /**
  * @phpstan-import-type TypeConfigDecorator from ASTDefinitionBuilder
+ * @phpstan-import-type FieldConfigDecorator from ASTDefinitionBuilder
  * @phpstan-import-type UnnamedArgumentConfig from Argument
  * @phpstan-import-type UnnamedInputObjectFieldConfig from InputObjectField
  *
@@ -58,6 +59,7 @@ class SchemaExtender
      * @param array<string, bool> $options
      *
      * @phpstan-param TypeConfigDecorator|null $typeConfigDecorator
+     * @phpstan-param FieldConfigDecorator|null $fieldConfigDecorator
      *
      * @api
      *
@@ -68,15 +70,17 @@ class SchemaExtender
         Schema $schema,
         DocumentNode $documentAST,
         array $options = [],
-        ?callable $typeConfigDecorator = null
+        ?callable $typeConfigDecorator = null,
+        ?callable $fieldConfigDecorator = null
     ): Schema {
-        return (new static())->doExtend($schema, $documentAST, $options, $typeConfigDecorator);
+        return (new static())->doExtend($schema, $documentAST, $options, $typeConfigDecorator, $fieldConfigDecorator);
     }
 
     /**
      * @param array<string, bool> $options
      *
      * @phpstan-param TypeConfigDecorator|null $typeConfigDecorator
+     * @phpstan-param FieldConfigDecorator|null $fieldConfigDecorator
      *
      * @throws \Exception
      * @throws \ReflectionException
@@ -87,7 +91,8 @@ class SchemaExtender
         Schema $schema,
         DocumentNode $documentAST,
         array $options = [],
-        ?callable $typeConfigDecorator = null
+        ?callable $typeConfigDecorator = null,
+        ?callable $fieldConfigDecorator = null
     ): Schema {
         if (
             ! ($options['assumeValid'] ?? false)
@@ -146,7 +151,8 @@ class SchemaExtender
 
                 return $this->extendNamedType($existingType);
             },
-            $typeConfigDecorator
+            $typeConfigDecorator,
+            $fieldConfigDecorator
         );
 
         $this->extendTypeCache = [];
@@ -499,6 +505,7 @@ class SchemaExtender
                 'type' => $this->extendType($field->getType()),
                 'args' => $this->extendArgs($field->args),
                 'resolve' => $field->resolveFn,
+                'argsMapper' => $field->argsMapper,
                 'astNode' => $field->astNode,
             ];
         }
@@ -511,7 +518,7 @@ class SchemaExtender
                 );
 
                 foreach ($extension->fields as $field) {
-                    $newFieldMap[$field->name->value] = $this->astBuilder->buildField($field);
+                    $newFieldMap[$field->name->value] = $this->astBuilder->buildField($field, $extension);
                 }
             }
         }
@@ -531,7 +538,8 @@ class SchemaExtender
             'interfaces' => fn (): array => $this->extendImplementedInterfaces($type),
             'fields' => fn (): array => $this->extendFieldMap($type),
             'isTypeOf' => [$type, 'isTypeOf'],
-            'resolveField' => $type->resolveFieldFn ?? null,
+            'resolveField' => $type->resolveFieldFn,
+            'argsMapper' => $type->argsMapper,
             'astNode' => $type->astNode,
             'extensionASTNodes' => $extensionASTNodes,
         ]);
