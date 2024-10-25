@@ -2409,7 +2409,7 @@ kiss-dropdown[open="true"] kiss-dropdownbox[pos="aside-left"] {
     transform: translateY(0px) translateX(-100%);
 }
 kiss-dialog {
-    display: flex;
+    display: none;
     align-items: flex-start;
     position: fixed;
     background: var(--kiss-dialog-background, rgba(0,0,0,.1));
@@ -2419,8 +2419,6 @@ kiss-dialog {
     bottom: 0;
     padding: 20px;
     touch-action: none;
-    opacity: 0;
-    pointer-events: none;
     overflow-y: auto;
     transform: translateZ(0);
     will-change: opacity;
@@ -2444,7 +2442,6 @@ kiss-dialog > kiss-content {
     max-width: calc(100% - 0.01px) !important;
 
     transform: translateY(20px) translateZ(0);
-    transition: transform 250ms;
     will-change: transform;
 }
 kiss-dialog[size="medium"] > kiss-content {
@@ -2457,11 +2454,21 @@ kiss-dialog[size="xlarge"] > kiss-content {
     width: var(--kiss-dialog-xlarge-width, 1200px);
 }
 kiss-dialog[open] {
+    display: flex;
+    transition: opacity .3s;
     opacity: 1;
-    pointer-events: auto;
+
+    @starting-style {
+        opacity: 0;
+    }
 
     & > kiss-content {
         transform: translateY(0) translateZ(0);
+        transition: transform 250ms;
+
+        @starting-style {
+            transform: translateY(20px);
+        }
     }
 }
 kiss-grid {
@@ -2572,7 +2579,7 @@ kiss-navlist ul > li > * {
     border-top: 1px solid var(--kiss-navlist-divider-color, var(--kiss-hr-color, rgba(0,0,0,.1)));
 }
 kiss-offcanvas {
-    display: block;
+    display: none;
     position: fixed;
     background: var(--kiss-offcanvas-background, rgba(0,0,0,.1));
     top: 0;
@@ -2581,7 +2588,6 @@ kiss-offcanvas {
     bottom: 0;
     touch-action: none;
     opacity: 0;
-    pointer-events: none;
     transform: translateZ(0);
     will-change: opacity;
     z-index: var(--kiss-offcanvas-zIndex, 1000);
@@ -2595,25 +2601,38 @@ kiss-offcanvas > kiss-content {
     color: var(--kiss-offcanvas-content-color,  #fff);
     min-width: 300px;
     overflow-y: auto;
-    transform: translateX(-100%) translateZ(0);
-    transition: transform 0.3s ease-in-out;
     will-change: transform;
 }
 kiss-offcanvas[flip="true"] > kiss-content {
     right: 0;
-    transform: translateX(100%) translateZ(0);
 }
 kiss-offcanvas[open] {
+    display: block;
     opacity: 1;
     pointer-events: auto;
     transition: opacity 0.3s ease-in-out;
 
+    @starting-style {
+        opacity: 0;
+    }
+
     & > kiss-content {
         transform: translateX(0) translateZ(0);
+        transition: transform 0.3s ease-in-out;
+
+        @starting-style {
+            transform: translateX(-100%) translateZ(0);
+        }
+    }
+
+    &[flip="true"] > kiss-content {
+        @starting-style {
+            transform: translateX(100%) translateZ(0);
+        }
     }
 }
 kiss-popout {
-    display: flex;
+    display: none;
     align-items: flex-start;
     position: fixed;
     background: var(--kiss-popout-background, rgba(0,0,0,.1));
@@ -2623,12 +2642,9 @@ kiss-popout {
     bottom: 0;
     padding: 20px;
     touch-action: none;
-    opacity: 0;
-    pointer-events: none;
     overflow-y: auto;
     transform: translateZ(0);
     will-change: opacity;
-    transition: opacity .3s;
     z-index: var(--kiss-popout-zIndex, 1000);
 }
 kiss-popout > kiss-content {
@@ -2649,19 +2665,27 @@ kiss-popout > kiss-content {
     min-width: var(--kiss-popout-width, 250px);
     max-width: calc(100% - 0.01px) !important;
 
-    transform: translateY(20px);
-    transition: transform 200ms;
     will-change: transform;
 }
 kiss-popout[size="large"] > kiss-content {
     width: var(--kiss-popout-large-width, 600px);
 }
 kiss-popout[open] {
+    display: flex;
+    transition: opacity .3s;
     opacity: 1;
-    pointer-events: auto;
+
+    @starting-style {
+        opacity: 0;
+    }
 
     & > kiss-content {
         transform: translateY(10px);
+        transition: transform 200ms;
+
+        @starting-style {
+            transform: translateY(20px);
+        }
     }
 }
 kiss-popout kiss-navlist a {

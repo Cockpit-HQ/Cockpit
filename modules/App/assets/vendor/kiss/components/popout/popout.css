@@ -1,5 +1,5 @@
 kiss-popout {
-    display: flex;
+    display: none;
     align-items: flex-start;
     position: fixed;
     background: var(--kiss-popout-background, rgba(0,0,0,.1));
@@ -9,12 +9,9 @@ kiss-popout {
     bottom: 0;
     padding: 20px;
     touch-action: none;
-    opacity: 0;
-    pointer-events: none;
     overflow-y: auto;
     transform: translateZ(0);
     will-change: opacity;
-    transition: opacity .3s;
     z-index: var(--kiss-popout-zIndex, 1000);
 }
 
@@ -36,8 +33,6 @@ kiss-popout > kiss-content {
     min-width: var(--kiss-popout-width, 250px);
     max-width: calc(100% - 0.01px) !important;
 
-    transform: translateY(20px);
-    transition: transform 200ms;
     will-change: transform;
 }
 
@@ -46,11 +41,21 @@ kiss-popout[size="large"] > kiss-content {
 }
 
 kiss-popout[open] {
+    display: flex;
+    transition: opacity .3s;
     opacity: 1;
-    pointer-events: auto;
+
+    @starting-style {
+        opacity: 0;
+    }
 
     & > kiss-content {
         transform: translateY(10px);
+        transition: transform 200ms;
+
+        @starting-style {
+            transform: translateY(20px);
+        }
     }
 }
 

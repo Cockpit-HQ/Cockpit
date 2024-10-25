@@ -1,5 +1,5 @@
 kiss-dialog {
-    display: flex;
+    display: none;
     align-items: flex-start;
     position: fixed;
     background: var(--kiss-dialog-background, rgba(0,0,0,.1));
@@ -9,8 +9,6 @@ kiss-dialog {
     bottom: 0;
     padding: 20px;
     touch-action: none;
-    opacity: 0;
-    pointer-events: none;
     overflow-y: auto;
     transform: translateZ(0);
     will-change: opacity;
@@ -35,7 +33,6 @@ kiss-dialog > kiss-content {
     max-width: calc(100% - 0.01px) !important;
 
     transform: translateY(20px) translateZ(0);
-    transition: transform 250ms;
     will-change: transform;
 }
 
@@ -52,10 +49,20 @@ kiss-dialog[size="xlarge"] > kiss-content {
 }
 
 kiss-dialog[open] {
+    display: flex;
+    transition: opacity .3s;
     opacity: 1;
-    pointer-events: auto;
+
+    @starting-style {
+        opacity: 0;
+    }
 
     & > kiss-content {
         transform: translateY(0) translateZ(0);
+        transition: transform 250ms;
+
+        @starting-style {
+            transform: translateY(20px);
+        }
     }
 }
