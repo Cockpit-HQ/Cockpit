@@ -61,7 +61,8 @@ a:focus {
 }
 
 a:focus-visible {
-    box-shadow: 0 0 0 var(--kiss-outline-width, .2rem) var(--kiss-outline-color, hsl(210, 100%, 85%));
+    outline: none;
+    box-shadow: 0 0 0 var(--kiss-outline-width, .1rem) var(--kiss-outline-color, hsl(210, 100%, 85%));
 }
 
 a:active {

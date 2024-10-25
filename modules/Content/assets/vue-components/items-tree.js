@@ -58,6 +58,17 @@ export default {
         }
     },
 
+    watch: {
+        actionItem(val) {
+
+            if (val) {
+                setTimeout(() => {
+                    document.getElementById('popout-content-tree-context-menu').show();
+                }, 50);
+            }
+        }
+    },
+
     mounted() {
 
         if (this.p && this.p._children) {
@@ -184,7 +195,7 @@ export default {
 
             let val =  (!item || this.actionItem?.item === item) ? null : {tree, item};
 
-            setTimeout(() => this.actionItem = val, !val ? 300 : 0);
+            this.actionItem = val;
         }
     },
 
@@ -227,10 +238,10 @@ export default {
                 </template>
             </vue-draggable>
         </div>
-        <teleport to="body" v-if="!p">
-            <kiss-popout :open="actionItem && 'true'" @popoutclose="toggleActionItemActions(null)">
+        <teleport to="body" v-if="!p && actionItem">
+            <kiss-popout id="popout-content-tree-context-menu" @popoutclose="toggleActionItemActions(null)">
                 <kiss-content>
-                    <kiss-navlist class="kiss-margin" v-if="actionItem">
+                    <kiss-navlist class="kiss-margin">
                         <ul>
                             <li class="kiss-nav-header">{{ t('Item actions') }}</li>
                             <li v-if="actionAsset">
