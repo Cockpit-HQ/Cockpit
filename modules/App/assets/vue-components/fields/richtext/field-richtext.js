@@ -164,7 +164,7 @@ export default {
                 <div class="kiss-padding-small kiss-flex-1" :style="{overflow: 'auto'}">
                     <editor-content :id="uid" class="tiptap-content-wrapper" :editor="editor"  />
                 </div>
-                <bubble-menu :editor="editor" :tippy-options="{ duration: 100 }" :should-show="shouldBubbleMenuTextShow" v-if="editor">
+                <bubble-menu :editor="editor" :tippy-options="{ placement: 'bottom', duration: 100 }" :should-show="shouldBubbleMenuTextShow" v-if="editor">
                     <kiss-card class="kiss-button-group" theme="shadowed" hover="bordered-primary">
                         <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-button-primary': editor.isActive('bold')}" @click="editor.chain().focus().toggleBold().run()" :title="t('Bold')"><icon>format_bold</icon></button>
                         <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-button-primary': editor.isActive('italic')}" @click="editor.chain().focus().toggleItalic().run()" :title="t('Italic')"><icon>format_italic</icon></button>
