@@ -87,7 +87,8 @@
                     <kiss-row match="true">
                         <?php if ($license): ?>
                         <div class="kiss-width-1-1 kiss-width-1-2@m kiss-width-1-3@l">
-                            <kiss-card class="kiss-padding-larger kiss-text-monospace" theme="contrast shadowed" style="border-top: 2px var(--kiss-color-primary) solid">
+                            <kiss-card class="kiss-position-relative kiss-padding-larger kiss-text-monospace" theme="contrast shadowed" style="border-top: 2px var(--kiss-color-primary) solid">
+                                <div class="kiss-cover" style="background:linear-gradient(225deg, #9f9e9e17 25%, transparent 25%) -10px 0 / 20px 20px, linear-gradient(315deg, #9f9e9e36 25%, transparent 25%) 0px 0 / 20px 20px, linear-gradient(45deg, #9f9e9e0d 25%, transparent 25%) 0px 0 / 20px 20px"></div>
 
                                 <div class="kiss-flex kiss-flex-middle" gap="small">
                                     <div><icon class="kiss-size-1 kiss-color-muted" size="larger">developer_board</icon></div>
