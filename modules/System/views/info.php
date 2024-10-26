@@ -88,11 +88,14 @@
                         <?php if ($license): ?>
                         <div class="kiss-width-1-1 kiss-width-1-2@m kiss-width-1-3@l">
                             <kiss-card class="kiss-position-relative kiss-padding-larger kiss-text-monospace" theme="contrast shadowed" style="border-top: 2px var(--kiss-color-primary) solid">
-                                <div class="kiss-cover" style="background:linear-gradient(225deg, #9f9e9e17 25%, transparent 25%) -10px 0 / 20px 20px, linear-gradient(315deg, #9f9e9e36 25%, transparent 25%) 0px 0 / 20px 20px, linear-gradient(45deg, #9f9e9e0d 25%, transparent 25%) 0px 0 / 20px 20px"></div>
+                                <div class="kiss-cover" style="background:linear-gradient(225deg, #9f9e9e17 25%, transparent 25%) -10px 0 / 20px 20px, linear-gradient(315deg, #9f9e9e36 25%, transparent 25%) 0px 0 / 20px 20px, linear-gradient(45deg, #9f9e9e0d 25%, transparent 25%) 0px 0 / 20px 20px,linear-gradient(transparent, var(--kiss-color-overlay)"></div>
 
                                 <div class="kiss-flex kiss-flex-middle" gap="small">
-                                    <div><icon class="kiss-size-1 kiss-color-muted" size="larger">developer_board</icon></div>
-                                    <div class="kiss-flex-1"><span class="kiss-badge kiss-text-upper"><?=($license['model'] ?? 'pro')?></span></div>
+                                    <div><icon class="kiss-size-1 kiss-color-warning" size="larger">developer_board</icon></div>
+                                    <div class="kiss-flex-1">
+                                        <span class="kiss-text-monospace kiss-text-bold kiss-text-upper"><?=($license['model'] ?? 'pro')?></span>
+                                        <div class="kiss-color-muted kiss-text-caption kiss-size-xsmall">License</div>
+                                    </div>
                                     <div>
                                         <kiss-svg src="<?=$this->baseUrl('app:assets/img/ag.svg')?>" width="30"></kiss-svg>
                                     </div>
@@ -100,7 +103,7 @@
 
                                 <div class="kiss-text-bold kiss-text-truncate kiss-margin-large"><?=($license['company'] ? $license['company'] : $license['name'])?></div>
 
-                                <div class="kiss-flex" gap="large">
+                                <div class="kiss-flex kiss-position-relative" gap="large">
 
                                     <div class="kiss-width-1-2 kiss-width-1-3@m kiss-color-muted kiss-size-small kiss-margin-small-top">
                                         <div class="kiss-text-caption"><?=t('Licensed domain')?></div>
