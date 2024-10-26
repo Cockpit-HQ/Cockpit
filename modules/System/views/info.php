@@ -93,7 +93,7 @@
                                 <div class="kiss-flex kiss-flex-middle" gap="small">
                                     <div><icon class="kiss-size-1 kiss-color-warning" size="larger">developer_board</icon></div>
                                     <div class="kiss-flex-1">
-                                        <span class="kiss-text-monospace kiss-text-bold kiss-text-upper"><?=($license['model'] ?? 'pro')?></span>
+                                        <span class="kiss-text-monospace kiss-text-bold kiss-text-upper">Cockpit <?=($license['model'] ?? 'pro')?></span>
                                         <div class="kiss-color-muted kiss-text-caption kiss-size-xsmall">License</div>
                                     </div>
                                     <div>
