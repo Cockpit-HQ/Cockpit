@@ -42,7 +42,7 @@
 
     <script type="importmap"><?=json_encode(['imports' => $importmap], JSON_PRETTY_PRINT);?></script>
 
-    <?=$this->helper('theme')->assets([['src' => 'app:assets/js/admin.js', 'type' => 'module']], 'app')?>
+    <?=$this->helper('theme')->assets([['src' => 'app:assets/js/admin.js', 'type' => 'module']], 'app:header')?>
 
     <script src="<?= $this->route('/app.i18n.data.js') ?>" type="module"></script>
 
@@ -258,8 +258,12 @@
 
     </script>
 
-    <?php $this->trigger('app.layout.footer') ?>
-    <?php $this->block('app.layout.footer') ?>
+    <?php
+        $this->trigger('app.layout.footer');
+        $this->block('app.layout.footer');
+    ?>
+
+    <?=$this->helper('theme')->assets(context: 'app:footer')?>
 
 </body>
 

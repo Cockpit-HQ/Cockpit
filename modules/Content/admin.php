@@ -22,9 +22,9 @@ $this->on('app.layout.init', function() {
     ]);
 });
 
-$this->on('app.layout.assets', function(array &$assets) {
+$this->on('app.layout.assets', function(array &$assets, $context) {
 
-    $assets[] = ['src' => 'content:assets/js/content.js', 'type' => 'module'];
+    if ($context === 'app:footer') $assets[] = ['src' => 'content:assets/js/content.js', 'type' => 'module'];
 });
 
 $this->on('app.permissions.collect', function($permissions) {

@@ -96,15 +96,22 @@ class Theme extends \Lime\Helper {
 
         $debug = $this->app->retrieve('debug');
 
-        $assets = array_merge([
-            $debug ? 'app:assets/css/app.css' : 'app:assets/app.bundle.css',
-            'app:assets/vendor/JSON5.js',
-            $debug ? ['src' => 'app:assets/js/app.js', 'type' => 'module'] : 'app:assets/app.bundle.js'
-        ], $assets);
+        $core = [];
 
-        $this->app->trigger('app.layout.assets', [&$assets, $this->app->retrieve('app.version'), $context]);
+        if ($context === 'app:header') {
+            $core[] = $debug ? 'app:assets/css/app.css' : 'app:assets/app.bundle.css';
+            $core[] = $debug ? ['src' => 'app:assets/js/app.js', 'type' => 'module'] : 'app:assets/app.bundle.js';
+        }
 
-        if ($this->app->path('#config:theme.css')) {
+        if ($context === 'app:footer') {
+            $core[] = ['src' => 'app:assets/vendor/JSON5.js', 'position' => 'footer'];
+        }
+
+        $assets = array_merge($core, $assets);
+
+        $this->app->trigger('app.layout.assets', [&$assets, $context]);
+
+        if ($context === 'app:header' && $this->app->path('#config:theme.css')) {
             $assets[] = '#config:theme.css';
         }
 

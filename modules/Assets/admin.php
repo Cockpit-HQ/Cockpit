@@ -39,8 +39,8 @@ $this->on('app.layout.init', function() {
     $this->helper('theme')->vars('ffmpeg', $this->retrieve('assets/ffmpeg') ? true : false);
 });
 
-$this->on('app.layout.assets', function(array &$assets) {
-    $assets[] = ['src' => 'assets:assets/js/assets.js', 'type' => 'module'];
+$this->on('app.layout.assets', function(array &$assets, $context) {
+    if ($context === 'app:footer') $assets[] = ['src' => 'assets:assets/js/assets.js', 'type' => 'module'];
 });
 
 $this->on('app.permissions.collect', function($permissions) {

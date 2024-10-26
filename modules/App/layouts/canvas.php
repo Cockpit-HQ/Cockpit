@@ -37,7 +37,7 @@
 
     <script type="importmap"><?=json_encode(['imports' => $importmap], JSON_PRETTY_PRINT);?></script>
 
-    <?=$this->helper('theme')->assets([], 'canvas')?>
+    <?=$this->helper('theme')->assets(context: 'app:header')?>
 
     <script src="<?=$this->route('/app.i18n.data.js')?>" type="module"></script>
 
@@ -67,6 +67,8 @@
         });
 
     </script>
+
+    <?=$this->helper('theme')->assets(context: 'app:footer')?>
 
 </body>
 </html>

@@ -31,11 +31,11 @@ $this->on('app.layout.init', function() {
     ]);
 });
 
-$this->on('app.layout.assets', function(&$assets, $version, $context) {
+$this->on('app.layout.assets', function(&$assets, $context) {
 
     // include app license component
-    $assets[] = 'system:assets/components/app-license/app-license.js';
-    $assets[] = 'system:assets/components/app-license/app-license.css';
+    if ($context === 'app:header') $assets[] = 'system:assets/components/app-license/app-license.css';
+    if ($context === 'app:footer') $assets[] = ['src' => 'system:assets/components/app-license/app-license.js'];
 
 });
 
