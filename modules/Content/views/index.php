@@ -310,30 +310,24 @@
 <div class="kiss-margin" id="content-models-aside"></div>
 
 <?php if ($this->helper('acl')->isAllowed("content/:models/manage")) : ?>
-    <kiss-navlist>
-        <ul>
-            <li class="kiss-nav-header kiss-margin-top kiss-margin-xsmall-bottom"><?= t('Create') ?></li>
-            <li>
-                <a class="kiss-color-muted kiss-flex kiss-flex-middle" href="<?= $this->route('/content/models/create') ?>?type=singleton">
-                    <kiss-svg class="kiss-margin-small-right" src="<?= $this->base('content:assets/icons/singleton.svg') ?>" width="20" height="20"><canvas width="20" height="20"></canvas></kiss-svg>
-                    <?= t('Singleton') ?>
-                </a>
-            </li>
-            <li class="kiss-nav-divider"></li>
-            <li>
-                <a class="kiss-color-muted kiss-flex kiss-flex-middle" href="<?= $this->route('/content/models/create') ?>?type=collection">
-                    <kiss-svg class="kiss-margin-small-right" src="<?= $this->base('content:assets/icons/collection.svg') ?>" width="20" height="20"><canvas width="20" height="20"></canvas></kiss-svg>
-                    <?= t('Collection') ?>
-                </a>
-            </li>
-            <li>
-                <a class="kiss-color-muted kiss-flex kiss-flex-middle" href="<?= $this->route('/content/models/create') ?>?type=tree">
-                    <kiss-svg class="kiss-margin-small-right" src="<?= $this->base('content:assets/icons/tree.svg') ?>" width="20" height="20"><canvas width="20" height="20"></canvas></kiss-svg>
-                    <?= t('Tree') ?>
-                </a>
-            </li>
-        </ul>
-    </kiss-navlist>
+
+    <span class="kiss-text-caption kiss-size-xsmall"><?=t('Create Model')?></span>
+
+    <div class="kiss-flex kiss-flex-middle kiss-margin kiss-color-muted" gap="small">
+        <kiss-card class="kiss-padding-small kiss-position-relative" kiss-tooltip aria-label="<?= t('Collection') ?>" theme="bordered" hover="contrast bordered-primary">
+            <kiss-svg src="<?= $this->base('content:assets/icons/collection.svg') ?>" width="32" height="32"><canvas width="32" height="32"></canvas></kiss-svg>
+            <a class="kiss-cover" href="<?= $this->route('/content/models/create') ?>?type=collection"></a>
+        </kiss-card>
+        <kiss-card class="kiss-padding-small kiss-position-relative" kiss-tooltip aria-label="<?= t('Tree') ?>" theme="bordered" hover="contrast bordered-primary">
+            <kiss-svg src="<?= $this->base('content:assets/icons/tree.svg') ?>" width="32" height="32"><canvas width="32" height="32"></canvas></kiss-svg>
+            <a class="kiss-cover" href="<?= $this->route('/content/models/create') ?>?type=tree"></a>
+        </kiss-card>
+        <kiss-card class="kiss-padding-small kiss-position-relative" kiss-tooltip="bottom" aria-label="<?= t('Singleton') ?>" theme="bordered" hover="contrast bordered-primary">
+            <kiss-svg src="<?= $this->base('content:assets/icons/singleton.svg') ?>" width="32" height="32"><canvas width="32" height="32"></canvas></kiss-svg>
+            <a class="kiss-cover" href="<?= $this->route('/content/models/create') ?>?type=singleton"></a>
+        </kiss-card>
+    </div>
+
 <?php endif ?>
 
 
