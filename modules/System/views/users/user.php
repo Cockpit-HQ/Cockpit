@@ -9,7 +9,7 @@ if (!isset($user['twofa'])) {
 }
 
 ?>
-<kiss-container class="kiss-margin-large" size="small">
+<kiss-container class="kiss-margin-small" size="small">
 
     <ul class="kiss-breadcrumbs">
         <li><a href="<?= $this->route('/system') ?>"><?= t('Settings') ?></a></li>

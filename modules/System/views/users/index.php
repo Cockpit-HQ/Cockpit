@@ -1,4 +1,4 @@
-<kiss-container class="kiss-margin-large" size="small">
+<kiss-container class="kiss-margin-small" size="small">
     <ul class="kiss-breadcrumbs">
         <li><a href="<?= $this->route('/system') ?>"><?= t('Settings') ?></a></li>
     </ul>
@@ -27,7 +27,7 @@
 
                     <li v-for="(user, idx) in users" :class="{'kiss-inactive': !user.active}">
 
-                        <kiss-card class="kiss-margin kiss-padding-small kiss-flex" hover="contrast scale-small bordered-primary">
+                        <kiss-card class="kiss-padding-small kiss-flex" hover="contrast scale-small bordered-primary">
                             <div class="kiss-margin-right kiss-position-relative">
                                 <app-avatar size="50" :name="user.name"></app-avatar>
                                 <a class="kiss-cover" :href="$routeUrl('/system/users/user/'+user._id)"></a>

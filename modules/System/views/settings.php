@@ -1,4 +1,4 @@
-<kiss-container class="kiss-margin-large" size="small">
+<kiss-container class="kiss-margin-small kiss-padding-large" size="small">
 
     <?php foreach ($this->helper('settings')->groups(true) as $group => $items) : ?>
 

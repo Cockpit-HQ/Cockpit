@@ -1,4 +1,4 @@
-<kiss-container class="kiss-margin">
+<kiss-container class="kiss-margin-small">
 
     <ul class="kiss-breadcrumbs">
         <li><a href="<?=$this->route('/system')?>"><?=t('Settings')?></a></li>

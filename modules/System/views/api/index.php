@@ -1,5 +1,5 @@
 
-<kiss-container class="kiss-margin" size="small">
+<kiss-container class="kiss-margin-small" size="small">
 
     <ul class="kiss-breadcrumbs">
         <li><a href="<?=$this->route('/system')?>"><?=t('Settings')?></a></li>
@@ -67,7 +67,7 @@
                 <ul class="app-list-items">
 
                     <li v-for="(key, idx) in keys">
-                        <div class="kiss-margin kiss-flex kiss-flex-middle">
+                        <div class="kiss-flex kiss-flex-middle">
                             <div class="kiss-margin-small-right"><icon>vpn_key</icon></div>
                             <div class="kiss-size-5 kiss-position-relative">
                                 <strong>{{key.name}}</strong>

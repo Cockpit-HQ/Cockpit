@@ -2,7 +2,7 @@
 
     $roles = $this->helper('acl')->roles();
 ?>
-<kiss-container class="kiss-margin" size="small">
+<kiss-container class="kiss-margin-small" size="small">
 
     <ul class="kiss-breadcrumbs">
         <li><a href="<?=$this->route('/system')?>"><?=t('Settings')?></a></li>

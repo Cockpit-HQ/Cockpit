@@ -1,5 +1,5 @@
 
-<kiss-container class="kiss-margin-large" size="small">
+<kiss-container class="kiss-margin-small" size="small">
 
 <ul class="kiss-breadcrumbs">
     <li><a href="<?=$this->route('/system')?>"><?=t('Settings')?></a></li>
@@ -26,7 +26,7 @@
 
             <li v-for="(role, idx) in roles">
 
-                <div class="kiss-margin kiss-flex">
+                <kiss-card class="kiss-padding-small kiss-flex" hover="contrast scale-small bordered-primary">
                     <div class="kiss-margin-right kiss-position-relative">
                         <app-avatar size="50" :name="role.name"></app-avatar>
                         <a class="kiss-cover" :href="$routeUrl('/system/users/roles/role/'+role._id)"></a>
@@ -41,7 +41,7 @@
                     <div class="kiss-margin-left">
                         <a class="kiss-color-danger" @click="remove(role)"><icon class="kiss-size-large">delete</icon></a>
                     </div>
-                </div>
+                </kiss-card>
 
             </li>
 
