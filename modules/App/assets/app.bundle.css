@@ -2880,20 +2880,20 @@ kiss-tooltip {
 kiss-tooltip[show="true"] {
     opacity: 1;
 }
-.kiss-color-primary { color: var(--kiss-color-primary, blue) !important; }
-.kiss-color-success { color: var(--kiss-color-success, green) !important; }
-.kiss-color-danger { color: var(--kiss-color-danger, red) !important; }
-.kiss-color-warning { color: var(--kiss-color-warning, orange) !important; }
 .kiss-color-muted { color: var(--kiss-color-muted, #6d6f79) !important; }
-.kiss-color-contrast { color: var(--kiss-color-contrast, #fff) !important; }
-.kiss-color-alternate { color: var(--kiss-color-alternate, var(--kiss-color-contrast)) !important; }
-.kiss-bgcolor-primary { background-color: var(--kiss-color-primary, blue) !important; }
-.kiss-bgcolor-success { background-color: var(--kiss-color-success, green) !important; }
-.kiss-bgcolor-danger { background-color: var(--kiss-color-danger, red) !important; }
-.kiss-bgcolor-warning { background-color: var(--kiss-color-warning, orange) !important; }
-.kiss-bgcolor-muted { background-color: var(--kiss-color-muted, #6d6f79) !important; }
-.kiss-bgcolor-contrast { background-color: var(--kiss-color-contrast, #fff) !important; }
-.kiss-bgcolor-transparent {
+.kiss-color-primary, .kiss-color-primary\@hover:hover { color: var(--kiss-color-primary, blue) !important; }
+.kiss-color-success, .kiss-color-success\@hover:hover { color: var(--kiss-color-success, green) !important; }
+.kiss-color-danger, .kiss-color-danger\@hover:hover { color: var(--kiss-color-danger, red) !important; }
+.kiss-color-warning, .kiss-color-warning\@hover:hover { color: var(--kiss-color-warning, orange) !important; }
+.kiss-color-contrast, .kiss-color-contrast\@hover:hover { color: var(--kiss-color-contrast, #fff) !important; }
+.kiss-color-alternate, .kiss-color-alternate\@hover:hover { color: var(--kiss-color-alternate, var(--kiss-color-contrast)) !important; }
+.kiss-bgcolor-muted, .kiss-bgcolor-muted\@hover:hover { background-color: var(--kiss-color-muted, #6d6f79) !important; }
+.kiss-bgcolor-primary, .kiss-bgcolor-primary\@hover:hover { background-color: var(--kiss-color-primary, blue) !important; }
+.kiss-bgcolor-success, .kiss-bgcolor-success:hover { background-color: var(--kiss-color-success, green) !important; }
+.kiss-bgcolor-danger, .kiss-bgcolor-danger:hover { background-color: var(--kiss-color-danger, red) !important; }
+.kiss-bgcolor-warning, .kiss-bgcolor-warning\@hover:hover { background-color: var(--kiss-color-warning, orange) !important; }
+.kiss-bgcolor-contrast, .kiss-bgcolor-contrast\@hover:hover { background-color: var(--kiss-color-contrast, #fff) !important; }
+.kiss-bgcolor-transparent, .kiss-bgcolor-transparent\@hover:hover {
     background: rgba(0,0,0,0) !important;
     background-color: rgba(0,0,0,0) !important;
 }
@@ -4318,6 +4318,10 @@ del {
     border-radius: 8px;
     box-shadow: 0 0 10px rgb(0 0 0 / 10%);
     overflow: auto;
+
+    kiss-card {
+        --kiss-card-theme-contrast-color: var(--kiss-base-background-color);
+    }
 }
 .app-container-aside-menu kiss-navlist a {
     text-align: center;

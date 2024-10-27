@@ -49,7 +49,6 @@
     text-decoration: none;
 }
 
-
 .kiss-button-primary {
     background-color: var(--kiss-button-primary-background, hsl(210, 100%, 50%));
     border-color: var(--kiss-button-primary-background, hsl(210, 100%, 50%));

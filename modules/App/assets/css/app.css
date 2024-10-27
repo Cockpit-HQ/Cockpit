@@ -230,6 +230,10 @@ del {
     border-radius: 8px;
     box-shadow: 0 0 10px rgb(0 0 0 / 10%);
     overflow: auto;
+
+    kiss-card {
+        --kiss-card-theme-contrast-color: var(--kiss-base-background-color);
+    }
 }
 
 .app-container-aside-menu kiss-navlist a {
