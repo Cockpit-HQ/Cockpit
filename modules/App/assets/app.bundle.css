@@ -2359,19 +2359,24 @@ kiss-dropdown {
     display: inline-block;
 }
 kiss-dropdownbox {
+    display: none;
     position: absolute;
     min-width: 200px;
     top: 100%;
     left: auto;
     right: 0;
     opacity: 0;
-    pointer-events: none;
+    will-change: opacity;
 }
 kiss-dropdown[open="true"] kiss-dropdownbox {
     display: block;
     opacity: 1;
     transform: translateY(10px);
-    pointer-events: auto;
+
+    @starting-style {
+        opacity: 0;
+        transform: translateY(20px);
+    }
 }
 kiss-dropdownbox {
     background: var(--kiss-dropdown-background, var(--kiss-color-contrast));
@@ -2381,7 +2386,6 @@ kiss-dropdownbox {
     right: 0;
     margin-top: 10px;
     min-width: 250px;
-    transform: translateY(20px);
     transition: all 200ms;
     z-index: 5;
 }
