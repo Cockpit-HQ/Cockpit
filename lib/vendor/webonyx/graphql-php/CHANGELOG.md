@@ -9,6 +9,18 @@ You can find and compare releases at the [GitHub release page](https://github.co
 
 ## Unreleased
 
+## v15.17.0
+
+### Added
+
+- Allow customizing PhpEnumType https://github.com/webonyx/graphql-php/pull/1623
+
+## v15.16.1
+
+### Fixed
+
+- Make field args mapper optional https://github.com/webonyx/graphql-php/pull/1622
+
 ## v15.16.0
 
 ### Added
