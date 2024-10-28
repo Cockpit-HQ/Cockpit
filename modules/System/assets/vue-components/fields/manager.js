@@ -234,36 +234,36 @@ let FieldsManager = {
 
             <app-loader v-if="!fieldTypes"></app-loader>
 
-            <vue-draggable v-model="fields" v-if="fieldTypes && fields.length" handle=".fm-handle">
-                <template #item="{ element, index }">
-                    <div class="kiss-position-relative" style="margin: 8px 0;">
-                        <kiss-card class="kiss-padding-small kiss-flex kiss-flex-middle" theme="bordered contrast">
-                            <a class="fm-handle kiss-margin-small-right kiss-color-muted"><icon>drag_handle</icon></a>
-                            <div class="kiss-margin-right">
-                                <div class="kiss-padding-small app-border-radius" :style="{background: fieldTypes?.[element.type]?.color ?? 'rgb(255, 248, 214)'}">
-                                    <img :src="$baseUrl(fieldTypes?.[element.type]?.icon ?? 'system:assets/icons/edit.svg')" width="20" height="20" style="opacity:.6" :title="element.type">
-                                </div>
-                            </div>
-                            <div class="kiss-flex-1">
-                                <div class="kiss-text-bold">
-                                    {{ element.label || element.name }}
-                                    <icon class="kiss-color-muted kiss-margin-xsmall-left" v-if="element.i18n">language</icon>
-                                    <icon class="kiss-color-muted kiss-margin-xsmall-left" v-if="element.multiple">format_list_numbered</icon>
-                                </div>
-                                <div class="kiss-size-xsmall">
-                                    <span class="kiss-color-muted">{{ element.name }}</span>
-                                </div>
-                            </div>
-                            <div class="kiss-margin-small-right kiss-size-small kiss-color-muted">{{ element.group || '' }}</div>
-                            <a class="kiss-margin-left" @click="edit(element)"><icon>settings</icon></a>
-                            <a class="kiss-margin-left kiss-color-danger" @click="remove(element)"><icon>delete</icon></a>
-                        </kiss-card>
+            <vue-draggable v-model="fields" :animation="150" v-if="fieldTypes && fields.length" handle=".fm-handle">
 
-                        <div class="kiss-position-absolute kiss-width-1-3 kiss-align-center kiss-visible-toggle" style="bottom:0;height:20px;left:50%;transform:translateX(-50%) translateY(15%);z-index:5;" v-if="fields.length > 1 && index !== (fields.length - 1)">
-                            <button type="button" class="kiss-button kiss-button-small kiss-hidden-hover animated fadeIn faster" :title="t('Add field')" @click="add(element)"><span class="kiss-size-6">+</span></button>
+                <div class="kiss-position-relative" style="margin: 8px 0;" v-for="(element, index) in fields">
+                    <kiss-card class="kiss-padding-small kiss-flex kiss-flex-middle" theme="bordered contrast">
+                        <a class="fm-handle kiss-margin-small-right kiss-color-muted"><icon>drag_handle</icon></a>
+                        <div class="kiss-margin-right">
+                            <div class="kiss-padding-small app-border-radius" :style="{background: fieldTypes?.[element.type]?.color ?? 'rgb(255, 248, 214)'}">
+                                <img :src="$baseUrl(fieldTypes?.[element.type]?.icon ?? 'system:assets/icons/edit.svg')" width="20" height="20" style="opacity:.6" :title="element.type">
+                            </div>
                         </div>
+                        <div class="kiss-flex-1">
+                            <div class="kiss-text-bold">
+                                {{ element.label || element.name }}
+                                <icon class="kiss-color-muted kiss-margin-xsmall-left" v-if="element.i18n">language</icon>
+                                <icon class="kiss-color-muted kiss-margin-xsmall-left" v-if="element.multiple">format_list_numbered</icon>
+                            </div>
+                            <div class="kiss-size-xsmall">
+                                <span class="kiss-color-muted">{{ element.name }}</span>
+                            </div>
+                        </div>
+                        <div class="kiss-margin-small-right kiss-size-small kiss-color-muted">{{ element.group || '' }}</div>
+                        <a class="kiss-margin-left" @click="edit(element)"><icon>settings</icon></a>
+                        <a class="kiss-margin-left kiss-color-danger" @click="remove(element)"><icon>delete</icon></a>
+                    </kiss-card>
+
+                    <div class="kiss-position-absolute kiss-width-1-3 kiss-align-center kiss-visible-toggle" style="bottom:0;height:20px;left:50%;transform:translateX(-50%) translateY(15%);z-index:5;" v-if="fields.length > 1 && index !== (fields.length - 1)">
+                        <button type="button" class="kiss-button kiss-button-small kiss-hidden-hover animated fadeIn faster" :title="t('Add field')" @click="add(element)"><span class="kiss-size-6">+</span></button>
                     </div>
-                </template>
+                </div>
+
             </vue-draggable>
 
             <div class="kiss-margin-small" v-if="fieldTypes">

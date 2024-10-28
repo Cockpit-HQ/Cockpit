@@ -16,7 +16,7 @@ export default {
             type: Object,
             default: null
         },
-        items: {
+        modelValue: {
             type: Array,
             default: []
         },
@@ -43,6 +43,15 @@ export default {
     },
 
     computed: {
+
+        items: {
+            get() {
+                return this.modelValue || []
+            },
+            set(value) {
+                this.$emit('update:modelValue', value)
+            }
+        },
 
         meta() {
             return (this.model.meta || {}).tree || {};
@@ -82,7 +91,6 @@ export default {
             }
 
             this.$request(`/content/tree/load/${this.model.name}`, params).then(items => {
-
                 this.p.children = items;
                 this.loading = false;
             }).catch(res => {
@@ -94,46 +102,58 @@ export default {
 
     methods: {
 
-        change(actions) {
-
-            let toUpdate = [],
-                pId = this.p ? this.p._id : null,
-                list = pId ? this.p.children : this.items;
-
-            if (actions.added) {
-
-                let element = actions.added.element
-
-                element._pid = pId;
-
-                list.forEach((p, idx) => {
-
-                    let item = {_id: p._id, _o: idx}
-
-                    if (item._id === element._id) {
-                        item._pid = pId;
-                    }
-
-                    toUpdate.push(item);
-                });
-
-            }
-
-            if (actions.moved || actions.removed) {
-
-                list.forEach((p, idx) => {
-                    toUpdate.push({_id: p._id, _o: idx});
-                });
-            }
-
+        lstUpdate() {
             if (this.p) {
                 this.p._children = this.p.children.length;
                 this.p._showChildren = true;
             }
+        },
 
-            if (toUpdate.length) {
-                this.$request(`/content/tree/updateOrder/${this.model.name}`, {items:toUpdate})
+        change(evt) {
+
+            if (!this.allowMoving) {
+                return App.ui.notify('You are not allowed to move content items', 'error');
             }
+
+            console.log(evt);return;
+
+            const { data, from, to, oldIndex, newIndex } = evt;
+
+            setTimeout(() => {
+
+                let pId = to.closest('[data-item-id]')?.getAttribute('data-item-id')  || null;
+                let toUpdate = {}
+
+                data._pid = pId;
+
+                [...to.children].forEach((child, idx) => {
+
+                    let page = {_id: child.getAttribute('data-item-id'), _o: idx};
+
+                    if (page._id === data._id) {
+                        page._pid = pId;
+                        page._o = newIndex;
+                    }
+
+                    toUpdate[page._id] = page;
+                });
+
+                [...from.children].forEach((child, idx) => {
+                    let page = {_id: child.getAttribute('data-item-id'), _o: idx};
+
+                    if (!toUpdate[page._id]) {
+                        toUpdate[page._id] = page;
+                    }
+                });
+
+                toUpdate = Object.values(toUpdate);
+
+                if (toUpdate.length) {
+                    this.$request(`/content/tree/updateOrder/${this.model.name}`, {items:toUpdate})
+                }
+
+            }, 0);
+
         },
 
         remove(item) {
@@ -152,6 +172,7 @@ export default {
         },
 
         onMove() {
+            console.log(111)
             return this.allowMoving;
         },
 
@@ -176,12 +197,6 @@ export default {
             this.$request(`/content/tree/updateOrder/${this.model.name}`, {items:toUpdate});
         },
 
-        onEnd() {
-            if (!this.allowMoving) {
-                App.ui.notify('You are not allowed to move content items', 'error');
-            }
-        },
-
         toggleActionItemActions(item, tree) {
 
             if (!tree) {
@@ -204,38 +219,34 @@ export default {
             <app-loader size="small" v-if="loading"></app-loader>
 
             <vue-draggable
-                :list="items"
+                :v-model="items"
                 handle=".fm-handle"
                 class="items-tree-dragarea"
                 :group="'items'"
                 :swapThreshold="0.35"
-                :animation="100",
-                :fallbackOnBody="false"
-                @change="change"
-                @end="onEnd"
-                :move="onMove"
-                itemKey="_id"
+                :animation="100"
+                @add="lstUpdate"
+                @remove="lstUpdate"
+                @end="change"
+                @move="onMove"
 
-                v-if="!loading"
             >
-                <template #item="{ element }">
-                    <div class="kiss-margin-xsmall" :data-item="element._id">
-                        <kiss-card class="kiss-padding-small kiss-flex kiss-flex-middle kiss-margin-xsmall" theme="bordered contrast shadowed">
-                            <a class="fm-handle kiss-margin-small-right kiss-color-muted"><icon>drag_handle</icon></a>
-                            <a class="kiss-margin-small-right kiss-color-muted" :class="{'kiss-hidden': !element._children}" :placeholder="t('Toggle children')" @click="element._showChildren = !element._showChildren">
-                                <icon>{{ element._showChildren ? 'indeterminate_check_box' : 'add_box' }}</icon>
-                            </a>
-                            <div class="kiss-position-relative kiss-flex-1">
-                                <tree-item :model="model" :item="element"></tree-item>
-                                <a class="kiss-cover" :href="$routeUrl('/content/tree/item/'+model.name+'/'+element._id)"></a>
-                            </div>
-                            <a class="kiss-margin-small-left" @click="toggleActionItemActions(element)"><icon>more_horiz</icon></a>
-                        </kiss-card>
-                        <div v-if="!isMaxLevel && (element._showChildren || !element._children)" :style="{paddingLeft: (((level+1)*23)+'px')}">
-                            <items-tree class="items-tree" :model="model" :items="element.children" :level="level+1" :p="element" :locale="locale" :allow-moving="allowMoving" @show-item-actions="(item, tree) => toggleActionItemActions(item, tree)"></items-tree>
+                <div class="kiss-margin-xsmall" :data-item-id="element._id" :data-item-idx="idx" :key="element._id" v-for="(element, idx) in items">
+                    <kiss-card class="kiss-padding-small kiss-flex kiss-flex-middle kiss-margin-xsmall" theme="bordered contrast shadowed">
+                        <a class="fm-handle kiss-margin-small-right kiss-color-muted"><icon>drag_handle</icon></a>
+                        <a class="kiss-margin-small-right kiss-color-muted" :class="{'kiss-hidden': !element._children}" :placeholder="t('Toggle children')" @click="element._showChildren = !element._showChildren">
+                            <icon>{{ element._showChildren ? 'indeterminate_check_box' : 'add_box' }}</icon>
+                        </a>
+                        <div class="kiss-position-relative kiss-flex-1">
+                            <tree-item :model="model" :item="element"></tree-item>
+                            <a class="kiss-cover" :href="$routeUrl('/content/tree/item/'+model.name+'/'+element._id)"></a>
                         </div>
+                        <a class="kiss-margin-small-left" @click="toggleActionItemActions(element)"><icon>more_horiz</icon></a>
+                    </kiss-card>
+                    <div v-if="!isMaxLevel && (element._showChildren || !element._children)" :style="{paddingLeft: (((level+1)*23)+'px')}">
+                        <items-tree class="items-tree" :model="model" v-model="element.children" :level="level+1" :p="element" :locale="locale" :allow-moving="allowMoving" @show-item-actions="(item, tree) => toggleActionItemActions(item, tree)"></items-tree>
                     </div>
-                </template>
+                </div>
             </vue-draggable>
         </div>
         <teleport to="body" v-if="!p && actionItem">

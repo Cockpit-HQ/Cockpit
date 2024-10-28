@@ -107,14 +107,14 @@
                             </kiss-card>
 
                             <vue-draggable v-model="model.preview" v-if="model.preview.length" handle=".fm-handle">
-                                <template #item="{ element }">
-                                    <kiss-card class="kiss-flex kiss-flex-middle kiss-margin-small kiss-padding-small" gap="small" theme="bordered contrast">
-                                        <a class="fm-handle kiss-color-muted"><icon>drag_handle</icon></a>
-                                        <div class="kiss-width-1-4"><input type="text" class="kiss-input kiss-input-small" v-model="element.name" placeholder="<?=t('Name')?>"></div>
-                                        <div class="kiss-flex-1"><input type="url" class="kiss-input kiss-input-small" v-model="element.uri" placeholder="https://..."></div>
-                                        <a class="kiss-color-danger" @click="model.preview.splice(model.preview.indexOf(element), 1)"><icon>delete</icon></a>
-                                    </kiss-card>
-                                </template>
+
+                                <kiss-card class="kiss-flex kiss-flex-middle kiss-margin-small kiss-padding-small" gap="small" theme="bordered contrast" v-for="element in model.preview">
+                                    <a class="fm-handle kiss-color-muted"><icon>drag_handle</icon></a>
+                                    <div class="kiss-width-1-4"><input type="text" class="kiss-input kiss-input-small" v-model="element.name" placeholder="<?=t('Name')?>"></div>
+                                    <div class="kiss-flex-1"><input type="url" class="kiss-input kiss-input-small" v-model="element.uri" placeholder="https://..."></div>
+                                    <a class="kiss-color-danger" @click="model.preview.splice(model.preview.indexOf(element), 1)"><icon>delete</icon></a>
+                                </kiss-card>
+
                             </vue-draggable>
 
                             <div class="kiss-margin-small">

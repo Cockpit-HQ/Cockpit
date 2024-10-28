@@ -11,9 +11,7 @@ import "../../../System/assets/js/components.js";
 // General
 VueView.component('vue-draggable', Vue.defineAsyncComponent(() => {
     return new Promise(resolve => {
-        App.assets.require(['app:assets/vendor/Sortable.js']).then(() => {
-            App.assets.require(['app:assets/vendor/vue/components/vue-draggable.js']).then(() => resolve(window.vuedraggable));
-        });
+        App.assets.require(['app:assets/vendor/vue/components/vue-draggable.js']).then(() => resolve(window.VueDraggable.VueDraggable));
     })
 }));
 

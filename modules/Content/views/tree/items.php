@@ -70,7 +70,7 @@
             </div>
 
             <div v-if="loading !== true && (!filter) && Array.isArray(items) && items.length">
-                <items-tree :model="model" :items="items" :locale="locale" :allow-moving="allowMoving"></items-tree>
+                <items-tree :model="model" v-model="items" :locale="locale" :allow-moving="allowMoving"></items-tree>
             </div>
 
             <app-loader v-if="loading === null || loading === true"></app-loader>
@@ -108,7 +108,6 @@
                 },
 
                 mounted() {
-
                     this.load();
                 },
 
