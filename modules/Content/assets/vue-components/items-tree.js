@@ -109,13 +109,11 @@ export default {
             }
         },
 
-        change(evt) {
+        onEnd(evt) {
 
             if (!this.allowMoving) {
                 return App.ui.notify('You are not allowed to move content items', 'error');
             }
-
-            console.log(evt);return;
 
             const { data, from, to, oldIndex, newIndex } = evt;
 
@@ -172,7 +170,6 @@ export default {
         },
 
         onMove() {
-            console.log(111)
             return this.allowMoving;
         },
 
@@ -219,7 +216,7 @@ export default {
             <app-loader size="small" v-if="loading"></app-loader>
 
             <vue-draggable
-                :v-model="items"
+                v-model="items"
                 handle=".fm-handle"
                 class="items-tree-dragarea"
                 :group="'items'"
@@ -227,21 +224,21 @@ export default {
                 :animation="100"
                 @add="lstUpdate"
                 @remove="lstUpdate"
-                @end="change"
+                @end="onEnd"
                 @move="onMove"
 
             >
                 <div class="kiss-margin-xsmall" :data-item-id="element._id" :data-item-idx="idx" :key="element._id" v-for="(element, idx) in items">
-                    <kiss-card class="kiss-padding-small kiss-flex kiss-flex-middle kiss-margin-xsmall" theme="bordered contrast shadowed">
-                        <a class="fm-handle kiss-margin-small-right kiss-color-muted"><icon>drag_handle</icon></a>
-                        <a class="kiss-margin-small-right kiss-color-muted" :class="{'kiss-hidden': !element._children}" :placeholder="t('Toggle children')" @click="element._showChildren = !element._showChildren">
+                    <kiss-card class="kiss-padding-small kiss-flex kiss-flex-middle kiss-margin-xsmall" gap="small" theme="bordered contrast shadowed">
+                        <a class="fm-handle kiss-color-muted" v-if="allowMoving"><icon>drag_handle</icon></a>
+                        <a class=" kiss-color-muted" :class="{'kiss-hidden': !element._children}" :placeholder="t('Toggle children')" @click="element._showChildren = !element._showChildren">
                             <icon>{{ element._showChildren ? 'indeterminate_check_box' : 'add_box' }}</icon>
                         </a>
                         <div class="kiss-position-relative kiss-flex-1">
                             <tree-item :model="model" :item="element"></tree-item>
                             <a class="kiss-cover" :href="$routeUrl('/content/tree/item/'+model.name+'/'+element._id)"></a>
                         </div>
-                        <a class="kiss-margin-small-left" @click="toggleActionItemActions(element)"><icon>more_horiz</icon></a>
+                        <a @click="toggleActionItemActions(element)"><icon>more_horiz</icon></a>
                     </kiss-card>
                     <div v-if="!isMaxLevel && (element._showChildren || !element._children)" :style="{paddingLeft: (((level+1)*23)+'px')}">
                         <items-tree class="items-tree" :model="model" v-model="element.children" :level="level+1" :p="element" :locale="locale" :allow-moving="allowMoving" @show-item-actions="(item, tree) => toggleActionItemActions(item, tree)"></items-tree>
