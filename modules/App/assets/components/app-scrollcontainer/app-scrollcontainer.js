@@ -41,6 +41,7 @@ customElements.define('app-scrollcontainer', class extends HTMLElement {
         let maxHeight = window.innerHeight - rect.top;
 
         switch (mode) {
+            case 'boundary-include':
             case 'boundary':
 
                 let boundary = this.getAttribute('boundary');
@@ -49,7 +50,15 @@ customElements.define('app-scrollcontainer', class extends HTMLElement {
                     boundary = document.querySelector(boundary);
 
                     if (boundary) {
-                        maxHeight = boundary.getBoundingClientRect().top - rect.top;
+
+                        const brect = boundary.getBoundingClientRect();
+
+                        maxHeight = brect.top - rect.top;
+
+                        if (mode === 'boundary-include') {
+                            maxHeight += brect.height;
+                            this.style.paddingBottom = `${brect.height}px`;
+                        }
                     }
                 }
 
@@ -57,10 +66,14 @@ customElements.define('app-scrollcontainer', class extends HTMLElement {
                     return;
                 }
 
+
+                if ((rect.top + maxHeight) >= window.innerHeight) {
+                    maxHeight = window.innerHeight - rect.top;
+                }
+
                 break;
         }
 
-
-        this.style.maxHeight = `${maxHeight}px`;
+       this.style.maxHeight = `${maxHeight}px`;
     }
 });

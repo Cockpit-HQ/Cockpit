@@ -1964,7 +1964,8 @@ app-loader-cover[label] .app-loader-cover-label {
 }
 app-scrollcontainer {
     display: block;
-    overflow: auto;
+    box-sizing: border-box;
+    overflow-y: auto;
 }
 app-textcomplete {
     display: block;

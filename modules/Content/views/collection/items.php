@@ -73,7 +73,7 @@
                 </div>
             </div>
 
-            <app-scrollcontainer mode="boundary" boundary="#items-actionbar">
+            <app-scrollcontainer mode="boundary-include" boundary="app-actionbar">
 
                 <app-loader class="kiss-margin" v-if="!fieldTypes || loading"></app-loader>
 
