@@ -4336,7 +4336,7 @@ del {
     right: 0;
     bottom: 0;
     background: linear-gradient(12deg, rgba(0,0,0,.5) 0%, rgba(0,0,0,0) 35%, rgba(0,0,0,0) 100%);
-    z-index: 0;
+    z-index: -1;
 }
 html[data-theme='light'] .app-container-aside-panel::before {
     background: none;
