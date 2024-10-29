@@ -30,7 +30,12 @@ export default {
             val: this.modelValue || [],
             selected: [],
             gridOptions: {
-                rowSelection: 'multiple',
+                rowSelection: {
+                    mode: 'multiRow',
+                    headerCheckbox: true,
+                    checkboxes: true,
+                    hideDisabledCheckboxes: false,
+                },
                 onSelectionChanged: (e) => {
                     this.selected = e.api.getSelectedRows();
                 },
@@ -82,13 +87,6 @@ export default {
             let cols = [
                 {
                     rowDrag: true,
-                    width: 50,
-                    pinned: 'left',
-                },
-                {
-                    headerCheckboxSelection: true,
-                    checkboxSelection: true,
-                    showDisabledCheckboxes: true,
                     width: 50,
                     pinned: 'left',
                 }
