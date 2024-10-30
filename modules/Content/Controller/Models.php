@@ -70,6 +70,8 @@ class Models extends App {
 
     public function remove($name = null) {
 
+        $this->hasValidCsrfToken(true);
+
         if (!$name) {
             return $this->stop(412);
         }
@@ -91,14 +93,16 @@ class Models extends App {
 
     public function save() {
 
+        $this->hasValidCsrfToken(true);
+
         $model = $this->param('model');
         $isUpdate = $this->param('isUpdate', false);
 
-        if (!$model) {
+        if (!$model || !isset($model['name'], $model['type']) || !trim($model['name']) || !trim($model['type'])) {
             return $this->stop(['error' => 'Model data is missing'], 412);
         }
 
-        if (!$this->isAllowed("content/:models/manage") && !$this->isAllowed("content/{$model}/manage")) {
+        if (!$this->isAllowed("content/:models/manage") && !$this->isAllowed("content/{$model['name']}/manage")) {
             return $this->stop(401);
         }
 
