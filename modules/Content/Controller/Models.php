@@ -155,6 +155,10 @@ class Models extends App {
         $model    = $this->module('content')->model($model);
         $isUpdate = isset($item['_id']) && $item['_id'];
 
+        if (isset($item['_id']) && (!is_string($item['_id']) || !$this->app->dataStorage->isValidId($item['_id']))) {
+            return $this->stop(['error' => 'Item ID looks wrong'], 400);
+        }
+
         if ($isUpdate && !$this->isAllowed("content/{$model['name']}/update")) {
             return $this->stop(401);
         }
