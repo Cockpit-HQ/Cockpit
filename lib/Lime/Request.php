@@ -44,9 +44,9 @@ class Request {
             (isset($_SERVER['CONTENT_TYPE']) && stripos($_SERVER['CONTENT_TYPE'],'application/json')!==false) ||
             (isset($_SERVER['HTTP_CONTENT_TYPE']) && stripos($_SERVER['HTTP_CONTENT_TYPE'],'application/json')!==false) // PHP build in Webserver !?
         ) {
-            if ($json = json_decode(@\file_get_contents('php://input'), true)) {
+            if ($json = json_decode(@file_get_contents('php://input'), true)) {
                 $config['body'] = $json;
-                $config['request'] = \array_merge($config['request'], $json);
+                $config['request'] = array_merge($config['request'], $json);
             }
         }
 
@@ -77,7 +77,7 @@ class Request {
         $cast = null;
 
         if (str_contains($index, ':')) {
-            list($index, $cast) = \explode(':', $index, 2);
+            list($index, $cast) = explode(':', $index, 2);
         }
 
         $value = fetch_from_array($src, $index, null);
@@ -147,7 +147,7 @@ class Request {
             $url .= $path;
         }
 
-        return \rtrim($url, '/');
+        return rtrim($url, '/');
     }
 
     public function is(string $type): bool {
@@ -168,7 +168,7 @@ class Request {
                     'zte-', 'lg-', 'googlebot-mobile'
                 ];
 
-                return \preg_match('/(' . \implode('|', $mobileDevices). ')/i', strtolower($this->server['HTTP_USER_AGENT']));
+                return preg_match('/(' . implode('|', $mobileDevices). ')/i', strtolower($this->server['HTTP_USER_AGENT']));
 
             case 'post':
                 return (isset($this->server['REQUEST_METHOD']) && strtolower($this->server['REQUEST_METHOD']) == 'post');
