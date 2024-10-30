@@ -23,6 +23,15 @@ class Mongo {
         $this->options = $options;
     }
 
+    public function isValidId(string $objectId) {
+        try {
+            $id = new ObjectID($objectId);
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
     public function lstCollections(): array {
 
         $return = [];

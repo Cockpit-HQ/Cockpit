@@ -15,6 +15,10 @@ class MongoLite {
         $this->db     = $options['db'];
     }
 
+    public function isValidId(string $objectId) {
+        return preg_match('/^[0-9a-f]{24}$/', $objectId) === 1;
+    }
+
     public function lstCollections(): array {
 
         $return = [];
