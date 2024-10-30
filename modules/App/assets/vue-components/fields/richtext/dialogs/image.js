@@ -47,7 +47,12 @@ export default {
                 </div>
             </div>
 
-            <img class="kiss-margin" :src="src" v-if="src">
+            <div class="kiss-margin kiss-position-relative kiss-bgcolor-transparentimage" v-if="src">
+                <canvas width="800" height="400"></canvas>
+                <div class="kiss-cover kiss-flex kiss-flex-middle kiss-flex-center">
+                    <img class="kiss-position-absolute kiss-margin-auto kiss-responsive-height" :src="src" v-if="src">
+                </div>
+            </div>
 
             <div class="kiss-margin">
                 <label class="kiss-text-capitalize">{{ t('Alternative text') }}</label>
