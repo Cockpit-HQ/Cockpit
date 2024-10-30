@@ -125,6 +125,8 @@ export default {
                     }),
                     VueTiptap.extensions.Link.configure({
                         openOnClick: false,
+                        protocols: ['pages', 'assets', 'ftp', 'mailto'],
+
                     }),
                     VueTiptap.extensions.Image.configure({
                         inline: false,
