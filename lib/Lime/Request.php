@@ -80,7 +80,11 @@ class Request {
             list($index, $cast) = \explode(':', $index, 2);
         }
 
-        $value = fetch_from_array($src, $index, $default);
+        $value = fetch_from_array($src, $index, null);
+
+        if (is_null($value)) {
+            $value = $default;
+        }
 
         if ($cast && $value !== null) {
 
