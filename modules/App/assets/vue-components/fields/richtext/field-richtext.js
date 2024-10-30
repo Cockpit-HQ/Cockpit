@@ -95,7 +95,7 @@ export default {
 
         ready.then(() => {
 
-            this.editor = new VueTiptap.Editor({
+            let config = {
                 extensions: [
                     VueTiptap.extensions.StarterKit,
                     VueTiptap.extensions.Subscript,
@@ -125,7 +125,7 @@ export default {
                     }),
                     VueTiptap.extensions.Link.configure({
                         openOnClick: false,
-                        protocols: ['pages', 'assets', 'ftp', 'mailto'],
+                        protocols: ['ftp', 'mailto'],
 
                     }),
                     VueTiptap.extensions.Image.configure({
@@ -137,7 +137,13 @@ export default {
                 onUpdate: ({ editor }) => {
                     $this.update()
                 }
-            });
+            };
+
+            App.trigger('field-richtext-config', [config]);
+
+            this.editor = new VueTiptap.Editor(config);
+
+            App.trigger('field-richtext-init', [this.editor]);
 
             this.editor.commands.setContent(this.modelValue || '', false);
         });

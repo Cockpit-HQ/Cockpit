@@ -4,6 +4,18 @@ import "../components/display-image.js";
 VueView.component('asset-preview', 'assets:assets/vue-components/asset-preview.js');
 VueView.component('field-asset', 'assets:assets/vue-components/field-asset.js');
 
+App.on('field-richtext-init', evt => {
+    let editor = evt.params[0];
+
+    editor.extensionManager.extensions.forEach(ext => {
+        switch (ext.name) {
+            case 'link':
+                ext.options.protocols.push('assets')
+                break;
+        }
+    });
+});
+
 App.on('field-richtext-image-sources', evt => {
     let img = evt.params[0];
 
