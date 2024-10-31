@@ -373,7 +373,7 @@ export default {
 
             </kiss-grid>
 
-            <div class="animated fadeIn kiss-margin-large kiss-color-muted kiss-align-center" :class="{'kiss-height-30vh kiss-flex kiss-flex-middle kiss-flex-center': !modal}" v-if="!loading && !assets.length">
+            <div class="animated fadeIn kiss-margin-large-top kiss-color-muted kiss-align-center" :class="{'kiss-height-30vh kiss-flex kiss-flex-middle kiss-flex-center': !modal}" v-if="!loading && !assets.length">
                 <div>
                     <kiss-svg :src="$baseUrl('assets:icon.svg')" width="40" height="40"><canvas width="40" height="40"></canvas></kiss-svg>
                     <p class="kiss-margin-small-top kiss-size-large">{{ t('No assets') }}</p>
