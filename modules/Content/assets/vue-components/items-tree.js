@@ -230,7 +230,7 @@ export default {
             >
                 <div class="kiss-margin-xsmall" :data-item-id="element._id" :data-item-idx="idx" :key="element._id" v-for="(element, idx) in items">
                     <kiss-card class="kiss-padding-small kiss-flex kiss-flex-middle kiss-margin-xsmall" gap="small" theme="bordered contrast shadowed">
-                        <a class="fm-handle kiss-color-muted" v-if="allowMoving"><icon>drag_handle</icon></a>
+                        <a class="fm-handle kiss-color-muted kiss-cursor-grab" v-if="allowMoving"><icon>drag_handle</icon></a>
                         <a class=" kiss-color-muted" :class="{'kiss-hidden': !element._children}" :placeholder="t('Toggle children')" @click="element._showChildren = !element._showChildren">
                             <icon>{{ element._showChildren ? 'indeterminate_check_box' : 'add_box' }}</icon>
                         </a>

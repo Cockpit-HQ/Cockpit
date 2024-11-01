@@ -3688,6 +3688,13 @@ td.kiss-text-truncate { max-width: 0; }
 .kiss-opacity-1 { opacity: 1 !important; }
 .kiss-transition { transition: all .3s ease; }
 .kiss-cursor-pointer { cursor: pointer;}
+.kiss-cursor-help { cursor: help;}
+.kiss-cursor-grab { cursor: grab;}
+.kiss-cursor-grabbing { cursor: grabbing;}
+.kiss-cursor-wait { cursor: wait;}
+.kiss-cursor-not-allowed { cursor: not-allowed;}
+.kiss-cursor-zoom-in { cursor: zoom-in;}
+.kiss-cursor-zoom-out { cursor: zoom-in;}
 .kiss-border-circle { border-radius: 50%; }
 .kiss-svg,
 .kiss-svg:not(.kiss-preserve) [fill*='#']:not(.kiss-preserve) { fill: currentcolor; }
