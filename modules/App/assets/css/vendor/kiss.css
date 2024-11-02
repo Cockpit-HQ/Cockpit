@@ -127,6 +127,14 @@ kiss-popout kiss-navlist > ul > li > a > icon {
     transform: scale(1.2);
 }
 
+kiss-navlist ul > li > a {
+    transition: color .3s;
+
+    &:focus, &:hover {
+        color: var(--kiss-color-primary) !important;
+    }
+}
+
 .kiss-input {
     padding: .6em .6em;
     color: var(--kiss-base-text-color);
