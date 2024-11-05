@@ -1,6 +1,6 @@
 <?php
 
-const APP_VERSION = '2.9.4';
+const APP_VERSION = '2.10.0';
 
 if (!defined('APP_ADMIN')) define('APP_ADMIN', false);
 if (!defined('APP_CLI')) define('APP_CLI', PHP_SAPI == 'cli');

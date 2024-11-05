@@ -1,6 +1,6 @@
 # Release Notes
 
-## WIP
+## 2.10.0 (2024-10-07)
 
 - Update Vue to v3.5.12
 - Fix request param casting (array to string)
@@ -8,6 +8,7 @@
 - Fix verbose required field error messages
 - Fix locale fields projection in content api
 - Optimize admin assets loading
+- Replace drag-n-drop lib (admin ui)
 
 ## 2.9.4 (2024-10-07)
 
