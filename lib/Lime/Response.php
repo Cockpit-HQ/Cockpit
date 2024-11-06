@@ -78,6 +78,7 @@ class Response {
         'asc'   => 'text/plain',
         'au'    => 'audio/basic',
         'avi'   => 'video/x-msvideo',
+        'avif'  => 'image/avif',
         'bin'   => 'application/octet-stream',
         'class' => 'application/octet-stream',
         'css'   => 'text/css',
