@@ -159,7 +159,7 @@ class Database {
      * @param  string $name
      */
     public function createCollection(string $name): void {
-        $this->connection->exec("CREATE TABLE `{$name}` ( id INTEGER PRIMARY KEY AUTOINCREMENT, document TEXT )");
+        $this->connection->exec("CREATE TABLE IF NOT EXISTS `{$name}` ( id INTEGER PRIMARY KEY AUTOINCREMENT, document TEXT )");
     }
 
     /**
