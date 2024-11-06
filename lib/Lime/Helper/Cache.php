@@ -8,7 +8,7 @@ class Cache extends \Lime\Helper {
     protected ?string $cachePath = null;
 
     protected function initialize(): void {
-        $this->cachePath = \rtrim(\sys_get_temp_dir(),"/\\").'/';
+        $this->cachePath = rtrim(sys_get_temp_dir(),"/\\").'/';
         $this->prefix    = $this->app['app.name'];
     }
 
@@ -35,34 +35,34 @@ class Cache extends \Lime\Helper {
             $safe_var['value'] = $this->app->encode($safe_var['value'], $this->app->retrieve('sec-key'));
         }
 
-        \file_put_contents($this->cachePath.\md5($this->prefix.'-'.$key).".cache" , \serialize($safe_var));
+        file_put_contents($this->cachePath.\md5($this->prefix.'-'.$key).".cache" , serialize($safe_var));
     }
 
     public function read(string $key, mixed $default = null, $decrypt = false): mixed {
 
-        $var = @\file_get_contents($this->cachePath.\md5($this->prefix.'-'.$key).".cache");
+        $var = @file_get_contents($this->cachePath.\md5($this->prefix.'-'.$key).".cache");
 
         if (!$var) {
-            return \is_callable($default) ? \call_user_func($default):$default;
+            return is_callable($default) ? call_user_func($default):$default;
         } else {
 
-            $time = \time();
-            $var  = \unserialize($var);
+            $time = time();
+            $var  = unserialize($var);
 
             if (!isset($var['expire'])) {
-                return \is_callable($default) ? \call_user_func($default):$default;
+                return is_callable($default) ? \call_user_func($default):$default;
             }
 
             if (($var['expire'] < $time) && $var['expire']!=-1) {
                 $this->delete($key);
-                return \is_callable($default) ? \call_user_func($default):$default;
+                return is_callable($default) ? \call_user_func($default):$default;
             }
 
             if ($decrypt) {
                 $var['value'] = $this->app->decode($var['value'], $this->app->retrieve('sec-key'));
             }
 
-            return \unserialize($var['value']);
+            return unserialize($var['value']);
         }
     }
 
@@ -70,7 +70,7 @@ class Cache extends \Lime\Helper {
 
         $file = $this->cachePath.\md5($this->prefix.'-'.$key).".cache";
 
-        if (\file_exists($file)) {
+        if (file_exists($file)) {
             @unlink($file);
         }
     }
@@ -81,7 +81,7 @@ class Cache extends \Lime\Helper {
 
         foreach ($iterator as $file) {
             if ($file->isFile() && str_ends_with($file, ".cache")) {
-                @\unlink($this->cachePath.$file->getFilename());
+                @unlink($this->cachePath.$file->getFilename());
             }
         }
     }
