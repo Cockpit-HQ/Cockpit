@@ -60,7 +60,10 @@ class Updater extends \Lime\Helper {
         }
 
         // extract zip contents
-        @mkdir("{$tmppath}/update-{$zipname}", 0777);
+        if (!is_dir("{$tmppath}/update-{$zipname}")) {
+            @mkdir("{$tmppath}/update-{$zipname}", 0777);
+        }
+
         $zip = new \ZipArchive;
 
         if ($zip->open("{$tmppath}/{$zipname}") === true) {
