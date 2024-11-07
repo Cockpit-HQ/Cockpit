@@ -59,17 +59,17 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.325.2",
-            "version_normalized": "3.325.2.0",
+            "version": "3.325.3",
+            "version_normalized": "3.325.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "9e354a5e0cd1d563ec85245e3000e98e16a44fce"
+                "reference": "de0b289c7260fb19301ffa2eb724de2076daad74"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/9e354a5e0cd1d563ec85245e3000e98e16a44fce",
-                "reference": "9e354a5e0cd1d563ec85245e3000e98e16a44fce",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/de0b289c7260fb19301ffa2eb724de2076daad74",
+                "reference": "de0b289c7260fb19301ffa2eb724de2076daad74",
                 "shasum": ""
             },
             "require": {
@@ -110,7 +110,7 @@
                 "ext-openssl": "Allows working with CloudFront private distributions and verifying received SNS messages",
                 "ext-sockets": "To use client-side monitoring"
             },
-            "time": "2024-11-01T18:08:38+00:00",
+            "time": "2024-11-06T19:05:22+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -154,7 +154,7 @@
             "support": {
                 "forum": "https://forums.aws.amazon.com/forum.jspa?forumID=80",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.325.2"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.325.3"
             },
             "install-path": "../aws/aws-sdk-php"
         },
@@ -2135,17 +2135,17 @@
         },
         {
             "name": "symfony/console",
-            "version": "v5.4.45",
-            "version_normalized": "5.4.45.0",
+            "version": "v5.4.46",
+            "version_normalized": "5.4.46.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "108d436c2af470858bdaba3257baab3a74172017"
+                "reference": "fb0d4760e7147d81ab4d9e2d57d56268261b4e4e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/108d436c2af470858bdaba3257baab3a74172017",
-                "reference": "108d436c2af470858bdaba3257baab3a74172017",
+                "url": "https://api.github.com/repos/symfony/console/zipball/fb0d4760e7147d81ab4d9e2d57d56268261b4e4e",
+                "reference": "fb0d4760e7147d81ab4d9e2d57d56268261b4e4e",
                 "shasum": ""
             },
             "require": {
@@ -2183,7 +2183,7 @@
                 "symfony/lock": "",
                 "symfony/process": ""
             },
-            "time": "2024-10-08T07:27:17+00:00",
+            "time": "2024-11-05T14:17:06+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -2217,7 +2217,7 @@
                 "terminal"
             ],
             "support": {
-                "source": "https://github.com/symfony/console/tree/v5.4.45"
+                "source": "https://github.com/symfony/console/tree/v5.4.46"
             },
             "funding": [
                 {
@@ -3103,23 +3103,23 @@
         },
         {
             "name": "symfony/process",
-            "version": "v6.4.13",
-            "version_normalized": "6.4.13.0",
+            "version": "v6.4.14",
+            "version_normalized": "6.4.14.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
-                "reference": "1f9f59b46880201629df3bd950fc5ae8c55b960f"
+                "reference": "25214adbb0996d18112548de20c281be9f27279f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/process/zipball/1f9f59b46880201629df3bd950fc5ae8c55b960f",
-                "reference": "1f9f59b46880201629df3bd950fc5ae8c55b960f",
+                "url": "https://api.github.com/repos/symfony/process/zipball/25214adbb0996d18112548de20c281be9f27279f",
+                "reference": "25214adbb0996d18112548de20c281be9f27279f",
                 "shasum": ""
             },
             "require": {
                 "php": ">=8.1"
             },
-            "time": "2024-09-25T14:18:03+00:00",
+            "time": "2024-11-06T09:25:01+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -3147,7 +3147,7 @@
             "description": "Executes commands in sub-processes",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/process/tree/v6.4.13"
+                "source": "https://github.com/symfony/process/tree/v6.4.14"
             },
             "funding": [
                 {
