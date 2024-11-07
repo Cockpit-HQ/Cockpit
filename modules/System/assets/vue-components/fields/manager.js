@@ -245,10 +245,11 @@ let FieldsManager = {
                             </div>
                         </div>
                         <div class="kiss-flex-1">
-                            <div class="kiss-text-bold">
+                            <div class="kiss-flex kiss-text-bold" gap="xsmall">
                                 {{ element.label || element.name }}
-                                <icon class="kiss-color-muted kiss-margin-xsmall-left" v-if="element.i18n">language</icon>
-                                <icon class="kiss-color-muted kiss-margin-xsmall-left" v-if="element.multiple">format_list_numbered</icon>
+                                <icon class="kiss-color-muted" v-if="element.i18n">language</icon>
+                                <icon class="kiss-color-muted" v-if="element.multiple">format_list_numbered</icon>
+                                <icon class="kiss-color-muted" v-if="element.condition">conversion_path</icon>
                             </div>
                             <div class="kiss-size-xsmall">
                                 <span class="kiss-color-muted">{{ element.name }}</span>
