@@ -490,11 +490,25 @@ export default {
 
             // compile condition
             if (typeof(field.condition) === 'string') {
-                field.condition = new Function('data', `return ${field.condition}`);
+
+                if (!field.condition.trim()) {
+                    return true;
+                } else {
+                    field.condition = new Function('data', `return ${field.condition}`);
+                }
+
             }
 
             try {
-                return field.condition(JSON.parse(JSON.stringify(this.val)));
+
+                const check = field.condition(JSON.parse(JSON.stringify(this.val)));
+
+                if (!check && this.val[field.name] !== undefined) {
+                    delete this.val[field.name];
+                }
+
+                return check;
+
             } catch(e) {}
 
             return true;
