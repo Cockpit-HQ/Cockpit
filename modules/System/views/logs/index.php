@@ -44,7 +44,7 @@
                         <div class="kiss-size-4 kiss-text-light kiss-flex-1">{{ (selectedChannel && channels[selectedChannel].label) || 'All' }}</div>
                     </div>
 
-                    <div class="kiss-margin">
+                    <div class="kiss-flex kiss-flex-middle kiss-margin">
 
                         <button class="kiss-button kiss-button-small kiss-margin-small-right" :class="{'kiss-button-primary': !selectedTypes.length}" @click="selectedTypes = []">All</button>
 
