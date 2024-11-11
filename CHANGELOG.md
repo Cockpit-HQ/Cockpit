@@ -1,5 +1,13 @@
 # Release Notes
 
+## WIP
+
+- Improve field condition behavior
+- Fix avif output using image api
+- Fix MongoLite edge error (table exists)
+- Add more checks during Cockpit update
+- Make field actions available for multiple values fields
+
 ## 2.10.0 (2024-11-05)
 
 - Update Vue to v3.5.12
