@@ -259,7 +259,7 @@ let FieldRenderer = {
                     </div>
 
                     <div class="kiss-margin">
-                        <component :is="getFieldType()" v-model="fieldItem.value" v-bind="field.opts" :locale="locale"></component>
+                        <fields-renderer v-model="fieldItem" :fields="[{name:'value', label: t('Item value'), type:field.type, opts:field.opts}]" :locale="locale"></fields-renderer>
                     </div>
 
                     <div class="kiss-button-group kiss-child-width-1-2 kiss-flex kiss-margin">
