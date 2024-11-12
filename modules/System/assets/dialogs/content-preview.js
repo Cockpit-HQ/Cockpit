@@ -124,8 +124,10 @@ export default {
                 <div class="kiss-flex-1 kiss-text-bold kiss-margin-small-left">{{ t('Content preview') }}</div>
 
                 <div class="kiss-margin-small-left kiss-margin-right" v-if="locales.length">
-                    <a class="kiss-text-bold kiss-flex kiss-flex-middle" kiss-popout="#content-preview-locales">
-                        <icon class="kiss-margin-xsmall-right">language</icon> {{ locale.name }}
+                    <a class="kiss-text-bold kiss-link-muted kiss-flex kiss-flex-middle" gap="xsmall" kiss-popout="#content-preview-locales">
+                        <icon size="larger" class="kiss-color-primary">translate</icon>
+                        {{ locale.name }}
+                        <icon class="kiss-color-muted">unfold_more</icon>
                     </a>
                 </div>
 

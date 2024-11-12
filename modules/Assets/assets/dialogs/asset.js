@@ -2,13 +2,20 @@ import {initUppyUploader} from '../js/uppy.js';
 
 export default {
 
-    data() {
+
+    data: function () {
+
+        let locales = Object.keys(App._locales).map(i18n => {
+            return {i18n, name: App._locales[i18n], visible: i18n === 'default'};
+        });
 
         return {
             item: null,
             loading: true,
             focalPointing: false,
-            folders: null
+            folders: null,
+            locale: null,
+            locales,
         }
     },
 
@@ -56,14 +63,15 @@ export default {
         assetInfoFields() {
 
             let fields = [
-                {name:'title', type:'text'},
-                {name:'description', type:'text', opts: {multiline:true, height:200}},
-                {name:'tags', type:'tags'}
+                {name:'title', type:'text', i18n: true},
+                {name:'description', type:'text', i18n: true, opts: {multiline:true, height:200}}
             ];
 
             if (this.item.type == 'image') {
-                fields.push({name:'altText', type:'text', label: 'Alt Text'});
+                fields.push({name:'altText', type:'text', label: 'Alt Text', i18n: true});
             }
+
+            fields.push({name:'tags', type:'tags'});
 
             return fields;
         },
@@ -79,6 +87,14 @@ export default {
             }
 
             return {left: (this.item.fp.x * 100)+'%', top: (this.item.fp.y * 100)+'%'}
+        }
+    },
+
+    watch: {
+        locale(val) {
+            this.locales.forEach(l => {
+                l.visible = val ? val.i18n === l.i18n : false;
+            });
         }
     },
 
@@ -141,7 +157,17 @@ export default {
     <div class="app-offcanvas-container">
         <div class="kiss-padding kiss-text-bold kiss-flex kiss-flex-middle">
             <div class="kiss-margin-small-right"><icon size-larger>create</icon></div>
-            {{ t('Edit asset') }}
+            <div class="kiss-flex-1">{{ t('Edit asset') }}</div>
+            <div class="kiss-overlay-input" v-if="locales.length > 1">
+                <button type="button" class="kiss-button kiss-flex-inline kiss-flex-middle kiss-button-small" gap="small">
+                    <icon class="kiss-color-primary">translate</icon>
+                    <div>{{ locale?.name || locales.find(l => l.visible).name }}</div>
+                    <icon class="kiss-color-muted">unfold_more</icon>
+                </button>
+                <select v-model="locale">
+                    <option :selected="locale == l" :value="l" v-for="l in locales">{{ l.name }}</option>
+                </select>
+            </div>
         </div>
         <div class="app-offcanvas-content kiss-padding">
 
@@ -183,9 +209,9 @@ export default {
                     </div>
                 </div>
 
-                <app-fieldcontainer class="kiss-margin" v-if="Array.isArray(folders) && folders.length">
+                <div class="kiss-margin" v-if="Array.isArray(folders) && folders.length">
                     <label>{{ t('Folder') }}</label>
-                    <div class="kiss-overlay-input kiss-display-block">
+                    <kiss-card class="kiss-overlay-input kiss-display-block" hover="bordered-primary" theme="bordered">
                         <kiss-card class="kiss-flex kiss-flex-middle" theme="shadowed contrast">
                             <div class="kiss-padding kiss-bgcolor-contrast"><icon size="larger">folder</icon></div>
                             <div class="kiss-padding kiss-text-truncate kiss-flex-1" :class="{'kiss-color-muted kiss-text-caption': !folder, 'kiss-text-bold': folder}">
@@ -196,10 +222,10 @@ export default {
                             <option vlaie="">- {{ t('none') }} -</option>
                             <option v-for="f in folders" :value="f._id">{{ (new Array(f._depth+1).join('-'))}} {{ f.name }}</option>
                         </select>
-                    </div>
-                </app-fieldcontainer>
+                    </kiss-card>
+                </div>
 
-                <fields-renderer class="kiss-margin" v-model="item" :fields="assetInfoFields"></fields-renderer>
+                <fields-renderer class="kiss-margin" v-model="item" :fields="assetInfoFields" :locales="locales.length > 1 ? locales : []"></fields-renderer>
 
             </form>
 
