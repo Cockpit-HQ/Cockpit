@@ -314,7 +314,7 @@
                     this.$request(`/content/models/saveItem/${model}`, {item: this.item}).then(item => {
 
                         this.item = Object.assign(this.item, item);
-                        this.savedItemState = JSON.stringify(this.item);
+                        setTimeout(() => this.savedItemState = JSON.stringify(this.item), 20);
                         this.saving = false;
                         App.ui.notify('Data updated!');
 
