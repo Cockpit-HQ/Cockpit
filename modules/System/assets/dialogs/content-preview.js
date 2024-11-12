@@ -126,7 +126,7 @@ export default {
                 <div class="kiss-margin-small-left kiss-margin-right" v-if="locales.length">
                     <a class="kiss-text-bold kiss-link-muted kiss-flex kiss-flex-middle" gap="xsmall" kiss-popout="#content-preview-locales">
                         <icon size="larger" class="kiss-color-primary">translate</icon>
-                        {{ locale.name }}
+                        <div class="kiss-size-small kiss-margin-xsmall-left">{{ locale.name }}</div>
                         <icon class="kiss-color-muted">unfold_more</icon>
                     </a>
                 </div>
