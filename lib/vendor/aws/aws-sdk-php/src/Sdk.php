@@ -88,6 +88,8 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionBedrockAgentRuntime(array $args = [])
  * @method \Aws\BedrockRuntime\BedrockRuntimeClient createBedrockRuntime(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionBedrockRuntime(array $args = [])
+ * @method \Aws\Billing\BillingClient createBilling(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionBilling(array $args = [])
  * @method \Aws\BillingConductor\BillingConductorClient createBillingConductor(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionBillingConductor(array $args = [])
  * @method \Aws\Braket\BraketClient createBraket(array $args = [])
@@ -785,7 +787,7 @@ namespace Aws;
  */
 class Sdk
 {
-    const VERSION = '3.325.7';
+    const VERSION = '3.326.0';
 
     /** @var array Arguments for creating clients */
     private $args;

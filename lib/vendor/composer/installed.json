@@ -59,17 +59,17 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.325.7",
-            "version_normalized": "3.325.7.0",
+            "version": "3.326.0",
+            "version_normalized": "3.326.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "55852104253172e66c3358bf4c35281bbd8622b2"
+                "reference": "5420284de9aad84e375fa8012cefd834bebfd623"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/55852104253172e66c3358bf4c35281bbd8622b2",
-                "reference": "55852104253172e66c3358bf4c35281bbd8622b2",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/5420284de9aad84e375fa8012cefd834bebfd623",
+                "reference": "5420284de9aad84e375fa8012cefd834bebfd623",
                 "shasum": ""
             },
             "require": {
@@ -110,7 +110,7 @@
                 "ext-openssl": "Allows working with CloudFront private distributions and verifying received SNS messages",
                 "ext-sockets": "To use client-side monitoring"
             },
-            "time": "2024-11-12T19:27:31+00:00",
+            "time": "2024-11-13T19:07:44+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -154,7 +154,7 @@
             "support": {
                 "forum": "https://forums.aws.amazon.com/forum.jspa?forumID=80",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.325.7"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.326.0"
             },
             "install-path": "../aws/aws-sdk-php"
         },
@@ -2135,17 +2135,17 @@
         },
         {
             "name": "symfony/console",
-            "version": "v5.4.46",
-            "version_normalized": "5.4.46.0",
+            "version": "v5.4.47",
+            "version_normalized": "5.4.47.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "fb0d4760e7147d81ab4d9e2d57d56268261b4e4e"
+                "reference": "c4ba980ca61a9eb18ee6bcc73f28e475852bb1ed"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/fb0d4760e7147d81ab4d9e2d57d56268261b4e4e",
-                "reference": "fb0d4760e7147d81ab4d9e2d57d56268261b4e4e",
+                "url": "https://api.github.com/repos/symfony/console/zipball/c4ba980ca61a9eb18ee6bcc73f28e475852bb1ed",
+                "reference": "c4ba980ca61a9eb18ee6bcc73f28e475852bb1ed",
                 "shasum": ""
             },
             "require": {
@@ -2183,7 +2183,7 @@
                 "symfony/lock": "",
                 "symfony/process": ""
             },
-            "time": "2024-11-05T14:17:06+00:00",
+            "time": "2024-11-06T11:30:55+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -2217,7 +2217,7 @@
                 "terminal"
             ],
             "support": {
-                "source": "https://github.com/symfony/console/tree/v5.4.46"
+                "source": "https://github.com/symfony/console/tree/v5.4.47"
             },
             "funding": [
                 {
@@ -3103,23 +3103,23 @@
         },
         {
             "name": "symfony/process",
-            "version": "v6.4.14",
-            "version_normalized": "6.4.14.0",
+            "version": "v6.4.15",
+            "version_normalized": "6.4.15.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
-                "reference": "25214adbb0996d18112548de20c281be9f27279f"
+                "reference": "3cb242f059c14ae08591c5c4087d1fe443564392"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/process/zipball/25214adbb0996d18112548de20c281be9f27279f",
-                "reference": "25214adbb0996d18112548de20c281be9f27279f",
+                "url": "https://api.github.com/repos/symfony/process/zipball/3cb242f059c14ae08591c5c4087d1fe443564392",
+                "reference": "3cb242f059c14ae08591c5c4087d1fe443564392",
                 "shasum": ""
             },
             "require": {
                 "php": ">=8.1"
             },
-            "time": "2024-11-06T09:25:01+00:00",
+            "time": "2024-11-06T14:19:14+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -3147,7 +3147,7 @@
             "description": "Executes commands in sub-processes",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/process/tree/v6.4.14"
+                "source": "https://github.com/symfony/process/tree/v6.4.15"
             },
             "funding": [
                 {
@@ -3253,17 +3253,17 @@
         },
         {
             "name": "symfony/string",
-            "version": "v6.4.13",
-            "version_normalized": "6.4.13.0",
+            "version": "v6.4.15",
+            "version_normalized": "6.4.15.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/string.git",
-                "reference": "38371c60c71c72b3d64d8d76f6b1bb81a2cc3627"
+                "reference": "73a5e66ea2e1677c98d4449177c5a9cf9d8b4c6f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/string/zipball/38371c60c71c72b3d64d8d76f6b1bb81a2cc3627",
-                "reference": "38371c60c71c72b3d64d8d76f6b1bb81a2cc3627",
+                "url": "https://api.github.com/repos/symfony/string/zipball/73a5e66ea2e1677c98d4449177c5a9cf9d8b4c6f",
+                "reference": "73a5e66ea2e1677c98d4449177c5a9cf9d8b4c6f",
                 "shasum": ""
             },
             "require": {
@@ -3283,7 +3283,7 @@
                 "symfony/translation-contracts": "^2.5|^3.0",
                 "symfony/var-exporter": "^5.4|^6.0|^7.0"
             },
-            "time": "2024-09-25T14:18:03+00:00",
+            "time": "2024-11-13T13:31:12+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -3322,7 +3322,7 @@
                 "utf8"
             ],
             "support": {
-                "source": "https://github.com/symfony/string/tree/v6.4.13"
+                "source": "https://github.com/symfony/string/tree/v6.4.15"
             },
             "funding": [
                 {
@@ -3417,17 +3417,17 @@
         },
         {
             "name": "webonyx/graphql-php",
-            "version": "v15.18.0",
-            "version_normalized": "15.18.0.0",
+            "version": "v15.18.1",
+            "version_normalized": "15.18.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webonyx/graphql-php.git",
-                "reference": "bd620384497500ecfdf44313dd98ecb95fb88975"
+                "reference": "a167afab66d8aa74b7f552759c0bbd906afb4134"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webonyx/graphql-php/zipball/bd620384497500ecfdf44313dd98ecb95fb88975",
-                "reference": "bd620384497500ecfdf44313dd98ecb95fb88975",
+                "url": "https://api.github.com/repos/webonyx/graphql-php/zipball/a167afab66d8aa74b7f552759c0bbd906afb4134",
+                "reference": "a167afab66d8aa74b7f552759c0bbd906afb4134",
                 "shasum": ""
             },
             "require": {
@@ -3445,8 +3445,8 @@
                 "nyholm/psr7": "^1.5",
                 "phpbench/phpbench": "^1.2",
                 "phpstan/extension-installer": "^1.1",
-                "phpstan/phpstan": "1.12.7",
-                "phpstan/phpstan-phpunit": "1.4.0",
+                "phpstan/phpstan": "1.12.10",
+                "phpstan/phpstan-phpunit": "1.4.1",
                 "phpstan/phpstan-strict-rules": "1.6.1",
                 "phpunit/phpunit": "^9.5 || ^10.5.21 || ^11",
                 "psr/http-message": "^1 || ^2",
@@ -3462,7 +3462,7 @@
                 "psr/http-message": "To use standard GraphQL server",
                 "react/promise": "To leverage async resolving on React PHP platform"
             },
-            "time": "2024-10-31T12:10:43+00:00",
+            "time": "2024-11-13T16:21:54+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -3482,7 +3482,7 @@
             ],
             "support": {
                 "issues": "https://github.com/webonyx/graphql-php/issues",
-                "source": "https://github.com/webonyx/graphql-php/tree/v15.18.0"
+                "source": "https://github.com/webonyx/graphql-php/tree/v15.18.1"
             },
             "funding": [
                 {
