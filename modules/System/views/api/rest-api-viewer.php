@@ -1,4 +1,10 @@
-<!doctype html>
+<?php
+
+    if (!class_exists('Cockpit')) {
+        return;
+    }
+
+?><!doctype html>
 <html>
 <head>
     <title>REST - API</title>

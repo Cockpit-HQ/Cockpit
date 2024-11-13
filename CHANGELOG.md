@@ -8,6 +8,7 @@
 - Add more checks during Cockpit update
 - Make field actions available for multiple values fields
 - Locale data support for asset information
+- Update GraphQL playground
 
 ## 2.10.0 (2024-11-05)
 

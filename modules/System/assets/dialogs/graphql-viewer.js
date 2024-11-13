@@ -19,11 +19,10 @@ export default {
             let apiKey = this.apiKey || '';
             let computedStyle = getComputedStyle(document.documentElement);
 
-            let bgColor = computedStyle.getPropertyValue('--kiss-base-background-color').trim().replace('#', '%23');
             let primaryColor = computedStyle.getPropertyValue('--kiss-color-primary').trim().replace('#', '%23');
-            let textColor = computedStyle.getPropertyValue('--kiss-base-text-color').trim().replace('#', '%23');
+            let theme = computedStyle.getPropertyValue('--app-auto-theme').trim()
 
-            return this.$routeUrl(`/system/api/graphqlViewer?bgColor=${bgColor}&primaryColor=${primaryColor}&textColor=${textColor}&apiKey=${apiKey}`);
+            return this.$routeUrl(`/system/api/graphqlViewer?theme=${theme}&primaryColor=${primaryColor}&apiKey=${apiKey}`);
         }
     },
 
