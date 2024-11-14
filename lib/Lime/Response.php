@@ -187,7 +187,14 @@ class Response {
             if (is_resource($body)) {
                 fpassthru($body);
             } else {
+
                 echo $body;
+
+                // Flush output buffers
+                while (ob_get_level()) {
+                    ob_end_flush();
+                }
+                flush();
             }
         }
     }

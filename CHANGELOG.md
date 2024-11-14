@@ -9,6 +9,7 @@
 - Make field actions available for multiple values fields
 - Locale data support for asset information
 - Update GraphQL playground
+- Add app:request:after event triggered after fastcgi_finish_request (if available)
 
 ## 2.10.0 (2024-11-05)
 

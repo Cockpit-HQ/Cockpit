@@ -199,6 +199,15 @@ class App implements \ArrayAccess {
     */
     public function stop(mixed $data = null, ?int $status = null): void {
 
+        register_shutdown_function(function () {
+
+            if (isset($this->response) && !function_exists('fastcgi_finish_request')) {
+                $this->trigger('app:request:after');
+            }
+
+            $this->trigger('shutdown', [true]);
+        });
+
         if (!isset($this->response)) {
 
             if (\is_array($data) || is_object($data)) {
@@ -210,7 +219,6 @@ class App implements \ArrayAccess {
             }
 
             $this->trigger('after', [true]);
-
             exit;
         }
 
@@ -237,6 +245,15 @@ class App implements \ArrayAccess {
 
         $this->trigger('after', [true]);
         $this->trigger('app:request:stop');
+
+        if (session_status() === \PHP_SESSION_ACTIVE) {
+            session_write_close();
+        }
+
+        if (function_exists('fastcgi_finish_request')) {
+            fastcgi_finish_request();
+            $this->trigger('app:request:after');
+        }
 
         exit;
     }
@@ -844,17 +861,7 @@ class App implements \ArrayAccess {
     */
     public function run(?string $route = null, ?Request $request = null, bool $flush = true): Response {
 
-        $self = $this;
-
         $this->request = $request ?? $this->getRequestfromGlobals();
-
-        register_shutdown_function(function() use($self) {
-
-            if (\session_status() === \PHP_SESSION_ACTIVE) {
-                \session_write_close();
-            }
-            $self->trigger('shutdown');
-        });
 
         if ($route) {
             $this->request->route = $route;
@@ -899,6 +906,24 @@ class App implements \ArrayAccess {
             }
 
             $this->response->flush();
+
+            if (session_status() === \PHP_SESSION_ACTIVE) {
+                session_write_close();
+            }
+
+            if (function_exists('fastcgi_finish_request')) {
+                fastcgi_finish_request();
+                $this->trigger('app:request:after');
+            }
+
+            register_shutdown_function(function () {
+
+                if (!function_exists('fastcgi_finish_request')) {
+                    $this->trigger('app:request:after');
+                }
+
+                $this->trigger('shutdown', [false]);
+            });
         }
 
         return $this->response;
