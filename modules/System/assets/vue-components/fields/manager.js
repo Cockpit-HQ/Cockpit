@@ -237,9 +237,9 @@ let FieldsManager = {
             <vue-draggable v-model="fields" :animation="150" v-if="fieldTypes && fields.length" handle=".fm-handle">
 
                 <div class="kiss-position-relative" style="margin: 8px 0;" v-for="(element, index) in fields">
-                    <kiss-card class="kiss-padding-small kiss-flex kiss-flex-middle" theme="bordered contrast">
+                    <kiss-card class="kiss-padding-small kiss-flex kiss-flex-middle" gap="small" theme="bordered contrast">
                         <a class="fm-handle kiss-margin-small-right kiss-color-muted"><icon>drag_handle</icon></a>
-                        <div class="kiss-margin-right">
+                        <div class="kiss-margin-small-right">
                             <div class="kiss-padding-small app-border-radius" :style="{background: fieldTypes?.[element.type]?.color ?? 'rgb(255, 248, 214)'}">
                                 <img :src="$baseUrl(fieldTypes?.[element.type]?.icon ?? 'system:assets/icons/edit.svg')" width="20" height="20" style="opacity:.6" :title="element.type">
                             </div>
@@ -255,9 +255,9 @@ let FieldsManager = {
                                 <span class="kiss-color-muted">{{ element.name }}</span>
                             </div>
                         </div>
-                        <div class="kiss-margin-small-right kiss-size-small kiss-color-muted">{{ element.group || '' }}</div>
-                        <a class="kiss-margin-left" @click="edit(element)"><icon>settings</icon></a>
-                        <a class="kiss-margin-left kiss-color-danger" @click="remove(element)"><icon>delete</icon></a>
+                        <div class="kiss-size-small kiss-color-muted">{{ element.group || '' }}</div>
+                        <a @click="edit(element)"><icon>settings</icon></a>
+                        <a class="kiss-color-danger" @click="remove(element)"><icon>delete</icon></a>
                     </kiss-card>
 
                     <div class="kiss-position-absolute kiss-width-1-3 kiss-align-center kiss-visible-toggle" style="bottom:0;height:20px;left:50%;transform:translateX(-50%) translateY(15%);z-index:5;" v-if="fields.length > 1 && index !== (fields.length - 1)">
