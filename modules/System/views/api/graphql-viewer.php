@@ -22,6 +22,14 @@
         </style>
         <style>
             <?php include($this->path('system:assets/vendor/graphiql/graphiql.min.css')) ?>
+
+            .graphiql-logo {
+                display: none;
+            }
+
+            .graphiql-session-header-right {
+                padding-right: 20px;
+            }
         </style>
         <script>
         <?php
