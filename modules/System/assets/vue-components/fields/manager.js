@@ -237,7 +237,7 @@ let FieldsManager = {
             <vue-draggable v-model="fields" :animation="150" v-if="fieldTypes && fields.length" handle=".fm-handle">
 
                 <div class="kiss-position-relative" style="margin: 8px 0;" v-for="(element, index) in fields">
-                    <kiss-card class="kiss-padding-small kiss-flex kiss-flex-middle" gap="small" theme="bordered contrast">
+                    <kiss-card class="kiss-padding-small kiss-flex kiss-flex-middle kiss-visible-toggle" gap="small" theme="bordered contrast" hover="bordered-primary">
                         <a class="fm-handle kiss-margin-small-right kiss-color-muted"><icon>drag_handle</icon></a>
                         <div class="kiss-margin-small-right">
                             <div class="kiss-padding-small app-border-radius" :style="{background: fieldTypes?.[element.type]?.color ?? 'rgb(255, 248, 214)'}">
@@ -255,7 +255,11 @@ let FieldsManager = {
                                 <span class="kiss-color-muted">{{ element.name }}</span>
                             </div>
                         </div>
-                        <div class="kiss-size-small kiss-color-muted">{{ element.group || '' }}</div>
+                        <div class="kiss-size-small kiss-color-muted kiss-invisible-hover">{{ element.group || '' }}</div>
+                        <div class="kiss-button-group kiss-invisible-hover kiss-size-xsmall">
+                            <a class="kiss-button kiss-button-small" :title="t('Move up')" v-if="fields.indexOf(element) !== 0" @click="fields.splice(index - 1, 0, fields.splice(index, 1)[0])"><icon>arrow_upward</icon></a>
+                            <a class="kiss-button kiss-button-small" :title="t('Move down')" v-if="fields.indexOf(element) !== fields.length - 1" @click="fields.splice(index, 2, fields[index + 1], fields[index])"><icon>arrow_downward</icon></a>
+                        </div>
                         <a @click="edit(element)"><icon>settings</icon></a>
                         <a class="kiss-color-danger" @click="remove(element)"><icon>delete</icon></a>
                     </kiss-card>
