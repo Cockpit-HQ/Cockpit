@@ -146,8 +146,15 @@
                             <tr><td>Realpath Cache</td><td class="kiss-text-monospace kiss-color-muted"><?=ini_get("realpath_cache_size")?> / <?=ini_get("realpath_cache_ttl")?> (ttl)</td></tr>
                             <tr><td>System temporary directory</td><td class="kiss-text-monospace kiss-color-muted"><?=sys_get_temp_dir()?></td></tr>
                             <tr>
-                                <td>OPCache</td>
-                                <td><span class="kiss-badge kiss-badge-outline kiss-color-<?=(ini_get("opcache.enable") ? 'success':'danger')?>"><?=(ini_get("opcache.enable") ? 'Enabled':'Disabled')?></span></td>
+                                <td>Opcache</td>
+                                <td>
+                                    <div class="kiss-flex kiss-flex-middle">
+                                        <div class="kiss-flex-1"><span class="kiss-badge kiss-badge-outline kiss-color-<?=(ini_get("opcache.enable") ? 'success':'danger')?>"><?=(ini_get("opcache.enable") ? 'Enabled':'Disabled')?></span></div>
+                                        <?php if(ini_get("opcache.enable")): ?>
+                                        <a title="Reset Opcache" @click="resetOpcache"><icon size="larger">mop</icon></a>
+                                        <?php endif ?>
+                                    </div>
+                                </td>
                             </tr>
 
                         </tbody>
@@ -229,6 +236,16 @@
                                 App.ui.unblock();
                                 App.ui.notify('Cache cleared!');
                             });
+                        });
+                    },
+
+                    resetOpcache() {
+
+                        App.ui.block();
+
+                        this.$request('/system/utils/resetOpcache', {}).then(res => {
+                            App.ui.unblock();
+                            App.ui.notify('Opcache cleared!');
                         });
                     },
 

@@ -107,6 +107,19 @@ class Utils extends App {
         return ['success' => true];
     }
 
+    public function resetOpcache() {
+
+        if (!$this->helper('acl')->isSuperAdmin() || !$this->helper('spaces')->isMaster()) {
+            return $this->stop(401);
+        }
+
+        if (function_exists('opcache_reset')) {
+            opcache_reset();
+        }
+
+        return ['success' => true];
+    }
+
     public function license() {
 
         $helper = $this->helper('license');
