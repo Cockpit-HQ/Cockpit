@@ -11,6 +11,7 @@
 - Update GraphQL playground
 - Add app:request:after event triggered after fastcgi_finish_request (if available)
 - Improve tower terminal ux (admin ui)
+- Add message filter to logs ui
 
 ## 2.10.0 (2024-11-05)
 

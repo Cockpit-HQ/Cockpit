@@ -40,7 +40,7 @@
                 <div class="kiss-flex-1">
 
                     <div class="kiss-flex kiss-flex-middle kiss-margin-bottom">
-                        <div class="kiss-margin-small-right" v-if="selectedChannel"><kiss-svg class="kiss-color-muted" :src="$baseUrl(channels[selectedChannel].icon)" width="25" height="25"><canvas width="20" height="20"></canvas></kiss-svg></div>
+                        <div class="kiss-margin-small-right"><kiss-svg class="kiss-color-muted" :src="$baseUrl(selectedChannel ? channels[selectedChannel].icon : 'system:assets/icons/logging.svg')" width="25" height="25"><canvas width="20" height="20"></canvas></kiss-svg></div>
                         <div class="kiss-size-4 kiss-text-light kiss-flex-1">{{ (selectedChannel && channels[selectedChannel].label) || 'All' }}</div>
                     </div>
 
@@ -57,6 +57,10 @@
                             <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': selectedTypes.indexOf('warning') > -1}" @click="toggleType('warning')">Warning</button>
                         </div>
                     </div>
+
+                    <form class="kiss-flex kiss-flex-middle kiss-margin">
+                        <input type="text" class="kiss-input" :placeholder="t('Filter message...')" v-model="filter">
+                    </form>
 
                     <app-loader class="kiss-margin" v-if="loading"></app-loader>
 
@@ -149,7 +153,6 @@
                         selectedTypes: [],
                         items: [],
                         filter: '',
-                        txtFilter: '',
                         page: 1,
                         pages: 1,
                         limit: 50,
@@ -169,12 +172,13 @@
                     selectedTypes: {
                         handler() { this.load(1) },
                         deep: true
-                    }
+                    },
+                    filter: KISS.utils.debounce(function() { this.load(1) }, 600)
                 },
 
                 methods: {
 
-                    load(page = 1, history = true) {
+                    load(page = 1) {
 
                         let options = {
                             limit: this.limit,
@@ -185,9 +189,13 @@
                         this.loading = true;
                         this.selected = [];
 
+                        if (this.filter) {
+                            options.filter = { message: {'$regex': this.filter}};
+                        }
+
                         if (this.selectedChannel || this.selectedTypes.length) {
 
-                            options.filter = {};
+                            if (!options.filter) options.filter = {};
 
                             if (this.selectedChannel) options.filter.channel = this.selectedChannel;
                             if (this.selectedTypes.length) options.filter.type = {$in: this.selectedTypes};
@@ -198,7 +206,7 @@
                             this.page = rsp.page;
                             this.pages = rsp.pages;
                             this.count = rsp.count;
-
+                        }).finally(() => {
                             this.loading = false;
                         });
                     },
