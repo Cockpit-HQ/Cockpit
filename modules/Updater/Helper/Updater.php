@@ -106,7 +106,7 @@ class Updater extends \Lime\Helper {
 
         // clear opcache
         if (function_exists('opcache_reset')) {
-            \opcache_reset();
+            opcache_reset();
         }
 
         return true;
