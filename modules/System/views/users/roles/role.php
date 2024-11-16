@@ -66,7 +66,7 @@ foreach ($permissions as $key => $meta) {
                     <div class="kiss-flex kiss-flex-middle" :class="{'kiss-color-muted': !visible[group]}" @click="visible[group]=!visible[group]">
                         <icon class="kiss-margin-small-right">workspaces</icon>
                         <a class="kiss-link-muted kiss-text-caption kiss-text-bold kiss-flex-1">{{ group }}</a>
-                        <a>
+                        <a :class="visible[group] ? 'kiss-color-primary' : 'kiss-color-muted'">
                             <icon>unfold_more</icon>
                         </a>
                     </div>

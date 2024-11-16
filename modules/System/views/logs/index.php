@@ -104,7 +104,7 @@
                                 </kiss-card>
                             </li>
                             <li class="kiss-nav-divider"></li>
-                            <li v-for="channel in channels">
+                            <li v-for="channel in sortedChannels">
                                 <kiss-card class="kiss-flex kiss-flex-middle kiss-padding-small" :theme="selectedChannel == channel.name && 'bordered contrast'">
                                     <a class="kiss-flex-1" @click="selectedChannel = channel.name" :class="selectedChannel == channel.name ? 'kiss-text-bold kiss-color-primary':'kiss-color-muted'">{{ channel.label}}</a>
                                     <div class="kiss-margin-xsmall-left" v-if="selectedChannel == channel.name">
@@ -163,6 +163,12 @@
 
                 mounted() {
                     this.load();
+                },
+
+                computed: {
+                    sortedChannels() {
+                        return Object.values(this.channels).sort((a, b) => a.name.localeCompare(b.name));
+                    }
                 },
 
                 watch: {
