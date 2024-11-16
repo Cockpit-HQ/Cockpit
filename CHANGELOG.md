@@ -2,6 +2,7 @@
 
 ## WIP
 
+- Update Vue to v3.5.13
 - Improve field condition behavior
 - Fix avif output using image api
 - Fix MongoLite edge error (table exists)
