@@ -1,6 +1,6 @@
 # Release Notes
 
-## WIP
+## 2.10.1 (2024-11-17)
 
 - Update Vue to v3.5.13
 - Improve field condition behavior
