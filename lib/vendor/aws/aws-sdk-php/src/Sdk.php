@@ -74,6 +74,8 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionB2bi(array $args = [])
  * @method \Aws\BCMDataExports\BCMDataExportsClient createBCMDataExports(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionBCMDataExports(array $args = [])
+ * @method \Aws\BCMPricingCalculator\BCMPricingCalculatorClient createBCMPricingCalculator(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionBCMPricingCalculator(array $args = [])
  * @method \Aws\Backup\BackupClient createBackup(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionBackup(array $args = [])
  * @method \Aws\BackupGateway\BackupGatewayClient createBackupGateway(array $args = [])
@@ -520,6 +522,10 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionNetworkManager(array $args = [])
  * @method \Aws\NetworkMonitor\NetworkMonitorClient createNetworkMonitor(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionNetworkMonitor(array $args = [])
+ * @method \Aws\Notifications\NotificationsClient createNotifications(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionNotifications(array $args = [])
+ * @method \Aws\NotificationsContacts\NotificationsContactsClient createNotificationsContacts(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionNotificationsContacts(array $args = [])
  * @method \Aws\OAM\OAMClient createOAM(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionOAM(array $args = [])
  * @method \Aws\OSIS\OSISClient createOSIS(array $args = [])
@@ -791,7 +797,7 @@ namespace Aws;
  */
 class Sdk
 {
-    const VERSION = '3.328.0';
+    const VERSION = '3.330.0';
 
     /** @var array Arguments for creating clients */
     private $args;

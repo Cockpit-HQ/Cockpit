@@ -59,17 +59,17 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.328.0",
-            "version_normalized": "3.328.0.0",
+            "version": "3.330.0",
+            "version_normalized": "3.330.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "a99b58e166ae367f2b067937afb04e843e900745"
+                "reference": "dd1b65a4329f91d5e282a92fab2be7bdf6e2adea"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/a99b58e166ae367f2b067937afb04e843e900745",
-                "reference": "a99b58e166ae367f2b067937afb04e843e900745",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/dd1b65a4329f91d5e282a92fab2be7bdf6e2adea",
+                "reference": "dd1b65a4329f91d5e282a92fab2be7bdf6e2adea",
                 "shasum": ""
             },
             "require": {
@@ -99,7 +99,7 @@
                 "paragonie/random_compat": ">= 2",
                 "phpunit/phpunit": "^5.6.3 || ^8.5 || ^9.5",
                 "psr/cache": "^1.0",
-                "psr/simple-cache": "^1.0",
+                "psr/simple-cache": "^1.0 || ^2.0 || ^3.0",
                 "sebastian/comparator": "^1.2.3 || ^4.0",
                 "yoast/phpunit-polyfills": "^1.0"
             },
@@ -110,7 +110,7 @@
                 "ext-openssl": "Allows working with CloudFront private distributions and verifying received SNS messages",
                 "ext-sockets": "To use client-side monitoring"
             },
-            "time": "2024-11-15T19:06:57+00:00",
+            "time": "2024-11-22T19:10:26+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -154,7 +154,7 @@
             "support": {
                 "forum": "https://forums.aws.amazon.com/forum.jspa?forumID=80",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.328.0"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.330.0"
             },
             "install-path": "../aws/aws-sdk-php"
         },
@@ -217,17 +217,17 @@
         },
         {
             "name": "claviska/simpleimage",
-            "version": "4.2.0",
-            "version_normalized": "4.2.0.0",
+            "version": "4.2.1",
+            "version_normalized": "4.2.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/claviska/SimpleImage.git",
-                "reference": "dfbe53c01dae8467468ef2b817c09b786a7839d2"
+                "reference": "ec6d5021e5a7153a2520d64c59b86b6f3c4157c5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/claviska/SimpleImage/zipball/dfbe53c01dae8467468ef2b817c09b786a7839d2",
-                "reference": "dfbe53c01dae8467468ef2b817c09b786a7839d2",
+                "url": "https://api.github.com/repos/claviska/SimpleImage/zipball/ec6d5021e5a7153a2520d64c59b86b6f3c4157c5",
+                "reference": "ec6d5021e5a7153a2520d64c59b86b6f3c4157c5",
                 "shasum": ""
             },
             "require": {
@@ -239,7 +239,7 @@
                 "laravel/pint": "^1.5",
                 "phpstan/phpstan": "^1.10"
             },
-            "time": "2024-04-15T16:07:16+00:00",
+            "time": "2024-11-22T13:25:03+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -261,7 +261,7 @@
             "description": "A PHP class that makes working with images as simple as possible.",
             "support": {
                 "issues": "https://github.com/claviska/SimpleImage/issues",
-                "source": "https://github.com/claviska/SimpleImage/tree/4.2.0"
+                "source": "https://github.com/claviska/SimpleImage/tree/4.2.1"
             },
             "funding": [
                 {
