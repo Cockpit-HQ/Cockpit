@@ -250,7 +250,7 @@ class UtilArrayQuery {
                     return false;
                 }
 
-                if (!isset($b['$maxDistance']) || !isset($b['$minDistance'])) {
+                if (!isset($b['$maxDistance']) && !isset($b['$minDistance'])) {
                     return false;
                 }
 
