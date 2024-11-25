@@ -838,5 +838,7 @@
 
 <div class="kiss-margin" id="content-collection-items-aside"></div>
 
+<?php $this->trigger('content.collection.items.side-panel', [$model]) ?>
+
 
 <?php $this->end('app-side-panel') ?>

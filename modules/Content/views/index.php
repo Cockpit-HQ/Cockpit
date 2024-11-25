@@ -332,5 +332,7 @@
 
 <?php endif ?>
 
+<?php $this->trigger('content.index.side-panel') ?>
+
 
 <?php $this->end('app-side-panel') ?>
