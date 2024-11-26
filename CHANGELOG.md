@@ -4,6 +4,7 @@
 
 - Fix $near filter for MongoLite
 - Add content.index.side-panel and content.collection.items.side-panel triggers
+- Improve php 8.4 compatibility (vendor libs)
 
 ## 2.10.1 (2024-11-17)
 
