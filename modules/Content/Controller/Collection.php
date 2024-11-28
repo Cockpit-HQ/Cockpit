@@ -199,7 +199,7 @@ class Collection extends App {
 
                         if (count($fields)) {
 
-                            $terms  = str_getcsv(trim($f), ' ');
+                            $terms  = str_getcsv(trim($f), ' ', escape: '\\');
                             $_filter = ['$or' => []];
 
                             foreach ($fields as $field) {

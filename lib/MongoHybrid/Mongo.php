@@ -210,7 +210,7 @@ class Mongo {
 
     public function getFindTermFilter($term) {
 
-        $terms = str_getcsv(trim($term), ' ');
+        $terms = str_getcsv(trim($term), ' ', escape: '\\');
 
         $filter = ['$where' => "function() { return JSON.stringify(this).indexOf('{$term}') > -1; }"];
 

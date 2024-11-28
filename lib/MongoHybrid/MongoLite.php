@@ -146,7 +146,7 @@ class MongoLite {
 
     public function getFindTermFilter($term): \Closure {
 
-        $terms = str_getcsv(trim($term), ' ');
+        $terms = str_getcsv(trim($term), ' ', escape: '\\');
 
         $filter = function ($doc) use ($term) {
             return stripos(json_encode($doc), $term) !== false;

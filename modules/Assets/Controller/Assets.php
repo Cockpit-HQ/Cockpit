@@ -56,7 +56,7 @@ class Assets extends App {
 
                 } else {
 
-                    $terms = str_getcsv(trim($f), ' ');
+                    $terms = str_getcsv(trim($f), ' ', escape: '\\');
 
                     $f = ['$or' => []];
 
