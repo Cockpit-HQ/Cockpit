@@ -18,7 +18,7 @@ export default {
         ],
         render(value, field, context) {
 
-            if (typeof(value) === 'object') {
+            if (typeof(value) !== 'string') {
                 value = JSON.stringify(value);
             }
 

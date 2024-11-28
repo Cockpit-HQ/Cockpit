@@ -115,8 +115,13 @@ class Database {
         if (is_array($criteria)) {
 
             $fn = null;
+            $condition = UtilArrayQuery::buildCondition($criteria);
 
-            eval('$fn = function($document) { return '.UtilArrayQuery::buildCondition($criteria).'; };');
+            if (trim($condition, "()\n\r\t\v\x00") === '') {
+                $fn = fn($document) => true;
+            } else {
+                eval('$fn = function($document) { return '.$condition.'; };');
+            }
 
             $this->document_criterias[$id] = $fn;
 
