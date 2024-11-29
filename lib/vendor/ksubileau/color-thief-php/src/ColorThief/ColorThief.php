@@ -191,7 +191,7 @@ class ColorThief
      * @param AdapterInterface|string|null $adapter     Image adapter to use for loading the image
      * @phpstan-param ?RectangularArea $area
      */
-    private static function loadImage($sourceImage, int $quality, array &$histo, array $area = null, $adapter = null): int
+    private static function loadImage($sourceImage, int $quality, array &$histo, ?array $area = null, $adapter = null): int
     {
         $loader = new ImageLoader();
         if (null !== $adapter) {

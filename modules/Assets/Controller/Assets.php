@@ -140,11 +140,17 @@ class Assets extends App {
             return $this->stop(['error' => 'Editing not allowed'], 401);
         }
 
-        if ($asset = $this->param('asset', false)) {
-            return $this->module('assets')->update($asset)[0];
+        $asset = $this->param('asset');
+
+        if (!$asset || !isset($asset['_id'])) {
+            return false;
         }
 
-        return false;
+        if (!is_string($asset['_id']) || !$this->app->dataStorage->isValidId($asset['_id'])) {
+            return $this->stop(['error' => 'Asset ID looks wrong'], 400);
+        }
+
+        return $this->module('assets')->update($asset)[0];
     }
 
     public function upload() {
