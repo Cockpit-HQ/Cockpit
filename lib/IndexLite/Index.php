@@ -367,7 +367,7 @@ class Index {
      *
      * @return string The built match query as a string.
      */
-    private function buildMatchQuery(string $query, int $fuzzyDistance = null): string {
+    private function buildMatchQuery(string $query, ?int $fuzzyDistance = null): string {
 
         $fields = [];
         $_fields = $this->fields;

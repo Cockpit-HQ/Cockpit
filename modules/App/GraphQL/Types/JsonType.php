@@ -18,7 +18,7 @@ class JsonType extends ScalarType
         'The `JSON` scalar type represents JSON values as specified by
         [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).';
 
-    public function __construct(string $name = null) {
+    public function __construct(?string $name = null) {
         if ($name) {
             $this->name = $name;
         }
@@ -33,7 +33,7 @@ class JsonType extends ScalarType
         return $this->identity($value);
     }
 
-    public function parseLiteral($valueNode, array $variables = null) {
+    public function parseLiteral($valueNode, ?array $variables = null) {
 
         switch ($valueNode) {
             case ($valueNode instanceof StringValueNode):

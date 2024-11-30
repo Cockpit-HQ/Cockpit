@@ -8,7 +8,7 @@ class NumericType extends ScalarType {
     public string $name = 'NumericType';
     public ?string $description = 'The `Numeric` scalar type represents numeric values.';
 
-    public function __construct(string $name = null) {
+    public function __construct(?string $name = null) {
         if ($name) {
             $this->name = $name;
         }
@@ -31,7 +31,7 @@ class NumericType extends ScalarType {
         return (float)$value;
     }
 
-    public function parseLiteral($valueNode, array $variables = null) {
+    public function parseLiteral($valueNode, ?array $variables = null) {
 
         if ($valueNode instanceof \GraphQL\Language\AST\IntValueNode) {
             return intval($valueNode->value);
