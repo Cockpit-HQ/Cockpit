@@ -27,15 +27,15 @@
 
                     <li v-for="(user, idx) in users" :class="{'kiss-inactive': !user.active}">
 
-                        <kiss-card class="kiss-padding-small kiss-flex" hover="contrast scale-small bordered-primary">
+                        <kiss-card class="kiss-padding-small kiss-flex" hover="contrast scale-small">
                             <div class="kiss-margin-right kiss-position-relative">
                                 <app-avatar size="50" :name="user.name"></app-avatar>
                                 <a class="kiss-cover" :href="$routeUrl('/system/users/user/'+user._id)"></a>
                             </div>
                             <div class="kiss-flex-1 kiss-position-relative">
                                 <div class="kiss-size-5"><strong>{{user.name}}</strong></div>
-                                <div class="kiss-color-muted kiss-size-small">
-                                    <span class="kiss-color-primary">{{user.user}}</span> &bullet; {{user.email}}
+                                <div class="kiss-color-muted kiss-size-small kiss-flex kiss-flex-middle" gap="small">
+                                    <span class="kiss-color-primary">{{user.user}}</span> {{user.email}} <span class="kiss-badge kiss-text-upper" :class="{'kiss-badge-outline': user.role !== 'admin'}">{{ user.role }}</span>
                                 </div>
                                 <a class="kiss-cover" :href="$routeUrl('/system/users/user/'+user._id)"></a>
                             </div>

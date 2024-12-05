@@ -3346,24 +3346,12 @@ small,
     padding-left: 0 !important;
     padding-right: 0 !important;
 }
-.kiss-text-bold {
-    font-weight: bold !important;
-}
-.kiss-text-light {
-    font-weight: 100 !important;
-}
-.kiss-text-bolder {
-    font-weight: bolder !important;
-}
-.kiss-text-normal {
-    font-weight: normal !important;
-}
-.kiss-text-capitalize {
-    text-transform: capitalize !important;
-}
-.kiss-text-upper {
-    text-transform: uppercase !important;
-}
+.kiss-text-bold { font-weight: bold !important; }
+.kiss-text-light { font-weight: 100 !important;}
+.kiss-text-bolder { font-weight: bolder !important; }
+.kiss-text-normal { font-weight: normal !important; }
+.kiss-text-capitalize { text-transform: capitalize !important; }
+.kiss-text-upper { text-transform: uppercase !important; }
 .kiss-text-caption {
     font-size: .65em;
     line-height: inherit;
@@ -3379,12 +3367,8 @@ small,
 }
 th.kiss-text-truncate,
 td.kiss-text-truncate { max-width: 0; }
-.kiss-text-pacing-loose {
-    letter-spacing: .05em !important;
-}
-.kiss-text-pacing-looser {
-    letter-spacing: .1em !important;
-}
+.kiss-text-pacing-loose { letter-spacing: .05em !important; }
+.kiss-text-pacing-looser { letter-spacing: .1em !important; }
 .kiss-text-monospace {
     font-family: ui-monospace,
     Menlo, Monaco,
