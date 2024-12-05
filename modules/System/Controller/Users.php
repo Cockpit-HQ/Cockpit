@@ -65,7 +65,8 @@ class Users extends App {
             'email'  => '',
             'role'   => 'admin',
             'theme'  => 'auto',
-            'i18n'   => $this->app->helper('i18n')->locale
+            'i18n'   => $this->app->helper('i18n')->locale,
+            '_meta'  => new \ArrayObject([])
         ];
 
         $isAccountView = false;
@@ -135,6 +136,10 @@ class Users extends App {
 
         foreach (['name', 'user', 'email'] as $key) {
             $user[$key] = strip_tags(trim($user[$key]));
+        }
+
+        if (isset($user['_meta']) && !is_array($user['_meta']) && is_countable($user['_meta'])) {
+            $user['_meta'] = new \ArrayObject([]);
         }
 
         // unique check

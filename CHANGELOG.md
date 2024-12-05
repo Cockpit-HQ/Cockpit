@@ -4,6 +4,7 @@
 
 - Fix $near filter for MongoLite
 - Add content.index.side-panel and content.collection.items.side-panel triggers
+- Add meta information field to accounts
 - Improve php 8.4 compatibility
 
 ## 2.10.1 (2024-11-17)
