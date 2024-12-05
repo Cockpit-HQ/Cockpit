@@ -34,8 +34,10 @@
                             </div>
                             <div class="kiss-flex-1 kiss-position-relative">
                                 <div class="kiss-size-5"><strong>{{user.name}}</strong></div>
-                                <div class="kiss-color-muted kiss-size-small kiss-flex kiss-flex-middle" gap="small">
-                                    <span class="kiss-color-primary">{{user.user}}</span> {{user.email}} <span class="kiss-badge kiss-text-upper" :class="{'kiss-badge-outline': user.role !== 'admin'}">{{ user.role }}</span>
+                                <div class="kiss-color-muted kiss-size-small kiss-flex kiss-flex-middle kiss-margin-xsmall" gap="small">
+                                    <span class="kiss-badge kiss-text-upper" :class="{'kiss-badge-outline': user.role !== 'admin'}">{{ user.role }}</span>
+                                    <span class="kiss-color-primary">{{user.user}}</span>
+                                    {{user.email}}
                                 </div>
                                 <a class="kiss-cover" :href="$routeUrl('/system/users/user/'+user._id)"></a>
                             </div>
