@@ -8,7 +8,7 @@ if (!isset($user['twofa'])) {
     ];
 }
 
-if (!isset($user['_meta']) || is_countable($user['_meta'])) {
+if (!isset($user['_meta']) || (is_array($user['_meta']) && array_is_list($user['_meta']))) {
     $user['_meta'] = new ArrayObject([]);
 }
 
