@@ -88,6 +88,10 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionBedrockAgent(array $args = [])
  * @method \Aws\BedrockAgentRuntime\BedrockAgentRuntimeClient createBedrockAgentRuntime(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionBedrockAgentRuntime(array $args = [])
+ * @method \Aws\BedrockDataAutomation\BedrockDataAutomationClient createBedrockDataAutomation(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionBedrockDataAutomation(array $args = [])
+ * @method \Aws\BedrockDataAutomationRuntime\BedrockDataAutomationRuntimeClient createBedrockDataAutomationRuntime(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionBedrockDataAutomationRuntime(array $args = [])
  * @method \Aws\BedrockRuntime\BedrockRuntimeClient createBedrockRuntime(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionBedrockRuntime(array $args = [])
  * @method \Aws\Billing\BillingClient createBilling(array $args = [])
@@ -218,6 +222,8 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionDAX(array $args = [])
  * @method \Aws\DLM\DLMClient createDLM(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionDLM(array $args = [])
+ * @method \Aws\DSQL\DSQLClient createDSQL(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionDSQL(array $args = [])
  * @method \Aws\DataExchange\DataExchangeClient createDataExchange(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionDataExchange(array $args = [])
  * @method \Aws\DataPipeline\DataPipelineClient createDataPipeline(array $args = [])
@@ -654,6 +660,8 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionS3Control(array $args = [])
  * @method \Aws\S3Outposts\S3OutpostsClient createS3Outposts(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionS3Outposts(array $args = [])
+ * @method \Aws\S3Tables\S3TablesClient createS3Tables(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionS3Tables(array $args = [])
  * @method \Aws\SSMContacts\SSMContactsClient createSSMContacts(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionSSMContacts(array $args = [])
  * @method \Aws\SSMIncidents\SSMIncidentsClient createSSMIncidents(array $args = [])
@@ -805,7 +813,7 @@ namespace Aws;
  */
 class Sdk
 {
-    const VERSION = '3.332.2';
+    const VERSION = '3.334.0';
 
     /** @var array Arguments for creating clients */
     private $args;
