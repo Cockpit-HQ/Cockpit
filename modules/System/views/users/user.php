@@ -42,8 +42,8 @@ if (!isset($user['_meta']) || (is_array($user['_meta']) && array_is_list($user['
                 </div>
                 <?php if ($this->helper('acl')->isAllowed('app/users/manage')): ?>
                 <kiss-card class="kiss-overlay-input kiss-flex kiss-flex-middle kiss-padding-small">
-                    <div>
-                        <span class="kiss-text-caption kiss-color-muted">{{ t('View') }}</span>
+                    <div class="kiss-align-right">
+                        <span class="kiss-text-caption kiss-color-muted">{{ t('Form') }}</span>
                         <div class="kiss-text-capitalize kiss-text-bold">{{ t(view) }}</div>
                     </div>
                     <select v-model="view">
