@@ -25,7 +25,7 @@
 
                 <li v-for="(locale, idx) in locales">
 
-                    <kiss-card class="kiss-padding-small kiss-flex kiss-flex-middle" :class="{'kiss-color-muted': locale.enabled === false}" hover="contrast scale-small bordered-primary">
+                    <kiss-card class="kiss-padding-small kiss-flex kiss-flex-middle" :class="{'kiss-color-muted': locale.enabled === false}" hover="contrast scale-small">
                         <div class="kiss-margin-small-right"><icon>language</icon></div>
                         <div class="kiss-size-5 kiss-flex-1 kiss-position-relative">
                             <strong>{{locale.name || locale.i18n}}</strong>

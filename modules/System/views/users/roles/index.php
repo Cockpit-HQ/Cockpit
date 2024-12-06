@@ -26,7 +26,7 @@
 
             <li v-for="(role, idx) in roles">
 
-                <kiss-card class="kiss-padding-small kiss-flex" hover="contrast scale-small bordered-primary">
+                <kiss-card class="kiss-padding-small kiss-flex" hover="contrast scale-small">
                     <div class="kiss-margin-right kiss-position-relative">
                         <app-avatar size="50" :name="role.name"></app-avatar>
                         <a class="kiss-cover" :href="$routeUrl('/system/users/roles/role/'+role._id)"></a>

@@ -9,11 +9,9 @@
                 <div class="kiss-size-4 kiss-flex-1"><strong><?= t('Users') ?></strong></div>
             </div>
 
-            <app-loader v-if="loading"></app-loader>
+            <form class="kiss-margin-large-bottom" :class="{'kiss-disabled': loading}" @submit.prevent="filter = txtFilter">
 
-            <div v-if="!loading && users && users.length">
-
-                <form class="kiss-flex kiss-flex-middle kiss-margin-large-bottom" @submit.prevent="filter = txtFilter">
+                <div class="kiss-flex kiss-flex-middle">
 
                     <input type="text" class="kiss-input kiss-flex-1 kiss-margin-xsmall-right" :placeholder="t('Filter users...')" v-model="txtFilter">
 
@@ -21,7 +19,32 @@
                         <button type="button" class="kiss-button" @click="filter = ''" v-if="filter"><?= t('Reset') ?></button>
                         <button class="kiss-button kiss-flex"><?= t('Search') ?></button>
                     </div>
-                </form>
+
+                </div>
+
+                <div class="kiss-margin">
+
+                    <button class="kiss-button kiss-button-small kiss-overlay-input" type="button">
+                        <span class="kiss-margin-small-right">{{ role || t('All') }}</span><icon>expand_more</icon>
+
+                        <select v-model="role">
+                            <option value="">{{ t('All') }}</option>
+                            <hr>
+                            <option :value="role.appid" v-for="role in roles">{{ role.name }}</option>
+                        </select>
+                    </button>
+                </div>
+            </form>
+
+            <app-loader v-if="loading"></app-loader>
+
+            <div class="animated fadeIn kiss-height-30vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted" v-if="!loading && users && !users.length">
+                <div>
+                    <p class="kiss-size-large"><?=t('No users found')?></p>
+                </div>
+            </div>
+
+            <div v-if="!loading && users && users.length">
 
                 <ul class="app-list-items animated fadeIn">
 
@@ -89,7 +112,9 @@
                 data() {
                     return {
                         users: null,
+                        roles: <?= json_encode($this->helper('acl')->roles()) ?>,
                         loading: false,
+                        role: '',
                         filter: '',
                         txtFilter: '',
 
@@ -112,6 +137,7 @@
                             if (q.filter) {
                                 this.filter = q.filter;
                                 this.txtFilter = q.filter;
+                                this.role = q.role;
                             }
                         } catch (e) {}
                     }
@@ -122,6 +148,9 @@
                 watch: {
                     filter(val) {
                         this.txtFilter = val;
+                        this.load();
+                    },
+                    role() {
                         this.load();
                     }
                 },
@@ -142,6 +171,10 @@
                             options.filter = this.filter;
                         }
 
+                        if (this.role) {
+                            options.role = this.role;
+                        }
+
                         if (history) {
 
                             window.history.pushState(
@@ -149,6 +182,7 @@
                                 App.route(['/system/users', '?state=', App.utils.base64encode(JSON.stringify({
                                     page: this.page || null,
                                     filter: this.filter || null,
+                                    role: this.role || '',
                                     limit: this.limit
                                 }))].join(''))
                             );
