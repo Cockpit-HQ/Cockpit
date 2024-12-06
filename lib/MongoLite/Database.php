@@ -85,11 +85,14 @@ class Database {
 
         $pragma = [
             'journal_mode'  => $options['journal_mode'] ??  'WAL',
+            'temp_store'  => $options['journal_mode'] ??  'MEMORY',
             'journal_size_limit' => $options['journal_size_limit'] ?? '27103364',
             'synchronous'   => $options['synchronous'] ?? 'NORMAL',
             'mmap_size'     => $options['mmap_size'] ?? '134217728',
-            'cache_size'    => $options['cache_size'] ?? '2000',
-            'page_size'     => $options['page_size'] ?? '4096',
+            'cache_size'    => $options['cache_size'] ?? '-20000',
+            'page_size'     => $options['page_size'] ?? '8192',
+            'busy_timeout'  => $options['page_size'] ?? '5000',
+            'auto_vacuum'  => $options['page_size'] ?? 'INCREMENTAL',
         ];
 
         foreach ($pragma as $key => $value) {
@@ -153,9 +156,7 @@ class Database {
      * Drop database
      */
     public function drop(): void {
-        if ($this->path != static::DSN_PATH_MEMORY) {
-            \unlink($this->path);
-        }
+        if ($this->path !== static::DSN_PATH_MEMORY) \unlink($this->path);
     }
 
     /**
@@ -234,7 +235,6 @@ class Database {
     }
 
     public function __get($collection) {
-
         return $this->selectCollection($collection);
     }
 }
@@ -250,23 +250,23 @@ function createMongoDbLikeId(): string {
 
     // based on https://gist.github.com/h4cc/9b716dc05869296c1be6
 
-    $timestamp = \microtime(true);
-    $processId = \random_int(10000, 99999);
-    $id        = \random_int(10, 1000);
+    $timestamp = microtime(true);
+    $processId = random_int(10000, 99999);
+    $id        = random_int(10, 1000);
     $result    = '';
 
     // Building binary data.
-    $bin = \sprintf(
+    $bin = sprintf(
         '%s%s%s%s',
-        \pack('N', $timestamp * 10000),
-        \substr(md5(uniqid()), 0, 3),
-        \pack('n', $processId),
-        \substr(\pack('N', $id), 1, 3)
+        pack('N', $timestamp * 10000),
+        substr(md5(uniqid()), 0, 3),
+        pack('n', $processId),
+        substr(pack('N', $id), 1, 3)
     );
 
     // Convert binary to hex.
     for ($i = 0; $i < 12; $i++) {
-        $result .= \sprintf('%02x', ord($bin[$i]));
+        $result .= sprintf('%02x', ord($bin[$i]));
     }
 
     return $result;

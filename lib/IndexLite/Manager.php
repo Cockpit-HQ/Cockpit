@@ -6,8 +6,10 @@ class Manager {
 
     protected string $path;
     protected array $indexes = [];
+    protected array $options = [];
 
     public function __construct(string $path, array $options = []) {
+        $this->options = $options;
         $this->path = rtrim($path, '/');
     }
 
@@ -28,7 +30,7 @@ class Manager {
             throw new \Exception("Index <{$name}> does not exist.");
         }
 
-        $index = new Index("{$this->path}/$name.idx");
+        $index = new Index("{$this->path}/$name.idx", $this->options);
 
         $this->indexes[$name] = $index;
 
@@ -76,7 +78,11 @@ class Manager {
             return;
         }
 
-        \unlink("{$this->path}/$name.idx");
+        if (file_exists("{$this->path}/$name.idx")) \unlink("{$this->path}/{$name}.idx");
+        if (file_exists("{$this->path}/$name.idx-shm")) \unlink("{$this->path}/{$name}.idx-shm");
+        if (file_exists("{$this->path}/$name.idx-wal")) \unlink("{$this->path}/{$name}.idx-wal");
+        if (file_exists("{$this->path}/$name.idx-journal")) \unlink("{$this->path}/{$name}.idx-journal");
+
         unset($this->indexes[$name]);
     }
 

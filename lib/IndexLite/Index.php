@@ -9,13 +9,26 @@ class Index {
     private PDO $db;
     private array $fields;
 
-    public function __construct(string $path) {
+    public function __construct(string $path, array $options = []) {
+
         $this->db = new PDO("sqlite:{$path}");
         $this->fields = $this->getFieldsFromExistingTable();
 
-        $this->db->exec('PRAGMA journal_mode = MEMORY');
-        $this->db->exec('PRAGMA synchronous = OFF');
-        $this->db->exec('PRAGMA PAGE_SIZE = 4096');
+        $pragma = [
+            'journal_mode'  => $options['journal_mode'] ??  'WAL',
+            'temp_store'  => $options['journal_mode'] ??  'MEMORY',
+            'journal_size_limit' => $options['journal_size_limit'] ?? '27103364',
+            'synchronous'   => $options['synchronous'] ?? 'NORMAL',
+            'mmap_size'     => $options['mmap_size'] ?? '134217728',
+            'cache_size'    => $options['cache_size'] ?? '-20000',
+            'page_size'     => $options['page_size'] ?? '8192',
+            'busy_timeout'  => $options['page_size'] ?? '5000',
+            'auto_vacuum'  => $options['page_size'] ?? 'INCREMENTAL',
+        ];
+
+        foreach ($pragma as $key => $value) {
+            $this->db->exec("PRAGMA {$key} = {$value}");
+        }
     }
 
     /**

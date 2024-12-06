@@ -40,9 +40,21 @@ class RedisLite {
         $this->connection = new \PDO($dns, null, null, $options);
 
         // some sqlite optimisations
-        $this->connection->exec('PRAGMA journal_mode = MEMORY');
-        $this->connection->exec('PRAGMA synchronous = OFF');
-        $this->connection->exec('PRAGMA PAGE_SIZE = 4096');
+        $pragma = [
+            'journal_mode'  => $options['journal_mode'] ??  'WAL',
+            'temp_store'  => $options['journal_mode'] ??  'MEMORY',
+            'journal_size_limit' => $options['journal_size_limit'] ?? '27103364',
+            'synchronous'   => $options['synchronous'] ?? 'NORMAL',
+            'mmap_size'     => $options['mmap_size'] ?? '134217728',
+            'cache_size'    => $options['cache_size'] ?? '-20000',
+            'page_size'     => $options['page_size'] ?? '8192',
+            'busy_timeout'  => $options['page_size'] ?? '5000',
+            'auto_vacuum'  => $options['page_size'] ?? 'INCREMENTAL',
+        ];
+
+        foreach ($pragma as $key => $value) {
+            $this->connection->exec("PRAGMA {$key} = {$value}");
+        }
 
         $stmt  = $this->connection->query("SELECT name FROM sqlite_master WHERE type='table' AND name='{$this->table}';");
         $table = $stmt->fetch(\PDO::FETCH_ASSOC);
