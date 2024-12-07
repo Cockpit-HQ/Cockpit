@@ -9,6 +9,10 @@ export default {
             timeout = 2500
         }
 
+        message = message.replace(/::(.*?)::/g, (match, group) => {
+            return `<span class="kiss-badge kiss-badge-outline">${group}</span>`;
+        });
+
         KissToast.notify(message,{
             type,
             timeout

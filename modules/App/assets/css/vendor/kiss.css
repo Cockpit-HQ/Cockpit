@@ -419,3 +419,7 @@ kiss-card[hover*="contrast"]:hover {
 .kiss-dialog-overflow[expand="true"] {
     height: 60vh;
 }
+
+.kiss-toast-message .kiss-badge {
+    font-size: .85em;
+}

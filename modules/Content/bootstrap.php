@@ -143,7 +143,7 @@ $this->module('content')->extend([
                 $model['meta']['unique'] &&
                 !$this->app->helper('content')->isContentUnique($model, $item, $model['meta']['unique'], $uniqueCheckInfo)
             ) {
-                throw new \App\Exception\AppNotification("Unique content check failed on field ::{$uniqueCheckInfo['field']}::");
+                throw new \App\Exception\AppNotification("::{$uniqueCheckInfo['field']}:: must be unique");
             }
         }
 
