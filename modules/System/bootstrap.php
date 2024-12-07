@@ -25,10 +25,16 @@ $this->on('app.cli.init', function($cli) {
     include(__DIR__.'/cli.php');
 });
 
-$this->on('error', function($error, $exception) {
+$this->on('error', function($error, $exception = null) {
 
     try {
+
+        if ($exception && $exception instanceof \App\Exception\AppNotification) {
+            return;
+        }
+
         $this->module('system')->log("System error: {$error['message']}", type: 'error', context: $error);
+
     } catch(Throwable $e) {}
 });
 

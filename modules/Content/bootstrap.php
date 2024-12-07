@@ -134,6 +134,17 @@ $this->module('content')->extend([
             } else {
                 $item = array_merge($default, $item);
             }
+
+            // check unique configured fields
+            $uniqueCheckInfo = [];
+
+            if (
+                isset($model['meta']['unique']) &&
+                $model['meta']['unique'] &&
+                !$this->app->helper('content')->isContentUnique($model, $item, $model['meta']['unique'], $uniqueCheckInfo)
+            ) {
+                throw new \App\Exception\AppNotification("Unique content check failed on field ::{$uniqueCheckInfo['field']}::");
+            }
         }
 
         $item['_modified'] = $time;

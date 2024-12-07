@@ -90,4 +90,63 @@ class Content extends \Lime\Helper {
             }
         }
     }
+
+    public function isContentUnique(string|array $model, array $data, string|array $fields, mixed &$info = []): bool {
+
+        $model = is_string($model) ? $this->app->module('content')->model($model) : $model;
+        $fields = is_string($fields) ? explode(',', $fields) : $fields;
+
+        if (!$model || !in_array($model['type'], ['collection', 'tree'])) {
+            return false;
+        }
+
+        $locales = array_keys($this->app->helper('locales')->locales(true));
+        $collection = "content/collections/{$model['name']}";
+        $projection = ['_id' => 1];
+        $filter = [];
+
+        foreach ($fields as $field) {
+
+            $field = trim($field);
+
+            if (!isset($data[$field]) || !$data[$field]) continue;
+
+            $projection[$field] = 1;
+            $value = $data[$field];
+            $filter[] = [$field => $value];
+
+            $mfield = array_find($model['fields'], fn($f) => $f['name'] === $field);
+
+            if ($mfield && $mfield['i18n']) {
+
+                foreach ($locales as $locale) {
+                    $key = "{$field}_{$locale}";
+                    if ($locale === 'default' || !isset($data[$key]) || !$data[$key]) continue;
+
+                    $filter[] = [$key => $data[$key]];
+                    $projection[$key] = 1;
+                }
+            }
+        }
+
+        $exists = $this->app->dataStorage->findOne($collection, ['$or' => $filter], $projection);
+
+        if ($exists && (($data['_id'] ?? null) !== $exists['_id'])) {
+
+            foreach ($projection as $key => $val) {
+
+                if ($key === '_id') continue;
+
+                if ($exists[$key] === $data[$key]) {
+                    $info['field'] = $key;
+                    $info['value'] = $data[$key];
+                    break;
+                }
+            }
+
+            return false;
+        }
+
+        return true;
+    }
 }

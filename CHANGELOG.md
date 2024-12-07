@@ -7,6 +7,7 @@
 - Add meta information field to accounts
 - Improve user filtering (admin ui)
 - Improve php 8.4 compatibility
+- Add unique field value check configuration
 
 ## 2.10.1 (2024-11-17)
 
