@@ -109,7 +109,7 @@ class Content extends \Lime\Helper {
 
             $field = trim($field);
 
-            if (!isset($data[$field]) || !$data[$field]) continue;
+            if (!isset($data[$field]) || !$data[$field] || !is_string($data[$field])) continue;
 
             $projection[$field] = 1;
             $value = $data[$field];
@@ -121,7 +121,7 @@ class Content extends \Lime\Helper {
 
                 foreach ($locales as $locale) {
                     $key = "{$field}_{$locale}";
-                    if ($locale === 'default' || !isset($data[$key]) || !$data[$key]) continue;
+                    if ($locale === 'default' || !isset($data[$key]) || !$data[$key] || !is_string($data[$key])) continue;
 
                     $filter[] = [$key => $data[$key]];
                     $projection[$key] = 1;
