@@ -1,6 +1,6 @@
 # Release Notes
 
-## WIP
+## 2.10.2 (2024-12-08)
 
 - Fix $near filter for MongoLite
 - Add content.index.side-panel and content.collection.items.side-panel triggers
