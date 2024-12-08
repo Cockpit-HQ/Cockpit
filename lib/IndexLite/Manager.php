@@ -78,10 +78,10 @@ class Manager {
             return;
         }
 
-        if (file_exists("{$this->path}/$name.idx")) \unlink("{$this->path}/{$name}.idx");
-        if (file_exists("{$this->path}/$name.idx-shm")) \unlink("{$this->path}/{$name}.idx-shm");
-        if (file_exists("{$this->path}/$name.idx-wal")) \unlink("{$this->path}/{$name}.idx-wal");
-        if (file_exists("{$this->path}/$name.idx-journal")) \unlink("{$this->path}/{$name}.idx-journal");
+        if (file_exists("{$this->path}/$name.idx")) unlink("{$this->path}/{$name}.idx");
+        if (file_exists("{$this->path}/$name.idx-shm")) unlink("{$this->path}/{$name}.idx-shm");
+        if (file_exists("{$this->path}/$name.idx-wal")) unlink("{$this->path}/{$name}.idx-wal");
+        if (file_exists("{$this->path}/$name.idx-journal")) unlink("{$this->path}/{$name}.idx-journal");
 
         unset($this->indexes[$name]);
     }
@@ -93,6 +93,6 @@ class Manager {
      * @return bool True if the index exists, false otherwise.
      */
     public function exists(string $name): bool {
-        return \file_exists("{$this->path}/$name.idx");
+        return file_exists("{$this->path}/$name.idx");
     }
 }

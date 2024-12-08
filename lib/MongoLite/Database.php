@@ -156,7 +156,13 @@ class Database {
      * Drop database
      */
     public function drop(): void {
-        if ($this->path !== static::DSN_PATH_MEMORY) \unlink($this->path);
+
+        if ($this->path !== static::DSN_PATH_MEMORY) {
+            if (file_exists($this->path)) unlink($this->path);
+            if (file_exists("{$this->path}-shm")) unlink("{$this->path}-shm");
+            if (file_exists("{$this->path}-wal")) unlink("{$this->path}-wal");
+            if (file_exists("{$this->path}-journal")) unlink("{$this->path}-journal");
+        }
     }
 
     /**
