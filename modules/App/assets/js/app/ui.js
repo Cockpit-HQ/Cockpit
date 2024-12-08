@@ -3,20 +3,23 @@ let uuid = 0;
 
 export default {
 
-    notify(message, type, timeout) {
+    notify(message, type, options = {}) {
 
-        if (timeout !== false && !timeout) {
-            timeout = 2500
+        options = Object.assign({
+            type,
+            timeout: 2500,
+            title: type === 'error' && !options.title ? 'Error:' : '',
+        }, options);
+
+        if (options.timeout !== false && !options.timeout) {
+            options.timeout = 2500
         }
 
         message = message.replace(/::(.*?)::/g, (match, group) => {
             return `<span class="kiss-badge kiss-badge-outline">${group}</span>`;
         });
 
-        KissToast.notify(message,{
-            type,
-            timeout
-        });
+        KissToast.notify(message, options);
     },
 
     block(info='', context = 'ui-block') {

@@ -45,7 +45,9 @@ window.AppEventStream =  {
     _registry: {
         notify: [
             function(evt) {
-                App.ui.notify(evt.data.message, evt.data.status || 'info', evt.data.timeout || false);
+                App.ui.notify(evt.data.message, evt.data.status || 'info', {
+                    timeout: evt.data.timeout || false
+                });
             }
         ],
 

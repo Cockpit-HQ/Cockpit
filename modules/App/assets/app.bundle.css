@@ -2847,13 +2847,12 @@ kiss-tabs tab[active="true"] {
     flex-grow: 1;
     text-shadow: 1px 1px 1px rgba(0, 0, 0, .1)
 }
-.kiss-toast-message {
+.kiss-toast-title {
     font-weight: bold;
+    margin-bottom: 0.5em;
 }
-.kiss-toast-info {
-    font-size: 0.9em;
-    opacity: 0.8;
-    margin-top: 4px;
+[data-title="false"] .kiss-toast-message {
+    font-weight: bold;
 }
 .kiss-toast[type="info"] {
     background-color: var(--kiss-color-primary, #2196F3);

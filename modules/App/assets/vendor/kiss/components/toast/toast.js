@@ -21,7 +21,7 @@ class Toast {
         const {
             type = 'info',
             timeout = 2500,
-            info = '',
+            title = '',
         } = options;
 
         const container = this.getContainer();
@@ -31,19 +31,20 @@ class Toast {
 
         toast.classList.add('kiss-toast');
         toast.setAttribute('type', type);
+        toast.setAttribute('data-title', title ? 'true' : 'false');
 
         contentDiv.classList.add('kiss-toast-content');
+
+        if (title) {
+            const titleElement = document.createElement('div');
+            titleElement.classList.add('kiss-toast-title');
+            titleElement.innerHTML = title;
+            contentDiv.appendChild(titleElement);
+        }
 
         messageElement.classList.add('kiss-toast-message');
         messageElement.innerHTML = message;
         contentDiv.appendChild(messageElement);
-
-        if (info) {
-            const infoElement = document.createElement('div');
-            infoElement.classList.add('kiss-toast-info');
-            infoElement.textContent = info;
-            contentDiv.appendChild(infoElement);
-        }
 
         const release = () => {
             toast.removeAttribute('show');

@@ -153,7 +153,7 @@ let FieldRenderer = {
                 }
 
                 if (!pass) {
-                    return App.ui.notify(`<span class="kiss-size-xsmall">${this.t('Field required:')}</span><br><strong class="kiss-text-capitalize">${field.label || field.name}</strong>`, 'error');
+                    return App.ui.notify(`<span class="kiss-text-capitalize">${field.label || field.name}</span>`, 'error', {title: this.t('Field required:')});
                 }
             }
 
