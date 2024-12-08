@@ -8,7 +8,6 @@ export default {
         options = Object.assign({
             type,
             timeout: 2500,
-            title: type === 'error' && !options.title ? 'Error:' : '',
         }, options);
 
         if (options.timeout !== false && !options.timeout) {
