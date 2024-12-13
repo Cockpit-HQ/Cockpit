@@ -11,7 +11,7 @@
 
 class Thumbhash {
 
-    public static function fromFile($file): array {
+    public static function fromFile(string $file): array {
 
         $image = imagecreatefromstring(file_get_contents($file));
 
