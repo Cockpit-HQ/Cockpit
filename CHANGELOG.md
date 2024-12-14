@@ -1,5 +1,9 @@
 # Release Notes
 
+## WIP
+
+- Allow to send custom headers via mailer service
+
 ## 2.10.2 (2024-12-08)
 
 - Fix $near filter for MongoLite

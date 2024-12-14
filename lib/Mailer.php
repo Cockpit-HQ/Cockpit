@@ -21,7 +21,6 @@ class Mailer {
     public function mail(mixed $to, string $subject, string $message, array $options = []) {
 
         $options = array_merge($this->options, is_array($options) ? $options: []);
-
         $message = $this->createMessage($to, $subject, $message, $options);
 
         if (isset($options['from'])) {
@@ -130,6 +129,12 @@ class Mailer {
             }
         }
 
+        if (isset($options['headers']) && is_array($options['headers'])) {
+            foreach ($options['headers'] as $name => $value) {
+                $mail->addCustomHeader($name, $value);
+            }
+        }
+
         $msg = new Mailer_Message($mail);
 
         return $msg;
@@ -176,5 +181,9 @@ class Mailer_Message {
 
     public function attach(mixed $file, string $alias = ''): mixed {
         return $this->mail->AddAttachment($file, $alias);
+    }
+
+    public function addCustomHeader(string $name, ?string $value = null): bool {
+        return $this->mail->addCustomHeader($name, $value);
     }
 }
