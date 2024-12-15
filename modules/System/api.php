@@ -31,7 +31,7 @@ $this->bind('/api/system/healthcheck', function() {
 
     $errors = [];
 
-    // check datastorage connection
+    // check datastore connection
     try {
         if (in_array('db', $checks)) $this->dataStorage->getCollection('system/users')->count();
     } catch(Throwable $e) {
@@ -45,7 +45,7 @@ $this->bind('/api/system/healthcheck', function() {
         $errors[] = ['resource' => 'memory', 'message' => $e->getMessage()];
     }
 
-    // check filetorage connection
+    // check file storage connection
     try {
         if (in_array('fs', $checks)) $this->fileStorage->listContents('uploads://');
     } catch(Throwable $e) {
