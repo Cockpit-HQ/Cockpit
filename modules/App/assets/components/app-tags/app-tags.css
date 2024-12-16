@@ -1,0 +1,72 @@
+app-tags {
+    display: flex;
+    flex-wrap: wrap;
+    background: var(--kiss-input-background);
+    border: 1px solid var(--kiss-input-border-color);
+    padding: 8px;
+    border-radius: var(--app-border-radius, 4px);
+    gap: 4px;
+    align-items: center;
+    min-width: 120px;
+}
+
+.app-tags-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.app-tags-tag {
+    display: flex;
+    background-color: var(--kiss-color-primary, #007bff);
+    color: #fff;
+    border-radius: var(--app-border-radius, 4px);
+    padding: 6px 12px;
+    font-size: 11px;
+    align-items: center;
+    gap: 6px;
+}
+
+.app-tags-tag-remove {
+    display: inline-block;
+    cursor: pointer;
+    font-weight: bold;
+    padding-left: 6px;
+    border-left: 1px dotted currentColor;
+}
+
+.app-tags-input {
+    background: transparent;
+    color: inherit;
+    border: none;
+    outline: none;
+    width: fit-content;
+    padding: 6px;
+    flex: 1;
+}
+
+.app-tags-input-autocomplete-dropdown {
+    position: absolute;
+    background: var(--kiss-base-background-color);
+    border: 1px solid var(--kiss-input-border-color);
+    border-radius: 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 99999;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin: 5px 0;
+}
+
+.app-tags-autocomplete-item {
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.app-tags-autocomplete-item:hover {
+    background-color: var(--kiss-color-muted);
+}
+
+.app-tags-autocomplete-item.selected {
+    background-color: var(--kiss-color-primary);
+    color: #fff;
+}

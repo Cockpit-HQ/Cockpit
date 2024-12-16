@@ -4,10 +4,10 @@ let instanceCount = 0;
 let ready = new Promise(function(resolve) {
 
     App.assets.require([
-        'app:assets/vendor/choices/choices.js',
-        'app:assets/vendor/choices/choices.css',
+        'app:assets/components/app-tags/app-tags.js',
+        'app:assets/components/app-tags/app-tags.css',
     ], function() {
-        resolve(window.Choices);
+        resolve();
     });
 });
 
@@ -39,7 +39,8 @@ export default {
             uid: `field-tags-${++instanceCount}`,
             val: this.modelValue || [],
             options: [],
-            loading: false
+            loading: false,
+            tagsElement: null
         }
     },
 
@@ -55,6 +56,14 @@ export default {
         max: {
             type: Number
         },
+        minChars: {
+            type: Number,
+            default: 1
+        },
+        strictMode: {
+            type: Boolean,
+            default: false
+        },
         list: {
             type: Array,
             default: []
@@ -65,48 +74,64 @@ export default {
         }
     },
 
+    emits: ['update:modelValue'],
+
     mounted() {
+
+        this.tagsElement = this.$refs.tags;
 
         ready.then(() => {
 
-            this.input = this.$el.querySelector('input, select');
-
-            this.choices = new Choices(this.input, {
-                paste: false,
-                duplicateItemsAllowed: false,
-                maxItemCount: this.max || -1,
-                placeholder: this.placeholder ? true : false,
-                placeholderValue: this.placeholder || '',
-                removeItemButton: true,
-                searchResultLimit: 8,
-                choices: this.options,
-
-                loadingText: App.i18n.get('Loading...'),
-                noResultsText: App.i18n.get('No results found'),
-                noChoicesText: App.i18n.get('No choices to choose from'),
-                itemSelectText: App.i18n.get('Press to select'),
-            })
+            // Set other options
+            if (this.max) {
+                this.tagsElement.setAttribute('max-tags', this.max);
+            }
+            if (this.minChars) {
+                this.tagsElement.setAttribute('min-chars', this.minChars);
+            }
+            if (this.placeholder) {
+                this.tagsElement.setAttribute('placeholder', this.placeholder);
+            }
+            if (this.strictMode) {
+                this.tagsElement.setAttribute('strict-mode', '');
+            }
 
             if (this.src || (Array.isArray(this.list) && this.list.length)) {
                 this.resolveOptions();
             }
 
-            this.updateChoices();
-
-            this.input.addEventListener('change', (e) => {
-                this.val = this.choices.getValue(true);
-                this.update();
-            });
+            this.tagsElement.addEventListener('tags-changed', this.update);
+            this.tagsElement.setTags(Array.isArray(this.modelValue) ? this.modelValue : []);
         });
 
     },
 
-    watch: {
-        modelValue() {
+    beforeUnmount() {
+        if (this.tagsElement) {
+            this.tagsElement.removeEventListener('tags-changed', this.update);
+        }
+    },
 
-            this.val = this.modelValue;
-            this.updateChoices();
-            this.update();
+    watch: {
+        modelValue: {
+            handler(newValue) {
+                if (this.tagsElement) {
+                    const currentTags = this.tagsElement.getTags();
+                    if (JSON.stringify(currentTags) !== JSON.stringify(newValue)) {
+                        this.tagsElement.setTags(newValue);
+                    }
+                }
+            },
+            deep: true
+        },
+
+        list: {
+            handler(newValue) {
+                if (this.tagsElement) {
+                    this.tagsElement.setSuggestions(newValue);
+                }
+            },
+            deep: true
         }
     },
 
@@ -116,26 +141,13 @@ export default {
 
     methods: {
 
-        updateChoices() {
-
-            if (!this.choices || this.loading) return;
-
-            this.choices.removeActiveItems();
-
-            if (this.options.length) {
-
-                if (Array.isArray(this.val)) {
-                    this.val.forEach(val => this.choices.setChoiceByValue(val))
-                }
-
-            } else {
-                this.choices.setValue(this.val || []);
-            }
-
+        updateOptions() {
+            if (this.loading) return;
+            this.tagsElement.setSuggestions(this.options);
         },
 
-        update() {
-            this.$emit('update:modelValue', this.val)
+        update(e) {
+            this.$emit('update:modelValue', e.detail.tags);
         },
 
         resolveOptions() {
@@ -143,11 +155,9 @@ export default {
             this.loading = true;
 
             (this.src ? this.resolveItemsBySrc() : this.resolveItemsByList()).then(options => {
-
                 this.loading = false;
                 this.options = options;
-                this.choices.setChoices(this.options, 'value', 'label', true);
-                this.updateChoices();
+                this.updateOptions();
             });
         },
 
@@ -211,9 +221,7 @@ export default {
 
     template: /*html*/`
         <div field="tags">
-            <select multiple hidden v-if="src"></select>
-            <select multiple hidden v-else-if="Array.isArray(list) && list.length"></select>
-            <input type="text" hidden v-else />
+            <app-tags ref="tags" />
         </div>
     `
 }
