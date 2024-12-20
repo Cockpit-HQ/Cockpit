@@ -172,7 +172,7 @@ class Index {
      * @return void
      */
     public function removeDocument(mixed $id) {
-        $sql = "DELETE FROM documents WHERE id = :id LIMIT 1";
+        $sql = "DELETE FROM documents WHERE id = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':id', $id);
         $stmt->execute();

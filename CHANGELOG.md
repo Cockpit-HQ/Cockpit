@@ -5,6 +5,7 @@
 - Allow to send custom headers via mailer service
 - Remove choices.js dependency
 - Fix kiss-sticky z-index issue
+- Fix IndexLite\Index::removeDocument
 
 ## 2.10.2 (2024-12-08)
 
