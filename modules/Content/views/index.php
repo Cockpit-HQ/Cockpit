@@ -28,7 +28,7 @@
                     <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': filterModelType=='lists'}" @click="filterModelType='lists'"><?= t('Lists') ?></button>
                 </div>
 
-                <app-scrollcontainer mode="boundary-include" boundary ="app-actionbar">
+                <app-scrollcontainer mode="boundary-include" boundary="app-actionbar">
 
                     <div class="animated fadeIn kiss-height-50vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted kiss-margin-large" v-if="!singletons.length && !lists.length">
                         <div>

@@ -95,6 +95,10 @@ kiss-tooltip {
     background-position: 0 0, 0 calc(var(--kiss-bgcolor-transparentimage-size, 20px) / 2), calc(var(--kiss-bgcolor-transparentimage-size, 20px) / 2) calc(-1 * var(--kiss-bgcolor-transparentimage-size, 20px) / 2), calc(-1 * var(--kiss-bgcolor-transparentimage-size, 20px) / 2) 0px;
 }
 
+.kiss-bgcolor-base {
+    background: var(--kiss-base-background-color);
+}
+
 .kiss-height-30vh { min-height: 30vh; }
 .kiss-height-50vh { min-height: 50vh; }
 .kiss-height-100vh { min-height: 100vh; }
