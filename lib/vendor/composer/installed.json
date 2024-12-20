@@ -59,17 +59,17 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.334.6",
-            "version_normalized": "3.334.6.0",
+            "version": "3.336.1",
+            "version_normalized": "3.336.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "2b0be3aded849d3b7bb0b53ea3295c7cecdeeee7"
+                "reference": "bef061855d6db932aac8f354f774b9b3ad84ad14"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/2b0be3aded849d3b7bb0b53ea3295c7cecdeeee7",
-                "reference": "2b0be3aded849d3b7bb0b53ea3295c7cecdeeee7",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/bef061855d6db932aac8f354f774b9b3ad84ad14",
+                "reference": "bef061855d6db932aac8f354f774b9b3ad84ad14",
                 "shasum": ""
             },
             "require": {
@@ -110,7 +110,7 @@
                 "ext-openssl": "Allows working with CloudFront private distributions and verifying received SNS messages",
                 "ext-sockets": "To use client-side monitoring"
             },
-            "time": "2024-12-13T19:18:29+00:00",
+            "time": "2024-12-19T19:03:08+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -154,7 +154,7 @@
             "support": {
                 "forum": "https://forums.aws.amazon.com/forum.jspa?forumID=80",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.334.6"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.336.1"
             },
             "install-path": "../aws/aws-sdk-php"
         },
@@ -3417,17 +3417,17 @@
         },
         {
             "name": "webonyx/graphql-php",
-            "version": "v15.19.0",
-            "version_normalized": "15.19.0.0",
+            "version": "v15.19.1",
+            "version_normalized": "15.19.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webonyx/graphql-php.git",
-                "reference": "5203bf29c8be0280e8d0925538a310202bc10f29"
+                "reference": "fa01712b1a170ddc1d92047011b2f4c2bdfa8234"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webonyx/graphql-php/zipball/5203bf29c8be0280e8d0925538a310202bc10f29",
-                "reference": "5203bf29c8be0280e8d0925538a310202bc10f29",
+                "url": "https://api.github.com/repos/webonyx/graphql-php/zipball/fa01712b1a170ddc1d92047011b2f4c2bdfa8234",
+                "reference": "fa01712b1a170ddc1d92047011b2f4c2bdfa8234",
                 "shasum": ""
             },
             "require": {
@@ -3462,7 +3462,7 @@
                 "psr/http-message": "To use standard GraphQL server",
                 "react/promise": "To leverage async resolving on React PHP platform"
             },
-            "time": "2024-12-04T19:14:22+00:00",
+            "time": "2024-12-19T10:52:18+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -3482,7 +3482,7 @@
             ],
             "support": {
                 "issues": "https://github.com/webonyx/graphql-php/issues",
-                "source": "https://github.com/webonyx/graphql-php/tree/v15.19.0"
+                "source": "https://github.com/webonyx/graphql-php/tree/v15.19.1"
             },
             "funding": [
                 {

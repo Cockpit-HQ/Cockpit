@@ -80,6 +80,8 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionBackup(array $args = [])
  * @method \Aws\BackupGateway\BackupGatewayClient createBackupGateway(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionBackupGateway(array $args = [])
+ * @method \Aws\BackupSearch\BackupSearchClient createBackupSearch(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionBackupSearch(array $args = [])
  * @method \Aws\Batch\BatchClient createBatch(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionBatch(array $args = [])
  * @method \Aws\Bedrock\BedrockClient createBedrock(array $args = [])
@@ -813,7 +815,7 @@ namespace Aws;
  */
 class Sdk
 {
-    const VERSION = '3.334.6';
+    const VERSION = '3.336.1';
 
     /** @var array Arguments for creating clients */
     private $args;
