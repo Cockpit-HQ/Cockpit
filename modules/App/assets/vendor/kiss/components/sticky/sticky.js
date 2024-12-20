@@ -14,12 +14,6 @@ document.addEventListener('scroll', () => {
 
         sticky.style.top = (stickyHeight + offset) + 'px';
 
-        if (sticky.getBoundingClientRect().top <= stickyHeight + offset) {
-            sticky.style.zIndex = stickies.length - idx;
-        } else {
-            sticky.style.zIndex = 0;
-        }
-
         stickyHeight += sticky.offsetHeight + offset;
     });
 });
