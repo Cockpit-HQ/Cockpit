@@ -38,12 +38,6 @@
     padding: 0;
 }
 
-.kiss-input-blank {
-    background: none !important;
-    border: none !important;
-    color: inherit !important;
-}
-
 .kiss-input,
 .kiss-textarea { -webkit-appearance: none; }
 
@@ -73,11 +67,13 @@
     vertical-align: top;
 }
 
+.kiss-input-blank,
 .kiss-input[seamless="true"] {
     background: none !important;
     border: none !important;
-    color: inherit;
+    color: inherit !important;
 }
+
 
 /* Focus */
 .kiss-input:focus,
