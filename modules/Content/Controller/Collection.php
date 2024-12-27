@@ -91,18 +91,9 @@ class Collection extends App {
             $this->checkAndLockResource($id);
         }
 
-        $fields = $model['fields'];
-        $locales = $this->helper('locales')->locales();
-
-        if (count($locales) == 1) {
-            $locales = [];
-        } else {
-            $locales[0]['visible'] = true;
-        }
-
         $this->helper('theme')->favicon(isset($model['icon']) && $model['icon'] ? $model['icon'] : 'content:assets/icons/collection.svg', $model['color'] ?? '#000');
 
-        return $this->render('content:views/collection/item.php', compact('model', 'fields', 'locales', 'item'));
+        return $this->render('content:views/collection/item.php', compact('model', 'item'));
     }
 
     public function clone($model = null, $id = null) {
@@ -132,16 +123,7 @@ class Collection extends App {
 
         $item['_state'] = 0;
 
-        $fields = $model['fields'];
-        $locales = $this->helper('locales')->locales();
-
-        if (count($locales) == 1) {
-            $locales = [];
-        } else {
-            $locales[0]['visible'] = true;
-        }
-
-        return $this->render('content:views/collection/item.php', compact('model', 'fields', 'locales', 'item'));
+        return $this->render('content:views/collection/item.php', compact('model', 'item'));
     }
 
     public function find($model = null) {

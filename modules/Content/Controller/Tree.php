@@ -79,18 +79,9 @@ class Tree extends App {
             $item['_o'] = $this->app->dataStorage->count("content/collections/{$model['name']}", ['_pid' => $item['_pid']]);
         }
 
-        $fields = $model['fields'];
-        $locales = $this->helper('locales')->locales();
-
-        if (count($locales) == 1) {
-            $locales = [];
-        } else {
-            $locales[0]['visible'] = true;
-        }
-
         $this->helper('theme')->favicon(isset($model['icon']) && $model['icon'] ? $model['icon'] : 'content:assets/icons/tree.svg', $model['color'] ?? '#000');
 
-        return $this->render('content:views/tree/item.php', compact('model', 'fields', 'locales', 'item'));
+        return $this->render('content:views/tree/item.php', compact('model', 'item'));
     }
 
     public function remove($model = null) {
@@ -231,16 +222,7 @@ class Tree extends App {
 
         $item['_state'] = 0;
 
-        $fields = $model['fields'];
-        $locales = $this->helper('locales')->locales();
-
-        if (count($locales) == 1) {
-            $locales = [];
-        } else {
-            $locales[0]['visible'] = true;
-        }
-
-        return $this->render('content:views/tree/item.php', compact('model', 'fields', 'locales', 'item'));
+        return $this->render('content:views/tree/item.php', compact('model', 'item'));
     }
 
 }

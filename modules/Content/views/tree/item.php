@@ -1,4 +1,15 @@
+<?php
 
+$fields = $model['fields'];
+$locales = $this->helper('locales')->locales();
+
+if (count($locales) == 1) {
+    $locales = [];
+} else {
+    $locales[0]['visible'] = true;
+}
+
+?>
 <vue-view class="kiss-margin-small">
 
     <template>
