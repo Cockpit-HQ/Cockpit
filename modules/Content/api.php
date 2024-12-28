@@ -190,7 +190,7 @@ $this->on('restApi.config', function($restApi) {
                 }
 
                 if (isset($data['_state']) && !$app->helper('acl')->isAllowed("content/{$model['name']}/publish", $app->helper('auth')->getUser('role'))) {
-                    unset($item['_state']);
+                    unset($data['_state']);
                 }
             }
 
