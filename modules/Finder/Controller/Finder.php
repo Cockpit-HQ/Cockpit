@@ -11,7 +11,7 @@ class Finder extends App {
 
     protected function before() {
 
-        if (!$this->helper('acl')->isSuperAdmin()) {
+        if (!$this->helper('acl')->isSuperAdmin() || !$this->helper('spaces')->isMaster()) {
             return $this->stop(401);
         }
 
@@ -25,6 +25,30 @@ class Finder extends App {
         $roots = $this->getRoots();
 
         return $this->render('finder:views/index.php', compact('roots'));
+    }
+
+    protected function getRoots() {
+
+        $roots = [
+            'Cockpit' => '#root:',
+        ];
+
+        $docsRoot = rtrim($this->app->retrieve('docs_root', ''), '/');
+        $cockpitRoot = rtrim($this->app->path('#root:'), '/');
+
+        if ($docsRoot && $docsRoot !== $cockpitRoot) {
+            $roots['Root'] = $docsRoot;
+        }
+
+        $spaces = $this->helper('spaces')->spaces();
+
+        foreach ($spaces as $space) {
+            $roots["Space: {$space['name']}"] = APP_SPACES_DIR.'/'.$space['name'];
+        }
+
+        $this->app->trigger('finder.collect.roots', [&$roots]);
+
+        return $roots;
     }
 
 
@@ -49,17 +73,6 @@ class Finder extends App {
         }
 
         return false;
-    }
-
-    protected function getRoots() {
-
-        $roots = [
-            'Cockpit' => '#root:',
-        ];
-
-        $this->app->trigger('finder.collect.roots', [&$roots]);
-
-        return $roots;
     }
 
     protected function ls() {
