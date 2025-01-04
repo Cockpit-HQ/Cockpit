@@ -59,17 +59,17 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.336.6",
-            "version_normalized": "3.336.6.0",
+            "version": "3.336.8",
+            "version_normalized": "3.336.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "0a99dab427f0a1c082775301141aeac3558691ad"
+                "reference": "933da0d1b9b1ac9b37d5e32e127d4581b1aabaf6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/0a99dab427f0a1c082775301141aeac3558691ad",
-                "reference": "0a99dab427f0a1c082775301141aeac3558691ad",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/933da0d1b9b1ac9b37d5e32e127d4581b1aabaf6",
+                "reference": "933da0d1b9b1ac9b37d5e32e127d4581b1aabaf6",
                 "shasum": ""
             },
             "require": {
@@ -110,7 +110,7 @@
                 "ext-openssl": "Allows working with CloudFront private distributions and verifying received SNS messages",
                 "ext-sockets": "To use client-side monitoring"
             },
-            "time": "2024-12-28T04:16:13+00:00",
+            "time": "2025-01-03T19:06:11+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -154,7 +154,7 @@
             "support": {
                 "forum": "https://forums.aws.amazon.com/forum.jspa?forumID=80",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.336.6"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.336.8"
             },
             "install-path": "../aws/aws-sdk-php"
         },
@@ -2307,17 +2307,17 @@
         },
         {
             "name": "symfony/finder",
-            "version": "v7.2.0",
-            "version_normalized": "7.2.0.0",
+            "version": "v7.2.2",
+            "version_normalized": "7.2.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/finder.git",
-                "reference": "6de263e5868b9a137602dd1e33e4d48bfae99c49"
+                "reference": "87a71856f2f56e4100373e92529eed3171695cfb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/finder/zipball/6de263e5868b9a137602dd1e33e4d48bfae99c49",
-                "reference": "6de263e5868b9a137602dd1e33e4d48bfae99c49",
+                "url": "https://api.github.com/repos/symfony/finder/zipball/87a71856f2f56e4100373e92529eed3171695cfb",
+                "reference": "87a71856f2f56e4100373e92529eed3171695cfb",
                 "shasum": ""
             },
             "require": {
@@ -2326,7 +2326,7 @@
             "require-dev": {
                 "symfony/filesystem": "^6.4|^7.0"
             },
-            "time": "2024-10-23T06:56:12+00:00",
+            "time": "2024-12-30T19:00:17+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -2354,7 +2354,7 @@
             "description": "Finds files and directories via an intuitive fluent interface",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/finder/tree/v7.2.0"
+                "source": "https://github.com/symfony/finder/tree/v7.2.2"
             },
             "funding": [
                 {
