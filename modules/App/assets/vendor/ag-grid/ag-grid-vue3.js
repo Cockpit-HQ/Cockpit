@@ -45,6 +45,7 @@ export default {
     mounted() {
 
         let opts = Object.assign({
+            theme: 'legacy',
             columnDefs: this.columns,
             rowData: this.rows,
             suppressScrollOnNewData: true,
