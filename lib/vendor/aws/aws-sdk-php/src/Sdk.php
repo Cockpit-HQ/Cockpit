@@ -366,10 +366,6 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionInternetMonitor(array $args = [])
  * @method \Aws\Invoicing\InvoicingClient createInvoicing(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionInvoicing(array $args = [])
- * @method \Aws\IoT1ClickDevicesService\IoT1ClickDevicesServiceClient createIoT1ClickDevicesService(array $args = [])
- * @method \Aws\MultiRegionClient createMultiRegionIoT1ClickDevicesService(array $args = [])
- * @method \Aws\IoT1ClickProjects\IoT1ClickProjectsClient createIoT1ClickProjects(array $args = [])
- * @method \Aws\MultiRegionClient createMultiRegionIoT1ClickProjects(array $args = [])
  * @method \Aws\IoTAnalytics\IoTAnalyticsClient createIoTAnalytics(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionIoTAnalytics(array $args = [])
  * @method \Aws\IoTDeviceAdvisor\IoTDeviceAdvisorClient createIoTDeviceAdvisor(array $args = [])
@@ -815,7 +811,7 @@ namespace Aws;
  */
 class Sdk
 {
-    const VERSION = '3.336.10';
+    const VERSION = '3.336.13';
 
     /** @var array Arguments for creating clients */
     private $args;
