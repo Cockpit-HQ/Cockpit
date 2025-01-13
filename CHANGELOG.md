@@ -1,5 +1,9 @@
 # Release Notes
 
+## WIP
+
+- Add App.utils.selectAsset helper
+
 ## 2.10.3 (2024-12-30)
 
 - Allow to send custom headers via mailer service

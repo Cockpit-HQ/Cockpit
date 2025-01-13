@@ -53,3 +53,11 @@ App.utils.$interpolate.fns.$image = function(asset, w = 25, h = 25, mode = 'best
     return `<display-image class="kiss-display-inline-block" src="${asset._id}" w="${w}" h="${h}" mode="${mode}" q="${q}" style="vertical-align: middle;"></display-image>`;
 };
 
+App.utils.selectAsset = function(callback, filter = {}) {
+
+    VueView.ui.modal('assets:assets/dialogs/asset-picker.js', {filter}, {
+        onSelect: (asset) => {
+            callback(asset);
+        }
+    }, {size: 'xlarge'})
+}
