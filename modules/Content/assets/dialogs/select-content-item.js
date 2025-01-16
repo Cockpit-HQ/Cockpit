@@ -6,6 +6,9 @@ export default {
             items: [],
             loading: true,
             fieldTypes: null,
+            sort: (this.model.meta && this.model.meta.sort) || {
+                _created: -1
+            },
             fltr: '',
             txtFilter: '',
             page: 1,
@@ -57,6 +60,7 @@ export default {
             let options = {
                 limit: this.limit,
                 skip: (page - 1) * this.limit,
+                sort: this.sort
             };
 
             let filter = [];
@@ -84,7 +88,19 @@ export default {
         pick(item) {
             this.$call('pickItem', item);
             this.$close();
-        }
+        },
+
+        sortItems(field) {
+
+            if (this.sort[field]) {
+                this.sort[field] = this.sort[field] == 1 ? -1 : 1;
+            } else {
+                this.sort = {};
+                this.sort[field] = 1;
+            }
+
+            this.load();
+        },
     },
 
     template: /*html*/`
@@ -123,9 +139,27 @@ export default {
                         <thead>
                             <tr>
                                 <th fixed="left" width="50">ID</th>
-                                <th width="20">State</th>
-                                <th v-for="field in fields">{{ field.label || field.name}}</th>
-                                <th width="120">{{ t('Modified') }}</th>
+                                <th class="kiss-position-relative" width="20">
+                                    <div class="kiss-flex kiss-flex-middle">
+                                        <span>{{ t('State') }}</span>
+                                        <span class="kiss-size-6" v-if="sort._state"><icon>{{sort._state == 1 ? 'south':'north'}}</icon></span>
+                                    </div>
+                                    <a class="kiss-cover" @click="sortItems('_state')"></a>
+                                </th>
+                                <th class="kiss-position-relative" v-for="field in fields">
+                                    <div class="kiss-flex kiss-flex-middle">
+                                        <span>{{ field.label || field.name}}</span>
+                                        <span class="kiss-size-6" v-if="sort[field.name]"><icon>{{sort[field.name] == 1 ? 'south':'north'}}</icon></span>
+                                    </div>
+                                    <a class="kiss-cover" @click="sortItems(field.name)"></a>
+                                </th>
+                                <th class="kiss-position-relative" width="120">
+                                    <div class="kiss-flex kiss-flex-middle">
+                                        <span>{{ t('Modified') }}</span>
+                                        <span class="kiss-size-6" v-if="sort._modified"><icon>{{sort._modified == 1 ? 'south':'north'}}</icon></span>
+                                    </div>
+                                    <a class="kiss-cover" @click="sortItems('_modified')"></a>
+                                </th>
                                 <th fixed="right" width="20"></th>
                             </tr>
                         </thead>

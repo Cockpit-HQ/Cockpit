@@ -3,6 +3,7 @@
 ## WIP
 
 - Add App.utils.selectAsset helper
+- Add support for sorting content items in content item picker dialog
 
 ## 2.10.3 (2024-12-30)
 
