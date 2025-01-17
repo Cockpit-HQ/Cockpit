@@ -11,6 +11,7 @@ export default {
             },
             fltr: '',
             txtFilter: '',
+            selected: [],
             page: 1,
             pages: 1,
             limit: 10,
@@ -26,6 +27,10 @@ export default {
         filter: {
             type: Object,
             default: null
+        },
+        multiple: {
+            type: Boolean,
+            default: false
         }
     },
 
@@ -80,14 +85,32 @@ export default {
                 this.page = rsp.page;
                 this.pages = rsp.pages;
                 this.count = rsp.count;
-
+            }).finally(() => {
+                this.selected = [];
                 this.loading = false;
-            })
+            });
         },
 
         pick(item) {
             this.$call('pickItem', item);
             this.$close();
+        },
+
+        pickSelected() {
+
+            let items = this.items.filter(item => this.selected.includes(item._id));
+
+            this.$call('pickItems', items);
+            this.$close();
+        },
+
+        toggleAllSelect(e) {
+
+            this.selected = [];
+
+            if (e.target.checked) {
+                this.items.forEach(item => this.selected.push(item._id));
+            }
         },
 
         sortItems(field) {
@@ -138,6 +161,9 @@ export default {
                     <table class="kiss-table animated fadeIn">
                         <thead>
                             <tr>
+                                <th fixed="left" width="20" v-if="multiple">
+                                    <input class="kiss-checkbox" type="checkbox" @click="toggleAllSelect">
+                                </th>
                                 <th fixed="left" width="50">ID</th>
                                 <th class="kiss-position-relative" width="20">
                                     <div class="kiss-flex kiss-flex-middle">
@@ -165,6 +191,9 @@ export default {
                         </thead>
                         <tbody>
                             <tr v-for="item in items">
+                                <td v-if="multiple">
+                                    <input class="kiss-checkbox" type="checkbox" v-model="selected" :value="item._id">
+                                </td>
                                 <td fixed="left"><a class="kiss-badge kiss-link-muted" :title="item._id">...{{ item._id.substr(-5) }}</a></td>
                                 <td class="kiss-align-center"><icon :class="{'kiss-color-success': item._state === 1, 'kiss-color-danger': !item._state}">trip_origin</icon></td>
                                 <td v-for="field in fields">
@@ -184,7 +213,7 @@ export default {
                 </div>
             </div>
 
-            <div class="kiss-flex kiss-flex-right kiss-margin-top">
+            <div class="kiss-flex kiss-flex-right kiss-margin-top" gap>
 
                 <div class="kiss-flex kiss-flex-middle kiss-flex-1" v-if="!loading && count">
                     <app-pagination>
@@ -200,10 +229,18 @@ export default {
                     </app-pagination>
                 </div>
 
-                <button class="kiss-button kiss-button-primary" @click="$close()">
-                    {{ t('Cancel') }}
-                </button>
-            </div>
+                <div class="kiss-button-group">
+
+                    <button type="button" class="kiss-button kiss-button-primary" @click="pickSelected()" v-if="multiple && selected.length">
+                        {{ t('Link selected') }}
+                    </button>
+
+                    <button type="button" class="kiss-button" :class="{'kiss-button-primary': !selected.length}" @click="$close()">
+                        {{ t('Cancel') }}
+                    </button>
+                </div>
+
+            </div>posts
         </div>
     `
 }

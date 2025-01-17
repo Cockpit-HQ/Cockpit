@@ -12,6 +12,51 @@ export default {
             {name: 'filter', type: 'object', opts:{height: 120}},
             {name: 'display', type: 'text'},
         ],
+        
+        addFieldItem(field, value) {
+
+            if (!field.opts.link) {
+                return;
+            }
+
+            App.utils.getContentModels().then(models => {
+
+                const model = models[field.opts.link];
+
+                if (!model) {
+                    return;
+                }
+
+                VueView.ui.modal('content:assets/dialogs/select-content-item.js', {
+                    model: model, 
+                    filter: field.opts?.filter,
+                    multiple: true
+                }, {
+                    pickItem: (item) => {
+
+                        value.push({
+                            _model: model.name,
+                            _id: item._id
+                        });
+                        
+                    },
+
+                    pickItems: (items) => {
+
+                        items.forEach(item => {
+                            value.push({
+                                _model: model.name,
+                                _id: item._id
+                            });
+                        });
+                    }
+                    
+                }, {size: 'xlarge'})
+                
+            });
+
+        },
+
         render(value, field, context) {
 
             if (Array.isArray(value)) {
@@ -87,7 +132,7 @@ export default {
                     this.item = item;
                     this.update();
                 }
-            }, {size: 'xlarge'})
+            }, {size: 'xlarge'});
         },
 
         getDisplay() {
