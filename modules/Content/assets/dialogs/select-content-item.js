@@ -129,7 +129,10 @@ export default {
     template: /*html*/`
         <div>
 
-            <div class="kiss-margin kiss-flex kiss-flex-middle">
+            <div class="kiss-margin kiss-flex kiss-flex-middle" gap>
+                <div>
+                    <kiss-svg class="kiss-margin-auto" :src="$baseUrl(model.icon ? model.icon : 'content:assets/icons/collection.svg')" width="50" height="50" :style="{color:model.color ? model.color : 'var(--kiss-color-muted)'}"><canvas width="50" height="50"></canvas></kiss-svg>
+                </div>
                 <div class="kiss-flex-1">
                     <div class="kiss-color-muted kiss-size-small">{{ model.label || model.name }}</div>
                     <div class="kiss-size-4 kiss-text-bold">{{ t('Select model item') }}</div>
