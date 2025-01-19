@@ -141,7 +141,9 @@ export default {
 
             <form class="kiss-flex kiss-margin" :class="{'kiss-disabled': loading}" @submit.prevent="fltr = txtFilter">
 
-                <input type="text" class="kiss-input kiss-flex-1 kiss-margin-xsmall-right" :placeholder="t('Filter items...')" v-model="txtFilter">
+                <app-textcomplete class="kiss-flex-1 kiss-margin-xsmall-right" :items="model.fields.map(f => f.name)" trigger="@">
+                    <input type="text" class="kiss-input" :placeholder="t('Filter items...')" v-model="txtFilter">
+                </app-textcomplete>
 
                 <div class="kiss-button-group kiss-margin-small-left">
                     <button type="button" class="kiss-button" @click="fltr = ''" v-if="fltr">{{ t('Reset') }}</button>
@@ -243,7 +245,7 @@ export default {
                     </button>
                 </div>
 
-            </div>posts
+            </div>
         </div>
     `
 }
