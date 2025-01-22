@@ -40,7 +40,12 @@ class Cache extends \Lime\Helper {
 
     public function read(string $key, mixed $default = null, $decrypt = false): mixed {
 
-        $var = @file_get_contents($this->cachePath.\md5($this->prefix.'-'.$key).".cache");
+        $var = null;
+        $cacheFile = $this->cachePath.\md5($this->prefix.'-'.$key).".cache";
+
+        if (file_exists($cacheFile)) {
+            $var = @file_get_contents($cacheFile);
+        }
 
         if (!$var) {
             return is_callable($default) ? call_user_func($default):$default;
