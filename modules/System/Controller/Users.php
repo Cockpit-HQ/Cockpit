@@ -281,8 +281,13 @@ class Users extends App {
     protected function geti18n() {
 
         $languages = [['i18n' => 'en', 'language' => 'English']];
+        $i18nFolder = '#config:i18n';
 
-        foreach ($this->app->helper('fs')->ls('#config:i18n') as $dir) {
+        if (!$this->helper('spaces')->isMaster() && !$this->app->path($i18nFolder)) {
+            $i18nFolder = '#app:config/i18n';
+        }
+
+        foreach ($this->app->helper('fs')->ls($i18nFolder) as $dir) {
 
             if (!$dir->isDir() || $dir->isDot() || !file_exists($dir->getRealPath().'/App.php')) {
                 continue;

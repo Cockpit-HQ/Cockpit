@@ -107,11 +107,16 @@ $this->on('app.admin.request', function(Lime\Request $request) {
     if ($locale !== 'en') {
 
         $i18n->locale = $locale;
+        $i18nConfigFolder = '#config:i18n';
+
+        if (!$this->helper('spaces')->isMaster() && !$this->path($i18nConfigFolder)) {
+            $i18nConfigFolder = '#app:config/i18n';
+        }
 
         foreach ($this->retrieve('modules')->getArrayCopy() as $m) {
 
             $name = basename($m->_dir);
-            $i18nPath = $this->path("#config:i18n/{$locale}/{$name}.php");
+            $i18nPath = $this->path("{$i18nConfigFolder}/{$locale}/{$name}.php");
 
             if (!$i18nPath) $i18nPath = $this->path("{$name}:i18n/{$locale}.php");
             if (!$i18nPath) continue;

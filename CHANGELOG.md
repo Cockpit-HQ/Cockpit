@@ -13,6 +13,7 @@
 - Remove choices.js dependency
 - Fix kiss-sticky z-index issue
 - Fix IndexLite\Index::removeDocument
+- Use fallback i18n root config path for spaces
 
 ## 2.10.2 (2024-12-08)
 
