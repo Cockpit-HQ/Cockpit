@@ -393,7 +393,8 @@ label {
 
 .auth-dialog {
     padding: var(--kiss-padding-large, 3rem);
-    border-radius: 10px;
+    border-radius: 8px;
+    border: 1px solid rgb(46 46 46 / 30%);
     background: var(--kiss-base-background-color);
     z-index: -1;
 
@@ -404,6 +405,10 @@ label {
         0 22.3px 17.9px rgba(0, 0, 0, 0.072),
         0 41.8px 33.4px rgba(0, 0, 0, 0.086),
         0 100px 80px rgba(0, 0, 0, 0.12);
+}
+
+html[data-theme='light'] .auth-dialog {
+    border-color: rgb(215 212 212 / 30%);
 }
 
 app-header {
