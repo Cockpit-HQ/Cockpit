@@ -81,12 +81,15 @@ class Auth extends Base {
             $user = $this->app->dataStorage->findOne('system/users', ['email' => $email, 'active' => true]);
 
             if (!$user) {
+                sleep(1);
                 return ['success' => true];
             }
 
+            $check = "{$user['_id']}.{$user['password']}.{$user['_modified']}";
+
             $token = $this->helper('jwt')->create([
                 'email' => $email,
-                'check' => $this->app->hash($user['_id']),
+                'check' => $this->app->hash($check),
                 'iat' => time(),
                 'exp' => strtotime('+15 minutes'),
             ]);
@@ -112,8 +115,9 @@ class Auth extends Base {
                 }
 
                 $user = $this->app->dataStorage->findOne('system/users', ['email' => $payload['email'], 'active' => true]);
+                $check = "{$user['_id']}.{$user['password']}.{$user['_modified']}";
 
-                if (!$user || !password_verify($user['_id'], $payload['check'])) {
+                if (!$user || !password_verify($check, $payload['check'])) {
                     return false;
                 }
 
@@ -276,7 +280,7 @@ class Auth extends Base {
                 }
 
                 $user = $this->app->dataStorage->findOne('system/users', ['email' => $payload['email'], 'active' => true]);
-                $check = $user['_id'].$user['password'].$user['_modified'];
+                $check = "{$user['_id']}.{$user['password']}.{$user['_modified']}";
 
                 if (!$user || !password_verify($check, $payload['check'])) {
                     return false;
@@ -302,7 +306,7 @@ class Auth extends Base {
                 return ['success' => true];
             }
 
-            $check = $user['_id'].$user['password'].$user['_modified'];
+            $check = "{$user['_id']}.{$user['password']}.{$user['_modified']}";
 
             $token = $this->helper('jwt')->create([
                 'email' => $email,
