@@ -7,6 +7,8 @@
 - Fix cache helper: ensure cache file existence before reading cache content
 - Add assets:files:fixvisibility tower helper command
 - Add password reset functionality
+- Fix cache helper: ensure cache file existence before reading cache content
+- Use fallback i18n root config path for spaces
 
 ## 2.10.3 (2024-12-30)
 
@@ -14,7 +16,6 @@
 - Remove choices.js dependency
 - Fix kiss-sticky z-index issue
 - Fix IndexLite\Index::removeDocument
-- Use fallback i18n root config path for spaces
 
 ## 2.10.2 (2024-12-08)
 
