@@ -27,6 +27,10 @@
                         <button class="kiss-button kiss-button-large kiss-button-primary kiss-width-1-1"><?= t('Log in') ?></button>
                     </div>
 
+                    <?php if ($this->mailer->getTransport() !== 'mail'): ?>
+                    <div class="kiss-size-small kiss-text-caption kiss-color-muted"><a class="kiss-link-muted" kiss-popout="#login-options"><?=t('More Options')?> <icon size="large">arrow_drop_down</icon></a></div>
+                    <?php endif ?>
+
                 </form>
 
                 <kiss-card class="animated fadeIn" v-if="!loading && view=='success' && !user.twofa">
@@ -67,12 +71,6 @@
                 </div>
 
             </div>
-
-            <?php if ($this->retrieve('auth.login.magiclink', true) && $this->mailer->getTransport() !== 'mail'): ?>
-            <div class="kiss-align-center kiss-margin" v-if="view=='form'">
-                <a class="kiss-size-small kiss-text-caption kiss-color-muted" href="<?=$this->route('/auth/magiclink')?>"><?=t('Login via Magic Link')?></a>
-            </div>
-            <?php endif ?>
 
         </kiss-container>
 
@@ -195,3 +193,30 @@
     </script>
 
 </vue-view>
+
+<?php if ($this->mailer->getTransport() !== 'mail'): ?>
+ <kiss-popout id="login-options">
+    <kiss-content>
+        <kiss-navlist>
+            <ul>
+                <li class="kiss-nav-header"><?=t('Login Options')?></li>
+                <?php if ($this->retrieve('auth.login.magiclink', true)): ?>
+                <li>
+                    <a class="kiss-flex kiss-flex-middle" href="<?=$this->route('/auth/magiclink')?>">
+                        <icon class="kiss-margin-small-right">bolt</icon>
+                        <?= t('Login via Magic Link') ?>
+                    </a>
+                </li>
+                <li class="kiss-nav-divider"></li>
+                <?php endif ?>
+                <li>
+                    <a class="kiss-flex kiss-flex-middle kiss-text-bold" href="<?=$this->route('/auth/reset')?>">
+                        <icon class="kiss-margin-small-right">lock_reset</icon>
+                        <?= t('Reset Password') ?>
+                    </a>
+                </li>
+            </ul>
+        </kiss-navlist>
+    </kiss-content>
+</kiss-popout>
+<?php endif ?>

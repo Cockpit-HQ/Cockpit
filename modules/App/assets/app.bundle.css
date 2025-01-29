@@ -4238,8 +4238,7 @@ html[data-theme='light'] [src$="App/assets/img/logo.svg"] {
 html[data-theme='light'] kiss-offcanvas kiss-content {
     --kiss-color-contrast: #fff;
 }
-html[data-theme='light'].magiclink-page,
-html[data-theme='light'].login-page {
+html[data-theme='light'].auth-page {
     background-image: radial-gradient(#00000033 1px, transparent 0);
 }
 @media (prefers-color-scheme: light) {
@@ -4454,8 +4453,7 @@ label {
     margin-bottom: 5px;
     color: var(--kiss-color-muted);
 }
-.login-page,
-.magiclink-page {
+.auth-page {
     background-image: radial-gradient(#ffffff22 1px, transparent 0);
     background-size: 40px 40px;
     background-position: 50%;

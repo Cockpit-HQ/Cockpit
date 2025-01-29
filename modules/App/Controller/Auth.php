@@ -10,6 +10,10 @@ class Auth extends Base {
 
     protected $layout = 'app:layouts/canvas.php';
 
+    protected function before() {
+        $this->helper('theme')->pageClass('auth-page');
+    }
+
     public function login() {
 
         if ($this->helper('auth')->getUser()) {
@@ -26,8 +30,6 @@ class Auth extends Base {
 
         $redirectTo = htmlspecialchars($this->app->routeUrl($redirectTo), ENT_QUOTES, 'UTF-8');
         $csrfToken = $this->helper('csrf')->token('app.login');
-
-        $this->helper('theme')->pageClass('login-page');
 
         return $this->render('app:views/auth/login.php', compact('redirectTo', 'csrfToken'));
     }
@@ -60,11 +62,9 @@ class Auth extends Base {
             $this->app->reroute('/');
         }
 
-        if (!$this->app->retrieve('auth.login.magiclink', true)) {
+        if (!$this->app->retrieve('auth.login.magiclink', true) || $this->app->mailer->getTransport() === 'mail') {
             return false;
         }
-
-        $this->helper('theme')->pageClass('magiclink-page');
 
         if ($this->param('email')) {
 
@@ -244,6 +244,112 @@ class Auth extends Base {
 
         return $this->stop(412);
 
+    }
+
+    public function reset() {
+
+        if ($this->helper('auth')->getUser()) {
+            $this->app->reroute('/');
+        }
+
+        if ($this->app->mailer->getTransport() === 'mail') {
+            return false;
+        }
+
+        $view = 'reset-password';
+        $token = $token = $this->param('token', null);
+        $user = null;
+
+        if ($this->param('email') || $this->param('password')) {
+            if (!$this->helper('csrf')->isValid('app.passwordreset', $this->param('csrf'), true)) {
+                return $this->stop(['error' => 'APP_PASSWORDRESET_SESSION_INVALID'], 412);
+            }
+        }
+
+        if ($token) {
+            try {
+
+                $payload = (array) $this->app->helper('jwt')->decode($token);
+
+                if (!isset($payload['email'], $payload['check'])) {
+                    return false;
+                }
+
+                $user = $this->app->dataStorage->findOne('system/users', ['email' => $payload['email'], 'active' => true]);
+                $check = $user['_id'].$user['password'].$user['_modified'];
+
+                if (!$user || !password_verify($check, $payload['check'])) {
+                    return false;
+                }
+
+            } catch(\Exception $e) {
+                return false;
+            }
+        }
+
+        if ($this->param('email')) {
+
+            $email = $this->param('email');
+
+            if (!$this->helper('utils')->isEmail($email)) {
+                $this->stop(['error' => 'APP_LOGIN_EMAIL_INVALID'], 412);
+            }
+
+            $user = $this->app->dataStorage->findOne('system/users', ['email' => $email, 'active' => true]);
+
+            if (!$user) {
+                sleep(1);
+                return ['success' => true];
+            }
+
+            $check = $user['_id'].$user['password'].$user['_modified'];
+
+            $token = $this->helper('jwt')->create([
+                'email' => $email,
+                'check' => $this->app->hash($check),
+                'iat' => time(),
+                'exp' => strtotime('+15 minutes'),
+            ]);
+
+            // send link to reset password
+            $this->app->mailer->mail(
+                $email,
+                'Reset Password: '.$this->app->retrieve('app.name'),
+                $this->app->render('app:emails/reset-password.php with app:layouts/email.php', compact('token', 'email', 'user'))
+            );
+
+            return ['success' => true];
+        }
+
+        if ($token) {
+
+            if ($this->param('password')) {
+
+                $password = $this->param('password', '');
+
+                if (!is_string($password)) return $this->stop(412);
+                if (!trim($password)) return $this->stop(412);
+
+                $password = $this->app->hash($password);
+
+                $data = [
+                    '_id' => $user['_id'],
+                    'password' => $password,
+                    '_modified' => time()
+                ];
+
+                $this->app->dataStorage->save('system/users', $data);
+
+                return ['success' => true];
+
+            } else {
+                $view = 'set-password';
+            }
+        }
+
+        $csrfToken = $this->helper('csrf')->token('app.passwordreset');
+
+        return $this->render("app:views/auth/{$view}.php", compact('csrfToken', 'token'));
     }
 
     private function setSessionUser($user) {

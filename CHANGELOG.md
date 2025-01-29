@@ -5,7 +5,8 @@
 - Add App.utils.selectAsset helper
 - Add support for sorting content items in content item picker dialog
 - Fix cache helper: ensure cache file existence before reading cache content
-- Add assets:files:fixvisibility tower helper command 
+- Add assets:files:fixvisibility tower helper command
+- Add password reset functionality
 
 ## 2.10.3 (2024-12-30)
 
