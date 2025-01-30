@@ -78,6 +78,19 @@ class Updater extends \Lime\Helper {
             throw new \Exception('Open zip file failed!');
         }
 
+        // check compatible php version
+        $composerContents = json_decode(file_get_contents("{$tmppath}/update-{$zipname}/{$zipRoot}/composer.json"), true);
+        $requiredPhpVersion = str_replace('^', '', $composerContents['require']['php']);
+
+        if (version_compare(PHP_VERSION, $requiredPhpVersion, '<')) {
+
+            // cleanup
+            $fs->delete("{$tmppath}/{$zipname}");
+            $fs->delete("{$tmppath}/update-{$zipname}");
+
+            throw new \Exception("Your PHP version is not compatible with this update! PHP version {$requiredPhpVersion} or higher is required.");
+        }
+
         $fs->delete("{$tmppath}/update-{$zipname}/{$zipRoot}/config");
         $fs->delete("{$tmppath}/update-{$zipname}/{$zipRoot}/storage");
 
