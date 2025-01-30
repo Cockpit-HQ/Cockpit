@@ -7,7 +7,7 @@
     icon[type="warning"]:before { content: "\e002"; }
 
     icon[type="error"] { color: red;}
-    icon[type="error"]:before { content: "\e031"; }
+    icon[type="error"]:before { content: "\ef55"; }
 
     icon[type="notice"] { color: yellow;}
     icon[type="notice"]:before { content: "\f1fc"; }
