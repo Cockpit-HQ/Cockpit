@@ -8,6 +8,7 @@
 - Add assets:files:fixvisibility tower helper command
 - Add password reset functionality
 - Use fallback i18n root config path for spaces
+- Update PHP requirement to v8.3
 
 ## 2.10.3 (2024-12-30)
 

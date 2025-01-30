@@ -22,7 +22,6 @@ class ComposerStaticInit31271496217d24f755014bacdfefaaf2
         'b6b991a57620e2fb6b2f66f03fe9ddc2' => __DIR__ . '/..' . '/symfony/string/Resources/functions.php',
         '7aed44d824e149ce152c0fb82af9379a' => __DIR__ . '/..' . '/colinodell/json5/src/global.php',
         '3a37ebac017bc098e9a86b35401e7a68' => __DIR__ . '/..' . '/mongodb/mongodb/src/functions.php',
-        '662a729f963d39afe703c9d9b7ab4a8c' => __DIR__ . '/..' . '/symfony/polyfill-php83/bootstrap.php',
         '9d2b9fc6db0f153a0a149fefb182415e' => __DIR__ . '/..' . '/symfony/polyfill-php84/bootstrap.php',
     );
 
@@ -34,7 +33,6 @@ class ComposerStaticInit31271496217d24f755014bacdfefaaf2
         'S' => 
         array (
             'Symfony\\Polyfill\\Php84\\' => 23,
-            'Symfony\\Polyfill\\Php83\\' => 23,
             'Symfony\\Polyfill\\Php81\\' => 23,
             'Symfony\\Polyfill\\Php80\\' => 23,
             'Symfony\\Polyfill\\Php73\\' => 23,
@@ -122,10 +120,6 @@ class ComposerStaticInit31271496217d24f755014bacdfefaaf2
         'Symfony\\Polyfill\\Php84\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-php84',
-        ),
-        'Symfony\\Polyfill\\Php83\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/symfony/polyfill-php83',
         ),
         'Symfony\\Polyfill\\Php81\\' => 
         array (
@@ -737,15 +731,6 @@ class ComposerStaticInit31271496217d24f755014bacdfefaaf2
         'DASPRiD\\Enum\\Exception\\SerializeNotSupportedException' => __DIR__ . '/..' . '/dasprid/enum/src/Exception/SerializeNotSupportedException.php',
         'DASPRiD\\Enum\\Exception\\UnserializeNotSupportedException' => __DIR__ . '/..' . '/dasprid/enum/src/Exception/UnserializeNotSupportedException.php',
         'DASPRiD\\Enum\\NullValue' => __DIR__ . '/..' . '/dasprid/enum/src/NullValue.php',
-        'DateError' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/DateError.php',
-        'DateException' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/DateException.php',
-        'DateInvalidOperationException' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/DateInvalidOperationException.php',
-        'DateInvalidTimeZoneException' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/DateInvalidTimeZoneException.php',
-        'DateMalformedIntervalStringException' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/DateMalformedIntervalStringException.php',
-        'DateMalformedPeriodStringException' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/DateMalformedPeriodStringException.php',
-        'DateMalformedStringException' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/DateMalformedStringException.php',
-        'DateObjectError' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/DateObjectError.php',
-        'DateRangeError' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/DateRangeError.php',
         'DeepArrayIterator' => __DIR__ . '/../../..' . '/lib/DeepArrayIterator.php',
         'Deprecated' => __DIR__ . '/..' . '/symfony/polyfill-php84/Resources/stubs/Deprecated.php',
         'Doctrine\\Common\\Annotations\\Annotation' => __DIR__ . '/..' . '/doctrine/annotations/lib/Doctrine/Common/Annotations/Annotation.php',
@@ -1443,7 +1428,6 @@ class ComposerStaticInit31271496217d24f755014bacdfefaaf2
         'OpenApi\\Processors\\ProcessorInterface' => __DIR__ . '/..' . '/zircote/swagger-php/src/Processors/ProcessorInterface.php',
         'OpenApi\\Serializer' => __DIR__ . '/..' . '/zircote/swagger-php/src/Serializer.php',
         'OpenApi\\Util' => __DIR__ . '/..' . '/zircote/swagger-php/src/Util.php',
-        'Override' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/Override.php',
         'PHPMailer\\PHPMailer\\DSNConfigurator' => __DIR__ . '/..' . '/phpmailer/phpmailer/src/DSNConfigurator.php',
         'PHPMailer\\PHPMailer\\Exception' => __DIR__ . '/..' . '/phpmailer/phpmailer/src/Exception.php',
         'PHPMailer\\PHPMailer\\OAuth' => __DIR__ . '/..' . '/phpmailer/phpmailer/src/OAuth.php',
@@ -1508,7 +1492,6 @@ class ComposerStaticInit31271496217d24f755014bacdfefaaf2
         'RobThree\\Auth\\Providers\\Time\\TimeException' => __DIR__ . '/..' . '/robthree/twofactorauth/lib/Providers/Time/TimeException.php',
         'RobThree\\Auth\\TwoFactorAuth' => __DIR__ . '/..' . '/robthree/twofactorauth/lib/TwoFactorAuth.php',
         'RobThree\\Auth\\TwoFactorAuthException' => __DIR__ . '/..' . '/robthree/twofactorauth/lib/TwoFactorAuthException.php',
-        'SQLite3Exception' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/SQLite3Exception.php',
         'SVGSanitizer' => __DIR__ . '/../../..' . '/lib/SVGSanitizer.php',
         'SimpleImageLib' => __DIR__ . '/../../..' . '/lib/SimpleImageLib.php',
         'Stringable' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',
@@ -1705,7 +1688,6 @@ class ComposerStaticInit31271496217d24f755014bacdfefaaf2
         'Symfony\\Polyfill\\Php80\\Php80' => __DIR__ . '/..' . '/symfony/polyfill-php80/Php80.php',
         'Symfony\\Polyfill\\Php80\\PhpToken' => __DIR__ . '/..' . '/symfony/polyfill-php80/PhpToken.php',
         'Symfony\\Polyfill\\Php81\\Php81' => __DIR__ . '/..' . '/symfony/polyfill-php81/Php81.php',
-        'Symfony\\Polyfill\\Php83\\Php83' => __DIR__ . '/..' . '/symfony/polyfill-php83/Php83.php',
         'Symfony\\Polyfill\\Php84\\Php84' => __DIR__ . '/..' . '/symfony/polyfill-php84/Php84.php',
         'Thumbhash' => __DIR__ . '/../../..' . '/lib/Thumbhash.php',
         'UnhandledMatchError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/UnhandledMatchError.php',

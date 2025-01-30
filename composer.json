@@ -23,7 +23,7 @@
     },
 
     "require": {
-        "php": "^8.2.0",
+        "php": "^8.3.0",
         "ext-curl": "*",
         "ext-fileinfo": "*",
         "ext-gd": "*",
@@ -44,7 +44,6 @@
         "robthree/twofactorauth": "^3.0",
         "bacon/bacon-qr-code": "^3.0",
         "symfony/polyfill-mbstring": "^1.22",
-        "symfony/polyfill-php83": "^1.22",
         "symfony/polyfill-php84": "^1.30",
         "webonyx/graphql-php": "^15.0",
         "zircote/swagger-php": "^4.5.1",
