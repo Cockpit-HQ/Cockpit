@@ -1,5 +1,12 @@
 <?php
 
+function generateRandomCockpitPassword($length = 12) {
+    $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%&*';
+    $password = '';
+    for ($i = 0; $i < $length; $i++) $password .= $chars[random_int(0, strlen($chars) - 1)];
+    return $password;
+}
+
 function hasSQLiteSupport() {
     try {
 
@@ -95,13 +102,14 @@ if (!count($failed)) {
         }
 
         $created = time();
+        $password = generateRandomCockpitPassword();
 
         $user = [
             'active' => true,
             'user' => 'admin',
             'name' => 'Admin',
             'email' => 'admin@admin.com',
-            'password' => $app->hash('admin'),
+            'password' => $app->hash($password),
             'i18n' => 'en',
             'role' => 'admin',
             'theme' => 'auto',
@@ -204,11 +212,11 @@ if (!count($failed)) {
 
                     <kiss-card class="kiss-text-monospace kiss-padding kiss-bgcolor-contrast kiss-flex kiss-flex-column kiss-margin">
                         <div><icon class="kiss-color-muted kiss-margin-right" size="larger">person</icon>admin</div>
-                        <div><icon class="kiss-color-muted kiss-margin-right" size="larger">key</icon>admin</div>
+                        <div><icon class="kiss-color-muted kiss-margin-right" size="larger">key</icon><?=$password?></div>
                     </kiss-card>
 
                     <div class="kiss-margin-large-bottom kiss-color-muted">
-                        Don't forget to change the credentials after your initial login to prevent bad things from bad people.
+                        You can change the credentials after your initial login to prevent bad things from bad people.
                     </div>
 
                     <div class="kiss-margin-large">
