@@ -13,7 +13,7 @@
                     </div>
                 </div>
 
-                <form :class="{'kiss-disabled': loading}" @submit.prevent="login" v-if="view=='form'">
+                <form :class="{'kiss-disabled': loading}" @submit.prevent="login" v-if="view=='form'" v-show="<?= !isset($this['maintenance']) ?>">
 
                     <div class="kiss-margin">
                         <input class="kiss-input" type="text" placeholder="<?= t('Username or Email') ?>" aria-label="<?= t('Username or Email') ?>" v-model="auth.user" autocomplete="off" autofocus required>
@@ -28,6 +28,16 @@
                     </div>
 
                 </form>
+
+                <kiss-card class="animated fadeIn" v-show="<?= isset($this['maintenance']) ?>">
+
+                    <kiss-row class="kiss-flex-middle">
+                        <div class="kiss-size-small">
+                            <div class="kiss-text-bold"><?= $this['maintenance'] ?></div>
+                       </div>
+                    </kiss-row>
+
+                </kiss-card>
 
                 <kiss-card class="animated fadeIn" v-if="!loading && view=='success' && !user.twofa">
 
