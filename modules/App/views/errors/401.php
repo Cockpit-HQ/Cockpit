@@ -25,6 +25,7 @@
         <h1>401</h1>
 
         <p class="kiss-margin kiss-color-muted"><?=t('Unauthorized request')?></p>
+        <p v-show="<?= isset($this['maintenance']) ?>" class="kiss-margin kiss-color-muted"><?= $this['maintenance'] ?></p>
 
     </kiss-container>
 
