@@ -11,6 +11,7 @@
 - Update PHP requirement to v8.3
 - Add PHP version compatibility check during update
 - Generate random admin password on initial installation
+- Enhance view rendering flow with pre/post render hooks
 
 ## 2.10.3 (2024-12-30)
 
