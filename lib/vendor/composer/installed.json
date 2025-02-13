@@ -59,17 +59,17 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.339.6",
-            "version_normalized": "3.339.6.0",
+            "version": "3.339.12",
+            "version_normalized": "3.339.12.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "cc0b21de3b1eaabb7d0a1ed4f3f067bad4be5f31"
+                "reference": "a63e79c15a972c54bf015a16cce3f3572e0c8221"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/cc0b21de3b1eaabb7d0a1ed4f3f067bad4be5f31",
-                "reference": "cc0b21de3b1eaabb7d0a1ed4f3f067bad4be5f31",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/a63e79c15a972c54bf015a16cce3f3572e0c8221",
+                "reference": "a63e79c15a972c54bf015a16cce3f3572e0c8221",
                 "shasum": ""
             },
             "require": {
@@ -95,7 +95,6 @@
                 "ext-openssl": "*",
                 "ext-pcntl": "*",
                 "ext-sockets": "*",
-                "paragonie/random_compat": ">= 2",
                 "phpunit/phpunit": "^5.6.3 || ^8.5 || ^9.5",
                 "psr/cache": "^2.0 || ^3.0",
                 "psr/simple-cache": "^2.0 || ^3.0",
@@ -110,7 +109,7 @@
                 "ext-openssl": "Allows working with CloudFront private distributions and verifying received SNS messages",
                 "ext-sockets": "To use client-side monitoring"
             },
-            "time": "2025-02-04T19:03:40+00:00",
+            "time": "2025-02-12T19:08:43+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -154,7 +153,7 @@
             "support": {
                 "forum": "https://github.com/aws/aws-sdk-php/discussions",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.339.6"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.339.12"
             },
             "install-path": "../aws/aws-sdk-php"
         },
