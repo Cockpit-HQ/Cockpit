@@ -9,7 +9,7 @@
                     <div><img class="app-logo" src="<?= $this->helper('theme')->logo() ?>" style="height:40px;width:auto;" alt="Logo"></div>
                     <div>
                         <strong class="kiss-size-5"><?= $this['app.name'] ?></strong>
-                        <div class="kiss-color-muted kiss-size-xsmall kiss-margin-xsmall"><?= t('Log in to your account') ?></div>
+                        <div class="kiss-color-muted kiss-size-xsmall kiss-margin-xsmall"><?= $this['maintenance']?:t('Log in to your account') ?></div>
                     </div>
                 </div>
 
@@ -32,16 +32,6 @@
                     <?php endif ?>
 
                 </form>
-
-                <kiss-card class="animated fadeIn" v-show="<?= isset($this['maintenance']) ?>">
-
-                    <kiss-row class="kiss-flex-middle">
-                        <div class="kiss-size-small">
-                            <div class="kiss-text-bold"><?= $this['maintenance'] ?></div>
-                       </div>
-                    </kiss-row>
-
-                </kiss-card>
 
                 <kiss-card class="animated fadeIn" v-if="!loading && view=='success' && !user.twofa">
 
