@@ -399,7 +399,7 @@
                         selected: [],
                         fieldTypes: null,
                         filter: '',
-                        sort: (model.meta && model.meta.sort) || {
+                        sort: model.meta?.sort || {
                             _created: -1
                         },
                         txtFilter: '',
