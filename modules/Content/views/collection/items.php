@@ -406,7 +406,7 @@
                         state: false,
                         page: 1,
                         pages: 1,
-                        limit: 25,
+                        limit: model.meta?.limit || 25,
                         count: 0,
                         loading: false,
                         locale: 'default',
