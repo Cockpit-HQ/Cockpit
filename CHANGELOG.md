@@ -1,14 +1,14 @@
 # Release Notes
 
-## WIP
+## 2.11.0 (2025-02-17)
 
+- Update PHP requirement to v8.3
 - Add App.utils.selectAsset helper
 - Add support for sorting content items in content item picker dialog
 - Fix cache helper: ensure cache file existence before reading cache content
 - Add assets:files:fixvisibility tower helper command
 - Add password reset functionality
 - Use fallback i18n root config path for spaces
-- Update PHP requirement to v8.3
 - Add PHP version compatibility check during update
 - Generate random admin password on initial installation
 - Enhance view rendering flow with pre/post render hooks
