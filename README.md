@@ -1,6 +1,6 @@
 # Cockpit - Content Platform
 
-![cockpit gumroad banner](https://github.com/user-attachments/assets/c8d4daf1-86cc-45c9-be24-5c6a6a2ca8ca)
+![cockpit banner](https://github.com/user-attachments/assets/c8d4daf1-86cc-45c9-be24-5c6a6a2ca8ca)
 
 
 * Homepage: [http://getcockpit.com](https://getcockpit.com)
@@ -10,7 +10,7 @@
 
 ### Requirements
 
-* PHP >= 8.2
+* PHP >= 8.3
 * PDO + SQLite (or MongoDB)
 * GD extension
 * mod_rewrite, mod_versions enabled (on apache)
