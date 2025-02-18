@@ -26,4 +26,28 @@ class Ffmpeg {
         $process = Process::fromShellCommandline($command);
         $process->run();
     }
+
+    public function getVideoDuration(string $src): ?float {
+
+        $command = "{$this->binary} -i '{$src}' 2>&1";
+
+        $process = Process::fromShellCommandline($command);
+        $process->run();
+
+        $output = $process->getOutput();
+
+        if (preg_match('/Duration:\s*(\d+):(\d+):(\d+)(?:\.(\d+))?/', $output, $matches)) {
+            $hours = (int)$matches[1];
+            $minutes = (int)$matches[2];
+            $seconds = (int)$matches[3];
+
+            // Handle milliseconds if present
+            $milliseconds = isset($matches[4]) ? (float)("0." . $matches[4]) : 0;
+
+            $duration = ($hours * 3600) + ($minutes * 60) + $seconds + $milliseconds;
+            return $duration;
+        }
+
+        return null;
+    }
 }

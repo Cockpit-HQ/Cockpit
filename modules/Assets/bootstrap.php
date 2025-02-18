@@ -188,6 +188,10 @@ $this->module('assets')->extend([
                 default => 'unknown'
             };
 
+            if ($asset['type'] == 'video') {
+                $asset['duration'] = $this->app->helper('asset')->getVideoDuration($file);
+            }
+
             if ($asset['type'] == 'image') {
 
                 $asset['altText'] = $name;

@@ -1,5 +1,10 @@
 # Release Notes
 
+## WIP
+
+- Include filename in file editor header (finder)
+- Add video duration meta info on asset upload
+
 ## 2.11.0 (2025-02-17)
 
 - Update PHP requirement to v8.3
