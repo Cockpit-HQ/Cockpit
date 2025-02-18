@@ -337,7 +337,7 @@ class Asset extends \Lime\Helper {
         return $array;
     }
 
-    public function getVideoDuration(string $path): ?float {
-        return $this->ffmpeg?->getVideoDuration($path);
+    public function getVideoMeta(string $path): ?array {
+        return $this->ffmpeg?->getVideoMeta($path);
     }
 }

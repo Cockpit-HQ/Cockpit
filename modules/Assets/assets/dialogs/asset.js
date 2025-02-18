@@ -80,6 +80,14 @@ export default {
             return App.utils.formatSize(this.item.size);
         },
 
+        duration() {
+            if (!this.item.duration) {
+                return null;
+            }
+
+            return App.utils.formatDuration(this.item.duration);
+        },
+
         focalPoint() {
 
             if (!this.item.fp) {
@@ -198,10 +206,13 @@ export default {
                     </div>
                 </div>
 
-                <div class="kiss-margin-small kiss-flex kiss-flex-middle">
-                    <div class="kiss-margin-small-right kiss-color-muted kiss-text-monospace kiss-size-small kiss-flex-1">
-                        {{ size }} <span v-if="item.type=='image' && item.width && item.height">&mdash; {{ item.width }}x{{ item.height }}</span>
+                <div class="kiss-margin-small kiss-flex kiss-flex-middle" gap="small">
+                    <div class="kiss-color-muted kiss-text-bold kiss-text-monospace kiss-size-xsmall">
+                        {{ size }}
                     </div>
+                    <div class="kiss-color-muted kiss-text-monospace kiss-size-xsmall" v-if="item.width && item.height">{{ item.width }}x{{ item.height }}</div>
+                    <div class="kiss-color-muted kiss-text-monospace kiss-size-xsmall" v-if="item.type=='video' && item.duration">{{ duration }}</div>
+                    <div class="kiss-flex-1"></div>
                     <div v-if="item.type == 'image' && Array.isArray(item.colors) && item.colors.length">
                         <div class="kiss-size-4">
                             <a class="kiss-margin-xsmall-right" :style="{color}" :title="color" @click="copyColor(color)" v-for="color in item.colors"><icon>invert_colors</icon></a>

@@ -189,7 +189,18 @@ $this->module('assets')->extend([
             };
 
             if ($asset['type'] == 'video') {
-                $asset['duration'] = $this->app->helper('asset')->getVideoDuration($file);
+
+                $videoMeta = $this->app->helper('asset')->getVideoMeta($file);
+
+                file_put_contents('debug.txt', json_encode($videoMeta, JSON_PRETTY_PRINT));
+
+                if (isset($videoMeta['duration'])) $asset['duration'] = $videoMeta['duration'];
+                if (isset($videoMeta['codec'])) $asset['codec'] = $videoMeta['codec'];
+
+                if (isset($videoMeta['width'], $videoMeta['height'])) {
+                    $asset['width'] = $videoMeta['width'];
+                    $asset['height'] = $videoMeta['height'];
+                }
             }
 
             if ($asset['type'] == 'image') {
