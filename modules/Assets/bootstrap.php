@@ -192,8 +192,6 @@ $this->module('assets')->extend([
 
                 $videoMeta = $this->app->helper('asset')->getVideoMeta($file);
 
-                file_put_contents('debug.txt', json_encode($videoMeta, JSON_PRETTY_PRINT));
-
                 if (isset($videoMeta['duration'])) $asset['duration'] = $videoMeta['duration'];
                 if (isset($videoMeta['codec'])) $asset['codec'] = $videoMeta['codec'];
 
