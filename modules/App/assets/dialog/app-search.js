@@ -2,11 +2,15 @@ export default {
 
     data() {
         return  {
-            search: '',
+            search: this.value || '',
             loading: false,
             findings: null,
             selected: null
         }
+    },
+
+    props: {
+        value: String,
     },
 
     mounted() {

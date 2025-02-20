@@ -28,15 +28,18 @@ let checkSessionTimeout = function() {
 
 checkSessionTimeout.idle = null;
 
-let showAppSearch = function() {
+const isUserLoggedOut = () => document.getElementById('app-session-login');
+const isAppSearchActive = () => document.getElementById('app-search');
 
-    let isActive = document.getElementById('app-search'),
-        isLoggedOut = document.getElementById('app-session-login');
+let showAppSearch = function(value) {
+
+    let isActive = isAppSearchActive(),
+        isLoggedOut = isUserLoggedOut();
 
     if (!isActive && !isLoggedOut) {
-        VueView.ui.modal('app:assets/dialog/app-search.js', {}, {}, {size:'large'}, 'app-search');
+        VueView.ui.modal('app:assets/dialog/app-search.js', {value}, {}, {size:'large'}, 'app-search');
     } else if (isActive && !isLoggedOut){
-        document.getElementById('app-search').querySelector('input').focus();
+        isActive.querySelector('input').focus();
     }
 }
 
@@ -109,6 +112,28 @@ document.addEventListener('DOMContentLoaded', () => {
         showAppSearch();
         return false;
     });
+
+    document.addEventListener('keydown', (e) => {
+
+        const IGNORED_KEYS = [
+            'Escape', 'Enter', 'Tab',
+            'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight',
+            'Backspace', 'Delete', 'Home', 'End', 'PageUp', 'PageDown',
+            'Space', 'CapsLock', 'Shift'
+        ];
+
+        //ctrl-c, ctrl-v etc.
+        if (e.ctrlKey || e.altKey || e.metaKey || IGNORED_KEYS.includes(e.key)) return;
+
+        if (
+            e.target.tagName?.toLowerCase() === 'body' &&
+            /^[A-Za-zÀ-ÿ]$/u.test(e.key) &&
+            !isAppSearchActive() &&
+            !isUserLoggedOut()
+        ) {
+            showAppSearch(e.key);
+        }
+    }, false);
 
     document.querySelectorAll('[app-search]').forEach(ele => {
         ele.addEventListener('click', e => {
