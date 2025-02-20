@@ -3905,7 +3905,7 @@ kiss-navlist ul > li > a {
 .kiss-input {
     padding: .6em .6em;
     color: var(--kiss-base-text-color);
-    background: var(--kiss-input-background);
+    background-color: var(--kiss-input-background);
     border: 1px var(--kiss-input-border-color) solid;
     border-radius: var(--app-border-radius);
     transition: all 250ms;
@@ -3919,12 +3919,18 @@ select.kiss-input optgroup,
 select.kiss-input option {
     background: var(--kiss-base-background-color);
 }
+select.kiss-input {
+    background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjRweCIgdmlld0JveD0iMCAtOTYwIDk2MCA5NjAiIHdpZHRoPSIyNHB4IiBmaWxsPSIjNjY2NjY2Ij48cGF0aCBkPSJNNDgwLTEyMCAzMDAtMzAwbDU4LTU4IDEyMiAxMjIgMTIyLTEyMiA1OCA1OC0xODAgMTgwWk0zNTgtNTk4bC01OC01OCAxODAtMTgwIDE4MCAxODAtNTggNTgtMTIyLTEyMi0xMjIgMTIyWiIvPjwvc3ZnPg==");
+    background-repeat: no-repeat;
+    background-position: right 0.7em top 50%, 0 0;
+    background-size: 1.25em auto, 100%;
+}
 .kiss-input[type="text"],
 .kiss-input[type="password"] {
     width: 100%;
 }
 .kiss-input:focus {
-    background: var(--kiss-input-background-active, rgba(255,255,255,.15));
+    background-color: var(--kiss-input-background-active, rgba(255,255,255,.15));
     border-color: var(--kiss-input-border-color-active, var(--kiss-color-primary));
 }
 .kiss-input[seamless="true"]:focus {
