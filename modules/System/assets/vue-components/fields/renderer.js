@@ -2,7 +2,7 @@ import { FieldTypes } from "../../js/settings.js";
 
 let fuid = 0;
 
-let FieldRenderer = {
+export let FieldRenderer = {
 
     data() {
 

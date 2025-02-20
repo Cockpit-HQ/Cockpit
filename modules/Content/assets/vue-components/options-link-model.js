@@ -65,7 +65,7 @@ export default {
                 {{ t('No models available') }}
             </div>
 
-            <kiss-card class="kiss-padding kiss-overlay-input kiss-display-block" theme="bordered" v-if="options && collections.length">
+            <kiss-card class="kiss-padding kiss-overlay-input kiss-display-block" theme="bordered" hover="contrast" v-if="options && collections.length">
 
                 <div class="kiss-flex kiss-flex-middle" gap="small" v-if="model">
                     <div>
