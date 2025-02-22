@@ -7,7 +7,9 @@
     <vue-view>
         <template>
 
-            <app-loader class="kiss-margin-large" v-if="loading"></app-loader>
+            <div class="kiss-height-50vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center" v-if="loading">
+                <app-loader></app-loader>
+            </div>
 
             <div class="animated fadeIn kiss-height-50vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted kiss-margin-large" v-if="!loading && !models.length">
                 <div>

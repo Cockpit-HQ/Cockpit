@@ -68,3 +68,13 @@ $this->on('spaces.config.create', function($config) {
     }
 
 });
+
+$this->on('app.dashboard.widgets', function($widgets) {
+
+    $widgets[] = [
+        'name' => 'dashboard-assets-widget',
+        'area' => 'tertiary',
+        'component' => 'assets:assets/vue-components/dashboard-widget.js'
+    ];
+
+});
