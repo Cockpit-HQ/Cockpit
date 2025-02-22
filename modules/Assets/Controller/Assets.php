@@ -44,7 +44,11 @@ class Assets extends App {
                 }
 
                 if ($f && $f[0] === ':') {
-                    $filter[] = SQLToMongoQuery::translate(substr($f, 1));
+                    try {
+                        $filter[] = SQLToMongoQuery::translate(substr($f, 1));
+                    } catch (\Exception $e) {
+                        throw new \Exception("Invalid filter!");
+                    }
                     continue;
                 }
 

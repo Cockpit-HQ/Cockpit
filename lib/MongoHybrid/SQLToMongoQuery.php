@@ -2,373 +2,283 @@
 
 namespace MongoHybrid;
 
-use Exception;
+class QueryParsingException extends \Exception {
 
-class Token {
-    public $type;
-    public $value;
-    public $line;
-    public $column;
+    public string $query;
+    public int $position;
 
-    public function __construct($type, $value, $line, $column) {
-        $this->type = $type;
-        $this->value = $value;
-        $this->line = $line;
-        $this->column = $column;
+    public function __construct(string $message, string $query, int $position) {
+        $this->query = $query;
+        $this->position = $position;
+
+        // Add context to the error message
+        $context = $this->getErrorContext($query, $position);
+        $fullMessage = sprintf(
+            "%s\nAt position %d: %s\n%s",
+            $message,
+            $position,
+            $context['snippet'],
+            $context['pointer']
+        );
+
+        parent::__construct($fullMessage);
+    }
+
+    private function getErrorContext(string $query, int $position, int $contextLength = 20): array {
+        $start = max(0, $position - $contextLength);
+        $length = min(strlen($query) - $start, $contextLength * 2);
+        $snippet = substr($query, $start, $length);
+
+        // Create a pointer to the error position
+        $pointerPosition = $position - $start;
+        $pointer = str_repeat(' ', $pointerPosition) . '^';
+
+        return [
+            'snippet' => $snippet,
+            'pointer' => $pointer
+        ];
     }
 }
 
-class QueryParsingException extends Exception {
-    public int $line;
-    public $column;
-
-    public function __construct($message, $line, $column) {
-        parent::__construct("Error at line $line, column $column: $message");
-        $this->line = $line;
-        $this->column = $column;
-    }
-}
-
-class Lexer {
-    private $input;
-    private $position = 0;
-    private $line = 1;
-    private $column = 1;
-    private static $keywords = ['AND', 'OR', 'NOT'];
-    private static $wordOperators = ['LIKE', 'IN', 'NIN', 'EXISTS', 'ALL', 'ELEMATCH', 'NEAR'];
-
-    public function __construct($input) {
-        $this->input = $input;
-    }
-
-    public function nextToken() {
-        if ($this->position >= strlen($this->input)) {
-            return new Token('EOF', null, $this->line, $this->column);
-        }
-
-        $char = $this->input[$this->position];
-
-        if ($char === "\n") {
-            $this->line++;
-            $this->column = 1;
-            $this->position++;
-            return $this->nextToken();
-        }
-
-        if (ctype_space($char)) {
-            $this->position++;
-            $this->column++;
-            return $this->nextToken();
-        }
-
-        if (ctype_alpha($char) || $char === '_') {
-            return $this->readIdentifier();
-        }
-
-        if ($char === "'" || $char === '"') {
-            return $this->readString();
-        }
-
-        if (ctype_digit($char) || ($char === '-' && $this->isDigit($this->peekNextChar()))) {
-            return $this->readNumber();
-        }
-
-        $this->column++;
-        $this->position++;
-
-        switch ($char) {
-            case '(': return new Token('LPAREN', '(', $this->line, $this->column - 1);
-            case ')': return new Token('RPAREN', ')', $this->line, $this->column - 1);
-            case ',': return new Token('COMMA', ',', $this->line, $this->column - 1);
-            case '=': return new Token('OPERATOR', '=', $this->line, $this->column - 1);
-            case '>':
-                if ($this->position < strlen($this->input) && $this->input[$this->position] === '=') {
-                    $this->position++;
-                    $this->column++;
-                    return new Token('OPERATOR', '>=', $this->line, $this->column - 2);
-                }
-                return new Token('OPERATOR', '>', $this->line, $this->column - 1);
-            case '<':
-                if ($this->position < strlen($this->input) && $this->input[$this->position] === '=') {
-                    $this->position++;
-                    $this->column++;
-                    return new Token('OPERATOR', '<=', $this->line, $this->column - 2);
-                }
-                return new Token('OPERATOR', '<', $this->line, $this->column - 1);
-            case '!':
-                if ($this->position < strlen($this->input) && $this->input[$this->position] === '=') {
-                    $this->position++;
-                    $this->column++;
-                    return new Token('OPERATOR', '!=', $this->line, $this->column - 2);
-                }
-        }
-
-        throw new QueryParsingException("Unexpected character: $char", $this->line, $this->column - 1);
-    }
-
-    private function readIdentifier() {
-        $startColumn = $this->column;
-        $start = $this->position;
-        while ($this->position < strlen($this->input) &&
-               (ctype_alnum($this->input[$this->position]) || $this->input[$this->position] === '_' || $this->input[$this->position] === '.')) {
-            $this->position++;
-            $this->column++;
-        }
-        $value = substr($this->input, $start, $this->position - $start);
-        $upperValue = strtoupper($value);
-
-        if (in_array($upperValue, self::$keywords)) {
-            return new Token($upperValue, $upperValue, $this->line, $startColumn);
-        }
-        if (in_array($upperValue, self::$wordOperators)) {
-            return new Token('OPERATOR', $upperValue, $this->line, $startColumn);
-        }
-        return new Token('IDENTIFIER', $value, $this->line, $startColumn);
-    }
-
-    private function readString() {
-        $startColumn = $this->column;
-        $quote = $this->input[$this->position];
-        $start = ++$this->position;
-        $this->column++;
-        while ($this->position < strlen($this->input) && $this->input[$this->position] !== $quote) {
-            if ($this->input[$this->position] === '\\') {
-                $this->position++;
-                $this->column++;
-            }
-            $this->position++;
-            $this->column++;
-        }
-        if ($this->position >= strlen($this->input)) {
-            throw new QueryParsingException("Unterminated string", $this->line, $startColumn);
-        }
-        $value = substr($this->input, $start, $this->position - $start);
-        $this->position++;
-        $this->column++;
-        return new Token('STRING', stripcslashes($value), $this->line, $startColumn);
-    }
-
-    private function readNumber() {
-        $startColumn = $this->column;
-        $start = $this->position;
-        $dotSeen = false;
-        $eSeen = false;
-
-        if ($this->input[$this->position] === '-') {
-            $this->position++;
-            $this->column++;
-        }
-
-        while ($this->position < strlen($this->input)) {
-            $char = $this->input[$this->position];
-            if ($char === '.' && !$dotSeen && !$eSeen) {
-                $dotSeen = true;
-            } elseif (($char === 'e' || $char === 'E') && !$eSeen) {
-                $eSeen = true;
-                if ($this->position + 1 < strlen($this->input) &&
-                    ($this->input[$this->position + 1] === '+' || $this->input[$this->position + 1] === '-')) {
-                    $this->position++;
-                    $this->column++;
-                }
-            } elseif (!ctype_digit($char)) {
-                break;
-            }
-            $this->position++;
-            $this->column++;
-        }
-        $value = substr($this->input, $start, $this->position - $start);
-        return new Token('NUMBER', $value, $this->line, $startColumn);
-    }
-
-    private function isDigit($char) {
-        return $char !== false && ctype_digit($char);
-    }
-
-    private function peekNextChar() {
-        return $this->position + 1 < strlen($this->input) ? $this->input[$this->position + 1] : false;
-    }
-}
-
-class Parser {
-    private $lexer;
-    private $currentToken;
-
+class SQLToMongoQuery {
+    // SQL operators to MongoDB operators mapping
     private static $operatorMap = [
         '=' => '$eq',
         '!=' => '$ne',
+        '<>' => '$ne',
         '>' => '$gt',
         '<' => '$lt',
         '>=' => '$gte',
         '<=' => '$lte',
         'LIKE' => '$regex',
+        'NOT LIKE' => '$not',
         'IN' => '$in',
-        'NIN' => '$nin',
-        'EXISTS' => '$exists',
-        'ALL' => '$all',
-        'ELEMATCH' => '$elemMatch',
-        'NEAR' => '$near'
+        'NOT IN' => '$nin',
+        'IS NULL' => '$exists',
+        'IS NOT NULL' => '$exists',
+        'BETWEEN' => '$gte',
+        'NOT BETWEEN' => '$not',
+        'REGEXP' => '$regex',
+        'MATCH' => '$text'
     ];
 
-    public function __construct(Lexer $lexer) {
-        $this->lexer = $lexer;
-        $this->currentToken = $this->lexer->nextToken();
+    // Additional MongoDB specific operators
+    private static $mongoOperators = [
+        'ALL' => '$all',
+        'ELEMATCH' => '$elemMatch',
+        'NEAR' => '$near',
+        'TEXT' => '$text'
+    ];
+
+    private $tokens = [];
+    private $position = 0;
+    private $query;
+
+    public function __construct(string $query) {
+        $this->query = trim($query);
     }
 
-    private function eat($tokenType) {
-        if ($this->currentToken->type === $tokenType) {
-            $this->currentToken = $this->lexer->nextToken();
-        } else {
+    public function toMongo(): array {
+        try {
+            $this->tokenize();
+            return $this->parseExpression();
+        } catch (\Exception $e) {
             throw new QueryParsingException(
-                "Unexpected token: {$this->currentToken->type}, expected: $tokenType",
-                $this->currentToken->line,
-                $this->currentToken->column
+                "Failed to parse SQL query: {$e->getMessage()}",
+                $this->query,
+                $this->position
             );
         }
     }
 
-    public function parse() {
-        return $this->expression();
+    private function tokenize(): void {
+        $pattern = '/
+            \s*
+            (
+                (?:<=|>=|!=|<>|=|<|>)|         # Operators
+                (?:\'[^\']*\'|"[^"]*")|        # Strings
+                (?:\d+(?:\.\d+)?)|             # Numbers
+                (?:AND|OR|NOT|IN|LIKE|IS|NULL|BETWEEN|REGEXP|MATCH)|  # Keywords
+                (?:[a-zA-Z_][a-zA-Z0-9_\.]*)|  # Identifiers
+                (?:[\(\),])                    # Parentheses and comma
+            )
+            \s*
+        /x';
+
+        preg_match_all($pattern, $this->query, $matches);
+        $this->tokens = $matches[1];
     }
 
-    private function expression() {
-        $node = $this->term();
+    private function parseExpression($precedence = 0): array {
+        $left = $this->parsePrimary();
 
-        while ($this->currentToken->type === 'OR') {
-            $this->eat('OR');
-            $node = ['$or' => [$node, $this->term()]];
-        }
+        while ($this->position < count($this->tokens)) {
+            $operator = strtoupper($this->tokens[$this->position] ?? '');
+            $nextPrecedence = $this->getOperatorPrecedence($operator);
 
-        return $node;
-    }
-
-    private function term() {
-        $node = $this->factor();
-
-        while ($this->currentToken->type === 'AND') {
-            $this->eat('AND');
-            $node = ['$and' => [$node, $this->factor()]];
-        }
-
-        return $node;
-    }
-
-    private function factor() {
-        if ($this->currentToken->type === 'LPAREN') {
-            $this->eat('LPAREN');
-            $node = $this->expression();
-            $this->eat('RPAREN');
-            return $node;
-        } elseif ($this->currentToken->type === 'NOT') {
-            $this->eat('NOT');
-            return ['$not' => $this->factor()];
-        } else {
-            return $this->condition();
-        }
-    }
-
-    private function condition() {
-        $field = $this->currentToken->value;
-        $this->eat('IDENTIFIER');
-        $operator = strtoupper($this->currentToken->value);
-        $this->eat('OPERATOR');
-
-        if ($operator === 'IN' || $operator === 'NIN' || $operator === 'ALL') {
-            $this->eat('LPAREN');
-            $values = $this->parseList();
-            $this->eat('RPAREN');
-            return [$field => [self::$operatorMap[$operator] => $values]];
-        } elseif ($operator === 'ELEMATCH') {
-            $this->eat('LPAREN');
-            $subQuery = $this->expression();
-            $this->eat('RPAREN');
-            return [$field => ['$elemMatch' => $subQuery]];
-        } elseif ($operator === 'NEAR') {
-            return $this->parseNearCondition($field);
-        } else {
-            $value = $this->parseValue();
-
-            $mongoOperator = self::$operatorMap[$operator] ?? null;
-            if ($mongoOperator === null) {
-                throw new QueryParsingException("Unsupported operator: $operator", $this->currentToken->line, $this->currentToken->column);
+            if ($nextPrecedence <= $precedence) {
+                break;
             }
 
-            if ($mongoOperator === '$regex') {
-                $pattern = str_replace(['%', '_', '*'], ['.*', '.', '.*'], preg_quote($value, '/'));
-                return [$field => [
-                    '$regex' => $pattern,
-                    '$options' => 'i'
-                ]];
-            } elseif ($mongoOperator === '$exists') {
-                $value = filter_var($value, FILTER_VALIDATE_BOOLEAN);
+            $this->position++;
+            $right = $this->parseExpression($nextPrecedence);
+
+            switch ($operator) {
+                case 'AND':
+                    $left = ['$and' => [$left, $right]];
+                    break;
+                case 'OR':
+                    $left = ['$or' => [$left, $right]];
+                    break;
+                default:
+                    throw new QueryParsingException("Unexpected operator: $operator", $this->query, $this->position);
             }
-
-            return [$field => [$mongoOperator => $value]];
         }
+
+        return $left;
     }
 
-    private function parseNearCondition($field) {
-        $this->eat('LPAREN');
-        $longitude = $this->parseNumber();
-        $this->eat('COMMA');
-        $latitude = $this->parseNumber();
-        $this->eat('COMMA');
-        $maxDistance = $this->parseNumber();
-        $this->eat('RPAREN');
+    private function parsePrimary(): array {
+        if ($this->position >= count($this->tokens)) {
+            throw new QueryParsingException("Unexpected end of query", $this->query, $this->position);
+        }
 
-        return [
-            $field => [
-                '$near' => [
-                    '$geometry' => [
-                        'type' => 'Point',
-                        'coordinates' => [$longitude, $latitude]
-                    ],
-                    '$maxDistance' => $maxDistance
-                ]
-            ]
-        ];
+        $token = $this->tokens[$this->position];
+
+        if ($token === '(') {
+            $this->position++;
+            $expr = $this->parseExpression();
+            if ($this->tokens[$this->position] !== ')') {
+                throw new QueryParsingException("Expected ')'", $this->query, $this->position);
+            }
+            $this->position++;
+            return $expr;
+        }
+
+        if (strtoupper($token) === 'NOT') {
+            $this->position++;
+            return ['$not' => $this->parsePrimary()];
+        }
+
+        return $this->parseCondition();
     }
 
-    private function parseList() {
+    private function parseCondition(): array {
+        $field = $this->tokens[$this->position++];
+
+        if ($this->position >= count($this->tokens)) {
+            throw new QueryParsingException("Unexpected end of query after field", $this->query, $this->position);
+        }
+
+        $operator = strtoupper($this->tokens[$this->position++]);
+
+        // Handle special cases
+        switch ($operator) {
+            case 'IS':
+                $isNot = false;
+                if (strtoupper($this->tokens[$this->position]) === 'NOT') {
+                    $isNot = true;
+                    $this->position++;
+                }
+                if (strtoupper($this->tokens[$this->position++]) !== 'NULL') {
+                    throw new QueryParsingException("Expected NULL after IS", $this->query, $this->position);
+                }
+                return [$field => ['$exists' => $isNot]];
+
+            case 'BETWEEN':
+                $start = $this->parseValue();
+                if (strtoupper($this->tokens[$this->position++]) !== 'AND') {
+                    throw new QueryParsingException("Expected AND in BETWEEN expression", $this->query, $this->position);
+                }
+                $end = $this->parseValue();
+                return [$field => ['$gte' => $start, '$lte' => $end]];
+
+            case 'IN':
+            case 'NOT IN':
+                if ($this->tokens[$this->position++] !== '(') {
+                    throw new QueryParsingException("Expected '(' after IN", $this->query, $this->position);
+                }
+                $values = $this->parseList();
+                if ($this->tokens[$this->position++] !== ')') {
+                    throw new QueryParsingException("Expected ')' after IN list", $this->query, $this->position);
+                }
+                $mongoOp = $operator === 'IN' ? '$in' : '$nin';
+                return [$field => [$mongoOp => $values]];
+
+            case 'LIKE':
+            case 'NOT LIKE':
+                $pattern = $this->parseValue();
+                $regex = $this->sqlLikeToRegex($pattern);
+                if ($operator === 'LIKE') {
+                    return [$field => ['$regex' => $regex, '$options' => 'i']];
+                } else {
+                    return [$field => ['$not' => ['$regex' => $regex, '$options' => 'i']]];
+                }
+        }
+
+        // Handle standard operators
+        if (!isset(self::$operatorMap[$operator])) {
+            throw new QueryParsingException("Unsupported operator: $operator", $this->query, $this->position);
+        }
+
+        $value = $this->parseValue();
+        $mongoOp = self::$operatorMap[$operator];
+        return [$field => [$mongoOp => $value]];
+    }
+
+    private function parseList(): array {
         $values = [];
         do {
             $values[] = $this->parseValue();
-            if ($this->currentToken->type === 'COMMA') {
-                $this->eat('COMMA');
-            } else {
+            if ($this->position >= count($this->tokens) || $this->tokens[$this->position] !== ',') {
                 break;
             }
+            $this->position++;
         } while (true);
-
         return $values;
     }
 
     private function parseValue() {
-        $token = $this->currentToken;
-        switch ($token->type) {
-            case 'STRING':
-                $this->eat('STRING');
-                return $token->value;
-            case 'NUMBER':
-                return $this->parseNumber();
-            default:
-                throw new QueryParsingException("Unexpected token type: {$token->type}", $token->line, $token->column);
+        $token = $this->tokens[$this->position++];
+
+        // Handle strings
+        if ($token[0] === "'" || $token[0] === '"') {
+            return substr($token, 1, -1);
+        }
+
+        // Handle numbers
+        if (is_numeric($token)) {
+            return strpos($token, '.') !== false ? (float)$token : (int)$token;
+        }
+
+        // Handle booleans
+        if (strtoupper($token) === 'TRUE') return true;
+        if (strtoupper($token) === 'FALSE') return false;
+
+        // Handle NULL
+        if (strtoupper($token) === 'NULL') return null;
+
+        throw new QueryParsingException("Invalid value: $token", $this->query, $this->position);
+    }
+
+    private function sqlLikeToRegex(string $pattern): string {
+        $pattern = preg_quote($pattern, '/');
+        $pattern = str_replace(['%', '_'], ['.*', '.'], $pattern);
+        return "^$pattern$";
+    }
+
+    private function getOperatorPrecedence(string $operator): int {
+        switch (strtoupper($operator)) {
+            case 'AND': return 2;
+            case 'OR': return 1;
+            default: return 0;
         }
     }
 
-    private function parseNumber() {
-        $number = '';
-        while ($this->currentToken->type === 'NUMBER' || $this->currentToken->value === '-') {
-            $number .= $this->currentToken->value;
-            $this->currentToken = $this->lexer->nextToken();
-        }
-        return floatval($number);
+    public static function translate(string $sql): array {
+
+        $parser = new self($sql);
+        return $parser->toMongo();
     }
 }
 
-class SQLToMongoQuery {
-    public static function translate(string $input): array {
-        $lexer = new Lexer($input);
-        $parser = new Parser($lexer);
-        return $parser->parse();
-    }
-}

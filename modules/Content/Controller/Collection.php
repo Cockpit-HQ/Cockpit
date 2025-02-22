@@ -166,7 +166,13 @@ class Collection extends App {
                 if (is_string($f)) {
 
                     if ($f && $f[0] === ':') {
-                        $_filter = SQLToMongoQuery::translate(substr($f, 1));
+
+                        try {
+                            $_filter = SQLToMongoQuery::translate(substr($f, 1));
+                        } catch (\Exception $e) {
+                            throw new \Exception("Invalid filter!");
+                        }
+
                     } elseif (\preg_match('/^\{(.*)\}$/', $f)) {
 
                         try {
