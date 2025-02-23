@@ -110,11 +110,12 @@ export default {
 
                 <kiss-card class="kiss-padding kiss-margin-small" theme="bordered" hover="contrast shadowed" v-for="model in modelsWithItems">
 
-                    <div class="kiss-flex kiss-flex-middle kiss-margin" gap="small">
+                    <div class="kiss-flex kiss-flex-middle kiss-margin kiss-visible-toggle" gap="small">
                         <div>
                             <kiss-svg :src="$baseUrl(model.icon ? model.icon : 'content:assets/icons/collection.svg')" width="25" height="25" :style="{color:model.color ? model.color : 'var(--kiss-color-muted)'}"><canvas width="25" height="25"></canvas></kiss-svg>
                         </div>
                         <a class="kiss-text-bold kiss-text-capitalize kiss-link-muted" :href="$routeUrl('/content/'+model.type+'/items/'+model.name)">{{ model.label || model.name}}</a>
+                        <a class="kiss-invisible-hover" :href="$routeUrl('/content/'+model.type+'/item/'+model.name)"><icon>add_circle</icon></a>
                     </div>
 
                     <div class="kiss-flex kiss-flex-middle kiss-margin-small kiss-size-small" gap="small" v-for="item in model.items">
