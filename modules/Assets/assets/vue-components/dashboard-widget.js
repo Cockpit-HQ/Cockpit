@@ -48,7 +48,7 @@ export default {
             <div class="kiss-color-muted kiss-size-small kiss-margin-xsmall">{{ t('Latest uploaded assets') }}</div>
             <div class="kiss-padding-large" v-if="loading"><app-loader size="small"></app-loader></div>
 
-            <kiss-grid class="animated fadeIn kiss-margin-small" cols="2 5@m" gap="small" v-if="!loading && assets.length">
+            <kiss-grid class="animated fadeIn kiss-margin-small" cols="3@s 5@m" gap="small" v-if="!loading && assets.length">
                 <kiss-card class="kiss-position-relative" theme="contrast bordered" v-for="asset in assets">
                     <canvas width="400" height="300"></canvas>
                     <asset-preview :asset="asset"></asset-preview>
