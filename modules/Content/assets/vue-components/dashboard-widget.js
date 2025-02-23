@@ -93,7 +93,7 @@ export default {
                     </div>
 
                     <div class="kiss-flex kiss-flex-middle kiss-margin-small kiss-size-small" gap="small" v-for="item in model.items">
-                        <div class="kiss-color-muted kiss-text-monospace kiss-link-muted" :title="item._id">...{{ item._id.substr(-5) }}</div>
+                        <icon :class="{'kiss-color-success': item._state === 1, 'kiss-color-danger': !item._state, 'kiss-color-muted': item._state === -1}">trip_origin</icon>
                         <div class="kiss-flex-1" v-html="displayContent(item)"></div>
                         <div class="kiss-text-monospace kiss-color-muted kiss-size-xsmall">{{ (new Date(item._modified * 1000).toLocaleString()) }}</div>
                     </div>
