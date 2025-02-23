@@ -67,3 +67,29 @@ $this->on('app.search', function($search, $findings) {
     }
 
 });
+
+$this->on('app.dashboard.widgets', function($widgets) {
+
+    $models = array_values($this->module('content')->models());
+
+    $models = array_values(array_filter($models, function($model) {
+
+        if (!in_array($model['type'], ['collection', 'tree'])) {
+            return false;
+        }
+
+        return $this->helper('acl')->isAllowed("content/{$model['name']}/read") && $this->module('content')->count($model['name']);
+    }));
+
+    if (!count($models)) {
+        return;
+    }
+
+    $widgets[] = [
+        'name' => 'dashboard-content-widget',
+        'area' => 'primary',
+        'component' => 'content:assets/vue-components/dashboard-widget.js',
+        'data' => compact('models')
+    ];
+
+});
