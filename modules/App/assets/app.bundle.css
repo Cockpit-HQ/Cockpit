@@ -4596,6 +4596,9 @@ app-pagination {
     font-weight: bolder;
     color: var(--kiss-color-primary);
 }
+.app-dashboard {
+    --kiss-navlist-padding-vertical: 5px;
+}
 .table-scroll {
     overflow-x: auto;
     white-space: nowrap;
