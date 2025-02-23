@@ -5,6 +5,7 @@
 - Include filename in file editor header (finder)
 - Add video duration meta info on asset upload
 - Refactor content model picker field
+- Refactored Dashboard
 
 ## 2.11.0 (2025-02-17)
 
