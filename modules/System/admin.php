@@ -135,3 +135,22 @@ $this->on('app.search', function($search, $findings) {
     }
 
 });
+
+$this->on('app.dashboard.widgets', function($widgets) {
+
+    if ($this->helper('spaces')->isMaster() && $this->helper('acl')->isAllowed('app/spaces')) {
+
+        $spaces = $this->helper('spaces')->spaces();
+
+        if (count($spaces)) {
+
+            $widgets[] = [
+                'name' => 'dashboard-spaces-widget',
+                'area' => 'secondary',
+                'prio' => 100,
+                'component' => 'system:assets/vue-components/dashboard/spaces.js',
+                'data' => compact('spaces')
+            ];
+        }
+    }
+});

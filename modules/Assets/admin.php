@@ -71,6 +71,10 @@ $this->on('spaces.config.create', function($config) {
 
 $this->on('app.dashboard.widgets', function($widgets) {
 
+    if (!$this->dataStorage->count('assets')) {
+        return;
+    }
+
     $widgets[] = [
         'name' => 'dashboard-assets-widget',
         'area' => 'tertiary',
