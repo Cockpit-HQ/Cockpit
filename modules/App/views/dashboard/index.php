@@ -14,7 +14,7 @@
 
 ?>
 
-<vue-view class="app-dashboard kiss-margin-large">
+<vue-view class="app-dashboard kiss-margin-large-top kiss-margin-large-bottom">
     <template>
 
         <kiss-container class="kiss-flex kiss-flex-wrap" gap="large">

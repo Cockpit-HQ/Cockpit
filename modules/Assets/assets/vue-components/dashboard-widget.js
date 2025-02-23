@@ -26,7 +26,19 @@ export default {
                 this.assets = rsp.assets;
                 this.loading = false;
             })
-        }
+        },
+
+        show(asset) {
+
+            VueView.ui.offcanvas('assets:assets/dialogs/asset.js', {asset}, {
+
+                update: updatedAsset => {
+                    Object.assign(asset, updatedAsset)
+                }
+
+            }, {flip: true, size: 'large'})
+        },
+
     },
 
     template: /*html*/`
@@ -40,6 +52,7 @@ export default {
                 <kiss-card class="kiss-position-relative" theme="contrast bordered" v-for="asset in assets">
                     <canvas width="400" height="300"></canvas>
                     <asset-preview :asset="asset"></asset-preview>
+                    <a class="kiss-cover" @click="show(asset)"></a>
                 </kiss-card>
             </kiss-grid>
 
