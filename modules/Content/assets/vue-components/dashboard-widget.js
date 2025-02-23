@@ -100,15 +100,15 @@ export default {
             <div class="kiss-color-muted kiss-size-small kiss-margin-xsmall">{{ t('Latest updated content items') }}</div>
 
             <ul class="kiss-tabs-nav kiss-margin-small" :class="{'kiss-disabled':loading}">
-                <li :active="mode == 'all' ? 'true':'false'"><a class="kiss-tabs-nav-link" @click="mode='all'">{{ t('All') }}</a></li>
-                <li :active="mode == 'all' ? 'false':'true'"><a class="kiss-tabs-nav-link"  @click="mode='byme'">{{ t('By me') }}</a></li>
+                <li :active="mode == 'all' ? 'true':'false'"><a class="kiss-tabs-nav-link" @click="mode='all'">{{ t('All items') }}</a></li>
+                <li :active="mode == 'all' ? 'false':'true'"><a class="kiss-tabs-nav-link"  @click="mode='byme'">{{ t('Update by me') }}</a></li>
             </ul>
 
             <div class="kiss-padding-large" v-if="loading"><app-loader size="small"></app-loader></div>
 
             <div class="kiss-margin" style="max-height: 450px;overflow: scroll" v-if="!loading">
 
-                <kiss-card class="kiss-padding kiss-margin-small" theme="bordered" hover="contrast shadowed" v-for="model in modelsWithItems">
+                <kiss-card class="kiss-padding kiss-margin-small" theme="bordered" hover="contrast shadowed bordered-primary" v-for="model in modelsWithItems">
 
                     <div class="kiss-flex kiss-flex-middle kiss-margin kiss-visible-toggle" gap="small">
                         <div>

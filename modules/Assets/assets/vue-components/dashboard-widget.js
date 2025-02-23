@@ -42,7 +42,7 @@ export default {
     },
 
     template: /*html*/`
-        <kiss-card>
+        <kiss-card :class="{'kiss-disabled': loading}">
 
             <div class="kiss-text-caption kiss-text-bold">{{ t('Assets') }}</div>
             <div class="kiss-color-muted kiss-size-small kiss-margin-xsmall">{{ t('Latest uploaded assets') }}</div>
