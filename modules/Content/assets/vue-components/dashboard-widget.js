@@ -83,7 +83,7 @@ export default {
 
             <div class="kiss-margin" v-if="!loading">
 
-                <kiss-card class="kiss-padding kiss-margin-small" theme="contrast" v-for="model in modelsWithItems">
+                <kiss-card class="kiss-padding kiss-margin-small" theme="bordered" hover="contrast shadowed" v-for="model in modelsWithItems">
 
                     <div class="kiss-flex kiss-flex-middle kiss-margin" gap="small">
                         <div>
