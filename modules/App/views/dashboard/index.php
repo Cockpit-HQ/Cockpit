@@ -11,15 +11,14 @@
         return ($b['prio'] ?? 1) - ($a['prio'] ?? 1);
     });
 
-
 ?>
 
 <vue-view class="app-dashboard kiss-margin-large-top kiss-margin-large-bottom">
     <template>
 
-        <kiss-container class="kiss-flex kiss-flex-wrap" gap="large">
+        <kiss-container class="kiss-flex kiss-flex-wrap" :size="cols === 1 ? 'small': ''" gap="large">
 
-            <section class="kiss-width-1-4@m kiss-width-1-5@xl" v-if="areas.secondary.length">
+            <section class="kiss-width-1-4@m kiss-width-1-5@xl" v-if="cols === 3">
 
                 <div class="kiss-flex-inline kiss-flex-middle" gap="small">
                     <div>
@@ -42,21 +41,35 @@
 
             <section class="kiss-flex-1">
 
-                <kiss-card class="kiss-padding-large kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center" :class="(areas.secondary.length && areas.tertiary.length) || areas.primary.length  ? 'kiss-height-30vh' : 'kiss-height-50vh'" :theme="areas.secondary.length && areas.tertiary.length ? 'contrast shadowed':''">
+                <kiss-card class="kiss-padding-large kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center" :class="widgets.length  ? 'kiss-height-30vh' : 'kiss-height-50vh'" :theme="widgets.length ? 'contrast shadowed':''">
                     <div class="animated fadeInUp">
                         <div class="kiss-size-xlarge kiss-margin-small"><?=_t('Hello %s', [$this['user/name']])?></div>
                         <div class="kiss-color-muted kiss-size-1 kiss-text-light animated fadeIn delay-1s"><?=t("Excited for your creations today!")?></div>
                     </div>
                 </kiss-card>
 
+                <div class="kiss-margin-large" v-if="cols === 1">
+                    <div class="kiss-margin" v-for="widget in areas.secondary">
+                        <div v-if="widget.html" v-html="widget.html"></div>
+                        <component :is="widget.name" v-bind="widget.data || {}" v-if="widget.component"></component>
+                    </div>
+                </div>
+
                 <div class="kiss-margin" v-for="widget in areas.primary">
                     <div v-if="widget.html" v-html="widget.html"></div>
                     <component :is="widget.name" v-bind="widget.data || {}" v-if="widget.component"></component>
                 </div>
 
+                <div class="kiss-margin-large" v-if="cols === 1">
+                    <div class="kiss-margin" v-for="widget in areas.tertiary">
+                        <div v-if="widget.html" v-html="widget.html"></div>
+                        <component :is="widget.name" v-bind="widget.data || {}" v-if="widget.component"></component>
+                    </div>
+                </div>
+
             </section>
 
-            <section class="kiss-width-1-4@m kiss-width-1-5@xl" v-if="areas.tertiary.length">
+            <section class="kiss-width-1-4@m kiss-width-1-5@xl" v-if="cols === 3">
                 <div class="kiss-margin" v-for="widget in areas.tertiary">
                     <div v-if="widget.html" v-html="widget.html"></div>
                     <component :is="widget.name" v-bind="widget.data || {}" v-if="widget.component"></component>
@@ -113,6 +126,10 @@
                     });
 
                     return areas;
+                },
+
+                cols() {
+                    return this.areas.primary.length && this.areas.secondary.length && this.areas.tertiary.length ? 3 : 1;
                 }
             },
 
