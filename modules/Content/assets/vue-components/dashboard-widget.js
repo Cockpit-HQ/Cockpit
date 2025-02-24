@@ -4,7 +4,8 @@ export default {
     data() {
         return {
             loading: true,
-            mode: 'all'
+            mode: 'all',
+            state: null,
         }
     },
 
@@ -22,11 +23,17 @@ export default {
     computed: {
         modelsWithItems() {
             return this.models.filter(model => model.items.length);
+        },
+        stateText() {
+            return this.state === null ? this.t('All') : this.state === 1 ? this.t('Published') : this.t('Unpublished');
         }
     },
 
     watch: {
         mode() {
+            this.load();
+        },
+        state() {
             this.load();
         }
     },
@@ -51,6 +58,11 @@ export default {
                         options.filter = {
                             _mby: App.user._id
                         };
+                    }
+
+                    if (this.state !== null) {
+                        options.filter = options.filter || {};
+                        options.filter._state = this.state;
                     }
 
                     this.$request(`/content/collection/find/${model.name}`, {options}).then(rsp => {
@@ -107,10 +119,24 @@ export default {
             <div class="kiss-text-caption kiss-text-bold">{{ t('Content') }}</div>
             <div class="kiss-color-muted kiss-size-small kiss-margin-xsmall">{{ t('Latest updated content items') }}</div>
 
-            <ul class="kiss-tabs-nav kiss-margin-small" :class="{'kiss-disabled':loading}">
-                <li :active="mode == 'all' ? 'true':'false'"><a class="kiss-tabs-nav-link" @click="mode='all'">{{ t('All items') }}</a></li>
-                <li :active="mode == 'all' ? 'false':'true'"><a class="kiss-tabs-nav-link"  @click="mode='byme'">{{ t('By me') }}</a></li>
-            </ul>
+            <div class="kiss-flex kiss-flex-middle kiss-margin-small" gap>
+
+                <ul class="kiss-tabs-nav kiss-flex-1" :class="{'kiss-disabled':loading}">
+                    <li :active="mode == 'all' ? 'true':'false'"><a class="kiss-tabs-nav-link" @click="mode='all'">{{ t('All items') }}</a></li>
+                    <li :active="mode == 'all' ? 'false':'true'"><a class="kiss-tabs-nav-link"  @click="mode='byme'">{{ t('By me') }}</a></li>
+                </ul>
+
+                <div class="kiss-overlay-input kiss-size-small">
+                    <span class="kiss-text-caption kiss-size-xsmall kiss-color-muted">{{ t('State') }}</span>
+                    <div class="kiss-color-muted">{{ stateText }}</div>
+                    <select v-model="state">
+                        <option :value="null">{{ t('All') }}</option>
+                        <hr>
+                        <option :value="1">{{ t('Published') }}</option>
+                        <option :value="0">{{ t('Unpublished') }}</option>
+                    </select>
+                </div>
+            </div>
 
             <div class="kiss-padding-large" v-if="loading"><app-loader size="small"></app-loader></div>
 
@@ -121,7 +147,7 @@ export default {
                 </div>
             </div>
 
-            <div class="animated fadeIn kiss-margin" v-if="!loading">
+            <div class="animated fadeIn kiss-margin-small" v-if="!loading">
 
                 <kiss-card class="kiss-padding kiss-margin-small" theme="bordered" hover="contrast shadowed bordered-primary" v-for="model in modelsWithItems">
 
