@@ -69,7 +69,7 @@ export default {
 
         displayContent(item) {
 
-            let data = {}, images= [], str;
+            let data = {}, images = [], str;
 
             Object.keys(item).forEach(key => {
 

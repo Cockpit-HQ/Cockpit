@@ -42,7 +42,7 @@
 
             <section class="kiss-flex-1">
 
-                <kiss-card class="kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center" :class="areas.secondary.length && areas.tertiary.length ? 'kiss-height-30vh' : 'kiss-height-50vh'" :theme="areas.secondary.length && areas.tertiary.length ? 'contrast shadowed':''">
+                <kiss-card class="kiss-padding-large kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center" :class="(areas.secondary.length && areas.tertiary.length) || areas.primary.length  ? 'kiss-height-30vh' : 'kiss-height-50vh'" :theme="areas.secondary.length && areas.tertiary.length ? 'contrast shadowed':''">
                     <div class="animated fadeInUp">
                         <div class="kiss-size-xlarge kiss-margin-small"><?=_t('Hello %s', [$this['user/name']])?></div>
                         <div class="kiss-color-muted kiss-size-1 kiss-text-light animated fadeIn delay-1s"><?=t("Excited for your creations today!")?></div>
