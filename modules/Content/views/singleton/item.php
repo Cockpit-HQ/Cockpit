@@ -53,7 +53,7 @@
                             <div class="kiss-margin-xsmall">
                                 <div class="kiss-flex kiss-flex-middle">
                                     <div class="kiss-size-4 kiss-margin-small-right kiss-flex kiss-color-muted" :title="t('Created at')"><icon>more_time</icon></div>
-                                    <div class="kiss-text-truncate kiss-size-small kiss-text-monospace kiss-color-muted kiss-flex-1">{{ (new Date(item._created * 1000).toLocaleString()) }}</div>
+                                    <div class="kiss-text-truncate kiss-size-small kiss-text-monospace kiss-color-muted kiss-flex-1"><app-datetime :datetime="item._created" /></div>
                                     <user-info :user-id="item._cby"></user-info>
                                 </div>
                             </div>
@@ -61,7 +61,7 @@
                             <div class="kiss-margin-xsmall" v-if="item._created != item._modified">
                                 <div class="kiss-flex kiss-flex-middle">
                                     <div class="kiss-size-4 kiss-margin-small-right kiss-flex kiss-color-muted" :title="t('Modified at')"><icon>history</icon></div>
-                                    <div class="kiss-text-truncate kiss-size-small kiss-text-monospace kiss-color-muted kiss-flex-1">{{ (new Date(item._modified * 1000).toLocaleString()) }}</div>
+                                    <div class="kiss-text-truncate kiss-size-small kiss-text-monospace kiss-color-muted kiss-flex-1"><app-datetime :datetime="item._modified" /></div>
                                     <user-info :user-id="item._mby"></user-info>
                                 </div>
                             </div>

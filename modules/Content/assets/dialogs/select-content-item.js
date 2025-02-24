@@ -210,7 +210,7 @@ export default {
                                         <span v-else>{{ item[field.name] }}</span>
                                     </div>
                                 </td>
-                                <td><span class="kiss-flex kiss-badge kiss-badge-outline kiss-color-primary">{{ (new Date(item._modified * 1000).toLocaleString()) }}</span></td>
+                                <td><span class="kiss-flex kiss-badge kiss-badge-outline kiss-color-primary"><app-datetime :datetime="item._modified" /></span></td>
                                 <td fixed="right"><a class="kiss-size-large" @click="pick(item)"><icon>link</icon></a></td>
                             </tr>
                         </tbody>

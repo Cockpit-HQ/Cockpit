@@ -151,8 +151,8 @@
                                         <span v-else>{{ item[field.name] }}</span>
                                     </div>
                                 </td>
-                                <td><span class="kiss-flex kiss-badge kiss-badge-outline kiss-color-primary" :title="(new Date(item._modified * 1000).toLocaleString())">{{ (new Date(item._modified * 1000).toLocaleString()) }}</span></td>
-                                <td><span class="kiss-flex kiss-badge kiss-badge-outline kiss-color-muted" :title="(new Date(item._created * 1000).toLocaleString())">{{ (new Date(item._created * 1000).toLocaleString()) }}</span></td>
+                                <td><span class="kiss-flex kiss-badge kiss-badge-outline kiss-color-primary"><app-datetime :datetime="item._modified" /></span></td>
+                                <td><span class="kiss-flex kiss-badge kiss-badge-outline kiss-color-muted"><app-datetime :datetime="item._created" /></span></td>
                                 <td class="kiss-align-center" fixed="right">
                                     <a @click="toggleItemActions(item)">
                                         <icon>more_horiz</icon>

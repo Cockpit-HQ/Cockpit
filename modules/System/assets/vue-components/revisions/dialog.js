@@ -182,7 +182,7 @@ export default {
                             <ul class="app-list-items kiss-cover">
                                 <li class="kiss-flex kiss-position-relative" v-for="rev in revisions">
                                     <div class="kiss-flex-1">
-                                        <div :class="(selectedRev == rev) ? 'kiss-color-primary kiss-text-bold':'kiss-size-small kiss-color-muted'">{{ (new Date(rev._created * 1000).toLocaleString()) }}</div>
+                                        <div :class="(selectedRev == rev) ? 'kiss-color-primary kiss-text-bold':'kiss-size-small kiss-color-muted'"><app-datetime :datetime="rev._created" /></div>
                                         <div class="kiss-size-xsmall" :class="(selectedRev == rev) ? '':'kiss-color-muted'">By {{ rev._by && rev._by.user ? rev._by.user : 'n/a' }}</div>
                                     </div>
                                     <a class="kiss-cover" @click="selectedRev = rev"></a>

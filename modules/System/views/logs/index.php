@@ -84,7 +84,7 @@
                         <tbody>
                             <tr v-for="item in items">
                                 <td class="kiss-align-center"><icon class="kiss-size-3" :type="item.type"></icon></td>
-                                <td class="kiss-text-bold kiss-text-monospace"><div class="kiss-size-xsmall">{{ (new Date(item.timestamp * 1000).toLocaleString()) }}</div></td>
+                                <td class="kiss-text-bold kiss-text-monospace"><div class="kiss-size-xsmall"><app-datetime :datetime="item.timestamp" /></div></td>
                                 <td class="kiss-text-bold kiss-color-muted kiss-align-center" v-if="!selectedChannel"><app-avatar :name="item.channel" size="25" kiss-tooltip="bottom" :aria-label="item.channel"></app-avatar></td>
                                 <td>{{ item.message }}</td>
                                 <td class="kiss-align-center"><a class="kiss-color-primary kiss-size-3" v-if="item.context" @click="showContext(item.context)"><icon>more_horiz</icon></a></td>
