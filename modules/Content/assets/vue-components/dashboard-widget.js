@@ -69,9 +69,13 @@ export default {
 
         displayContent(item) {
 
-            let data = {}, str;
+            let data = {}, images= [], str;
 
             Object.keys(item).forEach(key => {
+
+                if (item[key]?._id && item[key]?.path && item[key]?.type === 'image') {
+                    images.push(item[key]._id);
+                }
 
                 if (key[0] === '_' || !item[key] || typeof(item[key]) !== 'string') {
                     return;
@@ -84,6 +88,10 @@ export default {
             str = App.utils.truncate(App.utils.stripTags(str), 50);
 
             if (!str) return 'n/a';
+
+            if (images.length) {
+                str = `<div class="kiss-flex" gap="small"><display-image src="${images[0]}" w="40" h="25"></display-image><div>${str}</div></div>`;
+            }
 
             return str;
         },
@@ -122,7 +130,7 @@ export default {
                             <kiss-svg :src="$baseUrl(model.icon ? model.icon : 'content:assets/icons/collection.svg')" width="25" height="25" :style="{color:model.color ? model.color : 'var(--kiss-color-muted)'}"><canvas width="25" height="25"></canvas></kiss-svg>
                         </div>
                         <a class="kiss-text-bold kiss-text-capitalize kiss-link-muted" :href="$routeUrl('/content/'+model.type+'/items/'+model.name)">{{ model.label || model.name}}</a>
-                        <a class="kiss-invisible-hover" :href="$routeUrl('/content/'+model.type+'/item/'+model.name)"><icon>add_circle</icon></a>
+                        <a class="kiss-invisible-hover" :href="$routeUrl('/content/'+model.type+'/item/'+model.name)" :title="t('Create item')"><icon>add_circle</icon></a>
                     </div>
 
                     <div class="kiss-flex kiss-flex-middle kiss-margin-small kiss-size-small" gap="small" v-for="item in model.items">
