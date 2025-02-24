@@ -126,16 +126,15 @@ export default {
                     <li :active="mode == 'all' ? 'false':'true'"><a class="kiss-tabs-nav-link"  @click="mode='byme'">{{ t('By me') }}</a></li>
                 </ul>
 
-                <div class="kiss-overlay-input kiss-size-small">
-                    <span class="kiss-text-caption kiss-size-xsmall kiss-color-muted">{{ t('State') }}</span>
-                    <div class="kiss-color-muted">{{ stateText }}</div>
+                <span class="kiss-badge kiss-overlay-input" :class="{'kiss-bgcolor-success': state === 1, 'kiss-bgcolor-danger': state === 0}">
+                    {{ stateText }}
                     <select v-model="state">
                         <option :value="null">{{ t('All') }}</option>
                         <hr>
                         <option :value="1">{{ t('Published') }}</option>
                         <option :value="0">{{ t('Unpublished') }}</option>
                     </select>
-                </div>
+                </span>
             </div>
 
             <div class="kiss-padding-large" v-if="loading"><app-loader size="small"></app-loader></div>
