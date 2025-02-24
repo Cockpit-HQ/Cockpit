@@ -79,7 +79,7 @@ export default {
             </kiss-navlist>
 
             <div class="kiss-button-group">
-                <a class="kiss-button kiss-button-small" :href="$routeUrl('/system/spaces')">{{ t('Goto spaces') }}</a>
+                <a class="kiss-button kiss-button-small" :href="$routeUrl('/system/spaces')">{{ t('Go to spaces') }}</a>
                 <a class="kiss-button kiss-button-small" :href="$routeUrl('/system/spaces/create')" :title="t('Create space')"><icon>add_circle</icon></a>
             </div>
 

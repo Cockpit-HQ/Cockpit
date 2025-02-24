@@ -18,7 +18,7 @@ export default {
 
             const options = {
                 sort: {_created: -1},
-                limit: 15,
+                limit: 12,
             };
 
             this.$request('/assets/assets', {options}).then(rsp => {
@@ -48,7 +48,7 @@ export default {
             <div class="kiss-color-muted kiss-size-small kiss-margin-xsmall">{{ t('Latest uploaded assets') }}</div>
             <div class="kiss-padding-large" v-if="loading"><app-loader size="small"></app-loader></div>
 
-            <kiss-grid class="animated fadeIn kiss-margin-small" cols="3@s 5@m" gap="small" v-if="!loading && assets.length">
+            <kiss-grid class="animated fadeIn kiss-margin-small" cols="3@s 3@m" gap="small" v-if="!loading && assets.length">
                 <kiss-card class="kiss-position-relative" theme="contrast bordered" hover="bordered-primary" v-for="asset in assets">
                     <canvas width="400" height="300"></canvas>
                     <asset-preview :asset="asset"></asset-preview>
@@ -57,7 +57,7 @@ export default {
             </kiss-grid>
 
             <div class="kiss-margin-small" v-if="!loading">
-                <a class="kiss-button kiss-button-small" :href="$routeUrl('/assets')">{{ t('Goto assets') }}</a>
+                <a class="kiss-button kiss-button-small" :href="$routeUrl('/assets')">{{ t('Go to assets') }}</a>
             </div>
 
         </kiss-card>

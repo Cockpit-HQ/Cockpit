@@ -144,7 +144,7 @@ export default {
             </div>
 
             <div class="kiss-margin-small" v-if="!loading">
-                <a class="kiss-button kiss-button-small" :href="$routeUrl('/content')">{{ t('Goto content') }}</a>
+                <a class="kiss-button kiss-button-small" :href="$routeUrl('/content')">{{ t('Go to content') }}</a>
             </div>
 
         </kiss-card>
