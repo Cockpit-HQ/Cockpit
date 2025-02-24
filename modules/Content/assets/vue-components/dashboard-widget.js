@@ -136,7 +136,7 @@ export default {
                     <div class="kiss-flex kiss-flex-middle kiss-margin-small kiss-size-small" gap="small" v-for="item in model.items">
                         <icon :class="{'kiss-color-success': item._state === 1, 'kiss-color-danger': !item._state, 'kiss-color-muted': item._state === -1}">trip_origin</icon>
                         <a class="kiss-link-muted kiss-flex-1" :href="getItemLink(model, item)" v-html="displayContent(item)"></a>
-                        <div class="kiss-text-monospace kiss-color-muted kiss-size-xsmall">{{ (new Date(item._modified * 1000).toLocaleString()) }}</div>
+                        <div class="kiss-text-monospace kiss-color-muted kiss-size-xsmall"><app-datetime type="relative" :datetime="item._modified" /></div>
                     </div>
 
                 </kiss-card>

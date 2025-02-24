@@ -1,5 +1,6 @@
 import "../components/app-avatar/app-avatar.js";
 import "../components/app-actionbar/app-actionbar.js";
+import "../components/app-datetime/app-datetime.js";
 import "../components/app-fieldcontainer/app-fieldcontainer.js";
 import "../components/app-frame/app-frame.js";
 import "../components/app-loader/app-loader.js";
