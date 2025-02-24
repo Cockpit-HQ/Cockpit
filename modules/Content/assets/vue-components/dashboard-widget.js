@@ -106,6 +106,13 @@ export default {
 
             <div class="kiss-padding-large" v-if="loading"><app-loader size="small"></app-loader></div>
 
+            <div class="animated fadeIn kiss-padding-large kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted kiss-margin" v-if="!loading && !modelsWithItems.length">
+                <div>
+                    <kiss-svg :src="$baseUrl('content:icon.svg')" width="30" height="30"></kiss-svg>
+                    <p class="kiss-size-small kiss-margin-small-top">{{ t('No content items') }}</p>
+                </div>
+            </div>
+
             <div class="animated fadeIn kiss-margin" style="max-height: 450px;overflow: scroll" v-if="!loading">
 
                 <kiss-card class="kiss-padding kiss-margin-small" theme="bordered" hover="contrast shadowed bordered-primary" v-for="model in modelsWithItems">
@@ -126,6 +133,10 @@ export default {
 
                 </kiss-card>
 
+            </div>
+
+            <div class="kiss-margin-small" v-if="!loading">
+                <a class="kiss-button kiss-button-small" :href="$routeUrl('/content')">{{ t('Goto content') }}</a>
             </div>
 
         </kiss-card>

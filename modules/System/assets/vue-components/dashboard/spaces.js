@@ -62,8 +62,8 @@ export default {
 
             <div class="animated fadeIn kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted kiss-margin" v-if="!filtered.length">
                 <div>
-                    <kiss-svg :src="$baseUrl('system:assets/icons/spaces.svg')" width="20" height="20"></kiss-svg>
-                    <p class="kiss-size-smallkiss-margin-small-top">{{ t('No spaces') }}</p>
+                    <kiss-svg :src="$baseUrl('system:assets/icons/spaces.svg')" width="30" height="30"></kiss-svg>
+                    <p class="kiss-size-small kiss-margin-small-top">{{ t('No spaces') }}</p>
                 </div>
             </div>
 
