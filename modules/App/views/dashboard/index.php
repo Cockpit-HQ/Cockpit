@@ -98,10 +98,6 @@
                 };
             },
 
-            mounted() {
-
-            },
-
             computed: {
 
                 areas() {
