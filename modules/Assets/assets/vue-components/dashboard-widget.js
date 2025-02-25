@@ -51,8 +51,10 @@ export default {
             <kiss-grid class="animated fadeIn kiss-margin-small" cols="3@s 3@m" gap="small" v-if="!loading && assets.length">
                 <kiss-card class="kiss-position-relative" theme="bordered" :class="asset.type === 'image' ? 'kiss-bgcolor-transparentimage':'kiss-bgcolor-contrast'" hover="bordered-primary" v-for="asset in assets">
                     <canvas width="400" height="300"></canvas>
-                    <asset-preview :asset="asset"></asset-preview>
-                    <a class="kiss-cover" @click="show(asset)"></a>
+                    <div class="kiss-cover kiss-padding-larger kiss-flex kiss-flex-middle kiss-flex-center">
+                        <asset-preview :asset="asset"></asset-preview>
+                    </div>
+                    <a class="kiss-cover" @click="show(asset)" :title="asset.title"></a>
                 </kiss-card>
             </kiss-grid>
 
