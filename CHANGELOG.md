@@ -3,7 +3,7 @@
 ## WIP
 
 - Include filename in file editor header (finder)
-- Add video duration meta info on asset upload
+- Add video duration meta info on asset upload (if ffmpeg is available)
 - Refactor content model picker field
 - Refactored Dashboard
 

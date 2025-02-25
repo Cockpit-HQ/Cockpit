@@ -32,7 +32,7 @@
 
                 <hr>
 
-                <div class="kiss-margin" v-for="widget in areas.secondary">
+                <div class="app-dashboard-widget-container kiss-margin" v-for="widget in areas.secondary">
                     <div v-if="widget.html" v-html="widget.html"></div>
                     <component :is="widget.name" v-bind="widget.data || {}" v-if="widget.component"></component>
                 </div>
@@ -49,19 +49,19 @@
                 </kiss-card>
 
                 <div class="kiss-margin-large" v-if="cols === 1">
-                    <div class="kiss-margin" v-for="widget in areas.secondary">
+                    <div class="app-dashboard-widget-container kiss-margin" v-for="widget in areas.secondary">
                         <div v-if="widget.html" v-html="widget.html"></div>
                         <component :is="widget.name" v-bind="widget.data || {}" v-if="widget.component"></component>
                     </div>
                 </div>
 
-                <div class="kiss-margin" v-for="widget in areas.primary">
+                <div class="app-dashboard-widget-container kiss-margin" v-for="widget in areas.primary">
                     <div v-if="widget.html" v-html="widget.html"></div>
                     <component :is="widget.name" v-bind="widget.data || {}" v-if="widget.component"></component>
                 </div>
 
                 <div class="kiss-margin-large" v-if="cols === 1">
-                    <div class="kiss-margin" v-for="widget in areas.tertiary">
+                    <div class="app-dashboard-widget-container kiss-margin" v-for="widget in areas.tertiary">
                         <div v-if="widget.html" v-html="widget.html"></div>
                         <component :is="widget.name" v-bind="widget.data || {}" v-if="widget.component"></component>
                     </div>
@@ -70,7 +70,7 @@
             </section>
 
             <section class="kiss-width-1-4@m kiss-width-1-5@xl" v-if="cols === 3">
-                <div class="kiss-margin" v-for="widget in areas.tertiary">
+                <div class="app-dashboard-widget-container kiss-margin" v-for="widget in areas.tertiary">
                     <div v-if="widget.html" v-html="widget.html"></div>
                     <component :is="widget.name" v-bind="widget.data || {}" v-if="widget.component"></component>
                 </div>

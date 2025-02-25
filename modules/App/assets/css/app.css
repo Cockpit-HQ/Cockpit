@@ -537,6 +537,15 @@ app-pagination {
     --kiss-navlist-padding-vertical: 5px;
 }
 
+.app-dashboard-widget-container {
+    opacity: .45;
+    transition: all 250ms;
+}
+
+.app-dashboard-widget-container:hover {
+    opacity: 1;
+}
+
 .table-scroll {
     overflow-x: auto;
     white-space: nowrap;
