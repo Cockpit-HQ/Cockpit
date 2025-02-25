@@ -98,6 +98,23 @@
                 };
             },
 
+            mounted() {
+
+                const widgets = [... document.querySelectorAll('.app-dashboard-widget-container')];
+
+                widgets.forEach(widget => {
+
+                    widget.addEventListener('pointerenter', function() {
+                        widgets.forEach(w => w.setAttribute('focus', 'false'));
+                        this.setAttribute('focus', 'true');
+                    });
+
+                    widget.addEventListener('pointerleave', () => {
+                        widgets.forEach(w => w.removeAttribute('focus'));
+                    });
+                });
+            },
+
             computed: {
 
                 areas() {

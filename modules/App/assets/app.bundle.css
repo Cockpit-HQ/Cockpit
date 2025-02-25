@@ -4600,8 +4600,12 @@ app-pagination {
     --kiss-navlist-padding-vertical: 5px;
 }
 .app-dashboard-widget-container {
-    opacity: .45;
+    opacity: .65;
     transition: all 250ms;
+}
+.app-dashboard-widget-container[focus="false"] {
+    filter: blur(1.5px) grayscale(1);
+    opacity: .4;
 }
 .app-dashboard-widget-container:hover {
     opacity: 1;
