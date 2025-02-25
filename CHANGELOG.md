@@ -1,6 +1,6 @@
 # Release Notes
 
-## WIP
+## 2.11.1 (2025-02-25)
 
 - Include filename in file editor header (finder)
 - Add video duration meta info on asset upload (if ffmpeg is available)
