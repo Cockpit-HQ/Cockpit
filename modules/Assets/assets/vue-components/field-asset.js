@@ -37,10 +37,10 @@ export default {
 
                     const src = App.route(`/assets/thumbnail/${value._id}?m=bestFit&mime=auto&h=20&t=${value._modified}`);
 
-                    return `<img loading="lazy" class="kiss-responsive-height" src="${src}" style="height:20px">`;
+                    return `<img loading="lazy" class="kiss-responsive-height" src="${src}" style="height:20px" title="${value.title}">`;
                 }
 
-                return `<kiss-svg width="20" height="20" src="${App.base(value.type === 'video' ? 'assets:assets/icons/video.svg' : 'assets:assets/icons/file.svg')}"><canvas width="20" height="20"></canvas></kiss-svg>`;
+                return `<kiss-svg width="20" height="20" src="${App.base(value.type === 'video' ? 'assets:assets/icons/video.svg' : 'assets:assets/icons/file.svg')}" title="${value.title}"><canvas width="20" height="20"></canvas></kiss-svg>`;
             }
 
             const mediaSize= 70;
@@ -51,7 +51,7 @@ export default {
 
                 const src = App.route(`/assets/thumbnail/${value._id}?m=bestFit&mime=auto&h=${(mediaSize * 2)}&t=${value._modified}`);
 
-                media = `<img loading="lazy" class="kiss-responsive-height kiss-margin-auto" src="${src}" style="height:${mediaSize}px;object-fit:contain;object-position:center;">`;
+                media = `<img loading="lazy" class="kiss-responsive-height kiss-margin-auto" src="${src}" title="${value.title}" style="height:${mediaSize}px;object-fit:contain;object-position:center;">`;
             }
 
             return /*html*/ `
@@ -61,7 +61,7 @@ export default {
                         <div class="kiss-cover ${ value.type === 'image' ? 'kiss-bgcolor-transparentimage' : '' }" style="--kiss-bgcolor-transparentimage-size:10px">${media}</div>
                     </div>
                     <div class="kiss-flex-1 kiss-size-xsmall">
-                        <div class="kiss-text-truncate">${value.title}</div>
+                        <div class="kiss-text-truncate" title="${value.title}">${value.title}</div>
                         <div class="kiss-color-muted">${App.utils.formatSize(value.size) }</div>
                     </div>
                 </kiss-row>
