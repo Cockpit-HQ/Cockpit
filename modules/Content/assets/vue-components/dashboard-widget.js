@@ -128,6 +128,7 @@ export default {
 
                 <span class="kiss-badge kiss-overlay-input" :class="{'kiss-bgcolor-success': state === 1, 'kiss-bgcolor-danger': state === 0}">
                     {{ stateText }}
+                    <icon size="large">arrow_drop_down</icon>
                     <select v-model="state">
                         <option :value="null">{{ t('All') }}</option>
                         <hr>
