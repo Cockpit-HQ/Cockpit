@@ -74,13 +74,21 @@ function Cockpit() {
     return \$instance;
 }
 
+register_shutdown_function(function() {
+    \$error = error_get_last();
+
+    if (\$error && \$error['type'] === E_ERROR) {
+        // Log fatal error
+        Cockpit()->trigger('error', [\$error]);
+    }
+
+    // Delete worker script after execution
+    if (file_exists(__FILE__))  unlink(__FILE__);
+});
+
 extract(".var_export($params, true).");
 
-?>".$script."
-
-// delete worker script after execution
-unlink(__FILE__);
-";
+?>".$script;
 
         $file = "#storage:tmp/async/{$processId}.php";
         $fs->write($file, $script);
