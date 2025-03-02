@@ -33,10 +33,10 @@ $this->on('app.layout.init', function() {
 
 $this->on('app.layout.assets', function(&$assets, $context) {
 
-    // include app license component
-    if ($context === 'app:header') $assets[] = 'system:assets/components/app-license/app-license.css';
-    if ($context === 'app:footer') $assets[] = ['src' => 'system:assets/components/app-license/app-license.js'];
-
+    // include app license component (app header)
+    if ($this->request->route !== '/' && $context === 'app:footer') {
+        $assets[] = ['src' => 'system:assets/components/app-license/app-license.js'];
+    }
 });
 
 $this->on('app.permissions.collect', function (ArrayObject $permissions) {
@@ -153,4 +153,14 @@ $this->on('app.dashboard.widgets', function($widgets) {
             ];
         }
     }
-});
+
+    if (count($widgets) > 1 && $this->helper('license')->isTrial()) {
+
+        $widgets[] = [
+            'name' => 'dashboard-license-widget',
+            'area' => 'secondary',
+            'prio' => 1000,
+            'component' => 'system:assets/vue-components/dashboard/license.js'
+        ];
+    }
+}, -100);
