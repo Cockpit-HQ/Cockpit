@@ -1,5 +1,9 @@
 # Release Notes
 
+## WIP
+
+- Update content dashboard widget to sort models by latest updated item
+
 ## 2.11.1 (2025-02-25)
 
 - Include filename in file editor header (finder)

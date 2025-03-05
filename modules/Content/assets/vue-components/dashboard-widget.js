@@ -22,7 +22,14 @@ export default {
 
     computed: {
         modelsWithItems() {
-            return this.models.filter(model => model.items.length);
+
+            return this.models
+                    .filter(model => model.items.length > 0)
+                    .sort((a, b) => {
+                        const timeA = a.items[0]._modified || 0;
+                        const timeB = b.items[0]._modified || 0;
+                        return timeB - timeA;  // Descending order
+                    });
         },
         stateText() {
             return this.state === null ? this.t('All') : this.state === 1 ? this.t('Published') : this.t('Unpublished');
@@ -81,7 +88,7 @@ export default {
 
         displayContent(item) {
 
-            let data = {}, images = [], str;
+            let data = {}, images = [], str, value;
 
             Object.keys(item).forEach(key => {
 
@@ -89,14 +96,22 @@ export default {
                     images.push(item[key]._id);
                 }
 
-                if (key[0] === '_' || !item[key] || typeof(item[key]) !== 'string') {
+                value = item[key];
+
+                if (key[0] === '_' || !item[key]) {
                     return;
                 }
 
-                data[key] = item[key];
+                if (Array.isArray(value) && value.length && typeof(value[0]) === 'string') {
+                    value = value.join(', ');
+                }
+
+                if (typeof(value) === 'string') {
+                    data[key] = value;
+                }
             });
 
-            str = JSON.stringify(Object.values(data)).replace(/('null'|\[|\]|\{|\}|"|\\|')/g, '').replace(/,/g, ', ');
+            str = Object.values(data).join(' ');
             str = App.utils.truncate(App.utils.stripTags(str), 50);
 
             if (!str) return 'n/a';
