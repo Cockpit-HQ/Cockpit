@@ -16,7 +16,7 @@ let checkSessionTimeout = function() {
         }
 
         if (rsp && !rsp.status && !isActive) {
-            VueView.ui.modal('/auth/dialog');
+            VueView.ui.modal(Vue.defineAsyncComponent(() => import(`${App.route('/auth/dialog')}?v=${App.version}`)));
         }
 
     }).catch(rsp => {
