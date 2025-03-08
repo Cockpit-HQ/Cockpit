@@ -26,14 +26,19 @@ class Utils {
     }
 
     /**
-     * Converts a mixed input into a string representation.
-     * Handles various types such as null, strings, numbers, booleans, arrays, and objects.
-     * For arrays and objects, it recursively processes their elements and joins them into a single string.
+     * Converts a given input into a single string representation by processing arrays, objects,
+     * and primitive data types, with optional filtering based on provided patterns.
      *
-     * @param mixed $input The input value to be converted to a string. Can be of any type.
-     * @return string A string representation of the input. Returns an empty string for null or unsupported types.
+     * @param mixed $input The input value to be converted to a string. Can be any type, including null.
+     * @param array $options Optional configuration for the stringification process:
+     *                       - ignoreKeyPattern (string|null): A regex pattern to filter out keys in arrays/objects.
+     *                       - ignoreValuePattern (string|null): A regex pattern to filter out values in the input.
+     * @return string A string representation of the input, with filtered and normalized content.
      */
-    public static function stringifyValue(mixed $input): string {
+    public static function stringifyValue(mixed $input, array $options = []): string {
+
+        $ignoreKeyPattern = $options['ignoreKeyPattern'] ?? null;
+        $ignoreValuePattern = $options['ignoreValuePattern'] ?? null;
 
         // Early return for simple types
         if (is_null($input)) {
@@ -60,18 +65,34 @@ class Utils {
 
         // Process each element
         foreach ($array as $key => $value) {
+
+            if ($ignoreKeyPattern && preg_match($ignoreKeyPattern, $key)) {
+                continue;
+            }
+
             // Handle key-value pairs more intelligently for search
             if (is_string($key) && !is_numeric($key)) {
                 // Include keys as they might be relevant for search when named meaningfully
                 //$parts[] = $key;
             }
 
+            $part = null;
+
             if (is_string($value)) {
-                $parts[] = $value;
+                $part = $value;
             } elseif (is_numeric($value)) {
-                $parts[] = (string)$value;
+                $part = (string)$value;
             } elseif (is_array($value) || is_object($value)) {
-                $parts[] = self::stringifyValue($value);
+                $part = self::stringifyValue($value, $options);
+            }
+
+            if ($part) {
+
+                if ($ignoreValuePattern && preg_match($ignoreValuePattern, $part)) {
+                    continue;
+                }
+
+                $parts[] = $part;
             }
         }
 
