@@ -51,6 +51,11 @@ $this->on('app.search', function($search, $findings) {
             }
 
             $icon  = "content:assets/icons/{$model['type']}.svg";
+
+            if (isset($model['icon']) && $model['icon']) {
+                $icon = $model['icon'];
+            }
+
             $route = match($model['type']) {
                 'singleton' => "/content/singleton/item/{$model['name']}",
                 'collection' => "/content/collection/items/{$model['name']}",

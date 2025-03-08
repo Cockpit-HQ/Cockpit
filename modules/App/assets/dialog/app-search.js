@@ -31,7 +31,7 @@ export default {
         search: {
             handler: KISS.utils.debounce(function() {
                 this.query();
-            }, 350)
+            }, 550)
         }
     },
 
