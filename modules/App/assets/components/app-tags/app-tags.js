@@ -33,7 +33,7 @@ customElements.define('app-tags', class extends HTMLElement {
     }
 
     get minChars() {
-        return parseInt(this.getAttribute('min-chars')) || 1;
+        return parseInt(this.getAttribute('min-chars')) || 0;
     }
 
     get placeholder() {
@@ -219,7 +219,7 @@ customElements.define('app-tags', class extends HTMLElement {
         }
 
         this.filteredSuggestions = this.normalizedSuggestions.filter(suggestion => {
-            const matchesSearch = suggestion.label.toLowerCase().includes(value) ||
+            const matchesSearch = !value || suggestion.label.toLowerCase().includes(value) ||
                                 suggestion.value.toLowerCase().includes(value);
             const notDuplicate = this.allowDuplicates || !this.tags.includes(suggestion.value);
             return matchesSearch && notDuplicate;

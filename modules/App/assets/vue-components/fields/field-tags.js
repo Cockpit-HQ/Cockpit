@@ -58,7 +58,7 @@ export default {
         },
         minChars: {
             type: Number,
-            default: 1
+            default: 0
         },
         strictMode: {
             type: Boolean,
@@ -126,11 +126,12 @@ export default {
         },
 
         list: {
-            handler(newValue) {
-                if (this.tagsElement) {
-                    this.tagsElement.setSuggestions(newValue);
-                }
-            },
+            handler() { this.resolveOptions(); },
+            deep: true
+        },
+
+        src: {
+            handler() { this.resolveOptions(); },
             deep: true
         }
     },
@@ -151,6 +152,12 @@ export default {
         },
 
         resolveOptions() {
+
+            this.options = [];
+
+            if (!this.src && (!Array.isArray(this.list) || !this.list.length)) {
+                return;
+            }
 
             this.loading = true;
 
@@ -197,7 +204,7 @@ export default {
                 this.$request(this.src.route, this.src.params || {}).then(list => {
 
                     if (!Array.isArray(list)) {
-                        resolve(groups);
+                        resolve(options);
                         return;
                     }
 
