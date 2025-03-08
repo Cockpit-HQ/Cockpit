@@ -31,7 +31,7 @@ export default {
         search: {
             handler: KISS.utils.debounce(function() {
                 this.query();
-            }, 550)
+            }, 850)
         }
     },
 
@@ -98,23 +98,20 @@ export default {
 
             this.$request('/utils/search', {search: this.search}).then(findings => {
 
+                if (!Array.isArray(findings)) {
+                    findings = [];
+                }
+
+                this.findings = findings;
+                this.loading = false;
+
+                if (findings.length) {
+                    this.selected = 0;
+                }
+
                 setTimeout(() => {
-
-                    if (!Array.isArray(findings)) {
-                        findings = [];
-                    }
-
-                    this.findings = findings;
-                    this.loading = false;
-
-                    if (findings.length) {
-                        this.selected = 0;
-                    }
-
-                    setTimeout(() => {
-                        this.$refs.searchInput.focus();
-                    }, 50);
-                }, 200)
+                    this.$refs.searchInput.focus();
+                }, 50);
             });
         }
     },
