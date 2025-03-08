@@ -4,6 +4,7 @@
 
 - Update content dashboard widget to sort models by latest updated item
 - Fix login dialog loading in spaces
+- IndexLite fixes + improvements
 
 ## 2.11.1 (2025-02-25)
 
