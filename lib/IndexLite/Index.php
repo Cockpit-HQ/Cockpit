@@ -139,19 +139,8 @@ class Index {
                 }
 
                 $value = $document[$field];
-
-                if (is_array($value) || is_object($value)) {
-                    $value = $this->stringify((array)$value);
-                }
-
-                if (!is_string($value)) {
-                    $value = is_null($value) ? null : (string)$value;
-                }
-
-                // does value contain html?
-                if (!is_null($value) && preg_match('/<[^>]+>/', $value)) {
-                    $value = strip_tags(preg_replace('/\<br(\s*)?\/?\>/i', "\n", $value));
-                }
+                $value = stringifyValue($value);
+                $value = processHtmlContent($value);
 
                 $data[":{$field}"] = $value;
             }
@@ -413,10 +402,10 @@ class Index {
                 continue;
             }
 
-            $searchQuery = "{$field} MATCH '{$q}'";
+            $searchQuery = "\"{$field}\" MATCH '{$q}'";
 
             if ($fuzzyDistance !== null) {
-                $searchQuery = "{$field} MATCH '\"{$q}\" NEAR/{$fuzzyDistance}'";
+                $searchQuery = "\"{$field}\" MATCH '\"{$q}\" NEAR/{$fuzzyDistance}'";
             }
 
             $searchQueries[] = $searchQuery;
@@ -485,38 +474,6 @@ class Index {
     }
 
     /**
-     * Converts the given input into a string representation.
-     *
-     * @param mixed $input The input to convert.
-     * @return string The string representation of the input. If the input is already a string, it is returned as-is.
-     * If the input is not an array or an object, an empty string is returned. If the input is an array or an object,
-     * all the string values found recursively are concatenated with a space separator.
-     */
-    protected function stringify(mixed $input): string {
-
-        $str = [];
-
-        if (is_string($input)) {
-            return $input;
-        }
-
-        if (!(is_array($input) || !is_object($input))) {
-            return '';
-        }
-
-        foreach ($input as $value) {
-
-            if (is_string($value)) {
-                $str[] = $value;
-            } elseif (is_array($value) || is_object($value)) {
-                $str[] = $this->stringify($value);
-            }
-        }
-
-        return implode(' ', $str);
-    }
-
-    /**
      * Updates the indexed fields for the documents table.
      *
      * @param array $fields An array of fields to be updated.
@@ -581,4 +538,80 @@ function uuidv4(): string {
     $uuid[16] = dechex(hexdec($uuid[16]) & 3 | 8);
 
     return substr($uuid, 0, 8) . '-' . substr($uuid, 8, 4) . '-' . substr($uuid, 12, 4) . '-' . substr($uuid, 16, 4) . '-' . substr($uuid, 20);
+}
+
+function stringifyValue(mixed $input): string {
+
+    // Early return for simple types
+    if (is_null($input)) {
+        return '';
+    }
+
+    if (is_string($input)) {
+        return $input;
+    }
+
+    if (is_numeric($input) || is_bool($input)) {
+        return (string)$input;
+    }
+
+    if (!is_array($input) && !is_object($input)) {
+        return '';
+    }
+
+    // Process arrays and objects
+    $parts = [];
+
+    // Convert to array if object
+    $array = is_object($input) ? get_object_vars($input) : $input;
+
+    // Process each element
+    foreach ($array as $key => $value) {
+        // Handle key-value pairs more intelligently for search
+        if (is_string($key) && !is_numeric($key)) {
+            // Include keys as they might be relevant for search when named meaningfully
+            //$parts[] = $key;
+        }
+
+        if (is_string($value)) {
+            $parts[] = $value;
+        } elseif (is_numeric($value)) {
+            $parts[] = (string)$value;
+        } elseif (is_array($value) || is_object($value)) {
+            $parts[] = stringifyValue($value);
+        }
+    }
+
+    // Join with spaces and normalize whitespace
+    $result = implode(' ', $parts);
+    return preg_replace('/\s+/', ' ', trim($result));
+}
+
+function processHtmlContent(?string $value): ?string {
+
+    if (is_null($value) || !is_string($value)) {
+        return null;
+    }
+
+    // Check if the content likely contains HTML
+    if (preg_match('/<[^>]+>/', $value)) {
+
+        // First handle HTML entities
+        $value = html_entity_decode($value, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+        // Replace common significant whitespace elements with a space
+        // This preserves word boundaries while removing HTML structure
+        $value = preg_replace('/<(br|p|div|li|tr|h[1-6]|table|ul|ol)(\s+[^>]*)?>/i', ' ', $value);
+
+        // Strip all HTML tags
+        $value = strip_tags($value);
+
+        // Normalize all whitespace to single spaces
+        $value = preg_replace('/\s+/', ' ', $value);
+
+        // Trim leading/trailing whitespace
+        $value = trim($value);
+    }
+
+    return $value;
 }
