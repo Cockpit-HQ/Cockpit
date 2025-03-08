@@ -2,8 +2,7 @@
 
 namespace IndexLite;
 
-class Utils
-{
+class Utils {
 
     /**
      * Generates a version 4 UUID (Universally Unique Identifier).
