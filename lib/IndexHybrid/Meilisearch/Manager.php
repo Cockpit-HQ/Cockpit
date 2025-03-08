@@ -113,8 +113,7 @@ class Manager {
      */
     protected function name(string $name): string {
 
-        $name = strtolower($name);
-        $name = preg_replace('/[^a-z0-9]+/', ' ', $name);
+        $name = preg_replace('/[^a-zA-Z0-9]+/', ' ', $name);
         $name = ucwords($name);
         $name = str_replace(' ', '', $name);
         $name = lcfirst($name);
