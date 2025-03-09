@@ -1,7 +1,7 @@
 export default {
 
     data() {
-        return  {
+        return {
             search: this.value || '',
             loading: false,
             findings: null,
@@ -29,7 +29,7 @@ export default {
 
     watch: {
         search: {
-            handler: KISS.utils.debounce(function() {
+            handler: KISS.utils.debounce(function () {
                 this.query();
             }, 850)
         }
@@ -70,10 +70,16 @@ export default {
                     } else {
 
                         if (event.keyCode == 38) {
-                            this.selected = this.findings[this.selected - 1] ? this.selected - 1 : this.findings.length - 1 ;
+                            this.selected = this.findings[this.selected - 1] ? this.selected - 1 : this.findings.length - 1;
                         } else {
-                            this.selected = this.findings[this.selected + 1] ? this.selected + 1 : 0 ;
+                            this.selected = this.findings[this.selected + 1] ? this.selected + 1 : 0;
                         }
+                    }
+
+                    const ele = document.getElementById(`app-search-finding-${this.selected}`);
+
+                    if (ele && !KISS.utils.isElementInView(ele, ele.parentElement)) {
+                        ele.scrollIntoView({behavior: 'smooth', block: 'start'});
                     }
                     break;
 
@@ -141,14 +147,13 @@ export default {
             <div style="background-color:var(--kiss-base-background-color);margin: 0 calc(-1 * var(--kiss-dialog-content-spacing)) calc(-1 * var(--kiss-dialog-content-spacing)) calc(-1 * var(--kiss-dialog-content-spacing))" v-if="Array.isArray(findings) && findings.length">
 
                 <div style="max-height:50vh;overflow:auto;">
-                    <kiss-card class="kiss-padding-small" :theme="idx == this.selected && 'contrast'" v-for="finding, idx in findings">
+                    <kiss-card :id="'app-search-finding-'+idx" class="kiss-padding-small" :theme="idx == this.selected && 'contrast'" v-for="finding, idx in findings">
                         <a :href="finding.route" class="kiss-flex kiss-flex-middle" :class="{'kiss-color-primary': idx == this.selected, 'kiss-color-muted': idx != this.selected}">
                             <div class="kiss-margin-small-right">
                                 <kiss-svg :src="$baseUrl(finding.icon || 'system:assets/icons/link.svg')" width="20" height="20"></kiss-svg>
                             </div>
-                            <div class="kiss-flex-1">
-                                {{ finding.title }}
-                            </div>
+                            <div class="kiss-flex-1">{{ finding.title }}</div>
+                            <div class="kiss-size-xsmall kiss-text-monospace" v-if="finding.context">{{ finding.context }}</div>
                         </a>
                     </kiss-card>
                 </div>

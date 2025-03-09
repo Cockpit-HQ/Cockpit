@@ -48,6 +48,38 @@ export function isInViewport(element, partly = false) {
     return (partly > 0 && partly <= 100) && visiblePercentage >= partly;
 }
 
+export function isElementInView(element, container = null) {
+    // Find the closest scrollable parent if no container is specified
+    if (!container) {
+        container = document.body;
+    }
+
+    // If we still don't have a container, use the viewport
+    if (!container) {
+        const rect = element.getBoundingClientRect();
+        return (
+            rect.top >= 0 &&
+            rect.left >= 0 &&
+            rect.bottom <= window.innerHeight &&
+            rect.right <= window.innerWidth
+        );
+    }
+
+    // Regular container check
+    const containerRect = container.getBoundingClientRect();
+    const containerTop = container.scrollTop;
+    const containerBottom = containerTop + container.clientHeight;
+
+    const elementRect = element.getBoundingClientRect();
+    const elementTop = elementRect.top - containerRect.top + container.scrollTop;
+    const elementBottom = elementTop + element.clientHeight;
+
+    return (
+        elementBottom > containerTop &&
+        elementTop < containerBottom
+    );
+}
+
 export function isElementOnTop(element) {
     const rect = element.getBoundingClientRect();
     let topElement = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
@@ -87,6 +119,7 @@ export function setHighestZindex(element, max = 19998) {
 export default {
     debounce,
     isInViewport,
+    isElementInView,
     isElementOnTop,
     setHighestZindex,
 }
