@@ -85,14 +85,14 @@ class Database {
 
         $pragma = [
             'journal_mode'  => $options['journal_mode'] ??  'WAL',
-            'temp_store'  => $options['journal_mode'] ??  'MEMORY',
+            'temp_store'  => $options['temp_store'] ??  'MEMORY',
             'journal_size_limit' => $options['journal_size_limit'] ?? '27103364',
             'synchronous'   => $options['synchronous'] ?? 'NORMAL',
             'mmap_size'     => $options['mmap_size'] ?? '134217728',
             'cache_size'    => $options['cache_size'] ?? '-20000',
             'page_size'     => $options['page_size'] ?? '8192',
-            'busy_timeout'  => $options['page_size'] ?? '5000',
-            'auto_vacuum'  => $options['page_size'] ?? 'INCREMENTAL',
+            'busy_timeout'  => $options['busy_timeout'] ?? '5000',
+            'auto_vacuum'  => $options['auto_vacuum'] ?? 'INCREMENTAL',
         ];
 
         foreach ($pragma as $key => $value) {
