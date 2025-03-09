@@ -152,7 +152,7 @@ export default {
                             <div class="kiss-margin-small-right">
                                 <kiss-svg :src="$baseUrl(finding.icon || 'system:assets/icons/link.svg')" width="20" height="20"></kiss-svg>
                             </div>
-                            <div class="kiss-flex-1">{{ finding.title }}</div>
+                            <div class="kiss-flex-1 kiss-text-truncate">{{ finding.title }}</div>
                             <div class="kiss-size-xsmall kiss-text-monospace" v-if="finding.context">{{ finding.context }}</div>
                         </a>
                     </kiss-card>

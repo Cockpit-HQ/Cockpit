@@ -63,10 +63,11 @@ $this->on('app.search', function($search, $findings) {
             };
 
             $findings[] = [
-                'title' => isset($model['label']) && $model['label'] ? "{$model['label']} ({$model['name']})" : $model['name'],
+                'title' => isset($model['label']) && $model['label'] ? $model['label'] : $model['name'],
                 'route' => $this->routeUrl($route),
                 'group' => 'Content',
-                'icon'  => $icon
+                'icon'  => $icon,
+                'context' => ucfirst($model['type'])
             ];
         }
     }
