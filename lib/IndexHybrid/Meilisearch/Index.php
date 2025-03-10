@@ -2,6 +2,8 @@
 
 namespace IndexHybrid\Meilisearch;
 
+use IndexLite\Utils;
+
 class Index {
 
     protected Manager $manager;
@@ -54,7 +56,7 @@ class Index {
         foreach ($documents as &$document) {
 
             if (!isset($document['id'])) {
-                $document['id'] = \indexLite\Utils::uuidv4();
+                $document['id'] = Utils::uuidv4();
             }
         }
 
