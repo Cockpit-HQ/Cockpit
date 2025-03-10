@@ -54,7 +54,7 @@ class Index {
         foreach ($documents as &$document) {
 
             if (!isset($document['id'])) {
-                $document['id'] = uuidv4();
+                $document['id'] = \indexLite\Utils::uuidv4();
             }
         }
 
@@ -101,7 +101,7 @@ class Index {
     public function search(string $query, array $options = []) {
 
         $options = array_merge([
-            'fields' => null,
+            'fields' => '*',
             'limit' => 50,
             'offset' => 0,
             'filter' => null,
@@ -113,8 +113,8 @@ class Index {
             'offset' => $options['offset'],
         ];
 
-        if ($options['fields']) {
-            $params['attributesToRetrieve'] = is_string($options['fields']) ? explode(',' , $options['fields']) : $options['fields'];
+        if ($options['fields'] !== '*') {
+            $params['attributesToRetrieve'] = is_string($options['fields']) ? array_map(fn($f) => trim($f), explode(',' , $options['fields'])) : $options['fields'];
         }
 
         if (!$options['filter']) {
@@ -139,25 +139,4 @@ class Index {
 
         return $this->search($query, ['limit' => 1])['estimatedTotalHits'] ?? 0;
     }
-}
-
-/**
- * Generates a version 4 UUID (Universally Unique Identifier).
- *
- * @return string The generated UUID.
- */
-function uuidv4(): string {
-
-    if (function_exists('random_bytes')) {
-        $uuid = bin2hex(random_bytes(16));
-    } elseif (function_exists('openssl_random_pseudo_bytes')) {
-        $uuid = bin2hex(openssl_random_pseudo_bytes(16));
-    } else {
-        $uuid = md5(uniqid('', true));
-    }
-
-    $uuid[12] = '4';
-    $uuid[16] = dechex(hexdec($uuid[16]) & 3 | 8);
-
-    return substr($uuid, 0, 8) . '-' . substr($uuid, 8, 4) . '-' . substr($uuid, 12, 4) . '-' . substr($uuid, 16, 4) . '-' . substr($uuid, 20);
 }

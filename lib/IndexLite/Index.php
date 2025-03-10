@@ -236,14 +236,11 @@ class Index {
             'limit' => 50,
             'offset' => 0,
             'filter' => '',
-            'payload' => false
         ], $options);
 
-        $keepPayload = $options['payload'];
-        $fields = is_array($options['fields']) ? implode(', ', $options['fields']) : $options['fields'];
-
-        if ($fields !== '*') {
-            $fields .= ', __payload';
+        if ($options['fields'] !== '*') {
+            $options['fields'] = is_string($options['fields']) ? array_map(fn($f) => trim($f), explode(',' , $options['fields'])) : $options['fields'];
+            $intersectFields = array_flip($options['fields']);
         }
 
         if ($query) {
@@ -254,10 +251,10 @@ class Index {
                 $where = "({$where}) AND {$options['filter']}";
             }
 
-            $sql = "SELECT {$fields} FROM documents WHERE {$where} ORDER BY rank LIMIT :limit OFFSET :offset";
+            $sql = "SELECT * FROM documents WHERE {$where} ORDER BY rank LIMIT :limit OFFSET :offset";
 
         } else {
-            $sql = "SELECT {$fields} FROM documents LIMIT :limit OFFSET :offset";
+            $sql = "SELECT * FROM documents LIMIT :limit OFFSET :offset";
         }
 
         $stmt = $this->db->prepare($sql);
@@ -266,7 +263,6 @@ class Index {
         $stmt->execute();
 
         $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $keys = array_filter(array_keys($items[0] ?? []), fn($key) => !in_array($key, ['id', '__payload']));
 
         foreach ($items as &$item) {
 
@@ -274,20 +270,10 @@ class Index {
 
             unset($item['__payload']);
 
-            if ($keepPayload) {
+            $item = array_merge($item, $payload);
 
-                foreach ($payload as $key => $value) {
-                    $item[$key] = $value;
-                }
-
-            } else {
-
-                foreach ($keys as $key) {
-
-                    if (isset($payload[$key])) {
-                        $item[$key] = $payload[$key];
-                    }
-                }
+            if ($options['fields'] !== '*') {
+                $item = array_intersect_key($item, $intersectFields);
             }
         }
 
