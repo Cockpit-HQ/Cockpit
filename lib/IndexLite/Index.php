@@ -266,11 +266,9 @@ class Index {
 
         foreach ($items as &$item) {
 
-            $payload = json_decode($item['__payload'], true);
-
-            unset($item['__payload']);
-
+            $payload = json_decode($item['__payload'] ?? '{}', true);
             $item = array_merge($item, $payload);
+            unset($item['__payload']);
 
             if ($options['fields'] !== '*') {
                 $item = array_intersect_key($item, $intersectFields);
