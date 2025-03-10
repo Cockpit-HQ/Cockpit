@@ -48,27 +48,26 @@ class Updater extends \Lime\Helper {
         $targetPath = APP_DIR;
 
         $fs = $this->app->helper('fs');
-        $tmppath = $this->app->path('#tmp:');
-        $zipname = null;
+        $tempPath = $this->app->path('#tmp:');
         $zipRoot = trim($zipRoot, '/');
 
         // download
         $zipname = basename($zipUrl);
 
-        if (!file_put_contents("{$tmppath}/{$zipname}", $this->app->helper('utils')->urlGetContents($zipUrl))) {
+        if (!file_put_contents("{$tempPath}/{$zipname}", $this->app->helper('utils')->urlGetContents($zipUrl))) {
             throw new \Exception("Couldn't download {$zipUrl}!");
         }
 
         // extract zip contents
-        if (!is_dir("{$tmppath}/update-{$zipname}")) {
-            @mkdir("{$tmppath}/update-{$zipname}", 0777);
+        if (!is_dir("{$tempPath}/update-{$zipname}")) {
+            @mkdir("{$tempPath}/update-{$zipname}", 0777);
         }
 
         $zip = new \ZipArchive;
 
-        if ($zip->open("{$tmppath}/{$zipname}") === true) {
+        if ($zip->open("{$tempPath}/{$zipname}") === true) {
 
-            if (!$zip->extractTo("{$tmppath}/update-{$zipname}")) {
+            if (!$zip->extractTo("{$tempPath}/update-{$zipname}")) {
                 throw new \Exception('Extracting zip file failed!');
             }
 
@@ -79,27 +78,27 @@ class Updater extends \Lime\Helper {
         }
 
         // check compatible php version
-        $composerContents = json_decode(file_get_contents("{$tmppath}/update-{$zipname}/{$zipRoot}/composer.json"), true);
+        $composerContents = json_decode(file_get_contents("{$tempPath}/update-{$zipname}/{$zipRoot}/composer.json"), true);
         $requiredPhpVersion = str_replace('^', '', $composerContents['require']['php']);
 
         if (version_compare(PHP_VERSION, $requiredPhpVersion, '<')) {
 
             // cleanup
-            $fs->delete("{$tmppath}/{$zipname}");
-            $fs->delete("{$tmppath}/update-{$zipname}");
+            $fs->delete("{$tempPath}/{$zipname}");
+            $fs->delete("{$tempPath}/update-{$zipname}");
 
             throw new \Exception("Your PHP version is not compatible with this update! PHP version {$requiredPhpVersion} or higher is required.");
         }
 
-        $fs->delete("{$tmppath}/update-{$zipname}/{$zipRoot}/config");
-        $fs->delete("{$tmppath}/update-{$zipname}/{$zipRoot}/storage");
+        $fs->delete("{$tempPath}/update-{$zipname}/{$zipRoot}/config");
+        $fs->delete("{$tempPath}/update-{$zipname}/{$zipRoot}/storage");
 
         // copy files
-        $fs->copy("{$tmppath}/update-{$zipname}/{$zipRoot}", $targetPath);
+        $fs->copy("{$tempPath}/update-{$zipname}/{$zipRoot}", $targetPath);
 
         // cleanup
-        $fs->delete("{$tmppath}/{$zipname}");
-        $fs->delete("{$tmppath}/update-{$zipname}");
+        $fs->delete("{$tempPath}/{$zipname}");
+        $fs->delete("{$tempPath}/update-{$zipname}");
 
         // delete modules cache
         $cache = ['#cache:modules.cache.php'];
