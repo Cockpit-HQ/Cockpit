@@ -18,7 +18,7 @@
 
         <kiss-container class="kiss-flex kiss-flex-wrap" :size="cols === 1 ? 'small': ''" gap="large">
 
-            <section class="kiss-width-1-4@m kiss-width-1-5@xl" v-if="cols === 3">
+            <section class="kiss-width-1-4@m kiss-width-1-5@xl" v-if="cols !== 1">
 
                 <div class="kiss-flex-inline kiss-flex-middle" gap="small">
                     <div>
@@ -39,7 +39,7 @@
 
             <section class="kiss-flex-1">
 
-                <kiss-card class="kiss-padding-large kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center" :class="widgets.length  ? 'kiss-height-30vh' : 'kiss-height-50vh'" :theme="widgets.length ? 'contrast shadowed':''">
+                <kiss-card class="kiss-padding-large kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-visible@m" :class="widgets.length  ? 'kiss-height-30vh' : 'kiss-height-50vh'" :theme="widgets.length ? 'contrast shadowed':''">
                     <div class="animated fadeInUp">
                         <div class="kiss-size-xlarge kiss-margin-small"><?=_t('Hello %s', [$this['user/name']])?></div>
                         <div class="kiss-color-muted kiss-size-1 kiss-text-light animated fadeIn delay-1s"><?=t("Excited for your creations today!")?></div>
@@ -67,7 +67,7 @@
 
             </section>
 
-            <section class="kiss-width-1-4@m kiss-width-1-5@xl" v-if="cols === 3">
+            <section class="kiss-width-1-4@m kiss-width-1-5@xl" v-if="cols !== 1">
                 <div class="app-dashboard-widget-container kiss-margin-large" v-for="widget in areas.tertiary">
                     <div v-if="widget.html" v-html="widget.html"></div>
                     <component :is="widget.name" v-bind="widget.data || {}" v-if="widget.component"></component>
@@ -140,7 +140,14 @@
                 },
 
                 cols() {
-                    return this.areas.primary.length && this.areas.secondary.length && this.areas.tertiary.length ? 3 : 1;
+
+                    let cols = 0;
+
+                    if (this.areas.primary.length) cols++;
+                    if (this.areas.secondary.length) cols++;
+                    if (this.areas.tertiary.length) cols++;
+
+                    return cols;
                 }
             },
 
