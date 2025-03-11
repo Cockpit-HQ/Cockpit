@@ -788,6 +788,7 @@ return array(
     'IndexHybrid\\Meilisearch\\Manager' => $baseDir . '/lib/IndexHybrid/Meilisearch/Manager.php',
     'IndexLite\\Index' => $baseDir . '/lib/IndexLite/Index.php',
     'IndexLite\\Manager' => $baseDir . '/lib/IndexLite/Manager.php',
+    'IndexLite\\Utils' => $baseDir . '/lib/IndexLite/Utils.php',
     'JSONStream\\CollectionReader' => $baseDir . '/lib/JSONStream/CollectionReader.php',
     'JSONStream\\CollectionWriter' => $baseDir . '/lib/JSONStream/CollectionWriter.php',
     'JmesPath\\AstRuntime' => $vendorDir . '/mtdowling/jmespath.php/src/AstRuntime.php',

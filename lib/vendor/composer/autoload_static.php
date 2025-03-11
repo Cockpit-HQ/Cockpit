@@ -1077,6 +1077,7 @@ class ComposerStaticInit31271496217d24f755014bacdfefaaf2
         'IndexHybrid\\Meilisearch\\Manager' => __DIR__ . '/../../..' . '/lib/IndexHybrid/Meilisearch/Manager.php',
         'IndexLite\\Index' => __DIR__ . '/../../..' . '/lib/IndexLite/Index.php',
         'IndexLite\\Manager' => __DIR__ . '/../../..' . '/lib/IndexLite/Manager.php',
+        'IndexLite\\Utils' => __DIR__ . '/../../..' . '/lib/IndexLite/Utils.php',
         'JSONStream\\CollectionReader' => __DIR__ . '/../../..' . '/lib/JSONStream/CollectionReader.php',
         'JSONStream\\CollectionWriter' => __DIR__ . '/../../..' . '/lib/JSONStream/CollectionWriter.php',
         'JmesPath\\AstRuntime' => __DIR__ . '/..' . '/mtdowling/jmespath.php/src/AstRuntime.php',
