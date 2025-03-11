@@ -1075,6 +1075,7 @@ class ComposerStaticInit31271496217d24f755014bacdfefaaf2
         'IndexHybrid\\Manager' => __DIR__ . '/../../..' . '/lib/IndexHybrid/Manager.php',
         'IndexHybrid\\Meilisearch\\Index' => __DIR__ . '/../../..' . '/lib/IndexHybrid/Meilisearch/Index.php',
         'IndexHybrid\\Meilisearch\\Manager' => __DIR__ . '/../../..' . '/lib/IndexHybrid/Meilisearch/Manager.php',
+        'IndexLite\\Autocomplete' => __DIR__ . '/../../..' . '/lib/IndexLite/Autocomplete.php',
         'IndexLite\\Index' => __DIR__ . '/../../..' . '/lib/IndexLite/Index.php',
         'IndexLite\\Manager' => __DIR__ . '/../../..' . '/lib/IndexLite/Manager.php',
         'IndexLite\\Utils' => __DIR__ . '/../../..' . '/lib/IndexLite/Utils.php',

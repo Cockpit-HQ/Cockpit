@@ -786,6 +786,7 @@ return array(
     'IndexHybrid\\Manager' => $baseDir . '/lib/IndexHybrid/Manager.php',
     'IndexHybrid\\Meilisearch\\Index' => $baseDir . '/lib/IndexHybrid/Meilisearch/Index.php',
     'IndexHybrid\\Meilisearch\\Manager' => $baseDir . '/lib/IndexHybrid/Meilisearch/Manager.php',
+    'IndexLite\\Autocomplete' => $baseDir . '/lib/IndexLite/Autocomplete.php',
     'IndexLite\\Index' => $baseDir . '/lib/IndexLite/Index.php',
     'IndexLite\\Manager' => $baseDir . '/lib/IndexLite/Manager.php',
     'IndexLite\\Utils' => $baseDir . '/lib/IndexLite/Utils.php',
