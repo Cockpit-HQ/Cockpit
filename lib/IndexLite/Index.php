@@ -32,6 +32,35 @@ class Index {
     }
 
     /**
+     * Returns the database connection.
+     *
+     * This method is used by the Autocomplete class to access the database.
+     *
+     * @return PDO The database connection.
+     */
+    public function getConnection(): PDO {
+        return $this->db;
+    }
+
+    /**
+     * Returns the fields defined in the index.
+     *
+     * @return array The array of field names.
+     */
+    public function getFields(): array {
+        return $this->fields;
+    }
+
+    /**
+     * Creates and returns an Autocomplete instance for this index.
+     *
+     * @return Autocomplete The autocomplete helper for this index.
+     */
+    public function autocomplete(): Autocomplete {
+        return new Autocomplete($this);
+    }
+
+    /**
      * Creates a virtual table using FTS5 in an SQLite database.
      *
      * @param string $path The filepath of the SQLite database.
@@ -236,6 +265,7 @@ class Index {
             'limit' => 50,
             'offset' => 0,
             'filter' => '',
+            'boosts' => [],
         ], $options);
 
         if ($options['fields'] !== '*') {
@@ -245,7 +275,7 @@ class Index {
 
         if ($query) {
 
-            $where = $this->buildMatchQuery($query);
+            $where = $this->buildMatchQuery($query, null, $options['boosts']);
 
             if ($options['filter']) {
                 $where = "({$where}) AND {$options['filter']}";
@@ -353,10 +383,11 @@ class Index {
      *
      * @return string The built match query as a string.
      */
-    private function buildMatchQuery(string $query, ?int $fuzzyDistance = null): string {
+    private function buildMatchQuery(string $query, ?int $fuzzyDistance = null, array $boosts = []): string {
 
         $fields = [];
         $_fields = $this->fields;
+        $hasBoosts = !empty($boosts);
 
         if (preg_match('/(\w+):/', $query)) {
 
@@ -368,13 +399,13 @@ class Index {
 
                 $field = $match[1];
                 $value = trim($match[2], '\'"');
-                $fields[$field] = $this->escapeFts5SpecialChars($value);
+                $fields[$field] = Utils::escapeFts5SpecialChars($value);
             }
 
         } else {
 
             foreach ($_fields as $field) {
-                $fields[$field] = $this->escapeFts5SpecialChars($query);
+                $fields[$field] = Utils::escapeFts5SpecialChars($query);
             }
         }
 
@@ -386,48 +417,33 @@ class Index {
                 continue;
             }
 
-            $searchQuery = "\"{$field}\" MATCH '{$q}'";
-
+            // Apply fuzzy search if specified
             if ($fuzzyDistance !== null) {
-                $searchQuery = "\"{$field}\" MATCH '\"{$q}\" NEAR/{$fuzzyDistance}'";
+                $matchTerm = "\"{$q}\" NEAR/{$fuzzyDistance}";
+            } else {
+                $matchTerm = $q;
+            }
+
+            // Apply boosting if specified for this field
+            if ($hasBoosts && isset($boosts[$field])) {
+                $boostValue = (float) $boosts[$field];
+                $searchQuery = "(\"{$field}\" MATCH '{$matchTerm}') * {$boostValue}";
+            } else {
+                $searchQuery = "\"{$field}\" MATCH '{$matchTerm}'";
             }
 
             $searchQueries[] = $searchQuery;
         }
 
-        return implode(' OR ', $searchQueries);
-    }
+        // Combine queries with OR
+        $combinedQuery = implode(' OR ', $searchQueries);
 
-    /**
-     * Escapes special characters in a query string for use in FTS5 queries.
-     *
-     * @param string $query The query string to escape.
-     *
-     * @return string The escaped query string.
-     */
-    private function escapeFts5SpecialChars($query) {
-        // Define the special characters that need to be escaped in FTS5 queries
-        $specialChars = '.-@';
+        // If we have boosts, we need to wrap in a bm25() expression for proper weight calculation
+        if ($hasBoosts) {
+            return "bm25(documents, {$combinedQuery})";
+        }
 
-        // Split the query string into individual terms
-        $terms = preg_split('/\s+/', $query);
-
-        // Iterate through the terms and escape special characters and double quotes
-        $escapedTerms = array_map(function ($term) use ($specialChars) {
-            // Replace double quotes with two double quotes
-            $escapedTerm = str_replace('"', '""', $term);
-
-            // Escape special characters with double quotes
-            $pattern = '/([' . preg_quote($specialChars, '/') . '])/';
-            $escapedTerm = preg_replace($pattern, '"$1"', $escapedTerm);
-
-            return $escapedTerm;
-        }, $terms);
-
-        // Combine the escaped terms back into a single query string
-        $escapedQuery = implode(' ', $escapedTerms);
-
-        return $escapedQuery;
+        return $combinedQuery;
     }
 
     /**

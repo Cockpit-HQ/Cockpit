@@ -135,4 +135,36 @@ class Utils {
 
         return $value;
     }
+
+        /**
+     * Escapes special characters in a query string for use in FTS5 queries.
+     *
+     * @param string $query The query string to escape.
+     *
+     * @return string The escaped query string.
+     */
+    public static function escapeFts5SpecialChars($query): string {
+        // Define the special characters that need to be escaped in FTS5 queries
+        $specialChars = '.-@';
+
+        // Split the query string into individual terms
+        $terms = preg_split('/\s+/', $query);
+
+        // Iterate through the terms and escape special characters and double quotes
+        $escapedTerms = array_map(function ($term) use ($specialChars) {
+            // Replace double quotes with two double quotes
+            $escapedTerm = str_replace('"', '""', $term);
+
+            // Escape special characters with double quotes
+            $pattern = '/([' . preg_quote($specialChars, '/') . '])/';
+            $escapedTerm = preg_replace($pattern, '"$1"', $escapedTerm);
+
+            return $escapedTerm;
+        }, $terms);
+
+        // Combine the escaped terms back into a single query string
+        $escapedQuery = implode(' ', $escapedTerms);
+
+        return $escapedQuery;
+    }
 }
