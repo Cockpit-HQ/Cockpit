@@ -161,12 +161,12 @@ if (!count($failed)) {
 
             <div>
                 <div class="kiss-flex kiss-margin">
-                    <div class="kiss-margin-right">
-                        <img src="../modules/App/assets/img/logo.svg" width="30" height="30"alt="logo">
+                    <div class="kiss-margin-small-right">
+                        <img src="../modules/App/assets/img/logo.svg" width="35" height="35"alt="logo">
                     </div>
-                    <div class="kiss-flex-1 kiss-size-xsmall">
+                    <div class="kiss-flex-1">
                         <strong>Cockpit</strong>
-                        <div class="kiss-color-muted">Content Platform</div>
+                        <div class="kiss-color-muted kiss-size-xsmall">Content Platform</div>
                     </div>
                 </div>
 
