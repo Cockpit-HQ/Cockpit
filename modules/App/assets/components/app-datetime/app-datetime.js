@@ -64,7 +64,7 @@ customElements.define('app-datetime', class extends HTMLElement {
     }
 
     _initializeFormatter() {
-        const locale = this.getAttribute('locale') || navigator.language;
+        const locale = this.getAttribute('locale') || document.documentElement.getAttribute('lang') || navigator.language;
         const type = this.getAttribute('type') || 'datetime';
 
         try {
@@ -226,7 +226,7 @@ customElements.define('app-datetime', class extends HTMLElement {
 
         // Always add full datetime title on hover
         const fullFormatter = new Intl.DateTimeFormat(
-            this.getAttribute('locale') || navigator.language,
+            this.getAttribute('locale')|| document.documentElement.getAttribute('lang') || navigator.language,
             {dateStyle: 'full', timeStyle: 'full'}
         );
         span.title = fullFormatter.format(date);
