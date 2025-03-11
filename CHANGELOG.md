@@ -1,6 +1,6 @@
 # Release Notes
 
-## WIP
+## 2.11.2 (2025-03-11)
 
 - Update content dashboard widget to sort models by latest updated item
 - Fix login dialog loading in spaces
