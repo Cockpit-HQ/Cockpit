@@ -23,13 +23,19 @@ export default {
     computed: {
         modelsWithItems() {
 
-            return this.models
-                    .filter(model => model.items.length > 0)
-                    .sort((a, b) => {
-                        const timeA = a.items[0]._modified || 0;
-                        const timeB = b.items[0]._modified || 0;
-                        return timeB - timeA;  // Descending order
-                    });
+            let models = this.models
+                        .filter(model => model.items.length > 0)
+                        .sort((a, b) => {
+                            const timeA = a.items[0]._modified || 0;
+                            const timeB = b.items[0]._modified || 0;
+                            return timeB - timeA;  // Descending order
+                        });
+
+            if (models[0]?._visibleItems === undefined) {
+                models[0]._visibleItems = true;
+            }
+
+            return models;
         },
         stateText() {
             return this.state === null ? this.t('All') : this.state === 1 ? this.t('Published') : this.t('Unpublished');
@@ -172,12 +178,19 @@ export default {
                         </div>
                         <a class="kiss-text-bold kiss-text-capitalize kiss-link-muted" :href="$routeUrl('/content/'+model.type+'/items/'+model.name)">{{ model.label || model.name}}</a>
                         <a class="kiss-invisible-hover" :href="$routeUrl('/content/'+model.type+'/item/'+model.name)" :title="t('Create item')"><icon>add_circle</icon></a>
+                        <div class="kiss-flex-1"></div>
+                        <a class="kiss-link-muted kiss-flex kiss-flex-middle" gap="small" @click="model._visibleItems = !model._visibleItems">
+                            <span class="kiss-badge">{{ model.items.length }}</span>
+                            <icon>unfold_more</icon>
+                        </a>
                     </div>
 
-                    <div class="kiss-flex kiss-flex-middle kiss-margin-small kiss-size-small" gap="small" v-for="item in model.items">
-                        <icon :class="{'kiss-color-success': item._state === 1, 'kiss-color-danger': !item._state, 'kiss-color-muted': item._state === -1}">trip_origin</icon>
-                        <a class="kiss-link-muted kiss-flex-1" :href="getItemLink(model, item)" v-html="displayContent(item)"></a>
-                        <div class="kiss-text-monospace kiss-color-muted kiss-size-xsmall"><app-datetime type="relative" :datetime="item._modified" /></div>
+                    <div class="kiss-margin-small" v-if="model._visibleItems">
+                        <div class="kiss-flex kiss-flex-middle kiss-margin-small kiss-size-small" gap="small" v-for="item in model.items">
+                            <icon :class="{'kiss-color-success': item._state === 1, 'kiss-color-danger': !item._state, 'kiss-color-muted': item._state === -1}">trip_origin</icon>
+                            <a class="kiss-link-muted kiss-flex-1" :href="getItemLink(model, item)" v-html="displayContent(item)"></a>
+                            <div class="kiss-text-monospace kiss-color-muted kiss-size-xsmall"><app-datetime type="relative" :datetime="item._modified" /></div>
+                        </div>
                     </div>
 
                 </kiss-card>
