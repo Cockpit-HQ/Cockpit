@@ -140,14 +140,7 @@
                 },
 
                 cols() {
-
-                    let cols = 0;
-
-                    if (this.areas.primary.length) cols++;
-                    if (this.areas.secondary.length) cols++;
-                    if (this.areas.tertiary.length) cols++;
-
-                    return cols;
+                    return (this.areas.primary.length && this.areas.tertiary.length) ? 3 : 1;
                 }
             },
 
