@@ -186,8 +186,8 @@ export default {
                 data,
                 children: []
             });
-            
-            this.emitUpdate();
+
+            this.update();
         },
 
         edit(item) {
@@ -202,7 +202,7 @@ export default {
             this.update();
         },
 
-        emitUpdate() {
+        update() {
             this.$emit('update:modelValue', this.val);
         }
 
