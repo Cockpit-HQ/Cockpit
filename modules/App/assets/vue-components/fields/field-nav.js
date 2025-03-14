@@ -186,6 +186,8 @@ export default {
                 data,
                 children: []
             });
+            
+            this.emitUpdate();
         },
 
         edit(item) {
@@ -199,6 +201,10 @@ export default {
             this.val.splice(this.val.indexOf(item), 1);
             this.update();
         },
+
+        emitUpdate() {
+            this.$emit('update:modelValue', this.val);
+        }
 
     },
 
