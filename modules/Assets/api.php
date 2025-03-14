@@ -120,8 +120,8 @@ $this->on('restApi.config', function($restApi) {
                 'mode' => $app->param('m', 'thumbnail'),
                 'mime' => $mime,
                 'filters' => (array) $app->param('f', []),
-                'width' => intval($app->param('w', null)),
-                'height' => intval($app->param('h', null)),
+                'width' => $app->param('w', null),
+                'height' => $app->param('h', null),
                 'quality' => intval($app->param('q:int', 80)),
                 'rebuild' => intval($app->param('r:int', false)),
                 'base64' => intval($app->param('b64:int', false)),
@@ -129,6 +129,14 @@ $this->on('restApi.config', function($restApi) {
                 'output' => intval($app->param('o:int', false)),
                 'timestamp' => $this->param('t', null),
             ];
+
+            if ($options['width'] !== 'original') {
+                $options['width'] = intval($options['width']);
+            }
+
+            if ($options['height'] !== 'original') {
+                $options['height'] = intval($options['height']);
+            }
 
             $imgPath = $app->helper('asset')->image($options, true);
 

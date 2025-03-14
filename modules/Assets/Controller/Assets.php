@@ -336,12 +336,20 @@ class Assets extends App {
             'mode' => $this->param('m', 'thumbnail'),
             'mime' => $mime,
             'filters' => (array) $this->param('f', []),
-            'width' => intval($this->param('w', null)),
-            'height' => intval($this->param('h', null)),
+            'width' => $this->param('w', null),
+            'height' => $this->param('h', null),
             'quality' => intval($this->param('q', 30)),
             'rebuild' => intval($this->param('r', false)),
             'timestamp' => $this->param('t', null),
         ];
+
+        if ($options['width'] !== 'original') {
+            $options['width'] = intval($options['width']);
+        }
+
+        if ($options['height'] !== 'original') {
+            $options['height'] = intval($options['height']);
+        }
 
         $thumbUrl = $this->helper('asset')->image($options);
 

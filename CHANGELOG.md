@@ -2,6 +2,7 @@
 
 ## WIP
 
+- Fix assets image api to support "original" value for width and height
 - Fix nav field
 
 ## 2.11.2 (2025-03-11)
