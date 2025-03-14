@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'cockpit-hq/cockpit',
-        'pretty_version' => 'dev-develop',
-        'version' => 'dev-develop',
-        'reference' => '4fcbafea68b93f3773d0f69fed0b12cc19626e58',
+        'pretty_version' => 'dev-master',
+        'version' => 'dev-master',
+        'reference' => '3b5a05fa8c24ba2f8c4d560db2d0c87c9bb9e35b',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../../',
         'aliases' => array(),
@@ -20,9 +20,9 @@
             'dev_requirement' => false,
         ),
         'aws/aws-sdk-php' => array(
-            'pretty_version' => '3.342.4',
-            'version' => '3.342.4.0',
-            'reference' => '65cc842b9998d415b05d635b6146d0728934ff4a',
+            'pretty_version' => '3.342.5',
+            'version' => '3.342.5.0',
+            'reference' => '00523323c202121d2cc2e893a1bb7ff14928a5bb',
             'type' => 'library',
             'install_path' => __DIR__ . '/../aws/aws-sdk-php',
             'aliases' => array(),
@@ -47,9 +47,9 @@
             'dev_requirement' => false,
         ),
         'cockpit-hq/cockpit' => array(
-            'pretty_version' => 'dev-develop',
-            'version' => 'dev-develop',
-            'reference' => '4fcbafea68b93f3773d0f69fed0b12cc19626e58',
+            'pretty_version' => 'dev-master',
+            'version' => 'dev-master',
+            'reference' => '3b5a05fa8c24ba2f8c4d560db2d0c87c9bb9e35b',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../../',
             'aliases' => array(),

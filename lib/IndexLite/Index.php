@@ -266,6 +266,7 @@ class Index {
             'offset' => 0,
             'filter' => '',
             'boosts' => [],
+            'fuzzy' => null,
         ], $options);
 
         if ($options['fields'] !== '*') {
@@ -275,7 +276,7 @@ class Index {
 
         if ($query) {
 
-            $where = $this->buildMatchQuery($query, null, $options['boosts']);
+            $where = $this->buildMatchQuery($query, $options['fuzzy'], $options['boosts']);
 
             if ($options['filter']) {
                 $where = "({$where}) AND {$options['filter']}";
