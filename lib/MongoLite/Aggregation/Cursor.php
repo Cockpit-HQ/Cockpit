@@ -64,8 +64,7 @@ class Cursor implements \Iterator {
             switch ($op) {
 
                 case '$match':
-                    $fn = null;
-                    eval('$fn = function($document) { return ' . UtilArrayQuery::buildCondition($stage['$match']) . '; };');
+                    $fn = UtilArrayQuery::getFilterFunction($stage['$match']);
                     $data = array_filter($data, $fn);
                     break;
 
