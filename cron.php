@@ -59,15 +59,17 @@ if (!APP_CLI) {
     flush();
     ob_clean();
 
-    register_shutdown_function(function() use ($master, $pid, $startTime, $maxExecutionTime) {
+    register_shutdown_function(function() use ($master, $pid) {
 
         $master->helper('worker')->removeWorkerPID($pid);
 
-        $error = error_get_last();
-        $runtime = time() - $startTime;
+        /**
+         * auto-restart webworker
+         */
 
+        /*
         // Check if this was a clean shutdown (not a fatal error)
-        if ($error === null) {
+        if (error_get_last() === null) {
 
             // Wait a short moment to allow resources to be released
             usleep(500000); // 500ms delay
@@ -87,6 +89,7 @@ if (!APP_CLI) {
             curl_exec($ch);
             curl_close($ch);
         }
+        */
     });
 
     if (function_exists('fastcgi_finish_request')) {
