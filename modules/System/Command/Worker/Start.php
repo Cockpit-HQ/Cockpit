@@ -53,7 +53,7 @@ class Start extends Command {
                 }
             }
 
-            include_once(APP_DIR.'/cron.php');
+            include(APP_DIR.'/cron.php');
 
         } catch (\Throwable $e) {
             $output->writeln(sprintf('<error>Error: %s</error>', $e->getMessage()));

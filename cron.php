@@ -112,7 +112,7 @@ try {
         // avoid CPU hogging
         usleep(100000); // 100ms
 
-        echo $master->helper('utils')->formatSize(memory_get_usage())."\n";
+        //echo $master->helper('utils')->formatSize(memory_get_usage())."\n";
     }
 
 } catch (Throwable $e) {

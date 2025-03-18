@@ -9,6 +9,7 @@ class Worker {
     protected int $processedCount = 0;
 
     public function __construct(Queue $queue, array $options = []) {
+
         $this->queue = $queue;
 
         if (isset($options['maxExecutionTime'])) {
