@@ -8,6 +8,7 @@ $this->helpers['log']       = 'System\\Helper\\Log';
 $this->helpers['revisions'] = 'System\\Helper\\Revisions';
 $this->helpers['system']    = 'System\\Helper\\System';
 $this->helpers['spaces']    = 'System\\Helper\\Spaces';
+$this->helpers['worker']    = 'System\\Helper\\Worker';
 
 // events
 
