@@ -141,10 +141,14 @@ class Collection {
      */
     public function update(mixed $criteria, array $data, bool $merge = true): int {
 
+        $criteriaFnId = $this->database->registerCriteriaFunction($criteria);
+
         $conn   = $this->database->connection;
-        $sql    = "SELECT id, document FROM `{$this->name}` WHERE document_criteria('".$this->database->registerCriteriaFunction($criteria)."', document)";
+        $sql    = "SELECT id, document FROM `{$this->name}` WHERE document_criteria('".$criteriaFnId."', document)";
         $stmt   = $conn->query($sql);
         $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        $this->database->unregisterCriteriaFunction($criteriaFnId);
 
         foreach ($result as &$doc) {
 
@@ -168,9 +172,15 @@ class Collection {
      */
     public function remove(mixed $criteria): mixed {
 
-        $sql = "DELETE FROM `{$this->name}` WHERE document_criteria('".$this->database->registerCriteriaFunction($criteria)."', document)";
+        $criteriaFnId = $this->database->registerCriteriaFunction($criteria);
 
-        return $this->database->connection->exec($sql);
+        $sql = "DELETE FROM `{$this->name}` WHERE document_criteria('".$criteriaFnId."', document)";
+
+        $result = $this->database->connection->exec($sql);
+
+        $this->database->unregisterCriteriaFunction($criteriaFnId);
+
+        return $result;
     }
 
     /**

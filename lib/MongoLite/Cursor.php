@@ -63,6 +63,19 @@ class Cursor implements Iterator {
     }
 
     /**
+     * Destructor method to clean up resources or perform necessary actions
+     * when the object is destroyed.
+     *
+     * @return void
+     */
+    public function __destruct() {
+
+        if ($this->criteria) {
+            $this->collection->database->unregisterCriteriaFunction($this->criteria);
+        }
+    }
+
+    /**
      * Documents count
      *
      * @return integer

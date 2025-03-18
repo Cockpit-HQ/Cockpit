@@ -128,6 +128,16 @@ class Database {
     }
 
     /**
+     * Unregisters a criteria function by its identifier.
+     *
+     * @param string $id The identifier of the criteria function to be unregistered.
+     * @return void
+     */
+    public function unregisterCriteriaFunction(string $id): void {
+        if (isset($this->document_criterias[$id])) unset($this->document_criterias[$id]);
+    }
+
+    /**
      * Execute registred criteria function
      *
      * @param  string $id
