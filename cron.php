@@ -14,11 +14,21 @@ function _ini_get($name, $default) {
 }
 
 $master = Cockpit::instance();
+$debug  = $master->retrieve('debug',false);
 
 // is web based cron execution?
 if (!APP_CLI) {
 
     $startTime = time();
+    $pid = getmypid();
+    $maxExecutionTime = 30;
+
+    header('Content-Type: application/json');
+    header('Cache-Control: no-cache, must-revalidate');
+
+    if (!$master->retrieve('worker/web/enabled',false)) {
+        die('{"info": "Webworker disabled"}');
+    }
 
     if (session_status() === \PHP_SESSION_ACTIVE) {
         session_write_close();
@@ -26,36 +36,28 @@ if (!APP_CLI) {
 
     ignore_user_abort(true);
 
-    header('Content-Type: application/json');
-    header('Cache-Control: no-cache, must-revalidate');
-
     //    $maxExecutionTime = intval(_ini_get('max_execution_time', 30));
     //
     //    if ($maxExecutionTime <= 0) {
     //        $maxExecutionTime = 3600; // If unlimited, use a reasonable max
     //    }
 
-    $maxExecutionTime = 30;
-
     // Use 80% of max time as a safety buffer
     $maxExecutionTime = floor($maxExecutionTime * 0.8);
-    $workers = $master->helper('worker')->getWorkerPIDFileData()['workers'];
-    $webworker = array_find($workers, fn($worker) => $worker['mode'] === 'web');
+    $activeWebworker = array_find($master->helper('worker')->getWorkerPIDFileData()['workers'], fn($worker) => $worker['mode'] === 'web');
 
-    if ($webworker) {
+    if ($activeWebworker) {
 
-        if (time() - $webworker['start'] < $maxExecutionTime) {
-            die('{"info": "Webcron already running"}');
+        if (time() - $activeWebworker['start'] < $maxExecutionTime) {
+            die('{"info": "Webworker already running"}');
         }
 
-        $master->helper('worker')->removeWorkerPID($webworker['pid']);
+        $master->helper('worker')->removeWorkerPID($activeWebworker['pid']);
     }
-
-    $pid = getmypid();
 
     $master->helper('worker')->addWorkerPID($pid, 'web');
 
-    echo('{"info": "Webcron started"}');
+    echo('{"info": "Webworker started"}');
     flush();
     ob_clean();
 
@@ -67,18 +69,18 @@ if (!APP_CLI) {
          * auto-restart webworker
          */
 
-        /*
         // Check if this was a clean shutdown (not a fatal error)
-        if (error_get_last() === null) {
+        if (error_get_last() === null && $master->retrieve('worker/web/restart',false)) {
+
+            $restartCount = intval($_GET['restart'] ?? 0);
 
             // Wait a short moment to allow resources to be released
             usleep(500000); // 500ms delay
 
             // Get the current URL
-            $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https://' : 'http://';
-            $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-            $uri = $_SERVER['REQUEST_URI'] ?? '/cron.php';
-            $url = $protocol . $host . $uri;
+            $url = $master->retrieve('site_url');
+            $url .= ($_SERVER['REQUEST_URI'] ?? '/cron.php');
+            $url .= '?restart='.($restartCount+1);
 
             // Make an asynchronous request to restart
             $ch = curl_init($url);
@@ -89,7 +91,6 @@ if (!APP_CLI) {
             curl_exec($ch);
             curl_close($ch);
         }
-        */
     });
 
     if (function_exists('fastcgi_finish_request')) {
@@ -111,7 +112,7 @@ try {
             $runtime = time() - $startTime;
 
             if (($runtime) > $maxExecutionTime) {
-                die('{"info": "Webcron timeout"}');
+                die('{"info": "Webworker timeout"}');
             }
         }
 
@@ -143,7 +144,9 @@ try {
         // avoid CPU hogging
         usleep(100000); // 100ms
 
-        // echo $master->helper('utils')->formatSize(memory_get_usage())."\n";
+        if (APP_CLI && $debug) {
+            echo $master->helper('utils')->formatSize(memory_get_usage())."\n";
+        }
     }
 
 } catch (Throwable $e) {
