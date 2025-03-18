@@ -29,11 +29,13 @@ if (!APP_CLI) {
     header('Content-Type: application/json');
     header('Cache-Control: no-cache, must-revalidate');
 
-    $maxExecutionTime = intval(_ini_get('max_execution_time', 30));
+    //    $maxExecutionTime = intval(_ini_get('max_execution_time', 30));
+    //
+    //    if ($maxExecutionTime <= 0) {
+    //        $maxExecutionTime = 3600; // If unlimited, use a reasonable max
+    //    }
 
-    if ($maxExecutionTime <= 0) {
-        $maxExecutionTime = 3600; // If unlimited, use a reasonable max
-    }
+    $maxExecutionTime = 30;
 
     // Use 80% of max time as a safety buffer
     $maxExecutionTime = floor($maxExecutionTime * 0.8);
@@ -57,8 +59,34 @@ if (!APP_CLI) {
     flush();
     ob_clean();
 
-    register_shutdown_function(function() use ($master, $pid) {
+    register_shutdown_function(function() use ($master, $pid, $startTime, $maxExecutionTime) {
+
         $master->helper('worker')->removeWorkerPID($pid);
+
+        $error = error_get_last();
+        $runtime = time() - $startTime;
+
+        // Check if this was a clean shutdown (not a fatal error)
+        if ($error === null) {
+
+            // Wait a short moment to allow resources to be released
+            usleep(500000); // 500ms delay
+
+            // Get the current URL
+            $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https://' : 'http://';
+            $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+            $uri = $_SERVER['REQUEST_URI'] ?? '/cron.php';
+            $url = $protocol . $host . $uri;
+
+            // Make an asynchronous request to restart
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 1); // Very short timeout
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+            curl_exec($ch);
+            curl_close($ch);
+        }
     });
 
     if (function_exists('fastcgi_finish_request')) {
@@ -112,7 +140,7 @@ try {
         // avoid CPU hogging
         usleep(100000); // 100ms
 
-        //echo $master->helper('utils')->formatSize(memory_get_usage())."\n";
+        // echo $master->helper('utils')->formatSize(memory_get_usage())."\n";
     }
 
 } catch (Throwable $e) {
