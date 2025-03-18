@@ -6,6 +6,23 @@ class UtilArrayQuery {
 
     protected static array $closures = [];
 
+    public static function getFilterFunction(array $criteria): callable {
+        // If criteria is empty, return a function that always returns true
+        if (empty($criteria)) {
+            return fn() => true;
+        }
+
+        $condition = self::buildCondition($criteria);
+
+        if (trim($condition, "()\n\r\t\v\x00") === '') {
+            $fn = fn($document) => true;
+        } else {
+            eval('$fn = function($document) { return '.$condition.'; };');
+        }
+
+        return $fn;
+    }
+
     public static function closureCall(string $uid, mixed $doc): mixed {
         return self::$closures[$uid]($doc);
     }
