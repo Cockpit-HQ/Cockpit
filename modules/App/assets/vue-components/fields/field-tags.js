@@ -74,8 +74,6 @@ export default {
         }
     },
 
-    emits: ['update:modelValue'],
-
     mounted() {
 
         this.tagsElement = this.$refs.tags;
