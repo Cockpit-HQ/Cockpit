@@ -95,14 +95,13 @@ class Worker extends \Lime\Helper {
 
     public function getWorkerPIDFileData() {
 
-        $pidFile = $this->getWorkerPIDFile();
-
         $data = [
             'workers' => []
         ];
 
-        if (file_exists($pidFile)) {
-            $contents = json_decode(file_get_contents($pidFile), true);
+        $contents = $this->readPIDFile();
+
+        if (is_array($contents)) {
             $data = array_merge($data, $contents);
         }
 
@@ -118,7 +117,7 @@ class Worker extends \Lime\Helper {
             'mode' => $mode
         ];
 
-        file_put_contents($this->getWorkerPIDFile(), json_encode($data, JSON_PRETTY_PRINT));
+        $this->writePIDFile($data);
     }
 
     public function removeWorkerPID($pid) {
@@ -133,7 +132,65 @@ class Worker extends \Lime\Helper {
 
         $data['workers'] = array_values($workers);
 
-        file_put_contents($this->getWorkerPIDFile(), json_encode($data, JSON_PRETTY_PRINT));
+        $this->writePIDFile($data);
+    }
+
+    protected function writePIDFile(array $data) {
+
+        $pidFile = $this->getWorkerPIDFile();
+        $fp = fopen($pidFile, 'w');
+
+        if (!$fp) {
+            return false;
+        }
+
+        $success = false;
+
+        try {
+            if (flock($fp, LOCK_EX)) { // Exclusive lock for writing
+                $encoded = json_encode($data, JSON_PRETTY_PRINT);
+                $success = (fwrite($fp, $encoded) !== false);
+                flock($fp, LOCK_UN); // Release the lock
+            }
+        } finally {
+            fclose($fp);
+        }
+
+        return $success;
+    }
+
+    protected function readPIDFile() {
+
+        $pidFile = $this->getWorkerPIDFile();
+
+        if (!file_exists($pidFile)) {
+            return [];
+        }
+
+        $fp = fopen($pidFile, 'r');
+
+        if (!$fp) {
+            return [];
+        }
+
+        $data = [];
+
+        try {
+            if (flock($fp, LOCK_SH)) { // Shared lock for reading
+                $contents = fread($fp, filesize($pidFile) ?: 0);
+                if ($contents) {
+                    $decoded = json_decode($contents, true);
+                    if (is_array($decoded)) {
+                        $data = $decoded;
+                    }
+                }
+                flock($fp, LOCK_UN); // Release the lock
+            }
+        } finally {
+            fclose($fp);
+        }
+
+        return $data;
     }
 
 }
