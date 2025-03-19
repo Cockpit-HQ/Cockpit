@@ -150,7 +150,7 @@
                         this.loading = true;
                         this.page = page;
 
-                        this.$request('/system/jobs/load', {
+                        this.$request('/system/worker/load', {
                             filter: this.filter.trim(),
                             status: this.status,
                             limit: this.limit,

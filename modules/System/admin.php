@@ -6,7 +6,7 @@ $this->helpers['settings'] = 'System\\Helper\\Settings';
 // Register routes
 $this->bindClass('System\\Controller\\Api', '/system/api');
 $this->bindClass('System\\Controller\\Buckets', '/system/buckets');
-$this->bindClass('System\\Controller\\Jobs', '/system/jobs');
+$this->bindClass('System\\Controller\\Worker', '/system/worker');
 $this->bindClass('System\\Controller\\Locales', '/system/locales');
 $this->bindClass('System\\Controller\\Logs', '/system/logs');
 $this->bindClass('System\\Controller\\Users\\Roles', '/system/users/roles');

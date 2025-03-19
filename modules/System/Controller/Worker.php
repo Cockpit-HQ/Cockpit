@@ -4,7 +4,7 @@ namespace System\Controller;
 
 use App\Controller\App;
 
-class Jobs extends App {
+class Worker extends App {
 
     protected function before() {
 
