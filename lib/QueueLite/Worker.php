@@ -41,20 +41,28 @@ class Worker {
 
             try {
 
+                $context = new \ArrayObject([]);
+
                 $startTime = microtime(true);
+                $startMemory = memory_get_usage();
 
                 // Process the message
-                $result = call_user_func($callback, $message);
+                $result = call_user_func($callback, $message, $context);
+
+                $context['_stats'] = [
+                    'memory' => memory_get_usage() - $startMemory,
+                    'duration' => microtime(true) - $startTime,
+                ];
+
+                $context = $context->getArrayCopy();
 
                 // Mark the message as completed if the callback returned true
                 if ($result === true) {
 
-                    $this->queue->complete($message['_id'], [
-                        'pTime' => microtime(true) - $startTime
-                    ]);
+                    $this->queue->complete($message['_id'], $context);
                 } else {
                     // Otherwise mark it as failed
-                    $this->queue->fail($message['_id']);
+                    $this->queue->fail($message['_id'], $context);
                 }
 
                 $this->processedCount++;

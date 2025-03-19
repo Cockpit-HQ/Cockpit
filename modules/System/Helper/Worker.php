@@ -49,7 +49,7 @@ class Worker extends \Lime\Helper {
             }
         }
 
-        $this->worker->process(function($msg) {
+        $this->worker->process(function($msg, $context) {
 
             $job = $msg['data']['job'] ?? null;
             $data = $msg['data']['data'] ?? [];
@@ -59,7 +59,7 @@ class Worker extends \Lime\Helper {
                 return false;
             }
 
-            return call_user_func($handle, $data);
+            return call_user_func($handle, $data, $context);
 
         }, $limit);
     }
@@ -78,7 +78,7 @@ class Worker extends \Lime\Helper {
             'data' => $data,
         ];
 
-        return $this->queue->push($body, $opts['delay'], $opts['priority'], $opts['maxAttempts'], $opts['uid']);
+        return $this->queue->push($body, $opts);
     }
 
     public function cleanup(string $status, int $olderThan = 86400) {
