@@ -298,6 +298,10 @@ class Queue {
             $filter['status'] = $options['status'];
         }
 
+        if (isset($options['filter']) && is_array($options['filter'])) {
+            $filter = array_merge($options['filter'], $filter);
+        }
+
         return $this->storage->find($this->collectionName, [
             'filter' => $filter,
             'limit' => $options['limit'],

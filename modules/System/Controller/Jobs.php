@@ -22,13 +22,26 @@ class Jobs extends App {
 
     public function load() {
 
+        $filter = $this->param('filter', null);
         $status = $this->param('status', 'pending');
-        $limit = $this->param('limit', 50);
-        $skip = $this->param('skip', 0);
+        $limit  = $this->param('limit', 50);
+        $skip   = $this->param('skip', 0);
+
+        if ($filter && is_string($filter) && trim($filter)) {
+
+            $terms = str_getcsv(trim($filter), ' ', escape: '\\');
+
+            foreach ($terms as &$term) {
+                $term = ['data.job' => ['$regex' => trim($term), '$options' => 'i']];
+            }
+
+            $filter = ['$or' => $terms];
+        }
 
         $result = [
             'stats' => $this->helper('worker')->stats(),
             'jobs'  => $this->helper('worker')->jobs([
+                'filter' => $filter,
                 'status' => $status,
                 'limit' => intval($limit),
                 'skip' => intval($skip),

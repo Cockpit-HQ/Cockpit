@@ -42,7 +42,7 @@ class Worker extends \Lime\Helper {
         if (!$this->handlers) {
 
             $this->handlers = new ArrayObject([]);
-            $this->app->trigger('jobs.handlers.collect', [$this->handlers]);
+            $this->app->trigger('worker.handlers.collect', [$this->handlers]);
 
             foreach ($this->handlers as $name => $handler) {
                 $this->handlers[$name] = \Closure::bind($handler, $this->app, $this->app);

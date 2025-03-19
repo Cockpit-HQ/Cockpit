@@ -121,9 +121,19 @@ customElements.define('app-textcomplete', class extends HTMLElement {
         const newValue = inputValue.slice(0, lastTriggerIndex) + item + inputValue.slice(cursorPosition);
         this.input.value = newValue;
         this.input.focus();
+
         const newCursorPosition = lastTriggerIndex + item.length;
         this.input.setSelectionRange(newCursorPosition, newCursorPosition);
         this.hideItems();
+
+        this.dispatchEvent(new CustomEvent('textcomplete-select', {
+            bubbles: true,
+            detail: {
+                input: this.input,
+                item,
+                newValue
+            }
+        }));
     }
 
     handleKeyDown(e) {

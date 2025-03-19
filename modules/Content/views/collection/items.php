@@ -43,13 +43,13 @@
 
             <div class="kiss-margin" :class="{'kiss-disabled': !(fieldTypes && ((!loading && items.length) || filter || state !== false))}">
 
-                <form class="kiss-flex kiss-flex-middle" @submit.prevent="filter = txtFilter">
+                <form class="kiss-flex kiss-flex-middle" gap="small" @submit.prevent="filter = txtFilter">
 
                     <app-textcomplete class="kiss-flex-1 kiss-margin-xsmall-right" :items="model.fields.map(f => f.name)" trigger="@">
                         <input type="text" class="kiss-input" :placeholder="t('Filter items...')" v-model="txtFilter">
                     </app-textcomplete>
 
-                    <div class="kiss-button-group kiss-margin-small-left">
+                    <div class="kiss-button-group">
                         <button type="button" class="kiss-button" @click="filter = ''" v-if="filter"><?= t('Reset') ?></button>
                         <button class="kiss-button kiss-flex"><?= t('Search') ?></button>
                     </div>

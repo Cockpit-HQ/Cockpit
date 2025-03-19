@@ -1,3 +1,11 @@
+<?php
+
+    $handlers = new ArrayObject([]);
+    $this->trigger('worker.handlers.collect', [$handlers]);
+    $handlers = array_keys($handlers->getArrayCopy());
+
+?>
+
 <kiss-container class="kiss-margin-small" size="small">
 
     <ul class="kiss-breadcrumbs">
@@ -39,6 +47,19 @@
 
                 </kiss-card>
             </kiss-grid>
+
+            <form class="kiss-flex kiss-flex-middle" gap="small" @submit.prevent="load()" :class="{'kiss-disabled': loading}" v-if="stats">
+
+                <app-textcomplete class="kiss-flex-1 kiss-margin-xsmall-right" :items="handlers" trigger="@">
+                    <input type="text" class="kiss-input" :placeholder="t('Filter jobs...')" v-model="filter">
+                </app-textcomplete>
+
+                <div class="kiss-button-group">
+                    <button type="button" class="kiss-button" @click="() => {filter = ''; load()}" v-if="filter"><?= t('Reset') ?></button>
+                    <button class="kiss-button kiss-flex"><?= t('Search') ?></button>
+                </div>
+
+            </form>
 
             <div class="animated fadeIn kiss-height-50vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted" v-if="loading">
                 <app-loader></app-loader>
@@ -88,6 +109,7 @@
                 data() {
                     return {
                         status: 'pending',
+                        handlers: <?=json_encode($handlers)?>,
                         loading: true,
                         stats: null,
                         jobs: [],
@@ -95,9 +117,11 @@
                         icons: {
                             'pending': 'work',
                             'completed': 'check',
-                            'reserved': 'clock',
+                            'reserved': 'lock',
                             'failed': 'close'
                         },
+
+                        filter: '',
 
                         page: 1,
                         limit: 25,
@@ -105,13 +129,18 @@
                 },
 
                 mounted() {
+
                     this.load();
+
+                    this.$el.parentElement.addEventListener('textcomplete-select', (e) => {
+                        this.filter = e.detail.newValue;
+                    });
                 },
 
                 watch: {
                     status() {
                         this.load();
-                    }
+                    },
                 },
 
                 methods: {
@@ -122,6 +151,7 @@
                         this.page = page;
 
                         this.$request('/system/jobs/load', {
+                            filter: this.filter.trim(),
                             status: this.status,
                             limit: this.limit,
                             skip: (page - 1) * this.limit,
