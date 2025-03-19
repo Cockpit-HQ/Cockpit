@@ -9,9 +9,12 @@
 <kiss-container class="kiss-margin-small" size="small">
 
     <ul class="kiss-breadcrumbs">
-        <li><a href="<?= $this->route('/system') ?>"><?= t('Settings') ?></a></li>
-        <li><span><?= t('Jobs') ?></span></li>
+        <li><a href="<?= $this->route('/system') ?>"><?= t('System') ?></a></li>
     </ul>
+
+    <div class="kiss-margin-large-bottom kiss-flex kiss-flex-middle">
+        <div class="kiss-size-4 kiss-flex-1"><strong><?= t('Worker') ?></strong></div>
+    </div>
 
 
     <vue-view>

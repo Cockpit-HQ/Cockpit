@@ -8,7 +8,7 @@ class Worker extends App {
 
     protected function before() {
 
-        if (!$this->helper('acl')->isSuperAdmin()) {
+        if (!$this->helper('acl')->isSuperAdmin() || !$this->helper('spaces')->isMaster()) {
             return $this->stop(401);
         }
 
@@ -17,7 +17,7 @@ class Worker extends App {
 
     public function index() {
 
-        return $this->render('system:views/jobs/index.php');
+        return $this->render('system:views/worker/index.php');
     }
 
     public function load() {

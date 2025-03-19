@@ -60,6 +60,13 @@ class Settings extends \Lime\Helper {
                 'label' => 'Tower',
                 'permission' => 'system/tower'
             ];
+
+            $items[] = [
+                'icon' => 'system:assets/icons/worker.svg',
+                'route' => '/system/worker',
+                'label' => 'Worker',
+                'permission' => 'system/workers'
+            ];
         }
 
         $items[] = [
