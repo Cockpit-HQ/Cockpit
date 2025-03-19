@@ -61,13 +61,14 @@ class Settings extends \Lime\Helper {
                 'permission' => 'system/tower'
             ];
 
-            $items[] = [
-                'icon' => 'system:assets/icons/worker.svg',
-                'route' => '/system/worker',
-                'label' => 'Worker',
-                'permission' => 'system/workers'
-            ];
         }
+
+        $items[] = [
+            'icon' => 'system:assets/icons/worker.svg',
+            'route' => '/system/worker',
+            'label' => 'Worker',
+            'permission' => 'system/workers'
+        ];
 
         $items[] = [
             'icon' => 'system:assets/icons/logging.svg',

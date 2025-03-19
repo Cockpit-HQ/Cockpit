@@ -8,6 +8,7 @@ class Spaces extends \Lime\Helper {
 
     protected array $instances = [];
     protected bool $isMaster;
+    protected $master = null;
 
     protected function initialize() {
         $this->isMaster = $this->app->path('#app:') === $this->app->path('#root:');
@@ -52,6 +53,19 @@ class Spaces extends \Lime\Helper {
         }
 
         return $spaces;
+    }
+
+    public function master() {
+
+        if ($this->isMaster) {
+            return $this->app;
+        }
+
+        if (!$this->master) {
+            $this->master = \Cockpit::instance();
+        }
+
+        return $this->master;
     }
 
     public function space(string $name) {

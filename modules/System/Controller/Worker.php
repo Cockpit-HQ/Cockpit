@@ -8,7 +8,7 @@ class Worker extends App {
 
     protected function before() {
 
-        if (!$this->helper('acl')->isSuperAdmin() || !$this->helper('spaces')->isMaster()) {
+        if (!$this->helper('acl')->isSuperAdmin()) {
             return $this->stop(401);
         }
 
@@ -40,6 +40,7 @@ class Worker extends App {
 
         $result = [
             'stats' => $this->helper('worker')->stats(),
+            'workers' => $this->helper('worker')->getWorkerPIDFileData(),
             'jobs'  => $this->helper('worker')->jobs([
                 'filter' => $filter,
                 'status' => $status,

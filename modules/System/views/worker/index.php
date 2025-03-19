@@ -20,6 +20,33 @@
     <vue-view>
         <template>
 
+            <div class="kiss-margin-large animated fadeIn" v-if="stats">
+
+                <div class="kiss-text-caption kiss-text-bold" :class="{'kiss-color-muted': !workers.length}"><?=t('Active workers')?></div>
+
+                <kiss-card class="kiss-padding kiss-margin-small kiss-size-small kiss-color-muted" theme="contrast" v-if="!workers.length">
+                    <?=t('No active workers')?>
+                </kiss-card>
+
+                <table class="kiss-table kiss-margin-small" v-if="workers.length">
+                    <thead>
+                        <tr>
+                            <th width="120">PID</th>
+                            <th><?=t('Mode')?></th>
+                            <th class="kiss-align-right"><?=t('Start')?></th>
+                        </tr>
+                    </thead>
+                    <tbody class="kiss-text-monospace">
+                        <tr v-for="w in workers">
+                            <td><div class="kiss-size-xsmall kiss-text-bold">{{ w.pid }}</div></td>
+                            <td><div class="kiss-size-xsmall">{{ w.mode }}</div></td>
+                            <td class="kiss-align-right"><div class="kiss-size-xsmall"><app-datetime type="relative" :datetime="w.start"></app-datetime></div></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
             <kiss-grid class="kiss-margin" cols="2 4@m" :class="{'kiss-disabled': loading}" v-if="stats">
                 <kiss-card class="kiss-padding kiss-position-relative" :theme="status === 'pending' ? 'contrast bordered-primary' : 'bordered'" :class="{'kiss-color-muted': status !== 'pending'}">
 
@@ -115,6 +142,7 @@
                         handlers: <?=json_encode($handlers)?>,
                         loading: true,
                         stats: null,
+                        workers: [],
                         jobs: [],
 
                         icons: {
@@ -160,6 +188,7 @@
                             skip: (page - 1) * this.limit,
                         }).then(rsp => {
                             this.stats = rsp.stats;
+                            this.workers = rsp.workers.workers || [];
                             this.jobs = rsp.jobs;
                         }).catch(err => {
 

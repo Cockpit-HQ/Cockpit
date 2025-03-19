@@ -89,7 +89,7 @@ class Worker extends \Lime\Helper {
     // Helper methods to update con.jobs.pid file
 
     public function getWorkerPIDFile() {
-        $storagePath = $this->app->path('#storage:data');
+        $storagePath = $this->app->helper('spaces')->master()->path('#storage:data');
         return "{$storagePath}/app.workers.pid";
     }
 
