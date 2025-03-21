@@ -257,26 +257,26 @@ function createMongoDbLikeId(): string {
         return (string)$objId;
     }
 
-    // based on https://gist.github.com/h4cc/9b716dc05869296c1be6
+    // 4 bytes: timestamp (seconds since epoch)
+    $timestamp = pack('N', time());
 
-    $timestamp = microtime(true);
-    $processId = random_int(10000, 99999);
-    $id        = random_int(10, 1000);
-    $result    = '';
+    // 5 bytes: combination of host-specific and random data
+    // Instead of trying to convert hex strings directly, use binary data
+    $hostHash = md5(php_uname('n'), true); // Get binary hash
+    $processHash = md5(getmypid(), true); // Get binary hash
 
-    // Building binary data.
-    $bin = sprintf(
-        '%s%s%s%s',
-        pack('N', $timestamp * 10000),
-        substr(md5(uniqid()), 0, 3),
-        pack('n', $processId),
-        substr(pack('N', $id), 1, 3)
-    );
+    // Take portions of these hashes to create 5 bytes
+    $machineSpecificBytes = substr($hostHash, 0, 3) . substr($processHash, 0, 2);
 
-    // Convert binary to hex.
-    for ($i = 0; $i < 12; $i++) {
-        $result .= sprintf('%02x', ord($bin[$i]));
+    // 3 bytes: incrementing counter
+    static $counter = null;
+    if ($counter === null) {
+        // Start from a random position each time the function is first called
+        $counter = random_int(0, 0xFFFFFF);
     }
+    $counter = ($counter + 1) & 0xFFFFFF;
+    $counterBytes = substr(pack('N', $counter), 1, 3);
 
-    return $result;
+    // Combine all parts and convert to hex
+    return bin2hex($timestamp . $machineSpecificBytes . $counterBytes);
 }

@@ -247,7 +247,14 @@ class UtilArrayQuery {
     }
 
     /**
-     * Evaluate a condition based on its operator
+     * Evaluates a condition based on specified operators and values.
+     *
+     * @param string $func The operator to evaluate (e.g., $eq, $ne, $gte, $in, etc.).
+     * @param mixed $a The first value to compare or evaluate.
+     * @param mixed $b The second value to compare or evaluate. The expected format of $b may depend on the operator used.
+     * @return mixed The result of the evaluation, typically a boolean indicating whether the condition is satisfied. For some cases, it may return other types based on operator logic.
+     * @throws \InvalidArgumentException If invalid arguments are provided for certain operators.
+     * @throws \ErrorException If the specified operator is not valid.
      */
     private static function evaluate(string $func, mixed $a, mixed $b): mixed {
         $r = false;
