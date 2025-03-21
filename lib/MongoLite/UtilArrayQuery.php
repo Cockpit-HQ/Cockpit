@@ -10,20 +10,17 @@ class UtilArrayQuery {
      * Create a filter function from criteria array
      */
     public static function getFilterFunction(array $criteria): callable {
-        // If criteria is empty, return a function that always returns true
-        if (empty($criteria)) {
-            return function() { return true; };
-        }
 
-        return function($document) use ($criteria) {
-            return self::evaluateCondition($document, $criteria);
-        };
+        return empty($criteria) ?
+                fn() => true :
+                fn($document) => self::evaluateCondition($document, $criteria);
     }
 
     /**
      * Main method to evaluate if a document matches the given criteria
      */
     public static function evaluateCondition($document, array $criteria): bool {
+
         // Handle empty criteria
         if (empty($criteria)) {
             return true;
@@ -36,7 +33,7 @@ class UtilArrayQuery {
             if ($key[0] === '$') {
 
                 // List of valid top-level operators
-                $topLevelOperators = ['$and', '$or', '$where', '$nor'];
+                $topLevelOperators = ['$and', '$or', '$where', '$nor', '$expr'];
 
                 if (in_array($key, $topLevelOperators)) {
 
@@ -70,7 +67,7 @@ class UtilArrayQuery {
 
                         case '$where':
                             if (is_string($value) || !is_callable($value)) {
-                                throw new \InvalidArgumentException($key.' Function should be callable');
+                                throw new \InvalidArgumentException($key . ' Function should be callable');
                             }
 
                             // Register the closure and get a unique ID
@@ -90,6 +87,14 @@ class UtilArrayQuery {
                                 if (self::evaluateCondition($document, $subCriteria)) {
                                     return false; // If any criteria matches, $nor fails
                                 }
+                            }
+                            break;
+                        case '$expr':
+                            if (!is_array($value)) {
+                                return false;
+                            }
+                            if (!self::evaluateExpression($value, $document)) {
+                                return false;
                             }
                             break;
                     }
@@ -220,7 +225,12 @@ class UtilArrayQuery {
         if (!isset(self::$closures[$uid])) {
             throw new \RuntimeException("Closure with ID {$uid} not found");
         }
-        return self::$closures[$uid]($doc);
+
+        $return = self::$closures[$uid]($doc);
+
+        unset(self::$closures[$uid]);
+
+        return $return;
     }
 
     /**
@@ -264,10 +274,14 @@ class UtilArrayQuery {
         }
 
         switch ($func) {
+            case '$type':
+                $r = checkType($a, $b);
+                break;
+
             case '$not':
                 if (is_string($b)) {
                     if (is_string($a)) {
-                        $r = !preg_match(isset($b[0]) && $b[0]=='/' ? $b : '/'.$b.'/iu', $a);
+                        $r = !preg_match(isset($b[0]) && $b[0] == '/' ? $b : '/' . $b . '/iu', $a);
                     }
                 } elseif (is_array($b)) {
                     $r = !self::check($a, $b);
@@ -283,32 +297,60 @@ class UtilArrayQuery {
                 break;
 
             case '$gte':
-                if ( (is_numeric($a) && is_numeric($b)) || (is_string($a) && is_string($b)) ) {
+                if ((is_numeric($a) && is_numeric($b)) || (is_string($a) && is_string($b))) {
                     $r = $a >= $b;
+                } else if (is_numeric($a) && is_string($b) && is_numeric($b)) {
+                    $r = $a >= (float)$b;
+                } else if (is_string($a) && is_numeric($b) && is_numeric($a)) {
+                    $r = (float)$a >= $b;
+                } else {
+                    // Last resort - compare string representations
+                    $r = (string)$a >= (string)$b;
                 }
                 break;
 
             case '$gt':
-                if ( (is_numeric($a) && is_numeric($b)) || (is_string($a) && is_string($b)) ) {
+                if ((is_numeric($a) && is_numeric($b)) || (is_string($a) && is_string($b))) {
                     $r = $a > $b;
+                } else if (is_numeric($a) && is_string($b) && is_numeric($b)) {
+                    $r = $a > (float)$b;
+                } else if (is_string($a) && is_numeric($b) && is_numeric($a)) {
+                    $r = (float)$a > $b;
+                } else {
+                    // Last resort - compare string representations
+                    $r = (string)$a > (string)$b;
                 }
                 break;
 
             case '$lte':
-                if ( (is_numeric($a) && is_numeric($b)) || (is_string($a) && is_string($b)) ) {
+                if ((is_numeric($a) && is_numeric($b)) || (is_string($a) && is_string($b))) {
                     $r = $a <= $b;
+                } else if (is_numeric($a) && is_string($b) && is_numeric($b)) {
+                    $r = $a <= (float)$b;
+                } else if (is_string($a) && is_numeric($b) && is_numeric($a)) {
+                    $r = (float)$a <= $b;
+                } else {
+                    // Last resort - compare string representations
+                    $r = (string)$a <= (string)$b;
                 }
                 break;
 
             case '$lt':
-                if ( (is_numeric($a) && is_numeric($b)) || (is_string($a) && is_string($b)) ) {
+                if ((is_numeric($a) && is_numeric($b)) || (is_string($a) && is_string($b))) {
                     $r = $a < $b;
+                } else if (is_numeric($a) && is_string($b) && is_numeric($b)) {
+                    $r = $a < (float)$b;
+                } else if (is_string($a) && is_numeric($b) && is_numeric($a)) {
+                    $r = (float)$a < $b;
+                } else {
+                    // Last resort - compare string representations
+                    $r = (string)$a < (string)$b;
                 }
                 break;
 
             case '$in':
                 if (is_array($a)) {
-                    $r = is_array($b) ? count(array_intersect($a, $b)) : false;
+                    $r = is_array($b) && count(array_intersect($a, $b)) > 0;
                 } else {
                     $r = is_array($b) && in_array($a, $b);
                 }
@@ -325,74 +367,74 @@ class UtilArrayQuery {
             case '$has':
                 if (is_array($b))
                     throw new \InvalidArgumentException('Invalid argument for $has array not supported');
-                if (!is_array($a)) $a = @\json_decode($a, true) ?  : [];
+                if (!is_array($a)) $a = @\json_decode($a, true) ?: [];
                 $r = in_array($b, $a);
                 break;
 
             case '$all':
-                if (!is_array($a)) $a = @\json_decode($a, true) ?  : [];
-                if (!is_array($b))
+                if (!is_array($a)) $a = @\json_decode($a, true) ?: [];
+                if (!is_array($b)) {
                     throw new \InvalidArgumentException('Invalid argument for $all option must be array');
-                $r = count(array_intersect_key($a, $b)) == count($b);
+                }
+                $r = count(array_intersect($b, $a)) == count($b);
                 break;
 
             case '$regex':
-            case '$preg':
-            case '$match':
                 if (is_string($b)) {
-                    $b = isset($b[0]) && $b[0]=='/' ? $b : '/'.$b.'/iu';
+                    $b = isset($b[0]) && $b[0] == '/' ? $b : '/' . $b . '/iu';
                     if (is_string($a)) {
-                        $r = (boolean) preg_match($b, $a);
+                        $r = (boolean)preg_match($b, $a);
                     } elseif (is_countable($a)) {
-                        $r = (boolean) preg_match($b, implode(' ', $a));
+                        $r = (boolean)preg_match($b, implode(' ', $a));
                     }
                 }
                 break;
 
             case '$exists':
-                $r = $b ? !\is_null($a) : \is_null($a);
+                $r = $b ? !is_null($a) : is_null($a);
                 break;
 
             case '$size':
-                if (!is_array($a)) $a = @json_decode($a, true) ?  : [];
-                $r = (int) $b == count($a);
+                if (!is_array($a)) $a = @json_decode($a, true) ?: [];
+                $r = (int)$b == count($a);
                 break;
 
             case '$mod':
-                if (! is_array($b))
+                if (!is_array($b))
                     throw new \InvalidArgumentException('Invalid argument for $mod option must be array');
-                $r = $a % $b[0] == $b[1] ?? 0;
+                $r = $a % $b[0] == ($b[1] ?? 0);
                 break;
 
             case '$near':
                 if (!isset($a['coordinates'], $b['$geometry']['coordinates'])) {
                     return false;
                 }
+
                 // [lng, lat]
                 if (!is_array($a['coordinates']) || !is_array($b['$geometry']['coordinates'])) {
                     return false;
                 }
-                if (!isset($b['$maxDistance']) && !isset($b['$minDistance'])) {
-                    return false;
-                }
+
                 $distance = calculateDistanceInMeters($a['coordinates'], $b['$geometry']['coordinates']);
+
                 if (isset($b['$maxDistance']) && is_numeric($b['$maxDistance']) && $distance > $b['$maxDistance']) {
                     return false;
                 }
+
                 if (isset($b['$minDistance']) && is_numeric($b['$minDistance']) && $distance < $b['$minDistance']) {
                     return false;
                 }
+
                 $r = true;
                 break;
 
-            case '$fuzzy':
             case '$text':
                 $distance = 3;
                 $minScore = 0.7;
                 if (is_array($b) && isset($b['$search'])) {
                     if (isset($b['$minScore']) && is_numeric($b['$minScore'])) $minScore = $b['$minScore'];
                     if (isset($b['$distance']) && is_numeric($b['$distance'])) $distance = $b['$distance'];
-                    $b = $b['search'];
+                    $b = $b['$search'];
                 }
                 $r = fuzzy_search($b, $a, $distance) >= $minScore;
                 break;
@@ -404,13 +446,146 @@ class UtilArrayQuery {
 
         return $r;
     }
+
+    private static function evaluateExpression(array $expr, array $doc): mixed {
+        // Handle basic expressions
+        if (isset($expr['$eq'])) {
+            return self::evaluateExpressionOperands($expr['$eq'][0], $doc) ===
+                   self::evaluateExpressionOperands($expr['$eq'][1], $doc);
+        }
+        if (isset($expr['$gt'])) {
+            return self::evaluateExpressionOperands($expr['$gt'][0], $doc) >
+                   self::evaluateExpressionOperands($expr['$gt'][1], $doc);
+        }
+        if (isset($expr['$gte'])) {
+            return self::evaluateExpressionOperands($expr['$gte'][0], $doc) >=
+                   self::evaluateExpressionOperands($expr['$gte'][1], $doc);
+        }
+        if (isset($expr['$lt'])) {
+            return self::evaluateExpressionOperands($expr['$lt'][0], $doc) <
+                   self::evaluateExpressionOperands($expr['$lt'][1], $doc);
+        }
+        if (isset($expr['$lte'])) {
+            return self::evaluateExpressionOperands($expr['$lte'][0], $doc) <=
+                   self::evaluateExpressionOperands($expr['$lte'][1], $doc);
+        }
+        if (isset($expr['$ne'])) {
+            return self::evaluateExpressionOperands($expr['$ne'][0], $doc) !=
+                   self::evaluateExpressionOperands($expr['$ne'][1], $doc);
+        }
+
+        // Handle logical operators
+        if (isset($expr['$and'])) {
+            foreach ($expr['$and'] as $subExpr) {
+                if (!self::evaluateExpression($subExpr, $doc)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        if (isset($expr['$or'])) {
+            foreach ($expr['$or'] as $subExpr) {
+                if (self::evaluateExpression($subExpr, $doc)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        if (isset($expr['$not'])) {
+            return !self::evaluateExpression($expr['$not'], $doc);
+        }
+
+        // Handle arithmetic operators
+        if (isset($expr['$add'])) {
+            $result = 0;
+            foreach ($expr['$add'] as $operand) {
+                $result += self::evaluateExpressionOperands($operand, $doc);
+            }
+            return $result;
+        }
+        if (isset($expr['$subtract'])) {
+            $operands = $expr['$subtract'];
+            if (count($operands) != 2) {
+                throw new \InvalidArgumentException('$subtract requires exactly 2 operands');
+            }
+            return self::evaluateExpressionOperands($operands[0], $doc) -
+                   self::evaluateExpressionOperands($operands[1], $doc);
+        }
+        if (isset($expr['$multiply'])) {
+            $result = 1;
+            foreach ($expr['$multiply'] as $operand) {
+                $result *= self::evaluateExpressionOperands($operand, $doc);
+            }
+            return $result;
+        }
+        if (isset($expr['$divide'])) {
+            $operands = $expr['$divide'];
+            if (count($operands) != 2) {
+                throw new \InvalidArgumentException('$divide requires exactly 2 operands');
+            }
+            $divisor = self::evaluateExpressionOperands($operands[1], $doc);
+            if ($divisor == 0) {
+                return null; // Avoid division by zero
+            }
+            return self::evaluateExpressionOperands($operands[0], $doc) / $divisor;
+        }
+
+        // Handle conditional operators
+        if (isset($expr['$cond'])) {
+            $cond = $expr['$cond'];
+            if (is_array($cond) && !isset($cond[0])) {
+                // Object syntax { if: <boolean-expression>, then: <true-case>, else: <false-case> }
+                $condition = self::evaluateExpression($cond['if'], $doc);
+                return $condition ?
+                       self::evaluateExpressionOperands($cond['then'], $doc) :
+                       self::evaluateExpressionOperands($cond['else'], $doc);
+            } else {
+                // Array syntax [ <boolean-expression>, <true-case>, <false-case> ]
+                $condition = self::evaluateExpression($cond[0], $doc);
+                return $condition ?
+                       self::evaluateExpressionOperands($cond[1], $doc) :
+                       self::evaluateExpressionOperands($cond[2], $doc);
+            }
+        }
+
+        // If we got here, it's either a simple value or unrecognized operator
+        if (count($expr) == 1 && isset($expr[0])) {
+            return self::evaluateExpressionOperands($expr[0], $doc);
+        }
+
+        throw new \InvalidArgumentException('Unrecognized expression operator: ' . json_encode($expr));
+    }
+
+    /**
+     * Evaluate an operand in an expression
+     *
+     * @param mixed $operand The operand to evaluate
+     * @param array $doc The document to evaluate against
+     * @return mixed The evaluated operand
+     */
+    private static function evaluateExpressionOperands($operand, array $doc): mixed {
+        // If operand is a field path (starts with $)
+        if (is_string($operand) && strlen($operand) > 1 && $operand[0] === '$') {
+            $fieldPath = substr($operand, 1); // Remove leading $
+            return self::getNestedValue($doc, $fieldPath);
+        }
+
+        // If operand is a sub-expression
+        if (is_array($operand) && count($operand) > 0 &&
+            isset(array_keys($operand)[0]) && array_keys($operand)[0][0] === '$') {
+            return self::evaluateExpression($operand, $doc);
+        }
+
+        // Otherwise, return the literal value
+        return $operand;
+    }
 }
 
 // Helper Functions
 function levenshtein_utf8(string $s1, string $s2): int {
 
     $map = [];
-    $utf8_to_extended_ascii = function($str) use($map) {
+    $utf8_to_extended_ascii = function ($str) use ($map) {
 
         // find all multibyte characters (cf. utf-8 encoding specs)
         $matches = [];
@@ -432,10 +607,10 @@ function levenshtein_utf8(string $s1, string $s2): int {
 function fuzzy_search(string $search, string $text, $distance = 3): float {
 
     $needles = explode(' ', mb_strtolower($search, 'UTF-8'));
-    $tokens  = explode(' ', mb_strtolower($text, 'UTF-8'));
-    $score   = 0;
+    $tokens = explode(' ', mb_strtolower($text, 'UTF-8'));
+    $score = 0;
 
-    foreach ($needles as $needle){
+    foreach ($needles as $needle) {
 
         foreach ($tokens as $token) {
 
@@ -446,9 +621,9 @@ function fuzzy_search(string $search, string $text, $distance = 3): float {
                 $d = levenshtein_utf8($needle, $token);
 
                 if ($d <= $distance) {
-                    $l       = mb_strlen($token, 'UTF-8');
+                    $l = mb_strlen($token, 'UTF-8');
                     $matches = $l - $d;
-                    $score  += ($matches / $l);
+                    $score += ($matches / $l);
                 }
             }
         }
@@ -474,10 +649,62 @@ function calculateDistanceInMeters($fromPoint, $toPoint) {
 
     // Haversine formula
     $a = sin($latDiff / 2) * sin($latDiff / 2) +
-         cos($lat1) * cos($lat2) *
-         sin($lngDiff / 2) * sin($lngDiff / 2);
+        cos($lat1) * cos($lat2) *
+        sin($lngDiff / 2) * sin($lngDiff / 2);
     $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
 
     // distance
     return $earthRadius * $c;
+}
+
+function isArrayAssociative(array $array): bool {
+    if (empty($array)) return false;
+    return array_keys($array) !== range(0, count($array) - 1);
+}
+
+function checkType($value, $type): bool {
+    // Type can be a string name, number, or array of types
+    if (is_array($type)) {
+        // Check if value matches any of the types
+        foreach ($type as $t) {
+            if (checkType($value, $t)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Map of BSON types to PHP checks
+    $typeMap = [
+        // Numeric type codes
+        1 => fn($v) => is_float($v), // Double
+        2 => fn($v) => is_string($v), // String
+        3 => fn($v) => is_array($v) && !isArrayAssociative($v), // Object/Document
+        4 => fn($v) => is_array($v) && !isArrayAssociative($v), // Array
+        8 => fn($v) => is_bool($v), // Boolean
+        9 => fn($v) => is_string($v) && strtotime($v) !== false, // Date
+        10 => fn($v) => is_null($v), // Null
+        16 => fn($v) => is_int($v), // Int
+        18 => fn($v) => is_int($v)&& $v >= PHP_INT_MIN && $v <= PHP_INT_MAX, // Long
+
+        // String aliases
+        'double' => fn($v) => is_float($v),
+        'string' => fn($v) => is_string($v),
+        'object' => fn($v) => is_array($v)&& isArrayAssociative($v),
+        'array' => fn($v) => is_array($v)&& !isArrayAssociative($v),
+        'bool' => fn($v) => is_bool($v),
+        'boolean' => fn($v) => is_bool($v),
+        'date' => fn($v) => is_string($v)&& strtotime($v) !== false,
+        'null' => fn($v) => is_null($v),
+        'int' => fn($v) => is_int($v),
+        'long' => fn($v) => is_int($v),
+        'number' => fn($v) => is_numeric($v),
+    ];
+
+    // If type exists in the map, use that check
+    if (isset($typeMap[$type])) {
+        return $typeMap[$type]($value);
+    }
+
+    return false;
 }
