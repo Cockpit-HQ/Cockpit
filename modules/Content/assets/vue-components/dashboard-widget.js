@@ -78,6 +78,12 @@ export default {
                         options.filter._state = this.state;
                     }
 
+                    model.iFields = {};
+
+                    model.fields.forEach(field => {
+                        model.iFields[field.name] = field;
+                    });
+
                     this.$request(`/content/collection/find/${model.name}`, {options}).then(rsp => {
                         model.items = rsp.items;
                         resolve();
@@ -92,9 +98,12 @@ export default {
             });
         },
 
-        displayContent(item) {
+        displayContent(item, model) {
 
-            let data = {}, images = [], str, value;
+            let data = {},
+                images = [],
+                linkedContent = [],
+                str, value;
 
             Object.keys(item).forEach(key => {
 
@@ -115,18 +124,37 @@ export default {
                 if (typeof(value) === 'string') {
                     data[key] = value;
                 }
+
+                if (model.iFields[key]?.type === 'contentItemLink' && value._id && value._model) {
+                    linkedContent.push(value);
+                }
+
             });
 
             str = Object.values(data).join(' ');
             str = App.utils.truncate(App.utils.stripTags(str), 50);
 
-            if (!str) return 'n/a';
+            let output = [];
 
             if (images.length) {
-                str = `<div class="kiss-flex" gap="small"><display-image src="${images[0]}" w="40" h="25"></display-image><div>${str}</div></div>`;
+                output.push(`<display-image src="${images[0]}" w="40" h="25"></display-image>`);
             }
 
-            return str;
+            if (linkedContent.length) {
+                linkedContent.forEach(val => {
+                    output.push(`<display-content id="${val._id}" model="${val._model}"></display-content>`);
+                });
+            }
+
+            if (!str && !images.length && !linkedContent.length) {
+                str = 'n/a';
+            }
+
+            if (str) {
+                output.push(str);
+            }
+
+            return `<div class="kiss-flex" gap="small">${output.join(' ')}</div>`;
         },
 
         getItemLink(model, item) {
@@ -188,7 +216,7 @@ export default {
                     <div class="kiss-margin-small" v-if="model._visibleItems">
                         <div class="kiss-flex kiss-flex-middle kiss-margin-small kiss-size-small" gap="small" v-for="item in model.items">
                             <icon :class="{'kiss-color-success': item._state === 1, 'kiss-color-danger': !item._state, 'kiss-color-muted': item._state === -1}">trip_origin</icon>
-                            <a class="kiss-link-muted kiss-flex-1" :href="getItemLink(model, item)" v-html="displayContent(item)"></a>
+                            <a class="kiss-link-muted kiss-flex-1" :href="getItemLink(model, item)" v-html="displayContent(item, model)"></a>
                             <div class="kiss-text-monospace kiss-color-muted kiss-size-xsmall"><app-datetime type="relative" :datetime="item._modified" /></div>
                         </div>
                     </div>
