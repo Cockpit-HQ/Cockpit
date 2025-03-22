@@ -119,7 +119,7 @@ class ReferenceExecutor implements ExecutorImplementation
             $promiseAdapter,
         );
 
-        if (\is_array($exeContext)) {
+        if (is_array($exeContext)) {
             return new class($promiseAdapter->createFulfilled(new ExecutionResult(null, $exeContext))) implements ExecutorImplementation {
                 private Promise $result;
 
@@ -150,7 +150,7 @@ class ReferenceExecutor implements ExecutorImplementation
      *
      * @throws \Exception
      *
-     * @return ExecutionContext|array<int, Error>
+     * @return ExecutionContext|list<Error>
      */
     protected static function buildExecutionContext(
         Schema $schema,
@@ -163,7 +163,7 @@ class ReferenceExecutor implements ExecutorImplementation
         callable $argsMapper,
         PromiseAdapter $promiseAdapter
     ) {
-        /** @var array<int, Error> $errors */
+        /** @var list<Error> $errors */
         $errors = [];
 
         /** @var array<string, FragmentDefinitionNode> $fragments */
@@ -217,7 +217,7 @@ class ReferenceExecutor implements ExecutorImplementation
             if ($coercionErrors === null) {
                 $variableValues = $coercedVariableValues;
             } else {
-                $errors = \array_merge($errors, $coercionErrors);
+                $errors = array_merge($errors, $coercionErrors);
             }
         }
 
@@ -225,8 +225,8 @@ class ReferenceExecutor implements ExecutorImplementation
             return $errors;
         }
 
-        \assert($operation instanceof OperationDefinitionNode, 'Has operation if no errors.');
-        \assert(\is_array($variableValues), 'Has variables if no errors.');
+        assert($operation instanceof OperationDefinitionNode, 'Has operation if no errors.');
+        assert(is_array($variableValues), 'Has variables if no errors.');
 
         return new ExecutionContext(
             $schema,
@@ -355,10 +355,7 @@ class ReferenceExecutor implements ExecutorImplementation
             case 'query':
                 $queryType = $schema->getQueryType();
                 if ($queryType === null) {
-                    throw new Error(
-                        'Schema does not define the required query root type.',
-                        [$operation]
-                    );
+                    throw new Error('Schema does not define the required query root type.', [$operation]);
                 }
 
                 return $queryType;
@@ -366,10 +363,7 @@ class ReferenceExecutor implements ExecutorImplementation
             case 'mutation':
                 $mutationType = $schema->getMutationType();
                 if ($mutationType === null) {
-                    throw new Error(
-                        'Schema is not configured for mutations.',
-                        [$operation]
-                    );
+                    throw new Error('Schema is not configured for mutations.', [$operation]);
                 }
 
                 return $mutationType;
@@ -377,19 +371,13 @@ class ReferenceExecutor implements ExecutorImplementation
             case 'subscription':
                 $subscriptionType = $schema->getSubscriptionType();
                 if ($subscriptionType === null) {
-                    throw new Error(
-                        'Schema is not configured for subscriptions.',
-                        [$operation]
-                    );
+                    throw new Error('Schema is not configured for subscriptions.', [$operation]);
                 }
 
                 return $subscriptionType;
 
             default:
-                throw new Error(
-                    'Can only execute queries, mutations and subscriptions.',
-                    [$operation]
-                );
+                throw new Error('Can only execute queries, mutations and subscriptions.', [$operation]);
         }
     }
 
@@ -553,10 +541,10 @@ class ReferenceExecutor implements ExecutorImplementation
     protected function executeFieldsSerially(ObjectType $parentType, $rootValue, array $path, array $unaliasedPath, \ArrayObject $fields, $contextValue)
     {
         $result = $this->promiseReduce(
-            \array_keys($fields->getArrayCopy()),
+            array_keys($fields->getArrayCopy()),
             function ($results, $responseName) use ($contextValue, $path, $unaliasedPath, $parentType, $rootValue, $fields) {
                 $fieldNodes = $fields[$responseName];
-                \assert($fieldNodes instanceof \ArrayObject, 'The keys of $fields populate $responseName');
+                assert($fieldNodes instanceof \ArrayObject, 'The keys of $fields populate $responseName');
 
                 $result = $this->resolveField(
                     $parentType,
@@ -631,7 +619,7 @@ class ReferenceExecutor implements ExecutorImplementation
         $exeContext = $this->exeContext;
 
         $fieldNode = $fieldNodes[0];
-        \assert($fieldNode instanceof FieldNode, '$fieldNodes is non-empty');
+        assert($fieldNode instanceof FieldNode, '$fieldNodes is non-empty');
 
         $fieldName = $fieldNode->name->value;
         $fieldDef = $this->getFieldDef($exeContext->schema, $parentType, $fieldName);
@@ -920,8 +908,8 @@ class ReferenceExecutor implements ExecutorImplementation
 
         // If field type is List, complete each item in the list with the inner type
         if ($returnType instanceof ListOfType) {
-            if (! \is_iterable($result)) {
-                $resultType = \gettype($result);
+            if (! is_iterable($result)) {
+                $resultType = gettype($result);
 
                 throw new InvariantViolation("Expected field {$info->parentType}.{$info->fieldName} to return iterable, but got: {$resultType}.");
             }
@@ -929,11 +917,11 @@ class ReferenceExecutor implements ExecutorImplementation
             return $this->completeListValue($returnType, $fieldNodes, $info, $path, $unaliasedPath, $result, $contextValue);
         }
 
-        \assert($returnType instanceof NamedType, 'Wrapping types should return early');
+        assert($returnType instanceof NamedType, 'Wrapping types should return early');
 
         // Account for invalid schema definition when typeLoader returns different
         // instance than `resolveType` or $field->getType() or $arg->getType()
-        \assert(
+        assert(
             $returnType === $this->exeContext->schema->getType($returnType->name),
             SchemaValidationContext::duplicateType($this->exeContext->schema, "{$info->parentType}.{$info->fieldName}", $returnType->name)
         );
@@ -996,7 +984,7 @@ class ReferenceExecutor implements ExecutorImplementation
      */
     protected function promiseReduce(array $values, callable $callback, $initialValue)
     {
-        return \array_reduce(
+        return array_reduce(
             $values,
             function ($previous, $value) use ($callback) {
                 $promise = $this->getPromise($previous);
@@ -1075,11 +1063,7 @@ class ReferenceExecutor implements ExecutorImplementation
         } catch (\Throwable $error) {
             $safeReturnType = Utils::printSafe($returnType);
             $safeResult = Utils::printSafe($result);
-            throw new InvariantViolation(
-                "Expected a value of type {$safeReturnType} but received: {$safeResult}. {$error->getMessage()}",
-                0,
-                $error
-            );
+            throw new InvariantViolation("Expected a value of type {$safeReturnType} but received: {$safeResult}. {$error->getMessage()}", 0, $error);
         }
     }
 
@@ -1113,7 +1097,7 @@ class ReferenceExecutor implements ExecutorImplementation
 
         if ($typeCandidate === null) {
             $runtimeType = static::defaultTypeResolver($result, $contextValue, $info, $returnType);
-        } elseif (! \is_string($typeCandidate) && \is_callable($typeCandidate)) {
+        } elseif (! is_string($typeCandidate) && is_callable($typeCandidate)) {
             $runtimeType = $typeCandidate();
         } else {
             $runtimeType = $typeCandidate;
@@ -1174,7 +1158,7 @@ class ReferenceExecutor implements ExecutorImplementation
     protected function defaultTypeResolver($value, $contextValue, ResolveInfo $info, AbstractType $abstractType)
     {
         $typename = Utils::extractKey($value, '__typename');
-        if (\is_string($typename)) {
+        if (is_string($typename)) {
             return $typename;
         }
 
@@ -1272,7 +1256,7 @@ class ReferenceExecutor implements ExecutorImplementation
                 });
             }
 
-            \assert(is_bool($isTypeOf), 'Promise would return early');
+            assert(is_bool($isTypeOf), 'Promise would return early');
             if (! $isTypeOf) {
                 throw $this->invalidReturnTypeError($returnType, $result, $fieldNodes);
             }
@@ -1445,8 +1429,8 @@ class ReferenceExecutor implements ExecutorImplementation
      */
     protected function promiseForAssocArray(array $assoc): Promise
     {
-        $keys = \array_keys($assoc);
-        $valuesAndPromises = \array_values($assoc);
+        $keys = array_keys($assoc);
+        $valuesAndPromises = array_values($assoc);
         $promise = $this->exeContext->promiseAdapter->all($valuesAndPromises);
 
         return $promise->then(static function ($values) use ($keys) {
@@ -1472,7 +1456,7 @@ class ReferenceExecutor implements ExecutorImplementation
         ResolveInfo $info,
         &$result
     ): ObjectType {
-        $runtimeType = \is_string($runtimeTypeOrName)
+        $runtimeType = is_string($runtimeTypeOrName)
             ? $this->exeContext->schema->getType($runtimeTypeOrName)
             : $runtimeTypeOrName;
 
@@ -1486,12 +1470,12 @@ class ReferenceExecutor implements ExecutorImplementation
             throw new InvariantViolation("Runtime Object type \"{$runtimeType}\" is not a possible type for \"{$returnType}\".");
         }
 
-        \assert(
+        assert(
             $this->exeContext->schema->getType($runtimeType->name) !== null,
             "Schema does not contain type \"{$runtimeType}\". This can happen when an object type is only referenced indirectly through abstract types and never directly through fields.List the type in the option \"types\" during schema construction, see https://webonyx.github.io/graphql-php/schema-definition/#configuration-options."
         );
 
-        \assert(
+        assert(
             $runtimeType === $this->exeContext->schema->getType($runtimeType->name),
             "Schema must contain unique named types but contains multiple types named \"{$runtimeType}\". Make sure that `resolveType` function of abstract type \"{$returnType}\" returns the same type instance as referenced anywhere else within the schema (see https://webonyx.github.io/graphql-php/type-definitions/#type-registry)."
         );

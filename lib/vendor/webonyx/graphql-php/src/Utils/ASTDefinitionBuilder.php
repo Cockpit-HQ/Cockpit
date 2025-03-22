@@ -174,10 +174,10 @@ class ASTDefinitionBuilder
      */
     private function makeInputFields(array $nodes): array
     {
-        /** @var array<int, InputValueDefinitionNode>> $fields */
+        /** @var array<int, InputValueDefinitionNode> $fields */
         $fields = [];
         foreach ($nodes as $node) {
-            \array_push($fields, ...$node->fields);
+            array_push($fields, ...$node->fields);
         }
 
         return $this->makeInputValues(new NodeList($fields));
@@ -275,18 +275,11 @@ class ASTDefinitionBuilder
                     );
                 } catch (\Throwable $e) {
                     $class = static::class;
-                    throw new Error(
-                        "Type config decorator passed to {$class} threw an error when building {$typeName} type: {$e->getMessage()}",
-                        null,
-                        null,
-                        [],
-                        null,
-                        $e
-                    );
+                    throw new Error("Type config decorator passed to {$class} threw an error when building {$typeName} type: {$e->getMessage()}", null, null, [], null, $e);
                 }
 
                 // @phpstan-ignore-next-line should not happen, but function types are not enforced by PHP
-                if (! \is_array($config) || isset($config[0])) {
+                if (! is_array($config) || isset($config[0])) {
                     $class = static::class;
                     $notArray = Utils::printSafe($config);
                     throw new Error("Type config decorator passed to {$class} is expected to return an array, but got {$notArray}");
