@@ -85,6 +85,43 @@ class Worker extends \Lime\Helper {
         return $this->queue->cleanup();
     }
 
+    public function stopProcess($pid, $signal = 15): bool {
+
+        if (function_exists('posix_kill')) {
+            // Unix/Linux
+            return posix_kill($pid, $signal);
+        }
+
+        // Windows
+        if (PHP_OS_FAMILY === 'Windows') {
+            $cmd = $signal == 9 ? "taskkill /F /PID $pid" : "taskkill /PID $pid";
+            exec($cmd, $output, $result);
+            return $result === 0;
+        }
+
+        // Unix-like without posix extension
+        exec("kill -$signal $pid", $output, $result);
+        return $result === 0;
+    }
+
+    protected function isProcessRunning($pid): bool {
+
+        if (function_exists('posix_kill')) {
+            // Unix/Linux
+            return posix_kill($pid, 0);
+        }
+
+        // Windows
+        if (PHP_OS_FAMILY === 'Windows') {
+            exec("tasklist /FI \"PID eq $pid\" /NH", $output);
+            return count($output) > 0 && strpos($output[0], 'No tasks') === false;
+        }
+
+        // Unix-like without posix extension
+        exec("ps -p $pid -o pid=", $output);
+        return count($output) > 0;
+    }
+
 
     // Helper methods to update con.jobs.pid file
 

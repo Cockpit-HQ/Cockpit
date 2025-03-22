@@ -90,24 +90,7 @@ class Stop extends Command {
     }
 
     protected function stopProcess($pid, $signal = 15) {
-
-        if (function_exists('posix_kill')) {
-            // Unix/Linux
-            return posix_kill($pid, $signal);
-        } else {
-            // Windows
-            if (PHP_OS_FAMILY === 'Windows') {
-                $cmd = $signal == 9 ? "taskkill /F /PID $pid" : "taskkill /PID $pid";
-                exec($cmd, $output, $result);
-                return $result === 0;
-            } else {
-                // Unix-like without posix extension
-                exec("kill -$signal $pid", $output, $result);
-                return $result === 0;
-            }
-        }
-
-        return false;
+        return $this->app->helper('worker')->stopProcess($pid, $signal);
     }
 
 }

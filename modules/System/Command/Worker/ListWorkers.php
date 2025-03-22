@@ -47,7 +47,7 @@ class ListWorkers extends Command {
                 continue;
             }
 
-            $isRunning = $this->isProcessRunning($worker['pid']);
+            $isRunning = $this->app->helper('worker')->isProcessRunning($worker['pid']);
 
             // Format worker data for display
             $workerData = [
@@ -124,23 +124,6 @@ class ListWorkers extends Command {
         }
 
         return Command::SUCCESS;
-    }
-
-    protected function isProcessRunning($pid) {
-        if (function_exists('posix_kill')) {
-            // Unix/Linux
-            return posix_kill($pid, 0);
-        } else {
-            // Windows
-            if (PHP_OS_FAMILY === 'Windows') {
-                exec("tasklist /FI \"PID eq $pid\" /NH", $output);
-                return count($output) > 0 && strpos($output[0], 'No tasks') === false;
-            } else {
-                // Unix-like without posix extension
-                exec("ps -p $pid -o pid=", $output);
-                return count($output) > 0;
-            }
-        }
     }
 
     protected function formatUptime($seconds) {
