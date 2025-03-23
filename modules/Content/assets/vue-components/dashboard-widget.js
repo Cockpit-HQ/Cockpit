@@ -125,8 +125,15 @@ export default {
                     data[key] = value;
                 }
 
-                if (model.iFields[key]?.type === 'contentItemLink' && value._id && value._model) {
-                    linkedContent.push(value);
+                if (model.iFields[key]?.type === 'contentItemLink') {
+
+                    if (value._id && value._model) {
+                        linkedContent.push({...value, display: model.iFields[key].opts?.display});
+                    }
+
+                    if (Array.isArray(value) && value.length && value[0]._id && value[0]._model) {
+                        linkedContent.push({...value[0], display: model.iFields[key].opts?.display});
+                    }
                 }
 
             });
@@ -142,7 +149,7 @@ export default {
 
             if (linkedContent.length) {
                 linkedContent.forEach(val => {
-                    output.push(`<display-content id="${val._id}" model="${val._model}"></display-content>`);
+                    output.push(`<display-content id="${val._id}" model="${val._model}" display="${val.display || ''}"></display-content>`);
                 });
             }
 
