@@ -625,7 +625,7 @@ export default {
                     <li v-for="field in visibleFields">
                         <div>
                             <a class="kiss-text-capitalize kiss-text-truncate" :data-target="uid+'-'+field.name" @click="evt => focus(field, evt)">
-                                {{ field.name || field.label }}
+                                {{ field.label || field.name }}
                             </a>
                         </div>
                     </li>
