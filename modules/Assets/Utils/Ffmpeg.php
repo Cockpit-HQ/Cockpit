@@ -19,11 +19,15 @@ class Ffmpeg {
 
         $options = array_merge([
             'src' => null,
+            'scan' => 10
         ], $options);
 
-        $command = "{$this->binary} -i '{$options['src']}' -vf 'thumbnail=600' -frames:v 1 '{$dest}'";
+        $options['scan'] = intval($options['scan']);
+
+        $command = "{$this->binary} -hwaccel auto -i '{$options['src']}' -vf 'thumbnail=n={$options['scan']}' -frames:v 1 '{$dest}'";
 
         $process = Process::fromShellCommandline($command);
+        $process->setTimeout(25);
         $process->run();
     }
 

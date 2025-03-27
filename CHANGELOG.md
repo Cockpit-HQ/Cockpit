@@ -5,6 +5,7 @@
 - Fix assets image api to support "original" value for width and height
 - Fix nav field
 - Fix memory leaks when using MongoLite (because of eval based filter process)
+- Optimize video thumbnail creation using ffmpeg
 
 ## 2.11.2 (2025-03-11)
 
