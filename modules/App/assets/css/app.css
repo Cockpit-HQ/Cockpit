@@ -17,6 +17,10 @@
 
 @import "../../../System/assets/css/system.css";
 
+@view-transition {
+    navigation: auto;
+}
+
 vue-view {
     display: block;
 }

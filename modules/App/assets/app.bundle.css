@@ -4156,6 +4156,9 @@ kiss-card[hover*="contrast"]:hover {
 [data-theme="dark"] .app-icon-preview img {
     filter: invert(100%);
 }
+@view-transition {
+    navigation: auto;
+}
 vue-view {
     display: block;
 }
