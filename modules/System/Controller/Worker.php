@@ -38,9 +38,15 @@ class Worker extends App {
             $filter = ['$or' => $terms];
         }
 
+        $workers = $this->helper('worker')->getWorkerPIDFileData();
+
+        foreach ($workers['workers'] as &$worker) {
+            $worker['alive'] = $this->helper('worker')->isProcessRunning($worker['pid']);
+        }
+
         $result = [
             'stats' => $this->helper('worker')->stats(),
-            'workers' => $this->helper('worker')->getWorkerPIDFileData(),
+            'workers' => $workers,
             'jobs'  => $this->helper('worker')->jobs([
                 'filter' => $filter,
                 'status' => $status,

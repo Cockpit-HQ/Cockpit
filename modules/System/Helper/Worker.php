@@ -104,7 +104,11 @@ class Worker extends \Lime\Helper {
         return $result === 0;
     }
 
-    protected function isProcessRunning($pid): bool {
+    public function isProcessRunning($pid): ?bool {
+
+        if (!function_exists('posix_kill') && !function_exists('exec')) {
+            return null;
+        }
 
         if (function_exists('posix_kill')) {
             // Unix/Linux

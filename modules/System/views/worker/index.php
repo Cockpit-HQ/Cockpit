@@ -31,6 +31,7 @@
                 <table class="kiss-table kiss-margin-small" v-if="workers.length">
                     <thead>
                         <tr>
+                            <th width="20"></th>
                             <th width="120">PID</th>
                             <th><?=t('Mode')?></th>
                             <th class="kiss-align-right"><?=t('Start')?></th>
@@ -38,6 +39,7 @@
                     </thead>
                     <tbody class="kiss-text-monospace">
                         <tr v-for="w in workers">
+                            <td><icon :class="{'kiss-color-success': w.alive === true, 'kiss-color-danger': w.alive === false, 'kiss-color-warning': w.alive === null}">circle</icon></td>
                             <td><div class="kiss-size-xsmall kiss-text-bold">{{ w.pid }}</div></td>
                             <td><div class="kiss-size-xsmall">{{ w.mode }}</div></td>
                             <td class="kiss-align-right"><div class="kiss-size-xsmall"><app-datetime type="relative" :datetime="w.start"></app-datetime></div></td>
