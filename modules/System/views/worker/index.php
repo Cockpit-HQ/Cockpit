@@ -20,7 +20,7 @@
     <vue-view>
         <template>
 
-            <div class="kiss-margin-large animated fadeIn" v-if="stats">
+            <div class="kiss-margin-large animated fadeIn" v-if="stats && workers">
 
                 <div class="kiss-text-caption kiss-text-bold" :class="{'kiss-color-muted': !workers.length}"><?=t('Active workers')?></div>
 
@@ -97,11 +97,10 @@
                 <app-loader></app-loader>
             </div>
 
-
             <div class="animated fadeIn kiss-height-50vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted" v-if="!loading && !jobs.length">
                 <div>
-                    <icon class="kiss-size-xlarge">playlist_play</icon>
-                    <p class="kiss-size-large"><?=t('No jobs')?></p>
+                    <kiss-svg src="<?=$this->baseUrl('system:assets/icons/queue.svg')?>" width="40" height="40"></kiss-svg>
+                    <p class="kiss-size-large kiss-margin-small"><?=t('No jobs')?></p>
                 </div>
             </div>
 
@@ -114,7 +113,7 @@
 
                 <kiss-card class="kiss-padding-small kiss-flex kiss-flex-middle kiss-margin-small" theme="contrast shadowed" hover="bordered-primary" gap="small" v-for="job in jobs" :key="job._id">
                     <icon>{{ icons[status] }}</icon>
-                    <a class="kiss-link-muted kiss-flex-1 kiss-size-small" @click="showJob(job)">{{ job.data.job }}</a>
+                    <a class="kiss-link-muted kiss-flex-1 kiss-size-small kiss-text-monospace" @click="showJob(job)">{{ job.data.job }}</a>
                     <app-datetime class="kiss-size-xsmall kiss-text-monospace" :datetime="job.created_at"></app-datetime>
                 </kiss-card>
 
@@ -144,7 +143,7 @@
                         handlers: <?=json_encode($handlers)?>,
                         loading: true,
                         stats: null,
-                        workers: [],
+                        workers: null,
                         jobs: [],
 
                         icons: {
@@ -190,7 +189,7 @@
                             skip: (page - 1) * this.limit,
                         }).then(rsp => {
                             this.stats = rsp.stats;
-                            this.workers = rsp.workers.workers || [];
+                            this.workers = rsp.workers?.workers || null;
                             this.jobs = rsp.jobs;
                         }).catch(err => {
 

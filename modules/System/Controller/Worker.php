@@ -24,7 +24,7 @@ class Worker extends App {
 
         $filter = $this->param('filter', null);
         $status = $this->param('status', 'pending');
-        $limit  = $this->param('limit', 50);
+        $limit  = $this->param('limit', 30);
         $skip   = $this->param('skip', 0);
 
         if ($filter && is_string($filter) && trim($filter)) {
@@ -38,10 +38,15 @@ class Worker extends App {
             $filter = ['$or' => $terms];
         }
 
-        $workers = $this->helper('worker')->getWorkerPIDFileData();
+        $workers = null;
 
-        foreach ($workers['workers'] as &$worker) {
-            $worker['alive'] = $this->helper('worker')->isProcessRunning($worker['pid']);
+        if ($this->helper('spaces')->isMaster()) {
+
+            $workers = $this->helper('worker')->getWorkerPIDFileData();
+
+            foreach ($workers['workers'] as &$worker) {
+                $worker['alive'] = $this->helper('worker')->isProcessRunning($worker['pid']);
+            }
         }
 
         $result = [

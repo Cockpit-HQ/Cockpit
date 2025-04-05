@@ -64,7 +64,7 @@ class Settings extends \Lime\Helper {
         }
 
         $items[] = [
-            'icon' => 'system:assets/icons/worker.svg',
+            'icon' => 'system:assets/icons/queue.svg',
             'route' => '/system/worker',
             'label' => 'Worker',
             'permission' => 'system/workers'
