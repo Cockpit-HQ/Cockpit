@@ -59,17 +59,17 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.342.20",
-            "version_normalized": "3.342.20.0",
+            "version": "3.342.24",
+            "version_normalized": "3.342.24.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "eb68ff5bed48e653c1ddd84bd04a0d893f99ef46"
+                "reference": "cd7e1cbed4cb52c3aad31a647d1645594ff208eb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/eb68ff5bed48e653c1ddd84bd04a0d893f99ef46",
-                "reference": "eb68ff5bed48e653c1ddd84bd04a0d893f99ef46",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/cd7e1cbed4cb52c3aad31a647d1645594ff208eb",
+                "reference": "cd7e1cbed4cb52c3aad31a647d1645594ff208eb",
                 "shasum": ""
             },
             "require": {
@@ -109,7 +109,7 @@
                 "ext-openssl": "Allows working with CloudFront private distributions and verifying received SNS messages",
                 "ext-sockets": "To use client-side monitoring"
             },
-            "time": "2025-04-03T18:11:14+00:00",
+            "time": "2025-04-09T18:22:32+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -153,7 +153,7 @@
             "support": {
                 "forum": "https://github.com/aws/aws-sdk-php/discussions",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.342.20"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.342.24"
             },
             "install-path": "../aws/aws-sdk-php"
         },
@@ -578,17 +578,17 @@
         },
         {
             "name": "firebase/php-jwt",
-            "version": "v6.11.0",
-            "version_normalized": "6.11.0.0",
+            "version": "v6.11.1",
+            "version_normalized": "6.11.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/firebase/php-jwt.git",
-                "reference": "8f718f4dfc9c5d5f0c994cdfd103921b43592712"
+                "reference": "d1e91ecf8c598d073d0995afa8cd5c75c6e19e66"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/8f718f4dfc9c5d5f0c994cdfd103921b43592712",
-                "reference": "8f718f4dfc9c5d5f0c994cdfd103921b43592712",
+                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/d1e91ecf8c598d073d0995afa8cd5c75c6e19e66",
+                "reference": "d1e91ecf8c598d073d0995afa8cd5c75c6e19e66",
                 "shasum": ""
             },
             "require": {
@@ -606,7 +606,7 @@
                 "ext-sodium": "Support EdDSA (Ed25519) signatures",
                 "paragonie/sodium_compat": "Support EdDSA (Ed25519) signatures when libsodium is not present"
             },
-            "time": "2025-01-23T05:11:06+00:00",
+            "time": "2025-04-09T20:32:01+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -638,7 +638,7 @@
             ],
             "support": {
                 "issues": "https://github.com/firebase/php-jwt/issues",
-                "source": "https://github.com/firebase/php-jwt/tree/v6.11.0"
+                "source": "https://github.com/firebase/php-jwt/tree/v6.11.1"
             },
             "install-path": "../firebase/php-jwt"
         },
