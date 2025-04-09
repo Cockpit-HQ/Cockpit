@@ -21,7 +21,6 @@ $this->on('app.admin.init', function() {
 $this->on('app.api.request', function($request) {
 
     // check allowed origins
-
     $allowedOrigins = $this->retrieve('api.security.origins');
 
     if ($allowedOrigins) {

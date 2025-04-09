@@ -147,6 +147,7 @@ $this->on('app.admin.request', function(Lime\Request $request) {
 
     // update session time
     $this->helper('session')->write('app.session.start', time());
+
 }, 1000);
 
 

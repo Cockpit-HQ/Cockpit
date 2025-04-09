@@ -189,7 +189,7 @@
                             skip: (page - 1) * this.limit,
                         }).then(rsp => {
                             this.stats = rsp.stats;
-                            this.workers = rsp.workers?.workers || null;
+                            this.workers = rsp.workers || null;
                             this.jobs = rsp.jobs;
                         }).catch(err => {
 

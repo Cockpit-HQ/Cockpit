@@ -42,9 +42,9 @@ class Worker extends App {
 
         if ($this->helper('spaces')->isMaster()) {
 
-            $workers = $this->helper('worker')->getWorkerPIDFileData();
+            $workers = $this->helper('worker')->getWorkerPIDFileData()['workers'] ?? [];
 
-            foreach ($workers['workers'] as &$worker) {
+            foreach ($workers as &$worker) {
                 $worker['alive'] = $this->helper('worker')->isProcessRunning($worker['pid']);
             }
         }
@@ -52,6 +52,7 @@ class Worker extends App {
         $result = [
             'stats' => $this->helper('worker')->stats(),
             'workers' => $workers,
+            'webworker' => $this->helper('spaces')->isMaster() ? $this->app->retrieve('worker/web/enabled',false) : false,
             'jobs'  => $this->helper('worker')->jobs([
                 'filter' => $filter,
                 'status' => $status,
