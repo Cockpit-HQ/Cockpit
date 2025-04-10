@@ -30,6 +30,12 @@ if (!APP_CLI) {
         die('{"info": "Webworker disabled"}');
     }
 
+    $webToken = $master->retrieve('worker/web/token');
+
+    if ($webToken && ($_GET['token'] ?? '') !== $webToken) {
+        die('{"info": "Not authorized"}');
+    }
+
     if (session_status() === \PHP_SESSION_ACTIVE) {
         session_write_close();
     }
@@ -61,7 +67,7 @@ if (!APP_CLI) {
     flush();
     ob_clean();
 
-    register_shutdown_function(function() use ($master, $pid) {
+    register_shutdown_function(function() use ($master, $pid, $webToken) {
 
         $master->helper('worker')->removeWorkerPID($pid);
 
@@ -81,6 +87,10 @@ if (!APP_CLI) {
             $url = $master->retrieve('site_url');
             $url .= ($_SERVER['REQUEST_URI'] ?? '/cron.php');
             $url .= '?restart='.($restartCount+1);
+
+            if ($webToken) {
+                $url .= "&token={$webToken}";
+            }
 
             // Make an asynchronous request to restart
             $ch = curl_init($url);
