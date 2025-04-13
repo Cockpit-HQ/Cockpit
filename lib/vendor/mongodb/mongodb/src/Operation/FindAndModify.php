@@ -51,15 +51,11 @@ use function MongoDB\server_supports_feature;
  * @internal
  * @see https://mongodb.com/docs/manual/reference/command/findAndModify/
  */
-class FindAndModify implements Executable, Explainable
+final class FindAndModify implements Explainable
 {
     private const WIRE_VERSION_FOR_HINT = 9;
 
     private const WIRE_VERSION_FOR_UNSUPPORTED_OPTION_SERVER_SIDE_ERROR = 8;
-
-    private string $databaseName;
-
-    private string $collectionName;
 
     private array $options;
 
@@ -131,7 +127,7 @@ class FindAndModify implements Executable, Explainable
      * @param array  $options        Command options
      * @throws InvalidArgumentException for parameter/option parsing errors
      */
-    public function __construct(string $databaseName, string $collectionName, array $options)
+    public function __construct(private string $databaseName, private string $collectionName, array $options)
     {
         $options += ['remove' => false];
 
@@ -155,8 +151,8 @@ class FindAndModify implements Executable, Explainable
             throw InvalidArgumentException::expectedDocumentType('"fields" option', $options['fields']);
         }
 
-        if (isset($options['hint']) && ! is_string($options['hint']) && ! is_array($options['hint']) && ! is_object($options['hint'])) {
-            throw InvalidArgumentException::invalidType('"hint" option', $options['hint'], ['string', 'array', 'object']);
+        if (isset($options['hint']) && ! is_string($options['hint']) && ! is_document($options['hint'])) {
+            throw InvalidArgumentException::expectedDocumentOrStringType('"hint" option', $options['hint']);
         }
 
         if (isset($options['maxTimeMS']) && ! is_integer($options['maxTimeMS'])) {
@@ -219,21 +215,17 @@ class FindAndModify implements Executable, Explainable
             throw InvalidArgumentException::cannotCombineCodecAndTypeMap();
         }
 
-        $this->databaseName = $databaseName;
-        $this->collectionName = $collectionName;
         $this->options = $options;
     }
 
     /**
      * Execute the operation.
      *
-     * @see Executable::execute()
-     * @return array|object|null
      * @throws UnexpectedValueException if the command response was malformed
      * @throws UnsupportedException if hint or write concern is used and unsupported
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function execute(Server $server)
+    public function execute(Server $server): array|object|null
     {
         /* Server versions >= 4.2.0 raise errors for unsupported update options.
          * For previous versions, the CRUD spec requires a client-side error. */
@@ -280,9 +272,8 @@ class FindAndModify implements Executable, Explainable
      * Returns the command document for this operation.
      *
      * @see Explainable::getCommandDocument()
-     * @return array
      */
-    public function getCommandDocument()
+    public function getCommandDocument(): array
     {
         return $this->createCommandDocument();
     }

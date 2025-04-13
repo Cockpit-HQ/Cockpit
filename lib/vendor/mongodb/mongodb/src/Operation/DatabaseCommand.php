@@ -18,7 +18,7 @@
 namespace MongoDB\Operation;
 
 use MongoDB\Driver\Command;
-use MongoDB\Driver\Cursor;
+use MongoDB\Driver\CursorInterface;
 use MongoDB\Driver\ReadPreference;
 use MongoDB\Driver\Server;
 use MongoDB\Driver\Session;
@@ -32,13 +32,9 @@ use function MongoDB\is_document;
  *
  * @see \MongoDB\Database::command()
  */
-class DatabaseCommand implements Executable
+final class DatabaseCommand
 {
-    private string $databaseName;
-
     private Command $command;
-
-    private array $options;
 
     /**
      * Constructs a command.
@@ -61,36 +57,28 @@ class DatabaseCommand implements Executable
      * @param array        $options      Options for command execution
      * @throws InvalidArgumentException for parameter/option parsing errors
      */
-    public function __construct(string $databaseName, $command, array $options = [])
+    public function __construct(private string $databaseName, array|object $command, private array $options = [])
     {
         if (! is_document($command)) {
             throw InvalidArgumentException::expectedDocumentType('$command', $command);
         }
 
-        if (isset($options['readPreference']) && ! $options['readPreference'] instanceof ReadPreference) {
-            throw InvalidArgumentException::invalidType('"readPreference" option', $options['readPreference'], ReadPreference::class);
+        if (isset($this->options['readPreference']) && ! $this->options['readPreference'] instanceof ReadPreference) {
+            throw InvalidArgumentException::invalidType('"readPreference" option', $this->options['readPreference'], ReadPreference::class);
         }
 
-        if (isset($options['session']) && ! $options['session'] instanceof Session) {
-            throw InvalidArgumentException::invalidType('"session" option', $options['session'], Session::class);
+        if (isset($this->options['session']) && ! $this->options['session'] instanceof Session) {
+            throw InvalidArgumentException::invalidType('"session" option', $this->options['session'], Session::class);
         }
 
-        if (isset($options['typeMap']) && ! is_array($options['typeMap'])) {
-            throw InvalidArgumentException::invalidType('"typeMap" option', $options['typeMap'], 'array');
+        if (isset($this->options['typeMap']) && ! is_array($this->options['typeMap'])) {
+            throw InvalidArgumentException::invalidType('"typeMap" option', $this->options['typeMap'], 'array');
         }
 
-        $this->databaseName = $databaseName;
         $this->command = $command instanceof Command ? $command : new Command($command);
-        $this->options = $options;
     }
 
-    /**
-     * Execute the operation.
-     *
-     * @see Executable::execute()
-     * @return Cursor
-     */
-    public function execute(Server $server)
+    public function execute(Server $server): CursorInterface
     {
         $cursor = $server->executeCommand($this->databaseName, $this->command, $this->createOptions());
 

@@ -30,7 +30,7 @@ use function MongoDB\is_document;
  * @see \MongoDB\Collection::findOneAndDelete()
  * @see https://mongodb.com/docs/manual/reference/command/findAndModify/
  */
-class FindOneAndDelete implements Executable, Explainable
+final class FindOneAndDelete implements Explainable
 {
     private FindAndModify $findAndModify;
 
@@ -81,7 +81,7 @@ class FindOneAndDelete implements Executable, Explainable
      * @param array        $options        Command options
      * @throws InvalidArgumentException for parameter/option parsing errors
      */
-    public function __construct(string $databaseName, string $collectionName, $filter, array $options = [])
+    public function __construct(string $databaseName, string $collectionName, array|object $filter, array $options = [])
     {
         if (! is_document($filter)) {
             throw InvalidArgumentException::expectedDocumentType('$filter', $filter);
@@ -107,12 +107,10 @@ class FindOneAndDelete implements Executable, Explainable
     /**
      * Execute the operation.
      *
-     * @see Executable::execute()
-     * @return array|object|null
      * @throws UnsupportedException if collation or write concern is used and unsupported
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function execute(Server $server)
+    public function execute(Server $server): array|object|null
     {
         return $this->findAndModify->execute($server);
     }
@@ -121,9 +119,8 @@ class FindOneAndDelete implements Executable, Explainable
      * Returns the command document for this operation.
      *
      * @see Explainable::getCommandDocument()
-     * @return array
      */
-    public function getCommandDocument()
+    public function getCommandDocument(): array
     {
         return $this->findAndModify->getCommandDocument();
     }

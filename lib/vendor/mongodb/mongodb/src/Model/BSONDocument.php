@@ -22,7 +22,6 @@ use ArrayObject;
 use JsonSerializable;
 use MongoDB\BSON\Serializable;
 use MongoDB\BSON\Unserializable;
-use ReturnTypeWillChange;
 use stdClass;
 
 use function MongoDB\recursive_copy;
@@ -52,10 +51,10 @@ class BSONDocument extends ArrayObject implements JsonSerializable, Serializable
      * by default.
      *
      * @see https://php.net/arrayobject.construct
-     * @param array<string, mixed> $input
+     * @param array<string, mixed>|stdClass $input
      * @psalm-param class-string<ArrayIterator<string,mixed>>|class-string<ArrayObject<string,mixed>> $iteratorClass
      */
-    public function __construct(array $input = [], int $flags = ArrayObject::ARRAY_AS_PROPS, string $iteratorClass = ArrayIterator::class)
+    public function __construct(array|stdClass $input = [], int $flags = ArrayObject::ARRAY_AS_PROPS, string $iteratorClass = ArrayIterator::class)
     {
         parent::__construct($input, $flags, $iteratorClass);
     }
@@ -65,9 +64,8 @@ class BSONDocument extends ArrayObject implements JsonSerializable, Serializable
      *
      * @see https://php.net/oop5.magic#object.set-state
      * @see https://php.net/var-export
-     * @return self
      */
-    public static function __set_state(array $properties)
+    public static function __set_state(array $properties): self
     {
         $document = new self();
         $document->exchangeArray($properties);
@@ -79,10 +77,8 @@ class BSONDocument extends ArrayObject implements JsonSerializable, Serializable
      * Serialize the document to BSON.
      *
      * @see https://php.net/mongodb-bson-serializable.bsonserialize
-     * @return stdClass
      */
-    #[ReturnTypeWillChange]
-    public function bsonSerialize()
+    public function bsonSerialize(): stdClass
     {
         return (object) $this->getArrayCopy();
     }
@@ -93,8 +89,7 @@ class BSONDocument extends ArrayObject implements JsonSerializable, Serializable
      * @see https://php.net/mongodb-bson-unserializable.bsonunserialize
      * @param array<string, mixed> $data Array data
      */
-    #[ReturnTypeWillChange]
-    public function bsonUnserialize(array $data)
+    public function bsonUnserialize(array $data): void
     {
         parent::__construct($data, ArrayObject::ARRAY_AS_PROPS);
     }
@@ -103,10 +98,8 @@ class BSONDocument extends ArrayObject implements JsonSerializable, Serializable
      * Serialize the array to JSON.
      *
      * @see https://php.net/jsonserializable.jsonserialize
-     * @return object
      */
-    #[ReturnTypeWillChange]
-    public function jsonSerialize()
+    public function jsonSerialize(): stdClass
     {
         return (object) $this->getArrayCopy();
     }

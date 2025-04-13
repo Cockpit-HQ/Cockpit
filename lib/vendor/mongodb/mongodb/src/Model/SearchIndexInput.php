@@ -34,15 +34,13 @@ use function MongoDB\is_document;
  * @see https://github.com/mongodb/specifications/blob/master/source/index-management/index-management.rst#search-indexes
  * @see https://mongodb.com/docs/manual/reference/method/db.collection.createSearchIndex/
  */
-class SearchIndexInput implements Serializable
+final class SearchIndexInput implements Serializable
 {
-    private array $index;
-
     /**
      * @param array{definition: array|object, name?: string, type?: string} $index Search index specification
      * @throws InvalidArgumentException
      */
-    public function __construct(array $index)
+    public function __construct(private array $index)
     {
         if (! isset($index['definition'])) {
             throw new InvalidArgumentException('Required "definition" document is missing from search index specification');
@@ -60,8 +58,6 @@ class SearchIndexInput implements Serializable
         if (isset($index['type']) && ! is_string($index['type'])) {
             throw InvalidArgumentException::invalidType('"type" option', $index['type'], 'string');
         }
-
-        $this->index = $index;
     }
 
     /**

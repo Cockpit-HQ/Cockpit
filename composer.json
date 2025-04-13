@@ -38,7 +38,7 @@
         "league/flysystem": "^3.0",
         "league/flysystem-aws-s3-v3": "^3.0",
         "firebase/php-jwt": "^6.0",
-        "mongodb/mongodb": "^1.10",
+        "mongodb/mongodb": "^2.0.0",
         "maennchen/zipstream-php": "^3.1.0",
         "colinodell/json5": "^2.2",
         "robthree/twofactorauth": "^3.0",

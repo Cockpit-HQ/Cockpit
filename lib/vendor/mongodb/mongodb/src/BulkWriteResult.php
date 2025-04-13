@@ -17,25 +17,16 @@
 
 namespace MongoDB;
 
+use MongoDB\Driver\Exception\LogicException;
 use MongoDB\Driver\WriteResult;
-use MongoDB\Exception\BadMethodCallException;
 
 /**
  * Result class for a bulk write operation.
  */
 class BulkWriteResult
 {
-    private WriteResult $writeResult;
-
-    private array $insertedIds;
-
-    private bool $isAcknowledged;
-
-    public function __construct(WriteResult $writeResult, array $insertedIds)
+    public function __construct(private WriteResult $writeResult, private array $insertedIds)
     {
-        $this->writeResult = $writeResult;
-        $this->insertedIds = $insertedIds;
-        $this->isAcknowledged = $writeResult->isAcknowledged();
     }
 
     /**
@@ -44,16 +35,11 @@ class BulkWriteResult
      * This method should only be called if the write was acknowledged.
      *
      * @see BulkWriteResult::isAcknowledged()
-     * @return integer|null
-     * @throws BadMethodCallException if the write result is unacknowledged
+     * @throws LogicException if the write result is unacknowledged
      */
-    public function getDeletedCount()
+    public function getDeletedCount(): int
     {
-        if ($this->isAcknowledged) {
-            return $this->writeResult->getDeletedCount();
-        }
-
-        throw BadMethodCallException::unacknowledgedWriteResultAccess(__METHOD__);
+        return $this->writeResult->getDeletedCount();
     }
 
     /**
@@ -62,16 +48,11 @@ class BulkWriteResult
      * This method should only be called if the write was acknowledged.
      *
      * @see BulkWriteResult::isAcknowledged()
-     * @return integer|null
-     * @throws BadMethodCallException if the write result is unacknowledged
+     * @throws LogicException if the write result is unacknowledged
      */
-    public function getInsertedCount()
+    public function getInsertedCount(): int
     {
-        if ($this->isAcknowledged) {
-            return $this->writeResult->getInsertedCount();
-        }
-
-        throw BadMethodCallException::unacknowledgedWriteResultAccess(__METHOD__);
+        return $this->writeResult->getInsertedCount();
     }
 
     /**
@@ -82,10 +63,8 @@ class BulkWriteResult
      * the driver did not generate an ID), the index will contain its "_id"
      * field value. Any driver-generated ID will be a MongoDB\BSON\ObjectId
      * instance.
-     *
-     * @return array
      */
-    public function getInsertedIds()
+    public function getInsertedIds(): array
     {
         return $this->insertedIds;
     }
@@ -96,16 +75,11 @@ class BulkWriteResult
      * This method should only be called if the write was acknowledged.
      *
      * @see BulkWriteResult::isAcknowledged()
-     * @return integer|null
-     * @throws BadMethodCallException if the write result is unacknowledged
+     * @throws LogicException if the write result is unacknowledged
      */
-    public function getMatchedCount()
+    public function getMatchedCount(): int
     {
-        if ($this->isAcknowledged) {
-            return $this->writeResult->getMatchedCount();
-        }
-
-        throw BadMethodCallException::unacknowledgedWriteResultAccess(__METHOD__);
+        return $this->writeResult->getMatchedCount();
     }
 
     /**
@@ -117,16 +91,11 @@ class BulkWriteResult
      * This method should only be called if the write was acknowledged.
      *
      * @see BulkWriteResult::isAcknowledged()
-     * @return integer|null
-     * @throws BadMethodCallException if the write result is unacknowledged
+     * @throws LogicException if the write result is unacknowledged
      */
-    public function getModifiedCount()
+    public function getModifiedCount(): int
     {
-        if ($this->isAcknowledged) {
-            return $this->writeResult->getModifiedCount();
-        }
-
-        throw BadMethodCallException::unacknowledgedWriteResultAccess(__METHOD__);
+        return $this->writeResult->getModifiedCount();
     }
 
     /**
@@ -135,16 +104,11 @@ class BulkWriteResult
      * This method should only be called if the write was acknowledged.
      *
      * @see BulkWriteResult::isAcknowledged()
-     * @return integer|null
-     * @throws BadMethodCallException if the write result is unacknowledged
+     * @throws LogicException if the write result is unacknowledged
      */
-    public function getUpsertedCount()
+    public function getUpsertedCount(): int
     {
-        if ($this->isAcknowledged) {
-            return $this->writeResult->getUpsertedCount();
-        }
-
-        throw BadMethodCallException::unacknowledgedWriteResultAccess(__METHOD__);
+        return $this->writeResult->getUpsertedCount();
     }
 
     /**
@@ -158,16 +122,11 @@ class BulkWriteResult
      * This method should only be called if the write was acknowledged.
      *
      * @see BulkWriteResult::isAcknowledged()
-     * @return array
-     * @throws BadMethodCallException if the write result is unacknowledged
+     * @throws LogicException if the write result is unacknowledged
      */
-    public function getUpsertedIds()
+    public function getUpsertedIds(): array
     {
-        if ($this->isAcknowledged) {
-            return $this->writeResult->getUpsertedIds();
-        }
-
-        throw BadMethodCallException::unacknowledgedWriteResultAccess(__METHOD__);
+        return $this->writeResult->getUpsertedIds();
     }
 
     /**
@@ -175,11 +134,9 @@ class BulkWriteResult
      *
      * If the update was not acknowledged, other fields from the WriteResult
      * (e.g. matchedCount) will be undefined.
-     *
-     * @return boolean
      */
-    public function isAcknowledged()
+    public function isAcknowledged(): bool
     {
-        return $this->isAcknowledged;
+        return $this->writeResult->isAcknowledged();
     }
 }

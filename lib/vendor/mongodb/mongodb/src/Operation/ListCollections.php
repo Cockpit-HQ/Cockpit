@@ -22,8 +22,9 @@ use MongoDB\Command\ListCollections as ListCollectionsCommand;
 use MongoDB\Driver\Exception\RuntimeException as DriverRuntimeException;
 use MongoDB\Driver\Server;
 use MongoDB\Exception\InvalidArgumentException;
+use MongoDB\Model\CachingIterator;
+use MongoDB\Model\CallbackIterator;
 use MongoDB\Model\CollectionInfo;
-use MongoDB\Model\CollectionInfoCommandIterator;
 
 /**
  * Operation for the listCollections command.
@@ -31,10 +32,8 @@ use MongoDB\Model\CollectionInfoCommandIterator;
  * @see \MongoDB\Database::listCollections()
  * @see https://mongodb.com/docs/manual/reference/command/listCollections/
  */
-class ListCollections implements Executable
+final class ListCollections
 {
-    private string $databaseName;
-
     private ListCollectionsCommand $listCollections;
 
     /**
@@ -64,19 +63,25 @@ class ListCollections implements Executable
      */
     public function __construct(string $databaseName, array $options = [])
     {
-        $this->databaseName = $databaseName;
         $this->listCollections = new ListCollectionsCommand($databaseName, ['nameOnly' => false] + $options);
     }
 
     /**
      * Execute the operation.
      *
-     * @see Executable::execute()
      * @return Iterator<int, CollectionInfo>
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function execute(Server $server)
+    public function execute(Server $server): Iterator
     {
-        return new CollectionInfoCommandIterator($this->listCollections->execute($server), $this->databaseName);
+        /** @var Iterator<int, array> $collections */
+        $collections = $this->listCollections->execute($server);
+
+        return new CachingIterator(
+            new CallbackIterator(
+                $collections,
+                fn (array $collectionInfo, int $key): CollectionInfo => new CollectionInfo($collectionInfo),
+            ),
+        );
     }
 }

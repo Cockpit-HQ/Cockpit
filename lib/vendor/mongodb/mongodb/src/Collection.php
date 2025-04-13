@@ -19,8 +19,12 @@ namespace MongoDB;
 
 use Countable;
 use Iterator;
-use MongoDB\BSON\JavascriptInterface;
+use MongoDB\BSON\Document;
+use MongoDB\BSON\PackedArray;
+use MongoDB\Builder\BuilderEncoder;
+use MongoDB\Builder\Pipeline;
 use MongoDB\Codec\DocumentCodec;
+use MongoDB\Codec\Encoder;
 use MongoDB\Driver\CursorInterface;
 use MongoDB\Driver\Exception\RuntimeException as DriverRuntimeException;
 use MongoDB\Driver\Manager;
@@ -58,13 +62,13 @@ use MongoDB\Operation\InsertMany;
 use MongoDB\Operation\InsertOne;
 use MongoDB\Operation\ListIndexes;
 use MongoDB\Operation\ListSearchIndexes;
-use MongoDB\Operation\MapReduce;
 use MongoDB\Operation\RenameCollection;
 use MongoDB\Operation\ReplaceOne;
 use MongoDB\Operation\UpdateMany;
 use MongoDB\Operation\UpdateOne;
 use MongoDB\Operation\UpdateSearchIndex;
 use MongoDB\Operation\Watch;
+use stdClass;
 
 use function array_diff_key;
 use function array_intersect_key;
@@ -83,13 +87,10 @@ class Collection
 
     private const WIRE_VERSION_FOR_READ_CONCERN_WITH_WRITE_STAGE = 8;
 
+    /** @psalm-var Encoder<array|stdClass|Document|PackedArray, mixed> */
+    private readonly Encoder $builderEncoder;
+
     private ?DocumentCodec $codec = null;
-
-    private string $collectionName;
-
-    private string $databaseName;
-
-    private Manager $manager;
 
     private ReadConcern $readConcern;
 
@@ -106,6 +107,9 @@ class Collection
      * CRUD (i.e. create, read, update, and delete) and index management.
      *
      * Supported options:
+     *
+     *  * builderEncoder (MongoDB\Codec\Encoder): Encoder for query and
+     *    aggregation builders. If not given, the default encoder will be used.
      *
      *  * codec (MongoDB\Codec\DocumentCodec): Codec used to decode documents
      *    from BSON to PHP objects.
@@ -129,7 +133,7 @@ class Collection
      * @param array   $options        Collection options
      * @throws InvalidArgumentException for parameter/option parsing errors
      */
-    public function __construct(Manager $manager, string $databaseName, string $collectionName, array $options = [])
+    public function __construct(private Manager $manager, private string $databaseName, private string $collectionName, array $options = [])
     {
         if (strlen($databaseName) < 1) {
             throw new InvalidArgumentException('$databaseName is invalid: ' . $databaseName);
@@ -137,6 +141,10 @@ class Collection
 
         if (strlen($collectionName) < 1) {
             throw new InvalidArgumentException('$collectionName is invalid: ' . $collectionName);
+        }
+
+        if (isset($options['builderEncoder']) && ! $options['builderEncoder'] instanceof Encoder) {
+            throw InvalidArgumentException::invalidType('"builderEncoder" option', $options['builderEncoder'], Encoder::class);
         }
 
         if (isset($options['codec']) && ! $options['codec'] instanceof DocumentCodec) {
@@ -159,10 +167,7 @@ class Collection
             throw InvalidArgumentException::invalidType('"writeConcern" option', $options['writeConcern'], WriteConcern::class);
         }
 
-        $this->manager = $manager;
-        $this->databaseName = $databaseName;
-        $this->collectionName = $collectionName;
-
+        $this->builderEncoder = $options['builderEncoder'] ?? new BuilderEncoder();
         $this->codec = $options['codec'] ?? null;
         $this->readConcern = $options['readConcern'] ?? $this->manager->getReadConcern();
         $this->readPreference = $options['readPreference'] ?? $this->manager->getReadPreference();
@@ -174,11 +179,11 @@ class Collection
      * Return internal properties for debugging purposes.
      *
      * @see https://php.net/manual/en/language.oop5.magic.php#language.oop5.magic.debuginfo
-     * @return array
      */
-    public function __debugInfo()
+    public function __debugInfo(): array
     {
         return [
+            'builderEncoder' => $this->builderEncoder,
             'codec' => $this->codec,
             'collectionName' => $this->collectionName,
             'databaseName' => $this->databaseName,
@@ -194,9 +199,8 @@ class Collection
      * Return the collection namespace (e.g. "db.collection").
      *
      * @see https://mongodb.com/docs/manual/core/databases-and-collections/
-     * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->databaseName . '.' . $this->collectionName;
     }
@@ -205,16 +209,21 @@ class Collection
      * Executes an aggregation framework pipeline on the collection.
      *
      * @see Aggregate::__construct() for supported options
-     * @param array $pipeline Aggregation pipeline
-     * @param array $options  Command options
-     * @return CursorInterface&Iterator
+     * @param array|Pipeline $pipeline Aggregation pipeline
+     * @param array          $options  Command options
      * @throws UnexpectedValueException if the command response was malformed
      * @throws UnsupportedException if options are not supported by the selected server
      * @throws InvalidArgumentException for parameter/option parsing errors
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function aggregate(array $pipeline, array $options = [])
+    public function aggregate(array|Pipeline $pipeline, array $options = []): CursorInterface
     {
+        if (is_array($pipeline) && is_builder_pipeline($pipeline)) {
+            $pipeline = new Pipeline(...$pipeline);
+        }
+
+        $pipeline = $this->builderEncoder->encodeIfSupported($pipeline);
+
         $hasWriteStage = is_last_pipeline_operator_write($pipeline);
 
         $options = $this->inheritReadPreference($options);
@@ -247,13 +256,13 @@ class Collection
      * @see BulkWrite::__construct() for supported options
      * @param array[] $operations List of write operations
      * @param array   $options    Command options
-     * @return BulkWriteResult
      * @throws UnsupportedException if options are not supported by the selected server
      * @throws InvalidArgumentException for parameter/option parsing errors
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function bulkWrite(array $operations, array $options = [])
+    public function bulkWrite(array $operations, array $options = []): BulkWriteResult
     {
+        $options = $this->inheritBuilderEncoder($options);
         $options = $this->inheritWriteOptions($options);
         $options = $this->inheritCodec($options);
 
@@ -268,7 +277,6 @@ class Collection
      * @see Count::__construct() for supported options
      * @param array|object $filter  Query by which to filter documents
      * @param array        $options Command options
-     * @return integer
      * @throws UnexpectedValueException if the command response was malformed
      * @throws UnsupportedException if options are not supported by the selected server
      * @throws InvalidArgumentException for parameter/option parsing errors
@@ -276,8 +284,9 @@ class Collection
      *
      * @deprecated 1.4
      */
-    public function count($filter = [], array $options = [])
+    public function count(array|object $filter = [], array $options = []): int
     {
+        $filter = $this->builderEncoder->encodeIfSupported($filter);
         $options = $this->inheritReadOptions($options);
 
         $operation = new Count($this->databaseName, $this->collectionName, $filter, $options);
@@ -291,14 +300,14 @@ class Collection
      * @see CountDocuments::__construct() for supported options
      * @param array|object $filter  Query by which to filter documents
      * @param array        $options Command options
-     * @return integer
      * @throws UnexpectedValueException if the command response was malformed
      * @throws UnsupportedException if options are not supported by the selected server
      * @throws InvalidArgumentException for parameter/option parsing errors
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function countDocuments($filter = [], array $options = [])
+    public function countDocuments(array|object $filter = [], array $options = []): int
     {
+        $filter = $this->builderEncoder->encodeIfSupported($filter);
         $options = $this->inheritReadOptions($options);
 
         $operation = new CountDocuments($this->databaseName, $this->collectionName, $filter, $options);
@@ -319,7 +328,7 @@ class Collection
      * @throws InvalidArgumentException for parameter/option parsing errors
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function createIndex($key, array $options = [])
+    public function createIndex(array|object $key, array $options = []): string
     {
         $operationOptionKeys = ['comment' => 1, 'commitQuorum' => 1, 'maxTimeMS' => 1, 'session' => 1, 'writeConcern' => 1];
         $indexOptions = array_diff_key($options, $operationOptionKeys);
@@ -355,7 +364,7 @@ class Collection
      * @throws InvalidArgumentException for parameter/option parsing errors
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function createIndexes(array $indexes, array $options = [])
+    public function createIndexes(array $indexes, array $options = []): array
     {
         $options = $this->inheritWriteOptions($options);
 
@@ -377,7 +386,7 @@ class Collection
      * @throws InvalidArgumentException for parameter/option parsing errors
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function createSearchIndex($definition, array $options = []): string
+    public function createSearchIndex(array|object $definition, array $options = []): string
     {
         $indexOptionKeys = ['name' => 1, 'type' => 1];
         /** @psalm-var array{name?: string, type?: string} */
@@ -429,13 +438,13 @@ class Collection
      * @see https://mongodb.com/docs/manual/reference/command/delete/
      * @param array|object $filter  Query by which to delete documents
      * @param array        $options Command options
-     * @return DeleteResult
      * @throws UnsupportedException if options are not supported by the selected server
      * @throws InvalidArgumentException for parameter/option parsing errors
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function deleteMany($filter, array $options = [])
+    public function deleteMany(array|object $filter, array $options = []): DeleteResult
     {
+        $filter = $this->builderEncoder->encodeIfSupported($filter);
         $options = $this->inheritWriteOptions($options);
 
         $operation = new DeleteMany($this->databaseName, $this->collectionName, $filter, $options);
@@ -450,13 +459,13 @@ class Collection
      * @see https://mongodb.com/docs/manual/reference/command/delete/
      * @param array|object $filter  Query by which to delete documents
      * @param array        $options Command options
-     * @return DeleteResult
      * @throws UnsupportedException if options are not supported by the selected server
      * @throws InvalidArgumentException for parameter/option parsing errors
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function deleteOne($filter, array $options = [])
+    public function deleteOne(array|object $filter, array $options = []): DeleteResult
     {
+        $filter = $this->builderEncoder->encodeIfSupported($filter);
         $options = $this->inheritWriteOptions($options);
 
         $operation = new DeleteOne($this->databaseName, $this->collectionName, $filter, $options);
@@ -471,14 +480,14 @@ class Collection
      * @param string       $fieldName Field for which to return distinct values
      * @param array|object $filter    Query by which to filter documents
      * @param array        $options   Command options
-     * @return array
      * @throws UnexpectedValueException if the command response was malformed
      * @throws UnsupportedException if options are not supported by the selected server
      * @throws InvalidArgumentException for parameter/option parsing errors
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function distinct(string $fieldName, $filter = [], array $options = [])
+    public function distinct(string $fieldName, array|object $filter = [], array $options = []): array
     {
+        $filter = $this->builderEncoder->encodeIfSupported($filter);
         $options = $this->inheritReadOptions($options);
         $options = $this->inheritTypeMap($options);
 
@@ -492,15 +501,13 @@ class Collection
      *
      * @see DropCollection::__construct() for supported options
      * @param array $options Additional options
-     * @return array|object Command result document
      * @throws UnsupportedException if options are not supported by the selected server
      * @throws InvalidArgumentException for parameter/option parsing errors
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function drop(array $options = [])
+    public function drop(array $options = []): void
     {
         $options = $this->inheritWriteOptions($options);
-        $options = $this->inheritTypeMap($options);
 
         $server = select_server_for_write($this->manager, $options);
 
@@ -513,7 +520,7 @@ class Collection
             ? new DropEncryptedCollection($this->databaseName, $this->collectionName, $options)
             : new DropCollection($this->databaseName, $this->collectionName, $options);
 
-        return $operation->execute($server);
+        $operation->execute($server);
     }
 
     /**
@@ -522,12 +529,11 @@ class Collection
      * @see DropIndexes::__construct() for supported options
      * @param string|IndexInfo $indexName Index name or model object
      * @param array            $options   Additional options
-     * @return array|object Command result document
      * @throws UnsupportedException if options are not supported by the selected server
      * @throws InvalidArgumentException for parameter/option parsing errors
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function dropIndex($indexName, array $options = [])
+    public function dropIndex(string|IndexInfo $indexName, array $options = []): void
     {
         $indexName = (string) $indexName;
 
@@ -536,11 +542,10 @@ class Collection
         }
 
         $options = $this->inheritWriteOptions($options);
-        $options = $this->inheritTypeMap($options);
 
         $operation = new DropIndexes($this->databaseName, $this->collectionName, $indexName, $options);
 
-        return $operation->execute(select_server_for_write($this->manager, $options));
+        $operation->execute(select_server_for_write($this->manager, $options));
     }
 
     /**
@@ -548,19 +553,17 @@ class Collection
      *
      * @see DropIndexes::__construct() for supported options
      * @param array $options Additional options
-     * @return array|object Command result document
      * @throws UnsupportedException if options are not supported by the selected server
      * @throws InvalidArgumentException for parameter/option parsing errors
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function dropIndexes(array $options = [])
+    public function dropIndexes(array $options = []): void
     {
         $options = $this->inheritWriteOptions($options);
-        $options = $this->inheritTypeMap($options);
 
         $operation = new DropIndexes($this->databaseName, $this->collectionName, '*', $options);
 
-        return $operation->execute(select_server_for_write($this->manager, $options));
+        $operation->execute(select_server_for_write($this->manager, $options));
     }
 
     /**
@@ -586,13 +589,12 @@ class Collection
      *
      * @see EstimatedDocumentCount::__construct() for supported options
      * @param array $options Command options
-     * @return integer
      * @throws UnexpectedValueException if the command response was malformed
      * @throws UnsupportedException if options are not supported by the selected server
      * @throws InvalidArgumentException for parameter/option parsing errors
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function estimatedDocumentCount(array $options = [])
+    public function estimatedDocumentCount(array $options = []): int
     {
         $options = $this->inheritReadOptions($options);
 
@@ -608,12 +610,11 @@ class Collection
      * @see https://mongodb.com/docs/manual/reference/command/explain/
      * @param Explainable $explainable Command on which to run explain
      * @param array       $options     Additional options
-     * @return array|object
      * @throws UnsupportedException if explainable or options are not supported by the selected server
      * @throws InvalidArgumentException for parameter/option parsing errors
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function explain(Explainable $explainable, array $options = [])
+    public function explain(Explainable $explainable, array $options = []): array|object
     {
         $options = $this->inheritReadPreference($options);
         $options = $this->inheritTypeMap($options);
@@ -630,13 +631,13 @@ class Collection
      * @see https://mongodb.com/docs/manual/crud/#read-operations
      * @param array|object $filter  Query by which to filter documents
      * @param array        $options Additional options
-     * @return CursorInterface&Iterator
      * @throws UnsupportedException if options are not supported by the selected server
      * @throws InvalidArgumentException for parameter/option parsing errors
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function find($filter = [], array $options = [])
+    public function find(array|object $filter = [], array $options = []): CursorInterface
     {
+        $filter = $this->builderEncoder->encodeIfSupported($filter);
         $options = $this->inheritReadOptions($options);
         $options = $this->inheritCodecOrTypeMap($options);
 
@@ -652,13 +653,13 @@ class Collection
      * @see https://mongodb.com/docs/manual/crud/#read-operations
      * @param array|object $filter  Query by which to filter documents
      * @param array        $options Additional options
-     * @return array|object|null
      * @throws UnsupportedException if options are not supported by the selected server
      * @throws InvalidArgumentException for parameter/option parsing errors
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function findOne($filter = [], array $options = [])
+    public function findOne(array|object $filter = [], array $options = []): array|object|null
     {
+        $filter = $this->builderEncoder->encodeIfSupported($filter);
         $options = $this->inheritReadOptions($options);
         $options = $this->inheritCodecOrTypeMap($options);
 
@@ -676,14 +677,14 @@ class Collection
      * @see https://mongodb.com/docs/manual/reference/command/findAndModify/
      * @param array|object $filter  Query by which to filter documents
      * @param array        $options Command options
-     * @return array|object|null
      * @throws UnexpectedValueException if the command response was malformed
      * @throws UnsupportedException if options are not supported by the selected server
      * @throws InvalidArgumentException for parameter/option parsing errors
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function findOneAndDelete($filter, array $options = [])
+    public function findOneAndDelete(array|object $filter, array $options = []): array|object|null
     {
+        $filter = $this->builderEncoder->encodeIfSupported($filter);
         $options = $this->inheritWriteOptions($options);
         $options = $this->inheritCodecOrTypeMap($options);
 
@@ -706,14 +707,14 @@ class Collection
      * @param array|object $filter      Query by which to filter documents
      * @param array|object $replacement Replacement document
      * @param array        $options     Command options
-     * @return array|object|null
      * @throws UnexpectedValueException if the command response was malformed
      * @throws UnsupportedException if options are not supported by the selected server
      * @throws InvalidArgumentException for parameter/option parsing errors
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function findOneAndReplace($filter, $replacement, array $options = [])
+    public function findOneAndReplace(array|object $filter, array|object $replacement, array $options = []): array|object|null
     {
+        $filter = $this->builderEncoder->encodeIfSupported($filter);
         $options = $this->inheritWriteOptions($options);
         $options = $this->inheritCodecOrTypeMap($options);
 
@@ -736,14 +737,14 @@ class Collection
      * @param array|object $filter  Query by which to filter documents
      * @param array|object $update  Update to apply to the matched document
      * @param array        $options Command options
-     * @return array|object|null
      * @throws UnexpectedValueException if the command response was malformed
      * @throws UnsupportedException if options are not supported by the selected server
      * @throws InvalidArgumentException for parameter/option parsing errors
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function findOneAndUpdate($filter, $update, array $options = [])
+    public function findOneAndUpdate(array|object $filter, array|object $update, array $options = []): array|object|null
     {
+        $filter = $this->builderEncoder->encodeIfSupported($filter);
         $options = $this->inheritWriteOptions($options);
         $options = $this->inheritCodecOrTypeMap($options);
 
@@ -754,30 +755,24 @@ class Collection
 
     /**
      * Return the collection name.
-     *
-     * @return string
      */
-    public function getCollectionName()
+    public function getCollectionName(): string
     {
         return $this->collectionName;
     }
 
     /**
      * Return the database name.
-     *
-     * @return string
      */
-    public function getDatabaseName()
+    public function getDatabaseName(): string
     {
         return $this->databaseName;
     }
 
     /**
      * Return the Manager.
-     *
-     * @return Manager
      */
-    public function getManager()
+    public function getManager(): Manager
     {
         return $this->manager;
     }
@@ -786,9 +781,8 @@ class Collection
      * Return the collection namespace.
      *
      * @see https://mongodb.com/docs/manual/reference/glossary/#term-namespace
-     * @return string
      */
-    public function getNamespace()
+    public function getNamespace(): string
     {
         return $this->databaseName . '.' . $this->collectionName;
     }
@@ -797,29 +791,24 @@ class Collection
      * Return the read concern for this collection.
      *
      * @see https://php.net/manual/en/mongodb-driver-readconcern.isdefault.php
-     * @return ReadConcern
      */
-    public function getReadConcern()
+    public function getReadConcern(): ReadConcern
     {
         return $this->readConcern;
     }
 
     /**
      * Return the read preference for this collection.
-     *
-     * @return ReadPreference
      */
-    public function getReadPreference()
+    public function getReadPreference(): ReadPreference
     {
         return $this->readPreference;
     }
 
     /**
      * Return the type map for this collection.
-     *
-     * @return array
      */
-    public function getTypeMap()
+    public function getTypeMap(): array
     {
         return $this->typeMap;
     }
@@ -828,9 +817,8 @@ class Collection
      * Return the write concern for this collection.
      *
      * @see https://php.net/manual/en/mongodb-driver-writeconcern.isdefault.php
-     * @return WriteConcern
      */
-    public function getWriteConcern()
+    public function getWriteConcern(): WriteConcern
     {
         return $this->writeConcern;
     }
@@ -842,11 +830,10 @@ class Collection
      * @see https://mongodb.com/docs/manual/reference/command/insert/
      * @param list<object|array> $documents The documents to insert
      * @param array              $options   Command options
-     * @return InsertManyResult
      * @throws InvalidArgumentException for parameter/option parsing errors
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function insertMany(array $documents, array $options = [])
+    public function insertMany(array $documents, array $options = []): InsertManyResult
     {
         $options = $this->inheritWriteOptions($options);
         $options = $this->inheritCodec($options);
@@ -863,11 +850,10 @@ class Collection
      * @see https://mongodb.com/docs/manual/reference/command/insert/
      * @param array|object $document The document to insert
      * @param array        $options  Command options
-     * @return InsertOneResult
      * @throws InvalidArgumentException for parameter/option parsing errors
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function insertOne($document, array $options = [])
+    public function insertOne(array|object $document, array $options = []): InsertOneResult
     {
         $options = $this->inheritWriteOptions($options);
         $options = $this->inheritCodec($options);
@@ -885,7 +871,7 @@ class Collection
      * @throws InvalidArgumentException for parameter/option parsing errors
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function listIndexes(array $options = [])
+    public function listIndexes(array $options = []): Iterator
     {
         $operation = new ListIndexes($this->databaseName, $this->collectionName, $options);
 
@@ -896,7 +882,7 @@ class Collection
      * Returns information for all Atlas Search indexes for the collection.
      * Only available when used against a 7.0+ Atlas cluster.
      *
-     * @param array{name?: string} $options Command options
+     * @param array $options Command options
      * @return Countable&Iterator
      * @throws InvalidArgumentException for parameter/option parsing errors
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
@@ -904,51 +890,12 @@ class Collection
      */
     public function listSearchIndexes(array $options = []): Iterator
     {
+        $options = $this->inheritTypeMap($options);
+
         $operation = new ListSearchIndexes($this->databaseName, $this->collectionName, $options);
         $server = select_server($this->manager, $options);
 
         return $operation->execute($server);
-    }
-
-    /**
-     * Executes a map-reduce aggregation on the collection.
-     *
-     * @see MapReduce::__construct() for supported options
-     * @see https://mongodb.com/docs/manual/reference/command/mapReduce/
-     * @param JavascriptInterface $map     Map function
-     * @param JavascriptInterface $reduce  Reduce function
-     * @param string|array|object $out     Output specification
-     * @param array               $options Command options
-     * @return MapReduceResult
-     * @throws UnsupportedException if options are not supported by the selected server
-     * @throws InvalidArgumentException for parameter/option parsing errors
-     * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
-     * @throws UnexpectedValueException if the command response was malformed
-     */
-    public function mapReduce(JavascriptInterface $map, JavascriptInterface $reduce, $out, array $options = [])
-    {
-        $hasOutputCollection = ! is_mapreduce_output_inline($out);
-
-        // Check if the out option is inline because we will want to coerce a primary read preference if not
-        if ($hasOutputCollection) {
-            $options['readPreference'] = new ReadPreference(ReadPreference::PRIMARY);
-        } else {
-            $options = $this->inheritReadPreference($options);
-        }
-
-        /* A "majority" read concern is not compatible with inline output, so
-         * avoid providing the Collection's read concern if it would conflict.
-         */
-        if (! $hasOutputCollection || $this->readConcern->getLevel() !== ReadConcern::MAJORITY) {
-            $options = $this->inheritReadConcern($options);
-        }
-
-        $options = $this->inheritWriteOptions($options);
-        $options = $this->inheritTypeMap($options);
-
-        $operation = new MapReduce($this->databaseName, $this->collectionName, $map, $reduce, $out, $options);
-
-        return $operation->execute(select_server_for_write($this->manager, $options));
     }
 
     /**
@@ -958,23 +905,21 @@ class Collection
      * @param string      $toCollectionName New name of the collection
      * @param string|null $toDatabaseName   New database name of the collection. Defaults to the original database.
      * @param array       $options          Additional options
-     * @return array|object Command result document
      * @throws UnsupportedException if options are not supported by the selected server
      * @throws InvalidArgumentException for parameter/option parsing errors
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function rename(string $toCollectionName, ?string $toDatabaseName = null, array $options = [])
+    public function rename(string $toCollectionName, ?string $toDatabaseName = null, array $options = []): void
     {
         if (! isset($toDatabaseName)) {
             $toDatabaseName = $this->databaseName;
         }
 
         $options = $this->inheritWriteOptions($options);
-        $options = $this->inheritTypeMap($options);
 
         $operation = new RenameCollection($this->databaseName, $this->collectionName, $toDatabaseName, $toCollectionName, $options);
 
-        return $operation->execute(select_server_for_write($this->manager, $options));
+        $operation->execute(select_server_for_write($this->manager, $options));
     }
 
     /**
@@ -985,13 +930,13 @@ class Collection
      * @param array|object $filter      Query by which to filter documents
      * @param array|object $replacement Replacement document
      * @param array        $options     Command options
-     * @return UpdateResult
      * @throws UnsupportedException if options are not supported by the selected server
      * @throws InvalidArgumentException for parameter/option parsing errors
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function replaceOne($filter, $replacement, array $options = [])
+    public function replaceOne(array|object $filter, array|object $replacement, array $options = []): UpdateResult
     {
+        $filter = $this->builderEncoder->encodeIfSupported($filter);
         $options = $this->inheritWriteOptions($options);
         $options = $this->inheritCodec($options);
 
@@ -1008,13 +953,14 @@ class Collection
      * @param array|object $filter  Query by which to filter documents
      * @param array|object $update  Update to apply to the matched documents
      * @param array        $options Command options
-     * @return UpdateResult
      * @throws UnsupportedException if options are not supported by the selected server
      * @throws InvalidArgumentException for parameter/option parsing errors
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function updateMany($filter, $update, array $options = [])
+    public function updateMany(array|object $filter, array|object $update, array $options = []): UpdateResult
     {
+        $filter = $this->builderEncoder->encodeIfSupported($filter);
+        $update = $this->builderEncoder->encodeIfSupported($update);
         $options = $this->inheritWriteOptions($options);
 
         $operation = new UpdateMany($this->databaseName, $this->collectionName, $filter, $update, $options);
@@ -1030,13 +976,14 @@ class Collection
      * @param array|object $filter  Query by which to filter documents
      * @param array|object $update  Update to apply to the matched document
      * @param array        $options Command options
-     * @return UpdateResult
      * @throws UnsupportedException if options are not supported by the selected server
      * @throws InvalidArgumentException for parameter/option parsing errors
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function updateOne($filter, $update, array $options = [])
+    public function updateOne(array|object $filter, array|object $update, array $options = []): UpdateResult
     {
+        $filter = $this->builderEncoder->encodeIfSupported($filter);
+        $update = $this->builderEncoder->encodeIfSupported($update);
         $options = $this->inheritWriteOptions($options);
 
         $operation = new UpdateOne($this->databaseName, $this->collectionName, $filter, $update, $options);
@@ -1055,7 +1002,7 @@ class Collection
      * @throws InvalidArgumentException for parameter parsing errors
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function updateSearchIndex(string $name, $definition, array $options = []): void
+    public function updateSearchIndex(string $name, array|object $definition, array $options = []): void
     {
         $operation = new UpdateSearchIndex($this->databaseName, $this->collectionName, $name, $definition, $options);
         $server = select_server_for_write($this->manager, $options);
@@ -1067,13 +1014,18 @@ class Collection
      * Create a change stream for watching changes to the collection.
      *
      * @see Watch::__construct() for supported options
-     * @param array $pipeline Aggregation pipeline
-     * @param array $options  Command options
-     * @return ChangeStream
+     * @param array|Pipeline $pipeline Aggregation pipeline
+     * @param array          $options  Command options
      * @throws InvalidArgumentException for parameter/option parsing errors
      */
-    public function watch(array $pipeline = [], array $options = [])
+    public function watch(array|Pipeline $pipeline = [], array $options = []): ChangeStream
     {
+        if (is_array($pipeline) && is_builder_pipeline($pipeline)) {
+            $pipeline = new Pipeline(...$pipeline);
+        }
+
+        $pipeline = $this->builderEncoder->encodeIfSupported($pipeline);
+
         $options = $this->inheritReadOptions($options);
         $options = $this->inheritCodecOrTypeMap($options);
 
@@ -1087,12 +1039,12 @@ class Collection
      *
      * @see Collection::__construct() for supported options
      * @param array $options Collection constructor options
-     * @return Collection
      * @throws InvalidArgumentException for parameter/option parsing errors
      */
-    public function withOptions(array $options = [])
+    public function withOptions(array $options = []): Collection
     {
         $options += [
+            'builderEncoder' => $this->builderEncoder,
             'codec' => $this->codec,
             'readConcern' => $this->readConcern,
             'readPreference' => $this->readPreference,
@@ -1101,6 +1053,11 @@ class Collection
         ];
 
         return new Collection($this->manager, $this->databaseName, $this->collectionName, $options);
+    }
+
+    private function inheritBuilderEncoder(array $options): array
+    {
+        return ['builderEncoder' => $this->builderEncoder] + $options;
     }
 
     private function inheritCodec(array $options): array

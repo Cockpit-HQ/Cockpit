@@ -17,25 +17,16 @@
 
 namespace MongoDB;
 
+use MongoDB\Driver\Exception\LogicException;
 use MongoDB\Driver\WriteResult;
-use MongoDB\Exception\BadMethodCallException;
 
 /**
  * Result class for a multi-document insert operation.
  */
 class InsertManyResult
 {
-    private WriteResult $writeResult;
-
-    private array $insertedIds;
-
-    private bool $isAcknowledged;
-
-    public function __construct(WriteResult $writeResult, array $insertedIds)
+    public function __construct(private WriteResult $writeResult, private array $insertedIds)
     {
-        $this->writeResult = $writeResult;
-        $this->insertedIds = $insertedIds;
-        $this->isAcknowledged = $writeResult->isAcknowledged();
     }
 
     /**
@@ -44,16 +35,11 @@ class InsertManyResult
      * This method should only be called if the write was acknowledged.
      *
      * @see InsertManyResult::isAcknowledged()
-     * @return integer|null
-     * @throws BadMethodCallException if the write result is unacknowledged
+     * @throws LogicException if the write result is unacknowledged
      */
-    public function getInsertedCount()
+    public function getInsertedCount(): int
     {
-        if ($this->isAcknowledged) {
-            return $this->writeResult->getInsertedCount();
-        }
-
-        throw BadMethodCallException::unacknowledgedWriteResultAccess(__METHOD__);
+        return $this->writeResult->getInsertedCount();
     }
 
     /**
@@ -64,10 +50,8 @@ class InsertManyResult
      * the driver did not generate an ID), the index will contain its "_id"
      * field value. Any driver-generated ID will be a MongoDB\BSON\ObjectId
      * instance.
-     *
-     * @return array
      */
-    public function getInsertedIds()
+    public function getInsertedIds(): array
     {
         return $this->insertedIds;
     }
@@ -77,10 +61,8 @@ class InsertManyResult
      *
      * If the insert was not acknowledged, other fields from the WriteResult
      * (e.g. insertedCount) will be undefined.
-     *
-     * @return boolean
      */
-    public function isAcknowledged()
+    public function isAcknowledged(): bool
     {
         return $this->writeResult->isAcknowledged();
     }

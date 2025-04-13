@@ -48,7 +48,7 @@ use function MongoDB\server_supports_feature;
  * @see https://github.com/mongodb/specifications/blob/master/source/client-side-encryption/client-side-encryption.rst#create-encrypted-collection-helper
  * @see https://www.mongodb.com/docs/manual/core/queryable-encryption/fundamentals/manage-collections/
  */
-class CreateEncryptedCollection implements Executable
+final class CreateEncryptedCollection
 {
     private const WIRE_VERSION_FOR_QUERYABLE_ENCRYPTION_V2 = 21;
 
@@ -59,12 +59,6 @@ class CreateEncryptedCollection implements Executable
 
     private CreateIndexes $createSafeContentIndex;
 
-    private string $databaseName;
-
-    private string $collectionName;
-
-    private array $options;
-
     /**
      * @see CreateCollection::__construct() for supported options
      * @param string $databaseName   Database name
@@ -72,20 +66,20 @@ class CreateEncryptedCollection implements Executable
      * @param array  $options        CreateCollection options
      * @throws InvalidArgumentException for parameter/option parsing errors
      */
-    public function __construct(string $databaseName, string $collectionName, array $options)
+    public function __construct(private string $databaseName, private string $collectionName, private array $options)
     {
-        if (! isset($options['encryptedFields'])) {
+        if (! isset($this->options['encryptedFields'])) {
             throw new InvalidArgumentException('"encryptedFields" option is required');
         }
 
-        if (! is_document($options['encryptedFields'])) {
-            throw InvalidArgumentException::expectedDocumentType('"encryptedFields" option', $options['encryptedFields']);
+        if (! is_document($this->options['encryptedFields'])) {
+            throw InvalidArgumentException::expectedDocumentType('"encryptedFields" option', $this->options['encryptedFields']);
         }
 
-        $this->createCollection = new CreateCollection($databaseName, $collectionName, $options);
+        $this->createCollection = new CreateCollection($databaseName, $collectionName, $this->options);
 
         /** @psalm-var array{ecocCollection?: ?string, escCollection?: ?string} */
-        $encryptedFields = document_to_array($options['encryptedFields']);
+        $encryptedFields = document_to_array($this->options['encryptedFields']);
         $enxcolOptions = ['clusteredIndex' => ['key' => ['_id' => 1], 'unique' => true]];
 
         $this->createMetadataCollections = [
@@ -94,10 +88,6 @@ class CreateEncryptedCollection implements Executable
         ];
 
         $this->createSafeContentIndex = new CreateIndexes($databaseName, $collectionName, [['key' => ['__safeContent__' => 1]]]);
-
-        $this->databaseName = $databaseName;
-        $this->collectionName = $collectionName;
-        $this->options = $options;
     }
 
     /**
@@ -107,21 +97,20 @@ class CreateEncryptedCollection implements Executable
      * "encryptedFields" option and reconstruct the internal CreateCollection
      * operation used for creating the encrypted collection.
      *
-     * The $encryptedFields reference parameter may be used to determine which
-     * data keys have been created.
+     * Returns the data keys that have been created.
      *
      * @see \MongoDB\Database::createEncryptedCollection()
      * @see https://www.php.net/manual/en/mongodb-driver-clientencryption.createdatakey.php
      * @throws DriverRuntimeException for errors creating a data key
      */
-    public function createDataKeys(ClientEncryption $clientEncryption, string $kmsProvider, ?array $masterKey, ?array &$encryptedFields = null): void
+    public function createDataKeys(ClientEncryption $clientEncryption, string $kmsProvider, ?array $masterKey): array
     {
         /** @psalm-var array{fields: list<array{keyId: ?Binary}|object{keyId: ?Binary}>|Serializable|PackedArray} */
         $encryptedFields = document_to_array($this->options['encryptedFields']);
 
         // NOP if there are no fields to examine
         if (! isset($encryptedFields['fields'])) {
-            return;
+            return $encryptedFields;
         }
 
         // Allow PackedArray or Serializable object for the fields array
@@ -138,7 +127,7 @@ class CreateEncryptedCollection implements Executable
 
         // Skip invalid types and defer to the server to raise an error
         if (! is_array($encryptedFields['fields'])) {
-            return;
+            return $encryptedFields;
         }
 
         $createDataKeyArgs = [
@@ -162,15 +151,15 @@ class CreateEncryptedCollection implements Executable
 
         $this->options['encryptedFields'] = $encryptedFields;
         $this->createCollection = new CreateCollection($this->databaseName, $this->collectionName, $this->options);
+
+        return $encryptedFields;
     }
 
     /**
-     * @see Executable::execute()
-     * @return array|object Command result document from creating the encrypted collection
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      * @throws UnsupportedException if the server does not support Queryable Encryption
      */
-    public function execute(Server $server)
+    public function execute(Server $server): void
     {
         if (! server_supports_feature($server, self::WIRE_VERSION_FOR_QUERYABLE_ENCRYPTION_V2)) {
             throw new UnsupportedException('Driver support of Queryable Encryption is incompatible with server. Upgrade server to use Queryable Encryption.');
@@ -180,10 +169,8 @@ class CreateEncryptedCollection implements Executable
             $createMetadataCollection->execute($server);
         }
 
-        $result = $this->createCollection->execute($server);
+        $this->createCollection->execute($server);
 
         $this->createSafeContentIndex->execute($server);
-
-        return $result;
     }
 }

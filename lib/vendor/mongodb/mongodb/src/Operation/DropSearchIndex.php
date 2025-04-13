@@ -30,14 +30,9 @@ use MongoDB\Exception\UnsupportedException;
  * @see \MongoDB\Collection::dropSearchIndexes()
  * @see https://mongodb.com/docs/manual/reference/command/dropSearchIndexes/
  */
-class DropSearchIndex implements Executable
+final class DropSearchIndex
 {
     private const ERROR_CODE_NAMESPACE_NOT_FOUND = 26;
-
-    private string $databaseName;
-    private string $collectionName;
-    private string $name;
-    private array $options;
 
     /**
      * Constructs a dropSearchIndex command.
@@ -48,22 +43,16 @@ class DropSearchIndex implements Executable
      * @param array{comment?: mixed} $options        Command options
      * @throws InvalidArgumentException for parameter parsing errors
      */
-    public function __construct(string $databaseName, string $collectionName, string $name, array $options = [])
+    public function __construct(private string $databaseName, private string $collectionName, private string $name, private array $options = [])
     {
         if ($name === '') {
             throw new InvalidArgumentException('Index name cannot be empty');
         }
-
-        $this->databaseName = $databaseName;
-        $this->collectionName = $collectionName;
-        $this->name = $name;
-        $this->options = $options;
     }
 
     /**
      * Execute the operation.
      *
-     * @see Executable::execute()
      * @throws UnsupportedException if write concern is used and unsupported
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */

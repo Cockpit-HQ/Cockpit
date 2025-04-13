@@ -17,7 +17,6 @@
 
 namespace MongoDB\GridFS;
 
-use Iterator;
 use MongoDB\BSON\Binary;
 use MongoDB\Driver\CursorInterface;
 use MongoDB\Exception\InvalidArgumentException;
@@ -38,7 +37,7 @@ use function substr;
  *
  * @internal
  */
-class ReadableStream
+final class ReadableStream
 {
     private ?string $buffer = null;
 
@@ -48,14 +47,9 @@ class ReadableStream
 
     private int $chunkOffset = 0;
 
-    /** @var (CursorInterface&Iterator)|null */
-    private ?Iterator $chunksIterator = null;
-
-    private CollectionWrapper $collectionWrapper;
+    private ?CursorInterface $chunksIterator = null;
 
     private int $expectedLastChunkSize = 0;
-
-    private object $file;
 
     private int $length;
 
@@ -68,7 +62,7 @@ class ReadableStream
      * @param object            $file              GridFS file document
      * @throws CorruptFileException
      */
-    public function __construct(CollectionWrapper $collectionWrapper, object $file)
+    public function __construct(private CollectionWrapper $collectionWrapper, private object $file)
     {
         if (! isset($file->chunkSize) || ! is_integer($file->chunkSize) || $file->chunkSize < 1) {
             throw new CorruptFileException('file.chunkSize is not an integer >= 1');
@@ -82,11 +76,8 @@ class ReadableStream
             throw new CorruptFileException('file._id does not exist');
         }
 
-        $this->file = $file;
         $this->chunkSize = $file->chunkSize;
         $this->length = $file->length;
-
-        $this->collectionWrapper = $collectionWrapper;
 
         if ($this->length > 0) {
             $this->numChunks = (integer) ceil($this->length / $this->chunkSize);

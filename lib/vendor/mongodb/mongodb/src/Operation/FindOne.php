@@ -31,7 +31,7 @@ use function current;
  * @see https://mongodb.com/docs/manual/tutorial/query-documents/
  * @see https://mongodb.com/docs/manual/reference/operator/query-modifier/
  */
-class FindOne implements Executable, Explainable
+final class FindOne implements Explainable
 {
     private Find $find;
 
@@ -55,19 +55,10 @@ class FindOne implements Executable, Explainable
      *
      *  * max (document): The exclusive upper bound for a specific index.
      *
-     *  * maxScan (integer): Maximum number of documents or index keys to scan
-     *    when executing the query.
-     *
-     *    This option has been deprecated since version 1.4.
-     *
      *  * maxTimeMS (integer): The maximum amount of time to allow the query to
-     *    run. If "$maxTimeMS" also exists in the modifiers document, this
-     *    option will take precedence.
+     *    run.
      *
      *  * min (document): The inclusive upper bound for a specific index.
-     *
-     *  * modifiers (document): Meta-operators modifying the output or behavior
-     *    of a query.
      *
      *  * projection (document): Limits the fields to return for the matching
      *    document.
@@ -87,9 +78,7 @@ class FindOne implements Executable, Explainable
      *
      *  * skip (integer): The number of documents to skip before returning.
      *
-     *  * sort (document): The order in which to return matching documents. If
-     *    "$orderby" also exists in the modifiers document, this option will
-     *    take precedence.
+     *  * sort (document): The order in which to return matching documents.
      *
      *  * let (document): Map of parameter names and values. Values must be
      *    constant or closed expressions that do not reference document fields.
@@ -104,7 +93,7 @@ class FindOne implements Executable, Explainable
      * @param array        $options        Command options
      * @throws InvalidArgumentException for parameter/option parsing errors
      */
-    public function __construct(string $databaseName, string $collectionName, $filter, array $options = [])
+    public function __construct(string $databaseName, string $collectionName, array|object $filter, array $options = [])
     {
         $this->find = new Find(
             $databaseName,
@@ -117,12 +106,10 @@ class FindOne implements Executable, Explainable
     /**
      * Execute the operation.
      *
-     * @see Executable::execute()
-     * @return array|object|null
      * @throws UnsupportedException if collation or read concern is used and unsupported
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function execute(Server $server)
+    public function execute(Server $server): array|object|null
     {
         $cursor = $this->find->execute($server);
         $document = current($cursor->toArray());
@@ -134,9 +121,8 @@ class FindOne implements Executable, Explainable
      * Returns the command document for this operation.
      *
      * @see Explainable::getCommandDocument()
-     * @return array
      */
-    public function getCommandDocument()
+    public function getCommandDocument(): array
     {
         return $this->find->getCommandDocument();
     }
