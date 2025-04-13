@@ -151,6 +151,18 @@
     <kiss-popout id="app-account-menu">
         <kiss-content>
 
+            <kiss-card class="kiss-padding kiss-margin-small" theme="contrast">
+
+                <kiss-row gap="small">
+                    <div><app-avatar size="35" name="<?= $this['user/name'] ?>"></app-avatar></div>
+                    <div class="kisss-flex-1">
+                        <div class="kiss-text-bold kiss-text-truncate kiss-size-small"><?= $this['user/name'] ?></div>
+                        <div class="kiss-color-muted kiss-text-truncate kiss-size-xsmall"><?= $this['user/email'] ?></div>
+                    </div>
+                </kiss-row>
+
+            </kiss-card>
+
             <kiss-navlist>
                 <ul>
                     <li class="kiss-nav-header"><?= t('System') ?></li>
