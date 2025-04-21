@@ -170,7 +170,7 @@ class UtilArrayQuery {
     /**
      * Safely retrieve a nested value from an array using dot notation
      */
-    private static function getNestedValue(array $array, string $key) {
+    public static function getNestedValue(array $array, string $key) {
 
         // Security check for illegal characters (from original implementation)
         if (str_contains($key, '(') || str_contains($key, '"') || str_contains($key, "'")) {
@@ -563,7 +563,7 @@ class UtilArrayQuery {
      * @param array $doc The document to evaluate against
      * @return mixed The evaluated operand
      */
-    private static function evaluateExpressionOperands($operand, array $doc): mixed {
+    public static function evaluateExpressionOperands($operand, array $doc): mixed {
         // If operand is a field path (starts with $)
         if (is_string($operand) && strlen($operand) > 1 && $operand[0] === '$') {
             $fieldPath = substr($operand, 1); // Remove leading $

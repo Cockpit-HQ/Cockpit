@@ -208,6 +208,50 @@ class Mongo {
         return $resultSet;
     }
 
+    public function sum(string $collection, string $field, array $filter = []): int {
+
+        $filter = $this->_fixForMongo($filter, true);
+
+        $pipeline = [];
+
+        if (!empty($filter)) {
+            $pipeline[] = ['$match' => $filter];
+        }
+
+        $pipeline[] = [
+            '$group' => [
+                '_id' => null,
+                'total' => ['$sum' => '$'.$field]
+            ]
+        ];
+
+        $cursor = $this->getCollection($collection)->aggregate($pipeline);
+
+        return $cursor->toArray()[0]['total'] ?? 0;
+    }
+
+    public function avg(string $collection, string $field, array $filter = []): float {
+
+        $filter = $this->_fixForMongo($filter, true);
+
+        $pipeline = [];
+
+        if (!empty($filter)) {
+            $pipeline[] = ['$match' => $filter];
+        }
+
+        $pipeline[] = [
+            '$group' => [
+                '_id' => null,
+                'avg' => ['$avg' => '$'.$field]
+            ]
+        ];
+
+        $cursor = $this->getCollection($collection)->aggregate($pipeline);
+
+        return $cursor->toArray()[0]['avg'] ?? 0;
+    }
+
     public function getFindTermFilter($term) {
 
         $terms = str_getcsv(trim($term), ' ', escape: '\\');

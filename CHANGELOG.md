@@ -6,6 +6,7 @@
 - Fix nav field
 - Fix memory leaks when using MongoLite (because of eval based filter process)
 - Optimize video thumbnail creation using ffmpeg
+- Optimize MongoLite Aggregation Implementation
 
 ## 2.11.2 (2025-03-11)
 

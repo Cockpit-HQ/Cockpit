@@ -144,6 +144,42 @@ class MongoLite {
         return new ResultSet($this, $docs);
     }
 
+    public function sum(string $collection, string $field, array $filter = []): int {
+
+        $pipeline = [];
+
+        if (!empty($filter)) {
+            $pipeline[] = ['$match' => $filter];
+        }
+
+        $pipeline[] = [
+            '$group' => [
+                '_id' => null,
+                'total' => ['$sum' => '$'.$field]
+            ]
+        ];
+
+        return $this->aggregate($collection, $pipeline)[0]['total'] ?? 0;
+    }
+
+    public function avg(string $collection, string $field, array $filter = []): float {
+
+        $pipeline = [];
+
+        if (!empty($filter)) {
+            $pipeline[] = ['$match' => $filter];
+        }
+
+        $pipeline[] = [
+            '$group' => [
+                '_id' => null,
+                'avg' => ['$avg' => '$'.$field]
+            ]
+        ];
+
+        return $this->aggregate($collection, $pipeline)[0]['avg'] ?? 0;
+    }
+
     public function getFindTermFilter($term): \Closure {
 
         $terms = str_getcsv(trim($term), ' ', escape: '\\');
