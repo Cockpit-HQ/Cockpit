@@ -14,13 +14,15 @@ class QueryParsingException extends Exception
     // Use PHP 8.1 readonly properties
     public readonly string $query;
     public readonly int $position; // Position in the *original* query string
+    public readonly ?string $offendingValue; // Optionally store the token value causing the error
 
     /**
      * Constructor for QueryParsingException.
      *
      * @param string $message The primary error message.
      * @param string $query The full SQL query string being parsed.
-     * @param int $position The character position in the query where the error occurred.
+     * @param int $position The character position in the query where the error likely occurred.
+     * @param ?string $offendingValue The value of the token that might have caused the error.
      * @param int $code The exception code.
      * @param ?Throwable $previous The previous throwable used for exception chaining.
      */
@@ -28,19 +30,23 @@ class QueryParsingException extends Exception
         string $message,
         string $query,
         int $position,
+        ?string $offendingValue = null,
         int $code = 0,
         ?Throwable $previous = null
     ) {
         $this->query = $query;
-        $this->position = $position;
+        $this->position = max(0, $position); // Ensure position is not negative
+        $this->offendingValue = $offendingValue;
 
         // Add context to the error message
-        $context = $this->getErrorContext($query, $position);
+        $context = $this->getErrorContext($this->query, $this->position);
         $fullMessage = sprintf(
-            "%s\nAt position ~%d: ...%s...\n%s",
+            "%s%s\nAt position ~%d: ...%s...\n%s%s",
             $message,
-            $position,
+            ($offendingValue !== null ? " (near '{$offendingValue}')" : ""),
+            $this->position,
             $context['snippet'],
+            str_repeat(' ', strlen("At position ~{$this->position}: ...")), // Align pointer
             $context['pointer']
         );
 
@@ -57,18 +63,24 @@ class QueryParsingException extends Exception
      */
     private function getErrorContext(string $query, int $position, int $contextLength = 20): array
     {
+        $queryLength = strlen($query);
         $start = max(0, $position - $contextLength);
-        // Adjust length calculation to handle multibyte characters better if needed,
-        // but for context snippet, byte-based substr is often sufficient.
-        $length = min(strlen($query) - $start, $contextLength * 2);
+        // Calculate length carefully to avoid going past the end of the string
+        $length = min($queryLength - $start, $contextLength * 2 + 1); // +1 to potentially include the char at position
         $snippet = substr($query, $start, $length);
 
         // Create a pointer ('^') indicating the error position within the snippet
-        $pointerPosition = max(0, $position - $start); // Ensure pointer position isn't negative
-        // Handle potential multibyte characters if precise alignment is critical
-        // $pointer = mb_str_repeat(' ', mb_strlen(substr($snippet, 0, $pointerPosition))) . '^';
+        $pointerPosition = max(0, $position - $start); // Position relative to snippet start
+        // Ensure pointer doesn't exceed snippet length (can happen if error is at the very end)
+        $pointerPosition = min($pointerPosition, strlen($snippet));
+
+        // Basic pointer alignment (works well for ASCII/single-byte)
         $pointer = str_repeat(' ', $pointerPosition) . '^';
 
+        // Handle potential multibyte characters if precise alignment is critical (more complex)
+        // If multibyte support is needed:
+        // $prefix = mb_substr($snippet, 0, $pointerPosition);
+        // $pointer = mb_str_repeat(' ', mb_strlen($prefix)) . '^';
 
         return [
             'snippet' => $snippet,
@@ -82,18 +94,24 @@ class QueryParsingException extends Exception
  *
  * Supports:
  * - Basic comparisons: =, !=, <>, >, <, >=, <=
- * - Logical operators: AND, OR, NOT
+ * - Logical operators: AND, OR (respecting precedence), NOT
  * - Parentheses for grouping: (...)
- * - IN, NOT IN (...)
+ * - IN (value1, value2, ...), NOT IN (value1, value2, ...)
  * - BETWEEN value1 AND value2, NOT BETWEEN value1 AND value2
  * - IS NULL, IS NOT NULL
- * - LIKE, NOT LIKE (with % and _ wildcards, configurable case sensitivity)
- * - REGEXP (maps directly to $regex, pattern must be a valid PCRE)
- * - Strings (single/double quoted, with \' and \" escapes)
- * - Numbers (int, float)
- * - Booleans (TRUE, FALSE)
- * - NULL literal
- * - Field names (including dot notation like 'user.address' and backtick-quoted names `` `field name` ``)
+ * - LIKE pattern, NOT LIKE pattern (with % and _ wildcards, configurable case sensitivity)
+ * - REGEXP pattern (maps directly to $regex, pattern must be a valid PCRE string)
+ * - Strings (single/double quoted, with standard \' and \" escapes)
+ * - Numbers (integer, float)
+ * - Booleans (TRUE, FALSE - case-insensitive keywords)
+ * - NULL literal (case-insensitive keyword)
+ * - Field names (including dot notation like 'user.address' and backtick-quoted names `` `field name with spaces` ``)
+ *
+ * Limitations:
+ * - Does not support SQL functions, arithmetic operations, JOINs, subqueries, aliases, etc.
+ * - LIKE conversion is basic and does not support the SQL `ESCAPE` clause.
+ * - `field = NULL` and `field != NULL` translation follows MongoDB's common interpretation (`$eq: null`, `$ne: null`)
+ * which differs from strict SQL three-valued logic (where they usually evaluate to UNKNOWN/FALSE).
  */
 class SQLToMongoQuery
 {
@@ -102,13 +120,13 @@ class SQLToMongoQuery
     private const K_OR = 'OR';
     private const K_NOT = 'NOT';
     private const K_IN = 'IN';
-    private const K_NOT_IN = 'NOT IN';
+    private const K_NOT_IN = 'NOT IN'; // Internal use, helps clarity
     private const K_LIKE = 'LIKE';
-    private const K_NOT_LIKE = 'NOT LIKE';
+    private const K_NOT_LIKE = 'NOT LIKE'; // Internal use
     private const K_IS = 'IS';
     private const K_NULL = 'NULL';
     private const K_BETWEEN = 'BETWEEN';
-    private const K_NOT_BETWEEN = 'NOT BETWEEN';
+    private const K_NOT_BETWEEN = 'NOT BETWEEN'; // Internal use
     private const K_REGEXP = 'REGEXP';
     private const K_TRUE = 'TRUE';
     private const K_FALSE = 'FALSE';
@@ -121,6 +139,7 @@ class SQLToMongoQuery
     private const OP_GTE = '>=';
     private const OP_LTE = '<=';
 
+    // --- MongoDB Operators ---
     private const MGO_EQ = '$eq';
     private const MGO_NE = '$ne';
     private const MGO_GT = '$gt';
@@ -136,7 +155,7 @@ class SQLToMongoQuery
     private const MGO_AND = '$and';
     private const MGO_OR = '$or';
 
-    // SQL operators to MongoDB operators mapping
+    // SQL operators to MongoDB operators mapping (simple cases)
     private const OPERATOR_MAP = [
         self::OP_EQ => self::MGO_EQ,
         self::OP_NE => self::MGO_NE,
@@ -145,17 +164,21 @@ class SQLToMongoQuery
         self::OP_LT => self::MGO_LT,
         self::OP_GTE => self::MGO_GTE,
         self::OP_LTE => self::MGO_LTE,
-        self::K_REGEXP => self::MGO_REGEX,
-        // Special operators handled in parseCondition
+        self::K_REGEXP => self::MGO_REGEX, // Handled directly
+        // Special operators (IS NULL, IN, LIKE, BETWEEN, NOT variants) handled in parseCondition
     ];
 
-    /** @var array<array{value: string, type: string, pos: int}> */
+    /** @var array<array{value: string, type: string, pos: int}> Processed tokens */
     private array $tokens = [];
+    /** @var int Current position in the token array */
     private int $position = 0;
-    private readonly string $originalQuery; // Keep original for error reporting
-    private readonly string $processedQuery; // Trimmed query for parsing
+    /** @var string Original unmodified query string for error reporting */
+    private readonly string $originalQuery;
+    /** @var string Query string trimmed for parsing */
+    private readonly string $processedQuery;
 
     // --- Configurable Options ---
+    /** @var bool Whether LIKE/NOT LIKE comparisons should be case-insensitive */
     private bool $likeCaseInsensitive = false;
 
     /**
@@ -163,7 +186,7 @@ class SQLToMongoQuery
      *
      * @param string $query The SQL WHERE clause string.
      * @param array $options Optional configuration:
-     * - 'likeCaseInsensitive' (bool): Set LIKE/NOT LIKE matching to be case-insensitive (default: false).
+     * - 'likeCaseInsensitive' (bool): Set LIKE/NOT LIKE matching to be case-insensitive (default: false). Maps to MongoDB regex 'i' option.
      */
     public function __construct(string $query, private array $options = [])
     {
@@ -175,8 +198,8 @@ class SQLToMongoQuery
     /**
      * Performs the conversion from SQL to MongoDB query array.
      *
-     * @return array The MongoDB query filter array.
-     * @throws QueryParsingException If parsing fails.
+     * @return array<string, mixed> The MongoDB query filter array. Returns empty array for empty input string.
+     * @throws QueryParsingException If parsing fails due to syntax errors or unsupported constructs.
      */
     public function toMongo(): array
     {
@@ -187,24 +210,33 @@ class SQLToMongoQuery
         try {
             $this->tokenize();
             if (empty($this->tokens)) {
-                // Could happen if query was just whitespace
-                 return [];
+                 // Could happen if query was just whitespace or comments not handled
+                return [];
             }
-            $result = $this->parseExpression();
+
+            $result = $this->parseExpression(); // Start parsing with lowest precedence
+
+            // After parsing, check if all tokens were consumed
             if ($this->position < count($this->tokens)) {
-                $this->throwParsingException("Unexpected token found after main expression");
+                $this->throwParsingException(
+                    "Unexpected token found after main expression",
+                    $this->tokens[$this->position]['value'] ?? null // Provide offending token if possible
+                );
             }
             return $result;
+
         } catch (QueryParsingException $e) {
             // Re-throw our specific exception
             throw $e;
         } catch (Throwable $e) {
-            // Wrap other potential errors (e.g., regex errors)
-            $pos = $this->getCurrentTokenPosition();
+            // Wrap other potential errors (e.g., regex errors during LIKE conversion)
+            $pos = $this->getCurrentTokenCharPosition();
+            $currentToken = ($this->position < count($this->tokens)) ? $this->tokens[$this->position]['value'] : null;
             throw new QueryParsingException(
                 "Failed to parse SQL query: {$e->getMessage()}",
                 $this->originalQuery,
                 $pos,
+                $currentToken,
                 $e->getCode(),
                 $e // Chain the previous exception
             );
@@ -212,12 +244,24 @@ class SQLToMongoQuery
     }
 
     /**
-     * Tokenizes the input query string.
-     * @throws QueryParsingException if unknown characters are found.
+     * Tokenizes the input query string into fundamental units (keywords, operators, values, etc.).
+     * @throws QueryParsingException if unknown characters are found or strings/identifiers are malformed.
      */
     private function tokenize(): void
     {
-        // Enhanced regex to handle escapes in strings and backtick identifiers
+        // Regex breakdown:
+        // \s* : Skip leading whitespace
+        // Capturing groups (?<name>...) for different token types:
+        // string_single: '...' with escaped \'
+        // string_double: "..." with escaped \"
+        // identifier_backtick: `...` with escaped \`
+        // number: Integer or float (simple form)
+        // operator: <=, >=, !=, <>, =, <, > (order matters: longest first)
+        // keyword: Case-insensitive match for known keywords
+        // identifier: Standard SQL identifiers (letters, numbers, _, starting with letter or _) including dot notation
+        // paren: (, ), or ,
+        // \s* : Skip trailing whitespace
+        // x modifier: Ignore whitespace in pattern, allow comments (#)
         $pattern = '/
             \s* # Skip leading whitespace
             (
@@ -230,9 +274,9 @@ class SQLToMongoQuery
                 |
                 (?<number>\d+(?:\.\d+)?) # Numbers (integer or float)
                 |
-                (?<operator><=|>=|!=|<>|=|<|>) # Comparison operators
+                (?<operator><=|>=|!=|<>|=|<|>) # Comparison operators (longest first)
                 |
-                # Keywords (case-insensitive match)
+                # Keywords (case-insensitive match using (?i:...))
                 (?<keyword>(?i:AND|OR|NOT|IN|LIKE|IS|NULL|BETWEEN|REGEXP|TRUE|FALSE))
                 |
                 # Plain Identifiers (field names, potentially dotted)
@@ -241,125 +285,154 @@ class SQLToMongoQuery
                 (?<paren>[\(\),]) # Parentheses and comma
             )
             \s* # Skip trailing whitespace
-        /x'; // x modifier for free-spacing and comments
+        /x';
 
-        if (!preg_match_all($pattern, $this->processedQuery, $matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE)) {
-             $this->tokens = [];
-             // Check if the query wasn't empty - if it wasn't, preg_match_all failing might be an issue
-             if(!empty($this->processedQuery)) {
-                // Could try to find the position of the first *unmatched* character,
-                // but for now, just indicate a general tokenization failure.
-                 throw new QueryParsingException("Could not tokenize query string.", $this->originalQuery, 0);
-             }
-             return;
+        $flags = PREG_SET_ORDER | PREG_OFFSET_CAPTURE;
+        $matches = []; // Initialize $matches
+        $result = @preg_match_all($pattern, $this->processedQuery, $matches, $flags);
+
+        // Check for preg_match_all errors (e.g., regex compilation issues, backtrack limits)
+        if ($result === false) {
+             throw new QueryParsingException("Regex error during tokenization: " . preg_last_error_msg(), $this->originalQuery, 0);
         }
 
         $this->tokens = [];
         $matchedLength = 0;
+        $lastMatchEndPos = 0;
+
         foreach ($matches as $match) {
+            // Check for gaps between matches, indicating unrecognized characters
+            if ($match[0][1] > $lastMatchEndPos) {
+                 $unmatchedPos = $lastMatchEndPos;
+                 $this->throwParsingException(
+                    "Unrecognized character sequence in query",
+                    null, // Offending value is unknown here
+                    $unmatchedPos
+                 );
+            }
+
+            // $match[1] is the captured token group
             $value = $match[1][0];
-            $pos = $match[1][1];
-            $matchedLength += strlen($match[0][0]); // Length of full match including whitespace
+            $pos = $match[1][1]; // Starting character position of the token itself
 
-            // Determine token type (more robust than relying solely on regex groups)
+            // Determine token type robustly by checking which named capture group was successful
+            // Note: $match['group_name'][1] will be -1 if that group didn't match this specific token
             $type = 'unknown';
-            if ($match['string_single'][0] !== null && $match['string_single'][1] !== -1) $type = 'string';
-            elseif ($match['string_double'][0] !== null && $match['string_double'][1] !== -1) $type = 'string';
-            elseif ($match['identifier_backtick'][0] !== null && $match['identifier_backtick'][1] !== -1) $type = 'identifier';
-            elseif ($match['number'][0] !== null && $match['number'][1] !== -1) $type = 'number';
-            elseif ($match['operator'][0] !== null && $match['operator'][1] !== -1) $type = 'operator';
-            elseif ($match['keyword'][0] !== null && $match['keyword'][1] !== -1) $type = 'keyword';
-            elseif ($match['identifier'][0] !== null && $match['identifier'][1] !== -1) $type = 'identifier';
-            elseif ($match['paren'][0] !== null && $match['paren'][1] !== -1) $type = 'paren';
+            if (isset($match['string_single']) && $match['string_single'][1] !== -1) $type = 'string';
+            elseif (isset($match['string_double']) && $match['string_double'][1] !== -1) $type = 'string';
+            elseif (isset($match['identifier_backtick']) && $match['identifier_backtick'][1] !== -1) $type = 'identifier';
+            elseif (isset($match['number']) && $match['number'][1] !== -1) $type = 'number';
+            elseif (isset($match['operator']) && $match['operator'][1] !== -1) $type = 'operator';
+            elseif (isset($match['keyword']) && $match['keyword'][1] !== -1) $type = 'keyword';
+            elseif (isset($match['identifier']) && $match['identifier'][1] !== -1) $type = 'identifier';
+            elseif (isset($match['paren']) && $match['paren'][1] !== -1) $type = 'paren';
 
+            if ($type === 'unknown') {
+                 // Should not happen if regex is correct and covers all cases
+                 $this->throwParsingException("Internal tokenizer error: Failed to determine type for matched token", $value, $pos);
+            }
 
             $this->tokens[] = ['value' => $value, 'type' => $type, 'pos' => $pos];
+
+            $matchedLength += strlen($match[0][0]); // Length of full match including surrounding whitespace
+            $lastMatchEndPos = $match[0][1] + strlen($match[0][0]);
         }
 
-         // Check if the entire string was consumed by the tokenizer
-         if ($matchedLength < strlen($this->processedQuery)) {
-            // Find the approximate position of the error
-            $errorPos = $matchedLength > 0 ? $this->tokens[count($this->tokens) - 1]['pos'] + strlen($this->tokens[count($this->tokens) - 1]['value']) : 0;
-             // Attempt to find the actual start of the unmatched portion
-             $unmatchedPos = -1;
-             $tempPos = 0;
-             foreach ($matches as $match) {
-                if ($match[0][1] > $tempPos) {
-                    $unmatchedPos = $tempPos; // Gap found
-                    break;
-                }
-                $tempPos = $match[0][1] + strlen($match[0][0]);
-             }
-             if ($unmatchedPos === -1 && $tempPos < strlen($this->processedQuery)) {
-                 $unmatchedPos = $tempPos;
-             }
+        // Check if the entire string was consumed by the tokenizer
+        if ($lastMatchEndPos < strlen($this->processedQuery)) {
+            $this->throwParsingException(
+                "Unrecognized character sequence at the end of the query",
+                null,
+                $lastMatchEndPos // Error occurred after the last successfully matched token
+            );
+        }
 
-             throw new QueryParsingException(
-                 "Unrecognized character sequence in query",
-                 $this->originalQuery,
-                 $unmatchedPos !== -1 ? $unmatchedPos : $errorPos // Use more precise position if found
-             );
-         }
+         // Check if tokenization produced no tokens for a non-empty query (should be caught earlier)
+        if (empty($this->tokens) && !empty($this->processedQuery)) {
+             $this->throwParsingException("Could not tokenize the query string.", null, 0);
+        }
 
-        $this->position = 0; // Reset position for parsing
+
+        $this->position = 0; // Reset token position for the parser
     }
 
 
     /**
      * Parses expressions involving logical operators (AND, OR) respecting precedence.
+     * Implements precedence climbing method.
+     * AND has higher precedence (2) than OR (1).
+     *
+     * @param int $minPrecedence The minimum precedence level to bind.
+     * @return array<string, mixed> The MongoDB filter array for the parsed expression.
+     * @throws QueryParsingException If syntax errors occur.
      */
-    private function parseExpression(int $precedence = 0): array
+    private function parseExpression(int $minPrecedence = 0): array
     {
         if ($this->position >= count($this->tokens)) {
-             $this->throwParsingException("Unexpected end of query while parsing expression", true);
+            $this->throwParsingException("Unexpected end of query while parsing expression", null, true); // true -> point to end of previous token
         }
 
+        // Parse the left-hand side operand (primary expression or higher precedence expression)
         $left = $this->parsePrimary();
 
+        // Loop while the next operator has precedence >= $minPrecedence
         while ($this->position < count($this->tokens)) {
             $currentToken = $this->tokens[$this->position];
+
+            // Check if it's a logical operator we handle at this level
+            if ($currentToken['type'] !== 'keyword') break;
             $operator = strtoupper($currentToken['value']);
+            if ($operator !== self::K_AND && $operator !== self::K_OR) break;
 
-            if ($currentToken['type'] !== 'keyword' || ($operator !== self::K_AND && $operator !== self::K_OR)) {
-                break; // Not a logical operator we handle here
-            }
+            $precedence = $this->getLogicalOperatorPrecedence($operator);
 
-            $nextPrecedence = $this->getOperatorPrecedence($operator);
-            if ($nextPrecedence <= $precedence) {
-                break; // Lower or equal precedence operator, return to previous level
+            // If the operator's precedence is lower than the minimum required, break the loop
+            if ($precedence < $minPrecedence) {
+                break;
             }
 
             $this->position++; // Consume the AND/OR operator
 
-            $right = $this->parseExpression($nextPrecedence); // Parse the right-hand side
+            // Parse the right-hand side operand, requiring operators with higher precedence
+            $right = $this->parseExpression($precedence + 1); // For right-associativity, use $precedence
 
             $mongoOp = match ($operator) {
                 self::K_AND => self::MGO_AND,
                 self::K_OR => self::MGO_OR,
-                default => $this->throwParsingException("Unhandled logical operator: {$operator}") // Should not happen
+                default => $this->throwParsingException("Internal error: Unhandled logical operator", $operator) // Should not happen
             };
 
-            // Optimize AND/OR combination if possible (flattening)
-             if(isset($left[$mongoOp]) && is_array($left[$mongoOp])) {
-                 $left[$mongoOp][] = $right;
-             } elseif (isset($right[$mongoOp]) && is_array($right[$mongoOp])) {
+            // Combine left and right operands under the MongoDB operator ($and/$or)
+            // Optimize by flattening consecutive operators of the same type
+            if (isset($left[$mongoOp]) && is_array($left[$mongoOp])) {
+                // Append right to existing $and/$or array in left
+                $left[$mongoOp][] = $right;
+            } elseif (isset($right[$mongoOp]) && is_array($right[$mongoOp]) && count($right[$mongoOp]) === 1 && key($right[$mongoOp]) === 0) {
+                 // If right is [$mongoOp => [$singleExpr]], prepend left
                  array_unshift($right[$mongoOp], $left);
                  $left = $right;
-             } else {
+            } else {
+                 // Create a new $and/$or structure
                 $left = [$mongoOp => [$left, $right]];
-             }
+            }
         }
 
         return $left;
     }
 
     /**
-     * Parses primary expressions: conditions, NOT logic, or parenthesized expressions.
+     * Parses primary expressions:
+     * - Parenthesized expressions `( expression )`
+     * - Unary NOT operator `NOT primary_expression`
+     * - Basic conditions `field op value`, `field IS NULL`, etc.
+     *
+     * @return array<string, mixed> The MongoDB filter array for the parsed primary expression.
+     * @throws QueryParsingException If syntax errors occur.
      */
     private function parsePrimary(): array
     {
         if ($this->position >= count($this->tokens)) {
-            $this->throwParsingException("Unexpected end of query while looking for expression", true);
+            $this->throwParsingException("Unexpected end of query while looking for an expression or condition", null, true);
         }
 
         $currentToken = $this->tokens[$this->position];
@@ -367,122 +440,141 @@ class SQLToMongoQuery
         // Handle Parentheses: ( expression )
         if ($currentToken['type'] === 'paren' && $currentToken['value'] === '(') {
             $this->position++; // Consume '('
-            $expr = $this->parseExpression(0); // Start precedence from 0 inside parens
+            $expr = $this->parseExpression(0); // Parse expression inside parens, resetting precedence
 
             if ($this->position >= count($this->tokens) || $this->tokens[$this->position]['value'] !== ')') {
-                $this->throwParsingException("Expected ')' after expression");
+                $expectedToken = $this->tokens[$this->position] ?? null;
+                $this->throwParsingException(
+                    "Expected ')' to close parenthesized expression",
+                     $expectedToken['value'] ?? null
+                );
             }
             $this->position++; // Consume ')'
             return $expr;
         }
 
-        // Handle NOT operator: NOT expression
+        // Handle NOT operator: NOT primary_expression
         if ($currentToken['type'] === 'keyword' && strtoupper($currentToken['value']) === self::K_NOT) {
             $this->position++; // Consume 'NOT'
-            // The operand of NOT might be a complex condition, so parsePrimary/parseCondition
-            // needs to handle it correctly. A simple condition usually follows.
-            // $primary = $this->parsePrimary();
-             // Let's assume NOT applies to the immediately following condition/primary for simplicity
-             // More complex SQL might require different precedence/grouping for NOT.
-            $operand = $this->parseConditionOrPrimary(); // Parse the condition that NOT applies to
 
-             // Check for specific NOT cases like NOT LIKE, NOT IN, NOT BETWEEN handled in parseCondition
-             // This generic $not wrapper handles cases like `NOT (field > 5)` or `NOT field = 1`
-             // Note: MongoDB often optimizes `field != value` to `$ne`, etc.,
-             //       but a general `$not` wrapper is safer for complex operands.
-             // A simple $not might sometimes be redundant if parseCondition returns e.g. [$field => ['$ne'=> value]]
-             // Let's try to simplify simple negations where possible.
+            // Recursively parse the operand of NOT. This handles NOT (expr), NOT NOT expr, NOT field=val etc.
+            $operand = $this->parsePrimary(); // NOT has high precedence
 
-             // Simple heuristic: if operand is a single field condition, negate it directly
-             if (count($operand) === 1) {
-                 $field = key($operand);
-                 $condition = current($operand);
-                 if (is_array($condition) && count($condition) === 1) {
-                     $mongoOp = key($condition);
-                     $value = current($condition);
-                     $negatedOp = match($mongoOp) {
-                         self::MGO_EQ => self::MGO_NE,
-                         self::MGO_NE => self::MGO_EQ,
-                         self::MGO_GT => self::MGO_LTE,
-                         self::MGO_GTE => self::MGO_LT,
-                         self::MGO_LT => self::MGO_GTE,
-                         self::MGO_LTE => self::MGO_GT,
-                         self::MGO_IN => self::MGO_NIN,
-                         self::MGO_NIN => self::MGO_IN,
-                         self::MGO_EXISTS => $value === true ? self::MGO_EXISTS : null, // $not:{$exists:true} -> $exists:false
-                         default => null
-                     };
-                     if ($negatedOp === self::MGO_EXISTS) { // Special handling for exists
-                        return [$field => [self::MGO_EXISTS => false]];
-                     } elseif ($negatedOp !== null) {
+            // --- Simplification Heuristic for NOT ---
+            // Try to simplify negations where possible (e.g., NOT (field = 5) -> field != 5)
+            // This is an optimization and relies on the structure of the $operand array.
+
+            // Check if operand is a single field condition: { field: { $op: value } }
+            if (count($operand) === 1) {
+                $field = key($operand);
+                $condition = current($operand);
+
+                // Check if condition is a simple { $op: value } structure
+                if (is_array($condition) && count($condition) === 1) {
+                    $mongoOp = key($condition);
+                    $value = current($condition);
+
+                    $negatedOp = match($mongoOp) {
+                        self::MGO_EQ => self::MGO_NE,      // NOT (=) -> !=
+                        self::MGO_NE => self::MGO_EQ,      // NOT (!=) -> =
+                        self::MGO_GT => self::MGO_LTE,     // NOT (>) -> <=
+                        self::MGO_GTE => self::MGO_LT,     // NOT (>=) -> <
+                        self::MGO_LT => self::MGO_GTE,     // NOT (<) -> >=
+                        self::MGO_LTE => self::MGO_GT,     // NOT (<=) -> >
+                        self::MGO_IN => self::MGO_NIN,     // NOT (IN) -> NIN
+                        self::MGO_NIN => self::MGO_IN,     // NOT (NIN) -> IN
+                        self::MGO_EXISTS => ($value === true ? self::MGO_EXISTS : null), // NOT (IS NOT NULL / $exists:true) -> IS NULL / $exists:false
+                        // Add more direct negations if needed (e.g., $regex?)
+                        default => null // Cannot simplify this operator directly
+                    };
+
+                    // Special handling for EXISTS negation
+                    if ($mongoOp === self::MGO_EXISTS && $negatedOp === self::MGO_EXISTS) {
+                         return [$field => [self::MGO_EXISTS => false]]; // $not:{$exists:true} -> $exists:false
+                    } elseif ($negatedOp !== null) {
+                        // Apply the simplified negated operator
                         return [$field => [$negatedOp => $value]];
-                     }
+                    }
+                    // If no simplification, fall through to general $not wrapper
+                }
+                 // Handle simple equality case: { field: value } which implies { field: { $eq: value } }
+                 else if (!is_array($condition)) {
+                     // NOT (field = value) -> field != value
+                     return [$field => [self::MGO_NE => $condition]];
                  }
-             }
-             // Otherwise, use the general $not wrapper
+            }
+
+            // If operand is complex or couldn't be simplified, use the general MongoDB $not operator
+            // Example: NOT (a=1 AND b=2) -> { $not: { $and: [ {a: {$eq: 1}}, {b: {$eq: 2}} ] } }
             return [self::MGO_NOT => $operand];
         }
 
-        // Otherwise, assume it's a condition like "field op value"
+        // Otherwise, assume it's a simple condition like "field op value", "field IS NULL", etc.
+        // parseCondition expects to start at the identifier.
         return $this->parseCondition();
-    }
-
-     /**
-     * Parses a condition or a primary expression (used by NOT).
-     * This avoids direct recursion issues if NOT precedes another NOT or parentheses.
-     */
-    private function parseConditionOrPrimary(): array
-    {
-        if ($this->position >= count($this->tokens)) {
-            $this->throwParsingException("Unexpected end of query while looking for condition or primary expression", true);
-        }
-        $nextToken = $this->tokens[$this->position];
-        if ($nextToken['type'] === 'keyword' && strtoupper($nextToken['value']) === self::K_NOT || $nextToken['value'] === '(') {
-             return $this->parsePrimary();
-        } else {
-            return $this->parseCondition();
-        }
     }
 
 
     /**
-     * Parses conditions like "field operator value", "field IS NULL", "field BETWEEN x AND y", etc.
+     * Parses simple conditions like:
+     * - `field operator value`
+     * - `field IS [NOT] NULL`
+     * - `field [NOT] IN (list)`
+     * - `field [NOT] LIKE pattern`
+     * - `field [NOT] BETWEEN val1 AND val2`
+     * - `field [NOT] REGEXP pattern`
+     * Assumes the current token is the field identifier.
+     *
+     * @return array<string, mixed> The MongoDB filter array for the parsed condition.
+     * @throws QueryParsingException If syntax errors occur.
      */
     private function parseCondition(): array
     {
+        // 1. Expect Field Identifier
         if ($this->position >= count($this->tokens) || $this->tokens[$this->position]['type'] !== 'identifier') {
-             $this->throwParsingException("Expected field name");
+            $this->throwParsingException(
+                "Expected field name to start a condition",
+                $this->tokens[$this->position]['value'] ?? null
+            );
         }
         $fieldToken = $this->tokens[$this->position++];
         $field = $this->parseIdentifier($fieldToken['value']); // Handle backticks
 
         if ($this->position >= count($this->tokens)) {
-             $this->throwParsingException("Unexpected end of query after field name '{$field}'");
+            $this->throwParsingException("Unexpected end of query after field name '{$field}'", null, true);
         }
 
-        $operatorToken = $this->tokens[$this->position++];
-        $operator = strtoupper($operatorToken['value']);
+        // 2. Expect Operator or Keyword acting as operator (IS, IN, LIKE, BETWEEN, REGEXP, NOT)
+        $operatorToken = $this->tokens[$this->position];
+        $operatorValue = $operatorToken['value'];
+        $operatorUpper = strtoupper($operatorValue);
+        $this->position++; // Consume the operator/keyword token
 
         // --- Handle multi-word operators and special forms ---
-        switch ($operator) {
-            case self::K_IS:
+        switch ($operatorUpper) {
+            case self::K_IS: // Handles: IS NULL, IS NOT NULL
                 $isNot = false;
-                if ($this->position < count($this->tokens) && strtoupper($this->tokens[$this->position]['value']) === self::K_NOT) {
+                if ($this->peekKeyword(self::K_NOT)) {
                     $isNot = true;
                     $this->position++; // Consume 'NOT'
                 }
-                 if ($this->position >= count($this->tokens) || strtoupper($this->tokens[$this->position]['value']) !== self::K_NULL) {
-                     $this->throwParsingException("Expected NULL after IS [NOT]");
-                 }
-                $this->position++; // Consume 'NULL'
-                // IS NULL -> $exists: false (or field: null) - $exists:false is more general
-                // IS NOT NULL -> $exists: true
-                return [$field => [self::MGO_EXISTS => !$isNot]];
+                if (!$this->expectKeyword(self::K_NULL)) {
+                    $this->throwParsingException("Expected NULL after IS" . ($isNot ? " NOT" : ""), $this->getCurrentTokenValue());
+                }
+                // IS NULL     -> { field: { $exists: true, $eq: null } } (stricter) or { field: { $eq: null } } or { field: { $exists: false } } (common interpretation)
+                // IS NOT NULL -> { field: { $ne: null } } or { field: { $exists: true } } (common interpretation)
+                // We map IS NOT NULL to $exists: true (field must be present)
+                // We map IS NULL to $eq: null (field must be null, implies existence) - aligns better with $ne: null
+                // Alternative for IS NULL: $exists: false (more common SQL mapping, but less consistent with $ne: null)
+                 return $isNot
+                    ? [$field => [self::MGO_NE => null]] // IS NOT NULL -> { field: {$ne: null} } (exists and not null)
+                    : [$field => [self::MGO_EQ => null]]; // IS NULL -> { field: {$eq: null} } (exists and is null)
+                // return [$field => [self::MGO_EXISTS => !$isNot]]; // Alternative mapping
 
-            case self::K_NOT: // Check for NOT IN, NOT LIKE, NOT BETWEEN, NOT REGEXP
-                 if ($this->position >= count($this->tokens)) {
-                     $this->throwParsingException("Expected IN, LIKE, BETWEEN, or REGEXP after NOT");
-                 }
+            case self::K_NOT: // Check specifically for NOT IN, NOT LIKE, NOT BETWEEN, NOT REGEXP
+                if ($this->position >= count($this->tokens)) {
+                    $this->throwParsingException("Expected IN, LIKE, BETWEEN, or REGEXP after NOT", null, true);
+                }
                 $nextToken = $this->tokens[$this->position++];
                 $subOperator = strtoupper($nextToken['value']);
                 switch ($subOperator) {
@@ -493,243 +585,376 @@ class SQLToMongoQuery
                     case self::K_BETWEEN:
                         return $this->parseBetweenCondition($field, true); // isNotBetween = true
                     case self::K_REGEXP:
-                         $pattern = $this->parseValue();
-                         // Basic NOT REGEXP: $not: { $regex: pattern }
-                         return [$field => [self::MGO_NOT => [self::MGO_REGEX => $pattern]]];
+                        $patternValue = $this->parseValue(); // Expects the regex pattern value next
+                        if (!is_string($patternValue)) {
+                            $this->throwParsingException("REGEXP pattern must be a string value", is_scalar($patternValue) ? (string)$patternValue : gettype($patternValue), false, $this->position -1);
+                        }
+                        // MongoDB equivalent: { field: { $not: { $regex: pattern } } }
+                        return [$field => [self::MGO_NOT => [self::MGO_REGEX => $patternValue]]];
                     default:
-                        $this->throwParsingException("Unexpected token '{$nextToken['value']}' after NOT");
+                        $this->throwParsingException("Unexpected keyword '{$nextToken['value']}' following NOT for field '{$field}'. Expected IN, LIKE, BETWEEN, or REGEXP.", $nextToken['value']);
                 }
-                // break; // Unreachable due to return/throw inside switch
+                // break; // Unreachable
 
-            case self::K_IN:
+            case self::K_IN: // Handles: IN (list)
                 return $this->parseInCondition($field, false); // isNotIn = false
 
-            case self::K_LIKE:
-                 return $this->parseLikeCondition($field, false); // isNotLike = false
+            case self::K_LIKE: // Handles: LIKE pattern
+                return $this->parseLikeCondition($field, false); // isNotLike = false
 
-            case self::K_BETWEEN:
-                 return $this->parseBetweenCondition($field, false); // isNotBetween = false
+            case self::K_BETWEEN: // Handles: BETWEEN val1 AND val2
+                return $this->parseBetweenCondition($field, false); // isNotBetween = false
+
+            // --- Handle standard single-token operators (=, !=, <>, >, <, >=, <=, REGEXP) ---
+            default:
+                if (!isset(self::OPERATOR_MAP[$operatorValue]) && $operatorUpper !== self::K_REGEXP) {
+                    // Check OPERATOR_MAP using original case if needed, but map uses constants anyway.
+                    // The check for REGEXP is needed as it's in OPERATOR_MAP but handled differently if it follows NOT.
+                     $this->throwParsingException("Unsupported or misplaced operator '{$operatorValue}' for field '{$field}'", $operatorValue);
+                }
+
+                // Expect a value after the operator
+                if ($this->position >= count($this->tokens)) {
+                    $this->throwParsingException("Expected a value after operator '{$operatorValue}' for field '{$field}'", null, true);
+                }
+
+                $value = $this->parseValue(); // Parse the literal value
+
+                // REGEXP is handled like other simple operators here (field REGEXP 'pattern')
+                if ($operatorUpper === self::K_REGEXP) {
+                     if (!is_string($value)) {
+                          $this->throwParsingException("REGEXP pattern must be a string value", is_scalar($value) ? (string)$value : gettype($value), false, $this->position -1);
+                      }
+                     return [$field => [self::MGO_REGEX => $value]];
+                 }
+
+
+                // Get the corresponding MongoDB operator
+                $mongoOp = self::OPERATOR_MAP[$operatorValue] ?? null; // Should exist if we passed the check above
+                 if ($mongoOp === null) {
+                     $this->throwParsingException("Internal mapping error for operator '{$operatorValue}'", $operatorValue);
+                 }
+
+
+                // --- Special Handling for NULL comparisons ---
+                // SQL: `col = NULL` is generally false/unknown. `col IS NULL` is used.
+                // SQL: `col != NULL` or `col <> NULL` is generally false/unknown. `col IS NOT NULL` is used.
+                // Mongo: `$eq: null` matches documents where the field is explicitly null.
+                // Mongo: `$ne: null` matches documents where the field exists and is not null.
+                // This parser maps '=' to '$eq' and '!=' / '<>' to '$ne'.
+                // So, `field = NULL` becomes `{field: {$eq: null}}`.
+                // And `field != NULL` becomes `{field: {$ne: null}}`.
+                // This aligns with `IS NULL` / `IS NOT NULL` mappings chosen above but differs from strict SQL.
+
+                // No special code needed here anymore as IS NULL / IS NOT NULL handled above.
+                // The $eq/$ne mapping directly applies.
+
+                // Standard condition: { field: { $mongoOp: value } }
+                // Optimize simple equality: { field: value } is equivalent to { field: { $eq: value } } in MongoDB
+                 if ($mongoOp === self::MGO_EQ) {
+                     return [$field => $value];
+                 } else {
+                     return [$field => [$mongoOp => $value]];
+                 }
         }
-
-        // --- Handle standard single-token operators mapped in OPERATOR_MAP ---
-        if (!isset(self::OPERATOR_MAP[$operator])) {
-            $this->throwParsingException("Unsupported or misplaced operator: {$operatorToken['value']}");
-        }
-
-        if ($this->position >= count($this->tokens)) {
-             $this->throwParsingException("Expected value after operator '{$operatorToken['value']}'");
-        }
-
-        $value = $this->parseValue();
-        $mongoOp = self::OPERATOR_MAP[$operator];
-
-        // Special case for equality with null
-        if ($mongoOp === self::MGO_EQ && $value === null) {
-             // SQL `field = NULL` is usually false, `field IS NULL` is used.
-             // Mapping `=` to `$eq` means `field = NULL` becomes `field: {$eq: null}`
-             // which *does* match documents where field is explicitly null.
-             // If strict SQL `field = NULL -> false` is needed, this requires different handling.
-             // Current behavior matches typical NoSQL expectations for equality checks.
-              return [$field => [$mongoOp => $value]];
-        }
-         // Special case for inequality with null
-         if ($mongoOp === self::MGO_NE && $value === null) {
-              // SQL `field != NULL` or `field <> NULL` is usually false.
-              // Mapping to `$ne: null` matches fields that exist and are not null.
-              // This aligns with `IS NOT NULL`.
-              return [$field => [$mongoOp => $value]];
-         }
-
-
-        return [$field => [$mongoOp => $value]];
     }
 
 
-    /** Parses the value list for an IN or NOT IN operator. */
+    /**
+     * Parses the value list for an IN or NOT IN operator `(value1, value2, ...)`
+     * Assumes the '(' token has just been consumed.
+     *
+     * @param string $field The field name for the condition.
+     * @param bool $isNotIn True if parsing NOT IN, false for IN.
+     * @return array<string, mixed> The MongoDB filter array `{ field: { $in/$nin: [values] } }`.
+     * @throws QueryParsingException If syntax errors occur (missing comma, parenthesis, or invalid values).
+     */
     private function parseInCondition(string $field, bool $isNotIn): array
     {
-        if ($this->position >= count($this->tokens) || $this->tokens[$this->position]['value'] !== '(') {
-             $this->throwParsingException("Expected '(' after " . ($isNotIn ? self::K_NOT_IN : self::K_IN));
+        // Expect '(' to start the list
+        if (!$this->expectParen('(')) {
+             $opStr = $isNotIn ? self::K_NOT . ' ' . self::K_IN : self::K_IN;
+             $this->throwParsingException("Expected '(' to start value list after {$opStr}", $this->getCurrentTokenValue());
         }
-        $this->position++; // Consume '('
 
-        $values = $this->parseList();
+        $values = $this->parseList(); // Parse the comma-separated values
 
-        if ($this->position >= count($this->tokens) || $this->tokens[$this->position]['value'] !== ')') {
-            $this->throwParsingException("Expected ')' after list for " . ($isNotIn ? self::K_NOT_IN : self::K_IN));
+        // Expect ')' to end the list
+         if (!$this->expectParen(')')) {
+             $opStr = $isNotIn ? self::K_NOT . ' ' . self::K_IN : self::K_IN;
+             $this->throwParsingException("Expected ')' to end value list for {$opStr}", $this->getCurrentTokenValue());
+         }
+
+        // Handle SQL `IN ()` or `NOT IN ()` - this is often invalid SQL but easy to produce.
+        // MongoDB `$in: []` matches nothing.
+        // MongoDB `$nin: []` matches everything.
+        // This behavior seems reasonable to replicate.
+        if (empty($values)) {
+            // For `field IN ()`, we want it to match nothing. `$in: []` does this.
+            // For `field NOT IN ()`, we want it to match everything (where field exists). `$nin: []` does this.
         }
-        $this->position++; // Consume ')'
+
 
         $mongoOp = $isNotIn ? self::MGO_NIN : self::MGO_IN;
         return [$field => [$mongoOp => $values]];
     }
 
-     /** Parses the pattern for a LIKE or NOT LIKE operator. */
+    /**
+      * Parses the pattern for a LIKE or NOT LIKE operator.
+      * Assumes the LIKE or NOT LIKE token(s) have just been consumed.
+      *
+      * @param string $field The field name for the condition.
+      * @param bool $isNotLike True if parsing NOT LIKE, false for LIKE.
+      * @return array<string, mixed> The MongoDB filter array `{ field: { $regex: ..., $options: ... } }` or `{ field: { $not: { ... } } }`.
+      * @throws QueryParsingException If the pattern is not a string or regex conversion fails.
+      */
     private function parseLikeCondition(string $field, bool $isNotLike): array
     {
         if ($this->position >= count($this->tokens)) {
-            $this->throwParsingException("Expected pattern after " . ($isNotLike ? self::K_NOT_LIKE : self::K_LIKE));
-        }
-        $pattern = $this->parseValue();
-        if (!is_string($pattern)) {
-             $this->throwParsingException("LIKE pattern must be a string");
+             $opStr = $isNotLike ? self::K_NOT . ' ' . self::K_LIKE : self::K_LIKE;
+             $this->throwParsingException("Expected pattern value after {$opStr}", null, true);
         }
 
-        $regex = $this->sqlLikeToRegex($pattern);
+        $patternValue = $this->parseValue(); // Expects the pattern value next
+        if (!is_string($patternValue)) {
+             $opStr = $isNotLike ? self::K_NOT . ' ' . self::K_LIKE : self::K_LIKE;
+             $this->throwParsingException(
+                "Pattern for {$opStr} must be a string value",
+                is_scalar($patternValue) ? (string)$patternValue : gettype($patternValue),
+                false,
+                $this->position - 1 // Point to the token that was parsed as the value
+            );
+        }
+
+        try {
+            $regex = $this->sqlLikeToRegex($patternValue);
+        } catch (Throwable $e) {
+            // Catch potential errors during regex conversion/quoting
+            $this->throwParsingException("Error converting LIKE pattern to regex: " . $e->getMessage(), $patternValue, false, $this->position - 1);
+        }
+
         $options = $this->likeCaseInsensitive ? 'i' : '';
 
-        $condition = [self::MGO_REGEX => $regex];
+        $regexCondition = [self::MGO_REGEX => $regex];
         if (!empty($options)) {
-            $condition[self::MGO_OPTIONS] = $options;
+            $regexCondition[self::MGO_OPTIONS] = $options;
         }
 
         if ($isNotLike) {
-            return [$field => [self::MGO_NOT => $condition]];
+            // MongoDB equivalent for NOT LIKE: { field: { $not: { $regex: pattern, $options: opts } } }
+            return [$field => [self::MGO_NOT => $regexCondition]];
         } else {
-            return [$field => $condition];
-        }
-    }
-
-    /** Parses the range for a BETWEEN or NOT BETWEEN operator. */
-    private function parseBetweenCondition(string $field, bool $isNotBetween): array
-    {
-        if ($this->position >= count($this->tokens)) {
-             $this->throwParsingException("Expected lower bound value after BETWEEN");
-        }
-        $start = $this->parseValue();
-
-         if ($this->position >= count($this->tokens) || strtoupper($this->tokens[$this->position]['value']) !== self::K_AND) {
-             $this->throwParsingException("Expected AND after lower bound in BETWEEN expression");
-         }
-        $this->position++; // Consume AND
-
-        if ($this->position >= count($this->tokens)) {
-            $this->throwParsingException("Expected upper bound value after AND in BETWEEN");
-        }
-        $end = $this->parseValue();
-
-        $condition = [self::MGO_GTE => $start, self::MGO_LTE => $end];
-
-        if ($isNotBetween) {
-             // NOT BETWEEN a AND b  <=>  < a OR > b
-             // MongoDB equivalent: $not: { $gte: a, $lte: b } or { $or: [ { $lt: a }, { $gt: b } ] }
-             // Using $not is simpler to implement here.
-            return [$field => [self::MGO_NOT => $condition]];
-        } else {
-            return [$field => $condition];
+            // MongoDB equivalent for LIKE: { field: { $regex: pattern, $options: opts } }
+            return [$field => $regexCondition];
         }
     }
 
     /**
-     * Parses a comma-separated list of values, typically within parentheses.
-     * Stops parsing at the first token that is not a comma or a valid value.
+     * Parses the range for a BETWEEN or NOT BETWEEN operator `value1 AND value2`.
+     * Assumes the BETWEEN or NOT BETWEEN token(s) have just been consumed.
+     *
+     * @param string $field The field name for the condition.
+     * @param bool $isNotBetween True if parsing NOT BETWEEN, false for BETWEEN.
+     * @return array<string, mixed> The MongoDB filter array `{ field: { $gte: val1, $lte: val2 } }` or `{ field: { $not: { ... } } }`.
+     * @throws QueryParsingException If syntax errors occur (missing values, missing AND).
+     */
+    private function parseBetweenCondition(string $field, bool $isNotBetween): array
+    {
+         $opStr = $isNotBetween ? self::K_NOT . ' ' . self::K_BETWEEN : self::K_BETWEEN;
+
+        // 1. Parse Lower Bound Value
+        if ($this->position >= count($this->tokens)) {
+             $this->throwParsingException("Expected lower bound value after {$opStr}", null, true);
+        }
+        $startValue = $this->parseValue();
+
+        // 2. Expect AND Keyword
+        if (!$this->expectKeyword(self::K_AND)) {
+            $this->throwParsingException("Expected keyword AND after lower bound value in {$opStr} expression", $this->getCurrentTokenValue());
+        }
+
+        // 3. Parse Upper Bound Value
+        if ($this->position >= count($this->tokens)) {
+            $this->throwParsingException("Expected upper bound value after AND in {$opStr}", null, true);
+        }
+        $endValue = $this->parseValue();
+
+        // Standard BETWEEN condition: { field: { $gte: start, $lte: end } }
+        $betweenCondition = [self::MGO_GTE => $startValue, self::MGO_LTE => $endValue];
+
+        if ($isNotBetween) {
+            // SQL: NOT BETWEEN a AND b  <=>  < a OR > b
+            // MongoDB equivalent: { $not: { $gte: a, $lte: b } }
+            // An alternative formulation is { $or: [ { field: { $lt: a } }, { field: { $gt: b } } ] }
+            // Using $not is simpler to implement based on the standard BETWEEN condition.
+            return [$field => [self::MGO_NOT => $betweenCondition]];
+        } else {
+            return [$field => $betweenCondition];
+        }
+    }
+
+    /**
+     * Parses a comma-separated list of literal values.
+     * Used for IN (...) lists. Assumes the opening '(' has been consumed.
+     * Stops parsing at the first token that is not a comma or a valid value type.
+     *
+     * @return list<mixed> A list of the parsed PHP values.
+     * @throws QueryParsingException If an invalid token is found where a value or comma is expected, or on unexpected end of query.
      */
     private function parseList(): array
     {
         $values = [];
+
         if ($this->position >= count($this->tokens)) {
-            $this->throwParsingException("Unexpected end of query while parsing list", true); // Should be inside () normally
+             $this->throwParsingException("Unexpected end of query while parsing list", null, true);
         }
 
-        // Handle empty list case immediately e.g., IN () - though this is invalid SQL
-        if ($this->tokens[$this->position]['value'] === ')') {
-            return $values;
+        // Handle empty list case immediately e.g., IN ()
+        if ($this->peekParen(')')) {
+            return $values; // Return empty list
         }
 
-        do {
+        // Parse the first value
+        $values[] = $this->parseValue();
+
+        // Loop parsing subsequent values separated by commas
+        while ($this->peekParen(',')) {
+            $this->position++; // Consume comma
             if ($this->position >= count($this->tokens)) {
-                $this->throwParsingException("Unexpected end of query in list");
+                $this->throwParsingException("Unexpected end of query after comma in list", null, true);
+            }
+            // Handle trailing comma before closing parenthesis: IN (1, 2, )
+            if ($this->peekParen(')')) {
+                 $this->throwParsingException("Unexpected ')' after comma in list. Expected another value.", ")", false);
+                 // Or alternatively, allow trailing commas by just breaking here:
+                 // break;
             }
             $values[] = $this->parseValue();
-
-            if ($this->position >= count($this->tokens) || $this->tokens[$this->position]['value'] !== ',') {
-                break; // End of list (or expected closing parenthesis)
-            }
-            $this->position++; // Consume comma
-        } while (true);
+        }
 
         return $values;
     }
 
     /**
-     * Parses the next token as a literal value (string, number, boolean, null).
-     * @return mixed The parsed PHP value.
-     * @throws QueryParsingException If the token is not a valid value.
+     * Parses the current token as a literal value (string, number, boolean, null).
+     * Consumes the token.
+     *
+     * @return mixed The parsed PHP value (string, int, float, bool, null).
+     * @throws QueryParsingException If the current token is not a valid literal value type.
      */
     private function parseValue(): mixed
     {
-         if ($this->position >= count($this->tokens)) {
-             $this->throwParsingException("Unexpected end of query, expected value", true);
-         }
-        $token = $this->tokens[$this->position++];
+        if ($this->position >= count($this->tokens)) {
+            $this->throwParsingException("Unexpected end of query, expected a literal value (string, number, TRUE, FALSE, NULL)", null, true);
+        }
+
+        $token = $this->tokens[$this->position];
         $value = $token['value'];
         $type = $token['type'];
+        $posIndex = $this->position; // Store index before incrementing
+
+        $this->position++; // Consume the token
 
         switch ($type) {
             case 'string':
-                // Remove outer quotes and unescape internal quotes
-                $quoteChar = $value[0];
-                $escapedQuote = '\\' . $quoteChar;
+                // Remove outer quotes and unescape internal quotes based on the quote char used
+                $quoteChar = $value[0]; // ' or "
+                $escapedQuote = '\\' . $quoteChar; // \' or \"
+                // Use str_replace for simple cases, potentially needs adjustments for other escapes like \\
                 return str_replace($escapedQuote, $quoteChar, substr($value, 1, -1));
 
             case 'number':
-                // Convert to int or float
+                // Convert to int or float based on presence of decimal point
                 return strpos($value, '.') === false ? (int)$value : (float)$value;
 
             case 'keyword':
-                 // Handle TRUE, FALSE, NULL keywords
+                // Handle TRUE, FALSE, NULL keywords (case-insensitive match)
                 return match (strtoupper($value)) {
                     self::K_TRUE => true,
                     self::K_FALSE => false,
                     self::K_NULL => null,
-                    default => $this->throwParsingException("Unexpected keyword '{$value}' where value was expected", false, $this->position -1),
+                    default => $this->throwParsingException(
+                        "Unexpected keyword '{$value}' where a literal value was expected",
+                        $value,
+                        false, // Don't point to end of previous token
+                        $posIndex // Use stored index of the problematic token
+                    ),
                 };
 
-            case 'identifier': // Sometimes NULL might be tokenized as identifier if not uppercase
-                 if (strtoupper($value) === self::K_NULL) return null;
-                 // break intentionally omitted - fall through to throw error
+            case 'identifier': // Check if it's an unquoted NULL keyword (often allowed in SQL)
+                if (strtoupper($value) === self::K_NULL) {
+                     return null;
+                 }
+                // Fall through intended: An identifier is not a literal value unless it's NULL.
 
-             default:
-                $this->throwParsingException("Invalid token type '{$type}' where value was expected: {$value}", false, $this->position -1);
+            default:
+                // If it's not a string, number, or recognized keyword, it's invalid here.
+                $this->throwParsingException(
+                    "Invalid token type '{$type}' ('{$value}') where a literal value was expected",
+                    $value,
+                    false,
+                    $posIndex
+                );
         }
     }
 
     /**
-     * Parses an identifier, removing backticks and unescaping if necessary.
+     * Parses an identifier token value, removing outer backticks and unescaping internal backticks `\` ` if present.
+     *
+     * @param string $identifier The raw identifier token value.
+     * @return string The cleaned identifier name.
      */
     private function parseIdentifier(string $identifier): string
     {
         if (str_starts_with($identifier, '`') && str_ends_with($identifier, '`')) {
-            // Remove outer backticks and unescape internal backticks
-            return str_replace('\\`', '`', substr($identifier, 1, -1));
+            // Remove outer backticks (first and last char)
+            $inner = substr($identifier, 1, -1);
+            // Unescape internal escaped backticks (\`)
+            return str_replace('\\`', '`', $inner);
         }
-        // Return plain identifier directly
+        // Return plain identifier (like table.column or simple_field) directly
         return $identifier;
     }
 
 
     /**
-     * Converts a SQL LIKE pattern (% wildcard, _ wildcard) to a PCRE regex pattern.
-     * Handles basic escaping and optional anchoring.
+     * Converts a SQL LIKE pattern string (using % and _ wildcards) to a PCRE regex pattern.
+     * - Escapes regex metacharacters in the pattern.
+     * - Converts SQL '%' to PCRE '.*'.
+     * - Converts SQL '_' to PCRE '.'.
+     * - Anchors the regex ('^', '$') unless the pattern starts/ends with '%'.
+     *
+     * NOTE: Does not support the SQL `ESCAPE` clause for specifying custom escape characters.
+     * Assumes '%' and '_' are literal wildcards unless escaped with a standard backslash
+     * *if* backslash escaping is intended (this simple version doesn't handle `\%` -> `%` specifically).
      *
      * @param string $pattern The SQL LIKE pattern.
-     * @return string The PCRE regex pattern.
+     * @return string The equivalent PCRE regex pattern.
+     * @throws \RuntimeException If `preg_quote` fails (highly unlikely).
      */
     private function sqlLikeToRegex(string $pattern): string
     {
-        // 1. Escape PCRE special characters in the pattern
+        // 1. Escape all PCRE special characters in the input pattern string.
+        //    This treats characters like '.', '+', '*', '?', '^', '$', etc. literally.
+        //    We use '/' as the delimiter for our final regex.
         $regex = preg_quote($pattern, '/');
+        if ($regex === false) {
+             // preg_quote failing is extremely rare, maybe memory issues?
+             throw new \RuntimeException("preg_quote failed during LIKE to regex conversion");
+        }
 
-        // 2. Convert SQL wildcards to PCRE wildcards
-        //    Replace % with .* (any character, zero or more times)
-        //    Replace _ with . (any single character)
-        // Note: This simple replacement assumes '%' and '_' were not escaped
-        // in the original SQL (e.g., using an ESCAPE clause, which we don't support).
-        $regex = str_replace(['%', '_'], ['.*', '.'], $regex);
 
-        // 3. Add anchors conditionally
-        // Only anchor start if original pattern didn't start with %
-        // Only anchor end if original pattern didn't end with %
+        // 2. Convert the SQL wildcards (%) and (_) to their PCRE equivalents (.* and .)
+        //    We replace the *escaped* versions produced by preg_quote.
+        //    Example: If pattern is 'a%b_c', preg_quote makes it 'a\%b\_c'.
+        //    We need to change '\%' to '.*' and '\_' to '.'.
+        //    Using strtr for simultaneous replacement.
+        $regex = strtr($regex, ['%' => '.*', '_' => '.']);
+
+        // 3. Add PCRE anchors (^ for start, $ for end) conditionally.
+        //    Anchoring ensures the pattern matches the entire string by default.
+        //    However, if the original SQL pattern started or ended with '%',
+        //    it implies matching anywhere, so we omit the corresponding anchor.
         $anchorStart = !str_starts_with($pattern, '%');
         $anchorEnd = !str_ends_with($pattern, '%');
 
@@ -737,64 +962,161 @@ class SQLToMongoQuery
     }
 
     /**
-     * Gets the precedence level for logical operators.
+     * Gets the precedence level for logical operators (AND, OR).
+     * Higher number means higher precedence (binds tighter).
+     *
+     * @param string $operator The logical operator (AND or OR).
+     * @return int Precedence level (2 for AND, 1 for OR, 0 otherwise).
      */
-    private function getOperatorPrecedence(string $operator): int
+    private function getLogicalOperatorPrecedence(string $operator): int
     {
         return match (strtoupper($operator)) {
             self::K_AND => 2,
             self::K_OR => 1,
-            default => 0, // Includes NOT, comparison operators, etc.
+            default => 0, // Should not be used for non-logical operators in parseExpression
         };
     }
 
-    /** Helper to get current token's starting position for error reporting */
-    private function getCurrentTokenPosition(bool $endOfPrevious = false): int
+    // --- Helper methods for parsing ---
+
+    /** Checks if the next token matches the expected keyword (case-insensitive). Does not consume. */
+    private function peekKeyword(string $keyword): bool
+    {
+        if ($this->position >= count($this->tokens)) return false;
+        $token = $this->tokens[$this->position];
+        return $token['type'] === 'keyword' && strtoupper($token['value']) === $keyword;
+    }
+
+     /** Checks if the next token matches the expected parenthesis character. Does not consume. */
+    private function peekParen(string $paren): bool
+    {
+        if ($this->position >= count($this->tokens)) return false;
+        $token = $this->tokens[$this->position];
+        return $token['type'] === 'paren' && $token['value'] === $paren;
+    }
+
+    /** Consumes the next token if it matches the expected keyword (case-insensitive). Returns true if matched, false otherwise. */
+    private function expectKeyword(string $keyword): bool
+    {
+        if ($this->peekKeyword($keyword)) {
+            $this->position++;
+            return true;
+        }
+        return false;
+    }
+
+     /** Consumes the next token if it matches the expected parenthesis. Returns true if matched, false otherwise. */
+    private function expectParen(string $paren): bool
+    {
+        if ($this->peekParen($paren)) {
+            $this->position++;
+            return true;
+        }
+        return false;
+    }
+
+    /** Helper to get the current token's value, or null if at end */
+    private function getCurrentTokenValue(): ?string
+    {
+        if ($this->position < count($this->tokens)) {
+            return $this->tokens[$this->position]['value'];
+        }
+        return null;
+    }
+
+
+    /** Helper to get current token's starting character position for error reporting */
+    private function getCurrentTokenCharPosition(bool $endOfPrevious = false): int
     {
         $idx = $this->position;
         if ($endOfPrevious) {
-            $idx = max(0, $this->position -1);
+            // If requested position is end of previous, use the token *before* current index
+            $idx = max(0, $this->position - 1);
+             if ($idx < count($this->tokens)) {
+                 $prevToken = $this->tokens[$idx];
+                 // Position after the previous token
+                 return $prevToken['pos'] + strlen($prevToken['value']);
+             }
+             // If no previous token, point to start
+              return 0;
+
+        } else {
+             // Use the current index
+             if ($idx < count($this->tokens)) {
+                 // Position at the start of the current token
+                 return $this->tokens[$idx]['pos'];
+             }
         }
 
-        if ($idx < count($this->tokens)) {
-            return $this->tokens[$idx]['pos'];
-        }
-        // If position is beyond tokens, return position after the last character
+
+        // If position is beyond available tokens (end of query reached unexpectedly)
+        // point to the position immediately after the last character of the query string.
         return !empty($this->processedQuery) ? strlen($this->processedQuery) : 0;
     }
 
-     /** Helper to throw a QueryParsingException consistently */
-     private function throwParsingException(string $message, bool $endOfPrevious = false, ?int $overridePosIndex = null): never // PHP 8.1 never return type
-     {
-         $posIndex = $overridePosIndex ?? $this->position;
-         $charPos = 0;
+    /**
+     * Helper to throw a QueryParsingException consistently.
+     *
+     * @param string $message The base error message.
+     * @param ?string $offendingValue (Optional) The token value near the error.
+     * @param bool $pointToEndOfPrevious If true, the error position refers to the end of the *previous* token (useful for "unexpected end of query").
+     * @param ?int $overridePosIndex (Optional) Explicitly specify the token index causing the error, otherwise uses current position.
+     * @throws QueryParsingException Always throws.
+     * @return never PHP 8.1 never return type hint
+     */
+    private function throwParsingException(
+        string $message,
+        ?string $offendingValue = null,
+        bool $pointToEndOfPrevious = false,
+        ?int $overridePosIndex = null
+    ): never
+    {
+        $posIndex = $overridePosIndex ?? $this->position;
+        $charPos = 0; // Default character position
 
-         if ($posIndex < count($this->tokens)) {
-             $charPos = $this->tokens[$posIndex]['pos'];
-         } elseif (!empty($this->tokens)) {
-             // Point after the last token
-             $lastToken = $this->tokens[count($this->tokens) - 1];
-             $charPos = $lastToken['pos'] + strlen($lastToken['value']);
-         } elseif (!empty($this->processedQuery)) {
-            // Point to the end of the query string if no tokens exist but query isn't empty
-            $charPos = strlen($this->processedQuery);
-         }
+        if ($pointToEndOfPrevious) {
+            // Calculate position after the token *before* posIndex
+            $targetIndex = max(0, $posIndex - 1);
+            if ($targetIndex < count($this->tokens)) {
+                $token = $this->tokens[$targetIndex];
+                $charPos = $token['pos'] + strlen($token['value']);
+            } elseif (!empty($this->processedQuery)) {
+                 // If pointing after previous but we're at index 0, point to end of query
+                 $charPos = strlen($this->processedQuery);
+            } // else charPos remains 0
+        } elseif ($posIndex < count($this->tokens)) {
+            // Point to the start of the token at posIndex
+            $charPos = $this->tokens[$posIndex]['pos'];
+            // If offending value wasn't provided, try to get it from the token
+             if ($offendingValue === null) {
+                 $offendingValue = $this->tokens[$posIndex]['value'];
+             }
+        } elseif (!empty($this->tokens)) {
+            // If posIndex is beyond the last token, point after the last token
+            $lastToken = $this->tokens[count($this->tokens) - 1];
+            $charPos = $lastToken['pos'] + strlen($lastToken['value']);
+        } elseif (!empty($this->processedQuery)) {
+             // If no tokens exist but query isn't empty, point to the end of the query
+             $charPos = strlen($this->processedQuery);
+        }
+         // else: empty query and no tokens, charPos remains 0
 
-
-         throw new QueryParsingException(
-             $message,
-             $this->originalQuery,
-             $charPos
-         );
-     }
+        throw new QueryParsingException(
+            $message,
+            $this->originalQuery,
+            $charPos,
+            $offendingValue // Pass the determined or provided offending value
+        );
+    }
 
 
     /**
-     * Static convenience method to translate SQL directly.
+     * Static convenience method to translate an SQL WHERE clause directly.
+     * Creates an instance of the parser and calls `toMongo()`.
      *
      * @param string $sql The SQL WHERE clause string.
-     * @param array $options Optional configuration (see constructor).
-     * @return array The MongoDB query filter array.
+     * @param array $options Optional configuration (see constructor), e.g., ['likeCaseInsensitive' => true].
+     * @return array<string, mixed> The MongoDB query filter array.
      * @throws QueryParsingException If parsing fails.
      */
     public static function translate(string $sql, array $options = []): array
