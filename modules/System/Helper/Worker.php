@@ -81,8 +81,8 @@ class Worker extends \Lime\Helper {
         return $this->queue->push($body, $opts);
     }
 
-    public function cleanup(string $status, int $olderThan = 86400) {
-        return $this->queue->cleanup();
+    public function cleanup(string $status, int $olderThan = 86400): void {
+        $this->queue->cleanup($status, $olderThan);
     }
 
     public function stopProcess($pid, $signal = 15): bool {

@@ -332,7 +332,7 @@ class Queue {
         return $this->storage->count($this->collectionName, $filter);
     }
 
-    public function cleanup(string $status, int $olderThan = 86400) {
+    public function cleanup(string $status, int $olderThan = 86400): void {
 
         $timestamp = time();
         $cutoff = $timestamp - abs($olderThan);
@@ -346,14 +346,14 @@ class Queue {
         $this->storage->remove($this->collectionName, $filter);
     }
 
-    public function purge() {
+    public function purge(): void {
 
         $this->storage->remove($this->collectionName, [
             'queue' => $this->queueName,
         ]);
     }
 
-    public function worker(array $options = []) {
+    public function worker(array $options = []): Worker {
 
         $worker = new Worker($this, $options);
 
