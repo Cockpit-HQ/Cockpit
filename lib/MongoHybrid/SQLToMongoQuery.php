@@ -289,7 +289,7 @@ class SQLToMongoQuery
 
         $flags = PREG_SET_ORDER | PREG_OFFSET_CAPTURE;
         $matches = []; // Initialize $matches
-        $result = @preg_match_all($pattern, $this->processedQuery, $matches, $flags);
+        $result = preg_match_all($pattern, $this->processedQuery, $matches, $flags);
 
         // Check for preg_match_all errors (e.g., regex compilation issues, backtrack limits)
         if ($result === false) {
