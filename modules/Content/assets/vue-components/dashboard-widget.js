@@ -31,7 +31,7 @@ export default {
                             return timeB - timeA;  // Descending order
                         });
 
-            if (models[0]?._visibleItems === undefined) {
+            if (models[0] && models[0]?._visibleItems === undefined) {
                 models[0]._visibleItems = true;
             }
 
