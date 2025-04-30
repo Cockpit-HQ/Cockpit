@@ -239,7 +239,7 @@
                             </ul>
 
                             <ul class="kiss-overflow-y-auto" style="max-height:250px;">
-                                <li v-for="field in model.fields">
+                                <li v-for="field in fields">
                                     <div class="kiss-flex kiss-flex-middle" :class="field.__visible === false ? 'kiss-color-muted':''">
                                         <div class="kiss-margin-small-right"><input class="kiss-checkbox" type="checkbox" v-model="field.__visible"></div>
                                         <div>{{ field.label || field.name}}</div>
@@ -495,9 +495,20 @@
 
                 computed: {
 
+                    fields() {
+
+                        let fields = this.model.fields;
+
+                        if (Array.isArray((this.model.meta || {}).fields) && this.model.meta.fields.length) {
+                            fields = fields.filter(field => this.model.meta.fields.includes(field.name));
+                        }
+
+                        return fields
+                    },
+
                     visibleFields() {
 
-                        return this.model.fields.filter(field => {
+                        return this.fields.filter(field => {
                             return field.__visible !== false;
                         });
                     },

@@ -43,8 +43,15 @@ export default {
         },
 
         fields() {
-            return (Array.isArray(this.model.fields) ? this.model.fields : []).slice(0, 3);
-        }
+
+            let fields = (Array.isArray(this.model.fields) ? this.model.fields : []);
+
+            if (Array.isArray((this.model.meta || {}).fields) && this.model.meta.fields.length) {
+                fields = fields.filter(field => this.model.meta.fields.includes(field.name));
+            }
+
+            return fields.slice(0, 3)
+        },
 
     },
 
