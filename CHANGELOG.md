@@ -7,6 +7,7 @@
 - Fix memory leaks when using MongoLite (because of eval based filter process)
 - Optimize video thumbnail creation using ffmpeg
 - Optimize MongoLite Aggregation Implementation
+- Initial (beta) lite job worker implementation
 
 ## 2.11.2 (2025-03-11)
 

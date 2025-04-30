@@ -12,8 +12,9 @@
         <li><a href="<?= $this->route('/system') ?>"><?= t('System') ?></a></li>
     </ul>
 
-    <div class="kiss-margin-large-bottom kiss-flex kiss-flex-middle">
-        <div class="kiss-size-4 kiss-flex-1"><strong><?= t('Worker') ?></strong></div>
+    <div class="kiss-margin-large-bottom kiss-flex kiss-flex-middle" gap="small">
+        <div class="kiss-size-4"><strong><?= t('Worker') ?></strong></div>
+        <span class="kiss-badge">BETA</span>
     </div>
 
 
