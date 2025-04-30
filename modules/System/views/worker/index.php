@@ -36,6 +36,9 @@
                             <th width="120">PID</th>
                             <th><?=t('Mode')?></th>
                             <th class="kiss-align-right"><?=t('Start')?></th>
+                            <?php if ($canStopProcess): ?>
+                            <th width="20"></th>
+                            <?php endif; ?>
                         </tr>
                     </thead>
                     <tbody class="kiss-text-monospace">
@@ -44,6 +47,9 @@
                             <td><div class="kiss-size-xsmall kiss-text-bold">{{ w.pid }}</div></td>
                             <td><div class="kiss-size-xsmall">{{ w.mode }}</div></td>
                             <td class="kiss-align-right"><div class="kiss-size-xsmall"><app-datetime type="relative" :datetime="w.start"></app-datetime></div></td>
+                            <?php if ($canStopProcess): ?>
+                            <td><a @click="stopWorker(w.pid)" :title="t('Stop Worker')" v-if="w.alive"><icon class="kiss-size-4">stop_circle</icon></a></td>
+                            <?php endif; ?>
                         </tr>
                     </tbody>
                 </table>
@@ -198,6 +204,25 @@
                             this.loading = false;
                         });
 
+                    },
+
+                    stopWorker(pid) {
+
+                        App.ui.confirm('Are you sure you want to stop this worker?', () => {
+
+                            this.$request('/system/worker/stop', {pid}).then(rsp => {
+
+                                if (rsp?.success) {
+                                    this.workers = this.workers.filter(w => w.pid !== pid);
+                                    App.ui.notify('Worker stopped', 'success');
+                                } else {
+                                    App.ui.notify('Stop worker failed', 'error');
+                                }
+
+                            }).catch(err => {
+                                App.ui.notify(err?.message || 'Stop worker failed', 'error');
+                            });
+                        });
                     },
 
                     showJob(job) {

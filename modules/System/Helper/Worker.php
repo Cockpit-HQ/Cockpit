@@ -87,20 +87,43 @@ class Worker extends \Lime\Helper {
 
     public function stopProcess($pid, $signal = 15): bool {
 
+        $data = $this->getWorkerPIDFileData();
+        $exists = array_find($data['workers'], fn($worker) => $worker['pid'] === $pid);
+
+        if (!$exists) {
+            return false;
+        }
+
         if (function_exists('posix_kill')) {
             // Unix/Linux
-            return posix_kill($pid, $signal);
+            $ret = posix_kill($pid, $signal);
+
+            if ($ret) {
+                $this->removeWorkerPID($pid);
+            }
+
+            return $ret;
         }
 
         // Windows
         if (PHP_OS_FAMILY === 'Windows') {
             $cmd = $signal == 9 ? "taskkill /F /PID $pid" : "taskkill /PID $pid";
             exec($cmd, $output, $result);
+
+            if ($result === 0) {
+                $this->removeWorkerPID($pid);
+            }
+
             return $result === 0;
         }
 
         // Unix-like without posix extension
         exec("kill -$signal $pid", $output, $result);
+
+        if ($result === 0) {
+            $this->removeWorkerPID($pid);
+        }
+
         return $result === 0;
     }
 

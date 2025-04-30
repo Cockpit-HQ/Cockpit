@@ -6,6 +6,8 @@ use App\Controller\App;
 
 class Worker extends App {
 
+    protected bool $cliAvailable = false;
+
     protected function before() {
 
         if (!$this->helper('acl')->isSuperAdmin()) {
@@ -13,11 +15,15 @@ class Worker extends App {
         }
 
         $this->helper('session')->close();
+
+        $this->cliAvailable = $this->helper('spaces')->isMaster() && function_exists('posix_kill') && function_exists('exec');
     }
 
     public function index() {
 
-        return $this->render('system:views/worker/index.php');
+        $canStopProcess = $this->cliAvailable;
+
+        return $this->render('system:views/worker/index.php', compact('canStopProcess'));
     }
 
     public function load() {
@@ -40,7 +46,7 @@ class Worker extends App {
 
         $workers = null;
 
-        if ($this->helper('spaces')->isMaster()) {
+        if ($this->cliAvailable) {
 
             $workers = $this->helper('worker')->getWorkerPIDFileData()['workers'] ?? [];
 
@@ -62,6 +68,27 @@ class Worker extends App {
         ];
 
         return $result;
+    }
+
+    public function stopProcess() {
+
+        $this->hasValidCsrfToken(true);
+
+        if (!$this->cliAvailable) {
+            return $this->stop(['error' => 'Worker stop is not supported on this server'], 412);
+        }
+
+        $pid = $this->param('pid');
+
+        if (!$pid) {
+            return $this->stop(['error' => 'Worker PID is missing'], 412);
+        }
+
+        $pid = intval($pid);
+
+        $this->helper('worker')->stopProcess($pid);
+
+        return ['success' => true];
     }
 
 }
