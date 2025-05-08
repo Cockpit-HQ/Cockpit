@@ -109,6 +109,11 @@ final class Php84
         return true;
     }
 
+    public static function fpow(float $num, float $exponent): float
+    {
+        return $num ** $exponent;
+    }
+
     public static function mb_trim(string $string, ?string $characters = null, ?string $encoding = null): string
     {
         return self::mb_internal_trim('{^[%s]+|[%1$s]+$}Du', $string, $characters, $encoding, __FUNCTION__);
