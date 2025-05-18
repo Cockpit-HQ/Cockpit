@@ -55,6 +55,12 @@
     color: var(--kiss-color-muted);
 }
 
+.uppy-Dashboard-AddFiles-list .uppy-DashboardTab-inner {
+    border-radius: var(--app-border-radius, 4px);
+    background-color: var(--kiss-color-contrast);
+    box-shadow: none;
+}
+
 .uppy-DashboardContent-addMore:focus,
 .uppy-DashboardContent-back:focus {
     background-color: transparent;

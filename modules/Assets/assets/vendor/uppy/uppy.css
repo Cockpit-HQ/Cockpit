@@ -1798,6 +1798,15 @@
     padding-bottom: 10px;
   }
 }
+/* https://stackoverflow.com/a/33082658/6519037 */
+.picker-dialog-bg {
+  z-index: 20000 !important;
+}
+
+.picker-dialog {
+  z-index: 20001 !important;
+}
+
 .uppy-Dashboard-Item-previewInnerWrap {
   position: relative;
   display: flex;
@@ -3094,6 +3103,13 @@ button.uppy-Dashboard-Item-progressIndicator:focus .uppy-Dashboard-Item-progress
   color: #111;
 }
 [data-uppy-theme=dark] .uppy-DashboardTab-iconUnsplash {
+  color: #eaeaea;
+}
+
+.uppy-DashboardTab-iconWebdav {
+  color: #111;
+}
+[data-uppy-theme=dark] .uppy-DashboardTab-iconWebdav {
   color: #eaeaea;
 }
 
