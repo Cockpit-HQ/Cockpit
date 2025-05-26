@@ -29,6 +29,24 @@ class Asset extends \Lime\Helper {
         }
     }
 
+    public function makeAssetLocalAvailable(string $path) {
+
+        $path = trim($path, '/');
+        $src = $this->app->path("#uploads:{$path}");
+
+        if (!$src && $this->app->fileStorage->fileExists("uploads://{$path}")) {
+
+            $stream = $this->app->fileStorage->readStream("uploads://{$path}");
+
+            if ($stream) {
+                $this->app->fileStorage->writeStream("#uploads://{$path}", $stream);
+                $src = $this->app->path("#uploads:{$path}");
+            }
+        }
+
+        return $src;
+    }
+
     public function image(array $options = [], bool $asPath = false) {
 
         $options = array_merge([
@@ -81,9 +99,9 @@ class Asset extends \Lime\Helper {
 
         $options['src'] = $src;
 
-        if (\str_starts_with($src, 'uploads://')) {
+        if (str_starts_with($src, 'uploads://')) {
 
-            $options['src'] = \str_replace('uploads://', '', $src);
+            $options['src'] = str_replace('uploads://', '', $src);
 
             return $this->imageByPath($options, $asPath, $hash);
         }
@@ -98,7 +116,7 @@ class Asset extends \Lime\Helper {
 
         $asset = null;
 
-        if (\str_starts_with($src, 'assets://')) {
+        if (str_starts_with($src, 'assets://')) {
             $asset = ['path' => \str_replace('assets://', '', $src)];
         } elseif (!preg_match('/\.(png|jpg|jpeg|gif|svg|webp)$/i', $src)) {
             $asset = $this->app->dataStorage->findOne('assets', ['_id' => $src]);
@@ -125,17 +143,7 @@ class Asset extends \Lime\Helper {
 
         $path = trim($src, '/');
         $srcUrl = $this->app->fileStorage->getURL("uploads://{$path}");
-        $src = $this->app->path("#uploads:{$path}");
-
-        if (!$src && $this->app->fileStorage->fileExists("uploads://{$path}")) {
-
-            $stream = $this->app->fileStorage->readStream("uploads://{$path}");
-
-            if ($stream) {
-                $this->app->fileStorage->writeStream("#uploads://{$path}", $stream);
-                $src = $this->app->path("#uploads:{$path}");
-            }
-        }
+        $src = $this->makeAssetLocalAvailable($path);
 
         if (!$src) {
             return false;
@@ -339,5 +347,25 @@ class Asset extends \Lime\Helper {
 
     public function getVideoMeta(string $path): ?array {
         return $this->ffmpeg?->getVideoMeta($path);
+    }
+
+    public function videoTranscode(string $src, string $dest, array $options = []) {
+
+        if (!$this->ffmpeg) {
+            return false;
+        }
+
+        if (str_starts_with($src, 'uploads://')) {
+            $src = str_replace('uploads://', '', $src);
+            $src = $this->makeAssetLocalAvailable($src);
+        }
+
+        if (!$src) {
+            return false;
+        }
+
+        $this->ffmpeg->transcode($src, $dest, $options);
+
+        return true;
     }
 }

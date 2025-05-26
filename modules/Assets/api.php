@@ -154,8 +154,34 @@ $this->on('restApi.config', function($restApi) {
             }
 
             if ($options['output']) {
+
+                $fileModificationTime = $app->fileStorage->lastModified($imgPath);
+                $etag = md5("{$imgPath}-{$fileModificationTime}");
+                $maxAge = $app->retrieve('assets/output.maxAge', 2592000); // 30 days
+
+                if (isset($app->request->headers['If-None-Match']) && trim($app->request->headers['If-None-Match'], '"') == $etag) {
+                    $app->response->status = 304; // Not Modified
+                    return '';
+                }
+
+                // Caching-Header
+                $headers = [
+                    'Content-Length' => $app->fileStorage->fileSize($imgPath),
+                    'Cache-Control' => "public, max-age={$maxAge}, immutable",
+                    'ETag' => "\"{$etag}\"",
+                    'Expires' => gmdate('D, d M Y H:i:s', time() + $maxAge) . ' GMT'
+                ];
+
+                if ($fileModificationTime) {
+                    $headers['Last-Modified'] = gmdate('D, d M Y H:i:s', $fileModificationTime) . ' GMT';
+                }
+
+                foreach ($headers as $name => $value) {
+                    $app->response->headers[$name] = $value;
+                }
+
                 $app->response->mime = strtolower(pathinfo($imgPath, PATHINFO_EXTENSION));
-                $app->response->headers['Content-Length'] = $app->fileStorage->fileSize($imgPath);
+
                 return $app->fileStorage->readStream($imgPath);
             }
 
