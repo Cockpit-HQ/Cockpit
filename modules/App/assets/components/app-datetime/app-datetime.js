@@ -76,7 +76,7 @@ customElements.define('app-datetime', class extends HTMLElement {
             } else {
                 const options = {
                     hour12: this.getAttribute('hour12') === 'true',
-                    timeZone: this.getAttribute('timeZone'),
+                    timeZone: this.getAttribute('timeZone') || 'UTC',
                 };
 
                 // Add optional formatting parameters
@@ -226,7 +226,7 @@ customElements.define('app-datetime', class extends HTMLElement {
 
         // Always add full datetime title on hover
         const fullFormatter = new Intl.DateTimeFormat(
-            this.getAttribute('locale')|| document.documentElement.getAttribute('lang') || navigator.language,
+            this.getAttribute('locale') || document.documentElement.getAttribute('lang') || navigator.language,
             {dateStyle: 'full', timeStyle: 'full'}
         );
         span.title = fullFormatter.format(date);
