@@ -5,6 +5,10 @@ class EditorActions {
         this.editor = editor;
 
         this.actions = {
+            color: {
+                title: 'Color',
+                component: Vue.defineAsyncComponent(() => App.utils.import('app:assets/vue-components/fields/richtext/components/color.js'))
+            },
             format: {
                 title: 'Format',
                 component: Vue.defineAsyncComponent(() => App.utils.import('app:assets/vue-components/fields/richtext/components/format.js'))

@@ -4,6 +4,7 @@
 
 - Assets: add video transcoding helper function
 - Assets: Improved HTTP caching when output parameter `o` is used (image api)
+- Add color picker functionality to wysiwyg field
 
 ## 2.11.3 (2025-05-01)
 

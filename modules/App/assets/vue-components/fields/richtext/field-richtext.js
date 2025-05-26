@@ -51,7 +51,7 @@ export default {
 
         toolbar: {
             type: String,
-            default: 'format | alignLeft alignCenter alignRight | link image | listBullet listOrdered | table hr'
+            default: 'format | color | alignLeft alignCenter alignRight | link image | listBullet listOrdered | table hr'
         }
     },
 
@@ -102,6 +102,8 @@ export default {
                     VueTiptap.extensions.Superscript,
                     VueTiptap.extensions.Underline,
                     VueTiptap.extensions.ListKeymap,
+                    VueTiptap.extensions.TextStyle,
+                    VueTiptap.extensions.Color,
 
                     VueTiptap.extensions.Table.configure({
                         resizable: true,
