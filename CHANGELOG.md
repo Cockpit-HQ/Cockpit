@@ -1,5 +1,10 @@
 # Release Notes
 
+## WIP
+
+- Assets: add video transcoding helper function
+- Assets: Improved HTTP caching when output parameter `o` is used (image api)
+
 ## 2.11.3 (2025-05-01)
 
 - Fix assets image api to support "original" value for width and height
