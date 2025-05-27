@@ -13,10 +13,6 @@ export default {
         }
     },
 
-    mounted() {
-
-    },
-
     computed: {
         bgColor() {
             return this.value || '';

@@ -21,10 +21,6 @@ export default {
         }
     },
 
-    mounted() {
-
-    },
-
     methods: {
         pick() {
             VueView.ui.modal('app:assets/vue-components/fields/richtext/dialogs/color.js', {color: this.color}, {
