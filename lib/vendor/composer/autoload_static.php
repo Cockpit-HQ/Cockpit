@@ -741,6 +741,7 @@ class ComposerStaticInit31271496217d24f755014bacdfefaaf2
         'Doctrine\\Common\\Lexer\\AbstractLexer' => __DIR__ . '/..' . '/doctrine/lexer/src/AbstractLexer.php',
         'Doctrine\\Common\\Lexer\\Token' => __DIR__ . '/..' . '/doctrine/lexer/src/Token.php',
         'DotEnv' => __DIR__ . '/../../..' . '/lib/DotEnv.php',
+        'ESQL\\Client' => __DIR__ . '/../../..' . '/lib/ESQL/Client.php',
         'FileStorage' => __DIR__ . '/../../..' . '/lib/FileStorage.php',
         'Firebase\\JWT\\BeforeValidException' => __DIR__ . '/..' . '/firebase/php-jwt/src/BeforeValidException.php',
         'Firebase\\JWT\\CachedKeySet' => __DIR__ . '/..' . '/firebase/php-jwt/src/CachedKeySet.php',

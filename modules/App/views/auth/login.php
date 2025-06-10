@@ -72,6 +72,9 @@
 
             </div>
 
+
+            <?php $this->trigger('app.login.dialog.footer') ?>
+
         </kiss-container>
 
         <app-loader class="animated fadeIn kiss-margin-top" v-if="loading"></app-loader>

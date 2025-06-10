@@ -458,6 +458,7 @@ return array(
     'Doctrine\\Common\\Lexer\\AbstractLexer' => $vendorDir . '/doctrine/lexer/src/AbstractLexer.php',
     'Doctrine\\Common\\Lexer\\Token' => $vendorDir . '/doctrine/lexer/src/Token.php',
     'DotEnv' => $baseDir . '/lib/DotEnv.php',
+    'ESQL\\Client' => $baseDir . '/lib/ESQL/Client.php',
     'FileStorage' => $baseDir . '/lib/FileStorage.php',
     'Firebase\\JWT\\BeforeValidException' => $vendorDir . '/firebase/php-jwt/src/BeforeValidException.php',
     'Firebase\\JWT\\CachedKeySet' => $vendorDir . '/firebase/php-jwt/src/CachedKeySet.php',
