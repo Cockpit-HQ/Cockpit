@@ -454,6 +454,8 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionLookoutMetrics(array $args = [])
  * @method \Aws\LookoutforVision\LookoutforVisionClient createLookoutforVision(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionLookoutforVision(array $args = [])
+ * @method \Aws\MPA\MPAClient createMPA(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionMPA(array $args = [])
  * @method \Aws\MQ\MQClient createMQ(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionMQ(array $args = [])
  * @method \Aws\MTurk\MTurkClient createMTurk(array $args = [])
@@ -815,7 +817,7 @@ namespace Aws;
  */
 class Sdk
 {
-    const VERSION = '3.344.3';
+    const VERSION = '3.345.0';
 
     /** @var array Arguments for creating clients */
     private $args;
