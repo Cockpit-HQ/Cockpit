@@ -6,6 +6,8 @@ namespace Aws;
  *
  * @method \Aws\ACMPCA\ACMPCAClient createACMPCA(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionACMPCA(array $args = [])
+ * @method \Aws\AIOps\AIOpsClient createAIOps(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionAIOps(array $args = [])
  * @method \Aws\ARCZonalShift\ARCZonalShiftClient createARCZonalShift(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionARCZonalShift(array $args = [])
  * @method \Aws\AccessAnalyzer\AccessAnalyzerClient createAccessAnalyzer(array $args = [])
@@ -406,6 +408,8 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionKendraRanking(array $args = [])
  * @method \Aws\Keyspaces\KeyspacesClient createKeyspaces(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionKeyspaces(array $args = [])
+ * @method \Aws\KeyspacesStreams\KeyspacesStreamsClient createKeyspacesStreams(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionKeyspacesStreams(array $args = [])
  * @method \Aws\Kinesis\KinesisClient createKinesis(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionKinesis(array $args = [])
  * @method \Aws\KinesisAnalytics\KinesisAnalyticsClient createKinesisAnalytics(array $args = [])
@@ -798,6 +802,8 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionWorkSpacesThinClient(array $args = [])
  * @method \Aws\WorkSpacesWeb\WorkSpacesWebClient createWorkSpacesWeb(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionWorkSpacesWeb(array $args = [])
+ * @method \Aws\WorkspacesInstances\WorkspacesInstancesClient createWorkspacesInstances(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionWorkspacesInstances(array $args = [])
  * @method \Aws\XRay\XRayClient createXRay(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionXRay(array $args = [])
  * @method \Aws\drs\drsClient createdrs(array $args = [])
@@ -817,7 +823,7 @@ namespace Aws;
  */
 class Sdk
 {
-    const VERSION = '3.345.0';
+    const VERSION = '3.348.0';
 
     /** @var array Arguments for creating clients */
     private $args;
