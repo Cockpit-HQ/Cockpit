@@ -22,11 +22,11 @@
 
                 <div class="kiss-flex-inline kiss-flex-middle" gap="small">
                     <div>
-                        <app-avatar size="40" name="<?=$this['user/name']?>"></app-avatar>
+                        <app-avatar size="40" name="<?=$this->escape($this['user/name'])?>"></app-avatar>
                     </div>
                     <div>
-                        <div class="kiss-text-bold"><?=$this['user/name']?></div>
-                        <div class="kiss-text-truncate kiss-color-muted kiss-size-small"><?=$this['user/email']?></div>
+                        <div class="kiss-text-bold"><?=$this->escape($this['user/name'])?></div>
+                        <div class="kiss-text-truncate kiss-color-muted kiss-size-small"><?=$this->escape($this['user/email'])?></div>
                     </div>
                 </div>
 
@@ -41,7 +41,7 @@
 
                 <kiss-card class="kiss-padding-large kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-visible@m" :class="widgets.length  ? 'kiss-height-30vh' : 'kiss-height-50vh'" :theme="widgets.length ? 'contrast shadowed':''">
                     <div class="animated fadeInUp">
-                        <div class="kiss-size-xlarge kiss-margin-small"><?=_t('Hello %s', [$this['user/name']])?></div>
+                        <div class="kiss-size-xlarge kiss-margin-small"><?=_t('Hello %s', [$this->escape($this['user/name'])])?></div>
                         <div class="kiss-color-muted kiss-size-1 kiss-text-light animated fadeIn delay-1s"><?=t("Excited for your creations today!")?></div>
                     </div>
                 </kiss-card>

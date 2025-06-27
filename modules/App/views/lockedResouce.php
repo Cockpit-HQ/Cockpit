@@ -12,7 +12,7 @@
 
             <div class="kiss-flex kiss-flex-middle">
                 <div class="kiss-margin-small-right">
-                    <app-avatar size="40" name="<?=$meta['user']['name']?>">
+                    <app-avatar size="40" name="<?=$this->escape($meta['user']['name'])?>">
                         <canvas width="40" height="40"></canvas>
                     </app-avatar>
                 </div>

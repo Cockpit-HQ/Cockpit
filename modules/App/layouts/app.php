@@ -139,7 +139,7 @@
                     <div class="kiss-flex-1 kiss-margin-left"></div>
                     <?php $this->block('app.layout.header') ?>
                     <a class="kiss-margin-left" href="#app-account-menu" aria-label="<?=t('Account')?>" kiss-popout>
-                        <app-avatar size="30" name="<?= $this['user/name'] ?>"></app-avatar>
+                        <app-avatar size="30" name="<?= $this->escape($this['user/name']) ?>"></app-avatar>
                     </a>
                 </kiss-container>
             </app-header>
@@ -154,10 +154,10 @@
             <kiss-card class="kiss-padding kiss-margin-small" theme="contrast">
 
                 <kiss-row gap="small">
-                    <div><app-avatar size="35" name="<?= $this['user/name'] ?>"></app-avatar></div>
+                    <div><app-avatar size="35" name="<?=$this->escape($this['user/name'])?>"></app-avatar></div>
                     <div class="kisss-flex-1">
-                        <div class="kiss-text-bold kiss-text-truncate kiss-size-small"><?= $this['user/name'] ?></div>
-                        <div class="kiss-color-muted kiss-text-truncate kiss-size-xsmall"><?= $this['user/email'] ?></div>
+                        <div class="kiss-text-bold kiss-text-truncate kiss-size-small"><?= $this->escape($this['user/name']) ?></div>
+                        <div class="kiss-color-muted kiss-text-truncate kiss-size-xsmall"><?=$this->escape($this['user/email'])?></div>
                     </div>
                 </kiss-row>
 
@@ -181,7 +181,7 @@
     <kiss-offcanvas id="app-offcanvas">
         <kiss-content class="kiss-flex kiss-flex-column">
             <div class="kiss-padding kiss-flex kiss-bgcolor-contrast kiss-flex kiss-flex-middle">
-                <div><app-avatar size="30" name="<?= $this['user/name'] ?>"></app-avatar></div>
+                <div><app-avatar size="30" name="<?=$this->escape($this['user/name'])?>"></app-avatar></div>
                 <div class="kiss-margin-small-left kiss-flex-1 kiss-size-xsmall">
                     <div class="kiss-text-bold kiss-text-truncate"><?= $this->escape($this['user/name']) ?></div>
                     <div class="kiss-color-muted kiss-text-truncate"><?= $this->escape($this['user/email']) ?></div>
