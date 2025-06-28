@@ -54,12 +54,15 @@ class Settings extends \Lime\Helper {
                 'permission' => 'app/spaces'
             ];
 
-            $items[] = [
-                'icon' => 'system:assets/icons/console.svg',
-                'route' => '/system/tower',
-                'label' => 'Tower',
-                'permission' => 'system/tower'
-            ];
+            if (!$this->app->retrieve('tower.disabled')) {
+
+                $items[] = [
+                    'icon' => 'system:assets/icons/console.svg',
+                    'route' => '/system/tower',
+                    'label' => 'Tower',
+                    'permission' => 'system/tower'
+                ];
+            }
 
         }
 

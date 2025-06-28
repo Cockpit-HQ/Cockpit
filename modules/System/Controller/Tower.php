@@ -18,6 +18,10 @@ class Tower extends App {
             return $this->stop(403);
         }
 
+        if ($this->app->retrieve('tower.disabled') === true) {
+            return $this->stop(403);
+        }
+
         $this->helper('session')->close();
     }
 

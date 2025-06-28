@@ -6,6 +6,7 @@
 - Assets: Improved HTTP caching when output parameter `o` is used (image api)
 - Add color picker functionality to wysiwyg field
 - Escape user-provided data to prevent XSS vulnerabilities in views (admin ui).
+- Add config setting `tower.disabled` to disable tower in admin ui
 
 ## 2.11.3 (2025-05-01)
 
