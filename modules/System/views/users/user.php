@@ -130,14 +130,17 @@ if (!isset($user['_meta']) || (is_array($user['_meta']) && array_is_list($user['
                             <div><img src="<?= $this->route("/system/users/getSecretQRCode/{$user['twofa']['secret']}/150") ?>" width="150" height="150" loading="lazy" style="background:#fff;border:10px #fff solid;"></div>
                             <div class="kiss-flex-1">
 
-                                <p class="kiss-text-caption">
+                                <p class="kiss-text-monospace kiss-color-muted">
                                     Scan the QR code with your 2FA mobile app<br>
                                     or enter your secret manually:
                                 </p>
 
-                                <div class="kiss-margin kiss-text-monospace kiss-text-bold kiss-color-primary">
-                                    <?= $user['twofa']['secret'] ?>
-                                </div>
+                                <kiss-card class="kiss-padding-small kiss-flex" theme="bordered" gap="small">
+                                    <div class="kiss-flex-1 kiss-text-monospace kiss-text-bold kiss-text-truncate">
+                                        <?= $user['twofa']['secret'] ?>
+                                    </div>
+                                    <a :title="t('Copy')" @click="copyTwofaSecret"><icon>content_copy</icon></a>
+                                </kiss-card>
                             </div>
                         </kiss-row>
 
@@ -236,6 +239,12 @@ if (!isset($user['_meta']) || (is_array($user['_meta']) && array_is_list($user['
                     copyToken() {
                         App.utils.copyText(this.user.apiKey, () => {
                             App.ui.notify('Token copied!');
+                        });
+                    },
+
+                    copyTwofaSecret() {
+                        App.utils.copyText(this.user.twofa.secret, () => {
+                            App.ui.notify('Secret copied!');
                         });
                     },
 
