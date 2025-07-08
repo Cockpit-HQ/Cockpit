@@ -664,6 +664,7 @@ return array(
     'GraphQL\\Validator\\Rules\\NoUndefinedVariables' => $vendorDir . '/webonyx/graphql-php/src/Validator/Rules/NoUndefinedVariables.php',
     'GraphQL\\Validator\\Rules\\NoUnusedFragments' => $vendorDir . '/webonyx/graphql-php/src/Validator/Rules/NoUnusedFragments.php',
     'GraphQL\\Validator\\Rules\\NoUnusedVariables' => $vendorDir . '/webonyx/graphql-php/src/Validator/Rules/NoUnusedVariables.php',
+    'GraphQL\\Validator\\Rules\\OneOfInputObjectsRule' => $vendorDir . '/webonyx/graphql-php/src/Validator/Rules/OneOfInputObjectsRule.php',
     'GraphQL\\Validator\\Rules\\OverlappingFieldsCanBeMerged' => $vendorDir . '/webonyx/graphql-php/src/Validator/Rules/OverlappingFieldsCanBeMerged.php',
     'GraphQL\\Validator\\Rules\\PossibleFragmentSpreads' => $vendorDir . '/webonyx/graphql-php/src/Validator/Rules/PossibleFragmentSpreads.php',
     'GraphQL\\Validator\\Rules\\PossibleTypeExtensions' => $vendorDir . '/webonyx/graphql-php/src/Validator/Rules/PossibleTypeExtensions.php',
