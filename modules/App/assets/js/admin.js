@@ -58,6 +58,16 @@ window.AppEventStream =  {
             function(evt) {
                 App.ui.alert(evt.data.message);
             }
+        ],
+
+        logout: [
+            function(evt) {
+                App.ui.notify(evt.data?.message || 'You have been logged out!', 'danger');
+
+                setTimeout(() => {
+                    window.location.href = App.route('/auth/logout?force=1');
+                }, 1500);
+            }
         ]
     },
 

@@ -74,13 +74,14 @@ class Auth extends \Lime\Helper {
     public function logout(array $params = []): void {
 
         $user = $this->getUser();
+        $data =  $this->app->helper('session')->getSession();
 
-        $this->app->trigger('app.user.logout', [$user, $params]);
+        $this->app->trigger('app.user.logout', [$user, $params, $data]);
         $this->app->helper('session')->delete($this->sessionKey);
         $this->app->set($this->sessionKey, null);
 
         // prevent session fixation attacks
         $this->app->helper('session')->regenerateId(true);
-        $this->app->trigger('app.user.logout.after', [$user, $params]);
+        $this->app->trigger('app.user.logout.after', [$user, $params, $data]);
     }
 }
