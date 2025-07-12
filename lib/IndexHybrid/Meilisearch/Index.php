@@ -109,9 +109,28 @@ class Index {
             'filter' => null,
             'fuzzy' => null,
             'fuzzy_algorithm' => 'typo_tolerance',
+            'fuzzy_threshold' => null,
+            'fuzzy_min_score' => null,
             'boosts' => [],
             'highlights' => false,
+            'typoTolerance' => null,
+            'rankingScoreThreshold' => null,
+            'attributesToHighlight' => null,
         ], $options);
+        
+        // Handle parameter name conversion from snake_case to camelCase
+        if (isset($options['typo_tolerance'])) {
+            $options['typoTolerance'] = $options['typo_tolerance'];
+        }
+        if (isset($options['ranking_score_threshold'])) {
+            $options['rankingScoreThreshold'] = $options['ranking_score_threshold'];
+        }
+        if (isset($options['attributes_to_highlight'])) {
+            $options['attributesToHighlight'] = $options['attributes_to_highlight'];
+        }
+        
+        // Note: fuzzy_algorithm, fuzzy_threshold, and fuzzy_min_score are IndexLite-specific
+        // and are ignored by Meilisearch backend (they may be present in $options but won't be used)
 
         $params = [
             'q' => $query,
@@ -139,6 +158,20 @@ class Index {
                 ];
             }
         }
+        
+        // Handle direct typo tolerance parameter
+        if ($options['typoTolerance'] !== null) {
+            if (is_bool($options['typoTolerance'])) {
+                $params['typoTolerance'] = ['enabled' => $options['typoTolerance']];
+            } elseif (is_array($options['typoTolerance'])) {
+                $params['typoTolerance'] = $options['typoTolerance'];
+            }
+        }
+        
+        // Handle ranking score threshold
+        if ($options['rankingScoreThreshold'] !== null) {
+            $params['rankingScoreThreshold'] = (float) $options['rankingScoreThreshold'];
+        }
 
         // Handle field boosting
         if (!empty($options['boosts'])) {
@@ -148,7 +181,17 @@ class Index {
 
         // Handle highlights
         if ($options['highlights']) {
-            $params['attributesToHighlight'] = ['*'];
+            if ($options['attributesToHighlight'] !== null) {
+                // Use specific attributes to highlight
+                if (is_string($options['attributesToHighlight'])) {
+                    $params['attributesToHighlight'] = array_map(fn($f) => trim($f), explode(',', $options['attributesToHighlight']));
+                } elseif (is_array($options['attributesToHighlight'])) {
+                    $params['attributesToHighlight'] = $options['attributesToHighlight'];
+                }
+            } else {
+                // Default to all fields
+                $params['attributesToHighlight'] = ['*'];
+            }
         }
 
         // Handle filters
