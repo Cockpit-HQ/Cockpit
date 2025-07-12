@@ -236,7 +236,7 @@ class Index {
         try {
             $response = $this->manager->sendRequest("/indexes/{$this->name}/settings/displayed-attributes", 'GET');
             return $response ?? ['*'];
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // Fallback to common fields
             return ['id', 'title', 'content', 'description'];
         }
