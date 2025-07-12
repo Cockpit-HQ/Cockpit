@@ -19,8 +19,8 @@ class Index {
      *
      * @return void
      */
-    public function clear() {
-        return $this->manager->sendRequest("/indexes/{$this->name}/documents", 'DELETE');
+    public function clear(): void {
+        $this->manager->sendRequest("/indexes/{$this->name}/documents", 'DELETE');
     }
 
     /**
@@ -71,11 +71,11 @@ class Index {
      *                        - id : The ID of the document. This should match the $id parameter.
      *                        - ... (other fields): Other fields of the replacement document.
      *
-     * @return array The response from the manager's sendRequest() method.
+     * @return void
      */
-    public function replaceDocument(mixed $id, array $document) {
+    public function replaceDocument(mixed $id, array $document): void {
         $document['id'] = $id;
-        return $this->manager->sendRequest("/indexes/{$this->name}/documents", 'POST', $document);
+        $this->manager->sendRequest("/indexes/{$this->name}/documents", 'POST', $document);
     }
 
     /**
@@ -107,6 +107,10 @@ class Index {
             'limit' => 50,
             'offset' => 0,
             'filter' => null,
+            'fuzzy' => null,
+            'fuzzy_algorithm' => 'typo_tolerance',
+            'boosts' => [],
+            'highlights' => false,
         ], $options);
 
         $params = [
@@ -115,30 +119,151 @@ class Index {
             'offset' => $options['offset'],
         ];
 
+        // Handle field selection
         if ($options['fields'] !== '*') {
-            $params['attributesToRetrieve'] = is_string($options['fields']) ? array_map(fn($f) => trim($f), explode(',' , $options['fields'])) : $options['fields'];
+            $params['attributesToRetrieve'] = is_string($options['fields']) 
+                ? array_map(fn($f) => trim($f), explode(',' , $options['fields'])) 
+                : $options['fields'];
         }
 
-        if (!$options['filter']) {
-            $queryString = http_build_query($params);
-            return $this->manager->sendRequest("/indexes/{$this->name}/search?{$queryString}", 'GET');
+        // Handle fuzzy search (typo tolerance)
+        if ($options['fuzzy'] !== null) {
+            if (is_bool($options['fuzzy']) && $options['fuzzy']) {
+                // Enable typo tolerance with default settings
+                $params['typoTolerance'] = ['enabled' => true];
+            } elseif (is_int($options['fuzzy'])) {
+                // Set specific typo tolerance level
+                $params['typoTolerance'] = [
+                    'enabled' => true,
+                    'minWordSizeForTypos' => ['oneTypo' => max(1, $options['fuzzy']), 'twoTypos' => max(2, $options['fuzzy'] + 1)]
+                ];
+            }
         }
 
-        return $this->manager->sendRequest("/indexes/{$this->name}/search", 'POST', $params);
+        // Handle field boosting
+        if (!empty($options['boosts'])) {
+            $params['rankingScoreThreshold'] = 0.1; // Enable score-based ranking
+            // Note: Meilisearch handles boosting differently - would need index configuration
+        }
+
+        // Handle highlights
+        if ($options['highlights']) {
+            $params['attributesToHighlight'] = ['*'];
+        }
+
+        // Handle filters
+        if ($options['filter']) {
+            $params['filter'] = $options['filter'];
+        }
+
+        // Use POST for complex queries, GET for simple ones
+        if (isset($params['filter']) || isset($params['typoTolerance']) || !empty($options['boosts'])) {
+            return $this->manager->sendRequest("/indexes/{$this->name}/search", 'POST', $params);
+        }
+
+        $queryString = http_build_query($params);
+        return $this->manager->sendRequest("/indexes/{$this->name}/search?{$queryString}", 'GET');
     }
 
     /**
      * Count the number of documents in the specified index.
      *
      * @param string $query [optional] The search query string. Defaults to an empty string.
+     * @param string $filter [optional] Additional filter to apply. Defaults to an empty string.
      * @return int The number of documents in the index.
      */
-    public function countDocuments(string $query = '') {
+    public function countDocuments(string $query = '', string $filter = ''): int {
 
-        if (!$query) {
+        if (!$query && !$filter) {
             return $this->manager->sendRequest("/indexes/{$this->name}/stats", 'GET')['numberOfDocuments'] ?? 0;
         }
 
-        return $this->search($query, ['limit' => 1])['estimatedTotalHits'] ?? 0;
+        $searchOptions = ['limit' => 1];
+        if ($filter) {
+            $searchOptions['filter'] = $filter;
+        }
+
+        return $this->search($query, $searchOptions)['estimatedTotalHits'] ?? 0;
+    }
+
+    /**
+     * Perform faceted search on the specified index
+     *
+     * @param string $query The search query string
+     * @param string $facetField The field to facet on
+     * @param array $options Additional options
+     * @return array The faceted search results
+     */
+    public function facetSearch(string $query, string $facetField, array $options = []): array {
+        $options = array_merge([
+            'limit' => 50,
+            'offset' => 0,
+            'filter' => null,
+        ], $options);
+
+        $params = [
+            'q' => $query,
+            'limit' => $options['limit'],
+            'offset' => $options['offset'],
+            'facets' => [$facetField]
+        ];
+
+        if ($options['filter']) {
+            $params['filter'] = $options['filter'];
+        }
+
+        $response = $this->manager->sendRequest("/indexes/{$this->name}/search", 'POST', $params);
+        
+        // Transform Meilisearch facet format to match IndexLite format
+        $facets = [];
+        if (isset($response['facetDistribution'][$facetField])) {
+            foreach ($response['facetDistribution'][$facetField] as $value => $count) {
+                $facets[] = [
+                    $facetField => $value,
+                    'count' => $count
+                ];
+            }
+        }
+
+        return $facets;
+    }
+
+    /**
+     * Get available fields (for compatibility with IndexLite)
+     * Note: Meilisearch doesn't have a direct equivalent, so this returns common fields
+     */
+    public function getFields(): array {
+        try {
+            $response = $this->manager->sendRequest("/indexes/{$this->name}/settings/displayed-attributes", 'GET');
+            return $response ?? ['*'];
+        } catch (Exception $e) {
+            // Fallback to common fields
+            return ['id', 'title', 'content', 'description'];
+        }
+    }
+
+    /**
+     * Get connection/manager (for compatibility with IndexLite)
+     */
+    public function getConnection(): Manager {
+        return $this->manager;
+    }
+
+    /**
+     * Create autocomplete functionality (basic implementation for compatibility)
+     * Note: This is a simplified version - Meilisearch has more advanced autocomplete features
+     */
+    public function autocomplete(): object {
+        return new class($this) {
+            private $index;
+            
+            public function __construct($index) {
+                $this->index = $index;
+            }
+            
+            public function suggest(string $query, array $options = []): array {
+                return $this->index->search($query, array_merge($options, ['limit' => 10]));
+            }
+        };
     }
 }

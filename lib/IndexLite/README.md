@@ -1,22 +1,16 @@
 # IndexLite
 
-IndexLite is a lightweight, file-based search engine built on SQLite's powerful FTS5 extension. It provides full-text search capabilities with minimal setup, making it perfect for small to medium-sized applications where deploying a dedicated search engine like Elasticsearch would be overkill.
-
-This library consists of three main components:
-- `Index`: The core search engine class that handles indexing and searching
-- `Autocomplete`: Provides suggestion functionality for search interfaces
-- `Manager`: Manages multiple indices for applications requiring separate search collections
+IndexLite is a powerful, lightweight search engine built on SQLite's FTS5 extension with enhanced fuzzy search capabilities. It provides full-text search with advanced fuzzy matching algorithms, making it perfect for applications requiring intelligent search without the complexity of dedicated search engines.
 
 ## Features
 
-- **Simple Setup**: Single file database with zero dependencies beyond PHP and SQLite
-- **Full-Text Search**: Powerful searching with relevance ranking
-- **Field-Specific Queries**: Target searches to specific fields
-- **Boosted Fields**: Give higher importance to matches in specific fields
-- **Faceted Search**: Group and filter results by field values
-- **Autocomplete**: Smart, typo-tolerant real-time suggestions
-- **Search History**: Track and analyze user searches
-- **JSON Storage**: Store complete documents with arbitrary structure
+- **🔍 Full-Text Search** - Powered by SQLite FTS5 with relevance ranking
+- **🎯 Enhanced Fuzzy Search** - 6 different fuzzy matching algorithms
+- **📊 Faceted Search** - Group and filter results by field values
+- **🚀 Zero Dependencies** - Works with just PHP and SQLite
+- **⚡ High Performance** - Optimized for speed and memory efficiency
+- **🔧 No Extensions Required** - Uses PDO's sqliteCreateFunction for advanced features
+- **📱 Easy Integration** - Simple, intuitive API
 
 ## Requirements
 
@@ -24,389 +18,378 @@ This library consists of three main components:
 - SQLite 3.9.0 or higher (with FTS5 extension enabled)
 - PDO SQLite extension
 
-## Basic Usage
+## Quick Start
 
 ### Creating an Index
 
 ```php
 use IndexLite\Index;
 
-// Create a new index with specified fields
+// Create a new index
 Index::create('search.db', ['title', 'content', 'tags', 'category']);
 
-// Open an existing index
+// Open existing index
 $index = new Index('search.db');
 ```
 
 ### Adding Documents
 
 ```php
-// Add a single document with an explicit ID
+// Add single document
 $index->addDocument('doc1', [
     'title' => 'Getting Started with IndexLite',
-    'content' => 'IndexLite is a lightweight search engine built on SQLite...',
+    'content' => 'IndexLite is a powerful search engine...',
     'tags' => 'php, search, sqlite',
     'category' => 'Documentation'
 ]);
 
-// Add multiple documents in batch (more efficient)
-$index->addDocuments([
-    [
-        'id' => 'doc2',
-        'title' => 'Configuring IndexLite',
-        'content' => 'IndexLite can be configured with various options...',
-        'tags' => 'php, configuration',
-        'category' => 'Documentation'
-    ],
-    [
-        'id' => 'doc3',
-        'title' => 'Advanced Search Techniques',
-        'content' => 'Learn how to use field-specific queries and boosting...',
-        'tags' => 'php, advanced, search',
-        'category' => 'Tutorial'
-    ]
-]);
+// Add multiple documents
+$documents = [
+    ['id' => 'doc2', 'title' => 'Advanced Features', 'content' => '...'],
+    ['id' => 'doc3', 'title' => 'Best Practices', 'content' => '...']
+];
+
+foreach ($documents as $doc) {
+    $index->addDocument($doc['id'], $doc);
+}
 ```
 
-### Basic Searching
+### Basic Search
 
 ```php
-// Search across all fields
-$results = $index->search('sqlite');
+// Simple search
+$results = $index->search('search query');
 
-// Search with pagination
-$results = $index->search('php', [
+// Search with options
+$results = $index->search('query', [
     'limit' => 20,
-    'offset' => 40
+    'offset' => 0,
+    'fields' => ['title', 'content'],
+    'filter' => 'category = "Documentation"'
 ]);
 
-// Only return specific fields
-$results = $index->search('search engine', [
-    'fields' => ['title', 'category']
+// Results structure
+echo "Found {$results['estimatedTotalHits']} results\n";
+foreach ($results['hits'] as $hit) {
+    echo "- {$hit['title']}\n";
+}
+```
+
+## Enhanced Fuzzy Search
+
+IndexLite includes powerful fuzzy search capabilities that work without requiring SQLite extensions.
+
+### Available Algorithms
+
+| Algorithm | Best For | Example |
+|-----------|----------|---------|
+| `fts5` | General search (default) | Standard SQLite FTS5 |
+| `levenshtein` | Spelling errors | 'macbok' → 'MacBook' |
+| `jaro_winkler` | Names and people | 'galax' → 'Galaxy' |
+| `trigram` | Partial matches | 'surfac' → 'Surface' |
+| `soundex` | Pronunciation | 'thinkped' → 'ThinkPad' |
+| `hybrid` | Best overall results | Combined scoring |
+
+### Fuzzy Search Examples
+
+```php
+// Basic fuzzy search (uses hybrid algorithm)
+$results = $index->search('iphon', ['fuzzy' => true]);
+// Finds: 'iPhone 15 Pro', 'phone', etc.
+
+// Algorithm-specific searches
+$results = $index->search('macbok', [
+    'fuzzy' => true,
+    'fuzzy_algorithm' => 'levenshtein',
+    'fuzzy_threshold' => 2
 ]);
+// Finds: 'MacBook Pro', 'MacBook Air'
+
+$results = $index->search('smith', [
+    'fuzzy' => true,
+    'fuzzy_algorithm' => 'soundex'
+]);
+// Finds: 'Smith', 'Smyth', 'Smithe'
+
+$results = $index->search('galax', [
+    'fuzzy' => true,
+    'fuzzy_algorithm' => 'jaro_winkler'
+]);
+// Finds: 'Galaxy S24', 'Galaxy Note'
+
+// Hybrid algorithm with custom scoring
+$results = $index->search('searh', [
+    'fuzzy' => true,
+    'fuzzy_algorithm' => 'hybrid',
+    'fuzzy_min_score' => 70,
+    'fuzzy_threshold' => 2
+]);
+// Uses combined scoring for best results
 ```
 
-### Field-Specific Searches
+### Field Boosting
 
 ```php
-// Search only in the title field
-$results = $index->search('title:sqlite');
-
-// Combine field-specific and general searches
-$results = $index->search('title:php category:Tutorial sqlite');
-```
-
-## Advanced Search Features
-
-### Boosted Fields
-
-```php
-// Make matches in title 3x more important than other fields
-$results = $index->search('search engine', [
+// Boost title matches over content matches
+$results = $index->search('important', [
+    'fuzzy' => true,
     'boosts' => [
-        'title' => 3.0,
+        'title' => 2.0,
         'content' => 1.0,
-        'tags' => 2.0
+        'tags' => 1.5
     ]
 ]);
 ```
 
-### Faceted Search
+## Faceted Search
 
 ```php
-// Get category distribution for a search query
-$facets = $index->facetSearch('php', 'category');
-
-// Output: e.g., [['category' => 'Documentation', 'count' => 5], ['category' => 'Tutorial', 'count' => 3]]
-```
-
-### Document Management
-
-```php
-// Replace an existing document
-$index->replaceDocument('doc1', [
-    'title' => 'Updated: Getting Started with IndexLite',
-    'content' => 'New updated content...',
-    'tags' => 'php, search, sqlite, updated',
-    'category' => 'Documentation'
-]);
-
-// Remove a document
-$index->removeDocument('doc3');
-
-// Count documents
-$totalDocs = $index->countDocuments();
-$phpDocs = $index->countDocuments('php');
-$tutorialDocs = $index->countDocuments('php', "category = 'Tutorial'");
-
-// Clear all documents
-$index->clear();
-```
-
-## Autocomplete Features
-
-IndexLite includes a powerful autocomplete system that provides real-time suggestions as users type.
-
-### Basic Autocomplete
-
-```php
-// Get the autocomplete helper
-$autocomplete = $index->autocomplete();
-
-// Get suggestions as the user types
-$suggestions = $autocomplete->getSuggestions('progr');
-```
-
-### Autocomplete Options
-
-```php
-// Get up to 5 suggestions from the title field with highlighting
-$suggestions = $autocomplete->getSuggestions('progr', [
-    'field' => 'title',
-    'limit' => 5,
-    'highlight' => true
-]);
-
-// Get fuzzy suggestions that allow for typos
-$suggestions = $autocomplete->getSuggestions('serch', [
-    'fuzzy' => 2, // Integer value sets edit distance, higher value = more typo tolerance (max 3)
-]);
-
-// Get suggestions with document counts
-$suggestions = $autocomplete->getSuggestions('php', [
-    'countMatches' => true
-]);
-```
-
-### Popular Terms and Recent Searches
-
-```php
-// Get popular terms from the index
-$popularTerms = $autocomplete->getPopularTerms([
-    'limit' => 10,
-    'minTermFrequency' => 3
-]);
-
-// Track user searches
-$autocomplete->logSearch('php tutorial', [
-    'user_id' => 123,
-    'results_count' => 15
-]);
-
-// Get recent searches
-$recentSearches = $autocomplete->getRecentSearches([
-    'days' => 7,
+// Single facet
+$facets = $index->facetSearch('laptop', 'category', [
     'limit' => 10
 ]);
+
+foreach ($facets as $facet) {
+    echo "{$facet['category']}: {$facet['count']} items\n";
+}
 ```
 
-## Performance Optimization
+## Advanced Features
 
-### SQLite Configuration
-
-IndexLite allows for fine-tuning SQLite's performance:
+### Field-Specific Queries
 
 ```php
-$index = new Index('search.db', [
-    'journal_mode' => 'WAL',
-    'cache_size' => '-20000',  // 20MB cache
-    'mmap_size' => '134217728', // 128MB memory map
-    'temp_store' => 'MEMORY'
+// Search specific fields
+$results = $index->search('title:MacBook content:professional');
+
+// Multiple field constraints
+$results = $index->search('title:"iPhone 15" category:Electronics');
+```
+
+### Filtering
+
+```php
+// Combine search with filters
+$results = $index->search('laptop', [
+    'filter' => 'category = "Computers" AND price < 2000',
+    'fuzzy' => true
 ]);
 ```
 
-### Batch Operations
-
-Always use batch operations for better performance:
+### Pagination
 
 ```php
-// Much faster than adding documents one by one
-$index->addDocuments($largeArrayOfDocuments);
+// Paginated results
+$page1 = $index->search('query', ['limit' => 10, 'offset' => 0]);
+$page2 = $index->search('query', ['limit' => 10, 'offset' => 10]);
+
+echo "Showing results 1-10 of {$page1['estimatedTotalHits']}\n";
 ```
 
-### Optimizing Field Structure
+## Search Options Reference
 
-Choose fields carefully - more fields increase index size but provide better search targeting.
+### Basic Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `fields` | string/array | '*' | Fields to retrieve |
+| `limit` | int | 50 | Maximum results |
+| `offset` | int | 0 | Results offset |
+| `filter` | string | '' | Additional SQL filter |
+
+### Fuzzy Search Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `fuzzy` | bool/int | null | Enable fuzzy search |
+| `fuzzy_algorithm` | string | 'fts5' | Algorithm to use |
+| `fuzzy_threshold` | int | 2 | Distance threshold |
+| `fuzzy_min_score` | int | 70 | Minimum score for hybrid |
+
+### Field Boosting
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `boosts` | array | [] | Field importance weights |
+
+## Performance Tips
+
+### Indexing Performance
 
 ```php
-// Update fields if your schema changes
-$index->updateIndexedFields(['title', 'content', 'new_field', 'category']);
+// Batch insert for better performance
+$index->addDocuments($documents);
+
+// Use transactions for large batches
+$db = $index->getConnection();
+$db->beginTransaction();
+foreach ($documents as $doc) {
+    $index->addDocument($doc['id'], $doc);
+}
+$db->commit();
 ```
 
-## Managing Multiple Indices
-
-For applications that need multiple separate search indices, IndexLite provides the `Manager` class to simplify management:
+### Search Performance
 
 ```php
-use IndexLite\Manager;
-
-// Create a manager pointing to a directory where index files will be stored
-$manager = new Manager('/path/to/indices', [
-    // Default SQLite options for all indices
-    'journal_mode' => 'WAL',
-    'cache_size' => '-20000'
+// Use specific algorithms for better performance
+$results = $index->search('query', [
+    'fuzzy' => true,
+    'fuzzy_algorithm' => 'soundex'  // Faster than hybrid
 ]);
 
-// Create different indices for different collections
-$manager->createIndex('products', ['name', 'description', 'category', 'tags']);
-$manager->createIndex('articles', ['title', 'content', 'author', 'tags']);
-$manager->createIndex('users', ['username', 'bio', 'skills']);
+// Limit fuzzy threshold for better performance
+$results = $index->search('query', [
+    'fuzzy' => true,
+    'fuzzy_threshold' => 1  // More restrictive = faster
+]);
+```
 
-// Check if an index exists
-if ($manager->exists('products')) {
-    // Get a reference to an existing index
-    $productsIndex = $manager->index('products');
+## Integration with IndexHybrid
 
-    // Use the index normally
-    $productsIndex->addDocument('prod1', [
-        'name' => 'Smartphone XYZ',
-        'description' => 'Latest smartphone with advanced features',
-        'category' => 'Electronics',
-        'tags' => 'phone, mobile, tech'
-    ]);
+IndexLite works seamlessly with the IndexHybrid abstraction layer:
 
-    // Search in the products index
-    $results = $productsIndex->search('smartphone');
+```php
+use IndexHybrid\Manager;
+
+// Create manager
+$manager = new Manager('indexlite://search.db');
+
+// Check feature support
+if ($manager->supports('enhanced_fuzzy')) {
+    $algorithms = $manager->getFuzzyAlgorithms();
+    // ['fts5', 'levenshtein', 'jaro_winkler', 'trigram', 'soundex', 'hybrid']
 }
 
-// Get autocomplete for a specific index
-$articlesIndex = $manager->index('articles');
-$autocomplete = $articlesIndex->autocomplete();
-$suggestions = $autocomplete->getSuggestions('prog');
-
-// Remove an index when no longer needed
-$manager->removeIndex('users');
-```
-
-The Manager automatically handles file management and caching of index instances, making it efficient to work with multiple search collections.
-
-## Common Use Cases
-
-### Site Search
-
-```php
-// Add web pages to the index
-$index->addDocument('page1', [
-    'url' => 'https://example.com/about',
-    'title' => 'About Our Company',
-    'content' => 'Full page content here...',
-    'description' => 'Short meta description',
-    'last_updated' => '2023-09-15'
-]);
-
-// Search with boosted fields
-$results = $index->search($query, [
-    'boosts' => [
-        'title' => 5.0,
-        'description' => 3.0,
-        'content' => 1.0
-    ]
-]);
-```
-
-### Product Search
-
-```php
-// Add products to the index
-$index->addDocument('prod123', [
-    'name' => 'Ergonomic Office Chair',
-    'description' => 'Comfortable chair with lumbar support...',
-    'category' => 'Office Furniture',
-    'tags' => 'chair, ergonomic, office, furniture',
-    'price' => 299.99,
-    'in_stock' => true
-]);
-
-// Search with filtering
-$results = $index->search('ergonomic chair', [
-    'filter' => "price < 350 AND in_stock = 1"
-]);
-
-// Get category facets
-$categoryFacets = $index->facetSearch('chair', 'category');
-```
-
-### Content Management
-
-```php
-// Add articles to the index
-$index->addDocument('article123', [
-    'title' => 'How to Choose the Right Database',
-    'content' => 'When building an application, selecting the right database...',
-    'author' => 'Jane Smith',
-    'published_date' => '2023-08-22',
-    'categories' => ['Technology', 'Development'],
-    'status' => 'published'
-]);
-
-// Search only published articles
-$results = $index->search('database', [
-    'filter' => "status = 'published'"
-]);
-
-// Autocomplete for article search
-$suggestions = $index->autocomplete()->getSuggestions('data', [
-    'field' => 'title',
-    'highlight' => true
-]);
-```
-
-## Configuration Options
-
-### Index Creation
-
-```php
-// Create with custom tokenizer options
-Index::create('search.db', ['title', 'content', 'tags'], [
-    'tokenizer' => 'unicode61 remove_diacritics 1 tokenchars .-'
-]);
-```
-
-### Search Options
-
-```php
-$options = [
-    'fields' => ['title', 'content'],  // Fields to return
-    'limit' => 20,                     // Max results
-    'offset' => 0,                     // Pagination offset
-    'filter' => "category = 'Tutorial'", // SQL filter
-    'boosts' => [                      // Field importance
-        'title' => 3.0,
-        'content' => 1.0
-    ]
-];
-
-$results = $index->search('query', $options);
-```
-
-### Autocomplete Options
-
-```php
-$options = [
-    'field' => 'title',           // Specific field to get suggestions from
-    'limit' => 5,                 // Max suggestions
-    'minLength' => 2,             // Min prefix length
-    'filter' => "status = 'active'", // SQL filter
-    'countMatches' => true,       // Include document counts
-    'highlight' => true,          // Highlight matching prefix
-    'fuzzy' => true,              // Allow for typos
-    'fuzzyDistance' => 1          // Edit distance for fuzzy matching
-];
-
-$suggestions = $autocomplete->getSuggestions('prefix', $options);
+// Use through manager
+$index = $manager->index('my_index');
+$results = $index->search('query', ['fuzzy' => true]);
 ```
 
 ## Error Handling
 
 ```php
 try {
-    $results = $index->search('complex:query');
-} catch (\PDOException $e) {
-    // Handle search errors
-    echo "Search error: " . $e->getMessage();
+    $results = $index->search('query', ['fuzzy' => true]);
+} catch (PDOException $e) {
+    // Handle database errors
+    error_log("Search failed: " . $e->getMessage());
+} catch (Exception $e) {
+    // Handle other errors
+    error_log("Error: " . $e->getMessage());
 }
+```
+
+## Configuration
+
+### SQLite Optimization
+
+IndexLite automatically configures SQLite for optimal performance:
+
+```php
+// These are set automatically
+PRAGMA journal_mode = WAL;
+PRAGMA temp_store = MEMORY;
+PRAGMA synchronous = NORMAL;
+PRAGMA mmap_size = 134217728;
+PRAGMA cache_size = -20000;
+```
+
+### Custom Configuration
+
+```php
+$index = new Index('search.db', [
+    'journal_mode' => 'WAL',
+    'temp_store' => 'MEMORY',
+    'cache_size' => '-50000'
+]);
+```
+
+## Best Practices
+
+### 1. Choose the Right Algorithm
+
+- **General search**: Use `hybrid` for best overall results
+- **Typo tolerance**: Use `levenshtein` for spelling corrections
+- **Name matching**: Use `jaro_winkler` for person/place names
+- **Partial matching**: Use `trigram` for incomplete words
+- **Phonetic search**: Use `soundex` for pronunciation-based matching
+
+### 2. Optimize Field Structure
+
+```php
+// Good: Specific, searchable fields
+Index::create('search.db', ['title', 'content', 'author', 'category']);
+
+// Avoid: Too many or overly broad fields
+Index::create('search.db', ['everything']); // Not optimal
+```
+
+### 3. Use Appropriate Thresholds
+
+```php
+// Conservative (fewer, more accurate results)
+$results = $index->search('query', [
+    'fuzzy' => true,
+    'fuzzy_threshold' => 1,
+    'fuzzy_min_score' => 80
+]);
+
+// Permissive (more results, some less accurate)
+$results = $index->search('query', [
+    'fuzzy' => true,
+    'fuzzy_threshold' => 3,
+    'fuzzy_min_score' => 60
+]);
+```
+
+### 4. Leverage Field Boosting
+
+```php
+// Prioritize different content types
+$results = $index->search('query', [
+    'fuzzy' => true,
+    'boosts' => [
+        'title' => 3.0,      // Titles are most important
+        'author' => 2.0,     // Authors are important
+        'content' => 1.0,    // Content is baseline
+        'tags' => 1.5        // Tags are moderately important
+    ]
+]);
+```
+
+## Troubleshooting
+
+### Common Issues
+
+**FTS5 not available**
+```bash
+# Check if FTS5 is compiled in
+php -r "var_dump(class_exists('SQLite3')); $db = new SQLite3(':memory:'); var_dump($db->exec('CREATE VIRTUAL TABLE test USING fts5(content)'));"
+```
+
+**Performance issues**
+```php
+// Check index size
+$count = $index->countDocuments();
+echo "Index contains {$count} documents\n";
+
+// Optimize database
+$db = $index->getConnection();
+$db->exec('VACUUM');
+$db->exec('PRAGMA optimize');
+```
+
+**Memory usage**
+```php
+// Monitor memory during indexing
+echo "Memory: " . memory_get_usage(true) / 1024 / 1024 . " MB\n";
 ```
 
 ## License
 
-MIT License
+IndexLite is part of the Cockpit CMS project and follows the same licensing terms.
+
+## Contributing
+
+Contributions are welcome! Please ensure all changes maintain backward compatibility and include appropriate tests.

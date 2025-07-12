@@ -4,10 +4,14 @@ namespace IndexLite;
 
 use PDO;
 
+// Include FuzzyEnhancer for enhanced fuzzy search capabilities
+require_once __DIR__ . '/FuzzyEnhancer.php';
+
 class Index {
 
     private PDO $db;
     private array $fields;
+    private ?FuzzyEnhancer $fuzzyEnhancer = null;
 
     public function __construct(string $path, array $options = []) {
 
@@ -49,6 +53,16 @@ class Index {
      */
     public function getFields(): array {
         return $this->fields;
+    }
+
+    /**
+     * Get or create the fuzzy enhancer instance
+     */
+    private function getFuzzyEnhancer(): FuzzyEnhancer {
+        if (!$this->fuzzyEnhancer) {
+            $this->fuzzyEnhancer = new FuzzyEnhancer($this->db);
+        }
+        return $this->fuzzyEnhancer;
     }
 
     /**
@@ -118,7 +132,7 @@ class Index {
      *
      * @return void
      */
-    public function addDocument(mixed $id, array $data, bool $safe = true) {
+    public function addDocument(mixed $id, array $data, bool $safe = true): void {
 
         if ($safe) {
             $this->removeDocument($id);
@@ -137,8 +151,8 @@ class Index {
      *
      * @return void
      */
-    public function replaceDocument(mixed $id, array $data) {
-        return $this->addDocument($id, $data, true);
+    public function replaceDocument(mixed $id, array $data): void {
+        $this->addDocument($id, $data, true);
     }
 
     /**
@@ -205,7 +219,7 @@ class Index {
      *
      * @return int The number of documents matching the query and filter
      */
-    public function countDocuments(string $query = '', string $filter = '') {
+    public function countDocuments(string $query = '', string $filter = ''): int {
 
         if ($query) {
 
@@ -232,7 +246,7 @@ class Index {
      *
      * @return void
      */
-    public function clear() {
+    public function clear(): void {
         $this->db->exec('DELETE FROM documents');
     }
 
@@ -246,7 +260,10 @@ class Index {
      *   - limit: The maximum number of documents to retrieve (default: 50).
      *   - offset: The offset to start retrieving documents from (default: 0).
      *   - filter: Additional filter to apply to the search query (default: '').
-     *   - payload: Whether to include the full payload in the search results (default: false).
+     *   - fuzzy: Enable fuzzy search (null=disabled, int=FTS5 NEAR distance, true=enhanced algorithms)
+     *   - fuzzy_algorithm: Algorithm for enhanced fuzzy ('fts5', 'levenshtein', 'jaro_winkler', 'trigram', 'soundex', 'hybrid')
+     *   - fuzzy_threshold: Distance threshold for algorithms (default: 2)
+     *   - fuzzy_min_score: Minimum score for hybrid algorithm (default: 70)
      *
      * @return array The search results as an associative array with the following keys:
      *   - hits: An array of documents matching the search query.
@@ -267,6 +284,9 @@ class Index {
             'filter' => '',
             'boosts' => [],
             'fuzzy' => null,
+            'fuzzy_algorithm' => 'fts5',        // Algorithm: fts5, levenshtein, jaro_winkler, trigram, soundex, hybrid
+            'fuzzy_threshold' => 2,             // Threshold for distance-based algorithms
+            'fuzzy_min_score' => 70,            // Minimum score for hybrid algorithm
         ], $options);
 
         if ($options['fields'] !== '*') {
@@ -275,6 +295,11 @@ class Index {
         }
 
         if ($query) {
+            
+            // Check if we should use enhanced fuzzy search
+            if ($options['fuzzy'] !== null && $options['fuzzy_algorithm'] !== 'fts5') {
+                return $this->enhancedFuzzySearch($query, $options);
+            }
 
             $where = $this->buildMatchQuery($query, $options['fuzzy'], $options['boosts']);
 
@@ -327,6 +352,134 @@ class Index {
     }
 
     /**
+     * Enhanced fuzzy search using custom SQLite functions
+     */
+    private function enhancedFuzzySearch(string $query, array $options): array {
+        $start = microtime(true);
+        $enhancer = $this->getFuzzyEnhancer();
+        $fields = $this->getFields();
+        
+        // Build fuzzy WHERE clause
+        $fuzzyWhere = $enhancer->buildEnhancedFuzzyQuery($query, $fields, [
+            'algorithm' => $options['fuzzy_algorithm'],
+            'threshold' => $options['fuzzy_threshold'],
+            'min_score' => $options['fuzzy_min_score'],
+        ]);
+        
+        // Add filter if provided
+        if ($options['filter']) {
+            $where = "({$fuzzyWhere}) AND {$options['filter']}";
+        } else {
+            $where = $fuzzyWhere;
+        }
+        
+        // Build relevance score based on algorithm
+        $scoreExpr = $this->buildScoreExpression($query, $fields, $options);
+        
+        // Execute query
+        $sql = "SELECT *, {$scoreExpr} as relevance_score 
+                FROM documents 
+                WHERE {$where} 
+                ORDER BY relevance_score DESC 
+                LIMIT :limit OFFSET :offset";
+        
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':limit', intval($options['limit']), PDO::PARAM_INT);
+        $stmt->bindValue(':offset', intval($options['offset']), PDO::PARAM_INT);
+        $stmt->execute();
+        
+        $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        // Apply field filtering if needed
+        if ($options['fields'] !== '*') {
+            $intersectFields = is_string($options['fields']) 
+                ? array_flip(array_map('trim', explode(',', $options['fields']))) 
+                : array_flip($options['fields']);
+        }
+        
+        // Process results
+        foreach ($items as &$item) {
+            $payload = json_decode($item['__payload'] ?? '{}', true);
+            $item = array_merge($item, $payload);
+            unset($item['__payload']);
+            
+            // Apply field filtering if needed
+            if ($options['fields'] !== '*') {
+                $item = array_intersect_key($item, $intersectFields);
+            }
+        }
+        
+        // Count total results
+        $countSql = "SELECT COUNT(*) FROM documents WHERE {$where}";
+        $count = $this->db->query($countSql)->fetchColumn();
+        
+        $processingTimeMs = (microtime(true) - $start) * 1000;
+        
+        return [
+            'hits' => $items,
+            'query' => $query,
+            'processingTimeMs' => $processingTimeMs,
+            'limit' => $options['limit'],
+            'offset' => $options['offset'],
+            'estimatedTotalHits' => $count,
+            'fuzzy_algorithm' => $options['fuzzy_algorithm'],
+        ];
+    }
+
+    /**
+     * Build relevance score expression based on algorithm with SQL injection protection
+     */
+    private function buildScoreExpression(string $query, array $fields, array $options): string {
+        $algorithm = $options['fuzzy_algorithm'];
+        $expressions = [];
+        
+        // Escape the query to prevent SQL injection
+        $escapedQuery = $this->escapeQueryForSql($query);
+        
+        foreach ($fields as $field) {
+            if ($field === 'id' || $field === '__payload') continue;
+            
+            // Sanitize field name (only allow alphanumeric and underscore)
+            $sanitizedField = preg_replace('/[^a-zA-Z0-9_]/', '', $field);
+            if ($sanitizedField !== $field || empty($sanitizedField)) {
+                continue; // Skip invalid field names
+            }
+            
+            $boost = (float) ($options['boosts'][$field] ?? 1.0);
+            
+            switch ($algorithm) {
+                case 'levenshtein':
+                    $expressions[] = "(100 - levenshtein_ci({$sanitizedField}, {$escapedQuery}) * 10) * {$boost}";
+                    break;
+                    
+                case 'jaro_winkler':
+                    $expressions[] = "jaro_winkler({$sanitizedField}, {$escapedQuery}) * 100 * {$boost}";
+                    break;
+                    
+                case 'trigram':
+                    $expressions[] = "trigram_similarity({$sanitizedField}, {$escapedQuery}) * 100 * {$boost}";
+                    break;
+                    
+                case 'hybrid':
+                default:
+                    $expressions[] = "fuzzy_score({$sanitizedField}, {$escapedQuery}) * {$boost}";
+                    break;
+            }
+        }
+        
+        // Return the maximum score from all fields, or 0 if no expressions
+        if (empty($expressions)) {
+            return '0';
+        }
+        
+        if (count($expressions) === 1) {
+            return $expressions[0];
+        }
+        
+        return 'MAX(' . implode(', ', $expressions) . ')';
+    }
+
+    /**
      * Performs a faceted search for documents based on the given query, facet field, and options.
      *
      * @param string $query The search query.
@@ -347,7 +500,7 @@ class Index {
      *
      * @throws PDOException if there is an error executing the SQL statement.
      */
-    public function facetSearch($query, $facetField, $options = []) {
+    public function facetSearch(string $query, string $facetField, array $options = []): array {
 
         $options = array_merge([
             'limit' => 50,
@@ -517,5 +670,19 @@ class Index {
         $this->db->exec('DROP TABLE documents_old');
         // Update the fields property
         $this->fields = $fields;
+    }
+    
+    /**
+     * Properly escape query strings for SQL to prevent injection
+     */
+    protected function escapeQueryForSql(string $query): string {
+        // Remove any null bytes
+        $query = str_replace("\0", '', $query);
+        
+        // Escape single quotes by doubling them
+        $query = str_replace("'", "''", $query);
+        
+        // Wrap in single quotes
+        return "'{$query}'";
     }
 }
