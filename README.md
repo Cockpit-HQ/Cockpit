@@ -1,35 +1,227 @@
-# Cockpit - Content Platform
+# Cockpit CMS - Headless Content Management
 
 ![cockpit banner](https://github.com/user-attachments/assets/c8d4daf1-86cc-45c9-be24-5c6a6a2ca8ca)
 
+> **Modern, flexible CMS that adapts to your workflow**
 
-* Homepage: [http://getcockpit.com](https://getcockpit.com)
-* Twitter: [@getcockpit](http://twitter.com/getcockpit)
-* Support Forum: [https://discourse.getcockpit.com](https://discourse.getcockpit.com)
+Cockpit is a headless CMS that gives you the flexibility to build content-driven applications your way. Whether you're creating websites, mobile apps, or IoT applications, Cockpit provides the content infrastructure you need.
+
+## ✨ Why Developers Choose Cockpit
+
+- **🚀 Headless by Design** - Use any frontend technology (React, Vue, Flutter, etc.)
+- **📊 Flexible Content Models** - Collections, Singletons, and Trees with custom fields
+- **🔗 GraphQL & REST APIs** - Modern APIs with real-time capabilities  
+- **🌍 Multi-language Support** - Built-in internationalization for global applications
+- **🎨 No Vendor Lock-in** - Own your data, deploy anywhere
+- **⚡ Performance First** - MongoDB or SQLite backend, your choice
+
+## 🚀 Quick Start
+
+Get Cockpit running in under 5 minutes:
+
+### Option 1: Traditional Setup
+
+```bash
+# Download and extract
+wget https://github.com/cockpit-hq/cockpit/releases/latest/download/cockpit.zip
+unzip cockpit.zip && cd cockpit
+
+# Make storage writable  
+chmod -R 755 storage/
+
+# Open in browser and complete setup
+open http://localhost/cockpit/install
+```
+
+### Option 2: Docker (Recommended)
+
+```bash
+# Run Cockpit with persistent storage
+docker run -d \
+  --name cockpit \
+  -p 8080:80 \
+  -v cockpit_storage:/var/www/html/storage \
+  cockpithq/cockpit:latest
+
+# Access at http://localhost:8080/install
+```
+
+### Start Building
+
+Once installed, create content models through the admin UI or via API:
+
+```javascript
+// Fetch your content anywhere
+fetch('/api/content/items/blog')
+  .then(res => res.json())
+  .then(posts => {
+    // Use in React, Vue, mobile apps, etc.
+    console.log('My content:', posts);
+  });
+```
+
+## 🛠️ Key Features
+
+| Feature | Description | 
+|---------|-------------|
+| **Content Modeling** | Collections, Singletons, Trees with 20+ field types |
+| **Asset Management** | Image processing, video thumbnails, CDN integration |
+| **User Management** | Roles, permissions, 2FA, API tokens |
+| **Multi-language** | Localized content with fallback support |
+| **Developer Tools** | GraphQL playground, REST docs, CLI commands |
+| **Extensibility** | Custom fields, addons, hooks, events |
+| **Multi-tenancy** | Spaces for multiple sites and clients |
+
+## 📋 System Requirements
+
+- **PHP** >= 8.3 with PDO, GD extensions
+- **Database** SQLite (default) or MongoDB
+- **Web Server** Apache with mod_rewrite or Nginx
+- **Permissions** Writable `/storage` directory
+
+Ensure `$_SERVER['DOCUMENT_ROOT']` is properly configured.
+
+## 🌐 API Examples
+
+### REST API
+
+```bash
+# Get all published blog posts
+curl "https://yoursite.com/api/content/items/blog?filter={tags:'cms'}"
+
+# Get single post by ID
+curl "https://yoursite.com/api/content/item/blog/60f1b2b3c4d5e6f7a8b9c0d1"
+
+# Create new post
+curl -X POST "https://yoursite.com/api/content/item/blog" \
+  -H "Cockpit-Token: your-token" \
+  -H "Content-Type: application/json" \
+  -d '{"title":"New Post","content":"Content here","tags":["cms"]}'
+```
+
+### GraphQL
+
+```graphql
+# Query blog posts with pagination
+query GetBlogPosts($limit: Int, $skip: Int) {
+  blog(limit: $limit, skip: $skip, filter: {tags: "cms"}) {
+    _id
+    title
+    content
+    _created
+    _modified
+  }
+}
+
+# Create new blog post  
+mutation CreatePost($data: JSON!) {
+  saveContentItem(model: "blog", data: $data) {
+    _id
+    title
+  }
+}
+```
 
 
-### Requirements
+## 🔗 Resources
 
-* PHP >= 8.3
-* PDO + SQLite (or MongoDB)
-* GD extension
-* mod_rewrite, mod_versions enabled (on apache)
+- **[Documentation](https://getcockpit.com/documentation)** - Complete guides and API reference
+- **[GitHub](https://github.com/cockpit-hq/cockpit)** - Source code and issues
+- **[Community Forum](https://discourse.getcockpit.com)** - Get help and share knowledge
 
-make also sure that <code>$_SERVER['DOCUMENT_ROOT']</code> exists and is set correctly.
+## 📱 Use Cases
 
-
-### Installation
-
-1. Download Cockpit and put the cockpit folder in the root of your web project
-2. Make sure that the `/storage` folder and all its subfolders are writable
-3. Go to `/install` via Browser
-4. You're ready to use Cockpit :-)
+- **Headless Websites** - Static sites with JAMstack
+- **Mobile Apps** - iOS/Android with native or hybrid frameworks  
+- **E-commerce** - Product catalogs and content management
+- **Corporate Sites** - Multi-language corporate websites
+- **IoT Dashboards** - Content for smart devices and displays
+- **Multi-tenant SaaS** - Content infrastructure for platforms
 
 
 ## 🐳 Docker
 
-You can also run Cockpit using Docker. This can simplify the setup and ensure a consistent environment across different deployments.
-For more information and available tags, visit the [Cockpit Docker Hub page](https://hub.docker.com/r/cockpithq/cockpit/tags).
+Run Cockpit in containers for consistent, scalable deployments across any environment.
+
+### Quick Start with Docker
+
+```bash
+# Run with SQLite (development)
+docker run -d \
+  --name cockpit \
+  -p 8080:80 \
+  -v cockpit_storage:/var/www/html/storage \
+  cockpithq/cockpit:latest
+
+# Access at http://localhost:8080/install
+```
+
+### Production Setup with MongoDB
+
+```yaml
+# docker-compose.yml
+version: '3.8'
+services:
+  cockpit:
+    image: cockpithq/cockpit:core-latest
+    ports:
+      - "80:80"
+    environment:
+      - COCKPIT_DATABASE_SERVER=mongodb://mongo:27017
+      - COCKPIT_DATABASE_NAME=cockpit
+    volumes:
+      - ./storage:/var/www/html/storage
+      - ./config:/var/www/html/config
+    depends_on:
+      - mongo
+      
+  mongo:
+    image: mongo:8
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=cockpit
+
+volumes:
+  mongo_data:
+```
+
+### Configuration
+
+Create a `config/config.php` file and mount it to connect to MongoDB:
+
+```php
+<?php
+// config/config.php
+return [
+    'database' => [
+        'server' => $_ENV['COCKPIT_DATABASE_SERVER'] ?? 'mongodb://mongo:27017',
+        'database' => $_ENV['COCKPIT_DATABASE_NAME'] ?? 'cockpit'
+    ],
+    'sec-key' => $_ENV['COCKPIT_SEC_KEY'] ?? 'your-random-security-key'
+];
+```
+
+**Mount config via Docker Compose:**
+```yaml
+volumes:
+  - ./config:/var/www/html/config
+```
+
+**Or create custom Docker image:**
+```dockerfile
+FROM cockpithq/cockpit:core-latest
+COPY ./config/config.php /var/www/html/config/config.php
+```
+
+### Available Tags
+
+- `core-latest` - Latest stable release
+- `core-{version}` - Specific version tags
+- `pro-latest` - Latest pro stable release
+- `pro-{version}` - Specific pro version tags
+
+Visit [Docker Hub](https://hub.docker.com/r/cockpithq/cockpit/tags) for all available tags.
 
 ## 💐 Partners
 
