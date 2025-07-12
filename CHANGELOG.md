@@ -4,6 +4,7 @@
 
 - Trigger additional `app.user.logout.after` on user logout
 - Improve IndexLite lib
+- Improve MongoLite compatibility with MongoDB
 
 
 ## 2.11.4 (2025-07-01)

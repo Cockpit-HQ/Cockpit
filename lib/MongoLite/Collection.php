@@ -29,6 +29,13 @@ class Collection {
     }
 
     /**
+     * Get the database instance
+     */
+    public function getDatabase(): Database {
+        return $this->database;
+    }
+
+    /**
      * Drop collection
      */
     public function drop(): void {
@@ -83,7 +90,8 @@ class Collection {
      */
     protected function _insert(array &$document): mixed {
 
-        $table           = $this->name;
+        // Sanitize collection name
+        $table = $this->getSanitizedCollectionName();
         $document['_id'] = isset($document['_id']) ? $document['_id'] : createMongoDbLikeId();
         $data            = ['document' => \json_encode($document, JSON_UNESCAPED_UNICODE)];
 
@@ -142,9 +150,19 @@ class Collection {
     public function update(mixed $criteria, array $data, bool $merge = true): int {
 
         $criteriaFnId = $this->database->registerCriteriaFunction($criteria);
+        
+        // Sanitize criteria function ID to prevent SQL injection
+        $sanitizedCriteriaId = $this->database->sanitizeCriteriaId($criteriaFnId);
+        if (!$sanitizedCriteriaId) {
+            $this->database->unregisterCriteriaFunction($criteriaFnId);
+            throw new \InvalidArgumentException("Invalid criteria function ID");
+        }
+        
+        // Sanitize collection name
+        $sanitizedName = $this->getSanitizedCollectionName();
 
         $conn   = $this->database->connection;
-        $sql    = "SELECT id, document FROM `{$this->name}` WHERE document_criteria('".$criteriaFnId."', document)";
+        $sql    = "SELECT id, document FROM `{$sanitizedName}` WHERE document_criteria('".$sanitizedCriteriaId."', document)";
         $stmt   = $conn->query($sql);
         $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
@@ -156,7 +174,7 @@ class Collection {
             $document        = $merge ? \array_merge($_doc, $data['$set'] ?? []) : $data;
             $document['_id'] = $_doc['_id'];
 
-            $sql = "UPDATE `{$this->name}` SET document=".$conn->quote(json_encode($document, JSON_UNESCAPED_UNICODE))." WHERE id={$doc['id']}";
+            $sql = "UPDATE `{$sanitizedName}` SET document=".$conn->quote(json_encode($document, JSON_UNESCAPED_UNICODE))." WHERE id=".(int)$doc['id'];
 
             $conn->exec($sql);
         }
@@ -173,8 +191,18 @@ class Collection {
     public function remove(mixed $criteria): mixed {
 
         $criteriaFnId = $this->database->registerCriteriaFunction($criteria);
+        
+        // Sanitize criteria function ID to prevent SQL injection
+        $sanitizedCriteriaId = $this->database->sanitizeCriteriaId($criteriaFnId);
+        if (!$sanitizedCriteriaId) {
+            $this->database->unregisterCriteriaFunction($criteriaFnId);
+            throw new \InvalidArgumentException("Invalid criteria function ID");
+        }
+        
+        // Sanitize collection name
+        $sanitizedName = $this->getSanitizedCollectionName();
 
-        $sql = "DELETE FROM `{$this->name}` WHERE document_criteria('".$criteriaFnId."', document)";
+        $sql = "DELETE FROM `{$sanitizedName}` WHERE document_criteria('".$sanitizedCriteriaId."', document)";
 
         $result = $this->database->connection->exec($sql);
 
@@ -237,12 +265,36 @@ class Collection {
 
         if (!in_array($newname, $this->database->getCollectionNames())) {
 
-            $this->database->connection->exec("ALTER TABLE `{$this->name}` RENAME TO `{$newname}`");
+            // Sanitize both old and new collection names
+            $sanitizedOldName = $this->getSanitizedCollectionName();
+            
+            $sanitizedNewName = preg_replace('/[^a-zA-Z0-9_-]/', '', $newname);
+            if ($sanitizedNewName !== $newname || empty($sanitizedNewName)) {
+                throw new \InvalidArgumentException("Invalid new collection name: {$newname}");
+            }
+            
+            $this->database->connection->exec("ALTER TABLE `{$sanitizedOldName}` RENAME TO `{$sanitizedNewName}`");
             $this->name = $newname;
 
             return true;
         }
 
         return false;
+    }
+    
+    /**
+     * Get sanitized collection name to prevent SQL injection
+     * 
+     * @return string
+     * @throws \InvalidArgumentException if collection name is invalid
+     */
+    protected function getSanitizedCollectionName(): string {
+        $sanitized = preg_replace('/[^a-zA-Z0-9_-]/', '', $this->name);
+        
+        if ($sanitized !== $this->name || empty($sanitized)) {
+            throw new \InvalidArgumentException("Invalid collection name: {$this->name}");
+        }
+        
+        return $sanitized;
     }
 }

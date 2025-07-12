@@ -81,19 +81,28 @@ class Cursor implements Iterator {
      * @return integer
      */
     public function count(): int {
+        
+        // Get sanitized collection name
+        $sanitizedName = $this->getSanitizedCollectionName();
 
         if (!$this->criteria) {
 
-            $stmt = $this->collection->database->connection->query('SELECT COUNT(*) AS C FROM '.$this->collection->database->connection->quote($this->collection->name));
+            $stmt = $this->collection->database->connection->query("SELECT COUNT(*) AS C FROM `{$sanitizedName}`");
 
         } else {
+            
+            // Sanitize criteria function ID
+            $sanitizedCriteriaId = $this->collection->database->sanitizeCriteriaId($this->criteria);
+            if (!$sanitizedCriteriaId) {
+                throw new \InvalidArgumentException("Invalid criteria function ID");
+            }
 
-            $sql = ['SELECT COUNT(*) AS C FROM '.$this->collection->database->connection->quote($this->collection->name)];
+            $sql = ["SELECT COUNT(*) AS C FROM `{$sanitizedName}`"];
 
-            $sql[] = "WHERE document_criteria('{$this->criteria}', document)";
+            $sql[] = "WHERE document_criteria('{$sanitizedCriteriaId}', document)";
 
             if ($this->limit) {
-            $sql[] = "LIMIT {$this->limit}";
+                $sql[] = "LIMIT ".(int)$this->limit;
             }
 
             $stmt = $this->collection->database->connection->query(implode(' ', $sql));
@@ -175,12 +184,21 @@ class Cursor implements Iterator {
      * @return array
      */
     protected function getData(): array {
+        
+        // Get sanitized collection name
+        $sanitizedName = $this->getSanitizedCollectionName();
 
         $conn = $this->collection->database->connection;
-        $sql = ['SELECT document FROM '.$conn->quote($this->collection->name)];
+        $sql = ["SELECT document FROM `{$sanitizedName}`"];
 
         if ($this->criteria) {
-            $sql[] = "WHERE document_criteria('{$this->criteria}', document)";
+            // Sanitize criteria function ID
+            $sanitizedCriteriaId = $this->collection->database->sanitizeCriteriaId($this->criteria);
+            if (!$sanitizedCriteriaId) {
+                throw new \InvalidArgumentException("Invalid criteria function ID");
+            }
+            
+            $sql[] = "WHERE document_criteria('{$sanitizedCriteriaId}', document)";
         }
 
         if ($this->sort) {
@@ -195,9 +213,9 @@ class Cursor implements Iterator {
         }
 
         if ($this->limit) {
-            $sql[] = "LIMIT {$this->limit}";
+            $sql[] = "LIMIT ".(int)$this->limit;
 
-            if ($this->skip) { $sql[] = "OFFSET {$this->skip}"; }
+            if ($this->skip) { $sql[] = "OFFSET ".(int)$this->skip; }
         }
 
         $sql = implode(' ', $sql);
@@ -249,6 +267,22 @@ class Cursor implements Iterator {
         }
 
         return isset($this->data[$this->position]);
+    }
+    
+    /**
+     * Get sanitized collection name to prevent SQL injection
+     * 
+     * @return string
+     * @throws \InvalidArgumentException if collection name is invalid
+     */
+    protected function getSanitizedCollectionName(): string {
+        $sanitized = preg_replace('/[^a-zA-Z0-9_-]/', '', $this->collection->name);
+        
+        if ($sanitized !== $this->collection->name || empty($sanitized)) {
+            throw new \InvalidArgumentException("Invalid collection name: {$this->collection->name}");
+        }
+        
+        return $sanitized;
     }
 
 }

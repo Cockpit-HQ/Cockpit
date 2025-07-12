@@ -119,11 +119,20 @@ class Cursor implements Iterator {
                 case '$sortByCount':
                     $data = $this->sortByCount($data, $stageDefinition);
                     break;
+                case '$out':
+                    $data = $this->out($data, $stageDefinition);
+                    break;
+                case '$merge':
+                    $data = $this->merge($data, $stageDefinition);
+                    break;
+                case '$geoNear':
+                    $data = $this->geoNear($data, $stageDefinition);
+                    break;
                 default:
                     throw new Exception("Unsupported aggregation stage: {$op}");
             }
             // Optimization: Stop processing if data is empty (for most stages)
-            if (empty($data) && !in_array($op, ['$lookup', '$group', '$facet', '$bucket', '$sortByCount', '$count'])) {
+            if (empty($data) && !in_array($op, ['$lookup', '$group', '$facet', '$bucket', '$sortByCount', '$count', '$out', '$merge'])) {
                 break;
             }
         }
@@ -279,20 +288,70 @@ class Cursor implements Iterator {
                             $groups[$key][$outputField][] = $value;
                         }
                         break;
-                    // Add $first, $last here if implementing (requires sort context awareness)
+                    case '$first':
+                        // Only set if not already set (preserve first value)
+                        if (!isset($groups[$key][$outputField])) {
+                            $groups[$key][$outputField] = $value;
+                        }
+                        break;
+                    case '$last':
+                        // Always update to latest value
+                        $groups[$key][$outputField] = $value;
+                        break;
+                    case '$stdDevPop':
+                    case '$stdDevSamp':
+                        // Initialize tracking arrays for standard deviation
+                        if (!isset($groups[$key]["{$outputField}_values"])) {
+                            $groups[$key]["{$outputField}_values"] = [];
+                        }
+                        if (is_numeric($value)) {
+                            $groups[$key]["{$outputField}_values"][] = $value;
+                        }
+                        break;
                     default:
                         throw new Exception("Unsupported accumulator: {$accumulator}");
                 }
             }
         }
 
-        // Finalize accumulators (like $avg) and cleanup intermediate fields
+        // Finalize accumulators (like $avg, $stdDevPop, $stdDevSamp) and cleanup intermediate fields
         foreach ($groups as &$group) {
             foreach ($groupDefinition as $outputField => $accumulatorDefinition) {
-                if ($outputField !== '_id' && is_array($accumulatorDefinition) && key($accumulatorDefinition) === '$avg') {
-                    $count = $group["{$outputField}_count"];
-                    $group[$outputField] = ($count > 0) ? ($group["{$outputField}_sum"] / $count) : null;
-                    unset($group["{$outputField}_sum"], $group["{$outputField}_count"]);
+                if ($outputField !== '_id' && is_array($accumulatorDefinition)) {
+                    $accumulator = key($accumulatorDefinition);
+                    
+                    if ($accumulator === '$avg') {
+                        $count = $group["{$outputField}_count"];
+                        $group[$outputField] = ($count > 0) ? ($group["{$outputField}_sum"] / $count) : null;
+                        unset($group["{$outputField}_sum"], $group["{$outputField}_count"]);
+                    } elseif ($accumulator === '$stdDevPop' || $accumulator === '$stdDevSamp') {
+                        $values = $group["{$outputField}_values"] ?? [];
+                        $n = count($values);
+                        
+                        if ($n > 0) {
+                            // Calculate mean
+                            $mean = array_sum($values) / $n;
+                            
+                            // Calculate variance
+                            $variance = 0;
+                            foreach ($values as $value) {
+                                $variance += pow($value - $mean, 2);
+                            }
+                            
+                            // Population vs Sample standard deviation
+                            if ($accumulator === '$stdDevPop') {
+                                $variance = $n > 0 ? $variance / $n : 0;
+                            } else { // $stdDevSamp
+                                $variance = $n > 1 ? $variance / ($n - 1) : null;
+                            }
+                            
+                            $group[$outputField] = $variance !== null ? sqrt($variance) : null;
+                        } else {
+                            $group[$outputField] = null;
+                        }
+                        
+                        unset($group["{$outputField}_values"]);
+                    }
                 }
             }
         }
@@ -488,6 +547,50 @@ class Cursor implements Iterator {
                     }
                     $processedBucket[$field] = $values;
                     break;
+                case '$first':
+                    $processedBucket[$field] = null;
+                    foreach ($items as $item) {
+                        $val = UtilArrayQuery::evaluateExpressionOperands($inputExpr, $item);
+                        $processedBucket[$field] = $val;
+                        break; // Take only the first value
+                    }
+                    break;
+                case '$last':
+                    $processedBucket[$field] = null;
+                    foreach ($items as $item) {
+                        $val = UtilArrayQuery::evaluateExpressionOperands($inputExpr, $item);
+                        $processedBucket[$field] = $val; // Keep overwriting to get the last
+                    }
+                    break;
+                case '$stdDevPop':
+                case '$stdDevSamp':
+                    $values = [];
+                    foreach ($items as $item) {
+                        $val = UtilArrayQuery::evaluateExpressionOperands($inputExpr, $item);
+                        if (is_numeric($val)) {
+                            $values[] = $val;
+                        }
+                    }
+                    
+                    $n = count($values);
+                    if ($n > 0) {
+                        $mean = array_sum($values) / $n;
+                        $variance = 0;
+                        foreach ($values as $value) {
+                            $variance += pow($value - $mean, 2);
+                        }
+                        
+                        if ($accumulator === '$stdDevPop') {
+                            $variance = $n > 0 ? $variance / $n : 0;
+                        } else { // $stdDevSamp
+                            $variance = $n > 1 ? $variance / ($n - 1) : null;
+                        }
+                        
+                        $processedBucket[$field] = $variance !== null ? sqrt($variance) : null;
+                    } else {
+                        $processedBucket[$field] = null;
+                    }
+                    break;
                 default:
                     throw new Exception("Unknown bucket accumulator: {$accumulator}");
             }
@@ -573,6 +676,201 @@ class Cursor implements Iterator {
         $groupedData = $this->group($data, ['_id' => $groupByExpression, 'count' => ['$sum' => 1]]);
         usort($groupedData, $this->buildSortComparator(['count' => -1]));
         return $groupedData;
+    }
+
+    /**
+     * Handles the $out stage - writes results to a new collection.
+     * MongoDB compatibility: replaces the target collection entirely.
+     */
+    protected function out(array $data, string $outputCollection): array {
+        if (empty($outputCollection) || !is_string($outputCollection)) {
+            throw new Exception('$out requires a valid collection name');
+        }
+
+        // Get the database instance from the collection
+        $database = $this->collection->getDatabase();
+        
+        // Sanitize collection name to prevent SQL injection
+        $sanitizedName = $database->sanitizeCollectionName($outputCollection);
+        if ($sanitizedName === null) {
+            throw new Exception("Invalid collection name for \$out: {$outputCollection}");
+        }
+
+        // Drop existing collection if it exists
+        if (in_array($sanitizedName, $database->getCollectionNames())) {
+            $database->selectCollection($sanitizedName)->drop();
+        }
+
+        // Create new collection and insert all documents
+        $database->createCollection($sanitizedName);
+        $targetCollection = $database->selectCollection($sanitizedName);
+        
+        foreach ($data as $document) {
+            $targetCollection->insert($document);
+        }
+
+        // $out returns an empty result set
+        return [];
+    }
+
+    /**
+     * Handles the $merge stage - merges results into an existing collection.
+     * MongoDB compatibility: supports whenMatched and whenNotMatched options.
+     */
+    protected function merge(array $data, array $mergeDefinition): array {
+        if (!isset($mergeDefinition['into'])) {
+            throw new Exception('$merge requires "into" field specifying target collection');
+        }
+
+        $targetCollection = $mergeDefinition['into'];
+        $whenMatched = $mergeDefinition['whenMatched'] ?? 'merge';
+        $whenNotMatched = $mergeDefinition['whenNotMatched'] ?? 'insert';
+        $on = $mergeDefinition['on'] ?? '_id';
+
+        // Get database and target collection
+        $database = $this->collection->getDatabase();
+        $sanitizedName = $database->sanitizeCollectionName($targetCollection);
+        if ($sanitizedName === null) {
+            throw new Exception("Invalid collection name for \$merge: {$targetCollection}");
+        }
+
+        // Create collection if it doesn't exist
+        if (!in_array($sanitizedName, $database->getCollectionNames())) {
+            $database->createCollection($sanitizedName);
+        }
+
+        $target = $database->selectCollection($sanitizedName);
+
+        foreach ($data as $document) {
+            // Build match criteria based on "on" field(s)
+            $matchCriteria = [];
+            if (is_array($on)) {
+                foreach ($on as $field) {
+                    if (isset($document[$field])) {
+                        $matchCriteria[$field] = $document[$field];
+                    }
+                }
+            } else {
+                if (isset($document[$on])) {
+                    $matchCriteria[$on] = $document[$on];
+                }
+            }
+
+            // Check if document exists
+            $existing = $target->findOne($matchCriteria);
+
+            if ($existing) {
+                // Document exists - handle whenMatched
+                switch ($whenMatched) {
+                    case 'merge':
+                        // Merge documents (MongoDB default)
+                        $merged = array_merge($existing, $document);
+                        $target->update($matchCriteria, $merged);
+                        break;
+                    case 'replace':
+                        $target->update($matchCriteria, $document);
+                        break;
+                    case 'keepExisting':
+                        // Do nothing
+                        break;
+                    case 'fail':
+                        throw new Exception('$merge failed: duplicate key violation');
+                    default:
+                        throw new Exception("Unsupported whenMatched option: {$whenMatched}");
+                }
+            } else {
+                // Document doesn't exist - handle whenNotMatched
+                switch ($whenNotMatched) {
+                    case 'insert':
+                        $target->insert($document);
+                        break;
+                    case 'discard':
+                        // Do nothing
+                        break;
+                    case 'fail':
+                        throw new Exception('$merge failed: insert into non-existent document');
+                    default:
+                        throw new Exception("Unsupported whenNotMatched option: {$whenNotMatched}");
+                }
+            }
+        }
+
+        // $merge returns an empty result set
+        return [];
+    }
+
+    /**
+     * Handles the $geoNear stage - finds documents near a geospatial point.
+     * Returns documents sorted by distance with distance field added.
+     */
+    protected function geoNear(array $data, array $geoNearDefinition): array {
+        if (!isset($geoNearDefinition['near'])) {
+            throw new Exception('$geoNear requires "near" field with coordinates');
+        }
+
+        $near = $geoNearDefinition['near'];
+        $distanceField = $geoNearDefinition['distanceField'] ?? 'distance';
+        $maxDistance = $geoNearDefinition['maxDistance'] ?? null;
+        $minDistance = $geoNearDefinition['minDistance'] ?? 0;
+        $query = $geoNearDefinition['query'] ?? [];
+        $spherical = $geoNearDefinition['spherical'] ?? true;
+
+        // Validate near coordinates
+        if (!isset($near['coordinates']) || !is_array($near['coordinates']) || count($near['coordinates']) < 2) {
+            throw new Exception('$geoNear "near" must have valid coordinates array');
+        }
+
+        $nearCoords = $near['coordinates'];
+        $results = [];
+
+        foreach ($data as $document) {
+            // Apply additional query filter if specified
+            if (!empty($query)) {
+                $filterFn = UtilArrayQuery::getFilterFunction($query);
+                if (!$filterFn($document)) {
+                    continue;
+                }
+            }
+
+            // Find location field - try common field names
+            $docCoords = null;
+            foreach (['location', 'coordinates', 'loc', 'position'] as $field) {
+                if (isset($document[$field]['coordinates'])) {
+                    $docCoords = $document[$field]['coordinates'];
+                    break;
+                } elseif (isset($document[$field]) && is_array($document[$field]) && count($document[$field]) >= 2) {
+                    $docCoords = $document[$field];
+                    break;
+                }
+            }
+
+            if ($docCoords === null || !is_array($docCoords) || count($docCoords) < 2) {
+                continue; // Skip documents without valid coordinates
+            }
+
+            // Calculate distance
+            $distance = \MongoLite\calculateDistanceInMeters($docCoords, $nearCoords);
+
+            // Apply distance filters
+            if ($maxDistance !== null && $distance > $maxDistance) {
+                continue;
+            }
+            if ($minDistance !== null && $distance < $minDistance) {
+                continue;
+            }
+
+            // Add distance field to document
+            $resultDoc = $document;
+            $resultDoc[$distanceField] = $distance;
+            $results[] = $resultDoc;
+        }
+
+        // Sort by distance (ascending)
+        usort($results, function($a, $b) use ($distanceField) {
+            return $a[$distanceField] <=> $b[$distanceField];
+        });
+
+        return $results;
     }
 
 }

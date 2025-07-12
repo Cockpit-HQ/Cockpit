@@ -415,7 +415,7 @@ class UtilArrayQuery {
                     return false;
                 }
 
-                $distance = calculateDistanceInMeters($a['coordinates'], $b['$geometry']['coordinates']);
+                $distance = \MongoLite\calculateDistanceInMeters($a['coordinates'], $b['$geometry']['coordinates']);
 
                 if (isset($b['$maxDistance']) && is_numeric($b['$maxDistance']) && $distance > $b['$maxDistance']) {
                     return false;
@@ -437,6 +437,68 @@ class UtilArrayQuery {
                     $b = $b['$search'];
                 }
                 $r = fuzzy_search($b, $a, $distance) >= $minScore;
+                break;
+
+            case '$geoWithin':
+                if (!isset($a['coordinates']) || !is_array($a['coordinates'])) {
+                    return false;
+                }
+                
+                if (isset($b['$box'])) {
+                    // $box: [[minX, minY], [maxX, maxY]]
+                    $box = $b['$box'];
+                    if (!is_array($box) || count($box) != 2) return false;
+                    [$minX, $minY] = $box[0];
+                    [$maxX, $maxY] = $box[1];
+                    [$x, $y] = $a['coordinates'];
+                    $r = ($x >= $minX && $x <= $maxX && $y >= $minY && $y <= $maxY);
+                } elseif (isset($b['$center'])) {
+                    // $center: [[centerX, centerY], radius]
+                    $center = $b['$center'];
+                    if (!is_array($center) || count($center) != 2) return false;
+                    if (!is_array($center[0]) || count($center[0]) != 2) return false;
+                    if (!is_numeric($center[1])) return false;
+                    [$centerX, $centerY] = $center[0];
+                    if (!is_numeric($centerX) || !is_numeric($centerY)) return false;
+                    $radius = $center[1];
+                    $distance = \MongoLite\calculateDistanceInMeters($a['coordinates'], [$centerX, $centerY]);
+                    $r = $distance <= $radius;
+                } elseif (isset($b['$centerSphere'])) {
+                    // $centerSphere: [[centerX, centerY], radiusInRadians]
+                    $center = $b['$centerSphere'];
+                    if (!is_array($center) || count($center) != 2) return false;
+                    if (!is_array($center[0]) || count($center[0]) != 2) return false;
+                    if (!is_numeric($center[1])) return false;
+                    [$centerX, $centerY] = $center[0];
+                    if (!is_numeric($centerX) || !is_numeric($centerY)) return false;
+                    $radiusRadians = $center[1];
+                    $radiusMeters = $radiusRadians * 6371000; // Earth radius in meters
+                    $distance = \MongoLite\calculateDistanceInMeters($a['coordinates'], [$centerX, $centerY]);
+                    $r = $distance <= $radiusMeters;
+                } else {
+                    $r = false;
+                }
+                break;
+
+            case '$geoIntersects':
+                if (!isset($a['coordinates']) || !is_array($a['coordinates'])) {
+                    return false;
+                }
+                
+                if (isset($b['$geometry'])) {
+                    $geometry = $b['$geometry'];
+                    if ($geometry['type'] === 'Point') {
+                        // Point intersection - exact coordinate match
+                        $r = ($a['coordinates'] === $geometry['coordinates']);
+                    } elseif ($geometry['type'] === 'Polygon') {
+                        // Simple polygon intersection - point in polygon
+                        $r = \MongoLite\pointInPolygon($a['coordinates'], $geometry['coordinates'][0]);
+                    } else {
+                        $r = false; // Other geometry types not implemented
+                    }
+                } else {
+                    $r = false;
+                }
                 break;
 
             default:
@@ -707,4 +769,39 @@ function checkType($value, $type): bool {
     }
 
     return false;
+}
+
+function pointInPolygon(array $point, array $polygon): bool {
+    $x = $point[0];
+    $y = $point[1];
+    $inside = false;
+    
+    $n = count($polygon);
+    $j = $n - 1;
+    
+    for ($i = 0; $i < $n; $i++) {
+        $xi = $polygon[$i][0];
+        $yi = $polygon[$i][1];
+        $xj = $polygon[$j][0];
+        $yj = $polygon[$j][1];
+        
+        // Check if point is on vertex
+        if (($xi == $x && $yi == $y)) {
+            return true;
+        }
+        
+        // Check if point is on edge
+        if (($yi == $yj && $yi == $y && $x >= min($xi, $xj) && $x <= max($xi, $xj)) ||
+            ($xi == $xj && $xi == $x && $y >= min($yi, $yj) && $y <= max($yi, $yj))) {
+            return true;
+        }
+        
+        // Ray casting algorithm
+        if ((($yi > $y) !== ($yj > $y)) && ($x < ($xj - $xi) * ($y - $yi) / ($yj - $yi) + $xi)) {
+            $inside = !$inside;
+        }
+        $j = $i;
+    }
+    
+    return $inside;
 }
