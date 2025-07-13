@@ -1,7 +1,6 @@
 # Content Module
 
 [![Core Module](https://img.shields.io/badge/Type-Core%20Module-blue.svg)](https://getcockpit.com)
-[![Content Management](https://img.shields.io/badge/Feature-Content%20Management-green.svg)](#features)
 
 > **Powerful content management system at the heart of Cockpit CMS**
 
