@@ -5,6 +5,7 @@
 - Trigger additional `app.user.logout.after` on user logout
 - Improve IndexLite lib
 - Improve MongoLite compatibility with MongoDB
+- Add Identi module to enable OAuth based logins
 
 
 ## 2.11.4 (2025-07-01)
