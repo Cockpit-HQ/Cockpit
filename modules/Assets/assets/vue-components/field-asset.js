@@ -37,10 +37,18 @@ export default {
 
                     const src = App.route(`/assets/thumbnail/${value._id}?m=bestFit&mime=auto&h=20&t=${value._modified}`);
 
-                    return `<img loading="lazy" class="kiss-responsive-height" src="${src}" style="height:20px" title="${value.title}">`;
+                    return `<img loading="lazy" class="kiss-responsive-height" src="${src}" style="height:20px" title="${value.title} - ${value.mime}">`;
                 }
 
-                return `<kiss-svg width="20" height="20" src="${App.base(value.type === 'video' ? 'assets:assets/icons/video.svg' : 'assets:assets/icons/file.svg')}" title="${value.title}"><canvas width="20" height="20"></canvas></kiss-svg>`;
+                return `
+                    <div class="kiss-flex kiss-flex-middle" gap="xsmall" title="${value.title} - ${value.mime}">
+                        <div><kiss-svg width="35" height="35" src="${App.base(value.type === 'video' ? 'assets:assets/icons/video.svg' : 'assets:assets/icons/file.svg')}"><canvas width="35" height="35"></canvas></kiss-svg></div>
+                        <div class="flex-item-1 kiss-size-xsmall">
+                            <div>${App.utils.truncate(value.title || 'n/a', 30)}</div>
+                            <div class="kiss-color-muted">${value.mime}</div>
+                        </div>
+                    </div>
+                `;
             }
 
             const mediaSize= 70;
@@ -51,7 +59,7 @@ export default {
 
                 const src = App.route(`/assets/thumbnail/${value._id}?m=bestFit&mime=auto&h=${(mediaSize * 2)}&t=${value._modified}`);
 
-                media = `<img loading="lazy" class="kiss-responsive-height kiss-margin-auto" src="${src}" title="${value.title}" style="height:${mediaSize}px;object-fit:contain;object-position:center;">`;
+                media = `<img loading="lazy" class="kiss-responsive-height kiss-margin-auto" src="${src}" title="${value.title} - ${value.mime}" style="height:${mediaSize}px;object-fit:contain;object-position:center;">`;
             }
 
             return /*html*/ `
