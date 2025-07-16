@@ -41,7 +41,7 @@ docker run -d \
   --name cockpit \
   -p 8080:80 \
   -v cockpit_storage:/var/www/html/storage \
-  cockpithq/cockpit:latest
+  cockpithq/cockpit:core-latest
 
 # Access at http://localhost:8080/install
 ```
@@ -151,7 +151,7 @@ docker run -d \
   --name cockpit \
   -p 8080:80 \
   -v cockpit_storage:/var/www/html/storage \
-  cockpithq/cockpit:latest
+  cockpithq/cockpit:core-latest
 
 # Access at http://localhost:8080/install
 ```
