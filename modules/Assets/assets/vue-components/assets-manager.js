@@ -265,27 +265,29 @@ export default {
 
         createFolder() {
 
-            App.ui.prompt(this.t('Foldername'), '', name => {
-
-                this.$request(`/assets/saveFolder`, {name, parent: this.folder}).then(folder => {
+            VueView.ui.offcanvas('assets:assets/dialogs/asset-folder.js', {
+                parent: this.folder
+            }, {
+                save: (folder) => {
                     this.folders.push(folder);
-                    App.ui.notify('Folder created!');
-                }).catch(rsp => {
-                    App.ui.notify(rsp.error || 'Creating folder failed!', 'error');
-                });
+                }
+            }, {
+                size: 'medium',
+                flip: true
             });
         },
 
-        renameFolder(folder) {
+        editFolder(folder) {
 
-            App.ui.prompt(this.t('Foldername'), folder.name, name => {
-
-                this.$request(`/assets/saveFolder`, {name, parent: this.folder, folder}).then(f => {
-                    Object.assign(folder, f);
-                    App.ui.notify('Folder renamed!');
-                }).catch(rsp => {
-                    App.ui.notify(rsp.error || 'Renaming folder failed!', 'error');
-                });
+            VueView.ui.offcanvas('assets:assets/dialogs/asset-folder.js', {
+                folder: folder
+            }, {
+                save: (updatedFolder) => {
+                    Object.assign(folder, updatedFolder);
+                }
+            }, {
+                size: 'medium',
+                flip: true
             });
         },
 
@@ -363,7 +365,7 @@ export default {
             <kiss-grid cols="4@m 5@xl" class="kiss-margin-bottom" gap="small" v-if="!loading && folders.length">
 
                 <kiss-card class="kiss-flex kiss-flex-middle" theme="shadowed contrast" v-for="folder in folders">
-                    <div class="kiss-padding kiss-bgcolor-contrast"><icon size="larger">folder</icon></div>
+                    <div class="kiss-padding kiss-bgcolor-contrast"><kiss-svg :src="$baseUrl(folder.icon ? folder.icon: 'assets:assets/icons/folder.svg')" width="30" height="30"><canvas width="30" height="30"></canvas></kiss-svg></div>
                     <div class="kiss-padding kiss-text-truncate kiss-flex-1 kiss-text-bold kiss-position-relative">
                         {{ folder.name }}
                         <a class="kiss-cover" :aria-label="t('Open folder:')+folder.name" @click="openFolder(folder)"></a>
@@ -568,9 +570,9 @@ export default {
                                 <div class="kiss-color-muted kiss-text-truncate kiss-margin-small-bottom">{{ actionFolder.name }}</div>
                             </li>
                             <li>
-                                <a class="kiss-flex kiss-flex-middle" @click="renameFolder(actionFolder)">
+                                <a class="kiss-flex kiss-flex-middle" @click="editFolder(actionFolder)">
                                     <icon class="kiss-margin-small-right" size="larger">edit</icon>
-                                    {{ t('Rename') }}
+                                    {{ t('Edit') }}
                                 </a>
                             </li>
                             <li class="kiss-nav-divider"></li>

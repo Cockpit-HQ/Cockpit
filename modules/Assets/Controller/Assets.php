@@ -260,13 +260,18 @@ class Assets extends App {
 
         $this->hasValidCsrfToken(true);
 
-        $name   = $this->param('name', null);
         $parent = $this->param('parent', '');
+        $folder = $this->param('folder', null);
 
-        if (!$name) return;
+        if (!isset($folder['name']) || !$folder['name']) {
+            return $this->stop(['error' => 'Folder name is required'], 400);
+        }
 
-        $folder = $this->param('folder', [
+        $folder = array_merge([
+            'name' => '',
             '_p' => $parent,
+            'icon' => '',
+        ], $folder, [
             '_by' => $this->helper('auth')->getUser('_id'),
         ]);
 
@@ -274,10 +279,8 @@ class Assets extends App {
             return $this->stop(['error' => 'Editing folder not allowed'], 401);
         }
 
-        $folder['name'] = $name;
-
         // does folder already exists?
-        if ($this->app->dataStorage->count('assets/folders', ['name' => $name, '_p' => $folder['_p']])) {
+        if (!isset($folder['_id']) && $this->app->dataStorage->count('assets/folders', ['name' => $folder['name'], '_p' => $folder['_p']])) {
             return $this->stop(['error' => 'Folder already exists'], 409);
         }
 
