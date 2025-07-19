@@ -7,6 +7,9 @@ export default {
             cursorIndex: 0,
             commandHistory: [],
             historyIndex: -1,
+            resizeHandler: null,
+            historyStorageKey: 'cockpit-tower-history',
+            maxHistorySize: 1000,
         }
     },
 
@@ -18,6 +21,7 @@ export default {
     },
 
     mounted() {
+        this.loadCommandHistory();
         App.assets.require([
             'system:assets/vendor/xterm/xterm.js',
             'system:assets/vendor/xterm/xterm-addon-fit.js',
@@ -31,11 +35,56 @@ export default {
                 fontSize: 13,
                 fontFamily: '"Cascadia Code", Menlo, monospace',
                 cursorBlink: true,
+                allowProposedApi: true,
             });
 
             this.terminal.open(this.$refs.terminal);
 
             this.terminal.onData(this.handleTerminalInput);
+
+            // Set up keyboard shortcuts
+            this.terminal.attachCustomKeyEventHandler((event) => {
+                if (event.type === 'keydown' && event.ctrlKey) {
+                    switch (event.key) {
+                        case 'v': // Paste
+                            this.handlePaste();
+                            return false;
+                        case 'l': // Clear screen
+                            this.terminal.clear();
+                            return false;
+                        case 'u': // Clear line before cursor
+                            this.command = this.command.slice(this.cursorIndex);
+                            this.cursorIndex = 0;
+                            this.updateInput();
+                            return false;
+                        case 'k': // Clear line after cursor
+                            this.command = this.command.slice(0, this.cursorIndex);
+                            this.updateInput();
+                            return false;
+                        case 'a': // Move to start of line
+                            this.cursorIndex = 0;
+                            this.updateInput();
+                            return false;
+                        case 'e': // Move to end of line
+                            this.cursorIndex = this.command.length;
+                            this.updateInput();
+                            return false;
+                        case 'w': // Delete word before cursor
+                            const beforeCursor = this.command.slice(0, this.cursorIndex);
+                            const lastSpaceIndex = beforeCursor.lastIndexOf(' ');
+                            if (lastSpaceIndex === -1) {
+                                this.command = this.command.slice(this.cursorIndex);
+                                this.cursorIndex = 0;
+                            } else {
+                                this.command = this.command.slice(0, lastSpaceIndex + 1) + this.command.slice(this.cursorIndex);
+                                this.cursorIndex = lastSpaceIndex + 1;
+                            }
+                            this.updateInput();
+                            return false;
+                    }
+                }
+                return true;
+            });
 
             this.terminal.prompt = () => {
                 this.command = '';
@@ -48,11 +97,23 @@ export default {
             this.terminal.loadAddon(fitAddon);
             fitAddon.fit();
 
-            window.addEventListener('resize', () => fitAddon.fit());
+            this.resizeHandler = () => fitAddon.fit();
+            window.addEventListener('resize', this.resizeHandler);
 
             this.terminal.writeln('\r\nHello 👋  Welcome to the Tower terminal.\r\n');
             this.terminal.prompt();
             this.terminal.focus();
+
+            // Handle paste events
+            this.$refs.terminal.addEventListener('paste', (e) => {
+                e.preventDefault();
+                const text = e.clipboardData.getData('text');
+                if (text) {
+                    this.command = this.command.slice(0, this.cursorIndex) + text + this.command.slice(this.cursorIndex);
+                    this.cursorIndex += text.length;
+                    this.updateInput();
+                }
+            });
         },
 
         handleTerminalInput(e) {
@@ -138,6 +199,25 @@ export default {
                 return;
             }
 
+            if (this.command === 'help' || this.command === '?') {
+                this.terminal.writeln('');
+                this.terminal.writeln('\r\nKeyboard Shortcuts:');
+                this.terminal.writeln('\r\n  Ctrl+L   Clear screen');
+                this.terminal.writeln('\r\n  Ctrl+U   Clear line before cursor');
+                this.terminal.writeln('\r\n  Ctrl+K   Clear line after cursor');
+                this.terminal.writeln('\r\n  Ctrl+A   Move to start of line');
+                this.terminal.writeln('\r\n  Ctrl+E   Move to end of line');
+                this.terminal.writeln('\r\n  Ctrl+W   Delete word before cursor');
+                this.terminal.writeln('\r\n  Ctrl+V   Paste from clipboard');
+                this.terminal.writeln('\r\n  Ctrl+C   Cancel current command');
+                this.terminal.writeln('\r\n  ↑/↓      Navigate command history');
+                this.terminal.writeln('\r\n\r\nCommands:');
+                this.terminal.writeln('\r\n  clear    Clear the terminal');
+                this.terminal.writeln('\r\n  help     Show this help message');
+                this.terminal.prompt();
+                return;
+            }
+
             this.terminal.writeln('');
 
             this.$request('/system/tower/exec', { command: this.command })
@@ -159,9 +239,43 @@ export default {
         },
 
         addToHistory(command) {
-            if (command) {
+            if (command && command.trim()) {
+                // Remove duplicate if exists
+                const existingIndex = this.commandHistory.indexOf(command);
+                if (existingIndex !== -1) {
+                    this.commandHistory.splice(existingIndex, 1);
+                }
+
                 this.commandHistory.push(command);
+
+                // Limit history size
+                if (this.commandHistory.length > this.maxHistorySize) {
+                    this.commandHistory.shift();
+                }
+
                 this.historyIndex = this.commandHistory.length;
+                this.saveCommandHistory();
+            }
+        },
+
+        loadCommandHistory() {
+            try {
+                const saved = localStorage.getItem(this.historyStorageKey);
+                if (saved) {
+                    this.commandHistory = JSON.parse(saved);
+                    this.historyIndex = this.commandHistory.length;
+                }
+            } catch (err) {
+                console.warn('Failed to load command history:', err);
+                this.commandHistory = [];
+            }
+        },
+
+        saveCommandHistory() {
+            try {
+                localStorage.setItem(this.historyStorageKey, JSON.stringify(this.commandHistory));
+            } catch (err) {
+                console.warn('Failed to save command history:', err);
             }
         },
 
@@ -170,13 +284,34 @@ export default {
             this.cursorIndex = 0;
         },
 
+        handlePaste() {
+            navigator.clipboard.readText()
+                .then(text => {
+                    if (text) {
+                        // Insert pasted text at cursor position
+                        this.command = this.command.slice(0, this.cursorIndex) + text + this.command.slice(this.cursorIndex);
+                        this.cursorIndex += text.length;
+                        this.updateInput();
+                    }
+                })
+                .catch(err => {
+                    console.warn('Failed to read clipboard:', err);
+                });
+        },
+
+
         handleError(err) {
             console.error('Failed to load assets:', err);
         }
     },
 
     beforeDestroy() {
-        window.removeEventListener('resize', this.fitTerminal);
+        if (this.resizeHandler) {
+            window.removeEventListener('resize', this.resizeHandler);
+        }
+        if (this.terminal) {
+            this.terminal.dispose();
+        }
     },
 
     template: /*html*/`
