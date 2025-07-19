@@ -27,6 +27,16 @@ VueView.component('vue-table', Vue.defineAsyncComponent(() => {
     })
 }));
 
+VueView.component('vue-chart', Vue.defineAsyncComponent(() => {
+    return new Promise(resolve => {
+        App.assets.require([
+            'app:assets/vendor/chartjs/chart.js',
+        ]).then(() => {
+            App.utils.import('app:assets/vendor/chartjs/vue-chart.js').then((m) => resolve(m));
+        });
+    })
+}));
+
 VueView.component('revisions-widget', 'system:assets/vue-components/revisions/widget.js');
 VueView.component('user-info', 'app:assets/vue-components/user-info.js');
 
