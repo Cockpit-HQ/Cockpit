@@ -5,8 +5,10 @@
 - Trigger additional `app.user.logout.after` on user logout
 - Improve IndexLite lib
 - Improve MongoLite compatibility with MongoDB
-- Add Identi module to enable OAuth based logins
-
+- Add chart.js lib + vue-chart component
+- Add lightweight SQL pdo wrapper `ESQL` lib
+- Add Identi module to enable OAuth based logins - sponsored by @unchainedshop
+- Add custom folder icon support in assets manager
 
 ## 2.11.4 (2025-07-01)
 
