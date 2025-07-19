@@ -8,6 +8,8 @@ ESQL is a lightweight PHP PDO wrapper that provides SQL dialect-aware query gene
 - **Automatic JSON Handling**: Seamless encoding/decoding of arrays and objects
 - **SQL Dialect Awareness**: Automatic identifier quoting based on database type
 - **Query Builder**: Fluent interface for SELECT, INSERT, UPDATE, DELETE operations
+- **Aggregate Functions**: Built-in methods for COUNT, AVG, SUM with full query options
+- **Utility Methods**: EXISTS checks, PLUCK for single column extraction
 - **Advanced Conditions**: Support for nested AND/OR conditions, EXISTS/NOT EXISTS
 - **JOIN Support**: Multiple join types with structured ON clauses
 - **Batch Operations**: Efficient batch INSERT operations
@@ -595,6 +597,182 @@ $user = $db->selectOne('users', [
     'jsonDecodeAssoc' => false  // Decode JSON as stdClass objects
 ]);
 ```
+
+## Aggregate Functions
+
+ESQL provides convenient methods for common aggregate operations:
+
+### count()
+Count records in a table:
+
+```php
+// Simple count
+$totalUsers = $db->count('users');
+
+// Count with conditions
+$activeUsers = $db->count('users', [
+    'conditions' => ['status' => 'active']
+]);
+
+// Count distinct values
+$uniqueCities = $db->count('users', [
+    'distinct' => true,
+    'column' => 'city'
+]);
+
+// Count with joins
+$usersWithOrders = $db->count('users', [
+    'joins' => [
+        [
+            'type' => 'INNER',
+            'table' => 'orders',
+            'on' => [['users.id', '=', 'orders.user_id']]
+        ]
+    ],
+    'distinct' => true,
+    'column' => 'users.id'
+]);
+```
+
+### avg()
+Calculate average value of a column:
+
+```php
+// Simple average
+$avgAge = $db->avg('users', 'age');
+
+// Average with conditions
+$avgPremiumAge = $db->avg('users', 'age', [
+    'conditions' => ['subscription' => 'premium']
+]);
+
+// Average of distinct values
+$avgUniqueScore = $db->avg('game_scores', 'score', [
+    'distinct' => true
+]);
+
+// Average with joins
+$avgOrderAmount = $db->avg('orders', 'amount', [
+    'joins' => [
+        [
+            'type' => 'INNER',
+            'table' => 'users',
+            'on' => [['orders.user_id', '=', 'users.id']]
+        ]
+    ],
+    'conditions' => ['users.country' => 'US']
+]);
+```
+
+### sum()
+Calculate sum of column values:
+
+```php
+// Simple sum
+$totalRevenue = $db->sum('orders', 'amount');
+
+// Sum with conditions
+$monthlyRevenue = $db->sum('orders', 'amount', [
+    'conditions' => [
+        ['created_at', '>=', '2024-01-01'],
+        ['created_at', '<', '2024-02-01']
+    ]
+]);
+
+// Sum distinct values
+$uniqueAmounts = $db->sum('payments', 'amount', [
+    'distinct' => true
+]);
+
+// Sum with joins
+$categoryRevenue = $db->sum('order_items', 'quantity * price', [
+    'joins' => [
+        [
+            'type' => 'INNER',
+            'table' => 'products',
+            'on' => [['order_items.product_id', '=', 'products.id']]
+        ]
+    ],
+    'conditions' => ['products.category' => 'Electronics']
+]);
+```
+
+### exists()
+Check if records exist (more efficient than count > 0):
+
+```php
+// Simple existence check
+if ($db->exists('users', ['email' => 'john@example.com'])) {
+    echo "User already exists";
+}
+
+// With multiple conditions
+$hasActiveAdmin = $db->exists('users', [
+    'conditions' => [
+        'role' => 'admin',
+        'status' => 'active'
+    ]
+]);
+
+// With joins
+$hasOrders = $db->exists('orders', [
+    'joins' => [
+        [
+            'type' => 'INNER',
+            'table' => 'users',
+            'on' => [['orders.user_id', '=', 'users.id']]
+        ]
+    ],
+    'conditions' => [
+        'users.email' => 'john@example.com',
+        ['orders.created_at', '>', '2024-01-01']
+    ]
+]);
+```
+
+### pluck()
+Extract values from a single column as an array:
+
+```php
+// Get all email addresses
+$emails = $db->pluck('users', 'email');
+// Returns: ['john@example.com', 'jane@example.com', ...]
+
+// Pluck with conditions and ordering
+$topUsernames = $db->pluck('users', 'username', [
+    'conditions' => ['status' => 'active'],
+    'orderBy' => ['score' => 'DESC'],
+    'limit' => 10
+]);
+
+// Create associative array with keyColumn
+$userNames = $db->pluck('users', 'name', [
+    'keyColumn' => 'id'
+]);
+// Returns: [1 => 'John', 2 => 'Jane', 3 => 'Bob', ...]
+
+// Pluck with joins
+$orderNumbers = $db->pluck('orders', 'order_number', [
+    'joins' => [
+        [
+            'type' => 'INNER',
+            'table' => 'users',
+            'on' => [['orders.user_id', '=', 'users.id']]
+        ]
+    ],
+    'conditions' => ['users.country' => 'US'],
+    'orderBy' => ['orders.created_at' => 'DESC']
+]);
+
+// Get user ID to email mapping
+$userEmails = $db->pluck('users', 'email', [
+    'keyColumn' => 'id',
+    'conditions' => ['verified' => true]
+]);
+// Returns: [1 => 'john@example.com', 2 => 'jane@example.com', ...]
+```
+
+**Note:** When using `keyColumn`, duplicate keys will overwrite previous values. The last occurrence of a key will be retained.
 
 ## Utility Methods
 

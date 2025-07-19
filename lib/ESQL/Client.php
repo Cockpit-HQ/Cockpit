@@ -575,6 +575,175 @@ class Client {
         return $this->execute($queryParts['sql'], $queryParts['params']);
     }
 
+    public function count(string $table, array $options = []): int {
+        $opt = array_merge([
+            'conditions' => [],
+            'joins' => [],
+            'distinct' => false,
+            'column' => '*'
+        ], $options);
+
+        // Build the COUNT expression
+        $countExpr = $opt['distinct'] ? 
+            "COUNT(DISTINCT " . $this->quoteIdentifier($opt['column']) . ")" : 
+            "COUNT(" . ($opt['column'] === '*' ? '*' : $this->quoteIdentifier($opt['column'])) . ")";
+
+        // Use the buildSelectQuery method with COUNT as the column
+        $queryParts = $this->buildSelectQuery(
+            $table, 
+            [$countExpr], 
+            $opt['joins'], 
+            $opt['conditions']
+        );
+
+        // Fetch the count value
+        $result = $this->fetchColumn($queryParts['sql'], $queryParts['params']);
+        
+        return (int)$result;
+    }
+
+    public function avg(string $table, string $column, array $options = []): ?float {
+        $opt = array_merge([
+            'conditions' => [],
+            'joins' => [],
+            'distinct' => false
+        ], $options);
+
+        // Build the AVG expression
+        $avgExpr = $opt['distinct'] ? 
+            "AVG(DISTINCT " . $this->quoteIdentifier($column) . ")" : 
+            "AVG(" . $this->quoteIdentifier($column) . ")";
+
+        // Use the buildSelectQuery method with AVG as the column
+        $queryParts = $this->buildSelectQuery(
+            $table, 
+            [$avgExpr], 
+            $opt['joins'], 
+            $opt['conditions']
+        );
+
+        // Fetch the average value
+        $result = $this->fetchColumn($queryParts['sql'], $queryParts['params']);
+        
+        // Return null if no rows or all values are NULL
+        return $result === null ? null : (float)$result;
+    }
+
+    public function sum(string $table, string $column, array $options = []): float {
+        $opt = array_merge([
+            'conditions' => [],
+            'joins' => [],
+            'distinct' => false
+        ], $options);
+
+        // Build the SUM expression
+        $sumExpr = $opt['distinct'] ? 
+            "SUM(DISTINCT " . $this->quoteIdentifier($column) . ")" : 
+            "SUM(" . $this->quoteIdentifier($column) . ")";
+
+        // Use the buildSelectQuery method with SUM as the column
+        $queryParts = $this->buildSelectQuery(
+            $table, 
+            [$sumExpr], 
+            $opt['joins'], 
+            $opt['conditions']
+        );
+
+        // Fetch the sum value
+        $result = $this->fetchColumn($queryParts['sql'], $queryParts['params']);
+        
+        // Return 0 if no rows or all values are NULL
+        return $result === null ? 0.0 : (float)$result;
+    }
+
+    public function exists(string $table, array $options = []): bool {
+        // Support both old signature (conditions as array) and new (options array)
+        if (!empty($options) && !isset($options['conditions']) && !isset($options['joins'])) {
+            // Backward compatibility: assume it's conditions array
+            $options = ['conditions' => $options];
+        }
+        
+        $opt = array_merge([
+            'conditions' => [],
+            'joins' => []
+        ], $options);
+
+        // Build a SELECT 1 query with LIMIT 1 for efficiency
+        $queryParts = $this->buildSelectQuery(
+            $table, 
+            ['1'], 
+            $opt['joins'],
+            $opt['conditions'],
+            [], // no groupBy
+            [], // no having
+            [], // no orderBy
+            1,  // limit 1
+            0   // offset 0
+        );
+
+        // Fetch one column - will return false if no rows exist
+        $result = $this->fetchColumn($queryParts['sql'], $queryParts['params']);
+        
+        return $result !== false;
+    }
+
+    public function pluck(string $table, string $column, array $options = []): array {
+        $opt = array_merge([
+            'conditions' => [],
+            'joins' => [],
+            'orderBy' => [],
+            'limit' => null,
+            'offset' => null,
+            'keyColumn' => null, // Optional column to use as array keys
+            'jsonDecodeAssoc' => true
+        ], $options);
+
+        // Determine columns to select
+        $columns = $opt['keyColumn'] !== null 
+            ? [$opt['keyColumn'], $column] 
+            : [$column];
+
+        // Build the select query
+        $queryParts = $this->buildSelectQuery(
+            $table, 
+            $columns, 
+            $opt['joins'], 
+            $opt['conditions'],
+            [], // no groupBy
+            [], // no having
+            $opt['orderBy'],
+            $opt['limit'],
+            $opt['offset']
+        );
+
+        // Fetch all results
+        $results = $this->fetchAll($queryParts['sql'], $queryParts['params']);
+        
+        // Process results for JSON decoding
+        $results = $this->processResults($results, $opt['jsonDecodeAssoc']);
+        
+        // Process results
+        $plucked = [];
+        if ($opt['keyColumn'] !== null) {
+            // Use keyColumn as array keys
+            foreach ($results as $row) {
+                $key = $row[$opt['keyColumn']] ?? null;
+                $value = $row[$column] ?? null;
+                if ($key !== null) {
+                    // Warning: duplicate keys will overwrite previous values
+                    $plucked[$key] = $value;
+                }
+            }
+        } else {
+            // Simple indexed array
+            foreach ($results as $row) {
+                $plucked[] = $row[$column] ?? null;
+            }
+        }
+        
+        return $plucked;
+    }
+
     // --- Transaction and Utility Methods ---
 
     public function lastInsertId(?string $name = null) {
