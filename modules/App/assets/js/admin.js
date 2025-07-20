@@ -81,18 +81,20 @@ window.AppEventStream =  {
                     this.trigger(evt);
                 });
 
+                this._idle = setTimeout(check, 10000);
+
             }).catch(rsp => {
                 // todo
             });
         }
 
-        this._idle = setInterval(check, 15000);
+        check();
     },
 
     stop() {
 
         if (this._idle) {
-            clearInterval(this._idle);
+            clearTimeout(this._idle);
         }
     },
 

@@ -572,10 +572,10 @@ export default {
             <app-fieldcontainer :id="uid+'-'+field.name" class="kiss-margin" :class="{'kiss-disabled': field.opts && field.opts.readonly}" v-for="field in visibleFields">
                 <div>
                     <div class="kiss-flex kiss-flex-middle" gap="small">
-                        <label class="fields-renderer-field kiss-text-capitalize kiss-flex kiss-flex-middle kiss-flex-1">
+                        <label class="fields-renderer-field kiss-text-capitalize kiss-flex kiss-flex-middle kiss-flex-1" gap="xsmall">
                             <div>{{field.label || field.name}}</div>
-                            <icon class="kiss-size-5 kiss-color-muted kiss-margin-xsmall-left" v-if="field.i18n && locales.length" :title="t('Localized')">language</icon>
-                            <icon class="kiss-size-5 kiss-color-danger kiss-margin-xsmall-left" v-if="field.required" :title="t('Required')">trip_origin</icon>
+                            <icon class="kiss-size-5 kiss-color-muted" v-if="field.i18n && locales.length" :title="t('Localized')">language</icon>
+                            <icon class="kiss-size-5 kiss-color-danger" v-if="field.required" :title="t('Required')">trip_origin</icon>
                         </label>
                         <div class="kiss-flex kiss-flex-middle app-fieldcontainer-visible-hover" gap="xsmall" v-if="fieldActions.length && !field.i18n">
                             <component :is="action.component" v-model="val[field.name]" :document="val" :field="field" :locale="locale" v-for="action in fieldActions"></component>

@@ -36,10 +36,6 @@ $this->bind('/app-event-stream', function() {
     // auto-cleanup unrelevant events
     $this->helper('eventStream')->cleanup();
 
-    if (strtotime('-5 minutes') > $lastCheck) {
-        return [];
-    }
-
     // get all events since last check
     $events = $this->helper('eventStream')->getEvents($lastCheck);
 
