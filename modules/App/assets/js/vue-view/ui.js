@@ -1,3 +1,18 @@
+function getContentsComponent(component) {
+
+    let p;
+
+    p = new Promise(resolve => {
+        if (typeof (component) === 'string') {
+            App.utils.import(component).then(m => resolve(m.default));
+        } else {
+            resolve(component);
+        }
+    });
+
+    return p;
+}
+
 export default {
 
     offcanvas(component, data, callbacks, options) {
@@ -34,28 +49,29 @@ export default {
                 return  {
                     data
                 }
-            },
-
-            components: {
-                'vue-offcanvas-content': component
             }
         };
 
-        offcanvas = App.ui.offcanvas(/*html*/`
-            <div class="vue-offcanvas">
-                <vue-offcanvas-content v-bind="data"></vue-offcanvas-content>
-            </div>
-        `, options || {});
+        getContentsComponent(component).then(c => {
 
-        offcanvas.$view = offcanvas.querySelector('.vue-offcanvas');
+            def.components = {
+                VueOffcanvasContent: c
+            };
 
-        VueView.compile(offcanvas.$view, def);
-        setTimeout(() => offcanvas.show(), 50);
+            offcanvas = App.ui.offcanvas(/*html*/`
+                <div class="vue-offcanvas">
+                    <vue-offcanvas-content v-bind="data"></vue-offcanvas-content>
+                </div>
+            `, Object.assign({}, c._meta || {}, options || {}));
 
-        return offcanvas;
+            offcanvas.$view = offcanvas.querySelector('.vue-offcanvas');
+
+            VueView.compile(offcanvas.$view, def);
+            setTimeout(() => offcanvas.show(), 50);
+        });
     },
 
-    modal(url, data, callbacks, options, modaltype) {
+    modal(component, data, callbacks, options, modaltype) {
 
         data = data || {};
         callbacks = callbacks || {};
@@ -88,30 +104,30 @@ export default {
                 return  {
                     data
                 }
-            },
-
-            components: {
-                'vue-dialog-content':  url
             }
         };
 
-        let dialog = App.ui.dialog(/*html*/`
-            <div class="vue-modal">
-                <vue-dialog-content v-bind="data"></vue-dialog-content>
-            </div>
-        `, options || {}, modaltype);
+        getContentsComponent(component).then(c => {
 
-        dialog.$view = dialog.querySelector('.vue-modal');
+            def.components = {
+                VueDialogContent: c
+            };
 
-        VueView.compile(dialog.$view, def);
-        setTimeout(() => dialog.show(), 100);
+            let dialog = App.ui.dialog(/*html*/`
+                <div class="vue-modal">
+                    <vue-dialog-content v-bind="data"></vue-dialog-content>
+                </div>
+            `, Object.assign({}, c._meta || {}, options || {}), modaltype);
 
-        return dialog;
+            dialog.$view = dialog.querySelector('.vue-modal');
+
+            VueView.compile(dialog.$view, def);
+            setTimeout(() => dialog.show(), 100);
+        });
+
     },
 
     popout(component, data, callbacks, options) {
-
-        let popout;
 
         data = data || {};
         callbacks = callbacks || {};
@@ -143,24 +159,25 @@ export default {
                 return  {
                     data
                 }
-            },
-
-            components: {
-                'vue-popout-content': component
             }
         };
 
-        popout = App.ui.popout(/*html*/`
-            <div class="vue-popout">
-                <vue-popout-content v-bind="data"></vue-popout-content>
-            </div>
-        `, options || {});
+        getContentsComponent(component).then(c => {
 
-        popout.$view = popout.querySelector('.vue-popout');
+            def.components = {
+                VuePopoutContent: c
+            };
 
-        VueView.compile(popout.$view, def);
-        setTimeout(() => popout.show(), 50);
+            let popout = App.ui.popout(/*html*/`
+                <div class="vue-popout">
+                    <vue-popout-content v-bind="data"></vue-popout-content>
+                </div>
+            `, Object.assign({}, c._meta || {}, options || {}));
 
-        return popout;
+            popout.$view = popout.querySelector('.vue-popout');
+
+            VueView.compile(popout.$view, def);
+            setTimeout(() => popout.show(), 50);
+        });
     },
 }

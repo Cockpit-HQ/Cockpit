@@ -37,7 +37,7 @@ let showAppSearch = function(value) {
         isLoggedOut = isUserLoggedOut();
 
     if (!isActive && !isLoggedOut) {
-        VueView.ui.modal('app:assets/dialog/app-search.js', {value}, {}, {size:'large'}, 'app-search');
+        VueView.ui.modal('app:assets/dialog/app-search.js', {value}, {}, {}, 'app-search');
     } else if (isActive && !isLoggedOut){
         isActive.querySelector('input').focus();
     }

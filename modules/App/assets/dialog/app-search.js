@@ -1,5 +1,9 @@
 export default {
 
+    _meta: {
+        size: 'large'
+    },
+
     data() {
         return {
             search: this.value || '',
