@@ -397,7 +397,7 @@ $app->on('assets.asset.upload', function(&$asset, &$meta, &$opts, &$file) {
 - Ensure sufficient disk space for temporary files
 
 **❌ Image processing errors**
-- Install required extensions: GD or ImageMagick
+- Install required extensions: GD
 - For better performance, install VIPS: `apt-get install libvips-tools`
 - Check memory limits for large image processing
 

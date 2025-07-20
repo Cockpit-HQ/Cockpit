@@ -250,19 +250,6 @@ The module uses these events:
    - Check OIDC provider returns valid email in mapped claim
    - Verify email claim mapping is correct
 
-### Debug Mode
-
-Enable debug mode in Cockpit to see detailed error messages:
-
-```php
-'debug' => true
-```
-
-## Requirements
-
-- Cockpit => v2.11.5
-- OIDC-compliant identity provider
-
 ## Dependencies
 
 - `jumbojett/openid-connect-php` - OpenID Connect client library
