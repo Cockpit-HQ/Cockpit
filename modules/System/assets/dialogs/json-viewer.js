@@ -25,6 +25,8 @@ function sortObject(object){
 
 export default {
 
+    _meta: {flip: true, size: 'large'},
+
     data() {
 
         return {

@@ -1,5 +1,7 @@
 export default {
 
+    _meta: {size: 'large'},
+
     data() {
 
         return {

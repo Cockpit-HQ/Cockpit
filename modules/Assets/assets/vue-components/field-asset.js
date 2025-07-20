@@ -18,7 +18,7 @@ export default {
                         value.push(asset)
                     });
                 }
-            }, { size: 'xlarge' })
+            });
 
         },
         render(value, field, context) {
@@ -139,7 +139,7 @@ export default {
                 onSelect: (asset) => {
                     this.val = asset;
                 }
-            }, {size: 'xlarge'})
+            });
         },
 
         edit() {
@@ -150,7 +150,7 @@ export default {
                     this.val = updatedAsset;
                 }
 
-            }, {flip: true, size: 'large'})
+            });
         },
 
         editMeta() {
@@ -169,7 +169,7 @@ export default {
                     this.val._data = data;
                 }
 
-            }, { flip: true, size: 'large' })
+            });
         },
 
         update() {

@@ -218,7 +218,7 @@
                     },
 
                     showContext(context) {
-                        VueView.ui.offcanvas('system:assets/dialogs/json-viewer.js', {data: context, caption: 'LOG Context'}, {}, {flip: true, size: 'xlarge'})
+                        VueView.ui.offcanvas('system:assets/dialogs/json-viewer.js', {data: context, caption: 'LOG Context'});
                     },
 
                     toggleType($type) {

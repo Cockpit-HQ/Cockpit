@@ -2,6 +2,10 @@ import {initUppyUploader} from '../js/uppy.js';
 
 export default {
 
+    _meta: {
+        flip: true,
+        size: 'large'
+    },
 
     data: function () {
 

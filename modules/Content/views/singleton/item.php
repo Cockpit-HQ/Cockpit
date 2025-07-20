@@ -290,7 +290,7 @@
                     },
 
                     showJSON() {
-                        VueView.ui.offcanvas('system:assets/dialogs/json-viewer.js', {data: this.item}, {}, {flip: true, size: 'large'})
+                        VueView.ui.offcanvas('system:assets/dialogs/json-viewer.js', {data: this.item}, {})
                     },
 
                     showPreviewUri(uri) {
@@ -316,7 +316,7 @@
                             update: (item) => {
                                 this.item = Object.assign(this.item, item);
                             }
-                        }, {size: 'screen'})
+                        });
                     }
                 }
             }

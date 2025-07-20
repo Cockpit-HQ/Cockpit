@@ -1,5 +1,9 @@
 export default {
 
+    _meta: {
+        size: 'medium',
+    },
+
     data() {
         return {
             src: this.meta.src || '',

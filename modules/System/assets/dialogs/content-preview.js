@@ -2,6 +2,8 @@ import fieldsRenderer from "../vue-components/fields/renderer.js"
 
 export default {
 
+    _meta: {size: 'screen'},
+
     data() {
 
         return {

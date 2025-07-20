@@ -27,7 +27,7 @@ App.on('field-richtext-image-sources', evt => {
                 img.src = App.base(`#uploads:${asset.path}`);
             }
 
-        }, {size: 'xlarge'})
+        });
     };
 });
 
@@ -42,7 +42,7 @@ App.on('field-richtext-link-sources', evt => {
                 link.href = location.origin + App.route(`/assets/link/${asset._id}`);
             }
 
-        }, {size: 'xlarge'})
+        });
     };
 });
 
@@ -59,5 +59,5 @@ App.utils.selectAsset = function(callback, filter = {}) {
         onSelect: (asset) => {
             callback(asset);
         }
-    }, {size: 'xlarge'})
+    });
 }

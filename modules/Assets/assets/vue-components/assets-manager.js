@@ -189,7 +189,7 @@ export default {
                     Object.assign(asset, updatedAsset)
                 }
 
-            }, {flip: true, size: 'large'})
+            });
         },
 
         remove(asset) {
@@ -271,9 +271,6 @@ export default {
                 save: (folder) => {
                     this.folders.push(folder);
                 }
-            }, {
-                size: 'medium',
-                flip: true
             });
         },
 
@@ -285,9 +282,6 @@ export default {
                 save: (updatedFolder) => {
                     Object.assign(folder, updatedFolder);
                 }
-            }, {
-                size: 'medium',
-                flip: true
             });
         },
 

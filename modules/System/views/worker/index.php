@@ -229,7 +229,7 @@
                         VueView.ui.offcanvas('system:assets/dialogs/json-viewer.js', {
                             caption: 'Job',
                             data: job
-                        }, {}, {flip: true, size: 'large'})
+                        });
                     }
                 }
             }

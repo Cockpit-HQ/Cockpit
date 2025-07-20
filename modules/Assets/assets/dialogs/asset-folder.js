@@ -1,5 +1,10 @@
 export default {
 
+    _meta: {
+        size: 'medium',
+        flip: true
+    },
+
     data() {
         return {
             val: this.folder ? JSON.parse(JSON.stringify(this.folder)) : {

@@ -126,7 +126,7 @@ class EditorActions {
                                 editor.chain().focus().setImage(meta).run();
                             }
                         }
-                    }, {size: 'medium'});
+                    });
                 },
                 isActive: (editor) => editor.isActive('image')
             },
@@ -154,7 +154,7 @@ class EditorActions {
                                 editor.chain().focus().extendMarkRange('link').unsetLink().run()
                             }
                         }
-                    }, {size: 'medium'});
+                    });
 
                 },
                 isActive: (editor) => editor.isActive('link')

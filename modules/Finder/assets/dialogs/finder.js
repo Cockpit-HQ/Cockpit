@@ -1,5 +1,7 @@
 export default {
 
+    _meta: {flip: true, size: 'xxlarge'},
+
     data() {
         return {
 

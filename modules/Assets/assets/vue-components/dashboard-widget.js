@@ -36,7 +36,7 @@ export default {
                     Object.assign(asset, updatedAsset)
                 }
 
-            }, {flip: true, size: 'large'})
+            });
         },
 
     },

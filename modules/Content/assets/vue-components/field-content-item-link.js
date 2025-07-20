@@ -12,7 +12,7 @@ export default {
             {name: 'filter', type: 'object', opts:{height: 120}},
             {name: 'display', type: 'text'},
         ],
-        
+
         addFieldItem(field, value) {
 
             if (!field.opts.link) {
@@ -28,7 +28,7 @@ export default {
                 }
 
                 VueView.ui.modal('content:assets/dialogs/select-content-item.js', {
-                    model: model, 
+                    model: model,
                     filter: field.opts?.filter,
                     multiple: true
                 }, {
@@ -38,7 +38,7 @@ export default {
                             _model: model.name,
                             _id: item._id
                         });
-                        
+
                     },
 
                     pickItems: (items) => {
@@ -50,9 +50,9 @@ export default {
                             });
                         });
                     }
-                    
-                }, {size: 'xlarge'})
-                
+
+                });
+
             });
 
         },
@@ -132,7 +132,7 @@ export default {
                     this.item = item;
                     this.update();
                 }
-            }, {size: 'xlarge'});
+            });
         },
 
         getDisplay() {

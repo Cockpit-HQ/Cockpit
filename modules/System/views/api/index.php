@@ -154,13 +154,13 @@
                         VueView.ui.offcanvas('system:assets/dialogs/api-viewer.js', {
                             openApiUrl: this.$routeUrl('/system/api/openapi'),
                             apiKey
-                        }, {}, {flip: true, size: 'xxlarge'})
+                        });
                     },
 
                     showGraphQLViewer(apiKey = null) {
                         VueView.ui.offcanvas('system:assets/dialogs/graphql-viewer.js', {
                             apiKey
-                        }, {}, {flip: true, size: 'xxlarge'})
+                        });
                     }
                 }
             }

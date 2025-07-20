@@ -333,7 +333,7 @@ if (count($locales) == 1) {
                 },
 
                 showJSON() {
-                    VueView.ui.offcanvas('system:assets/dialogs/json-viewer.js', {data: this.item}, {}, {flip: true, size: 'large'})
+                    VueView.ui.offcanvas('system:assets/dialogs/json-viewer.js', {data: this.item}, {})
                 },
 
                 showPreviewUri(uri) {
@@ -359,7 +359,7 @@ if (count($locales) == 1) {
                         update: (item) => {
                             this.item = Object.assign(this.item, item);
                         }
-                    }, {size: 'screen'})
+                    });
                 }
             }
         }

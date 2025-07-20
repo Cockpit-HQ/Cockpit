@@ -62,14 +62,14 @@ export default {
                 oid: this.oid,
                 current: this.current,
                 revision: rev
-            }, {}, {flip: true, size: 'xxlarge'})
+            });
         },
 
         showRevisions() {
             VueView.ui.offcanvas('system:assets/vue-components/revisions/dialog.js', {
                 oid: this.oid,
                 current: this.current
-            }, {}, {flip: true, size: 'xxlarge'})
+            });
         }
     },
 

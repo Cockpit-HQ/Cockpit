@@ -1,5 +1,9 @@
 let editItem = {
 
+    _meta: {
+        size: 'large',
+    },
+
     data() {
 
         let data = JSON.parse(JSON.stringify(this.item));
@@ -194,7 +198,7 @@ export default {
 
             VueView.ui.modal(editItem, {item, fields: this.fields, url: this.url, locale: this.locale}, {
 
-            }, {size: 'large'})
+            })
         },
 
         remove(item) {

@@ -78,7 +78,7 @@ export default {
 
                 this.update();
 
-            }}, null, {size: 'large'});
+            }});
         },
 
         update() {

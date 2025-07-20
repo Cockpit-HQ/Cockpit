@@ -220,10 +220,7 @@
                         VueView.ui.offcanvas('finder:assets/dialogs/finder.js', {
                             root: '#root:',
                             path: `/.spaces/${path}`
-                        }, {
-
-
-                        }, {flip: true, size: 'xxlarge'})
+                        });
                     },
 
                 }

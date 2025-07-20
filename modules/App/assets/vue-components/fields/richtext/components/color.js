@@ -28,7 +28,7 @@ export default {
                 save: color => {
                     this.editor.chain().focus().setColor(color).run();
                 }
-            }, {size: 'medium'});
+            });
         }
     },
 

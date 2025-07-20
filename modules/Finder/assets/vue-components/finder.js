@@ -217,7 +217,7 @@ export default {
             VueView.ui.offcanvas('finder:assets/dialogs/file-editor.js', {root: this.root, file}, {
 
 
-            }, {flip: true, size: 'xxlarge'})
+            });
         },
 
         rename(item) {

@@ -741,7 +741,7 @@
                                 this.views[updatedView._id] = updatedView;
                                 this.selectedView = updatedView._id;
                             }
-                        }, {sizer: 'xlarge'});
+                        });
                     },
 
                     removeView() {
