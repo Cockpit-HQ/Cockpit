@@ -64,6 +64,50 @@ $zip->addFileFromPath(
 $zip->finish();
 ```
 
+### Callback Output
+
+You can stream ZIP data to a custom callback function instead of directly to the browser:
+
+```php
+use ZipStream\ZipStream;
+use ZipStream\Stream\CallbackStreamWrapper;
+
+// Stream to a callback function with proper file handling
+$outputFile = fopen('output.zip', 'wb');
+$backupFile = fopen('backup.zip', 'wb');
+
+$zip = new ZipStream(
+    outputStream: CallbackStreamWrapper::open(function (string $data) use ($outputFile, $backupFile) {
+        // Handle ZIP data as it's generated
+        fwrite($outputFile, $data);
+        
+        // Send to multiple destinations efficiently
+        echo $data; // Browser
+        fwrite($backupFile, $data); // Backup file
+    }),
+    sendHttpHeaders: false,
+);
+
+$zip->addFile('hello.txt', 'Hello World!');
+$zip->finish();
+
+// Clean up resources
+fclose($outputFile);
+fclose($backupFile);
+```
+
+## Questions
+
+**💬 Questions? Please Read This First!**
+
+If you have a question about using this library, please *do not email the
+authors directly*. Instead, head over to the
+[GitHub Discussions](https://github.com/maennchen/ZipStream-PHP/discussions)
+page — your question might already be answered there! Using Discussions helps
+build a shared knowledge base, so others can also benefit from the answers. If
+you need dedicated 1:1 support, check out the options available on
+[@maennchen's sponsorship page](https://github.com/sponsors/maennchen?frequency=one-time&sponsor=maennchen).
+
 ## Upgrade to version 3.1.2
 
 - Minimum PHP Version: `8.2`
@@ -76,7 +120,7 @@ $zip->finish();
 - Only 64bit Architecture is supported.
 - The class `ZipStream\Option\Method` has been replaced with the enum
   `ZipStream\CompressionMethod`.
-- Most clases have been flagged as `@internal` and should not be used from the
+- Most classes have been flagged as `@internal` and should not be used from the
   outside.
   If you're using internal resources to extend this library, please open an
   issue so that a clean interface can be added & published.
@@ -88,7 +132,7 @@ $zip->finish();
 ### Archive Options
 
 - The class `ZipStream\Option\Archive` has been replaced in favor of named
-  arguments in the `ZipStream\ZipStream` constuctor.
+  arguments in the `ZipStream\ZipStream` constructor.
 - The archive options `largeFileSize` & `largeFileMethod` has been removed. If
   you want different `compressionMethods` based on the file size, you'll have to
   implement this yourself.
@@ -101,7 +145,7 @@ $zip->finish();
   filesizes this way.
 - The archive option `deflateLevel` has been replaced with the option
   `defaultDeflateLevel` and can be overridden for every file.
-- The first argument (`name`) of the `ZipStream\ZipStream` constuctor has been
+- The first argument (`name`) of the `ZipStream\ZipStream` constructor has been
   replaced with the named argument `outputName`.
 - Headers are now also sent if the `outputName` is empty. If you do not want to
   automatically send http headers, set `sendHttpHeaders` to `false`.

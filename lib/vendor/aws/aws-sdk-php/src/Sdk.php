@@ -90,6 +90,10 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionBedrock(array $args = [])
  * @method \Aws\BedrockAgent\BedrockAgentClient createBedrockAgent(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionBedrockAgent(array $args = [])
+ * @method \Aws\BedrockAgentCore\BedrockAgentCoreClient createBedrockAgentCore(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionBedrockAgentCore(array $args = [])
+ * @method \Aws\BedrockAgentCoreControl\BedrockAgentCoreControlClient createBedrockAgentCoreControl(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionBedrockAgentCoreControl(array $args = [])
  * @method \Aws\BedrockAgentRuntime\BedrockAgentRuntimeClient createBedrockAgentRuntime(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionBedrockAgentRuntime(array $args = [])
  * @method \Aws\BedrockDataAutomation\BedrockDataAutomationClient createBedrockDataAutomation(array $args = [])
@@ -670,6 +674,8 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionS3Outposts(array $args = [])
  * @method \Aws\S3Tables\S3TablesClient createS3Tables(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionS3Tables(array $args = [])
+ * @method \Aws\S3Vectors\S3VectorsClient createS3Vectors(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionS3Vectors(array $args = [])
  * @method \Aws\SSMContacts\SSMContactsClient createSSMContacts(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionSSMContacts(array $args = [])
  * @method \Aws\SSMGuiConnect\SSMGuiConnectClient createSSMGuiConnect(array $args = [])
@@ -825,7 +831,7 @@ namespace Aws;
  */
 class Sdk
 {
-    const VERSION = '3.349.3';
+    const VERSION = '3.351.2';
 
     /** @var array Arguments for creating clients */
     private $args;
