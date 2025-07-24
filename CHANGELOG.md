@@ -9,6 +9,8 @@
 - Add lightweight SQL pdo wrapper `ESQL` lib
 - Add Identi module to enable OAuth based logins - sponsored by @unchainedshop
 - Add custom folder icon support in assets manager
+- Add support `$elemMatch` operator and nested array traversal in MongoLite
+- Add `assets.before.remove` event
 
 ## 2.11.4 (2025-07-01)
 
