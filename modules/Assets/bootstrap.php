@@ -328,6 +328,8 @@ $this->module('assets')->extend([
 
         $assets = isset($assets[0]) ? $assets : [$assets];
 
+        $this->app->trigger('assets.before.remove', [&$assets]);
+
         foreach ($assets as &$asset) {
 
             if (is_string($asset)) {
