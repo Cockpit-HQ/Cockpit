@@ -127,7 +127,19 @@ class UtilArrayQuery {
                 // Check if the value is a condition array or a direct value
                 if (is_array($value) && !empty($value) && isset(array_keys($value)[0]) && array_keys($value)[0][0] === '$') {
                     // This is a condition array with operators like {age: {$gt: 25}}
-                    if (!self::check($fieldValue, $value)) {
+                    // Handle special case for $elemMatch on arrays
+                    if (isset($value['$elemMatch']) && is_array($fieldValue)) {
+                        $found = false;
+                        foreach ($fieldValue as $element) {
+                            if (is_array($element) && self::evaluateCondition($element, $value['$elemMatch'])) {
+                                $found = true;
+                                break;
+                            }
+                        }
+                        if (!$found) {
+                            return false;
+                        }
+                    } else if (!self::check($fieldValue, $value)) {
                         return false;
                     }
                 } else {
@@ -143,19 +155,19 @@ class UtilArrayQuery {
                             return false;
                         }
 
-                        // Handle exactly as in the original implementation
-                        if (is_array($fieldValue) && is_string($value)) {
-                            // If field is array and value is string, check if array contains the string
-                            if (!in_array($value, $fieldValue)) {
+                        // Handle all comparison cases
+                        if (is_array($fieldValue) && !is_array($value)) {
+                            // If field is array (including nested arrays from dot notation), check if it contains the value
+                            if (!self::checkArrayContains($fieldValue, $value)) {
                                 return false;
                             }
-                        } else if (is_array($value) && is_string($fieldValue)) {
-                            // If value is array and field is string, check if value contains the field
+                        } else if (is_array($value) && !is_array($fieldValue)) {
+                            // If value is array and field is not, check if value contains the field
                             if (!in_array($fieldValue, $value)) {
                                 return false;
                             }
                         } else if ($fieldValue != $value) {
-                            // Simple equality check for other cases
+                            // Simple equality check for other cases (including array to array comparison)
                             return false;
                         }
                     }
@@ -169,6 +181,7 @@ class UtilArrayQuery {
 
     /**
      * Safely retrieve a nested value from an array using dot notation
+     * Supports MongoDB-style array traversal
      */
     public static function getNestedValue(array $array, string $key) {
 
@@ -182,20 +195,45 @@ class UtilArrayQuery {
         }
 
         $keys = explode('.', $key);
-        $value = $array;
+        $values = [$array];
 
         foreach ($keys as $k) {
-            if (!isset($value[$k])) {
+            $newValues = [];
+            
+            foreach ($values as $value) {
+                if (!is_array($value)) {
+                    continue;
+                }
+                
+                // Check if current value is an array without the key
+                // This means we should traverse array elements
+                if (!isset($value[$k]) && !isArrayAssociative($value)) {
+                    // Traverse array elements
+                    foreach ($value as $element) {
+                        if (is_array($element) && isset($element[$k])) {
+                            $newValues[] = $element[$k];
+                        }
+                    }
+                } elseif (isset($value[$k])) {
+                    $newValues[] = $value[$k];
+                }
+            }
+            
+            if (empty($newValues)) {
                 return null;
             }
-            $value = $value[$k];
+            
+            $values = $newValues;
         }
 
-        return $value;
+        // If we have multiple values, return them as array
+        // If single value, return it directly
+        return count($values) === 1 ? $values[0] : $values;
     }
 
     /**
      * Check if a nested key exists in the document
+     * Supports MongoDB-style array traversal
      */
     private static function getNestedValueExists(array $array, string $key): bool {
 
@@ -204,16 +242,55 @@ class UtilArrayQuery {
         }
 
         $keys = explode('.', $key);
-        $value = $array;
+        $values = [$array];
 
         foreach ($keys as $k) {
-            if (!isset($value[$k])) {
+            $newValues = [];
+            
+            foreach ($values as $value) {
+                if (!is_array($value)) {
+                    continue;
+                }
+                
+                // Check if current value is an array without the key
+                // This means we should traverse array elements
+                if (!isset($value[$k]) && !isArrayAssociative($value)) {
+                    // Traverse array elements
+                    foreach ($value as $element) {
+                        if (is_array($element) && isset($element[$k])) {
+                            $newValues[] = $element[$k];
+                        }
+                    }
+                } elseif (isset($value[$k])) {
+                    $newValues[] = $value[$k];
+                }
+            }
+            
+            if (empty($newValues)) {
                 return false;
             }
-            $value = $value[$k];
+            
+            $values = $newValues;
         }
 
         return true;
+    }
+
+    /**
+     * Check if an array contains a value, handling nested arrays
+     */
+    private static function checkArrayContains(array $arr, mixed $value): bool {
+        foreach ($arr as $item) {
+            if (is_array($item)) {
+                // Recursively check nested arrays
+                if (self::checkArrayContains($item, $value)) {
+                    return true;
+                }
+            } else if ($item == $value) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -247,6 +324,12 @@ class UtilArrayQuery {
      */
     public static function check(mixed $value, array $condition): bool {
 
+        // If value is an array from dot notation traversal, check if any element matches
+        if (is_array($value)) {
+            // Check each element in the array
+            return self::checkArrayWithCondition($value, $condition);
+        }
+
         foreach ($condition as $key => $conditionValue) {
             if ($key == '$options') continue;
             if (!self::evaluate($key, $value, $conditionValue)) {
@@ -254,6 +337,34 @@ class UtilArrayQuery {
             }
         }
         return true;
+    }
+    
+    /**
+     * Check if any element in an array (including nested arrays) matches the condition
+     */
+    private static function checkArrayWithCondition(array $arr, array $condition): bool {
+        foreach ($arr as $item) {
+            if (is_array($item)) {
+                // Recursively check nested arrays
+                if (self::checkArrayWithCondition($item, $condition)) {
+                    return true;
+                }
+            } else {
+                // Check if this item matches all conditions
+                $matches = true;
+                foreach ($condition as $key => $conditionValue) {
+                    if ($key == '$options') continue;
+                    if (!self::evaluate($key, $item, $conditionValue)) {
+                        $matches = false;
+                        break;
+                    }
+                }
+                if ($matches) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -498,6 +609,24 @@ class UtilArrayQuery {
                     }
                 } else {
                     $r = false;
+                }
+                break;
+
+            case '$elemMatch':
+                if (!is_array($a)) {
+                    return false;
+                }
+                if (!is_array($b)) {
+                    throw new \InvalidArgumentException('Invalid argument for $elemMatch - must be an array/object');
+                }
+                
+                $r = false;
+                // Check if any element in the array matches all conditions in $b
+                foreach ($a as $element) {
+                    if (is_array($element) && self::evaluateCondition($element, $b)) {
+                        $r = true;
+                        break;
+                    }
                 }
                 break;
 

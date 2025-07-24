@@ -385,7 +385,7 @@ class Mongo {
                 $data[$k] = $this->_fixForMongo($data[$k], $infinite, $_level + 1);
             }
 
-            if ($k === '_id') {
+            if ($k === '_id' || str_ends_with($k, '._id')) {
 
                 if (is_string($v) && isset($v[0])) {
                     $v = $v[0] === '@' ? \substr($v, 1) : $this->getObjectID($v);
