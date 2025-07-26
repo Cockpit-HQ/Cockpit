@@ -218,6 +218,11 @@ $this->module('content')->extend([
         } elseif (in_array($model['type'], ['collection', 'tree'])) {
 
             $this->app->helper('content')->replaceLocaleInArrayKeys($filter, $process['locale'] ?? '');
+            
+            // Process linked field filters
+            if (!empty($filter)) {
+                $this->app->helper('content.linkedfilter')->process($filter, $model);
+            }
 
             $collection = "content/collections/{$modelName}";
             $item = $this->app->dataStorage->findOne($collection, $filter, $fields);
@@ -385,8 +390,19 @@ $this->module('content')->extend([
 
     'tree' => function(string $modelName, $parentId = null, ?array $filter = null, ?array $fields = null, $process = []) {
 
+        $model = $this->model($modelName);
+        
+        if (!$model) {
+            throw new Exception('Try to access unknown model "'.$modelName.'"');
+        }
+
         $filter = is_array($filter) ? $filter : [];
         $filter['_pid'] = $parentId;
+        
+        // Process linked field filters
+        if (!empty($filter)) {
+            $this->app->helper('content.linkedfilter')->process($filter, $model);
+        }
 
         $items = $this->app->dataStorage->find("content/collections/{$modelName}", [
             'filter' => $filter,
