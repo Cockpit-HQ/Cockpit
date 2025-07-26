@@ -349,6 +349,10 @@ $this->module('content')->extend([
 
         $this->app->trigger('content.remove.before', [$modelName, &$filter, $collection]);
 
+        if (!empty($filter)) {
+            $this->app->helper('content.linkedfilter')->process($filter, $model);
+        }
+
         $result = $this->app->dataStorage->remove($collection, $filter);
 
         return $result;
@@ -372,8 +376,11 @@ $this->module('content')->extend([
 
         $collection = "content/collections/{$modelName}";
 
-        return $this->app->dataStorage->count($collection, $filter);
+        if (!empty($filter)) {
+            $this->app->helper('content.linkedfilter')->process($filter, $model);
+        }
 
+        return $this->app->dataStorage->count($collection, $filter);
     },
 
     'tree' => function(string $modelName, $parentId = null, ?array $filter = null, ?array $fields = null, $process = []) {
