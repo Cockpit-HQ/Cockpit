@@ -201,7 +201,7 @@ export default {
                     App.ui.notify('Asset removed!');
                 }).catch(rsp => {
                     App.ui.notify(rsp.error || 'Deleting asset failed!', 'error');
-                });;
+                });
             });
         },
 
@@ -212,6 +212,8 @@ export default {
                 this.$request(`/assets/remove`, {assets: this.selected}).then(res => {
                     this.load(this.page == 1 ? 1 : (this.assets.length - this.selected.length ? this.page : this.page - 1));
                     App.ui.notify('Assets removed!');
+                }).catch(rsp => {
+                    App.ui.notify(rsp.error || 'Deleting asset failed!', 'error');
                 });
             });
         },
