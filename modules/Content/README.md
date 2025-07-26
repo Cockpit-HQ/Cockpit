@@ -261,6 +261,75 @@ $app->module('content')->items('events', [
 ]);
 ```
 
+### Filtering by Linked Content
+
+The Content module supports filtering by properties of linked content using the `@` syntax:
+
+```php
+// Filter by linked content properties
+$posts = $app->module('content')->items('blog', [
+    'filter' => [
+        '@author.name' => 'John Doe',              // Author's name
+        '@category.status' => 'active'             // Active categories only
+    ]
+]);
+
+// With MongoDB operators on linked fields
+$products = $app->module('content')->items('products', [
+    'filter' => [
+        '@vendor.rating' => ['$gte' => 4.0],       // Highly rated vendors
+        '@vendor.country' => ['$in' => ['US', 'CA']], // North American vendors
+        '@category.name' => ['$regex' => 'tech', '$options' => 'i']
+    ]
+]);
+
+// Complex linked field queries
+$orders = $app->module('content')->items('orders', [
+    'filter' => [
+        '$and' => [
+            ['@customer.verified' => true],         // Verified customers
+            ['@product.price' => ['$gt' => 100]],  // High-value products
+            ['status' => 'completed']              // Completed orders
+        ]
+    ]
+]);
+
+// Nested properties in linked content
+$posts = $app->module('content')->items('blog', [
+    'filter' => [
+        '@author.address.city' => 'New York',      // Author's city
+        '@author.profile.verified' => true         // Verified profile
+    ]
+]);
+```
+
+#### Performance Considerations for Linked Filters
+
+The filter helper includes depth limiting to prevent performance issues:
+
+```php
+// Default max depth is 3 levels
+$filter = ['@author.name' => 'John'];
+
+// Process filter in-place (modifies $filter directly)
+$this->app->helper('content.linkedfilter')->process(
+    $filter, 
+    'posts',
+    ['maxDepth' => 5]  // Allow up to 5 levels
+);
+
+// Use the processed filter
+$posts = $app->module('content')->items('posts', [
+    'filter' => $filter
+]);
+```
+
+**Notes:**
+- The `@` syntax automatically resolves linked content IDs
+- All MongoDB operators work with linked fields
+- Depth limiting prevents excessive queries and circular references
+- Filters exceeding max depth are passed through unprocessed
+
 ### Field Projection
 
 Uses **MongoDB Field Projection** syntax for selecting which fields to return.

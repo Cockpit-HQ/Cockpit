@@ -3,6 +3,7 @@
 // Register Helpers
 $this->helpers['content'] = 'Content\\Helper\\Content';
 $this->helpers['content.model'] = 'Content\\Helper\\Model';
+$this->helpers['content.linkedfilter'] = 'Content\\Helper\\LinkedContentFilter';
 
 // load admin related code
 $this->on('app.admin.init', function() {
@@ -273,9 +274,12 @@ $this->module('content')->extend([
 
         }
 
-        // replace {field}:locale keys with locale defined in $process
         if (isset($options['filter'])) {
+            // replace {field}:locale keys with locale defined in $process
             $this->app->helper('content')->replaceLocaleInArrayKeys($options['filter'], $process['locale'] ?? '');
+            // resolve linked fields conditions via @fieldname.{prop} => {mongoquery}
+            $this->app->helper('content.linkedfilter')->process($options['filter'], $model);
+
         }
 
         if (isset($options['sort'])) {

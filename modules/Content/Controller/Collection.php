@@ -168,7 +168,24 @@ class Collection extends App {
                     if ($f && $f[0] === ':') {
 
                         try {
-                            $_filter = SQLToMongoQuery::translate(substr($f, 1));
+                            // Pre-process @ fields before SQL translation
+                            $sql = substr($f, 1);
+
+                            // Replace @field.property and @field.@field2.property with placeholders
+                            $sql = preg_replace_callback('/@([\w\.@]+)/', function($matches) {
+                                $path = $matches[1];
+                                // Replace @ with __AT__ and . with __DOT__
+                                $path = str_replace('@', '__AT__', $path);
+                                $path = str_replace('.', '__DOT__', $path);
+                                return '__AT__' . $path;
+                            }, $sql);
+
+                            $_filter = SQLToMongoQuery::translate($sql);
+
+                            // Convert placeholders back to @ syntax in the resulting filter
+                            $_filter = json_decode(json_encode($_filter), true);
+                            $_filter = $this->restoreLinkedSyntax($_filter);
+
                         } catch (\Exception $e) {
                             throw new \Exception("Invalid filter!");
                         }
@@ -385,6 +402,28 @@ class Collection extends App {
         $this->app->dataStorage->remove('content/views', ['_id' => $view['_id']]);
 
         return ['success' => true];
+    }
+
+    /**
+     * Restore @ syntax from placeholders in filter array
+     */
+    protected function restoreLinkedSyntax($filter) {
+        if (is_array($filter)) {
+            $result = [];
+            foreach ($filter as $key => $value) {
+                // Restore key if it contains placeholders
+                if (is_string($key) && str_starts_with($key, '__AT__')) {
+                    $key = '@' . substr($key, 6); // Remove __AT__ prefix
+                    $key = str_replace('__DOT__', '.', $key);
+                    $key = str_replace('__AT__', '@', $key); // Restore nested @ symbols
+                }
+
+                // Recursively process value
+                $result[$key] = is_array($value) ? $this->restoreLinkedSyntax($value) : $value;
+            }
+            return $result;
+        }
+        return $filter;
     }
 
 }
