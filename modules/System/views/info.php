@@ -93,7 +93,7 @@
                                 <div class="kiss-flex kiss-flex-middle" gap="small">
                                     <div><icon class="kiss-size-1 kiss-color-warning" size="larger">developer_board</icon></div>
                                     <div class="kiss-flex-1">
-                                        <span class="kiss-text-monospace kiss-text-bold kiss-text-upper">Cockpit <?=($license['model'] ?? 'pro')?></span>
+                                        <span class="kiss-text-monospace kiss-text-bold kiss-text-upper">Cockpit <?=$this->escape($license['model'] ?? 'pro')?></span>
                                         <div class="kiss-color-muted kiss-text-caption kiss-size-xsmall">License</div>
                                     </div>
                                     <div>
@@ -101,18 +101,18 @@
                                     </div>
                                 </div>
 
-                                <div class="kiss-text-bold kiss-text-truncate kiss-margin-large"><?=($license['company'] ? $license['company'] : $license['name'])?></div>
+                                <div class="kiss-text-bold kiss-text-truncate kiss-margin-large"><?=$this->escape($license['company'] ? $license['company'] : $license['name'])?></div>
 
                                 <div class="kiss-flex kiss-position-relative" gap="large">
 
                                     <div class="kiss-width-1-2 kiss-width-1-3@m kiss-color-muted kiss-size-small kiss-margin-small-top">
                                         <div class="kiss-text-caption"><?=t('Licensed domain')?></div>
-                                        <div class="kiss-margin-xsmall-top kiss-text-truncate kiss-size-xsmall" title="<?=$license['domain']?>"><?=$license['domain']?></div>
+                                        <div class="kiss-margin-xsmall-top kiss-text-truncate kiss-size-xsmall" title="<?=$this->escape($license['domain'])?>"><?=$this->escape($license['domain'])?></div>
                                     </div>
 
                                     <div class="kiss-color-muted kiss-size-small kiss-margin-small-top">
                                         <div class="kiss-text-caption"><?=t('License key')?></div>
-                                        <div class="kiss-margin-xsmall-top kiss-text-truncate kiss-size-xsmall" title="<?=$license['key']?>"><?=$license['key']?></div>
+                                        <div class="kiss-margin-xsmall-top kiss-text-truncate kiss-size-xsmall" title="<?=$this->escape($license['key'])?>"><?=$this->escape($license['key'])?></div>
                                     </div>
 
                                 </div>
