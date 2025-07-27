@@ -388,7 +388,7 @@ class Mongo {
             if ($k === '_id' || str_ends_with($k, '._id')) {
 
                 if (is_string($v) && isset($v[0])) {
-                    $v = $v[0] === '@' ? \substr($v, 1) : $this->getObjectID($v);
+                    $v = $this->getObjectID($v);
                 } elseif (is_array($v)) {
 
                     if (isset($v['$in'])) {
@@ -429,6 +429,11 @@ class Mongo {
     protected function getObjectID($v) {
 
         if (is_string($v)) {
+
+            if (isset($v[0]) && $v[0] === '@') {
+                return substr($v, 1);
+            }
+
             try {
                 $v = new ObjectID($v);
             } catch (\Throwable $e) {}

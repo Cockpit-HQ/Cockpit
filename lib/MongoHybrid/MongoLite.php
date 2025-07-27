@@ -285,10 +285,29 @@ class MongoLite {
                 $data[$k] = $this->_fixForMongo($data[$k], $infinite, $_level + 1);
             }
 
-            if ($k === '_id') {
+            if ($k === '_id' || str_ends_with($k, '._id')) {
 
-                if (is_string($v) && isset($v[0]) && $v[0] === '@') {
-                    $v = \substr($v, 1);
+                if (is_string($v)) {
+                    $v = $this->getObjectID($v);
+                } elseif (is_array($v)) {
+
+                    if (isset($v['$in'])) {
+
+                        foreach ($v['$in'] as &$id) {
+                            $id = $this->getObjectID($id);
+                        }
+                    }
+
+                    if (isset($v['$nin'])) {
+
+                        foreach ($v['$nin'] as &$id) {
+                            $id = $this->getObjectID($id);
+                        }
+                    }
+
+                    if (isset($v['$ne']) && is_string($v['$ne'])) {
+                        $v['$ne'] = $this->getObjectID($v['$ne']);
+                    }
                 }
             }
 
@@ -299,6 +318,15 @@ class MongoLite {
         }
 
         return $data;
+    }
+
+    protected function getObjectID($v) {
+
+        if (is_string($v) && isset($v[0]) && $v[0] === '@') {
+            return substr($v, 1);
+        }
+
+        return $v;
     }
 
 }

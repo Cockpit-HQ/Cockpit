@@ -167,28 +167,7 @@ class Collection extends App {
 
                     if ($f && $f[0] === ':') {
 
-                        try {
-                            // Pre-process @ fields before SQL translation
-                            $sql = substr($f, 1);
-
-                            // Replace @field.property and @field.@field2.property with placeholders
-                            $sql = preg_replace_callback('/@([\w\.@]+)/', function($matches) {
-                                $path = $matches[1];
-                                // Replace @ with __AT__ and . with __DOT__
-                                $path = str_replace('@', '__AT__', $path);
-                                $path = str_replace('.', '__DOT__', $path);
-                                return '__AT__' . $path;
-                            }, $sql);
-
-                            $_filter = SQLToMongoQuery::translate($sql);
-
-                            // Convert placeholders back to @ syntax in the resulting filter
-                            $_filter = json_decode(json_encode($_filter), true);
-                            $_filter = $this->restoreLinkedSyntax($_filter);
-
-                        } catch (\Exception $e) {
-                            throw new \Exception("Invalid filter!");
-                        }
+                        $_filter  = $this->getFilterFromSQL($f);
 
                     } elseif (\preg_match('/^\{(.*)\}$/', $f)) {
 
@@ -209,9 +188,24 @@ class Collection extends App {
 
                             foreach ($fields as $field) {
 
-                                if (!\in_array($field['type'], ['code', 'color', 'text', 'wysiwyg', 'select'])) continue;
+                                if (!\in_array($field['type'], ['contentItemLink', 'code', 'color', 'text', 'wysiwyg', 'select'])) continue;
 
-                                if ($field['type'] == 'select' && ($field['opts']['multiple'] ?? false)) {
+                                if ($field['type'] == 'contentItemLink') {
+
+                                    if (!($field['opts']['link'] ?? '')) continue;
+                                    $linkedModel = $this->module('content')->model($field['opts']['link']);
+                                    if (!$linkedModel) continue;
+
+                                    foreach (($linkedModel['fields'] ?? []) as $linkedField) {
+
+                                        if (!\in_array($linkedField['type'], ['code', 'color', 'text', 'wysiwyg', 'select'])) continue;
+
+                                        foreach ($terms as $term) {
+                                            $_f = [];
+                                            $_f["@{$field['name']}.{$linkedField['name']}"] = ['$regex' => $term, '$options' => 'i'];
+                                            $_filter['$or'][] = $_f;
+                                        }
+                                    }
                                     continue;
                                 }
 
@@ -402,6 +396,33 @@ class Collection extends App {
         $this->app->dataStorage->remove('content/views', ['_id' => $view['_id']]);
 
         return ['success' => true];
+    }
+
+    protected function getFilterFromSQL($sql) {
+
+        try {
+            // Pre-process @ fields before SQL translation
+            $sql = str_starts_with($sql, ':') ? substr($sql, 1) : $sql;
+
+            // Replace @field.property and @field.@field2.property with placeholders
+            $sql = preg_replace_callback('/@([\w\.@]+)/', function($matches) {
+                $path = $matches[1];
+                // Replace @ with __AT__ and . with __DOT__
+                $path = str_replace('@', '__AT__', $path);
+                $path = str_replace('.', '__DOT__', $path);
+                return '__AT__' . $path;
+            }, $sql);
+
+            $filter = SQLToMongoQuery::translate($sql);
+
+            // Convert placeholders back to @ syntax in the resulting filter
+            $filter = json_decode(json_encode($filter), true);
+            $filter = $this->restoreLinkedSyntax($filter);
+            return $filter;
+
+        } catch (\Exception $e) {
+            throw new \Exception("Invalid SQL filter!");
+        }
     }
 
     /**
