@@ -25,8 +25,16 @@ class Updater extends App {
 
     public function update() {
 
-        $version = 'master';
+        $version = $this->param('version', 'master');
         $target = $this->helper('license')->isProprietary() ? 'pro' : 'core';
+
+        if (!in_array($target, ['core', 'pro'])) {
+            return $this->stop(400, 'Invalid target');
+        }
+
+        if (!in_array($version, ['master', 'develop'])) {
+            return $this->stop(400, 'Invalid version');
+        }
 
         $this->helper('updater')->update($version, $target);
 
