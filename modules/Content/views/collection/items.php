@@ -420,12 +420,12 @@
                         views: Object.assign({
                             'created-by-me': {
                                 name: App.i18n.get('Created by me'),
-                                filter: `: _cby="${App.user._id}"`,
+                                filter: `{_cby:"${App.user._id}"}`,
                                 private: true
                             },
                             'updated-by-me': {
                                 name: App.i18n.get('Updated by me'),
-                                filter: `: _mby="${App.user._id}"`,
+                                filter: `{_mby:"${App.user._id}"}`,
                                 private: true
                             }
                         }, <?= json_encode($views) ?>)
