@@ -31,11 +31,11 @@ vue-view:not([init="true"]) {
 
 :root {
 
-    --app-header-background: var(--kiss-base-background-color);
+    --app-header-background: transparent;
     --app-border-radius: 3px;
     --app-shadow-color: rgba(0, 0, 0, 0.12);
 
-    --app-actionbar-bgcolor: #131720e6;
+    --app-actionbar-bgcolor: transparent;
 
     --app-loader-color1: var(--kiss-color-primary);
     --app-loader-color2: #fff;
@@ -83,7 +83,7 @@ html[data-theme='light'] {
     --kiss-table-row-hover-color: #efefef;
 
     --app-shadow-color: rgba(0, 0, 0, 0.12);
-    --app-actionbar-bgcolor: #eff7f7e8;
+    --app-actionbar-bgcolor: transparent;
     --app-loader-color2: #333;
     --app-fieldcontainer-border-color-inactive: rgba(0, 0, 0, .1);
     --app-scrollbar-color: var(--kiss-color-muted);
@@ -254,6 +254,21 @@ html[data-theme='light'] .app-container-aside-panel::before {
     background: linear-gradient(12deg, rgba(233, 233, 233, .5) 0%, rgba(0, 0, 0, 0) 35%, rgba(0, 0, 0, 0) 100%);
 }
 
+body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(12deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 35%, rgba(0, 0, 0, .5) 100%);
+    z-index: -1;
+}
+
+html[data-theme='light'] body::before {
+    background: linear-gradient(12deg, rgba(233, 233, 233, .5) 0%, rgba(0, 0, 0, 0) 35%, rgba(0, 0, 0, 0) 100%);
+}
+
 .app-container-aside-menu kiss-navlist a {
     text-align: center;
 }
@@ -418,7 +433,12 @@ app-header {
     position: relative;
     padding: 20px 0;
     background: var(--app-header-background);
+    backdrop-filter: blur(5px);
     z-index: 6;
+}
+
+app-actionbar {
+    backdrop-filter: blur(5px);
 }
 
 app-actionbar kiss-container {
