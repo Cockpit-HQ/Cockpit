@@ -4402,7 +4402,7 @@ body::before {
     z-index: -1;
 }
 html[data-theme='light'] body::before {
-    background: linear-gradient(12deg, rgba(233, 233, 233, .5) 0%, rgba(0, 0, 0, 0) 35%, rgba(0, 0, 0, 0) 100%);
+    background: linear-gradient(12deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 35%, rgba(233, 233, 233, .5) 100%);
 }
 .app-container-aside-menu kiss-navlist a {
     text-align: center;
