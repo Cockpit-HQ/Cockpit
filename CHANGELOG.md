@@ -11,6 +11,7 @@
 - Add custom folder icon support in assets manager
 - Add support `$elemMatch` operator and nested array traversal in MongoLite
 - Add `assets.before.remove` event
+- Added an experimental feature to filter content based on the attributes of its linked items. This allows for more granular queries using the `@{fieldname.property}` syntax, such as `@author.name: 'Ozzy'`
 
 ## 2.11.4 (2025-07-01)
 
