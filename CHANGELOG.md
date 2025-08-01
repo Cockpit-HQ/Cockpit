@@ -1,6 +1,6 @@
 # Release Notes
 
-# WIP
+## 2.12.0 (2025-08-01)
 
 - Trigger additional `app.user.logout.after` on user logout
 - Improve IndexLite lib
@@ -9,7 +9,6 @@
 - Add lightweight SQL pdo wrapper `ESQL` lib
 - Add Identi module to enable OAuth based logins - sponsored by @unchainedshop
 - Add custom folder icon support in assets manager
-- Add support `$elemMatch` operator and nested array traversal in MongoLite
 - Add `assets.before.remove` event
 - Added an experimental feature to filter content based on the attributes of its linked items. This allows for more granular queries using the `@{fieldname.property}` syntax, such as `@author.name: 'Ozzy'`
 
