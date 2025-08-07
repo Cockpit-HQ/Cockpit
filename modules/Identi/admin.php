@@ -22,7 +22,7 @@ $this->on('app.user.logout.after', function($user, $params, $data) {
 
     if ($idTokenHint) {
         try {
-            $signoutUrl = $this->helper('spaces')->url().'/auth/login';
+            $signoutUrl = $this->helper('spaces')->getSiteUrl().'/auth/login';
             $this->module('identi')->getOIDCClient()->signOut($idTokenHint, $signoutUrl);
         } catch (Exception $e) {}
     }

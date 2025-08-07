@@ -87,7 +87,7 @@ class Spaces extends \Lime\Helper {
         return $this->instances[$name];
     }
 
-    public function url(?string $name = null) {
+    public function getSiteUrl(?string $name = null) {
 
         if ($name) {
             return $this->app->getSiteUrl(true) . "/:{$name}";
