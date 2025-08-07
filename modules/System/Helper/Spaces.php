@@ -98,8 +98,7 @@ class Spaces extends \Lime\Helper {
             return $this->app->getSiteUrl(true) . "/:{$space}";
         }
 
-        $this->app->getSiteUrl(true);
-
+        return $this->app->getSiteUrl(true);
     }
 
     public function create(string $name, array $options = []) {
