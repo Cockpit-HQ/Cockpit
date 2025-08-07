@@ -117,7 +117,7 @@ class Identi extends Base {
 
         if ($idTokenHint) {
             try {
-                $this->getOIDCClient()->signOut($idTokenHint, $this->app->getSiteUrl(true).'/auth/login');
+                $this->getOIDCClient()->signOut($idTokenHint, $this->helper('spaces')->url().'/auth/login');
             } catch (Exception $e) {
                 return $this->render('identi:views/error.php', ['error' => 'Logout error: ' . $e->getMessage()]);
             }
