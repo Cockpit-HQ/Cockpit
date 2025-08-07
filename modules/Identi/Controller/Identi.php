@@ -90,7 +90,7 @@ class Identi extends Base {
             $oidc->setCodeChallengeMethod(is_string($this->config['pkce']) ? $this->config['pkce'] : 'S256');
         }
 
-        $oidc->setRedirectURL($this->app->getSiteUrl(true) . '/identi/callback');
+        $oidc->setRedirectURL($this->app->module('system')->spaceUrl('/identi/callback'));
 
         // Add scopes
         $scopes = explode(' ', trim($this->config['scopes']));
