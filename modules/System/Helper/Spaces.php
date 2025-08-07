@@ -87,6 +87,21 @@ class Spaces extends \Lime\Helper {
         return $this->instances[$name];
     }
 
+    public function url(?string $name = null) {
+
+        if ($name) {
+            return $this->app->getSiteUrl(true) . "/:{$name}";
+        }
+
+        if (!$this->isMaster) {
+            $space = basename(trim($this->app->path('#root:'), '/'));
+            return $this->app->getSiteUrl(true) . "/:{$space}";
+        }
+
+        $this->app->getSiteUrl(true);
+
+    }
+
     public function create(string $name, array $options = []) {
 
         $options = array_merge([
