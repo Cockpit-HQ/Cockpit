@@ -1,5 +1,10 @@
 # Release Notes
 
+## WIP
+
+- Fix Identi module usage with spaces
+
+
 ## 2.12.0 (2025-08-01)
 
 - Trigger additional `app.user.logout.after` on user logout
