@@ -90,7 +90,7 @@ class Identi extends Base {
             $oidc->setCodeChallengeMethod(is_string($this->config['pkce']) ? $this->config['pkce'] : 'S256');
         }
 
-        $oidc->setRedirectURL($this->helper('spaces')->url() . '/identi/callback');
+        $oidc->setRedirectURL($this->helper('spaces')->getSiteUrl() . '/identi/callback');
 
         // Add scopes
         $scopes = explode(' ', trim($this->config['scopes']));
@@ -117,7 +117,7 @@ class Identi extends Base {
 
         if ($idTokenHint) {
             try {
-                $this->getOIDCClient()->signOut($idTokenHint, $this->helper('spaces')->url().'/auth/login');
+                $this->getOIDCClient()->signOut($idTokenHint, $this->helper('spaces')->getSiteUrl().'/auth/login');
             } catch (Exception $e) {
                 return $this->render('identi:views/error.php', ['error' => 'Logout error: ' . $e->getMessage()]);
             }
