@@ -16,6 +16,11 @@ class License extends \Lime\Helper {
         return $key ? ($this->license[$key] ?? null) : $this->license;
     }
 
+    /**
+     * Load the license file.
+     *
+     * @return void
+     */
     protected function load() {
 
         $this->license = false;
@@ -71,22 +76,47 @@ class License extends \Lime\Helper {
         }
     }
 
+    /**
+     * Require a valid license.
+     *
+     * @return void
+     */
     public function require() {
         $this->required = true;
     }
 
+    /**
+     * Check if a valid license is required.
+     *
+     * @return bool
+     */
     public function required() {
         return $this->required;
     }
 
+    /**
+     * Check if the license is a trial license.
+     *
+     * @return bool
+     */
     public function isTrial() {
         return ($this->required || $this->isProprietary()) && $this->license() === false;
     }
 
+    /**
+     * Check if the license is a proprietary license.
+     *
+     * @return bool
+     */
     public function isProprietary() {
         return ((json_decode(file_get_contents(APP_DIR.'/composer.json'), true)['license'] ?? '') === 'proprietary');
     }
 
+    /**
+     * Check if the license is a valid domain.
+     *
+     * @return bool
+     */
     public function isValidDomain() {
 
         if (!$this->required) {

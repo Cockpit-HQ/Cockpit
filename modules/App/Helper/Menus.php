@@ -8,6 +8,13 @@ class Menus extends \Lime\Helper {
 
     protected array $menus = [];
 
+    /**
+     * Add a link to a menu.
+     *
+     * @param string $menu The menu name.
+     * @param array $link The link data.
+     * @return void
+     */
     public function addLink(string $menu, array $link): void {
 
         if (!isset($this->menus[$menu])) {
@@ -30,6 +37,13 @@ class Menus extends \Lime\Helper {
         $this->menus[$menu][] = $link;
     }
 
+    /**
+     * Get the menu links for a specific menu.
+     *
+     * @param string $name The menu name.
+     * @param bool $grouped Whether to group the links by their group.
+     * @return array The menu links.
+     */
     public function menu(string $name, bool $grouped = false): array {
 
         if (!isset($this->menus[$name]) || !count($this->menus[$name])) {

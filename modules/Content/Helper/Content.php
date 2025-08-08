@@ -7,6 +7,12 @@ class Content extends \Lime\Helper {
 
     protected array $allowedModels = [];
 
+    /**
+     * Get the allowed models for a specific role.
+     *
+     * @param string|null $role The role to check (default: current user role).
+     * @return array The list of allowed models.
+     */
     public function allowedModels(?string $role = null): array {
 
         $role = $role ?? $this->app->helper('auth')->getUser('role');
@@ -37,6 +43,14 @@ class Content extends \Lime\Helper {
         return $this->allowedModels[$role];
     }
 
+    /**
+     * Replace locale placeholders in array keys.
+     *
+     * @param array $array The array to modify.
+     * @param string $locale The locale to use (default: '').
+     * @param bool $keepDefault Whether to keep the default locale key (default: false).
+     * @return void
+     */
     public function replaceLocaleInArrayKeys(array &$array, string $locale = '', $keepDefault = false) {
 
         $locale = trim($locale);
@@ -66,6 +80,12 @@ class Content extends \Lime\Helper {
         }
     }
 
+    /**
+     * Resolve locale placeholders in projection options.
+     *
+     * @param array $fields The fields to modify.
+     * @return void
+     */
     public function resolveLocalesInProjectionOptions(array &$fields) {
 
         $locales = array_keys($this->app->helper('locales')->locales(true));
@@ -91,6 +111,15 @@ class Content extends \Lime\Helper {
         }
     }
 
+    /**
+     * Check if content is unique.
+     *
+     * @param string|array $model The model name or array.
+     * @param array $data The content data.
+     * @param string|array $fields The fields to check.
+     * @param mixed &$info Additional information (passed by reference).
+     * @return bool True if unique, false if not.
+     */
     public function isContentUnique(string|array $model, array $data, string|array $fields, mixed &$info = []): bool {
 
         $model = is_string($model) ? $this->app->module('content')->model($model) : $model;

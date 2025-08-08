@@ -1,6 +1,7 @@
 <?php
 
 namespace System\Helper;
+
 class Locales extends \Lime\Helper {
 
     protected array $locales = [];
@@ -12,6 +13,12 @@ class Locales extends \Lime\Helper {
         });
     }
 
+    /**
+     * Get the list of available locales.
+     *
+     * @param bool $assoc Whether to return an associative array.
+     * @return array The list of locales.
+     */
     public function locales(bool $assoc = false): array {
 
         if ($assoc) {
@@ -31,6 +38,14 @@ class Locales extends \Lime\Helper {
         return $locales;
     }
 
+    /**
+     * Apply locale-specific fields to an object.
+     *
+     * @param mixed $obj The object to apply locales to.
+     * @param string $locale The default locale to use.
+     * @param array|null $locales The list of locales to apply.
+     * @return mixed The object with applied locales.
+     */
     public function applyLocales($obj, $locale = 'default', ?array $locales = null) {
 
         if (!is_array($obj)) {
@@ -95,6 +110,12 @@ class Locales extends \Lime\Helper {
         return $obj;
     }
 
+    /**
+     * Get the cached locales.
+     *
+     * @param bool $persistent Whether to use the persistent cache.
+     * @return array The cached locales.
+     */
     public function cache(bool $persistent = true): array {
 
         $cache = [

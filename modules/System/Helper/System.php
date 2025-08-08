@@ -8,6 +8,14 @@ use ArrayObject;
 
 class System extends \Lime\Helper {
 
+    /**
+     * Try to execute a callback and handle exceptions.
+     *
+     * @param callable $callback The callback to execute.
+     * @param mixed $rescue The value to return on failure.
+     * @param bool $report Whether to report the error.
+     * @return mixed The result of the callback or the rescue value.
+     */
     public function try(callable $callback, $rescue = null, bool $report = true) {
         try {
             return $callback();
@@ -20,10 +28,21 @@ class System extends \Lime\Helper {
         }
     }
 
+    /**
+     * Report an error.
+     *
+     * @param mixed $error The error to report.
+     * @return void
+     */
     public function report(mixed $error) {
         // to be implemented
     }
 
+    /**
+     * Flush the application cache.
+     *
+     * @return void
+     */
     public function flushCache(): void {
 
         $dirs = ['#cache:','#tmp:'];
@@ -53,6 +72,13 @@ class System extends \Lime\Helper {
         }
     }
 
+    /**
+     * Get the size of a directory.
+     *
+     * @param string $directory The directory path.
+     * @param bool $format Whether to format the size.
+     * @return int|string The directory size in bytes or formatted size.
+     */
     public function getDirectorySize(string $directory, bool $format = false) {
 
         // Check if 'exec' is allowed
@@ -87,6 +113,11 @@ class System extends \Lime\Helper {
         return $format ? $this->app->helper('utils')->formatSize($size) : $size;;
     }
 
+    /**
+     * Vacuum SQLite databases.
+     *
+     * @return void
+     */
     public function vacuumSQLite(): void {
 
         $validExt = ['db', 'idx', 'sqlite', 'sqlite3'];

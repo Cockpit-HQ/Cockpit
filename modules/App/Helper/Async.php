@@ -29,6 +29,14 @@ class Async extends \Lime\Helper {
         }
     }
 
+    /**
+     * Execute a script asynchronously.
+     *
+     * @param string $script The script to execute.
+     * @param array $params The parameters to pass to the script.
+     * @param int $maxTime The maximum execution time in seconds.
+     * @return string The process ID.
+     */
     public function exec($script, $params = [], $maxTime = 60) {
 
         $processId = uniqid('worker').'-'.(time() + $maxTime);
@@ -99,6 +107,13 @@ extract(".var_export($params, true).");
         return $processId;
     }
 
+    /**
+     * Check if an asynchronous process has finished.
+     *
+     * @param string $processId The process ID.
+     * @param mixed $error The error information (if any).
+     * @return bool True if the process has finished, false otherwise.
+     */
     public function finished($processId, &$error = null) {
 
         $processId = str_replace('..', '', $processId);
@@ -121,6 +136,12 @@ extract(".var_export($params, true).");
         return true;
     }
 
+    /**
+     * Execute a script in the background.
+     *
+     * @param string $scriptfile The script file to execute.
+     * @return void
+     */
     protected function execInBackground($scriptfile) {
 
         if (!$this->isExecAvailable()) {
@@ -154,6 +175,11 @@ extract(".var_export($params, true).");
         }
     }
 
+    /**
+     * Check if the exec function is available.
+     *
+     * @return bool True if exec is available, false otherwise.
+     */
     protected function isExecAvailable() {
 
         if (!$this->phpPath || in_array(strtolower(ini_get('safe_mode')), ['on', '1'], true) || (!function_exists('exec'))) {
@@ -165,6 +191,11 @@ extract(".var_export($params, true).");
         return !in_array('exec', $disabled_functions) && strlen(trim(exec($this->phpPath.' -v')));
     }
 
+    /**
+     * Check if an asynchronous process is possible.
+     *
+     * @return bool True if an asynchronous process is possible, false otherwise.
+     */
     public function possible() {
         return $this->isExecAvailable() || function_exists('fsockopen');
     }
