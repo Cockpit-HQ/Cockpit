@@ -72,7 +72,7 @@ class Spaces extends \Lime\Helper {
     /**
      * Get the master space instance.
      *
-     * @return \Cockpit|null
+     * @return \Lime\App|null
      */
     public function master() {
 
@@ -91,7 +91,7 @@ class Spaces extends \Lime\Helper {
      * Get a specific space instance by name.
      *
      * @param string $name The name of the space.
-     * @return \Cockpit|null Returns the space instance or null if it does not exist.
+     * @return \Lime\App|null Returns the space instance or null if it does not exist.
      */
     public function space(string $name) {
 
