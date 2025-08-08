@@ -23,12 +23,24 @@ class Csrf extends \Lime\Helper {
         });
     }
 
+    /**
+     * Reset the CSRF token.
+     *
+     * @return void
+     */
     public function reset() {
         $key = bin2hex(random_bytes(32));
         $this->app->helper('session')->write("app.csrf._key", $key);
         $this->sessionKey = $key;
     }
 
+    /**
+     * Generate a CSRF token.
+     *
+     * @param string $key The key for the token.
+     * @param int|null $expire The expiration time in seconds.
+     * @return string The generated token.
+     */
     public function generateToken(string $key, ?int $expire = null): string {
 
         $payload = ['csrf' => "{$key}.{$this->sessionKey}"];
@@ -44,6 +56,14 @@ class Csrf extends \Lime\Helper {
         return $token;
     }
 
+    /**
+     * Get the CSRF token.
+     *
+     * @param string $key The key for the token.
+     * @param bool $generate Whether to generate a new token if it doesn't exist.
+     * @param int|null $expire The expiration time in seconds.
+     * @return string The CSRF token.
+     */
     public function token(string $key, bool $generate = false, ?int $expire = null): string {
 
         $token = $this->app->helper('session')->read("app.csrf.token.{$key}", null);
@@ -55,6 +75,14 @@ class Csrf extends \Lime\Helper {
         return $token;
     }
 
+    /**
+     * Check if a CSRF token is valid.
+     *
+     * @param string $key The key for the token.
+     * @param string|null $token The token to check.
+     * @param bool $checkpayload Whether to check the payload.
+     * @return bool True if the token is valid, false otherwise.
+     */
     public function isValid(string $key, ?string $token, bool $checkpayload = false): bool {
 
         if (!$token) {

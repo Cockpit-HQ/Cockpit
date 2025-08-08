@@ -20,6 +20,12 @@ class Theme extends \Lime\Helper {
         ];
     }
 
+    /**
+     * Get or set the page title.
+     *
+     * @param string|null $newTitle The new title to set, or null to get the current title.
+     * @return string|null The current title or null if not set.
+     */
     public function title(?string $newTitle = null): ?string {
 
         if ($newTitle) {
@@ -34,6 +40,13 @@ class Theme extends \Lime\Helper {
         return $this->app->retrieve('app.name');
     }
 
+    /**
+     * Get or set the favicon URL.
+     *
+     * @param string|null $url The new favicon URL to set, or null to get the current URL.
+     * @param string|null $color The color to apply to the favicon (for SVGs), or null to not change the color.
+     * @return string|null The current favicon URL or null if not set.
+     */
     public function favicon(?string $url = null, ?string $color = null): ?string {
 
         if ($url) {
@@ -66,6 +79,12 @@ class Theme extends \Lime\Helper {
         return $this->pathToUrl('#app:favicon.png');
     }
 
+    /**
+     * Get or set the logo URL.
+     *
+     * @param string|null $url The new logo URL to set, or null to get the current URL.
+     * @return string|null The current logo URL or null if not set.
+     */
     public function logo(?string $url = null): ?string {
 
         if ($url) {
@@ -84,6 +103,11 @@ class Theme extends \Lime\Helper {
         return $this->app->baseUrl('app:assets/img/logo.svg');
     }
 
+    /**
+     * Get theme.
+     *
+     * @return string|null The current theme or null if not set.
+     */
     public function theme() {
 
         $theme = $this->app->retrieve('theme/default', 'auto');
@@ -92,6 +116,13 @@ class Theme extends \Lime\Helper {
         return $theme;
     }
 
+    /**
+     * Get or set the assets for the current page.
+     *
+     * @param array $assets The assets to set.
+     * @param string|null $context The context in which the assets are used.
+     * @return array The current assets.
+     */
     public function assets(array $assets = [], ?string $context = null) {
 
         $debug = $this->app->retrieve('debug');
@@ -118,6 +149,12 @@ class Theme extends \Lime\Helper {
         return $this->app->assets($assets, $this->app->retrieve('app.version'));
     }
 
+    /**
+     * Get or set the page class.
+     *
+     * @param string|null $class The new class to set, or null to get the current class.
+     * @return string|null The current class or null if not set.
+     */
     public function pageClass(?string $class = null) {
 
         if ($class) {
@@ -128,6 +165,13 @@ class Theme extends \Lime\Helper {
         return $this->pageClass;
     }
 
+    /**
+     * Get or set the page variables.
+     *
+     * @param array|string|null $name The variable name or an array of variables to set.
+     * @param mixed|null $value The variable value to set, or null to get the current value.
+     * @return mixed The current variable value or null if not set.
+     */
     public function vars(...$args) {
 
         switch (count($args)) {

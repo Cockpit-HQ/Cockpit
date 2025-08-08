@@ -14,6 +14,11 @@ class Acl extends \Lime\Helper {
         });
     }
 
+    /**
+     * Get the list of roles with their permissions.
+     *
+     * @return array The list of roles.
+     */
     public function roles(): array {
 
         $roles = [
@@ -31,6 +36,13 @@ class Acl extends \Lime\Helper {
         return $roles;
     }
 
+    /**
+     * Check if a user has a specific permission.
+     *
+     * @param string $permission The permission to check.
+     * @param string|null $role The role to check against.
+     * @return bool True if the user has the permission, false otherwise.
+     */
     public function isAllowed(string $permission, ?string $role = null): bool {
 
         $role = $role ?? $this->app->helper('auth')->getUser('role');
@@ -42,6 +54,12 @@ class Acl extends \Lime\Helper {
         return isset($this->roles[$role]['permissions'][$permission]) && $this->roles[$role]['permissions'][$permission];
     }
 
+    /**
+     * Check if a user is a super admin.
+     *
+     * @param string|null $role The role to check.
+     * @return bool True if the user is a super admin, false otherwise.
+     */
     public function isSuperAdmin($role = null) {
 
         $role = $role ?? $this->app->helper('auth')->getUser('role');
@@ -53,6 +71,11 @@ class Acl extends \Lime\Helper {
         return false;
     }
 
+    /**
+     * Cache the roles and their permissions.
+     *
+     * @return array The cached roles.
+     */
     public function cache(): array {
 
         $cache = [];

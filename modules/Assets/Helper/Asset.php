@@ -29,6 +29,12 @@ class Asset extends \Lime\Helper {
         }
     }
 
+    /**
+     * Make an asset available locally.
+     *
+     * @param string $path The asset path.
+     * @return string|false The local path or false on failure.
+     */
     public function makeAssetLocalAvailable(string $path) {
 
         $path = trim($path, '/');
@@ -47,6 +53,13 @@ class Asset extends \Lime\Helper {
         return $src;
     }
 
+    /**
+     * Generate an image asset.
+     *
+     * @param array $options The image options.
+     * @param bool $asPath Whether to return the path or URL.
+     * @return string|false The image path or false on failure.
+     */
     public function image(array $options = [], bool $asPath = false) {
 
         $options = array_merge([
@@ -314,6 +327,12 @@ class Asset extends \Lime\Helper {
         return $img;
     }
 
+    /**
+     * Update asset references in an array.
+     *
+     * @param array $array The array to update.
+     * @return array The updated array.
+     */
     public function updateRefs(array $array): array {
 
         static $refs;
@@ -345,10 +364,24 @@ class Asset extends \Lime\Helper {
         return $array;
     }
 
+    /**
+     * Get video metadata.
+     *
+     * @param string $path The video path.
+     * @return array|null The video metadata or null if not found.
+     */
     public function getVideoMeta(string $path): ?array {
         return $this->ffmpeg?->getVideoMeta($path);
     }
 
+    /**
+     * Transcode a video asset.
+     *
+     * @param string $src The source video path.
+     * @param string $dest The destination video path.
+     * @param array $options The transcoding options.
+     * @return bool True on success, false on failure.
+     */
     public function videoTranscode(string $src, string $dest, array $options = []) {
 
         if (!$this->ffmpeg) {

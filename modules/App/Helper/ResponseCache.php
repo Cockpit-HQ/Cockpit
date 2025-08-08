@@ -15,6 +15,12 @@ class ResponseCache extends \Lime\Helper {
         }
     }
 
+    /**
+     * Handle the response caching.
+     *
+     * @param \Lime\Request $request The request object.
+     * @return void
+     */
     public function handle($request) {
 
         if (!$request->param('rspc')) {
@@ -29,6 +35,12 @@ class ResponseCache extends \Lime\Helper {
         return true;
     }
 
+    /**
+     * Cache the response.
+     *
+     * @param \Lime\Request $request The request object.
+     * @return void
+     */
     protected function cache($request) {
 
         $cacheHandler = $this->cacheHandler;
@@ -44,6 +56,12 @@ class ResponseCache extends \Lime\Helper {
         }, -2000);
     }
 
+    /**
+     * Get the cached response.
+     *
+     * @param \Lime\Request $request The request object.
+     * @return array|null The cached response data or null if not found.
+     */
     protected function getCache($request) {
 
         $cache = $this->cacheHandler->getCache($request);

@@ -15,6 +15,13 @@ class Vips {
         }
     }
 
+    /**
+     * Create a thumbnail of the image.
+     *
+     * @param string $dest The destination path.
+     * @param array $options The thumbnail options.
+     * @return void
+     */
     public function thumbnail(string $dest, array $options = []) {
 
         $options = array_merge([

@@ -6,6 +6,12 @@ class Auth extends \Lime\Helper {
 
     public string $sessionKey = 'app.auth.user';
 
+    /**
+     * Authenticate a user.
+     *
+     * @param array $data The user data.
+     * @return mixed The authenticated user data or false on failure.
+     */
     public function authenticate(array $data): mixed {
 
         $data = array_merge([
@@ -40,6 +46,13 @@ class Auth extends \Lime\Helper {
         return false;
     }
 
+    /**
+     * Get the authenticated user data.
+     *
+     * @param string|null $prop The property to retrieve.
+     * @param mixed $default The default value to return if the property is not set.
+     * @return mixed The user data or the default value.
+     */
     public function getUser(?string $prop = null, mixed $default = null): mixed {
 
         $user = $this->app->retrieve($this->sessionKey);
@@ -55,6 +68,13 @@ class Auth extends \Lime\Helper {
         return $user;
     }
 
+    /**
+     * Set the authenticated user data.
+     *
+     * @param array $user The user data.
+     * @param bool $permanent Whether to store the user data permanently.
+     * @return void
+     */
     public function setUser(array $user, bool $permanent = true): void {
 
         if (isset($user['name'])) {
@@ -71,6 +91,12 @@ class Auth extends \Lime\Helper {
         $this->app->set($this->sessionKey, $user);
     }
 
+    /**
+     * Logout the authenticated user.
+     *
+     * @param array $params Additional parameters.
+     * @return void
+     */
     public function logout(array $params = []): void {
 
         $user = $this->getUser();

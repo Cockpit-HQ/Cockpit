@@ -13,14 +13,31 @@ class Api extends \Lime\Helper {
         });
     }
 
+    /**
+     * Get an API key by its identifier.
+     *
+     * @param string $key The API key identifier.
+     * @return mixed The API key value or null if not found.
+     */
     public function getKey(string $key) {
         return $this->keys[$key] ?? null;
     }
 
+    /**
+     * Get a list of all API keys.
+     *
+     * @return array The list of API keys.
+     */
     public function keys(): array {
         return array_keys($this->keys);
     }
 
+    /**
+     * Cache and get the cached API keys.
+     *
+     * @param bool $persistent Whether to use the persistent cache.
+     * @return array The cached API keys.
+     */
     public function cache(bool $persistent = true): array {
 
         $cache = [];

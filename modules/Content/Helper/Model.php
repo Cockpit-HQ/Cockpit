@@ -16,6 +16,13 @@ class Model extends \Lime\Helper {
         });
     }
 
+    /**
+     * Create a new content model.
+     *
+     * @param string $name The model name.
+     * @param array $data The model data.
+     * @return array|false The created model or false on failure.
+     */
     public function create(string $name, array $data = []) {
 
         if (!trim($name)) {
@@ -76,6 +83,13 @@ class Model extends \Lime\Helper {
         return $model;
     }
 
+    /**
+     * Update an existing content model.
+     *
+     * @param string $name The model name.
+     * @param array $data The model data.
+     * @return array|false The updated model or false on failure.
+     */
     public function update(string $name, array $data) {
 
         if (!$this->exists($name)) {
@@ -120,6 +134,13 @@ class Model extends \Lime\Helper {
         return $model;
     }
 
+    /**
+     * Save a content model.
+     *
+     * @param string $name The model name.
+     * @param array $data The model data.
+     * @return array|false The saved model or false on failure.
+     */
     public function save(string $name, array $data) {
 
         if (!trim($name)) {
@@ -129,6 +150,12 @@ class Model extends \Lime\Helper {
         return $this->exists($name) ? $this->update($name, $data) : $this->create($name, $data);
     }
 
+    /**
+     * Remove a content model.
+     *
+     * @param string $name The model name.
+     * @return bool True on success, false on failure.
+     */
     public function remove(string $name) {
 
         $model = $this->model($name);
@@ -160,6 +187,12 @@ class Model extends \Lime\Helper {
         return true;
     }
 
+    /**
+     * Check if a content model exists.
+     *
+     * @param string $name The model name.
+     * @return bool True if exists, false if not.
+     */
     public function exists(string $name) {
 
         if ($this->storage === 'database') {
@@ -169,14 +202,31 @@ class Model extends \Lime\Helper {
         return $this->app->path("#storage:content/{$name}.model.php");
     }
 
+    /**
+     * Get a content model by name.
+     *
+     * @param string $name The model name.
+     * @return array|null The model data or null if not found.
+     */
     public function model(string $name) {
         return $this->models[$name] ?? null;
     }
 
+    /**
+     * Get all content models.
+     *
+     * @return array The list of content models.
+     */
     public function models(): array {
         return $this->models;
     }
 
+    /**
+     * Cache the content models.
+     *
+     * @param bool $persistent Whether to cache persistently.
+     * @return array The cached models.
+     */
     public function cache(bool $persistent = true): array {
 
         $models = [];

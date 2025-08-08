@@ -25,18 +25,40 @@ class Worker extends \Lime\Helper {
 
     }
 
+    /**
+     * Get the queue instance.
+     *
+     * @return Queue The queue instance.
+     */
     public function queue() {
         return $this->queue;
     }
 
+    /**
+     * Get the queue statistics.
+     *
+     * @return array The queue statistics.
+     */
     public function stats() {
         return $this->queue->count();
     }
 
+    /**
+     * Get the list of jobs in the queue.
+     *
+     * @param array $options Options for retrieving jobs.
+     * @return array The list of jobs.
+     */
     public function jobs(array $options = []) {
         return $this->queue->messages($options);
     }
 
+    /**
+     * Process jobs in the queue.
+     *
+     * @param int $limit The maximum number of jobs to process.
+     * @return void
+     */
     public function process(int $limit = 10) {
 
         if (!$this->handlers) {
@@ -64,6 +86,14 @@ class Worker extends \Lime\Helper {
         }, $limit);
     }
 
+    /**
+     * Push a job onto the queue.
+     *
+     * @param string $job The job name.
+     * @param mixed $data The job data.
+     * @param array $options The job options.
+     * @return mixed The result of the push operation.
+     */
     public function push($job, $data = [], array $options = []) {
 
         $opts = array_merge([
@@ -81,10 +111,24 @@ class Worker extends \Lime\Helper {
         return $this->queue->push($body, $opts);
     }
 
+    /**
+     * Cleanup old jobs from the queue.
+     *
+     * @param string $status The job status to clean up.
+     * @param int $olderThan The age in seconds to consider a job old.
+     * @return void
+     */
     public function cleanup(string $status, int $olderThan = 86400): void {
         $this->queue->cleanup($status, $olderThan);
     }
 
+    /**
+     * Stop a running process.
+     *
+     * @param int $pid The process ID.
+     * @param int $signal The signal to send (default: 15).
+     * @return bool True on success, false on failure.
+     */
     public function stopProcess($pid, $signal = 15): bool {
 
         $data = $this->getWorkerPIDFileData();
@@ -127,6 +171,12 @@ class Worker extends \Lime\Helper {
         return $result === 0;
     }
 
+    /**
+     * Check if a process is running.
+     *
+     * @param int $pid The process ID.
+     * @return bool|null True if running, false if not, null if unknown.
+     */
     public function isProcessRunning($pid): ?bool {
 
         if (!function_exists('posix_kill') && !function_exists('exec')) {

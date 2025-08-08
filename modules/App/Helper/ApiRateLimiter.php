@@ -11,6 +11,12 @@ class ApiRateLimiter extends \Lime\Helper {
         $this->rateLimitTime = $this->app->retrieve('api.security.ratelimit.time', 60);
     }
 
+    /**
+     * Handle the API rate limiting.
+     *
+     * @param \Lime\Request $request The request object.
+     * @return void
+     */
     public function handle($request) {
 
         $identifier = $this->app->param('api_key', $request->server['HTTP_API_KEY'] ?? $request->getBearerToken());
@@ -35,6 +41,13 @@ class ApiRateLimiter extends \Lime\Helper {
         }
     }
 
+    /**
+     * Check if the rate limit has been exceeded for a specific identifier.
+     *
+     * @param string $identifier The identifier to check.
+     * @param int $ratelimit The rate limit to compare against.
+     * @return bool True if the rate limit has been exceeded, false otherwise.
+     */
     public function isRateLimitExceeded(string $identifier, int $ratelimit = 0): bool {
 
         if ($ratelimit <= 0) {

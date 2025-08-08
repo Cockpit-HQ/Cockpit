@@ -6,6 +6,12 @@ use ArrayObject;
 
 class Settings extends \Lime\Helper {
 
+    /**
+     * Get the groups for the settings.
+     *
+     * @param bool $filter Whether to filter the groups by permissions.
+     * @return ArrayObject The groups for the settings.
+     */
     public function groups(bool $filter = false): ArrayObject {
 
         $items = [];

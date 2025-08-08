@@ -147,6 +147,11 @@ class LinkedContentFilter extends \Lime\Helper {
 
     /**
      * Resolve IDs from linked model
+     *
+     * @param string $modelName The name of the linked model.
+     * @param string $fieldPath The field path to resolve.
+     * @param mixed $filterValue The value to filter by.
+     * @return array The resolved IDs.
      */
     protected function resolveLinkedIds(string $modelName, string $fieldPath, $filterValue): array {
 
@@ -177,6 +182,10 @@ class LinkedContentFilter extends \Lime\Helper {
 
     /**
      * Find field definition in model
+     *
+     * @param array $model Model definition
+     * @param string $fieldName The field name to find.
+     * @return array|null The field definition or null if not found.
      */
     protected function findFieldDefinition(array $model, string $fieldName): ?array {
 

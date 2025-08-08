@@ -11,6 +11,13 @@ class Updater extends \Lime\Helper {
         $this->releasesUrl = rtrim($this->app->retrieve('updater/releasesUrl', 'https://files.getcockpit.com/releases'), '/');
     }
 
+    /**
+     * Update Cockpit to a specific version.
+     *
+     * @param string $version The version to update to (default: 'master').
+     * @param string $target The target type ('core' or 'pro', default: 'core').
+     * @return bool True on success, false on failure.
+     */
     public function update(string $version = 'master', string $target = 'core'): bool {
 
         if (!in_array($target, ['core', 'pro'])) {
@@ -24,6 +31,11 @@ class Updater extends \Lime\Helper {
         return true;
     }
 
+    /**
+     * Get the latest release information.
+     *
+     * @return array The latest release information.
+     */
     public function getLatestReleaseInfo() {
 
         $url = "{$this->releasesUrl}/latest.json";
@@ -39,6 +51,13 @@ class Updater extends \Lime\Helper {
         return json_decode($contents, true);
     }
 
+    /**
+     * Process the update.
+     *
+     * @param string $zipUrl The URL of the zip file.
+     * @param string $zipRoot The root directory inside the zip file.
+     * @return bool True on success, false on failure.
+     */
     protected function process(string $zipUrl, string $zipRoot = '/'): bool {
 
         if (!is_writable(APP_DIR)) {
