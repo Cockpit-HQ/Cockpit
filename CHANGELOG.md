@@ -3,6 +3,7 @@
 ## WIP
 
 - Fix Identi module usage with spaces
+- Fix video preview in assets manager spotlight
 
 
 ## 2.12.0 (2025-08-01)
