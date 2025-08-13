@@ -4,7 +4,6 @@ namespace ESQL;
 
 use PDO;
 use PDOStatement;
-use stdClass;
 
 /**
  * ESQL - A lightweight PDO wrapper
@@ -178,8 +177,8 @@ class Client {
     }
 
     protected function quoteIdentifier(string $identifier): string {
-        if ($this->isComplexIdentifier($identifier)) {
-            return $identifier;
+        if ($this->isComplexIdentifier($identifier) || $this->isNumericLiteral($identifier)) {
+            return $identifier; // don't quote complex expressions or numeric literals
         }
 
         $parts = preg_split('/\s+as\s+|\s+/i', $identifier, 2);
@@ -205,6 +204,10 @@ class Client {
                ($trimmed[0] === '`' && $trimmed[strlen($trimmed)-1] === '`');
     }
 
+    private function isNumericLiteral(string $id): bool {
+        return preg_match('/^\d+(\.\d+)?$/', $id) === 1;
+    }
+
     private function buildConditionalClause(array $conditions, array &$params, string $placeholderPrefix = '', string $defaultOperator = 'AND'): string {
         $clauses = [];
 
@@ -224,12 +227,21 @@ class Client {
             }
 
             $clause = '';
-            if (is_int($key) && is_array($value) && count($value) === 3) {
+            if (is_int($key) && is_array($value) && (count($value) === 3 || count($value) === 4)) {
                 $col = $this->isComplexIdentifier($value[0]) ? $value[0] : $this->quoteIdentifier($value[0]);
                 $op = strtoupper($value[1]);
                 $val = $value[2];
                 if ($val === null) {
-                    $clause = "{$col} " . ($op === '=' ? 'IS NULL' : 'IS NOT NULL');
+                    // Handle NULL comparisons explicitly
+                    if (in_array($op, ['IS', 'IS NOT'], true)) {
+                        $clause = "{$col} {$op} NULL";
+                    } elseif ($op === '=') {
+                        $clause = "{$col} IS NULL";
+                    } elseif (in_array($op, ['<>', '!='], true)) {
+                        $clause = "{$col} IS NOT NULL";
+                    } else {
+                        throw new \InvalidArgumentException("Operator {$op} is not valid with NULL");
+                    }
                 } elseif (in_array($op, ['IN', 'NOT IN']) && is_array($val)) {
                     // Handle IN and NOT IN clauses with arrays
                     if (empty($val)) {
@@ -263,6 +275,54 @@ class Client {
                     } else {
                         throw new \InvalidArgumentException("EXISTS/NOT EXISTS requires a string subquery or array with 'table' key");
                     }
+                } elseif (in_array($op, ['LIKE_ESC','NOT_LIKE_ESC','ILIKE_ESC','NOT_ILIKE_ESC'], true)) {
+                    $placeholder = $this->generateNamedPlaceholder(
+                        $placeholderPrefix . preg_replace('/[^a-zA-Z0-9_]/', '', $value[0])
+                    );
+
+                    // Check if escape character is provided (4th element) or use default
+                    $escapeChar   = isset($value[3]) && is_string($value[3]) ? $value[3] : '~';
+                    $escapeClause = " ESCAPE '" . str_replace("'", "''", $escapeChar) . "'";
+
+                    // Base: already quoted (or left as complex) above
+                    $colExpr  = $col;
+                    $paramRef = $placeholder;
+
+                    $isNot   = in_array($op, ['NOT_LIKE_ESC','NOT_ILIKE_ESC'], true);
+                    $isILike = in_array($op, ['ILIKE_ESC','NOT_ILIKE_ESC'], true);
+
+                    switch ($this->driverName) {
+                        case 'pgsql':
+                            // Native ILIKE on Postgres
+                            if ($isILike) {
+                                $realOp = $isNot ? 'NOT ILIKE' : 'ILIKE';
+                            } else {
+                                $realOp = $isNot ? 'NOT LIKE' : 'LIKE';
+                            }
+                            break;
+
+                        case 'sqlite':
+                            // Case-insensitive with COLLATE NOCASE, keeps indexes usable
+                            if ($isILike) {
+                                $colExpr = "{$colExpr} COLLATE NOCASE";
+                                $realOp  = $isNot ? 'NOT LIKE' : 'LIKE';
+                            } else {
+                                $realOp  = $isNot ? 'NOT LIKE' : 'LIKE';
+                            }
+                            break;
+
+                        case 'mysql':
+                        default:
+                            // MySQL is case-insensitive under *_ci collations, so use LIKE directly
+                            // (no LOWER()) to preserve index usage.
+                            $realOp = $isNot ? 'NOT LIKE' : 'LIKE';
+                            // If you want to avoid using ESCAPE on MySQL entirely, you can set:
+                            // $escapeClause = '';
+                            break;
+                    }
+
+                    $clause = "{$colExpr} {$realOp} {$paramRef}{$escapeClause}";
+                    $params[substr($placeholder, 1)] = $val;
                 } else {
                     $placeholder = $this->generateNamedPlaceholder($placeholderPrefix . preg_replace('/[^a-zA-Z0-9_]/', '', $value[0]));
                     $clause = "{$col} {$op} {$placeholder}";
@@ -289,20 +349,32 @@ class Client {
         $result = '';
         foreach ($clauses as $i => $item) {
             if ($i > 0) {
-                $result .= ' ' . $clauses[$i-1]['operator'] . ' ';
+                $result .= ' ' . $item['operator'] . ' ';
             }
             $result .= $item['clause'];
         }
         return $result;
     }
 
+    /**
+     * Sanitize JOIN operator to prevent injection
+     */
+    private function sanitizeJoinOperator(string $op): string {
+        $op = strtoupper(trim($op));
+        $allowed = ['=', '!=', '<>', '<', '<=', '>', '>='];
+        if (!in_array($op, $allowed, true)) {
+            throw new \InvalidArgumentException("Unsupported JOIN operator: {$op}");
+        }
+        return $op;
+    }
+
     private function buildOnClause(array $conditions): string {
         $clauses = [];
         foreach($conditions as $condition) {
             if (is_array($condition) && count($condition) === 3) {
-                $clauses[] = $this->quoteIdentifier($condition[0]) . " {$condition[1]} " . $this->quoteIdentifier($condition[2]);
+                $clauses[] = $this->quoteIdentifier($condition[0]) . ' ' . $this->sanitizeJoinOperator($condition[1]) . ' ' . $this->quoteIdentifier($condition[2]);
             } elseif (is_string($condition)) {
-                $clauses[] = $condition;
+                $clauses[] = $condition; // allow raw when explicitly requested
             }
         }
         return implode(' AND ', $clauses);
@@ -314,7 +386,7 @@ class Client {
         $columns = $subqueryDef['columns'] ?? ['1'];
         $conditions = $subqueryDef['conditions'] ?? [];
         $joins = $subqueryDef['joins'] ?? [];
-        
+
         // Build SELECT part - don't quote literal numbers
         $quotedColumns = [];
         foreach ($columns as $col) {
@@ -325,7 +397,7 @@ class Client {
             }
         }
         $sql = "SELECT " . implode(', ', $quotedColumns) . " FROM " . $this->quoteIdentifier($table);
-        
+
         // Add JOINs if present
         if (!empty($joins)) {
             foreach ($joins as $join) {
@@ -335,12 +407,12 @@ class Client {
                 $sql .= " {$joinType} JOIN {$joinTable} ON {$onCondition}";
             }
         }
-        
+
         // Add WHERE conditions if present
         if (!empty($conditions)) {
             $sql .= " WHERE " . $this->buildConditionalClause($conditions, $params, $placeholderPrefix);
         }
-        
+
         return $sql;
     }
 
@@ -388,6 +460,13 @@ class Client {
                 'mysql' => " LIMIT " . intval($offset) . ", " . intval($limit),
                 default => " LIMIT " . intval($limit) . " OFFSET " . intval($offset),
             };
+        } elseif ($offset !== null) {
+            // Support OFFSET without LIMIT
+            $sql .= match ($this->driverName) {
+                'mysql' => " LIMIT " . intval($offset) . ", 18446744073709551615", // MySQL needs LIMIT with huge value
+                'sqlite' => " LIMIT -1 OFFSET " . intval($offset), // SQLite needs LIMIT -1 for OFFSET
+                default => " OFFSET " . intval($offset), // PostgreSQL supports standalone OFFSET
+            };
         }
 
         return ['sql' => $sql, 'params' => $params];
@@ -416,19 +495,27 @@ class Client {
     }
 
     public function buildInsertBatchQuery(string $table, array $data, array $returning = []): array {
+        if (empty($data)) {
+            throw new \InvalidArgumentException("'data' for insertBatch cannot be empty.");
+        }
         $this->resetParamCounter();
+        
         $firstRow = current($data);
-        $columns = array_map([$this, 'quoteIdentifier'], array_keys($firstRow));
+        $columnsRaw = array_keys($firstRow);
+        $columns = array_map([$this, 'quoteIdentifier'], $columnsRaw);
+        
         $params = [];
         $rowPlaceholders = [];
 
         foreach ($data as $row) {
             $singleRow = [];
-            foreach ($row as $column => $value) {
+            // Use the column order from first row to ensure alignment
+            foreach ($columnsRaw as $colName) {
+                $value = array_key_exists($colName, $row) ? $row[$colName] : null;
                 if ($this->autoEncodeJson && (is_array($value) || is_object($value))) {
                     $value = json_encode($value);
                 }
-                $placeholder = $this->generateNamedPlaceholder($column);
+                $placeholder = $this->generateNamedPlaceholder($colName);
                 $singleRow[] = $placeholder;
                 $params[substr($placeholder, 1)] = $value;
             }
@@ -507,7 +594,17 @@ class Client {
     public function selectOne(string $table, array $options = []) {
         $opt = array_merge($this->getDefaultQueryOptions(), $options);
         $opt['limit'] = 1;
-        $queryParts = $this->buildSelectQuery($table, $opt['columns'], $opt['joins'], $opt['conditions'], [], [], $opt['orderBy'], $opt['limit'], $opt['offset']);
+        $queryParts = $this->buildSelectQuery(
+            $table,
+            $opt['columns'],
+            $opt['joins'],
+            $opt['conditions'],
+            $opt['groupBy'],   // keep them
+            $opt['having'],    // keep them
+            $opt['orderBy'],
+            $opt['limit'],
+            $opt['offset']
+        );
         $result = $this->fetchOne($queryParts['sql'], $queryParts['params'], $opt['fetchStyle']);
         return $this->processResults($result, $opt['jsonDecodeAssoc']);
     }
@@ -584,21 +681,21 @@ class Client {
         ], $options);
 
         // Build the COUNT expression
-        $countExpr = $opt['distinct'] ? 
-            "COUNT(DISTINCT " . $this->quoteIdentifier($opt['column']) . ")" : 
+        $countExpr = $opt['distinct'] ?
+            "COUNT(DISTINCT " . $this->quoteIdentifier($opt['column']) . ")" :
             "COUNT(" . ($opt['column'] === '*' ? '*' : $this->quoteIdentifier($opt['column'])) . ")";
 
         // Use the buildSelectQuery method with COUNT as the column
         $queryParts = $this->buildSelectQuery(
-            $table, 
-            [$countExpr], 
-            $opt['joins'], 
+            $table,
+            [$countExpr],
+            $opt['joins'],
             $opt['conditions']
         );
 
         // Fetch the count value
         $result = $this->fetchColumn($queryParts['sql'], $queryParts['params']);
-        
+
         return (int)$result;
     }
 
@@ -610,21 +707,21 @@ class Client {
         ], $options);
 
         // Build the AVG expression
-        $avgExpr = $opt['distinct'] ? 
-            "AVG(DISTINCT " . $this->quoteIdentifier($column) . ")" : 
+        $avgExpr = $opt['distinct'] ?
+            "AVG(DISTINCT " . $this->quoteIdentifier($column) . ")" :
             "AVG(" . $this->quoteIdentifier($column) . ")";
 
         // Use the buildSelectQuery method with AVG as the column
         $queryParts = $this->buildSelectQuery(
-            $table, 
-            [$avgExpr], 
-            $opt['joins'], 
+            $table,
+            [$avgExpr],
+            $opt['joins'],
             $opt['conditions']
         );
 
         // Fetch the average value
         $result = $this->fetchColumn($queryParts['sql'], $queryParts['params']);
-        
+
         // Return null if no rows or all values are NULL
         return $result === null ? null : (float)$result;
     }
@@ -637,21 +734,21 @@ class Client {
         ], $options);
 
         // Build the SUM expression
-        $sumExpr = $opt['distinct'] ? 
-            "SUM(DISTINCT " . $this->quoteIdentifier($column) . ")" : 
+        $sumExpr = $opt['distinct'] ?
+            "SUM(DISTINCT " . $this->quoteIdentifier($column) . ")" :
             "SUM(" . $this->quoteIdentifier($column) . ")";
 
         // Use the buildSelectQuery method with SUM as the column
         $queryParts = $this->buildSelectQuery(
-            $table, 
-            [$sumExpr], 
-            $opt['joins'], 
+            $table,
+            [$sumExpr],
+            $opt['joins'],
             $opt['conditions']
         );
 
         // Fetch the sum value
         $result = $this->fetchColumn($queryParts['sql'], $queryParts['params']);
-        
+
         // Return 0 if no rows or all values are NULL
         return $result === null ? 0.0 : (float)$result;
     }
@@ -662,7 +759,7 @@ class Client {
             // Backward compatibility: assume it's conditions array
             $options = ['conditions' => $options];
         }
-        
+
         $opt = array_merge([
             'conditions' => [],
             'joins' => []
@@ -670,8 +767,8 @@ class Client {
 
         // Build a SELECT 1 query with LIMIT 1 for efficiency
         $queryParts = $this->buildSelectQuery(
-            $table, 
-            ['1'], 
+            $table,
+            ['1'],
             $opt['joins'],
             $opt['conditions'],
             [], // no groupBy
@@ -683,7 +780,7 @@ class Client {
 
         // Fetch one column - will return false if no rows exist
         $result = $this->fetchColumn($queryParts['sql'], $queryParts['params']);
-        
+
         return $result !== false;
     }
 
@@ -699,15 +796,15 @@ class Client {
         ], $options);
 
         // Determine columns to select
-        $columns = $opt['keyColumn'] !== null 
-            ? [$opt['keyColumn'], $column] 
+        $columns = $opt['keyColumn'] !== null
+            ? [$opt['keyColumn'], $column]
             : [$column];
 
         // Build the select query
         $queryParts = $this->buildSelectQuery(
-            $table, 
-            $columns, 
-            $opt['joins'], 
+            $table,
+            $columns,
+            $opt['joins'],
             $opt['conditions'],
             [], // no groupBy
             [], // no having
@@ -718,10 +815,10 @@ class Client {
 
         // Fetch all results
         $results = $this->fetchAll($queryParts['sql'], $queryParts['params']);
-        
+
         // Process results for JSON decoding
         $results = $this->processResults($results, $opt['jsonDecodeAssoc']);
-        
+
         // Process results
         $plucked = [];
         if ($opt['keyColumn'] !== null) {
@@ -740,11 +837,108 @@ class Client {
                 $plucked[] = $row[$column] ?? null;
             }
         }
-        
+
         return $plucked;
     }
 
     // --- Transaction and Utility Methods ---
+
+    /**
+     * Escape special characters for LIKE patterns
+     * 
+     * @param string $str The string to escape
+     * @param string $escapeChar The escape character to use (default: '~')
+     * @return string The escaped string
+     */
+    private function escapeForLike(string $str, string $escapeChar = '~'): string {
+        return str_replace(
+            [$escapeChar, '%', '_'],
+            [$escapeChar . $escapeChar, $escapeChar . '%', $escapeChar . '_'],
+            $str
+        );
+    }
+
+    /**
+     * Generate a LIKE condition with escaped pattern and placeholder.
+     *
+     * @param string $column      Column/expression
+     * @param string $search      Raw user text
+     * @param string $pattern     'contains' (default), 'starts', 'ends', 'exact'
+     * @param string $escapeChar  Escape character to use (default: '~')
+     * @return array              ['condition' => [$column, 'LIKE_ESC', $pattern, $escapeChar], 'value' => $likePattern]
+     */
+    public function like(string $column, string $search, string $pattern = 'contains', string $escapeChar = '~'): array {
+        if ($search === '') {
+            return ['condition' => '1=0', 'value' => '']; // raw, no placeholder
+        }
+        
+        $escaped = $this->escapeForLike($search, $escapeChar);
+
+        $likePattern = match ($pattern) {
+            'starts' => $escaped.'%',
+            'ends'   => '%'.$escaped,
+            'exact'  => $escaped,
+            default  => '%'.$escaped.'%',
+        };
+
+        return [
+            'condition' => [$column, 'LIKE_ESC', $likePattern, $escapeChar],
+            'value'     => $likePattern,
+        ];
+    }
+
+    /**
+     * Generate a NOT LIKE condition with escaped pattern and placeholder.
+     * 
+     * @param string $column      Column/expression
+     * @param string $search      Raw user text
+     * @param string $pattern     'contains' (default), 'starts', 'ends', 'exact'
+     * @param string $escapeChar  Escape character to use (default: '~')
+     * @return array              ['condition' => [$column, 'NOT_LIKE_ESC', $pattern, $escapeChar], 'value' => $likePattern]
+     */
+    public function notLike(string $column, string $search, string $pattern = 'contains', string $escapeChar = '~'): array {
+        $like = $this->like($column, $search, $pattern, $escapeChar);
+        if (is_array($like['condition'])) {
+            $like['condition'][1] = 'NOT_LIKE_ESC';
+        }
+        return $like;
+    }
+
+    /**
+     * Case-insensitive LIKE helper (Postgres uses ILIKE; others use LOWER()).
+     * 
+     * @param string $column      Column/expression
+     * @param string $search      Raw user text
+     * @param string $pattern     'contains' (default), 'starts', 'ends', 'exact'
+     * @param string $escapeChar  Escape character to use (default: '~')
+     * @return array              ['condition' => [$column, 'ILIKE_ESC', $pattern, $escapeChar], 'value' => $likePattern]
+     */
+    public function ilike(string $column, string $search, string $pattern = 'contains', string $escapeChar = '~'): array {
+        $like = $this->like($column, $search, $pattern, $escapeChar);
+        // Only modify if it's not a raw string (empty search case)
+        if (is_array($like['condition'])) {
+            $like['condition'][1] = 'ILIKE_ESC';
+        }
+        return $like;
+    }
+
+    /**
+     * Case-insensitive NOT LIKE helper.
+     * 
+     * @param string $column      Column/expression
+     * @param string $search      Raw user text
+     * @param string $pattern     'contains' (default), 'starts', 'ends', 'exact'
+     * @param string $escapeChar  Escape character to use (default: '~')
+     * @return array              ['condition' => [$column, 'NOT_ILIKE_ESC', $pattern, $escapeChar], 'value' => $likePattern]
+     */
+    public function notIlike(string $column, string $search, string $pattern = 'contains', string $escapeChar = '~'): array {
+        $like = $this->like($column, $search, $pattern, $escapeChar);
+        // Only modify if it's not a raw string (empty search case)
+        if (is_array($like['condition'])) {
+            $like['condition'][1] = 'NOT_ILIKE_ESC';
+        }
+        return $like;
+    }
 
     public function lastInsertId(?string $name = null) {
         return $this->pdo?->lastInsertId($name);
@@ -768,6 +962,25 @@ class Client {
     public function inTransaction(): bool {
         if (!$this->pdo) throw new \PDOException("PDO connection not established.");
         return $this->pdo->inTransaction();
+    }
+
+    /**
+     * Execute a callback within a transaction with automatic rollback on failure
+     *
+     * @param callable $fn The callback to execute. Receives this Client instance as parameter.
+     * @return mixed The return value of the callback
+     * @throws \Throwable Any exception thrown by the callback
+     */
+    public function transaction(callable $fn) {
+        $this->beginTransaction();
+        try {
+            $res = $fn($this);
+            $this->commit();
+            return $res;
+        } catch (\Throwable $e) {
+            $this->rollBack();
+            throw $e;
+        }
     }
 
     public function close(): void {
