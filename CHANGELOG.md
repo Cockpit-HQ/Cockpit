@@ -4,7 +4,7 @@
 
 - Fix Identi module usage with spaces
 - Fix video preview in assets manager spotlight
-- Improve RedisLite lib
+- Improve RedisLite and ESQL lib
 
 
 ## 2.12.0 (2025-08-01)
