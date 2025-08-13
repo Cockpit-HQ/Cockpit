@@ -38,9 +38,9 @@ $db = new Client('mysql:host=localhost;dbname=testdb', [
 
 // Insert data with automatic JSON encoding
 $db->insert([
-    'table' => 'users', 
+    'table' => 'users',
     'data' => [
-        'name' => 'John', 
+        'name' => 'John',
         'email' => 'john@example.com',
         'preferences' => ['theme' => 'dark', 'notifications' => true] // Auto-encoded to JSON
     ]
@@ -174,7 +174,7 @@ Execute INSERT/UPDATE/DELETE and get affected row count:
 
 ```php
 $affected = $db->execute("UPDATE users SET status = :status WHERE id = :id", [
-    'status' => 'inactive', 
+    'status' => 'inactive',
     'id' => 123
 ]);
 ```
@@ -247,7 +247,7 @@ $data = $db->select('users', [
             'on' => [['users.id', '=', 'profiles.user_id']]
         ],
         [
-            'type' => 'INNER', 
+            'type' => 'INNER',
             'table' => 'user_roles ur',
             'on' => [['users.id', '=', 'ur.user_id']]
         ],
@@ -275,15 +275,26 @@ $stats = $db->select('orders', [
 ```
 
 #### selectOne()
-Get a single record:
+Get a single record with full query options including GROUP BY and HAVING:
 
 ```php
+// Simple usage
 $user = $db->selectOne('users', [
     'conditions' => ['email' => 'john@example.com'],
     'columns' => ['id', 'name', 'email'],
     'jsonDecodeAssoc' => false  // Optional: decode JSON as objects
 ]);
+
+// With GROUP BY and HAVING (useful for aggregated data)
+$topCustomer = $db->selectOne('orders', [
+    'columns' => ['customer_id', 'COUNT(*) as order_count', 'SUM(total) as total_spent'],
+    'groupBy' => ['customer_id'],
+    'having' => [['COUNT(*)', '>', 10]],
+    'orderBy' => ['total_spent' => 'DESC']
+]);
 ```
+
+**Note:** `selectOne()` supports all the same query options as `select()` including joins, GROUP BY, HAVING, and ORDER BY.
 
 ### INSERT Operations
 
@@ -304,7 +315,7 @@ $rowsAffected = $db->insert([
 $newUser = $db->insert([
     'table' => 'users',
     'data' => [
-        'name' => 'Jane', 
+        'name' => 'Jane',
         'email' => 'jane@example.com',
         'preferences' => ['theme' => 'light']
     ],
@@ -319,23 +330,25 @@ $rowsAffected = $db->insertBatch([
     'table' => 'users',
     'data' => [
         [
-            'name' => 'User 1', 
+            'name' => 'User 1',
             'email' => 'user1@example.com',
             'tags' => ['admin', 'beta']
         ],
         [
-            'name' => 'User 2', 
+            'name' => 'User 2',
             'email' => 'user2@example.com',
             'tags' => ['user']
         ],
         [
-            'name' => 'User 3', 
+            'name' => 'User 3',
             'email' => 'user3@example.com',
             'tags' => ['premium', 'vip']
         ]
     ]
 ]);
 ```
+
+**Note:** The `data` array must not be empty. An `InvalidArgumentException` will be thrown if an empty array is provided.
 
 ### UPDATE Operations
 
@@ -386,14 +399,16 @@ $deletedUsers = $db->delete([
 
 ## Transactions
 
+### Manual Transaction Management
+
 ```php
 try {
     $db->beginTransaction();
-    
+
     $db->insert([
-        'table' => 'orders', 
+        'table' => 'orders',
         'data' => [
-            'user_id' => 1, 
+            'user_id' => 1,
             'total' => 100,
             'items' => [  // This array will be JSON-encoded
                 ['product_id' => 1, 'quantity' => 2],
@@ -402,7 +417,42 @@ try {
         ]
     ]);
     $orderId = $db->lastInsertId();
-    
+
+    $db->insertBatch([
+        'table' => 'order_items',
+        'data' => [
+            ['order_id' => $orderId, 'product_id' => 1, 'quantity' => 2],
+            ['order_id' => $orderId, 'product_id' => 2, 'quantity' => 1]
+        ]
+    ]);
+
+    $db->commit();
+} catch (Exception $e) {
+    $db->rollBack();
+    throw $e;
+}
+```
+
+### Transaction Helper (Recommended)
+
+The `transaction()` helper provides automatic rollback on failure:
+
+```php
+// Cleaner syntax with automatic rollback
+$result = $db->transaction(function($db) {
+    $db->insert([
+        'table' => 'orders',
+        'data' => [
+            'user_id' => 1,
+            'total' => 100,
+            'items' => [
+                ['product_id' => 1, 'quantity' => 2],
+                ['product_id' => 2, 'quantity' => 1]
+            ]
+        ]
+    ]);
+    $orderId = $db->lastInsertId();
+
     $db->insertBatch([
         'table' => 'order_items',
         'data' => [
@@ -411,12 +461,19 @@ try {
         ]
     ]);
     
-    $db->commit();
-} catch (Exception $e) {
-    $db->rollBack();
-    throw $e;
-}
+    return $orderId; // Return value is passed through
+});
+
+// The transaction is automatically committed on success
+// or rolled back if any exception is thrown
+echo "Order created with ID: $result";
 ```
+
+**Benefits of the transaction helper:**
+- Automatic rollback on any exception
+- Cleaner, more readable code
+- Return values are passed through
+- No need to manually manage commit/rollback
 
 ## Condition Syntax Reference
 
@@ -713,6 +770,9 @@ $hasActiveAdmin = $db->exists('users', [
         'status' => 'active'
     ]
 ]);
+```
+
+**Technical Note:** The `exists()` method uses `SELECT 1` internally for efficiency. Numeric literals like `1` are not quoted as identifiers, ensuring proper SQL generation across all database systems.
 
 // With joins
 $hasOrders = $db->exists('orders', [
@@ -774,6 +834,94 @@ $userEmails = $db->pluck('users', 'email', [
 
 **Note:** When using `keyColumn`, duplicate keys will overwrite previous values. The last occurrence of a key will be retained.
 
+## LIKE Helper Methods
+
+ESQL provides helper methods to safely build LIKE conditions with proper escaping of special characters:
+
+### like()
+Generate a LIKE condition with escaped pattern:
+
+```php
+// Basic usage - search for 'john' anywhere in the name
+$like = $db->like('name', 'john');
+$users = $db->select('users', ['conditions' => [$like['condition']]]);
+
+// Different pattern types
+$startsWithJohn = $db->like('name', 'john', 'starts');    // john%
+$endsWithJohn = $db->like('name', 'john', 'ends');        // %john
+$exactlyJohn = $db->like('name', 'john', 'exact');        // john
+$containsJohn = $db->like('name', 'john', 'contains');    // %john% (default)
+
+// Special characters are automatically escaped
+$like = $db->like('email', 'user_123@test.com');  // Searches for literal underscore
+$like = $db->like('discount', '50%');             // Searches for literal percent sign
+
+// Use in conditions
+$results = $db->select('products', [
+    'conditions' => [
+        $db->like('name', 'laptop')['condition'],
+        'status' => 'active'
+    ]
+]);
+
+// Custom escape character (if needed for compatibility)
+$like = $db->like('code', '@user', 'contains', '@');  // Use @ as escape character
+$like = $db->like('path', '\\dir\\', 'contains', '\\'); // Use backslash as escape
+```
+
+### notLike()
+Generate a NOT LIKE condition with escaped pattern:
+
+```php
+// Exclude names containing 'test'
+$notLike = $db->notLike('username', 'test');
+$users = $db->select('users', ['conditions' => [$notLike['condition']]]);
+
+// Different pattern types work the same as like()
+$notStartingAdmin = $db->notLike('role', 'admin', 'starts');
+$notEndingBot = $db->notLike('username', 'bot', 'ends');
+```
+
+### ilike()
+Generate a case-insensitive LIKE condition:
+
+```php
+// Case-insensitive search - finds 'John', 'JOHN', 'john', etc.
+$ilike = $db->ilike('name', 'john');
+$users = $db->select('users', ['conditions' => [$ilike['condition']]]);
+
+// Different pattern types
+$startsWithJohn = $db->ilike('name', 'john', 'starts');  // Matches 'John%', 'JOHN%', etc.
+$endsWithAdmin = $db->ilike('role', 'admin', 'ends');    // Matches '%admin', '%ADMIN', etc.
+
+// Special characters are still properly escaped
+$ilike = $db->ilike('email', 'user_123');  // Searches for literal underscore, case-insensitive
+```
+
+### notIlike()
+Generate a case-insensitive NOT LIKE condition:
+
+```php
+// Exclude emails containing 'test' (case-insensitive)
+$notIlike = $db->notIlike('email', 'test');
+$users = $db->select('users', ['conditions' => [$notIlike['condition']]]);
+
+// Works with all pattern types
+$notStartingWithAdmin = $db->notIlike('username', 'admin', 'starts');
+```
+
+**Technical Notes:**
+- All LIKE helpers use a centralized `escapeForLike()` method for consistent escaping
+- Default escape character is `~` but can be customized via the 4th parameter if needed for compatibility
+- The escape character properly escapes `%`, `_`, and itself in search terms
+- Empty search strings return a raw no-op condition (`1=0`) without parameter binding to avoid matching everything
+- ilike() and notIlike() provide case-insensitive matching:
+  - PostgreSQL: Uses native `ILIKE` operator (most efficient)
+  - SQLite: Uses `COLLATE NOCASE` (preserves index usage)
+  - MySQL: Uses standard `LIKE` (MySQL is case-insensitive by default with *_ci collations, preserving indexes)
+- All helpers accept the same parameters: `($column, $search, $pattern = 'contains', $escapeChar = '~')`
+- All helpers work consistently across MySQL, PostgreSQL, and SQLite
+
 ## Utility Methods
 
 ```php
@@ -813,7 +961,7 @@ try {
 - Uses backticks for identifier quoting: `` `column` ``
 - LIMIT with offset: `LIMIT offset, limit`
 
-### PostgreSQL  
+### PostgreSQL
 - Uses double quotes for identifier quoting: `"column"`
 - Supports RETURNING clauses
 - Standard LIMIT/OFFSET: `LIMIT limit OFFSET offset`
