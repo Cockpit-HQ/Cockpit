@@ -100,7 +100,8 @@ class QueryParsingException extends Exception
  * - BETWEEN value1 AND value2, NOT BETWEEN value1 AND value2
  * - IS NULL, IS NOT NULL
  * - LIKE pattern, NOT LIKE pattern (with % and _ wildcards, configurable case sensitivity)
- * - REGEXP pattern (maps directly to $regex, pattern must be a valid PCRE string)
+ *   Note: ESCAPE clause is not supported. If you need literal % or _, escape them in the pattern.
+ * - REGEXP pattern (maps directly to $regex, supports /pattern/flags syntax for i, m, s, x flags)
  * - Strings (single/double quoted, with standard \' and \" escapes)
  * - Numbers (integer, float)
  * - Booleans (TRUE, FALSE - case-insensitive keywords)
@@ -109,7 +110,7 @@ class QueryParsingException extends Exception
  *
  * Limitations:
  * - Does not support SQL functions, arithmetic operations, JOINs, subqueries, aliases, etc.
- * - LIKE conversion is basic and does not support the SQL `ESCAPE` clause.
+ * - LIKE does not support the SQL `ESCAPE` clause for custom escape characters.
  * - `field = NULL` and `field != NULL` translation follows MongoDB's common interpretation (`$eq: null`, `$ne: null`)
  * which differs from strict SQL three-valued logic (where they usually evaluate to UNKNOWN/FALSE).
  */
@@ -266,13 +267,13 @@ class SQLToMongoQuery
             \s* # Skip leading whitespace
             (
                 # Capture one of the following:
-                (?<string_single>\'(?:\\\\\'|[^\'])*\') # Single-quoted strings with escaped quotes
+                (?<string_single>\'(?:\\\\.|[^\'])*\') # Single-quoted strings with escape sequences
                 |
-                (?<string_double>"(?:\\\\"|[^"])*") # Double-quoted strings with escaped quotes
+                (?<string_double>"(?:\\\\.|[^"])*") # Double-quoted strings with escape sequences
                 |
                 (?<identifier_backtick>`(?:\\\\`|[^`])*`) # Backtick-quoted identifiers with escaped backticks
                 |
-                (?<number>\d+(?:\.\d+)?) # Numbers (integer or float)
+                (?<number>-?\d+(?:\.\d+)?) # Numbers (integer or float, with optional leading minus)
                 |
                 (?<operator><=|>=|!=|<>|=|<|>) # Comparison operators (longest first)
                 |
@@ -460,53 +461,8 @@ class SQLToMongoQuery
             // Recursively parse the operand of NOT. This handles NOT (expr), NOT NOT expr, NOT field=val etc.
             $operand = $this->parsePrimary(); // NOT has high precedence
 
-            // --- Simplification Heuristic for NOT ---
-            // Try to simplify negations where possible (e.g., NOT (field = 5) -> field != 5)
-            // This is an optimization and relies on the structure of the $operand array.
-
-            // Check if operand is a single field condition: { field: { $op: value } }
-            if (count($operand) === 1) {
-                $field = key($operand);
-                $condition = current($operand);
-
-                // Check if condition is a simple { $op: value } structure
-                if (is_array($condition) && count($condition) === 1) {
-                    $mongoOp = key($condition);
-                    $value = current($condition);
-
-                    $negatedOp = match($mongoOp) {
-                        self::MGO_EQ => self::MGO_NE,      // NOT (=) -> !=
-                        self::MGO_NE => self::MGO_EQ,      // NOT (!=) -> =
-                        self::MGO_GT => self::MGO_LTE,     // NOT (>) -> <=
-                        self::MGO_GTE => self::MGO_LT,     // NOT (>=) -> <
-                        self::MGO_LT => self::MGO_GTE,     // NOT (<) -> >=
-                        self::MGO_LTE => self::MGO_GT,     // NOT (<=) -> >
-                        self::MGO_IN => self::MGO_NIN,     // NOT (IN) -> NIN
-                        self::MGO_NIN => self::MGO_IN,     // NOT (NIN) -> IN
-                        self::MGO_EXISTS => ($value === true ? self::MGO_EXISTS : null), // NOT (IS NOT NULL / $exists:true) -> IS NULL / $exists:false
-                        // Add more direct negations if needed (e.g., $regex?)
-                        default => null // Cannot simplify this operator directly
-                    };
-
-                    // Special handling for EXISTS negation
-                    if ($mongoOp === self::MGO_EXISTS && $negatedOp === self::MGO_EXISTS) {
-                         return [$field => [self::MGO_EXISTS => false]]; // $not:{$exists:true} -> $exists:false
-                    } elseif ($negatedOp !== null) {
-                        // Apply the simplified negated operator
-                        return [$field => [$negatedOp => $value]];
-                    }
-                    // If no simplification, fall through to general $not wrapper
-                }
-                 // Handle simple equality case: { field: value } which implies { field: { $eq: value } }
-                 else if (!is_array($condition)) {
-                     // NOT (field = value) -> field != value
-                     return [$field => [self::MGO_NE => $condition]];
-                 }
-            }
-
-            // If operand is complex or couldn't be simplified, use the general MongoDB $not operator
-            // Example: NOT (a=1 AND b=2) -> { $not: { $and: [ {a: {$eq: 1}}, {b: {$eq: 2}} ] } }
-            return [self::MGO_NOT => $operand];
+            // Apply De Morgan's laws and simplifications
+            return $this->negateExpression($operand);
         }
 
         // Otherwise, assume it's a simple condition like "field op value", "field IS NULL", etc.
@@ -561,15 +517,24 @@ class SQLToMongoQuery
                 if (!$this->expectKeyword(self::K_NULL)) {
                     $this->throwParsingException("Expected NULL after IS" . ($isNot ? " NOT" : ""), $this->getCurrentTokenValue());
                 }
-                // IS NULL     -> { field: { $exists: true, $eq: null } } (stricter) or { field: { $eq: null } } or { field: { $exists: false } } (common interpretation)
-                // IS NOT NULL -> { field: { $ne: null } } or { field: { $exists: true } } (common interpretation)
-                // We map IS NOT NULL to $exists: true (field must be present)
-                // We map IS NULL to $eq: null (field must be null, implies existence) - aligns better with $ne: null
-                // Alternative for IS NULL: $exists: false (more common SQL mapping, but less consistent with $ne: null)
-                 return $isNot
-                    ? [$field => [self::MGO_NE => null]] // IS NOT NULL -> { field: {$ne: null} } (exists and not null)
-                    : [$field => [self::MGO_EQ => null]]; // IS NULL -> { field: {$eq: null} } (exists and is null)
-                // return [$field => [self::MGO_EXISTS => !$isNot]]; // Alternative mapping
+                // SQL semantics:
+                // IS NULL: field exists AND value is null
+                // IS NOT NULL: field exists AND value is not null
+                // 
+                // MongoDB behavior:
+                // {$eq: null} matches both null values AND missing fields
+                // {$ne: null} matches non-null values but NOT missing fields
+                // {$exists: true, $eq: null} matches only existing fields with null value
+                // {$exists: true, $ne: null} matches only existing fields with non-null value
+                //
+                // We use the strict SQL semantics with $exists check:
+                if ($isNot) {
+                    // IS NOT NULL -> field must exist and not be null
+                    return [$field => [self::MGO_EXISTS => true, self::MGO_NE => null]];
+                } else {
+                    // IS NULL -> field must exist and be null
+                    return [$field => [self::MGO_EXISTS => true, self::MGO_EQ => null]];
+                }
 
             case self::K_NOT: // Check specifically for NOT IN, NOT LIKE, NOT BETWEEN, NOT REGEXP
                 if ($this->position >= count($this->tokens)) {
@@ -589,8 +554,44 @@ class SQLToMongoQuery
                         if (!is_string($patternValue)) {
                             $this->throwParsingException("REGEXP pattern must be a string value", is_scalar($patternValue) ? (string)$patternValue : gettype($patternValue), false, $this->position -1);
                         }
-                        // MongoDB equivalent: { field: { $not: { $regex: pattern } } }
-                        return [$field => [self::MGO_NOT => [self::MGO_REGEX => $patternValue]]];
+                        
+                        // Check if the pattern uses the /pattern/flags syntax
+                        $pattern = $patternValue;
+                        $options = '';
+                        
+                        if (preg_match('#^/(.*)/([\w]*)$#', $patternValue, $matches)) {
+                            // Pattern is in /pattern/flags format
+                            $pattern = $matches[1];
+                            $flags = $matches[2];
+                            
+                            // Validate and map PCRE flags to MongoDB options
+                            $validFlags = ['i', 'm', 's', 'x'];
+                            $options = '';
+                            
+                            for ($i = 0; $i < strlen($flags); $i++) {
+                                $flag = $flags[$i];
+                                if (in_array($flag, $validFlags)) {
+                                    if (!str_contains($options, $flag)) { // Avoid duplicates
+                                        $options .= $flag;
+                                    }
+                                } else {
+                                    $this->throwParsingException(
+                                        "Invalid REGEXP flag '{$flag}'. Valid flags are: i, m, s, x",
+                                        $patternValue,
+                                        false,
+                                        $this->position - 1
+                                    );
+                                }
+                            }
+                        }
+                        
+                        $regexCondition = [self::MGO_REGEX => $pattern];
+                        if (!empty($options)) {
+                            $regexCondition[self::MGO_OPTIONS] = $options;
+                        }
+                        
+                        // MongoDB equivalent: { field: { $not: { $regex: pattern, $options: opts } } }
+                        return [$field => [self::MGO_NOT => $regexCondition]];
                     default:
                         $this->throwParsingException("Unexpected keyword '{$nextToken['value']}' following NOT for field '{$field}'. Expected IN, LIKE, BETWEEN, or REGEXP.", $nextToken['value']);
                 }
@@ -625,7 +626,44 @@ class SQLToMongoQuery
                      if (!is_string($value)) {
                           $this->throwParsingException("REGEXP pattern must be a string value", is_scalar($value) ? (string)$value : gettype($value), false, $this->position -1);
                       }
-                     return [$field => [self::MGO_REGEX => $value]];
+                     
+                     // Check if the pattern uses the /pattern/flags syntax
+                     $pattern = $value;
+                     $options = '';
+                     
+                     if (preg_match('#^/(.*)/([\w]*)$#', $value, $matches)) {
+                         // Pattern is in /pattern/flags format
+                         $pattern = $matches[1];
+                         $flags = $matches[2];
+                         
+                         // Validate and map PCRE flags to MongoDB options
+                         // MongoDB supports: i (case-insensitive), m (multiline), s (dotall), x (extended)
+                         $validFlags = ['i', 'm', 's', 'x'];
+                         $options = '';
+                         
+                         for ($i = 0; $i < strlen($flags); $i++) {
+                             $flag = $flags[$i];
+                             if (in_array($flag, $validFlags)) {
+                                 if (!str_contains($options, $flag)) { // Avoid duplicates
+                                     $options .= $flag;
+                                 }
+                             } else {
+                                 $this->throwParsingException(
+                                     "Invalid REGEXP flag '{$flag}'. Valid flags are: i, m, s, x",
+                                     $value,
+                                     false,
+                                     $this->position - 1
+                                 );
+                             }
+                         }
+                     }
+                     
+                     $result = [self::MGO_REGEX => $pattern];
+                     if (!empty($options)) {
+                         $result[self::MGO_OPTIONS] = $options;
+                     }
+                     
+                     return [$field => $result];
                  }
 
 
@@ -779,17 +817,17 @@ class SQLToMongoQuery
         }
         $endValue = $this->parseValue();
 
-        // Standard BETWEEN condition: { field: { $gte: start, $lte: end } }
-        $betweenCondition = [self::MGO_GTE => $startValue, self::MGO_LTE => $endValue];
-
         if ($isNotBetween) {
-            // SQL: NOT BETWEEN a AND b  <=>  < a OR > b
-            // MongoDB equivalent: { $not: { $gte: a, $lte: b } }
-            // An alternative formulation is { $or: [ { field: { $lt: a } }, { field: { $gt: b } } ] }
-            // Using $not is simpler to implement based on the standard BETWEEN condition.
-            return [$field => [self::MGO_NOT => $betweenCondition]];
+            // SQL: NOT BETWEEN a AND b  <=>  field < a OR field > b
+            // MongoDB equivalent: { $or: [ { field: { $lt: a } }, { field: { $gt: b } } ] }
+            // Using $or is the canonical and compatible form
+            return [self::MGO_OR => [
+                [$field => [self::MGO_LT => $startValue]],
+                [$field => [self::MGO_GT => $endValue]]
+            ]];
         } else {
-            return [$field => $betweenCondition];
+            // Standard BETWEEN condition: { field: { $gte: start, $lte: end } }
+            return [$field => [self::MGO_GTE => $startValue, self::MGO_LTE => $endValue]];
         }
     }
 
@@ -857,11 +895,30 @@ class SQLToMongoQuery
 
         switch ($type) {
             case 'string':
-                // Remove outer quotes and unescape internal quotes based on the quote char used
+                // Remove outer quotes and process escape sequences
                 $quoteChar = $value[0]; // ' or "
-                $escapedQuote = '\\' . $quoteChar; // \' or \"
-                // Use str_replace for simple cases, potentially needs adjustments for other escapes like \\
-                return str_replace($escapedQuote, $quoteChar, substr($value, 1, -1));
+                $content = substr($value, 1, -1); // Remove outer quotes
+                
+                // Process escape sequences
+                // We need to handle: \', \", \\, \n, \t, \r, \b, \f, and potentially \0
+                // Order matters: process \\ first to avoid double-processing
+                $escapeMap = [
+                    '\\\\' => '\\',      // Escaped backslash (process first)
+                    '\\' . $quoteChar => $quoteChar,  // Escaped quote (depends on quote type)
+                    '\\n' => "\n",       // Newline
+                    '\\t' => "\t",       // Tab
+                    '\\r' => "\r",       // Carriage return
+                    '\\b' => "\b",       // Backspace
+                    '\\f' => "\f",       // Form feed
+                    '\\0' => "\0",       // Null character
+                ];
+                
+                // Apply escape replacements
+                foreach ($escapeMap as $escaped => $replacement) {
+                    $content = str_replace($escaped, $replacement, $content);
+                }
+                
+                return $content;
 
             case 'number':
                 // Convert to int or float based on presence of decimal point
@@ -1109,6 +1166,118 @@ class SQLToMongoQuery
         );
     }
 
+
+    /**
+     * Negates a MongoDB expression using De Morgan's laws and operator inversions.
+     * Properly handles complex expressions with $and/$or operators.
+     *
+     * @param array $expr The MongoDB expression to negate
+     * @return array The negated MongoDB expression
+     */
+    private function negateExpression(array $expr): array
+    {
+        // Handle $and: NOT (A AND B) => (NOT A) OR (NOT B)
+        if (isset($expr[self::MGO_AND])) {
+            $negatedParts = [];
+            foreach ($expr[self::MGO_AND] as $part) {
+                $negatedParts[] = $this->negateExpression($part);
+            }
+            return count($negatedParts) === 1 ? $negatedParts[0] : [self::MGO_OR => $negatedParts];
+        }
+        
+        // Handle $or: NOT (A OR B) => (NOT A) AND (NOT B)
+        if (isset($expr[self::MGO_OR])) {
+            $negatedParts = [];
+            foreach ($expr[self::MGO_OR] as $part) {
+                $negatedParts[] = $this->negateExpression($part);
+            }
+            return count($negatedParts) === 1 ? $negatedParts[0] : [self::MGO_AND => $negatedParts];
+        }
+        
+        // Handle $not: NOT (NOT A) => A (double negation)
+        if (isset($expr[self::MGO_NOT])) {
+            return $expr[self::MGO_NOT];
+        }
+        
+        // Handle single field conditions
+        if (count($expr) === 1) {
+            $field = key($expr);
+            $condition = current($expr);
+            
+            // Skip special operators like $and, $or, $not (already handled above)
+            if (str_starts_with($field, '$')) {
+                // This shouldn't happen for valid queries, but wrap in $not as fallback
+                // Actually, for unhandled top-level operators, we can't properly negate
+                // This is an error case
+                throw new QueryParsingException(
+                    "Cannot negate unsupported top-level operator: {$field}",
+                    $this->originalQuery,
+                    $this->getCurrentTokenCharPosition()
+                );
+            }
+            
+            // Simple equality: { field: value } => { field: { $ne: value } }
+            if (!is_array($condition)) {
+                return [$field => [self::MGO_NE => $condition]];
+            }
+            
+            // Complex field condition: { field: { $op: value, ... } }
+            if (count($condition) === 1) {
+                $op = key($condition);
+                $value = current($condition);
+                
+                // Try to invert the operator directly
+                $negatedOp = match($op) {
+                    self::MGO_EQ => self::MGO_NE,      // NOT (=) -> !=
+                    self::MGO_NE => self::MGO_EQ,      // NOT (!=) -> =
+                    self::MGO_GT => self::MGO_LTE,     // NOT (>) -> <=
+                    self::MGO_GTE => self::MGO_LT,     // NOT (>=) -> <
+                    self::MGO_LT => self::MGO_GTE,     // NOT (<) -> >=
+                    self::MGO_LTE => self::MGO_GT,     // NOT (<=) -> >
+                    self::MGO_IN => self::MGO_NIN,     // NOT (IN) -> NIN
+                    self::MGO_NIN => self::MGO_IN,     // NOT (NIN) -> IN
+                    self::MGO_EXISTS => self::MGO_EXISTS, // Special case handled below
+                    default => null
+                };
+                
+                // Special handling for $exists
+                if ($op === self::MGO_EXISTS) {
+                    return [$field => [self::MGO_EXISTS => !$value]];
+                }
+                
+                if ($negatedOp !== null) {
+                    return [$field => [$negatedOp => $value]];
+                }
+                
+                // For operators we can't directly invert (like $regex), use field-level $not
+                // MongoDB's $not works at field level: { field: { $not: { $regex: ... } } }
+                return [$field => [self::MGO_NOT => $condition]];
+            }
+            
+            // Multiple operators on same field (e.g., BETWEEN creates { $gte: a, $lte: b })
+            // We need to negate this as OR of inverses
+            if (isset($condition[self::MGO_GTE]) && isset($condition[self::MGO_LTE])) {
+                // This is likely from BETWEEN
+                // NOT (field >= a AND field <= b) => field < a OR field > b
+                return [self::MGO_OR => [
+                    [$field => [self::MGO_LT => $condition[self::MGO_GTE]]],
+                    [$field => [self::MGO_GT => $condition[self::MGO_LTE]]]
+                ]];
+            }
+            
+            // For other multi-operator conditions, wrap in field-level $not
+            // This might not always be valid, but it's the best we can do
+            return [$field => [self::MGO_NOT => $condition]];
+        }
+        
+        // Multiple field conditions at top level (implicit AND)
+        // NOT (a=1 AND b=2) => NOT(a=1) OR NOT(b=2)
+        $negatedParts = [];
+        foreach ($expr as $field => $condition) {
+            $negatedParts[] = $this->negateExpression([$field => $condition]);
+        }
+        return count($negatedParts) === 1 ? $negatedParts[0] : [self::MGO_OR => $negatedParts];
+    }
 
     /**
      * Static convenience method to translate an SQL WHERE clause directly.
