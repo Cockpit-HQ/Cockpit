@@ -125,22 +125,74 @@ class UtilArrayQuery {
                 $fieldValue = self::getNestedValue($document, $key);
 
                 // Check if the value is a condition array or a direct value
-                if (is_array($value) && !empty($value) && isset(array_keys($value)[0]) && array_keys($value)[0][0] === '$') {
-                    // This is a condition array with operators like {age: {$gt: 25}}
-                    // Handle special case for $elemMatch on arrays
-                    if (isset($value['$elemMatch']) && is_array($fieldValue)) {
-                        $found = false;
-                        foreach ($fieldValue as $element) {
-                            if (is_array($element) && self::evaluateCondition($element, $value['$elemMatch'])) {
-                                $found = true;
-                                break;
+                if (is_array($value) && !empty($value)) {
+                    $firstKey = array_keys($value)[0];
+                    if (is_string($firstKey) && str_starts_with($firstKey, '$')) {
+                        // This is a condition array with operators like {age: {$gt: 25}}
+                        
+                        // Handle special case for $exists - it needs to check field presence, not value
+                        if (isset($value['$exists'])) {
+                            $fieldExists = self::getNestedValueExists($document, $key);
+                            $shouldExist = (bool)$value['$exists'];
+                            if ($fieldExists !== $shouldExist) {
+                                return false;
+                            }
+                            // If there are other operators besides $exists, continue checking them
+                            $otherConditions = array_diff_key($value, ['$exists' => true]);
+                            if (!empty($otherConditions)) {
+                                if (!$fieldExists) {
+                                    // Field doesn't exist, other conditions can't be checked
+                                    return false;
+                                }
+                                if (!self::check($fieldValue, $otherConditions)) {
+                                    return false;
+                                }
                             }
                         }
-                        if (!$found) {
+                        // Handle special case for $elemMatch on arrays
+                        else if (isset($value['$elemMatch']) && is_array($fieldValue)) {
+                            $found = false;
+                            foreach ($fieldValue as $element) {
+                                if (is_array($element) && self::evaluateCondition($element, $value['$elemMatch'])) {
+                                    $found = true;
+                                    break;
+                                }
+                            }
+                            if (!$found) {
+                                return false;
+                            }
+                        } else if (!self::check($fieldValue, $value)) {
                             return false;
                         }
-                    } else if (!self::check($fieldValue, $value)) {
-                        return false;
+                    } else {
+                        // Direct value comparison for arrays without operators
+                        if (is_null($value)) {
+                            // Check for null / non-existence
+                            if (self::getNestedValueExists($document, $key)) {
+                                return false;
+                            }
+                        } else {
+                            // Regular equality check
+                            if (!self::getNestedValueExists($document, $key)) {
+                                return false;
+                            }
+
+                            // Handle all comparison cases
+                            if (is_array($fieldValue) && !is_array($value)) {
+                                // If field is array (including nested arrays from dot notation), check if it contains the value
+                                if (!self::checkArrayContains($fieldValue, $value)) {
+                                    return false;
+                                }
+                            } else if (is_array($value) && !is_array($fieldValue)) {
+                                // If value is array and field is not, check if value contains the field
+                                if (!in_array($fieldValue, $value)) {
+                                    return false;
+                                }
+                            } else if ($fieldValue != $value) {
+                                // Simple equality check for other cases (including array to array comparison)
+                                return false;
+                            }
+                        }
                     }
                 } else {
                     // Direct value comparison
@@ -207,14 +259,14 @@ class UtilArrayQuery {
                 
                 // Check if current value is an array without the key
                 // This means we should traverse array elements
-                if (!isset($value[$k]) && !isArrayAssociative($value)) {
+                if (!array_key_exists($k, $value) && !isArrayAssociative($value)) {
                     // Traverse array elements
                     foreach ($value as $element) {
-                        if (is_array($element) && isset($element[$k])) {
+                        if (is_array($element) && array_key_exists($k, $element)) {
                             $newValues[] = $element[$k];
                         }
                     }
-                } elseif (isset($value[$k])) {
+                } elseif (array_key_exists($k, $value)) {
                     $newValues[] = $value[$k];
                 }
             }
@@ -238,7 +290,7 @@ class UtilArrayQuery {
     private static function getNestedValueExists(array $array, string $key): bool {
 
         if (!str_contains($key, '.')) {
-            return isset($array[$key]);
+            return array_key_exists($key, $array);
         }
 
         $keys = explode('.', $key);
@@ -254,14 +306,14 @@ class UtilArrayQuery {
                 
                 // Check if current value is an array without the key
                 // This means we should traverse array elements
-                if (!isset($value[$k]) && !isArrayAssociative($value)) {
+                if (!array_key_exists($k, $value) && !isArrayAssociative($value)) {
                     // Traverse array elements
                     foreach ($value as $element) {
-                        if (is_array($element) && isset($element[$k])) {
+                        if (is_array($element) && array_key_exists($k, $element)) {
                             $newValues[] = $element[$k];
                         }
                     }
-                } elseif (isset($value[$k])) {
+                } elseif (array_key_exists($k, $value)) {
                     $newValues[] = $value[$k];
                 }
             }
@@ -324,9 +376,19 @@ class UtilArrayQuery {
      */
     public static function check(mixed $value, array $condition): bool {
 
-        // If value is an array from dot notation traversal, check if any element matches
-        if (is_array($value)) {
-            // Check each element in the array
+        // Check if this is a geo operator that needs the full object structure
+        $geoOperators = ['$geoWithin', '$geoIntersects', '$near'];
+        $hasGeoOperator = false;
+        foreach ($condition as $key => $_) {
+            if (in_array($key, $geoOperators)) {
+                $hasGeoOperator = true;
+                break;
+            }
+        }
+        
+        // If value is an array and NOT a geo query, check if any element matches
+        if (is_array($value) && !$hasGeoOperator) {
+            // For non-geo queries, traverse array elements
             return self::checkArrayWithCondition($value, $condition);
         }
 
@@ -502,6 +564,9 @@ class UtilArrayQuery {
                 break;
 
             case '$exists':
+                // Note: This is a fallback. $exists should be handled at a higher level
+                // using getNestedValueExists to properly distinguish between null values
+                // and non-existent fields. This fallback treats null as non-existent.
                 $r = $b ? !is_null($a) : is_null($a);
                 break;
 
@@ -870,7 +935,7 @@ function checkType($value, $type): bool {
         // Numeric type codes
         1 => fn($v) => is_float($v), // Double
         2 => fn($v) => is_string($v), // String
-        3 => fn($v) => is_array($v) && !isArrayAssociative($v), // Object/Document
+        3 => fn($v) => is_array($v) && isArrayAssociative($v), // Object/Document
         4 => fn($v) => is_array($v) && !isArrayAssociative($v), // Array
         8 => fn($v) => is_bool($v), // Boolean
         9 => fn($v) => is_string($v) && strtotime($v) !== false, // Date

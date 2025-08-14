@@ -75,6 +75,102 @@ $collection->update(['name' => 'John Doe'], ['$set' => ['age' => 31]]);
 $collection->remove(['age' => ['$lt' => 18]]);
 ```
 
+### Update Operations
+
+```php
+// Update operators
+$collection->update(
+    ['name' => 'John Doe'],  // Criteria
+    [
+        '$set' => ['email' => 'newemail@example.com'],     // Set/update fields
+        '$unset' => ['temporaryField' => 1],               // Remove fields
+        '$inc' => ['loginCount' => 1, 'score' => -5],      // Increment numbers
+        '$push' => ['tags' => 'mongodb'],                  // Append to array
+        '$addToSet' => ['categories' => 'database']        // Add unique to array
+    ]
+);
+
+// $set - Set or update field values (supports dot notation)
+$collection->update(
+    ['_id' => $userId],
+    ['$set' => [
+        'profile.name' => 'Jane Doe',
+        'profile.address.city' => 'New York'
+    ]]
+);
+
+// $unset - Remove fields from documents (supports dot notation)
+$collection->update(
+    ['_id' => $userId],
+    ['$unset' => [
+        'temporaryData' => 1,
+        'profile.obsoleteField' => true
+    ]]
+);
+
+// $inc - Increment numeric fields (creates field if doesn't exist)
+$collection->update(
+    ['_id' => $productId],
+    ['$inc' => [
+        'viewCount' => 1,        // Increment by 1
+        'stock' => -5,           // Decrement by 5
+        'newField' => 10         // Creates with value 10 if doesn't exist
+    ]]
+);
+
+// $push - Append values to arrays
+$collection->update(
+    ['_id' => $postId],
+    ['$push' => [
+        'comments' => ['user' => 'John', 'text' => 'Great post!'],
+        'tags' => 'featured'
+    ]]
+);
+
+// $push with $each - Append multiple values
+$collection->update(
+    ['_id' => $postId],
+    ['$push' => [
+        'tags' => ['$each' => ['mongodb', 'database', 'nosql']]
+    ]]
+);
+
+// $addToSet - Add unique values to arrays
+$collection->update(
+    ['_id' => $userId],
+    ['$addToSet' => [
+        'skills' => 'PHP',  // Only adds if not already present
+        'roles' => ['name' => 'admin', 'level' => 1]  // Works with objects too
+    ]]
+);
+
+// $addToSet with $each - Add multiple unique values
+$collection->update(
+    ['_id' => $userId],
+    ['$addToSet' => [
+        'skills' => ['$each' => ['PHP', 'JavaScript', 'Python']]
+    ]]
+);
+
+// Combining multiple operators in one update
+$collection->update(
+    ['productId' => 'ABC123'],
+    [
+        '$set' => ['lastModified' => date('Y-m-d H:i:s')],
+        '$inc' => ['version' => 1],
+        '$push' => ['changeLog' => 'Updated by admin'],
+        '$unset' => ['deprecated' => 1]
+    ]
+);
+
+// Update multiple documents (all matching criteria)
+$affectedCount = $collection->update(
+    ['status' => 'pending'],  // All documents with pending status
+    ['$set' => ['status' => 'processed', 'processedAt' => time()]]
+);
+echo "Updated {$affectedCount} documents";
+```
+
 ### Advanced Queries
 
 ```php
@@ -210,15 +306,42 @@ $count = $collection->insertMany($documents);
 $cursor = $collection->find($criteria, $projection);
 $document = $collection->findOne($criteria, $projection);
 
-$collection->update($criteria, $data, $options);
-$collection->remove($criteria, $options);
+$affected = $collection->update($criteria, $updates, $merge = true);
+$collection->remove($criteria);
 
 // Aggregation
 $cursor = $collection->aggregate($pipeline);
 
+// Counting
+$count = $collection->count($criteria);                     // May include skip/limit
+$count = $collection->countDocuments($criteria);            // Accurate count ignoring skip/limit
+$count = $collection->estimatedDocumentCount();             // Fast total count
+
 // Utility
-$count = $collection->count($criteria);
 $collection->drop();
+```
+
+### Update Operators
+
+| Operator | Description | Example |
+|----------|-------------|---------|
+| `$set` | Sets field values (creates if doesn't exist) | `['$set' => ['name' => 'John']]` |
+| `$unset` | Removes fields from documents | `['$unset' => ['field' => 1]]` |
+| `$inc` | Increments numeric fields | `['$inc' => ['count' => 1]]` |
+| `$push` | Appends values to arrays | `['$push' => ['tags' => 'new']]` |
+| `$addToSet` | Adds unique values to arrays | `['$addToSet' => ['tags' => 'unique']]` |
+
+**Modifier Support:**
+- `$each` - Used with `$push` and `$addToSet` to add multiple values
+  ```php
+  ['$push' => ['tags' => ['$each' => ['tag1', 'tag2']]]]
+  ```
+
+**Dot Notation:**
+All update operators support dot notation for nested fields:
+```php
+['$set' => ['address.city' => 'New York']]
+['$inc' => ['stats.views' => 1]]
 ```
 
 ### Cursor Class
