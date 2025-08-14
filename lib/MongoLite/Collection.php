@@ -2,6 +2,8 @@
 
 namespace MongoLite;
 
+use MongoLite\Aggregation\ValueAccessor;
+
 /**
  * Collection object.
  */
@@ -112,8 +114,8 @@ class Collection {
         if ($res){
             return $document['_id'];
         } else {
-            trigger_error('SQL Error: '.\implode(', ', $this->database->connection->errorInfo()).":\n".$sql);
-            return false;
+            $errorInfo = $this->database->connection->errorInfo();
+            throw new \PDOException('SQL Error: ' . implode(', ', $errorInfo) . " - Query: " . $sql, (int)$errorInfo[1]);
         }
     }
 
@@ -168,18 +170,192 @@ class Collection {
 
         $this->database->unregisterCriteriaFunction($criteriaFnId);
 
-        foreach ($result as &$doc) {
+        // Wrap multi-document updates in a transaction for consistency
+        if (count($result) > 0) {
+            $conn->beginTransaction();
+            
+            try {
+                foreach ($result as &$doc) {
+                    $_doc = \json_decode($doc['document'], true);
+                    
+                    // Apply update operators
+                    $document = $this->applyUpdateOperators($_doc, $data, $merge);
+                    $document['_id'] = $_doc['_id'];
 
-            $_doc            = \json_decode($doc['document'], true);
-            $document        = $merge ? \array_merge($_doc, $data['$set'] ?? []) : $data;
-            $document['_id'] = $_doc['_id'];
+                    $sql = "UPDATE `{$sanitizedName}` SET document=".$conn->quote(json_encode($document, JSON_UNESCAPED_UNICODE))." WHERE id=".(int)$doc['id'];
 
-            $sql = "UPDATE `{$sanitizedName}` SET document=".$conn->quote(json_encode($document, JSON_UNESCAPED_UNICODE))." WHERE id=".(int)$doc['id'];
-
-            $conn->exec($sql);
+                    $conn->exec($sql);
+                }
+                
+                $conn->commit();
+            } catch (\Exception $e) {
+                $conn->rollBack();
+                throw $e;
+            }
         }
 
         return count($result);
+    }
+
+    /**
+     * Apply update operators to a document
+     *
+     * @param array $document The original document
+     * @param array $updates The update operations
+     * @param bool $merge Whether to merge or replace (for backward compatibility)
+     * @return array The updated document
+     */
+    protected function applyUpdateOperators(array $document, array $updates, bool $merge = true): array {
+        // Check if we have update operators
+        $hasOperators = false;
+        foreach ($updates as $key => $value) {
+            if (str_starts_with($key, '$')) {
+                $hasOperators = true;
+                break;
+            }
+        }
+        
+        // If no operators and not merging, replace the document
+        if (!$hasOperators && !$merge) {
+            return $updates;
+        }
+        
+        // If no operators and merging, treat as $set
+        if (!$hasOperators && $merge) {
+            // Use ValueAccessor for proper dot-notation support in shallow merge
+            foreach ($updates as $field => $value) {
+                ValueAccessor::set($document, $field, $value);
+            }
+            return $document;
+        }
+        
+        // Process each operator
+        foreach ($updates as $operator => $fields) {
+            switch ($operator) {
+                case '$set':
+                    // Set or update fields using ValueAccessor for proper dot-notation
+                    if (is_array($fields)) {
+                        foreach ($fields as $field => $value) {
+                            ValueAccessor::set($document, $field, $value);
+                        }
+                    }
+                    break;
+                    
+                case '$unset':
+                    // Remove fields using ValueAccessor for proper dot-notation
+                    if (is_array($fields)) {
+                        foreach ($fields as $field => $value) {
+                            // MongoDB uses any truthy value to unset
+                            if ($value) {
+                                ValueAccessor::unset($document, $field);
+                            }
+                        }
+                    }
+                    break;
+                    
+                case '$inc':
+                    // Increment numeric fields with dot-notation support
+                    if (is_array($fields)) {
+                        foreach ($fields as $field => $increment) {
+                            if (is_numeric($increment)) {
+                                $current = ValueAccessor::get($document, $field, 0);
+                                if (is_numeric($current)) {
+                                    ValueAccessor::set($document, $field, $current + $increment);
+                                } else {
+                                    throw new \InvalidArgumentException("Cannot increment non-numeric field: {$field}");
+                                }
+                            }
+                        }
+                    }
+                    break;
+                    
+                case '$push':
+                    // Append to array fields with dot-notation support
+                    if (is_array($fields)) {
+                        foreach ($fields as $field => $value) {
+                            $current = ValueAccessor::get($document, $field);
+                            if ($current === null) {
+                                $current = [];
+                            }
+                            if (!is_array($current)) {
+                                throw new \InvalidArgumentException("Cannot push to non-array field: {$field}");
+                            }
+                            // Handle $each modifier
+                            if (is_array($value) && isset($value['$each']) && is_array($value['$each'])) {
+                                foreach ($value['$each'] as $item) {
+                                    $current[] = $item;
+                                }
+                            } else {
+                                $current[] = $value;
+                            }
+                            ValueAccessor::set($document, $field, $current);
+                        }
+                    }
+                    break;
+                    
+                case '$addToSet':
+                    // Add to array only if not already present with dot-notation support
+                    if (is_array($fields)) {
+                        foreach ($fields as $field => $value) {
+                            $current = ValueAccessor::get($document, $field);
+                            if ($current === null) {
+                                $current = [];
+                            }
+                            if (!is_array($current)) {
+                                throw new \InvalidArgumentException("Cannot addToSet to non-array field: {$field}");
+                            }
+                            // Handle $each modifier
+                            if (is_array($value) && isset($value['$each']) && is_array($value['$each'])) {
+                                foreach ($value['$each'] as $item) {
+                                    if (!$this->arrayContainsValue($current, $item)) {
+                                        $current[] = $item;
+                                    }
+                                }
+                            } else {
+                                if (!$this->arrayContainsValue($current, $value)) {
+                                    $current[] = $value;
+                                }
+                            }
+                            ValueAccessor::set($document, $field, $current);
+                        }
+                    }
+                    break;
+                    
+                default:
+                    // Unknown operator - for backward compatibility with $set behavior
+                    if (str_starts_with($operator, '$')) {
+                        // Ignore unknown operators
+                    } else if ($merge) {
+                        // If not an operator and merge is true, treat as field to set
+                        $document[$operator] = $fields;
+                    }
+                    break;
+            }
+        }
+        
+        return $document;
+    }
+    
+    /**
+     * Check if an array contains a value (deep comparison for arrays/objects)
+     */
+    protected function arrayContainsValue(array $array, mixed $value): bool {
+        foreach ($array as $item) {
+            if ($this->valuesEqual($item, $value)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * Compare two values for equality (deep comparison for arrays)
+     */
+    protected function valuesEqual(mixed $a, mixed $b): bool {
+        if (is_array($a) && is_array($b)) {
+            return json_encode($a) === json_encode($b);
+        }
+        return $a === $b;
     }
 
     /**
@@ -220,6 +396,56 @@ class Collection {
     public function count(mixed $criteria = null): int {
 
         return $this->find($criteria)->count();
+    }
+
+    /**
+     * Count documents matching criteria (ignoring skip/limit)
+     * MongoDB-compatible method for accurate document counting
+     *
+     * @param  mixed $criteria
+     * @return integer
+     */
+    public function countDocuments(mixed $criteria = null): int {
+        // Get sanitized collection name
+        $sanitizedName = $this->getSanitizedCollectionName();
+        
+        if (!$criteria) {
+            $stmt = $this->database->connection->query("SELECT COUNT(*) AS C FROM `{$sanitizedName}`");
+        } else {
+            // Register and sanitize criteria
+            $criteriaId = $this->database->registerCriteriaFunction($criteria);
+            $sanitizedCriteriaId = $this->database->sanitizeCriteriaId($criteriaId);
+            
+            if (!$sanitizedCriteriaId) {
+                throw new \InvalidArgumentException("Invalid criteria function ID");
+            }
+            
+            $sql = "SELECT COUNT(*) AS C FROM `{$sanitizedName}` WHERE document_criteria('{$sanitizedCriteriaId}', document)";
+            $stmt = $this->database->connection->query($sql);
+            
+            // Unregister criteria to prevent memory leaks
+            $this->database->unregisterCriteriaFunction($criteriaId);
+        }
+        
+        $res = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return intval(isset($res['C']) ? $res['C'] : 0);
+    }
+
+    /**
+     * Get estimated document count (fast count of all documents)
+     * MongoDB-compatible method for quick collection size estimation
+     *
+     * @return integer
+     */
+    public function estimatedDocumentCount(): int {
+        // Get sanitized collection name
+        $sanitizedName = $this->getSanitizedCollectionName();
+        
+        // Use fast COUNT(*) without criteria for estimation
+        $stmt = $this->database->connection->query("SELECT COUNT(*) AS C FROM `{$sanitizedName}`");
+        $res = $stmt->fetch(\PDO::FETCH_ASSOC);
+        
+        return intval(isset($res['C']) ? $res['C'] : 0);
     }
 
     /**
@@ -289,9 +515,9 @@ class Collection {
      * @throws \InvalidArgumentException if collection name is invalid
      */
     protected function getSanitizedCollectionName(): string {
-        $sanitized = preg_replace('/[^a-zA-Z0-9_-]/', '', $this->name);
+        $sanitized = $this->database->sanitizeCollectionName($this->name);
         
-        if ($sanitized !== $this->name || empty($sanitized)) {
+        if ($sanitized === null) {
             throw new \InvalidArgumentException("Invalid collection name: {$this->name}");
         }
         

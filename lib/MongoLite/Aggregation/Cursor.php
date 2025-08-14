@@ -764,11 +764,12 @@ class Cursor implements Iterator {
                 switch ($whenMatched) {
                     case 'merge':
                         // Merge documents (MongoDB default)
-                        $merged = array_merge($existing, $document);
-                        $target->update($matchCriteria, $merged);
+                        // Use $set operator to properly merge fields
+                        $target->update($matchCriteria, ['$set' => $document], true);
                         break;
                     case 'replace':
-                        $target->update($matchCriteria, $document);
+                        // Replace whole document (preserving _id)
+                        $target->update($matchCriteria, $document, false);
                         break;
                     case 'keepExisting':
                         // Do nothing

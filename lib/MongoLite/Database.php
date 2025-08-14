@@ -54,21 +54,21 @@ class Database {
             $document = \json_decode($document, true);
             $val      = '';
 
+            // Use generic traversal for any depth of nesting
             if (str_contains($key, '.')) {
-
                 $keys = \explode('.', $key);
-
-                switch (\count($keys)) {
-                    case 2:
-                        $val = isset($document[$keys[0]][$keys[1]]) ? $document[$keys[0]][$keys[1]] : '';
+                $current = $document;
+                
+                // Traverse the nested structure
+                foreach ($keys as $k) {
+                    if (is_array($current) && isset($current[$k])) {
+                        $current = $current[$k];
+                    } else {
+                        $current = '';
                         break;
-                    case 3:
-                        $val = isset($document[$keys[0]][$keys[1]][$keys[2]]) ? $document[$keys[0]][$keys[1]][$keys[2]] : '';
-                        break;
-                    default:
-                        $val = isset($document[$keys[0]]) ? $document[$keys[0]] : '';
+                    }
                 }
-
+                $val = $current;
             } else {
                 $val = isset($document[$key]) ? $document[$key] : '';
             }

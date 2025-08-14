@@ -276,9 +276,9 @@ class Cursor implements Iterator {
      * @throws \InvalidArgumentException if collection name is invalid
      */
     protected function getSanitizedCollectionName(): string {
-        $sanitized = preg_replace('/[^a-zA-Z0-9_-]/', '', $this->collection->name);
+        $sanitized = $this->collection->database->sanitizeCollectionName($this->collection->name);
         
-        if ($sanitized !== $this->collection->name || empty($sanitized)) {
+        if ($sanitized === null) {
             throw new \InvalidArgumentException("Invalid collection name: {$this->collection->name}");
         }
         
