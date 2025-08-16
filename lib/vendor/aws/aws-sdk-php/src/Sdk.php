@@ -8,6 +8,8 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionACMPCA(array $args = [])
  * @method \Aws\AIOps\AIOpsClient createAIOps(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionAIOps(array $args = [])
+ * @method \Aws\ARCRegionSwitch\ARCRegionSwitchClient createARCRegionSwitch(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionARCRegionSwitch(array $args = [])
  * @method \Aws\ARCZonalShift\ARCZonalShiftClient createARCZonalShift(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionARCZonalShift(array $args = [])
  * @method \Aws\AccessAnalyzer\AccessAnalyzerClient createAccessAnalyzer(array $args = [])
@@ -78,6 +80,8 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionBCMDataExports(array $args = [])
  * @method \Aws\BCMPricingCalculator\BCMPricingCalculatorClient createBCMPricingCalculator(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionBCMPricingCalculator(array $args = [])
+ * @method \Aws\BCMRecommendedActions\BCMRecommendedActionsClient createBCMRecommendedActions(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionBCMRecommendedActions(array $args = [])
  * @method \Aws\Backup\BackupClient createBackup(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionBackup(array $args = [])
  * @method \Aws\BackupGateway\BackupGatewayClient createBackupGateway(array $args = [])
@@ -831,7 +835,7 @@ namespace Aws;
  */
 class Sdk
 {
-    const VERSION = '3.351.12';
+    const VERSION = '3.354.1';
 
     /** @var array Arguments for creating clients */
     private $args;
