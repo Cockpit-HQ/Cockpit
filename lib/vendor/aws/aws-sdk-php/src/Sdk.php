@@ -76,6 +76,8 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionAutoScalingPlans(array $args = [])
  * @method \Aws\B2bi\B2biClient createB2bi(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionB2bi(array $args = [])
+ * @method \Aws\BCMDashboards\BCMDashboardsClient createBCMDashboards(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionBCMDashboards(array $args = [])
  * @method \Aws\BCMDataExports\BCMDataExportsClient createBCMDataExports(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionBCMDataExports(array $args = [])
  * @method \Aws\BCMPricingCalculator\BCMPricingCalculatorClient createBCMPricingCalculator(array $args = [])
@@ -835,7 +837,7 @@ namespace Aws;
  */
 class Sdk
 {
-    const VERSION = '3.354.1';
+    const VERSION = '3.356.3';
 
     /** @var array Arguments for creating clients */
     private $args;
