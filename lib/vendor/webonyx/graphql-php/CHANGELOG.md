@@ -9,6 +9,30 @@ You can find and compare releases at the [GitHub release page](https://github.co
 
 ## Unreleased
 
+## v15.24.0
+
+### Added
+
+- Allow passing `NonNull` to `Type::nonNull()` https://github.com/webonyx/graphql-php/pull/1757
+
+## v15.23.1
+
+### Changed
+
+- Improve `Type::getNamedType()` return type https://github.com/webonyx/graphql-php/pull/1756
+
+## v15.23.0
+
+### Added
+
+- Allow replacing a `Node` with a `NodeList` in `Visitor` https://github.com/webonyx/graphql-php/pull/1754
+
+## v15.22.4
+
+### Fixed
+
+- Fix `NodeVisitor` return type by allowing `Node` https://github.com/webonyx/graphql-php/pull/1752
+
 ## v15.22.3
 
 ### Changed
