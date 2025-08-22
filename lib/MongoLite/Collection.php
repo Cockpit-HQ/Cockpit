@@ -95,7 +95,13 @@ class Collection {
         // Sanitize collection name
         $table = $this->getSanitizedCollectionName();
         $document['_id'] = isset($document['_id']) ? $document['_id'] : createMongoDbLikeId();
-        $data            = ['document' => \json_encode($document, JSON_UNESCAPED_UNICODE)];
+        
+        // Encode document with error handling
+        $json = \json_encode($document, JSON_UNESCAPED_UNICODE);
+        if ($json === false) {
+            throw new \RuntimeException('Failed to encode document: ' . json_last_error_msg());
+        }
+        $data = ['document' => $json];
 
         $fields = [];
         $values = [];
@@ -182,7 +188,13 @@ class Collection {
                     $document = $this->applyUpdateOperators($_doc, $data, $merge);
                     $document['_id'] = $_doc['_id'];
 
-                    $sql = "UPDATE `{$sanitizedName}` SET document=".$conn->quote(json_encode($document, JSON_UNESCAPED_UNICODE))." WHERE id=".(int)$doc['id'];
+                    // Encode document with error handling
+                    $json = json_encode($document, JSON_UNESCAPED_UNICODE);
+                    if ($json === false) {
+                        throw new \RuntimeException('Failed to encode document during update: ' . json_last_error_msg());
+                    }
+                    
+                    $sql = "UPDATE `{$sanitizedName}` SET document=".$conn->quote($json)." WHERE id=".(int)$doc['id'];
 
                     $conn->exec($sql);
                 }

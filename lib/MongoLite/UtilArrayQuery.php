@@ -110,7 +110,8 @@ class UtilArrayQuery {
                             return false;
                         }
                     } else if (is_null($value)) {
-                        if (self::getNestedValueExists($document, $key)) {
+                        // MongoDB behavior: null matches both null values and non-existent fields
+                        if (self::getNestedValueExists($document, $key) && $fieldValue !== null) {
                             return false;
                         }
                     } else {
@@ -167,8 +168,8 @@ class UtilArrayQuery {
                     } else {
                         // Direct value comparison for arrays without operators
                         if (is_null($value)) {
-                            // Check for null / non-existence
-                            if (self::getNestedValueExists($document, $key)) {
+                            // MongoDB behavior: null matches both null values and non-existent fields
+                            if (self::getNestedValueExists($document, $key) && $fieldValue !== null) {
                                 return false;
                             }
                         } else {
@@ -197,8 +198,8 @@ class UtilArrayQuery {
                 } else {
                     // Direct value comparison
                     if (is_null($value)) {
-                        // Check for null / non-existence
-                        if (self::getNestedValueExists($document, $key)) {
+                        // MongoDB behavior: null matches both null values and non-existent fields
+                        if (self::getNestedValueExists($document, $key) && $fieldValue !== null) {
                             return false;
                         }
                     } else {
