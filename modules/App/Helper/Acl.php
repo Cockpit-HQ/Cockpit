@@ -50,6 +50,9 @@ class Acl extends \Lime\Helper {
         if ($this->isSuperAdmin($role)) {
             return true;
         }
+        else if ($this->app['maintenance'] && !preg_match('/\/read$/', $permission)) {
+            return false;
+        }
 
         return isset($this->roles[$role]['permissions'][$permission]) && $this->roles[$role]['permissions'][$permission];
     }
