@@ -87,6 +87,25 @@
     background-color: var(--kiss-color-contrast);
 }
 
+.uppy-Dashboard--modal .uppy-Dashboard-inner {
+    top: 15px;
+    padding-top: 30px;
+}
+@media only screen and (min-width: 820px) {
+    .uppy-Dashboard--modal .uppy-Dashboard-inner {
+        top: 50%;
+    }
+}
 .uppy-Dashboard-close {
     color: var(--kiss-base-text-color);
+    top: 5px;
+    width: 1em;
+    height: 1em;
+    text-align: center;
+}
+[dir="ltr"] .uppy-Dashboard-close {
+    right: 5px;
+}
+[dir="rtl"] .uppy-Dashboard-close {
+    left: 5px;
 }
