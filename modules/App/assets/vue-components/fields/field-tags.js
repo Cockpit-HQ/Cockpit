@@ -107,6 +107,11 @@ export default {
     beforeUnmount() {
         if (this.tagsElement) {
             this.tagsElement.removeEventListener('tags-changed', this.update);
+            // Destroy the tags element completely to prevent memory leaks
+            if (typeof this.tagsElement.destroy === 'function') {
+                this.tagsElement.destroy();
+            }
+            this.tagsElement = null;
         }
     },
 

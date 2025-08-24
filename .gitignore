@@ -43,3 +43,5 @@ addons/
 !.gitkeep
 !/storage/*/index.html
 !/storage/*/.htaccess
+CLAUDE.md
+.claude
