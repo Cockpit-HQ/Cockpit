@@ -634,6 +634,10 @@ kiss-dialog[type="prompt"]>kiss-content {
     font-size: var(--kiss-font-size-2, 2rem);
 }
 
+.sortable-ghost > kiss-card {
+    border: 1px solid var(--kiss-color-primary);
+}
+
 @media (min-width: 768px) {
 
     app-header {

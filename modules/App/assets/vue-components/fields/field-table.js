@@ -40,7 +40,7 @@ export default {
                     this.selected = e.api.getSelectedRows();
                 },
                 onRowDragEnd: (e) => {
-                    let rowData = [];
+                    const rowData = [];
                     e.api.forEachNode((rowNode) => rowData.push(rowNode.data));
                     this.updateTableData(rowData);
                 },
@@ -108,20 +108,24 @@ export default {
     methods: {
 
         addRow() {
-            let val = {};
-            this.columns.forEach(col => val[col.name] = null);
-            this.val.push(val);
+            const newRow = {};
+            this.columns.forEach(col => newRow[col.name] = null);
+            // Use spread operator for proper reactivity
+            this.val = [...this.val, newRow];
             this.emitUpdate();
         },
 
         removeSelected() {
-            this.val = this.val.filter(row => !this.selected.includes(row));
+            // Create new array for proper reactivity
+            const filteredData = this.val.filter(row => !this.selected.includes(row));
+            this.val = filteredData;
             this.selected = [];
             this.emitUpdate();
         },
 
         updateTableData(data) {
-            this.val = Array.isArray(data) ? data : [];
+            // Ensure new array reference for reactivity
+            this.val = Array.isArray(data) ? [...data] : [];
             this.emitUpdate();
         },
 

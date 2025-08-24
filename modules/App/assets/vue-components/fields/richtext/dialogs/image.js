@@ -26,7 +26,36 @@ export default {
     },
 
     methods: {
+        isValidImageUrl(url) {
+            // Allow empty URLs
+            if (!url || url.trim() === '') return true;
+            
+            // Block dangerous protocols that could execute scripts
+            const dangerousProtocols = ['javascript:', 'data:text/html', 'vbscript:'];
+            const lowerUrl = url.toLowerCase().trim();
+            
+            for (const protocol of dangerousProtocols) {
+                if (lowerUrl.startsWith(protocol)) {
+                    return false;
+                }
+            }
+            
+            // Allow data URIs for images only (not HTML/JS)
+            if (lowerUrl.startsWith('data:')) {
+                const allowedDataTypes = ['data:image/jpeg', 'data:image/jpg', 'data:image/png', 'data:image/gif', 'data:image/webp', 'data:image/svg'];
+                return allowedDataTypes.some(type => lowerUrl.startsWith(type));
+            }
+            
+            return true;
+        },
+        
         save() {
+            // Validate image URL before saving
+            if (!this.isValidImageUrl(this.src)) {
+                App.ui.notify('Invalid or potentially dangerous image URL', 'error');
+                return;
+            }
+            
             this.$call('save', {
                 src: this.src,
                 alt: this.alt,

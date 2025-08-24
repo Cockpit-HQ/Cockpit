@@ -89,7 +89,7 @@ export default {
 
     mounted() {
 
-        let observer = new IntersectionObserver((entries, observer) => {
+        this.observer = new IntersectionObserver((entries, observer) => {
             entries.forEach(entry => {
                 if (entry.intersectionRatio > 0 && this.editor) {
                     this.editor.refresh()
@@ -97,7 +97,7 @@ export default {
             });
         }, {root: this.$el.parentNode});
 
-        observer.observe(this.$el);
+        this.observer.observe(this.$el);
 
         ready.then(CodeMirror => {
 
@@ -143,6 +143,20 @@ export default {
                 this.$el.dispatchEvent(new Event('focusout', { bubbles: true, cancelable: true }));
             });
         })
+    },
+
+    beforeUnmount() {
+        // Cleanup IntersectionObserver to prevent memory leak
+        if (this.observer) {
+            this.observer.disconnect();
+            this.observer = null;
+        }
+        
+        // Cleanup CodeMirror editor
+        if (this.editor) {
+            this.editor.toTextArea();
+            this.editor = null;
+        }
     },
 
     methods: {

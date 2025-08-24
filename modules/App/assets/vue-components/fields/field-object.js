@@ -77,8 +77,17 @@ export default {
             }
 
             this.val = JSON5.stringify(val, null, 2);
+            this.error = null;
 
-        } catch (e) {}
+        } catch (e) {
+            // Handle parse errors gracefully
+            if (this.modelValue) {
+                // If we can't parse it, show the raw value
+                this.val = typeof this.modelValue === 'string' ? this.modelValue : JSON.stringify(this.modelValue);
+                this.error = `Failed to parse: ${e.message}`;
+                console.warn('field-object: Failed to parse initial value:', e);
+            }
+        }
     },
 
     methods: {
@@ -96,9 +105,21 @@ export default {
                 let val = JSON5.parse(this.val);
 
                 this.$emit('update:modelValue', this.asString ? this.val : val);
+                this.error = null;
 
             } catch (e) {
-                this.error = `${e.lineNumber}: ${e.message}`;
+                // Provide more helpful error messages
+                const lineNumber = e.lineNumber || 'Unknown line';
+                const message = e.message || 'Invalid JSON5 syntax';
+                this.error = `${lineNumber}: ${message}`;
+                
+                // Log detailed error for debugging
+                console.error('field-object: JSON5 parse error:', {
+                    error: e,
+                    value: this.val,
+                    lineNumber,
+                    message
+                });
             }
         }
     },

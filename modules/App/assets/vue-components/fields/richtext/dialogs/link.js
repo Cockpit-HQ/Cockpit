@@ -25,7 +25,28 @@ export default {
     },
 
     methods: {
+        isValidUrl(url) {
+            // Allow empty URLs
+            if (!url || url.trim() === '') return true;
+
+            // Block dangerous protocols
+            const dangerousProtocols = ['javascript:', 'data:', 'vbscript:'];
+            const lowerUrl = url.toLowerCase().trim();
+
+            for (const protocol of dangerousProtocols) {
+                if (lowerUrl.startsWith(protocol)) return false;
+            }
+
+            return true;
+        },
+
         save() {
+            // Validate URL before saving
+            if (!this.isValidUrl(this.href)) {
+                App.ui.notify('Invalid or potentially dangerous URL', 'error');
+                return;
+            }
+
             this.$call('save', {
                 href: this.href,
                 title: this.title,
