@@ -1,5 +1,7 @@
 export default {
 
+    emits: [],
+
     data() {
         return {
             terminal: null,
@@ -27,6 +29,9 @@ export default {
             'system:assets/vendor/xterm/xterm-addon-fit.js',
             'system:assets/vendor/xterm/xterm.css',
         ], this.initializeTerminal, this.handleError);
+        
+        // Track paste event listener
+        this.pasteEventListener = null;
     },
 
     methods: {
@@ -105,7 +110,7 @@ export default {
             this.terminal.focus();
 
             // Handle paste events
-            this.$refs.terminal.addEventListener('paste', (e) => {
+            this.pasteEventListener = (e) => {
                 e.preventDefault();
                 const text = e.clipboardData.getData('text');
                 if (text) {
@@ -113,7 +118,8 @@ export default {
                     this.cursorIndex += text.length;
                     this.updateInput();
                 }
-            });
+            };
+            this.$refs.terminal.addEventListener('paste', this.pasteEventListener);
         },
 
         handleTerminalInput(e) {
@@ -262,18 +268,51 @@ export default {
             try {
                 const saved = localStorage.getItem(this.historyStorageKey);
                 if (saved) {
-                    this.commandHistory = JSON.parse(saved);
-                    this.historyIndex = this.commandHistory.length;
+                    const parsed = JSON.parse(saved);
+                    if (Array.isArray(parsed)) {
+                        this.commandHistory = parsed.filter(cmd => typeof cmd === 'string');
+                        this.historyIndex = this.commandHistory.length;
+                    } else {
+                        this.commandHistory = [];
+                        this.historyIndex = 0;
+                    }
                 }
             } catch (err) {
                 console.warn('Failed to load command history:', err);
                 this.commandHistory = [];
+                this.historyIndex = 0;
+                // Try to clear corrupted data
+                try {
+                    localStorage.removeItem(this.historyStorageKey);
+                } catch (e) {
+                    // Ignore if we can't clear it
+                }
             }
         },
 
         saveCommandHistory() {
             try {
-                localStorage.setItem(this.historyStorageKey, JSON.stringify(this.commandHistory));
+                // Check if localStorage is available and has space
+                if (!window.localStorage) {
+                    return;
+                }
+                
+                const data = JSON.stringify(this.commandHistory);
+                
+                // Try to save, handle quota exceeded
+                try {
+                    localStorage.setItem(this.historyStorageKey, data);
+                } catch (e) {
+                    if (e.name === 'QuotaExceededError') {
+                        // Remove oldest entries and try again
+                        const reducedHistory = this.commandHistory.slice(-Math.floor(this.maxHistorySize / 2));
+                        localStorage.setItem(this.historyStorageKey, JSON.stringify(reducedHistory));
+                        this.commandHistory = reducedHistory;
+                        this.historyIndex = this.commandHistory.length;
+                    } else {
+                        throw e;
+                    }
+                }
             } catch (err) {
                 console.warn('Failed to save command history:', err);
             }
@@ -305,13 +344,27 @@ export default {
         }
     },
 
-    beforeDestroy() {
+    beforeUnmount() {
+        // Clean up event listeners
         if (this.resizeHandler) {
             window.removeEventListener('resize', this.resizeHandler);
+            this.resizeHandler = null;
         }
+        
+        // Clean up paste event listener
+        if (this.pasteEventListener && this.$refs.terminal) {
+            this.$refs.terminal.removeEventListener('paste', this.pasteEventListener);
+            this.pasteEventListener = null;
+        }
+        
+        // Dispose terminal
         if (this.terminal) {
             this.terminal.dispose();
+            this.terminal = null;
         }
+        
+        // Save command history before unmounting
+        this.saveCommandHistory();
     },
 
     template: /*html*/`
