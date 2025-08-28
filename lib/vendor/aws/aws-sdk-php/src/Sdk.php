@@ -568,10 +568,6 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionOpenSearchServerless(array $args = [])
  * @method \Aws\OpenSearchService\OpenSearchServiceClient createOpenSearchService(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionOpenSearchService(array $args = [])
- * @method \Aws\OpsWorks\OpsWorksClient createOpsWorks(array $args = [])
- * @method \Aws\MultiRegionClient createMultiRegionOpsWorks(array $args = [])
- * @method \Aws\OpsWorksCM\OpsWorksCMClient createOpsWorksCM(array $args = [])
- * @method \Aws\MultiRegionClient createMultiRegionOpsWorksCM(array $args = [])
  * @method \Aws\Organizations\OrganizationsClient createOrganizations(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionOrganizations(array $args = [])
  * @method \Aws\Outposts\OutpostsClient createOutposts(array $args = [])
@@ -837,7 +833,7 @@ namespace Aws;
  */
 class Sdk
 {
-    const VERSION = '3.356.3';
+    const VERSION = '3.356.6';
 
     /** @var array Arguments for creating clients */
     private $args;
