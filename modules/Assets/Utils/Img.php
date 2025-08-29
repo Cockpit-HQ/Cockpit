@@ -100,6 +100,10 @@ class Img {
         return $this->image->thumbnail($width, $height, $anchor);
     }
 
+    public function fitToHeight(int $height) {
+        return $this->image->resize(null, $height);
+    }
+
     public function __call($method, $args) {
 
         $ret = \call_user_func_array([$this->image, $method], $args);
