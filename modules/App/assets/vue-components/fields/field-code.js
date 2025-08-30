@@ -151,10 +151,12 @@ export default {
             this.observer.disconnect();
             this.observer = null;
         }
-        
+
         // Cleanup CodeMirror editor
         if (this.editor) {
-            this.editor.toTextArea();
+            try {
+                this.editor.toTextArea();
+            } catch (error) {}
             this.editor = null;
         }
     },

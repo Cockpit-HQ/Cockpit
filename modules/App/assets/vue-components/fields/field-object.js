@@ -112,7 +112,7 @@ export default {
                 const lineNumber = e.lineNumber || 'Unknown line';
                 const message = e.message || 'Invalid JSON5 syntax';
                 this.error = `${lineNumber}: ${message}`;
-                
+
                 // Log detailed error for debugging
                 console.error('field-object: JSON5 parse error:', {
                     error: e,
