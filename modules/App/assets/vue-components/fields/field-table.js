@@ -90,7 +90,7 @@ export default {
                 }
             ];
 
-            this.columns.forEach(col => {
+            (Array.isArray(this.columns) ? this.columns : []).forEach(col => {
 
                 cols.push({
                     field: col.name,
@@ -109,7 +109,7 @@ export default {
 
         addRow() {
             const newRow = {};
-            this.columns.forEach(col => newRow[col.name] = null);
+            (Array.isArray(this.columns) ? this.columns : []).forEach(col => newRow[col.name] = null);
             // Use spread operator for proper reactivity
             this.val = [...this.val, newRow];
             this.emitUpdate();
