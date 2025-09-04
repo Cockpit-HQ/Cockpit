@@ -17,6 +17,7 @@ AddDefaultCharset UTF-8
     # Protect some contents
     RewriteRule (^|/)\.(?!spaces|well-known\/) - [F,L]
     RewriteRule \.(sqlite|sdb|s3db|db|yaml|yml|env|lic)$ - [F,L]
+    RewriteRule (tower|bootstrap.php|composer.json|composer.lock|package.json|package-lock.json)$ - [F,L]
     RewriteRule (config|modules|addons|lib)\/(.*)\.php$ - [F,L]
 
     # map spaces :{space} to .spaces/{space}
