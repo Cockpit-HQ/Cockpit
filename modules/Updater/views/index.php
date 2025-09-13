@@ -23,7 +23,7 @@
                         <kiss-card class="kiss-padding-larger">
                             <div>
                                 <div class="kiss-text-light kiss-size-4 kiss-color-muted kiss-margin-small">
-                                    Current
+                                    <?=t('Current')?>
                                 </div>
                                 <div class="kiss-size-xlarge kiss-text-light"><?=APP_VERSION?></div>
                             </div>
@@ -32,9 +32,9 @@
                         <kiss-card class="kiss-padding-larger" theme="contrast">
                             <div class="kiss-overlay-input">
                                 <div class="kiss-text-light kiss-size-4 kiss-color-muted kiss-margin-small">
-                                    Target
+                                    <?=t('Target')?>
                                 </div>
-                                <div class="kiss-size-xlarge kiss-text-light" :class="{'kiss-color-muted':!selectedVersion}">{{ selectedVersion ? (selectedVersion == 'develop' ? 'Develop':'<?=$meta['version']?>') : 'Select...' }}</div>
+                                <div class="kiss-size-xlarge kiss-text-light" :class="{'kiss-color-muted':!selectedVersion}">{{ selectedVersion ? (selectedVersion == 'develop' ? 'Develop':'<?=$meta['version']?>') : t('Select...') }}</div>
                                 <select v-model="selectedVersion">
                                     <option :value="null"><?=t('Select version...')?></option>
                                     <hr>

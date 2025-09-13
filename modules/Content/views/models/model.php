@@ -122,7 +122,7 @@
                             </div>
 
                         </tab>
-                        <tab :caption="'Other'">
+                        <tab :caption="t('Other')">
 
                             <div class="kiss-flex">
                                 <div class="kiss-flex-1">

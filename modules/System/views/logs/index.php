@@ -41,20 +41,20 @@
 
                     <div class="kiss-flex kiss-flex-middle kiss-margin-bottom" gap="small">
                         <div :class="{'kiss-color-muted':!selectedChannel, 'kiss-color-primary':selectedChannel}"><kiss-svg :src="$baseUrl(selectedChannel ? channels[selectedChannel].icon : 'system:assets/icons/logging.svg')" width="40" height="40"><canvas width="40" height="40"></canvas></kiss-svg></div>
-                        <div class="kiss-size-4 kiss-text-light kiss-flex-1">{{ (selectedChannel && channels[selectedChannel].label) || 'All' }}</div>
+                        <div class="kiss-size-4 kiss-text-light kiss-flex-1">{{ t((selectedChannel && channels[selectedChannel].label) || 'All') }}</div>
                     </div>
 
                     <div class="kiss-flex kiss-flex-middle kiss-margin">
 
-                        <button class="kiss-button kiss-button-small kiss-margin-small-right" :class="{'kiss-button-primary': !selectedTypes.length}" @click="selectedTypes = []">All</button>
+                        <button class="kiss-button kiss-button-small kiss-margin-small-right" :class="{'kiss-button-primary': !selectedTypes.length}" @click="selectedTypes = []"><?=t('All')?></button>
 
                         <div class="kiss-button-group">
-                            <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': selectedTypes.indexOf('alert') > -1}" @click="toggleType('alert')">Alert</button>
-                            <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': selectedTypes.indexOf('debug') > -1}" @click="toggleType('debug')">Debug</button>
-                            <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': selectedTypes.indexOf('error') > -1}" @click="toggleType('error')">Error</button>
-                            <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': selectedTypes.indexOf('info') > -1}" @click="toggleType('info')">Info</button>
-                            <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': selectedTypes.indexOf('notice') > -1}" @click="toggleType('notice')">Notice</button>
-                            <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': selectedTypes.indexOf('warning') > -1}" @click="toggleType('warning')">Warning</button>
+                            <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': selectedTypes.indexOf('alert') > -1}" @click="toggleType('alert')"><?=t('Alert')?></button>
+                            <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': selectedTypes.indexOf('debug') > -1}" @click="toggleType('debug')"><?=t('Debug')?></button>
+                            <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': selectedTypes.indexOf('error') > -1}" @click="toggleType('error')"><?=t('Error')?></button>
+                            <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': selectedTypes.indexOf('info') > -1}" @click="toggleType('info')"><?=t('Info')?></button>
+                            <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': selectedTypes.indexOf('notice') > -1}" @click="toggleType('notice')"><?=t('Notice')?></button>
+                            <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': selectedTypes.indexOf('warning') > -1}" @click="toggleType('warning')"><?=t('Warning')?></button>
                         </div>
                     </div>
 
@@ -74,10 +74,10 @@
                     <table class="kiss-table animated fadeIn" v-if="!loading && items.length">
                         <thead>
                             <tr>
-                                <th width="30">Type</th>
-                                <th width="100">Date</th>
-                                <th width="25" v-if="!selectedChannel">Channel</th>
-                                <th>Message</th>
+                                <th width="30"><?=t('Type')?></th>
+                                <th width="100"><?=t('Date')?></th>
+                                <th width="25" v-if="!selectedChannel"><?=t('Channel')?></th>
+                                <th><?=t('Message')?></th>
                                 <th width="25"></th>
                             </tr>
                         </thead>
@@ -97,7 +97,7 @@
 
                     <kiss-navlist>
                         <ul>
-                            <li class="kiss-nav-header kiss-padding-small">Channels</li>
+                            <li class="kiss-nav-header kiss-padding-small"><?=t('Channels')?></li>
                             <li>
                                 <kiss-card class="kiss-padding-small" :theme="!selectedChannel && 'bordered contrast'">
                                     <a class="kiss-display-block" @click="selectedChannel = null" :class="!selectedChannel ? 'kiss-text-bold kiss-color-primary':'kiss-color-muted'">{{ t('All') }}</a>
@@ -106,7 +106,7 @@
                             <li class="kiss-nav-divider"></li>
                             <li v-for="channel in sortedChannels">
                                 <kiss-card class="kiss-flex kiss-flex-middle kiss-padding-small" :theme="selectedChannel == channel.name && 'bordered contrast'">
-                                    <a class="kiss-flex-1" @click="selectedChannel = channel.name" :class="selectedChannel == channel.name ? 'kiss-text-bold kiss-color-primary':'kiss-color-muted'">{{ channel.label}}</a>
+                                    <a class="kiss-flex-1" @click="selectedChannel = channel.name" :class="selectedChannel == channel.name ? 'kiss-text-bold kiss-color-primary':'kiss-color-muted'">{{ t(channel.label) }}</a>
                                     <div class="kiss-margin-xsmall-left" v-if="selectedChannel == channel.name">
                                         <kiss-svg class="kiss-color-muted" :src="$baseUrl(channel.icon)" width="20" height="20"><canvas width="20" height="20"></canvas></kiss-svg>
                                     </div>

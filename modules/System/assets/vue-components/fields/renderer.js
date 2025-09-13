@@ -248,10 +248,10 @@ export let FieldRenderer = {
                             <kiss-svg class="kiss-color-primary" :src="$baseUrl(fieldItem.meta.icon || 'system:assets/icons/edit.svg')" width="50" height="50"></kiss-svg>
                         </div>
                         <div class="kiss-flex-1 kiss-margin-left">
-                            <span class="kiss-size-xsmall kiss-color-muted kiss-text-upper">{{ fieldItem.field.type }}</span>
+                            <span class="kiss-size-xsmall kiss-color-muted kiss-text-upper">{{ t(fieldItem.field.type) }}</span>
                             <kiss-row class="kiss-flex-middle">
                                 <div class="kiss-size-4 kiss-flex-1">
-                                    <strong class="kiss-text-capitalize">{{ field.label || field.name}}</strong>
+                                    <strong class="kiss-text-capitalize">{{ t(field.label || field.name) }}</strong>
                                     <span class="kiss-color-muted kiss-text-light kiss-margin-small-left">{{ fieldItem.create ? t('Add item'):t('Update item') }}</span>
                                 </div>
                             </kiss-row>
@@ -573,7 +573,7 @@ export default {
                 <div>
                     <div class="kiss-flex kiss-flex-middle" gap="small">
                         <label class="fields-renderer-field kiss-text-capitalize kiss-flex kiss-flex-middle kiss-flex-1" gap="xsmall">
-                            <div>{{field.label || field.name}}</div>
+                            <div>{{t(field.label || field.name)}}</div>
                             <icon class="kiss-size-5 kiss-color-muted" v-if="field.i18n && locales.length" :title="t('Localized')">language</icon>
                             <icon class="kiss-size-5 kiss-color-danger" v-if="field.required" :title="t('Required')">trip_origin</icon>
                         </label>
