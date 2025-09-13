@@ -301,8 +301,8 @@ let FieldsManager = {
                                     <img :src="$baseUrl(fieldTypes?.[field.type]?.icon ?? 'system:assets/icons/edit.svg')" width="20" height="20">
                                 </div>
                                 <div>
-                                    <div class="kiss-text-bold kiss-size-small">{{ fieldTypes?.[field.type]?.label ?? field.type }}</div>
-                                    <div class="kiss-color-muted kiss-size-xsmall">{{ fieldTypes?.[field.type]?.info ?? '' }}</div>
+                                    <div class="kiss-text-bold kiss-size-small">{{ t(fieldTypes?.[field.type]?.label ?? field.type) }}</div>
+                                    <div class="kiss-color-muted kiss-size-xsmall">{{ t(fieldTypes?.[field.type]?.info) ?? '' }}</div>
                                 </div>
                                 <a class="kiss-cover" :kiss-popout="'#'+uid+'-fieldtype-selector'"></a>
                             </kiss-card>
@@ -341,7 +341,7 @@ let FieldsManager = {
 
                                 <div class="kiss-margin-bottom kiss-flex kiss-flex-right" v-if="fieldTypes[field.type] && fieldTypes[field.type].settings">
                                     <div class="kiss-button-group">
-                                        <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': state.optionsView != 'json'}" @click="state.optionsView = 'form'" type="button">Fields</button>
+                                        <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': state.optionsView != 'json'}" @click="state.optionsView = 'form'" type="button">{{t('Fields')}}</button>
                                         <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': state.optionsView === 'json'}" @click="state.optionsView = 'json'" type="button">JSON</button>
                                     </div>
                                 </div>
@@ -403,8 +403,8 @@ let FieldsManager = {
                                         </div>
                                     </div>
                                     <div class="kiss-flex-1">
-                                        <strong class="kiss-size-small">{{ f.label || fieldTypeName }}</strong>
-                                        <div class="kiss-color-muted kiss-size-xsmall">{{ f.info || '' }}</div>
+                                        <strong class="kiss-size-small">{{ t(f.label || fieldTypeName) }}</strong>
+                                        <div class="kiss-color-muted kiss-size-xsmall">{{ t(f.info) || '' }}</div>
                                     </div>
                                     <a class="kiss-cover" @click="setFieldType(fieldTypeName)"></a>
                                 </kiss-row>

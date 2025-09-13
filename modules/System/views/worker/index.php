@@ -59,28 +59,28 @@
             <kiss-grid class="kiss-margin" cols="2 4@m" :class="{'kiss-disabled': loading}" v-if="stats">
                 <kiss-card class="kiss-padding kiss-position-relative" :theme="status === 'pending' ? 'contrast bordered-primary' : 'bordered'" :class="{'kiss-color-muted': status !== 'pending'}">
 
-                    <div class="kiss-text-caption kiss-text-bold">Pending</div>
+                    <div class="kiss-text-caption kiss-text-bold"><?= t('Pending') ?></div>
                     <div class="kiss-size-1 kiss-text-monospace kiss-margin-small">{{ stats.pending || 0}}</div>
                     <a class="kiss-cover" @click="status='pending'"></a>
 
                 </kiss-card>
                 <kiss-card class="kiss-padding kiss-position-relative" :theme="status === 'completed' ? 'contrast bordered-primary' : 'bordered'" :class="{'kiss-color-muted': status !== 'completed'}">
 
-                    <div class="kiss-text-caption kiss-text-bold">Completed</div>
+                    <div class="kiss-text-caption kiss-text-bold"><?= t('Completed') ?></div>
                     <div class="kiss-size-1 kiss-text-monospace kiss-margin-small">{{ stats.completed || 0}}</div>
                     <a class="kiss-cover" @click="status='completed'"></a>
 
                 </kiss-card>
                 <kiss-card class="kiss-padding kiss-position-relative" :theme="status === 'reserved' ? 'contrast bordered-primary' : 'bordered'" :class="{'kiss-color-muted': status !== 'reserved'}">
 
-                    <div class="kiss-text-caption kiss-text-bold">Reserved</div>
+                    <div class="kiss-text-caption kiss-text-bold"><?= t('Reserved') ?></div>
                     <div class="kiss-size-1 kiss-text-monospace kiss-margin-small">{{ stats.reserved || 0}}</div>
                     <a class="kiss-cover" @click="status='reserved'"></a>
 
                 </kiss-card>
                 <kiss-card class="kiss-padding kiss-position-relative" :theme="status === 'failed' ? 'contrast bordered-primary' : 'bordered'" :class="{'kiss-color-muted': status !== 'failed'}">
 
-                    <div class="kiss-text-caption kiss-text-bold">Failed</div>
+                    <div class="kiss-text-caption kiss-text-bold"><?= t('Failed') ?></div>
                     <div class="kiss-size-1 kiss-text-monospace kiss-margin-small">{{ stats.failed || 0}}</div>
                     <a class="kiss-cover" @click="status='failed'"></a>
 
@@ -115,7 +115,7 @@
 
                 <div class="kiss-flex kiss-flex-middle" gap="small">
                     <icon class="kiss-size-4">playlist_play</icon>
-                    <div class="kiss-text-caption kiss-text-bold">Jobs</div>
+                    <div class="kiss-text-caption kiss-text-bold"><?=t('Jobs')?></div>
                 </div>
 
                 <kiss-card class="kiss-padding-small kiss-flex kiss-flex-middle kiss-margin-small" theme="contrast shadowed" hover="bordered-primary" gap="small" v-for="job in jobs" :key="job._id">
