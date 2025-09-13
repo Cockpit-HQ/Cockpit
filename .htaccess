@@ -15,10 +15,16 @@ AddDefaultCharset UTF-8
     # RewriteBase /
 
     # Protect some contents
+    # Block access to all dotfiles except .spaces and .well-known/
     RewriteRule (^|/)\.(?!spaces|well-known\/) - [F,L]
-    RewriteRule \.(sqlite|sdb|s3db|db|yaml|yml|env|lic)$ - [F,L]
-    RewriteRule (tower|bootstrap.php|composer.json|composer.lock|package.json|package-lock.json)$ - [F,L]
-    RewriteRule (config|modules|addons|lib)\/(.*)\.php$ - [F,L]
+    # Block access to sensitive file extensions
+    RewriteRule \.(?:sqlite|sdb|s3db|db|yaml|yml|env|lic)$ - [F,L]
+    # Block direct access to the tower cli
+    RewriteRule ^tower$ - [F,L]
+    # Block access to sensitive config and package files
+    RewriteRule (?:bootstrap\.php|composer\.json|composer\.lock|package\.json|package-lock\.json)$ - [F,L]
+    # Block direct access to PHP files in config, modules, addons, and lib folders
+    RewriteRule (?:config|modules|addons|lib)/(.*)\.php$ - [F,L]
 
     # map spaces :{space} to .spaces/{space}
     RewriteRule ^:(.+)/storage/(.*)$ .spaces/$1/storage/$2 [L]
