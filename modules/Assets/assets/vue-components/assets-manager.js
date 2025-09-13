@@ -23,7 +23,7 @@ export default {
             limit: App.storage.get('assets.manager.limit', 15),
 
             sort: App.storage.get('assets.manager.sort', {_created: -1}),
-            sortOptions: {title: 'Title', _created: 'Created', size: 'Size'},
+            sortOptions: {title: 'Title', _created: App.i18n.get('Created'), size: 'Size'},
 
             view: App.session.get('assets.manager.view', 'cards'),
 

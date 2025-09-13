@@ -37,7 +37,7 @@ customElements.define('app-tags', class extends HTMLElement {
     }
 
     get placeholder() {
-        return this.getAttribute('placeholder') || 'Type and press Enter to add tags';
+        return this.getAttribute('placeholder') || App.i18n.get('Type and press Enter to add tags');
     }
 
     get strictMode() {

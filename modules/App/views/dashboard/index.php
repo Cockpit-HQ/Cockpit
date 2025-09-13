@@ -41,7 +41,7 @@
 
                 <kiss-card class="kiss-padding-large kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-visible@m" :class="widgets.length  ? 'kiss-height-30vh' : 'kiss-height-50vh'" :theme="widgets.length ? 'contrast shadowed':''">
                     <div class="animated fadeInUp">
-                        <div class="kiss-size-xlarge kiss-margin-small"><?=_t('Hello %s', [$this->escape($this['user/name'])])?></div>
+                        <div class="kiss-size-xlarge kiss-margin-small"><?=_t('Hello, %s', [$this->escape($this['user/name'])])?></div>
                         <div class="kiss-color-muted kiss-size-1 kiss-text-light animated fadeIn delay-1s"><?=t("Excited for your creations today!")?></div>
                     </div>
                 </kiss-card>
