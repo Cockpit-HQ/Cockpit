@@ -324,6 +324,7 @@ return array(
     'Aws\\Token\\TokenAuthorization' => $vendorDir . '/aws/aws-sdk-php/src/Token/TokenAuthorization.php',
     'Aws\\Token\\TokenInterface' => $vendorDir . '/aws/aws-sdk-php/src/Token/TokenInterface.php',
     'Aws\\Token\\TokenProvider' => $vendorDir . '/aws/aws-sdk-php/src/Token/TokenProvider.php',
+    'Aws\\Token\\TokenSource' => $vendorDir . '/aws/aws-sdk-php/src/Token/TokenSource.php',
     'Aws\\TraceMiddleware' => $vendorDir . '/aws/aws-sdk-php/src/TraceMiddleware.php',
     'Aws\\UserAgentMiddleware' => $vendorDir . '/aws/aws-sdk-php/src/UserAgentMiddleware.php',
     'Aws\\Waiter' => $vendorDir . '/aws/aws-sdk-php/src/Waiter.php',
