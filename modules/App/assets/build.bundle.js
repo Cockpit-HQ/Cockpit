@@ -24,10 +24,18 @@ postcss()
         fs.writeFileSync(__dirname + '/app.bundle.css', result.css)
     })
 
-exec(`rollup ${__dirname}/js/app.js --file ${__dirname}/app.bundle.js  --plugin @rollup/plugin-terser --format iife`, (err, stdout, stderr) => {
+const execFile = require('child_process').execFile;
 
+const rollupArgs = [
+    `${__dirname}/js/app.js`,
+    '--file', `${__dirname}/app.bundle.js`,
+    '--plugin', '@rollup/plugin-terser',
+    '--format', 'iife'
+];
+
+execFile('rollup', rollupArgs, (err, stdout, stderr) => {
     if (err) {
-        console.log(err)
+        console.log(err);
         return;
     }
 
