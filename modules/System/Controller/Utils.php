@@ -85,7 +85,7 @@ class Utils extends App {
 
                 $icons[] = [
                     'name' => $f->getBasename('.svg'),
-                    'path' => $p.str_replace($path, '', $f->getRealPath()),
+                    'path' => $p.str_replace([DIRECTORY_SEPARATOR, $path], ['/', ''], $f->getPathname()),
                 ];
             }
 
