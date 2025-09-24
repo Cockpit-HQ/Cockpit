@@ -19,6 +19,7 @@ class ComposerStaticInit31271496217d24f755014bacdfefaaf2
         'decc78cc4436b1292c6c0d151b19445c' => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib/bootstrap.php',
         '0d59ee240a4cd96ddbb4ff164fccea4d' => __DIR__ . '/..' . '/symfony/polyfill-php73/bootstrap.php',
         'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
+        '606a39d89246991a373564698c2d8383' => __DIR__ . '/..' . '/symfony/polyfill-php85/bootstrap.php',
         'b6b991a57620e2fb6b2f66f03fe9ddc2' => __DIR__ . '/..' . '/symfony/string/Resources/functions.php',
         '7aed44d824e149ce152c0fb82af9379a' => __DIR__ . '/..' . '/colinodell/json5/src/global.php',
         '3a37ebac017bc098e9a86b35401e7a68' => __DIR__ . '/..' . '/mongodb/mongodb/src/functions.php',
@@ -36,6 +37,7 @@ class ComposerStaticInit31271496217d24f755014bacdfefaaf2
         ),
         'S' => 
         array (
+            'Symfony\\Polyfill\\Php85\\' => 23,
             'Symfony\\Polyfill\\Php84\\' => 23,
             'Symfony\\Polyfill\\Php80\\' => 23,
             'Symfony\\Polyfill\\Php73\\' => 23,
@@ -124,6 +126,10 @@ class ComposerStaticInit31271496217d24f755014bacdfefaaf2
         'ZipStream\\' => 
         array (
             0 => __DIR__ . '/..' . '/maennchen/zipstream-php/src',
+        ),
+        'Symfony\\Polyfill\\Php85\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-php85',
         ),
         'Symfony\\Polyfill\\Php84\\' => 
         array (
@@ -1559,6 +1565,7 @@ class ComposerStaticInit31271496217d24f755014bacdfefaaf2
         'MongoDB\\BulkWriteResult' => __DIR__ . '/..' . '/mongodb/mongodb/src/BulkWriteResult.php',
         'MongoDB\\ChangeStream' => __DIR__ . '/..' . '/mongodb/mongodb/src/ChangeStream.php',
         'MongoDB\\Client' => __DIR__ . '/..' . '/mongodb/mongodb/src/Client.php',
+        'MongoDB\\ClientBulkWrite' => __DIR__ . '/..' . '/mongodb/mongodb/src/ClientBulkWrite.php',
         'MongoDB\\Codec\\Codec' => __DIR__ . '/..' . '/mongodb/mongodb/src/Codec/Codec.php',
         'MongoDB\\Codec\\DecodeIfSupported' => __DIR__ . '/..' . '/mongodb/mongodb/src/Codec/DecodeIfSupported.php',
         'MongoDB\\Codec\\Decoder' => __DIR__ . '/..' . '/mongodb/mongodb/src/Codec/Decoder.php',
@@ -1604,6 +1611,7 @@ class ComposerStaticInit31271496217d24f755014bacdfefaaf2
         'MongoDB\\Model\\SearchIndexInput' => __DIR__ . '/..' . '/mongodb/mongodb/src/Model/SearchIndexInput.php',
         'MongoDB\\Operation\\Aggregate' => __DIR__ . '/..' . '/mongodb/mongodb/src/Operation/Aggregate.php',
         'MongoDB\\Operation\\BulkWrite' => __DIR__ . '/..' . '/mongodb/mongodb/src/Operation/BulkWrite.php',
+        'MongoDB\\Operation\\ClientBulkWriteCommand' => __DIR__ . '/..' . '/mongodb/mongodb/src/Operation/ClientBulkWriteCommand.php',
         'MongoDB\\Operation\\Count' => __DIR__ . '/..' . '/mongodb/mongodb/src/Operation/Count.php',
         'MongoDB\\Operation\\CountDocuments' => __DIR__ . '/..' . '/mongodb/mongodb/src/Operation/CountDocuments.php',
         'MongoDB\\Operation\\CreateCollection' => __DIR__ . '/..' . '/mongodb/mongodb/src/Operation/CreateCollection.php',
@@ -1662,6 +1670,7 @@ class ComposerStaticInit31271496217d24f755014bacdfefaaf2
         'MongoLite\\Database' => __DIR__ . '/../../..' . '/lib/MongoLite/Database.php',
         'MongoLite\\Projection' => __DIR__ . '/../../..' . '/lib/MongoLite/Projection.php',
         'MongoLite\\UtilArrayQuery' => __DIR__ . '/../../..' . '/lib/MongoLite/UtilArrayQuery.php',
+        'NoDiscard' => __DIR__ . '/..' . '/symfony/polyfill-php85/Resources/stubs/NoDiscard.php',
         'Normalizer' => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer/Resources/stubs/Normalizer.php',
         'OpenApi\\Analysers\\AnalyserInterface' => __DIR__ . '/..' . '/zircote/swagger-php/src/Analysers/AnalyserInterface.php',
         'OpenApi\\Analysers\\AnnotationFactoryInterface' => __DIR__ . '/..' . '/zircote/swagger-php/src/Analysers/AnnotationFactoryInterface.php',
@@ -2067,6 +2076,7 @@ class ComposerStaticInit31271496217d24f755014bacdfefaaf2
         'Symfony\\Polyfill\\Php80\\Php80' => __DIR__ . '/..' . '/symfony/polyfill-php80/Php80.php',
         'Symfony\\Polyfill\\Php80\\PhpToken' => __DIR__ . '/..' . '/symfony/polyfill-php80/PhpToken.php',
         'Symfony\\Polyfill\\Php84\\Php84' => __DIR__ . '/..' . '/symfony/polyfill-php84/Php84.php',
+        'Symfony\\Polyfill\\Php85\\Php85' => __DIR__ . '/..' . '/symfony/polyfill-php85/Php85.php',
         'Thumbhash' => __DIR__ . '/../../..' . '/lib/Thumbhash.php',
         'TokenVerificationTest' => __DIR__ . '/..' . '/jumbojett/openid-connect-php/tests/TokenVerificationTest.php',
         'UnhandledMatchError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/UnhandledMatchError.php',

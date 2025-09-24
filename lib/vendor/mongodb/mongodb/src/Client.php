@@ -24,6 +24,8 @@ use MongoDB\BSON\PackedArray;
 use MongoDB\Builder\BuilderEncoder;
 use MongoDB\Builder\Pipeline;
 use MongoDB\Codec\Encoder;
+use MongoDB\Driver\BulkWriteCommand;
+use MongoDB\Driver\BulkWriteCommandResult;
 use MongoDB\Driver\ClientEncryption;
 use MongoDB\Driver\Exception\InvalidArgumentException as DriverInvalidArgumentException;
 use MongoDB\Driver\Exception\RuntimeException as DriverRuntimeException;
@@ -39,6 +41,7 @@ use MongoDB\Exception\UnsupportedException;
 use MongoDB\Model\BSONArray;
 use MongoDB\Model\BSONDocument;
 use MongoDB\Model\DatabaseInfo;
+use MongoDB\Operation\ClientBulkWriteCommand;
 use MongoDB\Operation\DropDatabase;
 use MongoDB\Operation\ListDatabaseNames;
 use MongoDB\Operation\ListDatabases;
@@ -78,6 +81,8 @@ class Client
     private readonly Encoder $builderEncoder;
 
     private WriteConcern $writeConcern;
+
+    private bool $autoEncryptionEnabled;
 
     /**
      * Constructs a new Client instance.
@@ -130,6 +135,11 @@ class Client
         $this->uri = $uri ?? self::DEFAULT_URI;
         $this->builderEncoder = $driverOptions['builderEncoder'] ?? new BuilderEncoder();
         $this->typeMap = $driverOptions['typeMap'];
+
+        /* Database and Collection objects may need to know whether auto
+         * encryption is enabled for dropping collections. Track this via an
+         * internal option until PHPC-2615 is implemented. */
+        $this->autoEncryptionEnabled = isset($driverOptions['autoEncryption']['keyVaultNamespace']);
 
         $driverOptions = array_diff_key($driverOptions, ['builderEncoder' => 1, 'typeMap' => 1]);
 
@@ -190,6 +200,32 @@ class Client
     }
 
     /**
+     * Executes multiple write operations across multiple namespaces.
+     *
+     * @param BulkWriteCommand|ClientBulkWrite $bulk    Assembled bulk write command or builder
+     * @param array                            $options Additional options
+     * @throws UnsupportedException if options are unsupported on the selected server
+     * @throws InvalidArgumentException for parameter/option parsing errors
+     * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
+     * @see ClientBulkWriteCommand::__construct() for supported options
+     */
+    public function bulkWrite(BulkWriteCommand|ClientBulkWrite $bulk, array $options = []): BulkWriteCommandResult
+    {
+        if (! isset($options['writeConcern']) && ! is_in_transaction($options)) {
+            $options['writeConcern'] = $this->writeConcern;
+        }
+
+        if ($bulk instanceof ClientBulkWrite) {
+            $bulk = $bulk->bulkWriteCommand;
+        }
+
+        $operation = new ClientBulkWriteCommand($bulk, $options);
+        $server = select_server_for_write($this->manager, $options);
+
+        return $operation->execute($server);
+    }
+
+    /**
      * Returns a ClientEncryption instance for explicit encryption and decryption
      *
      * @param array $options Encryption options
@@ -241,7 +277,7 @@ class Client
      */
     public function getCollection(string $databaseName, string $collectionName, array $options = []): Collection
     {
-        $options += ['typeMap' => $this->typeMap, 'builderEncoder' => $this->builderEncoder];
+        $options += ['typeMap' => $this->typeMap, 'builderEncoder' => $this->builderEncoder, 'autoEncryptionEnabled' => $this->autoEncryptionEnabled];
 
         return new Collection($this->manager, $databaseName, $collectionName, $options);
     }
@@ -256,7 +292,7 @@ class Client
      */
     public function getDatabase(string $databaseName, array $options = []): Database
     {
-        $options += ['typeMap' => $this->typeMap, 'builderEncoder' => $this->builderEncoder];
+        $options += ['typeMap' => $this->typeMap, 'builderEncoder' => $this->builderEncoder, 'autoEncryptionEnabled' => $this->autoEncryptionEnabled];
 
         return new Database($this->manager, $databaseName, $options);
     }
