@@ -59,17 +59,17 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.356.17",
-            "version_normalized": "3.356.17.0",
+            "version": "3.356.24",
+            "version_normalized": "3.356.24.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "d0357fbe2535bb7d832e594a4ff2ff8da29d229c"
+                "reference": "d897c1345496af3440b8d8a5979d5f47cce6c433"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/d0357fbe2535bb7d832e594a4ff2ff8da29d229c",
-                "reference": "d0357fbe2535bb7d832e594a4ff2ff8da29d229c",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/d897c1345496af3440b8d8a5979d5f47cce6c433",
+                "reference": "d897c1345496af3440b8d8a5979d5f47cce6c433",
                 "shasum": ""
             },
             "require": {
@@ -109,7 +109,7 @@
                 "ext-openssl": "Allows working with CloudFront private distributions and verifying received SNS messages",
                 "ext-sockets": "To use client-side monitoring"
             },
-            "time": "2025-09-12T18:07:37+00:00",
+            "time": "2025-09-23T18:08:42+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -153,7 +153,7 @@
             "support": {
                 "forum": "https://github.com/aws/aws-sdk-php/discussions",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.356.17"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.356.24"
             },
             "install-path": "../aws/aws-sdk-php"
         },
@@ -216,17 +216,17 @@
         },
         {
             "name": "claviska/simpleimage",
-            "version": "4.2.1",
-            "version_normalized": "4.2.1.0",
+            "version": "4.3.0",
+            "version_normalized": "4.3.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/claviska/SimpleImage.git",
-                "reference": "ec6d5021e5a7153a2520d64c59b86b6f3c4157c5"
+                "reference": "b6f0950a12e8928b84475c960e46a0eb2ca45340"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/claviska/SimpleImage/zipball/ec6d5021e5a7153a2520d64c59b86b6f3c4157c5",
-                "reference": "ec6d5021e5a7153a2520d64c59b86b6f3c4157c5",
+                "url": "https://api.github.com/repos/claviska/SimpleImage/zipball/b6f0950a12e8928b84475c960e46a0eb2ca45340",
+                "reference": "b6f0950a12e8928b84475c960e46a0eb2ca45340",
                 "shasum": ""
             },
             "require": {
@@ -238,7 +238,7 @@
                 "laravel/pint": "^1.5",
                 "phpstan/phpstan": "^1.10"
             },
-            "time": "2024-11-22T13:25:03+00:00",
+            "time": "2025-09-17T20:35:09+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -260,7 +260,7 @@
             "description": "A PHP class that makes working with images as simple as possible.",
             "support": {
                 "issues": "https://github.com/claviska/SimpleImage/issues",
-                "source": "https://github.com/claviska/SimpleImage/tree/4.2.1"
+                "source": "https://github.com/claviska/SimpleImage/tree/4.3.0"
             },
             "funding": [
                 {
@@ -366,17 +366,17 @@
         },
         {
             "name": "dasprid/enum",
-            "version": "1.0.6",
-            "version_normalized": "1.0.6.0",
+            "version": "1.0.7",
+            "version_normalized": "1.0.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/DASPRiD/Enum.git",
-                "reference": "8dfd07c6d2cf31c8da90c53b83c026c7696dda90"
+                "reference": "b5874fa9ed0043116c72162ec7f4fb50e02e7cce"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/DASPRiD/Enum/zipball/8dfd07c6d2cf31c8da90c53b83c026c7696dda90",
-                "reference": "8dfd07c6d2cf31c8da90c53b83c026c7696dda90",
+                "url": "https://api.github.com/repos/DASPRiD/Enum/zipball/b5874fa9ed0043116c72162ec7f4fb50e02e7cce",
+                "reference": "b5874fa9ed0043116c72162ec7f4fb50e02e7cce",
                 "shasum": ""
             },
             "require": {
@@ -386,7 +386,7 @@
                 "phpunit/phpunit": "^7 || ^8 || ^9 || ^10 || ^11",
                 "squizlabs/php_codesniffer": "*"
             },
-            "time": "2024-08-09T14:30:48+00:00",
+            "time": "2025-09-16T12:23:56+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -413,7 +413,7 @@
             ],
             "support": {
                 "issues": "https://github.com/DASPRiD/Enum/issues",
-                "source": "https://github.com/DASPRiD/Enum/tree/1.0.6"
+                "source": "https://github.com/DASPRiD/Enum/tree/1.0.7"
             },
             "install-path": "../dasprid/enum"
         },
@@ -1486,24 +1486,25 @@
         },
         {
             "name": "mongodb/mongodb",
-            "version": "2.0.0",
-            "version_normalized": "2.0.0.0",
+            "version": "2.1.1",
+            "version_normalized": "2.1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mongodb/mongo-php-library.git",
-                "reference": "04cd7edc6a28950e3fab6eccb2869d72a0541232"
+                "reference": "f399d24905dd42f97dfe0af9706129743ef247ac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mongodb/mongo-php-library/zipball/04cd7edc6a28950e3fab6eccb2869d72a0541232",
-                "reference": "04cd7edc6a28950e3fab6eccb2869d72a0541232",
+                "url": "https://api.github.com/repos/mongodb/mongo-php-library/zipball/f399d24905dd42f97dfe0af9706129743ef247ac",
+                "reference": "f399d24905dd42f97dfe0af9706129743ef247ac",
                 "shasum": ""
             },
             "require": {
                 "composer-runtime-api": "^2.0",
-                "ext-mongodb": "^2.0",
+                "ext-mongodb": "^2.1",
                 "php": "^8.1",
-                "psr/log": "^1.1.4|^2|^3"
+                "psr/log": "^1.1.4|^2|^3",
+                "symfony/polyfill-php85": "^1.32"
             },
             "replace": {
                 "mongodb/builder": "*"
@@ -1515,7 +1516,7 @@
                 "squizlabs/php_codesniffer": "^3.7",
                 "vimeo/psalm": "6.5.*"
             },
-            "time": "2025-04-10T08:34:11+00:00",
+            "time": "2025-08-13T20:50:05+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1559,7 +1560,7 @@
             ],
             "support": {
                 "issues": "https://github.com/mongodb/mongo-php-library/issues",
-                "source": "https://github.com/mongodb/mongo-php-library/tree/2.0.0"
+                "source": "https://github.com/mongodb/mongo-php-library/tree/2.1.1"
             },
             "install-path": "../mongodb/mongodb"
         },
@@ -1634,27 +1635,29 @@
         },
         {
             "name": "paragonie/constant_time_encoding",
-            "version": "v3.0.0",
-            "version_normalized": "3.0.0.0",
+            "version": "v3.1.2",
+            "version_normalized": "3.1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/paragonie/constant_time_encoding.git",
-                "reference": "df1e7fde177501eee2037dd159cf04f5f301a512"
+                "reference": "5bd79e0e88e8757f23e757bcedd1e37fa818cf68"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/paragonie/constant_time_encoding/zipball/df1e7fde177501eee2037dd159cf04f5f301a512",
-                "reference": "df1e7fde177501eee2037dd159cf04f5f301a512",
+                "url": "https://api.github.com/repos/paragonie/constant_time_encoding/zipball/5bd79e0e88e8757f23e757bcedd1e37fa818cf68",
+                "reference": "5bd79e0e88e8757f23e757bcedd1e37fa818cf68",
                 "shasum": ""
             },
             "require": {
                 "php": "^8"
             },
             "require-dev": {
-                "phpunit/phpunit": "^9",
-                "vimeo/psalm": "^4|^5"
+                "infection/infection": "^0",
+                "nikic/php-fuzzer": "^0",
+                "phpunit/phpunit": "^9|^10|^11",
+                "vimeo/psalm": "^4|^5|^6"
             },
-            "time": "2024-05-08T12:36:18+00:00",
+            "time": "2025-09-24T01:22:14+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -3255,6 +3258,89 @@
                 }
             ],
             "install-path": "../symfony/polyfill-php84"
+        },
+        {
+            "name": "symfony/polyfill-php85",
+            "version": "v1.33.0",
+            "version_normalized": "1.33.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/polyfill-php85.git",
+                "reference": "d4e5fcd4ab3d998ab16c0db48e6cbb9a01993f91"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/polyfill-php85/zipball/d4e5fcd4ab3d998ab16c0db48e6cbb9a01993f91",
+                "reference": "d4e5fcd4ab3d998ab16c0db48e6cbb9a01993f91",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2"
+            },
+            "time": "2025-06-23T16:12:55+00:00",
+            "type": "library",
+            "extra": {
+                "thanks": {
+                    "url": "https://github.com/symfony/polyfill",
+                    "name": "symfony/polyfill"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "files": [
+                    "bootstrap.php"
+                ],
+                "psr-4": {
+                    "Symfony\\Polyfill\\Php85\\": ""
+                },
+                "classmap": [
+                    "Resources/stubs"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony polyfill backporting some PHP 8.5+ features to lower PHP versions",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "compatibility",
+                "polyfill",
+                "portable",
+                "shim"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/polyfill-php85/tree/v1.33.0"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/nicolas-grekas",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "install-path": "../symfony/polyfill-php85"
         },
         {
             "name": "symfony/process",
