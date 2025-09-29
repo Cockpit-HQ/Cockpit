@@ -15,6 +15,7 @@ composer.lock
 composer.phar
 package-lock.json
 bun.lockb
+.phpup
 /.spaces/
 /lib/**/.github/*
 /lib/**/bin/*
