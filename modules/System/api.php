@@ -29,6 +29,12 @@ $this->bind('/api/system/healthcheck', function() {
         explode(',', $this->param('checks:string', 'db, memory, fs, redis, smtp, custom'))
     );
 
+    // Avoid caching of healthcheck responses
+    $this->response->headers['Cache-Control'] = 'no-store, no-cache, must-revalidate';
+    $this->response->headers['Pragma'] = 'no-cache';
+    $this->response->headers['Expires'] = '0';
+    $this->response->headers['X-Health-Checks'] = implode(', ', $checks);
+
     $errors = [];
 
     // check datastore connection
