@@ -6,6 +6,7 @@
 - Fix video preview in assets manager spotlight
 - Improve RedisLite and ESQL lib
 - Fix missing fixToHeight method for image api
+- Add image assets preset support
 
 
 ## 2.12.0 (2025-08-01)

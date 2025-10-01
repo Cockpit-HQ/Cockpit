@@ -23,6 +23,16 @@ $this->on('app.cli.init', function ($cli) {
 // assets api
 $this->module('assets')->extend([
 
+    'presets' => function() {
+        return $this->app->retrieve('assets/presets', [
+            'thumbnail' => ['width' => 150, 'height' => 150, 'mode' => 'thumbnail', 'quality' => 80, 'mime' => 'webp'],
+            'small' => ['width' => 400, 'height' => 300, 'mode' => 'bestFit', 'quality' => 85, 'mime' => 'webp'],
+            'medium' => ['width' => 800, 'height' => 600, 'mode' => 'bestFit', 'quality' => 85, 'mime' => 'webp'],
+            'large' => ['width' => 1200, 'height' => 900, 'mode' => 'bestFit', 'quality' => 85, 'mime' => 'webp'],
+            'hero' => ['width' => 1920, 'height' => 1080, 'mode' => 'bestFit', 'quality' => 90, 'mime' => 'webp'],
+        ]);
+    },
+
     'assets' => function(array $options = []) {
         $assets = $this->app->dataStorage->find('assets', $options)->toArray();
         return $assets;

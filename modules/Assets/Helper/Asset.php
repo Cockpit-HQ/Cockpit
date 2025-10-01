@@ -74,7 +74,8 @@ class Asset extends \Lime\Helper {
             'quality' => 100,
             'rebuild' => false,
             'base64' => false,
-            'timestamp' => null
+            'timestamp' => null,
+            'smartcrop' => null
         ], $options);
 
         extract($options);
@@ -248,11 +249,18 @@ class Asset extends \Lime\Helper {
 
                 $tmp = $this->app->path('#tmp:').uniqid().".{$ext}";
 
-                $this->vips->thumbnail($tmp, [
+                $vipsOptions = [
                     'src' => $src,
                     'size' => "{$width}x{$height}",
                     'quality' => $quality
-                ]);
+                ];
+
+                // Add smartcrop if specified
+                if ($smartcrop && in_array($smartcrop, ['attention', 'centre', 'center', 'entropy', 'low', 'high'])) {
+                    $vipsOptions['smartcrop'] = $smartcrop === 'center' ? 'centre' : $smartcrop;
+                }
+
+                $this->vips->thumbnail($tmp, $vipsOptions);
 
                 if (file_exists($tmp)) {
 

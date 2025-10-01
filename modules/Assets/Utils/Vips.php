@@ -27,10 +27,17 @@ class Vips {
         $options = array_merge([
             'size' => '200x200',
             'src' => null,
+            'smartcrop' => 'attention',
             'quality' => 100,
         ], $options);
 
-        $command = "{$this->binary} '{$options['src']}' --size {$options['size']} --smartcrop attention -o '{$dest}[Q={$options['quality']}]'";
+        if (!in_array($options['smartcrop'], ['attention', 'centre', 'center', 'entropy', 'low', 'high'])) {
+            $options['smartcrop'] = 'attention';
+        }
+
+        $options['quality'] = intval($options['quality']);
+
+        $command = "{$this->binary} '{$options['src']}' --size {$options['size']} --smartcrop {$options['smartcrop']} -o '{$dest}[Q={$options['quality']}]'";
 
         $process = Process::fromShellCommandline($command);
         $process->run();
