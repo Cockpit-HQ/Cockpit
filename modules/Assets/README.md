@@ -417,30 +417,49 @@ $url = $app->helper('asset')->image(array_merge(
 
 ## 🖥️ CLI Commands
 
+### Preset Generation
+
+```bash
+# Generate all preset variants for all image assets
+./tower assets:presets:generate
+
+# Generate only specific preset
+./tower assets:presets:generate --preset=thumbnail
+./tower assets:presets:generate -p hero
+
+# Rebuild existing preset images (force regenerate)
+./tower assets:presets:generate --rebuild
+./tower assets:presets:generate -r
+
+# Generate presets for filtered assets
+./tower assets:presets:generate --filter='{"folder":"gallery"}'
+./tower assets:presets:generate -f '{"tags":["product"]}'
+
+# Generate specific preset for filtered assets
+./tower assets:presets:generate -p thumbnail -f '{"type":"image"}' -r
+```
+
+**What it does:**
+- Processes all image-based assets (excludes SVGs)
+- Generates cached versions for all configured presets
+- Shows progress bar during generation
+- Reports generation statistics and cache size
+- Skips already cached images (use `-r` to rebuild)
+
+**Use cases:**
+- Pre-warm cache after uploading bulk assets
+- Regenerate thumbnails after preset configuration changes
+- Optimize delivery performance for new galleries
+- Build cache during deployment/maintenance windows
+
 ### Thumbnail Management
 
 ```bash
 # Generate thumbhash for existing images
-./tower assets:thumbhash
-
-# Generate thumbhash for specific assets
-./tower assets:thumbhash --filter='{"type":"image"}'
+./tower assets:thumbhash:generate
 
 # Fix file visibility permissions
 ./tower assets:files:fixvisibility
-```
-
-### Bulk Operations
-
-```bash
-# Process all images for color extraction
-./tower assets:process-images
-
-# Generate thumbnails for all images
-./tower assets:generate-thumbnails --sizes='400,800,1200'
-
-# Optimize existing images
-./tower assets:optimize --quality=80
 ```
 
 ## 🔧 Advanced Usage
