@@ -57,7 +57,7 @@ if (PHP_SAPI == 'cli-server') {
                 $mimeType = (new finfo(FILEINFO_MIME_TYPE))->file($spaceFilePath);
 
                 header('Content-Description: File Transfer');
-                header("Content-Type: {mimeType}"); // Change the MIME type as needed
+                header("Content-Type: {$mimeType}");
                 header('Expires: 0');
                 header('Cache-Control: must-revalidate');
                 header('Pragma: public');
