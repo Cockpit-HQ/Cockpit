@@ -90,7 +90,8 @@ class Response {
         'htm'   => 'text/html',
         'html'  => 'text/html',
         'json'  => 'application/json',
-        'js'    => 'application/x-javascript',
+        // Prefer the modern, registered JavaScript MIME type
+        'js'    => 'application/javascript',
         'txt'   => 'text/plain',
         'rtf'   => 'text/rtf',
         'wml'   => 'text/vnd.wap.wml',

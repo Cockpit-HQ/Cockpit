@@ -221,7 +221,7 @@ $this->on('restApi.config', function($restApi) {
          *         @OA\Schema(type="string")
          *     ),
          *     @OA\Parameter(
-         *         description="Conten item id",
+         *         description="Content item id",
          *         in="path",
          *         name="id",
          *         required=true,
