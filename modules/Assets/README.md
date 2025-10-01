@@ -88,7 +88,7 @@ $webpUrl = $app->helper('asset')->image([
 
 // Convert to AVIF for maximum compression
 $avifUrl = $app->helper('asset')->image([
-    'src' => '/path/to/image.jpg',  
+    'src' => '/path/to/image.jpg',
     'width' => 400,
     'mime' => 'avif',
     'quality' => 70
@@ -101,6 +101,46 @@ $progressiveUrl = $app->helper('asset')->image([
     'quality' => 85,
     'filters' => ['progressive' => true]
 ]);
+```
+
+### Smart Cropping (VIPS)
+
+When VIPS is enabled, use intelligent cropping algorithms to focus on the most important parts of an image:
+
+```php
+// Attention-based smart cropping (focuses on areas of interest)
+$url = $app->helper('asset')->image([
+    'src' => '/path/to/image.jpg',
+    'width' => 400,
+    'height' => 300,
+    'mode' => 'thumbnail',
+    'smartcrop' => 'attention'  // Best for most images
+]);
+
+// Entropy-based cropping (focuses on high-detail areas)
+$url = $app->helper('asset')->image([
+    'src' => '/path/to/image.jpg',
+    'width' => 400,
+    'height' => 300,
+    'smartcrop' => 'entropy'    // Good for detailed images
+]);
+```
+
+**Available smartcrop modes:**
+- `attention` - Focuses on areas of visual interest (recommended)
+- `entropy` - Focuses on high-detail/high-contrast areas
+- `centre` / `center` - Crops from the center
+- `low` - Focuses on low-frequency areas
+- `high` - Focuses on high-frequency areas
+
+**Use in API:**
+
+```bash
+# Smart crop with attention algorithm
+GET /api/assets/image/{id}?w=400&h=300&m=thumbnail&smartcrop=attention
+
+# Smart crop with entropy
+GET /api/assets/image/{id}?w=400&h=300&smartcrop=entropy
 ```
 
 ### Responsive Images
@@ -177,10 +217,21 @@ GET /api/assets/{id}
 GET /api/assets/image/{id}?w=300&h=200&m=thumbnail&q=80
 
 # Get image with format conversion
-GET /api/assets/image/{id}?w=400&f=webp&q=75
+GET /api/assets/image/{id}?w=400&mime=webp&q=75
 
 # Get original image
 GET /api/assets/image/{id}?w=original&h=original
+
+# Smart crop with VIPS
+GET /api/assets/image/{id}?w=400&h=300&smartcrop=attention
+
+# Use named preset
+GET /api/assets/image/{id}/thumbnail
+GET /api/assets/image/{id}/hero
+GET /api/assets/image/{id}/card
+
+# List available presets
+GET /api/assets/presets
 ```
 
 #### Asset Management
@@ -289,6 +340,80 @@ const generateSrcSet = (assetId, sizes, format = 'webp') => {
     ]
 ]
 ```
+
+### Image Presets
+
+Define reusable image transformation presets in your configuration:
+
+```php
+// config/config.php
+return [
+    'assets' => [
+        'presets' => [
+            'thumbnail' => [
+                'width' => 150,
+                'height' => 150,
+                'mode' => 'thumbnail',
+                'quality' => 80
+            ],
+            'card' => [
+                'width' => 400,
+                'height' => 300,
+                'mode' => 'thumbnail',
+                'quality' => 85,
+                'smartcrop' => 'attention'  // VIPS smart cropping
+            ],
+            'hero' => [
+                'width' => 1920,
+                'height' => 1080,
+                'mode' => 'bestFit',
+                'quality' => 90,
+                'mime' => 'webp'
+            ],
+            'avatar' => [
+                'width' => 200,
+                'height' => 200,
+                'mode' => 'thumbnail',
+                'quality' => 85,
+                'smartcrop' => 'attention',
+                'filters' => ['sharpen']
+            ]
+        ]
+    ]
+];
+```
+
+**Use presets in API:**
+
+```bash
+# Use named preset
+GET /api/assets/image/{id}/thumbnail
+GET /api/assets/image/{id}/hero
+GET /api/assets/image/{id}/card
+
+# Get binary output
+GET /api/assets/image/{id}/thumbnail?o=1
+```
+
+**Use presets in PHP:**
+
+```php
+// Get preset configuration
+$presets = $app->module('assets')->presets();
+
+// Use preset directly
+$url = $app->helper('asset')->image(array_merge(
+    $presets['hero'],
+    ['src' => $assetId]
+));
+```
+
+**Benefits of Presets:**
+- ✅ Consistent image sizes across your application
+- ✅ Easier to maintain and update globally
+- ✅ Better caching with predictable URLs
+- ✅ Prevents arbitrary URL manipulation
+- ✅ Centralized image optimization settings
 
 ## 🖥️ CLI Commands
 
