@@ -74,10 +74,9 @@ export default {
         offcanvas.__show = offcanvas.show;
 
         offcanvas.close = function() {
-            offcanvas.__close();
-            setTimeout(() => {
+            return offcanvas.__close().then(() => {
                 offcanvas.parentNode.removeChild(offcanvas);
-            }, 300)
+            });
         };
 
         offcanvas.show = function() {
@@ -119,8 +118,9 @@ export default {
         dialog.__show = dialog.show;
 
         dialog.close = function() {
-            dialog.__close();
-            dialog.parentNode.removeChild(dialog);
+            return dialog.__close().then(() => {
+                dialog.parentNode.removeChild(dialog);
+            });
         };
 
         dialog.show = function() {
@@ -250,10 +250,9 @@ export default {
         popout.__show = popout.show;
 
         popout.close = function() {
-            popout.__close();
-            setTimeout(() => {
+            return popout.__close().then(() => {
                 popout.parentNode.removeChild(popout);
-            }, 300)
+            });
         };
 
         popout.show = function() {

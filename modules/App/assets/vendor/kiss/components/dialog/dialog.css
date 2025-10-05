@@ -50,7 +50,7 @@ kiss-dialog[size="xlarge"] > kiss-content {
 
 kiss-dialog[open] {
     display: flex;
-    transition: opacity .3s;
+    transition: opacity .2s;
     opacity: 1;
 
     @starting-style {
@@ -59,10 +59,20 @@ kiss-dialog[open] {
 
     & > kiss-content {
         transform: translateY(0) translateZ(0);
-        transition: transform 250ms;
+        transition: transform 200ms, opacity 200ms;
 
         @starting-style {
             transform: translateY(20px);
         }
+    }
+}
+
+/* exit animation state driven by [closing] */
+kiss-dialog[open][closing] {
+    opacity: 0;
+
+    & > kiss-content {
+        transform: translateY(20px);
+        opacity: 0;
     }
 }

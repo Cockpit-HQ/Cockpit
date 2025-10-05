@@ -12,7 +12,12 @@ on(document.documentElement, 'click', '[kiss-popout]', function (e) {
 
         let position = this.getAttribute('kiss-popout-pos');
 
-        menu.show(position ? this : null, position);
+        const trigger = this;
+        trigger.setAttribute('aria-haspopup', 'menu');
+        trigger.setAttribute('aria-expanded', 'true');
+        if (menu.id) trigger.setAttribute('aria-controls', menu.id);
+
+        menu.show(position ? trigger : null, position);
     }
 });
 
@@ -68,6 +73,15 @@ customElements.define('kiss-popout', class extends HTMLElement {
 
         if (this.getAttribute('open') === 'true') {
             setHighestZindex(this);
+        }
+
+        // Ensure baseline ARIA
+        this.setAttribute('aria-hidden', this.getAttribute('open') === 'true' ? 'false' : 'true');
+        const content = this.querySelector('kiss-content');
+        if (content && !content.hasAttribute('role')) {
+            content.setAttribute('role', 'menu');
+            content.setAttribute('aria-orientation', 'vertical');
+            if (!content.hasAttribute('tabindex')) content.setAttribute('tabindex', '-1');
         }
     }
 
@@ -127,11 +141,68 @@ customElements.define('kiss-popout', class extends HTMLElement {
 
         }, 100);
 
+        this._previouslyFocused = document.activeElement;
+        this._triggerEl = ele || this._triggerEl || null;
+        this.removeAttribute('closing');
         this.setAttribute('open', 'true');
+        this.setAttribute('aria-hidden', 'false');
     }
 
     close() {
-        this.removeAttribute('open');
-        trigger(this, 'popoutclose');
+        if (this._closingPromise) return this._closingPromise;
+
+        if (this.getAttribute('open') !== 'true') {
+            return Promise.resolve();
+        }
+
+        const overlay = this;
+        const content = this.querySelector('kiss-content');
+
+        const onTransitionEnd = (el, prop, fallbackMs = 300) => new Promise((resolve) => {
+            if (!el) return resolve();
+
+            let done = false;
+            const cleanup = () => {
+                done = true;
+                el.removeEventListener('transitionend', handler);
+                clearTimeout(timer);
+            };
+            const handler = (e) => {
+                if (done) return;
+                if (e.target === el && (!prop || e.propertyName === prop)) {
+                    cleanup();
+                    resolve();
+                }
+            };
+
+            el.addEventListener('transitionend', handler);
+            const timer = setTimeout(() => {
+                if (done) return;
+                cleanup();
+                resolve();
+            }, fallbackMs);
+        });
+
+        this.setAttribute('closing', 'true');
+
+        this._closingPromise = Promise.all([
+            onTransitionEnd(overlay, 'opacity', 300),
+            onTransitionEnd(content, 'transform', 200)
+        ])
+        .then(() => {
+            overlay.removeAttribute('open');
+            overlay.removeAttribute('closing');
+            overlay.setAttribute('aria-hidden', 'true');
+            if (overlay._triggerEl) {
+                overlay._triggerEl.setAttribute('aria-expanded', 'false');
+                try { overlay._triggerEl.focus(); } catch (e) {}
+            } else if (this._previouslyFocused && document.contains(this._previouslyFocused)) {
+                try { this._previouslyFocused.focus(); } catch (e) {}
+            }
+            trigger(overlay, 'popoutclose');
+        });
+
+        this._closingPromise = this._closingPromise.finally(() => { this._closingPromise = null; });
+        return this._closingPromise;
     }
 });
