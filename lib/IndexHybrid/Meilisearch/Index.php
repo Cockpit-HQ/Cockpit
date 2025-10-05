@@ -116,6 +116,9 @@ class Index {
             'typoTolerance' => null,
             'rankingScoreThreshold' => null,
             'attributesToHighlight' => null,
+            'facets' => [],
+            'facet_limit' => 20,
+            'facet_offset' => 0,
         ], $options);
         
         // Handle parameter name conversion from snake_case to camelCase
@@ -199,13 +202,105 @@ class Index {
             $params['filter'] = $options['filter'];
         }
 
-        // Use POST for complex queries, GET for simple ones
-        if (isset($params['filter']) || isset($params['typoTolerance']) || !empty($options['boosts'])) {
-            return $this->manager->sendRequest("/indexes/{$this->name}/search", 'POST', $params);
+        // Handle multi-facets
+        if (!empty($options['facets']) && is_array($options['facets'])) {
+            $params['facets'] = array_values(array_filter($options['facets'], fn($f) => is_string($f) && $f !== ''));
+            // Ensure requested facet fields are configured as filterable attributes
+            if (!empty($params['facets'])) {
+                $this->ensureFilterableAttributes($params['facets'], true);
+            }
         }
 
-        $queryString = http_build_query($params);
-        return $this->manager->sendRequest("/indexes/{$this->name}/search?{$queryString}", 'GET');
+        // Use POST for complex queries, GET for simple ones
+        $response = null;
+        if (isset($params['filter']) || isset($params['typoTolerance']) || !empty($options['boosts']) || !empty($params['facets'])) {
+            $response = $this->manager->sendRequest("/indexes/{$this->name}/search", 'POST', $params);
+        } else {
+            $queryString = http_build_query($params);
+            $response = $this->manager->sendRequest("/indexes/{$this->name}/search?{$queryString}", 'GET');
+        }
+
+        // Normalize multi-facets to unified 'facets' key (preserve original facetDistribution)
+        if (!empty($options['facets']) && isset($response['facetDistribution']) && is_array($response['facetDistribution'])) {
+            $facets = [];
+            $limit = (int)$options['facet_limit'];
+            $offset = max(0, (int)$options['facet_offset']);
+            foreach ($options['facets'] as $field) {
+                if (!isset($response['facetDistribution'][$field]) || !is_array($response['facetDistribution'][$field])) continue;
+                $items = [];
+                foreach ($response['facetDistribution'][$field] as $value => $count) {
+                    $items[] = ['value' => $value, 'count' => (int)$count];
+                }
+                // Sort by count desc
+                usort($items, fn($a, $b) => $b['count'] <=> $a['count']);
+                // Apply offset/limit
+                if ($limit > 0) {
+                    $items = array_slice($items, $offset, $limit);
+                } elseif ($offset > 0) {
+                    $items = array_slice($items, $offset);
+                }
+                $facets[$field] = $items;
+            }
+            if (!empty($facets)) {
+                $response['facets'] = $facets;
+            }
+        }
+
+        return $response;
+    }
+
+    /**
+     * Ensure the given attributes are set as filterable on the index to enable faceting
+     */
+    private function ensureFilterableAttributes(array $attributes, bool $wait = true): void {
+        // Normalize
+        $attributes = array_values(array_unique(array_filter($attributes, fn($a) => is_string($a) && $a !== '')));
+        if (empty($attributes)) return;
+
+        try {
+            $current = $this->manager->sendRequest("/indexes/{$this->name}/settings/filterable-attributes", 'GET');
+            if (!is_array($current)) {
+                $current = [];
+            }
+            $missing = array_values(array_diff($attributes, $current));
+            if (empty($missing)) {
+                return;
+            }
+
+            $new = array_values(array_unique(array_merge($current, $attributes)));
+            $rsp = $this->manager->sendRequest("/indexes/{$this->name}/settings/filterable-attributes", 'PUT', $new);
+
+            // Meilisearch returns taskUid for async update; optionally wait
+            if ($wait && is_array($rsp)) {
+                $taskUid = $rsp['taskUid'] ?? $rsp['uid'] ?? $rsp['updateId'] ?? null;
+                if (is_int($taskUid)) {
+                    $this->waitForTask($taskUid, 8000);
+                }
+            }
+        } catch (\Exception $e) {
+            // Best-effort: ignore and proceed to search
+        }
+    }
+
+    /**
+     * Wait for a Meilisearch task to complete (best-effort)
+     */
+    private function waitForTask(int $taskUid, int $maxWaitMs = 8000): void {
+        $waited = 0;
+        $interval = 200; // ms
+        while ($waited < $maxWaitMs) {
+            try {
+                $task = $this->manager->sendRequest("/tasks/{$taskUid}", 'GET');
+                $status = $task['status'] ?? null;
+                if (in_array($status, ['succeeded', 'failed'], true)) {
+                    return;
+                }
+            } catch (\Exception $e) {
+                return;
+            }
+            usleep($interval * 1000);
+            $waited += $interval;
+        }
     }
 
     /**
@@ -255,17 +350,34 @@ class Index {
             $params['filter'] = $options['filter'];
         }
 
+        // Ensure facet field is filterable
+        $this->ensureFilterableAttributes([$facetField], true);
+
         $response = $this->manager->sendRequest("/indexes/{$this->name}/search", 'POST', $params);
         
         // Transform Meilisearch facet format to match IndexLite format
         $facets = [];
-        if (isset($response['facetDistribution'][$facetField])) {
+        if (isset($response['facetDistribution'][$facetField]) && is_array($response['facetDistribution'][$facetField])) {
             foreach ($response['facetDistribution'][$facetField] as $value => $count) {
                 $facets[] = [
                     $facetField => $value,
-                    'count' => $count
+                    'count' => (int) $count
                 ];
             }
+        }
+
+        // Sort by count DESC to match IndexLite behavior
+        usort($facets, function($a, $b) {
+            return $b['count'] <=> $a['count'];
+        });
+
+        // Apply offset and limit on the facet list
+        $offset = max(0, (int)$options['offset']);
+        $limit = (int)$options['limit'];
+        if ($limit > 0) {
+            $facets = array_slice($facets, $offset, $limit);
+        } elseif ($offset > 0) {
+            $facets = array_slice($facets, $offset);
         }
 
         return $facets;

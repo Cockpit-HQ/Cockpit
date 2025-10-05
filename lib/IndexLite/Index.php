@@ -225,8 +225,9 @@ class Index {
 
             $where = $this->buildMatchQuery($query);
 
-            if ($filter) {
-                $where = "({$where}) AND {$filter}";
+            $safeFilter = $this->sanitizeFilter($filter);
+            if ($safeFilter) {
+                $where = "({$where}) AND {$safeFilter}";
             }
 
             $sql = "SELECT COUNT(*) FROM documents WHERE {$where}";
@@ -287,12 +288,17 @@ class Index {
             'fuzzy_algorithm' => 'fts5',        // Algorithm: fts5, levenshtein, jaro_winkler, trigram, soundex, hybrid
             'fuzzy_threshold' => 2,             // Threshold for distance-based algorithms
             'fuzzy_min_score' => 70,            // Minimum score for hybrid algorithm
+            'facets' => [],                     // Array of facet fields
+            'facet_limit' => 20,
+            'facet_offset' => 0,
         ], $options);
 
         if ($options['fields'] !== '*') {
             $options['fields'] = is_string($options['fields']) ? array_map(fn($f) => trim($f), explode(',' , $options['fields'])) : $options['fields'];
             $intersectFields = array_flip($options['fields']);
         }
+
+        $where = '';
 
         if ($query) {
             
@@ -303,14 +309,24 @@ class Index {
 
             $where = $this->buildMatchQuery($query, $options['fuzzy'], $options['boosts']);
 
-            if ($options['filter']) {
-                $where = "({$where}) AND {$options['filter']}";
+            $safeFilter = $this->sanitizeFilter($options['filter']);
+            if ($safeFilter) {
+                $where = "({$where}) AND {$safeFilter}";
             }
 
-            $sql = "SELECT * FROM documents WHERE {$where} ORDER BY rank LIMIT :limit OFFSET :offset";
+            // Use bm25() for ranking; apply boosts via column weights
+            $orderExpr = $this->buildBm25OrderExpression($options['boosts'] ?? []);
+            $sql = "SELECT * FROM documents WHERE {$where} ORDER BY {$orderExpr} ASC LIMIT :limit OFFSET :offset";
 
         } else {
-            $sql = "SELECT * FROM documents LIMIT :limit OFFSET :offset";
+            $safeFilter = $this->sanitizeFilter($options['filter']);
+            if ($safeFilter) {
+                $where = $safeFilter;
+                $sql = "SELECT * FROM documents WHERE {$where} LIMIT :limit OFFSET :offset";
+            } else {
+                $where = '1';
+                $sql = "SELECT * FROM documents LIMIT :limit OFFSET :offset";
+            }
         }
 
         $stmt = $this->db->prepare($sql);
@@ -348,6 +364,14 @@ class Index {
             'estimatedTotalHits' => $count,
         ];
 
+        // Multi-facet support
+        if (!empty($options['facets']) && is_array($options['facets'])) {
+            $facetData = $this->computeFacets($where, $options['facets'], (int)$options['facet_limit'], (int)$options['facet_offset']);
+            if (!empty($facetData)) {
+                $result['facets'] = $facetData;
+            }
+        }
+
         return $result;
     }
 
@@ -366,9 +390,10 @@ class Index {
             'min_score' => $options['fuzzy_min_score'],
         ]);
         
-        // Add filter if provided
-        if ($options['filter']) {
-            $where = "({$fuzzyWhere}) AND {$options['filter']}";
+        // Add filter if provided (sanitized)
+        $safeFilter = $this->sanitizeFilter($options['filter'] ?? '');
+        if ($safeFilter) {
+            $where = "({$fuzzyWhere}) AND {$safeFilter}";
         } else {
             $where = $fuzzyWhere;
         }
@@ -414,8 +439,8 @@ class Index {
         $count = $this->db->query($countSql)->fetchColumn();
         
         $processingTimeMs = (microtime(true) - $start) * 1000;
-        
-        return [
+
+        $result = [
             'hits' => $items,
             'query' => $query,
             'processingTimeMs' => $processingTimeMs,
@@ -424,6 +449,54 @@ class Index {
             'estimatedTotalHits' => $count,
             'fuzzy_algorithm' => $options['fuzzy_algorithm'],
         ];
+
+        // Multi-facet support (use same WHERE)
+        if (!empty($options['facets']) && is_array($options['facets'])) {
+            $facetData = $this->computeFacets($where, $options['facets'], (int)($options['facet_limit'] ?? 20), (int)($options['facet_offset'] ?? 0));
+            if (!empty($facetData)) {
+                $result['facets'] = $facetData;
+            }
+        }
+        
+        return $result;
+    }
+
+    /**
+     * Compute facets for multiple fields using an existing WHERE clause
+     */
+    private function computeFacets(string $where, array $facetFields, int $limit = 20, int $offset = 0): array {
+        $facets = [];
+
+        // Validate and sanitize fields
+        $validFields = array_filter($facetFields, function($f) {
+            return in_array($f, $this->fields, true) && !in_array($f, ['id', '__payload'], true);
+        });
+
+        if (empty($validFields)) return $facets;
+
+        foreach ($validFields as $field) {
+            // Sanitize field name: allow alphanumeric + underscore only
+            $sanitized = preg_replace('/[^a-zA-Z0-9_]/', '', $field);
+            if ($sanitized !== $field || $sanitized === '') continue;
+
+            $sql = "SELECT {$sanitized} as value, COUNT(*) as count FROM documents WHERE {$where} GROUP BY {$sanitized} ORDER BY count DESC";
+            if ($limit > 0) {
+                $sql .= " LIMIT " . (int)$limit . " OFFSET " . max(0, (int)$offset);
+            }
+
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute();
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+
+            // Normalize counts to int
+            foreach ($rows as &$r) {
+                $r['count'] = (int)$r['count'];
+            }
+
+            $facets[$field] = $rows;
+        }
+
+        return $facets;
     }
 
     /**
@@ -510,8 +583,14 @@ class Index {
 
         $where = $this->buildMatchQuery($query);
 
-        if ($options['filter']) {
-            $where = "({$where}) AND {$options['filter']}";
+        $safeFilter = $this->sanitizeFilter($options['filter']);
+        if ($safeFilter) {
+            $where = "({$where}) AND {$safeFilter}";
+        }
+
+        // Validate facet field against known fields and exclude non-content columns
+        if (!in_array($facetField, $this->fields, true) || in_array($facetField, ['id', '__payload'], true)) {
+            return [];
         }
 
         $sql = "SELECT {$facetField}, COUNT(*) as count FROM documents WHERE {$where} GROUP BY {$facetField} ORDER BY count DESC";
@@ -553,13 +632,13 @@ class Index {
 
                 $field = $match[1];
                 $value = trim($match[2], '\'"');
-                $fields[$field] = Utils::escapeFts5SpecialChars($value);
+                $fields[$field] = $this->escapeForMatch($value);
             }
 
         } else {
 
             foreach ($_fields as $field) {
-                $fields[$field] = Utils::escapeFts5SpecialChars($query);
+                $fields[$field] = $this->escapeForMatch($query);
             }
         }
 
@@ -578,24 +657,14 @@ class Index {
                 $matchTerm = $q;
             }
 
-            // Apply boosting if specified for this field
-            if ($hasBoosts && isset($boosts[$field])) {
-                $boostValue = (float) $boosts[$field];
-                $searchQuery = "(\"{$field}\" MATCH '{$matchTerm}') * {$boostValue}";
-            } else {
-                $searchQuery = "\"{$field}\" MATCH '{$matchTerm}'";
-            }
+            // Build boolean MATCH expression (boosting is applied via bm25 weights in ORDER BY)
+            $searchQuery = "\"{$field}\" MATCH '{$matchTerm}'";
 
             $searchQueries[] = $searchQuery;
         }
 
         // Combine queries with OR
         $combinedQuery = implode(' OR ', $searchQueries);
-
-        // If we have boosts, we need to wrap in a bm25() expression for proper weight calculation
-        if ($hasBoosts) {
-            return "bm25(documents, {$combinedQuery})";
-        }
 
         return $combinedQuery;
     }
@@ -684,5 +753,51 @@ class Index {
         
         // Wrap in single quotes
         return "'{$query}'";
+    }
+
+    /**
+     * Escape a term for safe embedding in FTS5 MATCH right-hand side
+     */
+    private function escapeForMatch(string $term): string {
+        $escaped = Utils::escapeFts5SpecialChars($term);
+        // Also ensure any single quotes are doubled for safe SQL embedding
+        $escaped = str_replace("'", "''", $escaped);
+        return $escaped;
+    }
+
+    /**
+     * Build bm25() expression with per-column weights based on boosts
+     */
+    private function buildBm25OrderExpression(array $boosts): string {
+        $weights = [];
+        foreach ($this->fields as $field) {
+            if ($field === 'id' || $field === '__payload') {
+                $weights[] = '0';
+                continue;
+            }
+            $w = isset($boosts[$field]) ? (float)$boosts[$field] : 1.0;
+            $weights[] = (string)$w;
+        }
+
+        // If all weights are default, we can omit them
+        $allDefault = count(array_unique($weights)) === 1 && reset($weights) === '1';
+        if ($allDefault) {
+            return 'bm25(documents)';
+        }
+
+        return 'bm25(documents, ' . implode(', ', $weights) . ')';
+    }
+
+    /**
+     * Basic sanitization for filter fragments to avoid obvious SQL injection vectors
+     */
+    protected function sanitizeFilter(?string $filter): string {
+        $filter = trim((string)$filter);
+        if ($filter === '') return '';
+        // Disallow statement separators and comments
+        if (preg_match('/(;|--|\/\*)/', $filter)) {
+            return '';
+        }
+        return $filter;
     }
 }
