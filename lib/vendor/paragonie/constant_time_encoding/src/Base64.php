@@ -221,13 +221,14 @@ abstract class Base64 implements EncoderInterface
                 };
                 if ($variant > 0) {
                     try {
-                        return sodium_base642bin($encodedString, $variant);
+                        return sodium_base642bin(substr($encodedString, 0, $srcLen), $variant);
                     } catch (SodiumException $ex) {
                         throw new RangeException($ex->getMessage(), $ex->getCode(), $ex);
                     }
                 }
             }
         } else {
+            // Just remove all padding.
             $encodedString = rtrim($encodedString, '=');
             $srcLen = strlen($encodedString);
         }
