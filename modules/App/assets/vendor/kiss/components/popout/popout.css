@@ -51,11 +51,21 @@ kiss-popout[open] {
 
     & > kiss-content {
         transform: translateY(10px);
-        transition: transform 200ms;
+        transition: transform 200ms, opacity 200ms;
 
         @starting-style {
             transform: translateY(20px);
         }
+    }
+}
+
+/* exit animation state driven by [closing] */
+kiss-popout[open][closing] {
+    opacity: 0;
+
+    & > kiss-content {
+        transform: translateY(20px);
+        opacity: 0;
     }
 }
 

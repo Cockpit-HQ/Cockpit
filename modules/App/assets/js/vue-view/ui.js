@@ -31,9 +31,9 @@ export default {
                         $close() {
 
                             if (this.$el.closest) {
-                                this.$el.closest('kiss-offcanvas').close();
+                                return this.$el.closest('kiss-offcanvas').close();
                             } else {
-                                this.$el.parentNode.closest('kiss-offcanvas').close();
+                                return this.$el.parentNode.closest('kiss-offcanvas').close();
                             }
                         },
                         $call(name, ...args) {
@@ -85,9 +85,9 @@ export default {
                         $close() {
 
                             if (this.$el.closest) {
-                                this.$el.closest('kiss-dialog').close();
+                                return this.$el.closest('kiss-dialog').close();
                             } else {
-                                this.$el.parentNode.closest('kiss-dialog').close();
+                                return this.$el.parentNode.closest('kiss-dialog').close();
                             }
                         },
                         $call(name, ...args) {
@@ -141,9 +141,9 @@ export default {
                         $close() {
 
                             if (this.$el.closest) {
-                                this.$el.closest('kiss-popout').close();
+                                return this.$el.closest('kiss-popout').close();
                             } else {
-                                this.$el.parentNode.closest('kiss-popout').close();
+                                return this.$el.parentNode.closest('kiss-popout').close();
                             }
                         },
                         $call(name, ...args) {

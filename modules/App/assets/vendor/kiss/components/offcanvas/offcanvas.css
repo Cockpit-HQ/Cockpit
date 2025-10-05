@@ -54,3 +54,16 @@ kiss-offcanvas[open] {
         }
     }
 }
+
+/* exit animation state driven by [closing] */
+kiss-offcanvas[open][closing] {
+    opacity: 0;
+
+    & > kiss-content {
+        transform: translateX(-100%) translateZ(0);
+    }
+
+    &[flip="true"] > kiss-content {
+        transform: translateX(100%) translateZ(0);
+    }
+}
