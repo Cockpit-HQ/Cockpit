@@ -162,16 +162,17 @@ foreach ($facets as $facet) {
 }
 ```
 
-### Multiple Facets (IndexLite)
+### Multiple Facets (Both Backends)
 
 ```php
-// IndexLite supports multiple facets in a single search
+// Request multiple facets in a single search (works for IndexLite + Meilisearch)
 $results = $index->search('electronics', [
     'facets' => ['category', 'brand', 'price_range'],
-    'facet_limit' => 20
+    'facet_limit' => 20,        // per-field limit
+    'facet_offset' => 0         // per-field offset
 ]);
 
-// Access facet data
+// Access facet data (unified shape)
 foreach ($results['facets'] as $field => $facetData) {
     echo "Facets for {$field}:\n";
     foreach ($facetData as $facet) {
@@ -179,6 +180,13 @@ foreach ($results['facets'] as $field => $facetData) {
     }
 }
 ```
+
+Notes:
+- Facets are returned in a unified structure:
+  - `facets => field => [ { value, count }, ... ]`, sorted by count desc.
+- `facet_limit` and `facet_offset` apply per facet field.
+- Meilisearch requires facet attributes to be configured as `filterableAttributes`.
+  The adapter auto‑ensures requested facet fields are filterable before running the query.
 
 ### Unified Facet Interface
 
@@ -220,6 +228,11 @@ $manager = new Manager('meilisearch://localhost:7700', [
     'https' => true,              // Use HTTPS
 ]);
 ```
+
+### Boosts and Ranking Parity
+
+- IndexLite: boosts are applied via BM25 column weights internally. Higher weights increase a field's influence on ranking.
+- Meilisearch: boosting typically requires custom ranking rules at index configuration time. The `boosts` option is accepted for parity but is not auto‑translated into ranking rules.
 
 ## Feature Detection
 

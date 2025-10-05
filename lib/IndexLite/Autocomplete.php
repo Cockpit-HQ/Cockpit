@@ -89,6 +89,8 @@ class Autocomplete {
     private function getSuggestionsByPrefix(string $prefix, array $options): array {
 
         $escapedPrefix = Utils::escapeFts5SpecialChars($prefix);
+        // Ensure single quotes are safely doubled for SQL embedding
+        $escapedPrefix = str_replace("'", "''", $escapedPrefix);
 
         // Determine the match condition based on fuzzy option
         if ($options['fuzzy']) {
@@ -113,8 +115,9 @@ class Autocomplete {
 
             $where = "\"{$options['field']}\" MATCH '{$matchCondition}'";
 
-            if ($options['filter']) {
-                $where = "({$where}) AND {$options['filter']}";
+            $safeFilter = $this->sanitizeFilter($options['filter']);
+            if ($safeFilter) {
+                $where = "({$where}) AND {$safeFilter}";
             }
 
             // Select the specific field and get unique values
@@ -137,8 +140,9 @@ class Autocomplete {
 
             $where = implode(' OR ', $fieldQueries);
 
-            if ($options['filter']) {
-                $where = "({$where}) AND {$options['filter']}";
+            $safeFilter = $this->sanitizeFilter($options['filter']);
+            if ($safeFilter) {
+                $where = "({$where}) AND {$safeFilter}";
             }
 
             // For multi-field suggestions, extract phrases containing the match
@@ -201,39 +205,42 @@ class Autocomplete {
             'maxLength' => 20
         ], $options);
 
-        $where = '';
-
-        if ($options['filter']) {
-            $where = "WHERE {$options['filter']}";
-        }
+        $safeFilter = $this->sanitizeFilter($options['filter']);
 
         // If a specific field is provided, get popular terms from that field
         if ($options['field'] && in_array($options['field'], $this->fields) &&
             $options['field'] !== 'id' && $options['field'] !== '__payload') {
 
-            // For FTS5, we need to use the special 'documents_terms' virtual table
-            $sql = "
-                WITH term_counts AS (
-                    SELECT term, COUNT(*) as count
-                    FROM (
-                        SELECT documents_terms.term as term
-                        FROM documents_terms
-                        JOIN documents ON documents.rowid = documents_terms.rowid
-                        {$where}
-                        WHERE documents_terms.col = :column_index
-                        AND length(documents_terms.term) BETWEEN :min_length AND :max_length
-                    )
-                    GROUP BY term
-                    HAVING count >= :min_freq
-                )
-                SELECT term, count
-                FROM term_counts
-                ORDER BY count DESC
-                LIMIT :limit
-            ";
-
-            // Find the column index for the specified field
             $columnIndex = array_search($options['field'], $this->fields);
+
+            if ($safeFilter) {
+                // Use instance mode to allow filtering by documents
+                $sql = "
+                    WITH filtered AS (
+                        SELECT rowid FROM documents WHERE {$safeFilter}
+                    )
+                    SELECT v.term as term, COUNT(DISTINCT v.doc) as count
+                    FROM fts5vocab(documents, 'instance') AS v
+                    JOIN filtered f ON f.rowid = v.doc
+                    WHERE v.col = :column_index
+                      AND length(v.term) BETWEEN :min_length AND :max_length
+                    GROUP BY v.term
+                    HAVING count >= :min_freq
+                    ORDER BY count DESC
+                    LIMIT :limit
+                ";
+            } else {
+                // Faster path without filter using 'col' mode
+                $sql = "
+                    SELECT term, doc as count
+                    FROM fts5vocab(documents, 'col')
+                    WHERE col = :column_index
+                      AND length(term) BETWEEN :min_length AND :max_length
+                      AND doc >= :min_freq
+                    ORDER BY count DESC
+                    LIMIT :limit
+                ";
+            }
 
             $stmt = $this->db->prepare($sql);
             $stmt->bindValue(':column_index', $columnIndex, PDO::PARAM_INT);
@@ -243,24 +250,30 @@ class Autocomplete {
             $stmt->bindValue(':limit', (int)$options['limit'], PDO::PARAM_INT);
         } else {
             // Get popular terms across all fields
-            $sql = "
-                WITH term_counts AS (
-                    SELECT term, COUNT(*) as count
-                    FROM (
-                        SELECT documents_terms.term as term
-                        FROM documents_terms
-                        JOIN documents ON documents.rowid = documents_terms.rowid
-                        {$where}
-                        WHERE length(documents_terms.term) BETWEEN :min_length AND :max_length
+            if ($safeFilter) {
+                $sql = "
+                    WITH filtered AS (
+                        SELECT rowid FROM documents WHERE {$safeFilter}
                     )
-                    GROUP BY term
+                    SELECT v.term as term, COUNT(DISTINCT v.doc) as count
+                    FROM fts5vocab(documents, 'instance') AS v
+                    JOIN filtered f ON f.rowid = v.doc
+                    WHERE length(v.term) BETWEEN :min_length AND :max_length
+                    GROUP BY v.term
                     HAVING count >= :min_freq
-                )
-                SELECT term, count
-                FROM term_counts
-                ORDER BY count DESC
-                LIMIT :limit
-            ";
+                    ORDER BY count DESC
+                    LIMIT :limit
+                ";
+            } else {
+                $sql = "
+                    SELECT term, doc as count
+                    FROM fts5vocab(documents, 'row')
+                    WHERE length(term) BETWEEN :min_length AND :max_length
+                      AND doc >= :min_freq
+                    ORDER BY count DESC
+                    LIMIT :limit
+                ";
+            }
 
             $stmt = $this->db->prepare($sql);
             $stmt->bindValue(':min_freq', (int)$options['minTermFrequency'], PDO::PARAM_INT);
@@ -527,4 +540,15 @@ class Autocomplete {
         return $suggestions;
     }
 
+    /**
+     * Basic sanitization for filter fragments to avoid obvious SQL injection vectors
+     */
+    private function sanitizeFilter(?string $filter): string {
+        $filter = trim((string)$filter);
+        if ($filter === '') return '';
+        if (preg_match('/(;|--|\/\*)/', $filter)) {
+            return '';
+        }
+        return $filter;
+    }
 }
