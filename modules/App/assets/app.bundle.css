@@ -4324,7 +4324,7 @@ html[data-theme='light'].auth-page {
     }
 }
 * {
-    scrollbar-width: thin;
+    scrollbar-width: none;
     scrollbar-color: var(--app-scrollbar-color) var(--kiss-base-background-color);
 }
 /* Works on Chrome, Edge, and Safari */
