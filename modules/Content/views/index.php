@@ -27,12 +27,13 @@
                 <div class="kiss-button-group kiss-margin-large-bottom">
                     <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': !filterModelType}" @click="filterModelType=null"><?= t('All') ?></button>
                     <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': filterModelType=='singletons'}" @click="filterModelType='singletons'"><?= t('Singletons') ?></button>
-                    <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': filterModelType=='lists'}" @click="filterModelType='lists'"><?= t('Lists') ?></button>
+                    <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': filterModelType=='collections'}" @click="filterModelType='collections'"><?= t('Collections') ?></button>
+                    <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': filterModelType=='trees'}" @click="filterModelType='trees'"><?= t('Trees') ?></button>
                 </div>
 
                 <app-scrollcontainer mode="boundary-include" boundary="app-actionbar">
 
-                    <div class="animated fadeIn kiss-height-50vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted kiss-margin-large" v-if="!singletons.length && !lists.length">
+                    <div class="animated fadeIn kiss-height-50vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted kiss-margin-large" v-if="!singletons.length && !collections.length && !trees.length">
                         <div>
                             <kiss-svg src="<?= $this->base('content:icon.svg') ?>" width="40" height="40"></kiss-svg>
                             <p class="kiss-size-large kiss-margin-top"><?= t('No models found') ?></p>
@@ -43,51 +44,97 @@
                         &mdash; {{group}}
                     </div>
 
-                    <kiss-grid cols="2@m 4@xl" class="kiss-margin" gap="small" v-if="singletons.length">
+                    <kiss-grid cols="2@l" gap="large">
 
-                        <kiss-card class="animated fadeIn kiss-flex" theme="shadowed contrast" hover="shadow bordered-primary" v-for="model in singletons">
-                            <div class="kiss-position-relative kiss-padding-small kiss-bgcolor-contrast">
-                                <canvas width="40" height="40"></canvas>
-                                <div class="kiss-cover kiss-flex kiss-padding-small kiss-flex-middle kiss-flex-center">
-                                    <div :style="{color: model.color || 'inherit' }"><kiss-svg :src="$baseUrl(model.icon || 'content:assets/icons/singleton.svg')" width="30" height="30"></kiss-svg></div>
-                                </div>
-                                <a class="kiss-cover" :href="$routeUrl(`/content/singleton/item/${model.name}`)"></a>
+                        <div>
+
+                            <div class="kiss-margin" v-if="singletons.length">
+
+                                <div class="kiss-margin kiss-text-caption kiss-text-bold kiss-color-muted kiss-size-small"><?= t('Singletons') ?></div>
+
+
+                                <kiss-grid cols="2@l" class="kiss-margin" gap="small">
+
+                                    <kiss-card class="animated fadeIn kiss-flex" theme="shadowed contrast" hover="shadow bordered-primary" v-for="model in singletons">
+                                        <div class="kiss-position-relative kiss-padding-small kiss-bgcolor-contrast">
+                                            <canvas width="40" height="40"></canvas>
+                                            <div class="kiss-cover kiss-flex kiss-padding-small kiss-flex-middle kiss-flex-center">
+                                                <div :style="{color: model.color || 'inherit' }"><kiss-svg :src="$baseUrl(model.icon || 'content:assets/icons/singleton.svg')" width="30" height="30"></kiss-svg></div>
+                                            </div>
+                                            <a class="kiss-cover" :href="$routeUrl(`/content/singleton/item/${model.name}`)"></a>
+                                        </div>
+                                        <div class="kiss-padding-small kiss-flex-1 kiss-position-relative">
+                                            <div class="kiss-size-small kiss-text-bold kiss-text-truncate">{{ model.label || model.name }}</div>
+                                            <div class="kiss-margin-xsmall-top kiss-color-muted kiss-size-xsmall kiss-text-truncate">{{model.info || t('Singleton')}}</div>
+                                            <a class="kiss-cover" :href="$routeUrl(`/content/singleton/item/${model.name}`)" :aria-label="model.label || model.name"></a>
+                                        </div>
+                                        <a class="kiss-padding-small kiss-color-muted" @click="toggleModelActions(model)">
+                                            <icon>more_vert</icon>
+                                        </a>
+                                    </kiss-card>
+
+                                </kiss-grid>
+
                             </div>
-                            <div class="kiss-padding-small kiss-flex-1 kiss-position-relative">
-                                <div class="kiss-size-small kiss-text-bold kiss-text-truncate">{{ model.label || model.name }}</div>
-                                <div class="kiss-margin-xsmall-top kiss-color-muted kiss-size-xsmall kiss-text-truncate">{{model.info || t('Singleton')}}</div>
-                                <a class="kiss-cover" :href="$routeUrl(`/content/singleton/item/${model.name}`)" :aria-label="model.label || model.name"></a>
+
+                            <div class="kiss-margin" v-if="collections.length">
+
+                                <div class="kiss-margin kiss-text-caption kiss-text-bold kiss-color-muted kiss-size-small"><?= t('Collections') ?></div>
+
+                                <kiss-card class="kiss-margin-small kiss-flex animated fadeIn" theme="shadowed contrast" hover="shadow bordered-primary" v-for="model in collections">
+                                    <div class="kiss-position-relative kiss-padding-small kiss-bgcolor-contrast">
+                                        <canvas width="40" height="40"></canvas>
+                                        <div class="kiss-cover kiss-flex kiss-flex-middle kiss-flex-center">
+                                            <div :style="{color: model.color || 'inherit' }"><kiss-svg :src="$baseUrl(model.icon || 'content:assets/icons/'+model.type+'.svg')" width="30" height="30"></kiss-svg></div>
+                                        </div>
+                                        <a class="kiss-cover" :href="$routeUrl(`/content/${model.type}/items/${model.name}`)" :aria-label="model.label || model.name"></a>
+                                    </div>
+                                    <div class="kiss-padding-small kiss-flex-1 kiss-position-relative">
+                                        <div class="kiss-size-small kiss-text-bold kiss-text-truncate">{{ model.label || model.name }}</div>
+                                        <div class="kiss-margin-xsmall-top kiss-color-muted kiss-size-xsmall kiss-text-truncate">{{model.info || model.type}}</div>
+                                        <a class="kiss-cover" :href="$routeUrl(`/content/${model.type}/items/${model.name}`)" :aria-label="model.label || model.name"></a>
+                                    </div>
+                                    <a class="kiss-padding-small kiss-color-muted" @click="toggleModelActions(model)">
+                                        <icon>more_vert</icon>
+                                    </a>
+                                </kiss-card>
+                                
                             </div>
-                            <a class="kiss-padding-small" @click="toggleModelActions(model)">
-                                <icon>more_horiz</icon>
-                            </a>
-                        </kiss-card>
+
+                            <div class="kiss-margin" v-if="trees.length">
+        
+                                <div class="kiss-margin kiss-text-caption kiss-text-bold kiss-color-muted kiss-size-small"><?= t('Trees') ?></div>
+
+                                <kiss-card class="kiss-margin-small kiss-flex animated fadeIn" theme="shadowed contrast" hover="shadow bordered-primary" v-for="model in trees">
+                                    <div class="kiss-position-relative kiss-padding-small kiss-bgcolor-contrast">
+                                        <canvas width="40" height="40"></canvas>
+                                        <div class="kiss-cover kiss-flex kiss-flex-middle kiss-flex-center">
+                                            <div :style="{color: model.color || 'inherit' }"><kiss-svg :src="$baseUrl(model.icon || 'content:assets/icons/'+model.type+'.svg')" width="30" height="30"></kiss-svg></div>
+                                        </div>
+                                        <a class="kiss-cover" :href="$routeUrl(`/content/${model.type}/items/${model.name}`)" :aria-label="model.label || model.name"></a>
+                                    </div>
+                                    <div class="kiss-padding-small kiss-flex-1 kiss-position-relative">
+                                        <div class="kiss-size-small kiss-text-bold kiss-text-truncate">{{ model.label || model.name }}</div>
+                                        <div class="kiss-margin-xsmall-top kiss-color-muted kiss-size-xsmall kiss-text-truncate">{{model.info || model.type}}</div>
+                                        <a class="kiss-cover" :href="$routeUrl(`/content/${model.type}/items/${model.name}`)" :aria-label="model.label || model.name"></a>
+                                    </div>
+                                    <a class="kiss-padding-small kiss-color-muted" @click="toggleModelActions(model)">
+                                        <icon>more_vert</icon>
+                                    </a>
+                                </kiss-card>
+
+                            </div>
+                        </div>
+
+
+                        <div>
+                            <content-recent-items :models="collections.concat(trees)" :open="3"></content-recent-items>
+                        </div>
+
 
                     </kiss-grid>
 
-                    <div class="kiss-margin" v-if="lists.length">
 
-                        <div class="kiss-margin kiss-text-caption kiss-text-bold kiss-color-muted kiss-size-small"><?= t('Lists') ?></div>
-
-                        <kiss-card class="kiss-margin-small kiss-flex animated fadeIn" theme="shadowed contrast" hover="shadow bordered-primary" v-for="model in lists">
-                            <div class="kiss-position-relative kiss-padding-small kiss-bgcolor-contrast">
-                                <canvas width="40" height="40"></canvas>
-                                <div class="kiss-cover kiss-flex kiss-flex-middle kiss-flex-center">
-                                    <div :style="{color: model.color || 'inherit' }"><kiss-svg :src="$baseUrl(model.icon || 'content:assets/icons/'+model.type+'.svg')" width="30" height="30"></kiss-svg></div>
-                                </div>
-                                <a class="kiss-cover" :href="$routeUrl(`/content/${model.type}/items/${model.name}`)" :aria-label="model.label || model.name"></a>
-                            </div>
-                            <div class="kiss-padding-small kiss-flex-1 kiss-position-relative">
-                                <div class="kiss-size-small kiss-text-bold kiss-text-truncate">{{ model.label || model.name }}</div>
-                                <div class="kiss-margin-xsmall-top kiss-color-muted kiss-size-xsmall kiss-text-truncate">{{model.info || model.type}}</div>
-                                <a class="kiss-cover" :href="$routeUrl(`/content/${model.type}/items/${model.name}`)" :aria-label="model.label || model.name"></a>
-                            </div>
-                            <a class="kiss-padding-small" @click="toggleModelActions(model)">
-                                <icon>more_horiz</icon>
-                            </a>
-                        </kiss-card>
-
-                    </div>
                 </app-scrollcontainer>
 
             </div>
@@ -156,17 +203,22 @@
 
                 <kiss-card class="kiss-margin-small">
                     <span class="kiss-text-caption kiss-size-xsmall"><?= t('Models') ?></span>
-                    <div class="kiss-size-3 kiss-text-bold kiss-margin-small-top">{{ (singletons.length + lists.length) }}</div>
+                    <div class="kiss-size-3 kiss-text-bold kiss-margin-small-top">{{ (singletons.length + collections.length + trees.length) }}</div>
                 </kiss-card>
 
                 <kiss-grid cols="2" gap="small" v-if="!filterModelType">
-                    <kiss-card class="kiss-padding-small" theme="bordered">
-                        <span class="kiss-text-caption kiss-size-xsmall kiss-color-muted"><?= t('Lists') ?></span>
-                        <div class="kiss-size-3 kiss-color-muted">{{ lists.length }}</div>
-                    </kiss-card>
+                    
                     <kiss-card class="kiss-padding-small" theme="bordered">
                         <span class="kiss-text-caption kiss-size-xsmall kiss-color-muted"><?= t('Singletons') ?></span>
                         <div class="kiss-size-3 kiss-color-muted">{{ singletons.length }}</div>
+                    </kiss-card>
+                    <kiss-card class="kiss-padding-small" theme="bordered">
+                        <span class="kiss-text-caption kiss-size-xsmall kiss-color-muted"><?= t('Collections') ?></span>
+                        <div class="kiss-size-3 kiss-color-muted">{{ collections.length }}</div>
+                    </kiss-card>
+                    <kiss-card class="kiss-padding-small" theme="bordered">
+                        <span class="kiss-text-caption kiss-size-xsmall kiss-color-muted"><?= t('Trees') ?></span>
+                        <div class="kiss-size-3 kiss-color-muted">{{ trees.length }}</div>
                     </kiss-card>
                 </kiss-grid>
             </teleport>
@@ -182,15 +234,22 @@
                         actionModel: null,
                         group: null,
                         filter: '',
-                        filterModelType: null
+                        filterModelType: null,
+                        
                     }
+                },
+
+                components: {
+                    'content-recent-items': Vue.defineAsyncComponent(() =>
+                        App.utils.import('content:assets/vue-components/content-recent-items.js')
+                    )
                 },
 
                 computed: {
 
-                    lists() {
+                    collections() {
 
-                        if (this.filterModelType && this.filterModelType != 'lists') {
+                        if (this.filterModelType && this.filterModelType != 'collections') {
                             return [];
                         }
 
@@ -200,7 +259,23 @@
                                 return false;
                             }
 
-                            return ['collection', 'tree'].includes(model.type) && (!this.group || this.group == model.group);
+                            return ['collection'].includes(model.type) && (!this.group || this.group == model.group);
+                        });
+                    },
+
+                    trees() {
+
+                        if (this.filterModelType && this.filterModelType != 'trees') {
+                            return [];
+                        }
+
+                        return this.models.filter(model => {
+
+                            if (this.filter && !`${model.name} ${model.label}`.toLocaleLowerCase().includes(this.filter.toLocaleLowerCase())) {
+                                return false;
+                            }
+
+                            return ['tree'].includes(model.type) && (!this.group || this.group == model.group);
                         });
                     },
 
@@ -285,7 +360,8 @@
                                 App.ui.notify(rsp.error || 'Duplicating model failed!', 'error');
                             });
                         });
-                    }
+                    },
+
                 }
             }
         </script>
