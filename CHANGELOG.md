@@ -7,6 +7,7 @@
 - Improve RedisLite and ESQL lib
 - Fix missing fixToHeight method for image api
 - Add image assets preset support
+- Fix nested _id filtering (mongodb)
 
 
 ## 2.12.0 (2025-08-01)

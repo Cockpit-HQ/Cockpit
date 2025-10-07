@@ -385,31 +385,10 @@ class Mongo {
                 $data[$k] = $this->_fixForMongo($data[$k], $infinite, $_level + 1);
             }
 
-            if ($k === '_id' || str_ends_with($k, '._id')) {
-
-                if (is_string($v) && isset($v[0])) {
-                    $v = $this->getObjectID($v);
-                } elseif (is_array($v)) {
-
-                    if (isset($v['$in'])) {
-
-                        foreach ($v['$in'] as &$id) {
-                            $id = $this->getObjectID($id);
-                        }
-                    }
-
-                    if (isset($v['$nin'])) {
-
-                        foreach ($v['$nin'] as &$id) {
-                            $id = $this->getObjectID($id);
-                        }
-                    }
-
-                    if (isset($v['$ne']) && is_string($v['$ne'])) {
-                        $v['$ne'] = $this->getObjectID($v['$ne']);
-                    }
-
-                }
+            if ($k === '_id') {
+                $v = $this->normalizeIdFilterValue($v, false);
+            } elseif (str_ends_with($k, '._id')) {
+                $v = $this->normalizeIdFilterValue($v, true);
             }
 
             // eg ArrayObject
@@ -426,17 +405,69 @@ class Mongo {
         return $data;
     }
 
-    protected function getObjectID($v) {
+    protected function normalizeIdFilterValue(mixed $v, bool $nested, int $depth = 0, int $maxDepth = 8, int $maxList = 1000): mixed {
+
+        if ($depth >= $maxDepth) {
+            return $v;
+        }
 
         if (is_string($v)) {
-
-            if (isset($v[0]) && $v[0] === '@') {
+            if (str_starts_with($v, '@')) {
                 return substr($v, 1);
             }
+            if ($nested) {
+                if (str_starts_with($v, '#')) {
+                    return $this->getObjectID(substr($v, 1));
+                }
+                return $v;
+            }
+            return $this->getObjectID($v);
+        }
 
-            try {
-                $v = new ObjectID($v);
-            } catch (\Throwable $e) {}
+        if (is_array($v)) {
+            if (isset($v['$in']) && is_array($v['$in'])) {
+                if (count($v['$in']) > $maxList) {
+                    $v['$in'] = array_slice($v['$in'], 0, $maxList);
+                }
+                foreach ($v['$in'] as &$id) {
+                    if (is_string($id)) {
+                        $id = $this->normalizeIdFilterValue($id, $nested, $depth + 1, $maxDepth, $maxList);
+                    }
+                }
+                unset($id);
+            }
+            if (isset($v['$nin']) && is_array($v['$nin'])) {
+                if (count($v['$nin']) > $maxList) {
+                    $v['$nin'] = array_slice($v['$nin'], 0, $maxList);
+                }
+                foreach ($v['$nin'] as &$id) {
+                    if (is_string($id)) {
+                        $id = $this->normalizeIdFilterValue($id, $nested, $depth + 1, $maxDepth, $maxList);
+                    }
+                }
+                unset($id);
+            }
+            if (array_key_exists('$ne', $v) && is_string($v['$ne'])) {
+                $v['$ne'] = $this->normalizeIdFilterValue($v['$ne'], $nested, $depth + 1, $maxDepth, $maxList);
+            }
+            return $v;
+        }
+
+        return $v;
+    }
+
+    protected function getObjectID($v) {
+
+        if (!is_string($v)) {
+            return $v;
+        }
+
+        if (str_starts_with($v, '@')) {
+            return substr($v, 1);
+        }
+
+        if (strlen($v) === 24 && ctype_xdigit($v)) {
+            try { return new ObjectID($v); } catch (\Throwable $e) { return $v; }
         }
 
         return $v;

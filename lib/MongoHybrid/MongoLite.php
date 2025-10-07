@@ -322,7 +322,7 @@ class MongoLite {
 
     protected function getObjectID($v) {
 
-        if (is_string($v) && isset($v[0]) && $v[0] === '@') {
+        if (is_string($v) && isset($v[0]) && ($v[0] === '@'  || $v[0] === '#')) {
             return substr($v, 1);
         }
 
