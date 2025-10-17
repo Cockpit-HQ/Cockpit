@@ -1,4 +1,4 @@
-@import url(../vendor/uppy/uppy.css);
+@import url(../vendor/uppy/uppy.css?v=5.1.6);
 
 .uppy-Dashboard--modal.uppy-Dashboard--animateOpenClose > .uppy-Dashboard-overlay {
     backdrop-filter: grayscale(1) blur(4.5px);
@@ -41,6 +41,7 @@
     background-color: var(--kiss-color-primary);
     color: #fff;
     font-size: .9em;
+    padding: 13px 22px;
 }
 
 .uppy-DashboardTab-btn:active,
@@ -89,4 +90,8 @@
 
 .uppy-Dashboard-close {
     color: var(--kiss-base-text-color);
+}
+
+.uppy-StatusBar {
+    height: 75px;
 }
