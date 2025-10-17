@@ -167,7 +167,9 @@ class Model extends \Lime\Helper {
         if ($this->storage === 'database') {
             $this->app->dataStorage->remove('content/models', ['name' => $name]);
         } else {
-            $this->app->helper('fs')->delete("#storage:content/{$name}.model.php");
+            $metapath = $this->app->path("#storage:content/{$name}.model.php");
+            $this->app->helper('fs')->delete($metapath);
+            if (function_exists('opcache_invalidate')) opcache_invalidate($metapath, true);
         }
 
         if ($model['type'] == 'singleton') {
