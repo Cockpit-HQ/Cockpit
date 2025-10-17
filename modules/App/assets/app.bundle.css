@@ -4006,6 +4006,67 @@ select.kiss-input {
     padding: .3em .3em;
     font-size: .8em;
 }
+@supports (appearance: base-select) {
+    
+
+    .kiss-overlay-input {
+        
+        select,
+        ::picker(select) {
+            appearance: base-select;
+            border-radius: var(--app-border-radius);
+            background: none;
+
+            hr {
+                margin: 0 auto;
+                background: var(--kiss-input-border-color);
+            }
+        }
+
+        ::picker(select) {
+            border: none;
+            color: var(--kiss-base-text-color);
+            background-color: var(--kiss-base-background-color);
+            font-size: .9em;
+            line-height: 2;
+            opacity: 0;
+            transition: all 0.4s allow-discrete;
+        }
+
+        ::picker(select):popover-open {
+            opacity: 1;
+        }
+
+        @starting-style {
+            ::picker(select):popover-open {
+                opacity: 0;
+            }
+        }
+
+        option {
+            background: var(--kiss-base-background-color);
+            color: var(--kiss-base-text-color);
+            padding: 4px 8px;
+            border-left: 1px var(--kiss-input-border-color) solid;
+            border-right: 1px var(--kiss-input-border-color) solid;
+        }
+
+        option:first-of-type {
+            border-top: 1px var(--kiss-input-border-color) solid;
+            border-radius: var(--app-border-radius) var(--app-border-radius) 0 0;
+        }
+
+        option:last-of-type {
+            border-bottom: 1px var(--kiss-input-border-color) solid;
+            border-radius: 0 0 var(--app-border-radius) var(--app-border-radius);
+        }
+
+        option:hover {
+            background: var(--kiss-color-primary);
+            color: #fff;
+        }
+    }
+}
 .kiss-disabled,
 .kiss-nav-header { opacity: .6; }
 kiss-offcanvas kiss-navlist ul > li > a,
