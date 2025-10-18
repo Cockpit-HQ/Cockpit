@@ -30,7 +30,7 @@ bun.lockb
 /lib/**/vendor-bin/*
 /lib/**/\.travis/*
 /lib/**/\.travis.yml
-/modules/App/assets/vendor/**/index.html
+/modules/App/assets/vendor/**/*.html
 /modules/App/assets/vendor/**/test.js
 /storage/*.*
 /storage/*/*
