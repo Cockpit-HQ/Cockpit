@@ -58,9 +58,11 @@
 
                 <div class="kiss-margin">
 
-                    <button class="kiss-button kiss-button-small kiss-overlay-input kiss-margin-small-right" :class="{'kiss-button-primary': state !== false}" type="button">
-                        <span class="kiss-margin-small-right">{{ selectedState }}</span>
-                        <icon>expand_more</icon>
+                    <div class="kiss-overlay-input">
+                        <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': state !== false}" type="button">
+                            <span class="kiss-margin-small-right">{{ selectedState }}</span>
+                            <icon>expand_more</icon>
+                        </button>
                         <select v-model="state">
                             <option :value="false">{{ t('All') }}</option>
                             <hr />
@@ -68,7 +70,7 @@
                             <option :value="0">{{ t('Unpublished') }}</option>
                             <option :value="-1">{{ t('Archive') }}</option>
                         </select>
-                    </button>
+                    </div>
 
                 </div>
             </div>
