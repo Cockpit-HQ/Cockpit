@@ -127,7 +127,7 @@
                         </div>
 
 
-                        <div>
+                        <div v-if="(collections.length + trees.length) > 0">
                             <content-recent-items :models="collections.concat(trees)" :open="3"></content-recent-items>
                         </div>
 
