@@ -11,6 +11,7 @@
 - Enhance field-object component to support strict JSON mode
 - Enhance field-boolean component with integer mode support
 - Update Uppy.js from v4 to v5
+- Fix missing _id on assets folder creation (mongodb)
 
 
 ## 2.12.0 (2025-08-01)

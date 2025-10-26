@@ -10,7 +10,6 @@ export default {
             val: this.folder ? JSON.parse(JSON.stringify(this.folder)) : {
                 name: '',
                 _p: this.parent || '',
-                _id: null,
                 icon: null
             },
             loading: false,
