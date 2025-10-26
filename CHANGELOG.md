@@ -1,6 +1,6 @@
 # Release Notes
 
-## WIP
+## 2.12.1 (2025-10-26)
 
 - Fix Identi module usage with spaces
 - Fix video preview in assets manager spotlight
