@@ -23,7 +23,7 @@ export default {
             limit: App.storage.get('assets.manager.limit', 15),
 
             sort: App.storage.get('assets.manager.sort', {_created: -1}),
-            sortOptions: {title: 'Title', _created: App.i18n.get('Created'), size: 'Size'},
+            sortOptions: {title: 'Title', _created: 'Created', size: 'Size'},
 
             view: App.session.get('assets.manager.view', 'cards'),
 
@@ -447,7 +447,7 @@ export default {
                     <div class="kiss-margin-left">
                         <a @click="sort[sortKey] = sortDir == -1 ? 1 : -1"><icon>{{ sortDir == 1 ? 'arrow_downward':'arrow_upward' }}</icon></a>
                         <div class="kiss-margin-xsmall-left kiss-overlay-input">
-                            <span class="kiss-color-muted">{{ sortOptions[sortKey]}}</span>
+                            <span class="kiss-color-muted">{{ t(sortOptions[sortKey]) }}</span>
                             <select @change="updateSortBy">
                                 <option v-for="(lbl, key) in sortOptions" :value="key" :selected="key==sortKey">{{ t(lbl) }}</option>
                             </select>
@@ -493,7 +493,7 @@ export default {
                             <div class="kiss-margin-left">
                                 <a @click="sort[sortKey] = sortDir == -1 ? 1 : -1"><icon>{{ sortDir == 1 ? 'arrow_downward':'arrow_upward' }}</icon></a>
                                 <div class="kiss-margin-xsmall-left kiss-overlay-input">
-                                    <span class="kiss-color-muted">{{ sortOptions[sortKey]}}</span>
+                                    <span class="kiss-color-muted">{{ t(sortOptions[sortKey]) }}</span>
                                     <select @change="updateSortBy">
                                         <option v-for="(lbl, key) in sortOptions" :value="key" :selected="key==sortKey">{{ t(lbl) }}</option>
                                     </select>
