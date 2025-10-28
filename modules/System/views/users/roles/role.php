@@ -77,7 +77,7 @@ foreach ($permissions as $key => $meta) {
 
                         <div v-if="!meta.component">
                             <div class="kiss-margin-small kiss-size-small" v-for="(label, permission) in meta">
-                                <field-boolean v-model="role.permissions[permission]" :label="label"></field-boolean>
+                                <field-boolean v-model="role.permissions[permission]" :label="t(label)"></field-boolean>
                             </div>
                         </div>
 
