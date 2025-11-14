@@ -13,15 +13,15 @@ require(__DIR__.'/bootstrap.php');
  * Collect needed paths
  */
 $APP_SPACE_DIR = __DIR__;
-$APP_DIR = str_replace(DIRECTORY_SEPARATOR, '/', __DIR__);
-$APP_DOCUMENT_ROOT = str_replace(DIRECTORY_SEPARATOR, '/', isset($_SERVER['DOCUMENT_ROOT']) ? realpath($_SERVER['DOCUMENT_ROOT']) : __DIR__);
+$APP_DIR = __DIR__;
+$APP_DOCUMENT_ROOT = realpath($_SERVER['DOCUMENT_ROOT'] ?? __DIR__);
 
 # make sure that $_SERVER['DOCUMENT_ROOT'] is set correctly
-if (strpos($APP_DIR, $APP_DOCUMENT_ROOT)!==0 && isset($_SERVER['SCRIPT_NAME'])) {
-    $APP_DOCUMENT_ROOT = str_replace(dirname(str_replace(DIRECTORY_SEPARATOR, '/', $_SERVER['SCRIPT_NAME'])), '', $APP_DIR);
+if (!str_starts_with($APP_DIR, $APP_DOCUMENT_ROOT) && isset($_SERVER['SCRIPT_NAME'])) {
+    $APP_DOCUMENT_ROOT = str_replace(dirname($_SERVER['SCRIPT_NAME']), '', $APP_DIR);
 }
 
-// Support php debug webserver: e.g. php -S localhost:8080 index.php
+// Support php cli-server: e.g. php -S localhost:8080 index.php
 if (PHP_SAPI == 'cli-server') {
 
     $file  = $_SERVER['SCRIPT_FILENAME'];
@@ -31,25 +31,55 @@ if (PHP_SAPI == 'cli-server') {
     /* "dot" routes (see: https://bugs.php.net/bug.php?id=61286) */
     $_SERVER['PATH_INFO'] = explode('?', $_SERVER['REQUEST_URI'] ?? '')[0];
 
-    /* static files (eg. assets/app/css/style.css) */
+    /* static files (e.g. assets/app/css/style.css) */
     if (is_file($file) && $path['extension'] != 'php') {
         return false;
     }
 
     /* index files (eg. install/index.php) */
-    if (is_file($index) && $index != __FILE__) {
+    if ($index !== __FILE__ && is_file($index)) {
         include($index);
         return;
     }
 
-    $APP_BASE = "";
-    $APP_BASE_URL = "";
+    // handle static space storage files
+    if (str_starts_with($_SERVER['PATH_INFO'], '/:') && str_contains($_SERVER['PATH_INFO'], '/storage/')) {
+
+        $spaceFilePath = APP_SPACES_DIR.'/'.trim(substr($_SERVER['PATH_INFO'], 2), '/');
+        $path  = pathinfo($spaceFilePath);
+
+        if (is_file($spaceFilePath)) {
+
+            if ($path['extension'] === 'php') {
+                include($spaceFilePath);
+            } else {
+
+                $mimeType = (new finfo(FILEINFO_MIME_TYPE))->file($spaceFilePath);
+
+                header('Content-Description: File Transfer');
+                header("Content-Type: {$mimeType}");
+                header('Expires: 0');
+                header('Cache-Control: must-revalidate');
+                header('Pragma: public');
+                header('Content-Length: ' . filesize($spaceFilePath));
+
+                $fp = fopen($spaceFilePath, 'rb');
+                fpassthru($fp);
+                fclose($fp);
+            }
+
+            exit;
+        }
+    }
+
+    $APP_BASE = '';
+    $APP_BASE_URL = '';
     $APP_BASE_ROUTE  = $APP_BASE_URL;
     $APP_ROUTE = $_SERVER['PATH_INFO'];
 
 } else {
 
-    $APP_BASE        = trim(str_replace($APP_DOCUMENT_ROOT, '', $APP_DIR), "/");
+    $APP_BASE        = trim(str_replace($APP_DOCUMENT_ROOT, '', $APP_DIR), DIRECTORY_SEPARATOR);
     $APP_BASE_URL    = strlen($APP_BASE) ? "/{$APP_BASE}": $APP_BASE;
     $APP_BASE_ROUTE  = $APP_BASE_URL;
     $APP_ROUTE       = preg_replace('#'.preg_quote($APP_BASE_URL, '#').'#', '', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), 1);
@@ -58,7 +88,7 @@ if (PHP_SAPI == 'cli-server') {
 $APP_SPACE = null;
 
 // support /:space/* to load custom cockpit instance from /.spaces/*
-if ($APP_ROUTE && substr($APP_ROUTE, 0, 2) == '/:') {
+if ($APP_ROUTE && str_starts_with($APP_ROUTE, '/:')) {
 
     $parts    = explode('/', $APP_ROUTE);
     $space    = substr($parts[1], 1);
@@ -81,13 +111,32 @@ if ($APP_ROUTE == '') {
 
 define('APP_DOCUMENT_ROOT', $APP_DOCUMENT_ROOT);
 define('APP_BASE_URL', $APP_BASE_URL);
-define('APP_API_REQUEST', strpos($APP_ROUTE, '/api/') === 0 ? 1:0);
+define('APP_API_REQUEST', str_starts_with($APP_ROUTE, '/api/') ? 1 : 0);
 
-$app = Cockpit::instance($APP_SPACE_DIR, [
+$appOptions = [
     'app_space' => $APP_SPACE,
     'base_route' => $APP_BASE_ROUTE,
     'base_url' => $APP_BASE_URL
-]);
+];
+
+if ($APP_SPACE) {
+
+    $masterConfig = [];
+
+    if (file_exists("{$APP_DIR}/config/config.php")) {
+        $masterConfig = include("{$APP_DIR}/config/config.php");
+    }
+
+    if (isset($masterConfig['site_url']) && $masterConfig['site_url']) {
+        $appOptions['site_url'] = $masterConfig['site_url'];
+    }
+
+    if (isset($masterConfig['app.name']) && $masterConfig['app.name']) {
+        $appOptions['app.name'] = $masterConfig['app.name'];
+    }
+}
+
+$app = Cockpit::instance($APP_SPACE_DIR, $appOptions);
 
 $GLOBALS['APP'] = $app;
 

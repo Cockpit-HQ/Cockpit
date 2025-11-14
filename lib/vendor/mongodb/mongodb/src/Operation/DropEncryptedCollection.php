@@ -21,9 +21,8 @@ use MongoDB\Driver\Exception\RuntimeException as DriverRuntimeException;
 use MongoDB\Driver\Server;
 use MongoDB\Exception\InvalidArgumentException;
 
-use function is_array;
-use function is_object;
 use function MongoDB\document_to_array;
+use function MongoDB\is_document;
 
 /**
  * Drop an encrypted collection.
@@ -38,13 +37,12 @@ use function MongoDB\document_to_array;
  * @see https://github.com/mongodb/specifications/blob/master/source/client-side-encryption/client-side-encryption.rst#drop-collection-helper
  * @see https://www.mongodb.com/docs/manual/core/queryable-encryption/fundamentals/manage-collections/
  */
-class DropEncryptedCollection implements Executable
+final class DropEncryptedCollection
 {
-    /** @var DropCollection */
-    private $dropCollection;
+    private DropCollection $dropCollection;
 
-    /** @var DropCollection[] */
-    private $dropMetadataCollections;
+    /** @var list<DropCollection> */
+    private array $dropMetadataCollections;
 
     /**
      * Constructs an operation to drop an encrypted collection and its related
@@ -68,8 +66,8 @@ class DropEncryptedCollection implements Executable
             throw new InvalidArgumentException('"encryptedFields" option is required');
         }
 
-        if (! is_array($options['encryptedFields']) && ! is_object($options['encryptedFields'])) {
-            throw InvalidArgumentException::invalidType('"encryptedFields" option', $options['encryptedFields'], ['array', 'object']);
+        if (! is_document($options['encryptedFields'])) {
+            throw InvalidArgumentException::expectedDocumentType('"encryptedFields" option', $options['encryptedFields']);
         }
 
         /** @psalm-var array{ecocCollection?: ?string, escCollection?: ?string} */
@@ -86,17 +84,13 @@ class DropEncryptedCollection implements Executable
         $this->dropCollection = new DropCollection($databaseName, $collectionName, $options);
     }
 
-    /**
-     * @see Executable::execute()
-     * @return array|object Command result document from dropping the encrypted collection
-     * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
-     */
-    public function execute(Server $server)
+    /** @throws DriverRuntimeException for other driver errors (e.g. connection errors) */
+    public function execute(Server $server): void
     {
         foreach ($this->dropMetadataCollections as $dropMetadataCollection) {
             $dropMetadataCollection->execute($server);
         }
 
-        return $this->dropCollection->execute($server);
+        $this->dropCollection->execute($server);
     }
 }

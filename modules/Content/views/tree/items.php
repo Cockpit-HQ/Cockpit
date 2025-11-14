@@ -18,11 +18,11 @@
                 </a>
 
                 <div class="kiss-margin-small-right">
-                    <div class="kiss-size-5 kiss-text-bold"><?= $this->escape($model['label'] ? $model['label'] : $model['name']) ?></div>
+                    <div class="kiss-size-4 kiss-text-bold"><?= $this->escape($model['label'] ? $model['label'] : $model['name']) ?></div>
                 </div>
 
-                <kiss-card class="kiss-flex kiss-flex-middle kiss-overlay-input kiss-padding-small kiss-margin-small-right" theme="contrast shadowed" v-if="hasLocalization">
-                    <icon class="kiss-margin-xsmall-right">language</icon>
+                <kiss-card class="kiss-flex kiss-flex-middle kiss-overlay-input kiss-padding-small kiss-margin-small-right" gap="small" theme="contrast shadowed" v-if="hasLocalization">
+                    <icon size="larger">language</icon>
                     <span class="kiss-size-small kiss-text-caption kiss-text-bolder">{{ App._locales[this.locale] }}</span>
                     <select v-model="locale"><option :value="i18n" v-for="(label,i18n) in App._locales">{{label}}</option></select>
                 </kiss-card>
@@ -36,7 +36,9 @@
 
             <form class="kiss-flex kiss-margin" :class="{'kiss-disabled': loading}" @submit.prevent="filter = txtFilter">
 
-                <input type="text" class="kiss-input kiss-flex-1 kiss-margin-xsmall-right" :placeholder="t('Filter items...')" v-model="txtFilter">
+                <app-textcomplete class="kiss-flex-1 kiss-margin-xsmall-right" :items="model.fields.map(f => f.name)" trigger="@">
+                    <input type="text" class="kiss-input" :placeholder="t('Filter items...')" v-model="txtFilter">
+                </app-textcomplete>
 
                 <div class="kiss-button-group kiss-margin-small-left">
                     <button type="button" class="kiss-button" @click="filter = ''" v-if="filter"><?=t('Reset')?></button>
@@ -59,7 +61,7 @@
                     <kiss-card class="kiss-padding-small kiss-flex kiss-flex-middle kiss-margin-xsmall" theme="bordered contrast">
                         <div class="kiss-position-relative kiss-flex-1">
                             <tree-item :model="model" :item="item"></tree-item>
-                            <a class="kiss-cover" :href="$route('/content/tree/item/'+model.name+'/'+item._id)"></a>
+                            <a class="kiss-cover" :href="$routeUrl('/content/tree/item/'+model.name+'/'+item._id)"></a>
                         </div>
                         <a class="kiss-margin-small-left" @click="createItem(item._id)"><icon>create_new_folder</icon></a>
                         <a class="kiss-margin-small-left kiss-color-danger" @click="remove(item)"><icon>delete</icon></a>
@@ -68,7 +70,7 @@
             </div>
 
             <div v-if="loading !== true && (!filter) && Array.isArray(items) && items.length">
-                <items-tree :model="model" :items="items" :locale="locale" :allow-moving="allowMoving"></items-tree>
+                <items-tree :model="model" v-model="items" :locale="locale" :allow-moving="allowMoving"></items-tree>
             </div>
 
             <app-loader v-if="loading === null || loading === true"></app-loader>
@@ -106,7 +108,6 @@
                 },
 
                 mounted() {
-
                     this.load();
                 },
 
@@ -206,7 +207,7 @@
                     },
 
                     createItem(pid = null) {
-                        location.href = this.$route(`/content/tree/item/${this.model.name}?pid=${pid}`);
+                        location.href = this.$routeUrl(`/content/tree/item/${this.model.name}?pid=${pid}`);
                     }
                 }
             }

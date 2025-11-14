@@ -1,4 +1,4 @@
-@import url(../vendor/uppy/uppy.css);
+@import url(../vendor/uppy/uppy.css?v=5.1.6);
 
 .uppy-Dashboard--modal.uppy-Dashboard--animateOpenClose > .uppy-Dashboard-overlay {
     backdrop-filter: grayscale(1) blur(4.5px);
@@ -41,11 +41,12 @@
     background-color: var(--kiss-color-primary);
     color: #fff;
     font-size: .9em;
+    padding: 13px 22px;
 }
 
 .uppy-DashboardTab-btn:active,
 .uppy-DashboardTab-btn:focus {
-    color: inherit;
+    color: #fff;
 }
 
 
@@ -53,6 +54,12 @@
 .uppy-Dashboard-note,
 .uppy-StatusBar-content {
     color: var(--kiss-color-muted);
+}
+
+.uppy-Dashboard-AddFiles-list .uppy-DashboardTab-inner {
+    border-radius: var(--app-border-radius, 4px);
+    background-color: var(--kiss-color-contrast);
+    box-shadow: none;
 }
 
 .uppy-DashboardContent-addMore:focus,
@@ -83,4 +90,8 @@
 
 .uppy-Dashboard-close {
     color: var(--kiss-base-text-color);
+}
+
+.uppy-StatusBar {
+    height: 75px;
 }

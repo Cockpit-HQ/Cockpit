@@ -19,17 +19,6 @@
 
                     <kiss-grid cols="3@m" gap="small">
 
-                        <kiss-card class="kiss-flex kiss-padding kiss-position-relative" theme="bordered" :class="model.type == 'singleton' ? '': 'kiss-color-muted'" :style="{borderColor:model.type == 'singleton' ? 'var(--kiss-color-primary)': null}">
-                            <div class="kiss-margin-small-right"><kiss-svg src="<?=$this->base('content:assets/icons/singleton.svg')?>" width="30" height="30"><canvas width="30" height="30"></canvas></kiss-svg></div>
-                            <div class="kiss-size-small">
-                                <strong>{{ t('Singleton') }}</strong>
-                                <div class="kiss-size-xsmall kiss-color-muted kiss-margin-xsmall-top">
-                                    <?=t('Model has one single item')?>
-                                </div>
-                            </div>
-                            <a class="kiss-cover" @click="model.type = 'singleton'"></a>
-                        </kiss-card>
-
                         <kiss-card class="kiss-flex kiss-padding kiss-position-relative kiss-padding" theme="bordered" :class="model.type == 'collection' ? '': 'kiss-color-muted'" :style="{borderColor:model.type == 'collection' ? 'var(--kiss-color-primary)': null}">
                             <div class="kiss-margin-small-right"><kiss-svg src="<?=$this->base('content:assets/icons/collection.svg')?>" width="30" height="30"><canvas width="30" height="30"></canvas></kiss-svg></div>
                             <div class="kiss-size-small">
@@ -50,6 +39,17 @@
                                 </div>
                             </div>
                             <a class="kiss-cover" @click="model.type = 'tree'"></a>
+                        </kiss-card>
+
+                        <kiss-card class="kiss-flex kiss-padding kiss-position-relative" theme="bordered" :class="model.type == 'singleton' ? '': 'kiss-color-muted'" :style="{borderColor:model.type == 'singleton' ? 'var(--kiss-color-primary)': null}">
+                            <div class="kiss-margin-small-right"><kiss-svg src="<?=$this->base('content:assets/icons/singleton.svg')?>" width="30" height="30"><canvas width="30" height="30"></canvas></kiss-svg></div>
+                            <div class="kiss-size-small">
+                                <strong>{{ t('Singleton') }}</strong>
+                                <div class="kiss-size-xsmall kiss-color-muted kiss-margin-xsmall-top">
+                                    <?=t('Model has one single item')?>
+                                </div>
+                            </div>
+                            <a class="kiss-cover" @click="model.type = 'singleton'"></a>
                         </kiss-card>
 
                     </kiss-grid>
@@ -102,30 +102,27 @@
                         </tab>
                         <tab :caption="t('Preview')">
 
-                            <kiss-card class="animated fadeIn kiss-padding kiss-align-center kiss-text-caption" theme="bordered contrast" v-if="!model.preview.length">
+                            <kiss-card class="animated fadeIn kiss-padding kiss-align-center kiss-text-caption" theme="contrast" v-if="!model.preview.length">
                                 <div class="kiss-text-bold"><?=t('No content preview urls defined')?></div>
                             </kiss-card>
 
                             <vue-draggable v-model="model.preview" v-if="model.preview.length" handle=".fm-handle">
-                                <template #item="{ element }">
-                                    <kiss-card class="kiss-flex kiss-flex-middle kiss-margin-small">
-                                        <div class="kiss-margin-small-right">
-                                            <icon class="kiss-size-3" :class="{'kiss-color-muted': !(element.name && element.uri)}">visibility</icon>
-                                        </div>
-                                        <div class="kiss-width-1-4"><input type="text" class="kiss-input kiss-input-small" v-model="element.name" placeholder="<?=t('Name')?>"></div>
-                                        <div class="kiss-margin-small-left kiss-flex-1"><input type="url" class="kiss-input kiss-input-small" v-model="element.uri" placeholder="https://..."></div>
-                                        <a class="kiss-margin-small-left kiss-color-danger" @click="model.preview.splice(model.preview.indexOf(element), 1)"><icon>delete</icon></a>
-                                        <a class="fm-handle kiss-margin-small-left kiss-color-muted"><icon>drag_handle</icon></a>
-                                    </kiss-card>
-                                </template>
+
+                                <kiss-card class="kiss-flex kiss-flex-middle kiss-margin-small kiss-padding-small" gap="small" theme="bordered contrast" v-for="element in model.preview">
+                                    <a class="fm-handle kiss-color-muted"><icon>drag_handle</icon></a>
+                                    <div class="kiss-width-1-4"><input type="text" class="kiss-input kiss-input-small" v-model="element.name" placeholder="<?=t('Name')?>"></div>
+                                    <div class="kiss-flex-1"><input type="url" class="kiss-input kiss-input-small" v-model="element.uri" placeholder="https://..."></div>
+                                    <a class="kiss-color-danger" @click="model.preview.splice(model.preview.indexOf(element), 1)"><icon>delete</icon></a>
+                                </kiss-card>
+
                             </vue-draggable>
 
-                            <div class="kiss-margin kiss-align-center">
-                                <a class="kiss-size-large" @click="model.preview.push({name:'', uri:''})"><icon>control_point</icon></a>
+                            <div class="kiss-margin-small">
+                                <button type="button" class="kiss-button kiss-button-small" @click="model.preview.push({name:'', uri:''})"><icon class="kiss-margin-small-right">control_point</icon> {{ t('Add url') }}</button>
                             </div>
 
                         </tab>
-                        <tab :caption="'Other'">
+                        <tab :caption="t('Other')">
 
                             <div class="kiss-flex">
                                 <div class="kiss-flex-1">
@@ -173,9 +170,9 @@
                         <div class="kiss-flex kiss-flex-middle kiss-flex-right">
 
                             <div class="kiss-flex-1" v-if="isUpdate">
-                                <a class="kiss-button" :href="$route(`/content/tree/items/${model.name}`)" v-if="model.type == 'tree'"><?=t('Goto items')?></a>
-                                <a class="kiss-button" :href="$route(`/content/collection/items/${model.name}`)" v-if="model.type == 'collection'"><?=t('Goto items')?></a>
-                                <a class="kiss-button" :href="$route(`/content/singleton/item/${model.name}`)" v-if="model.type == 'singleton'"><?=t('Goto form')?></a>
+                                <a class="kiss-button" :href="$routeUrl(`/content/tree/items/${model.name}`)" v-if="model.type == 'tree'"><?=t('Goto items')?></a>
+                                <a class="kiss-button" :href="$routeUrl(`/content/collection/items/${model.name}`)" v-if="model.type == 'collection'"><?=t('Goto items')?></a>
+                                <a class="kiss-button" :href="$routeUrl(`/content/singleton/item/${model.name}`)" v-if="model.type == 'singleton'"><?=t('Goto form')?></a>
                             </div>
 
                             <div class="kiss-button-group">

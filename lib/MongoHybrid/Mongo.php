@@ -4,6 +4,7 @@ namespace MongoHybrid;
 
 use MongoDB\Client as MongoDBClient;
 use MongoDB\BSON\ObjectID;
+use MongoDB\Driver\Command;
 
 class Mongo {
 
@@ -20,6 +21,15 @@ class Mongo {
         $this->client  = new MongoDBClient($server, $options, $driverOptions);
         $this->db      = $this->client->selectDatabase($options['db']);
         $this->options = $options;
+    }
+
+    public function isValidId(string $objectId) {
+        try {
+            $id = new ObjectID($objectId);
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
     public function lstCollections(): array {
@@ -83,6 +93,54 @@ class Mongo {
 
         return true;
     }
+
+    public function createIndex(string $collectionName, array $key, array $options = []) {
+
+        $col = $this->getCollection($collectionName);
+
+        return $col->createIndex($key, $options);
+    }
+
+    public function dropIndex(string $collectionName, string $indexName, array $options = []) {
+
+        $col = $this->getCollection($collectionName);
+
+        if ($indexName === '*') {
+            return $col->dropIndexes($options);
+        }
+
+        return $col->dropIndex($indexName, $options);
+    }
+
+    public function lstIndexes(string $collectionName, array $options = []): array {
+
+        $indexes = [];
+
+        $col = $this->getCollection($collectionName);
+        $idxs = $col->listIndexes($options);
+
+        foreach ($idxs as $idx) {
+
+            $type = null;
+
+            if ($idx->isText()) {
+                $type = 'text';
+            } elseif ($idx->is2dSphere()) {
+                $type = '2dsphere';
+            }
+
+            $indexes[] = [
+                'name' => $idx->getName(),
+                'type' => $type,
+                'unique' => $idx->isUnique(),
+                'ttl' => $idx->isTtl(),
+                'sparse' => $idx->isSparse(),
+            ];
+        }
+
+        return $indexes;
+    }
+
 
     public function findOneById(string $collection, mixed $id): ?array {
 
@@ -150,9 +208,53 @@ class Mongo {
         return $resultSet;
     }
 
+    public function sum(string $collection, string $field, array $filter = []): int {
+
+        $filter = $this->_fixForMongo($filter, true);
+
+        $pipeline = [];
+
+        if (!empty($filter)) {
+            $pipeline[] = ['$match' => $filter];
+        }
+
+        $pipeline[] = [
+            '$group' => [
+                '_id' => null,
+                'total' => ['$sum' => '$'.$field]
+            ]
+        ];
+
+        $cursor = $this->getCollection($collection)->aggregate($pipeline);
+
+        return $cursor->toArray()[0]['total'] ?? 0;
+    }
+
+    public function avg(string $collection, string $field, array $filter = []): float {
+
+        $filter = $this->_fixForMongo($filter, true);
+
+        $pipeline = [];
+
+        if (!empty($filter)) {
+            $pipeline[] = ['$match' => $filter];
+        }
+
+        $pipeline[] = [
+            '$group' => [
+                '_id' => null,
+                'avg' => ['$avg' => '$'.$field]
+            ]
+        ];
+
+        $cursor = $this->getCollection($collection)->aggregate($pipeline);
+
+        return $cursor->toArray()[0]['avg'] ?? 0;
+    }
+
     public function getFindTermFilter($term) {
 
-        $terms = str_getcsv(trim($term), ' ');
+        $terms = str_getcsv(trim($term), ' ', escape: '\\');
 
         $filter = ['$where' => "function() { return JSON.stringify(this).indexOf('{$term}') > -1; }"];
 
@@ -284,30 +386,9 @@ class Mongo {
             }
 
             if ($k === '_id') {
-
-                if (is_string($v)) {
-                    $v = $v[0] === '@' ? \substr($v, 1) : $this->getObjectID($v);
-                } elseif (is_array($v)) {
-
-                    if (isset($v['$in'])) {
-
-                        foreach ($v['$in'] as &$id) {
-                            $id = $this->getObjectID($id);
-                        }
-                    }
-
-                    if (isset($v['$nin'])) {
-
-                        foreach ($v['$nin'] as &$id) {
-                            $id = $this->getObjectID($id);
-                        }
-                    }
-
-                    if (isset($v['$ne']) && is_string($v['$ne'])) {
-                        $v['$ne'] = $this->getObjectID($v['$ne']);
-                    }
-
-                }
+                $v = $this->normalizeIdFilterValue($v, false);
+            } elseif (str_ends_with($k, '._id')) {
+                $v = $this->normalizeIdFilterValue($v, true);
             }
 
             // eg ArrayObject
@@ -315,21 +396,78 @@ class Mongo {
                 $v = \json_decode(\json_encode($v), true);
             }
 
-            if (is_string($v) && strpos($v, '$DATE(') === 0) {
+            if (is_string($v) && str_starts_with($v, '$DATE(')) {
                 $format = trim(substr($v, 6, -1));
-                $v = date($format ? $format : 'Y-m-d');
+                $v = date($format ?: 'Y-m-d');
             }
         }
 
         return $data;
     }
 
-    protected function getObjectID($v) {
+    protected function normalizeIdFilterValue(mixed $v, bool $nested, int $depth = 0, int $maxDepth = 8, int $maxList = 1000): mixed {
+
+        if ($depth >= $maxDepth) {
+            return $v;
+        }
 
         if (is_string($v)) {
-            try {
-                $v = new ObjectID($v);
-            } catch (\Throwable $e) {}
+            if (str_starts_with($v, '@')) {
+                return substr($v, 1);
+            }
+            if ($nested) {
+                if (str_starts_with($v, '#')) {
+                    return $this->getObjectID(substr($v, 1));
+                }
+                return $v;
+            }
+            return $this->getObjectID($v);
+        }
+
+        if (is_array($v)) {
+            if (isset($v['$in']) && is_array($v['$in'])) {
+                if (count($v['$in']) > $maxList) {
+                    $v['$in'] = array_slice($v['$in'], 0, $maxList);
+                }
+                foreach ($v['$in'] as &$id) {
+                    if (is_string($id)) {
+                        $id = $this->normalizeIdFilterValue($id, $nested, $depth + 1, $maxDepth, $maxList);
+                    }
+                }
+                unset($id);
+            }
+            if (isset($v['$nin']) && is_array($v['$nin'])) {
+                if (count($v['$nin']) > $maxList) {
+                    $v['$nin'] = array_slice($v['$nin'], 0, $maxList);
+                }
+                foreach ($v['$nin'] as &$id) {
+                    if (is_string($id)) {
+                        $id = $this->normalizeIdFilterValue($id, $nested, $depth + 1, $maxDepth, $maxList);
+                    }
+                }
+                unset($id);
+            }
+            if (array_key_exists('$ne', $v) && is_string($v['$ne'])) {
+                $v['$ne'] = $this->normalizeIdFilterValue($v['$ne'], $nested, $depth + 1, $maxDepth, $maxList);
+            }
+            return $v;
+        }
+
+        return $v;
+    }
+
+    protected function getObjectID($v) {
+
+        if (!is_string($v)) {
+            return $v;
+        }
+
+        if (str_starts_with($v, '@')) {
+            return substr($v, 1);
+        }
+
+        if (strlen($v) === 24 && ctype_xdigit($v)) {
+            try { return new ObjectID($v); } catch (\Throwable $e) { return $v; }
         }
 
         return $v;

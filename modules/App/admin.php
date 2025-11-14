@@ -36,10 +36,6 @@ $this->bind('/app-event-stream', function() {
     // auto-cleanup unrelevant events
     $this->helper('eventStream')->cleanup();
 
-    if (strtotime('-5 minutes') > $lastCheck) {
-        return [];
-    }
-
     // get all events since last check
     $events = $this->helper('eventStream')->getEvents($lastCheck);
 
@@ -88,7 +84,11 @@ $this->on('app.admin.request', function(Lime\Request $request) {
         }
 
         $this->bind('/check-session', function() use($status) {
-            return compact('status');
+
+            $csrf = $status ? $this->helper('csrf')->token('app.csrf') : null;
+
+            return compact('status', 'csrf');
+
         }, $request->route == '/check-session');
 
         return;
@@ -100,19 +100,24 @@ $this->on('app.admin.request', function(Lime\Request $request) {
 
     $locale = $user && isset($user['i18n']) && $user['i18n'] ? $user['i18n'] : $i18n->locale;
 
-    if ($locale !== 'en' && $translationspath = $this->path("#config:i18n/{$locale}/App.php")) {
+    if ($locale !== 'en') {
 
         $i18n->locale = $locale;
+        $i18nConfigFolder = '#config:i18n';
+
+        if (!$this->helper('spaces')->isMaster() && !$this->path($i18nConfigFolder)) {
+            $i18nConfigFolder = '#app:config/i18n';
+        }
 
         foreach ($this->retrieve('modules')->getArrayCopy() as $m) {
 
             $name = basename($m->_dir);
+            $i18nPath = $this->path("{$i18nConfigFolder}/{$locale}/{$name}.php");
 
-            if ($translationspath = $this->path("#config:i18n/{$locale}/{$name}.php")) {
-                $i18n->load($translationspath, $locale);
-            } elseif($translationspath = $this->path("{$name}:i18n/{$locale}.json")) {
-                $i18n->load($translationspath, $locale);
-            }
+            if (!$i18nPath) $i18nPath = $this->path("{$name}:i18n/{$locale}.php");
+            if (!$i18nPath) continue;
+
+            $i18n->load($i18nPath, $locale);
         }
     }
 
@@ -138,6 +143,7 @@ $this->on('app.admin.request', function(Lime\Request $request) {
 
     // update session time
     $this->helper('session')->write('app.session.start', time());
+
 }, 1000);
 
 
@@ -147,7 +153,9 @@ $this->on('app.admin.request', function(Lime\Request $request) {
 $this->on('after', function() {
 
     // prevent possible clickjacking via iframe layer
-    $this->response->headers['X-Frame-Options'] = 'SAMEORIGIN';
+    if ($this->response->mime === 'html') {
+        $this->response->headers['X-Frame-Options'] = 'SAMEORIGIN';
+    }
 
     // handle error pages
     switch ($this->response->status) {

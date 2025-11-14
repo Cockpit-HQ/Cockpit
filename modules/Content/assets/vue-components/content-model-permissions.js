@@ -80,7 +80,7 @@ export default {
 
                             <div v-if="['collection', 'tree'].includes(model.type)">
                                 <span class="kiss-text-caption">{{ t('Items') }}</span>
-                                <kiss-row class="kiss-flex kiss-margin-xsmall kiss-size-small">
+                                <kiss-row class="kiss-flex kiss-margin-xsmall kiss-size-small" gap>
                                     <div><input class="kiss-checkbox kiss-margin-xsmall-right" type="checkbox" v-model="modelValue['content/'+name+'/read']"> <span :class="{'kiss-color-muted':!modelValue['content/'+name+'/read']}">{{ t('Read')}}</span></div>
                                     <div v-if="modelValue['content/'+name+'/read']"><input class="kiss-checkbox kiss-margin-xsmall-right" type="checkbox" v-model="modelValue['content/'+name+'/create']"> <span :class="{'kiss-color-muted':!modelValue['content/'+name+'/create']}">{{ t('Create') }}</span></div>
                                     <div v-if="modelValue['content/'+name+'/read']"><input class="kiss-checkbox kiss-margin-xsmall-right" type="checkbox" v-model="modelValue['content/'+name+'/update']"> <span :class="{'kiss-color-muted':!modelValue['content/'+name+'/update']}">{{ t('Update') }}</span></div>
@@ -92,7 +92,7 @@ export default {
 
                             <div v-if="model.type == 'singleton'">
                                 <span class="kiss-text-caption">{{ t('Data') }}</span>
-                                <kiss-row class="kiss-flex kiss-margin-xsmall kiss-size-small">
+                                <kiss-row class="kiss-flex kiss-margin-xsmall kiss-size-small" gap>
                                     <div><input class="kiss-checkbox kiss-margin-xsmall-right" type="checkbox" v-model="modelValue['content/'+name+'/read']"> <span :class="{'kiss-color-muted':!modelValue['content/'+name+'/read']}">{{ t('Read')}}</span></div>
                                     <div v-if="modelValue['content/'+name+'/read']"><input class="kiss-checkbox kiss-margin-xsmall-right" type="checkbox" v-model="modelValue['content/'+name+'/update']"> <span :class="{'kiss-color-muted':!modelValue['content/'+name+'/update']}">{{ t('Update') }}</span></div>
                                     <div v-if="modelValue['content/'+name+'/read']"><input class="kiss-checkbox kiss-margin-xsmall-right" type="checkbox" v-model="modelValue['content/'+name+'/publish']"> <span :class="{'kiss-color-muted':!modelValue['content/'+name+'/publish']}">{{ t('Publish') }}</span></div>

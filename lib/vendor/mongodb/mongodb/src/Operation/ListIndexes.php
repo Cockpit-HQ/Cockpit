@@ -18,15 +18,17 @@
 namespace MongoDB\Operation;
 
 use EmptyIterator;
+use Iterator;
 use MongoDB\Driver\Command;
+use MongoDB\Driver\CursorInterface;
 use MongoDB\Driver\Exception\CommandException;
 use MongoDB\Driver\Exception\RuntimeException as DriverRuntimeException;
 use MongoDB\Driver\Server;
 use MongoDB\Driver\Session;
 use MongoDB\Exception\InvalidArgumentException;
 use MongoDB\Model\CachingIterator;
-use MongoDB\Model\IndexInfoIterator;
-use MongoDB\Model\IndexInfoIteratorIterator;
+use MongoDB\Model\CallbackIterator;
+use MongoDB\Model\IndexInfo;
 
 use function is_integer;
 
@@ -36,19 +38,10 @@ use function is_integer;
  * @see \MongoDB\Collection::listIndexes()
  * @see https://mongodb.com/docs/manual/reference/command/listIndexes/
  */
-class ListIndexes implements Executable
+final class ListIndexes
 {
     private const ERROR_CODE_DATABASE_NOT_FOUND = 60;
     private const ERROR_CODE_NAMESPACE_NOT_FOUND = 26;
-
-    /** @var string */
-    private $databaseName;
-
-    /** @var string */
-    private $collectionName;
-
-    /** @var array */
-    private $options;
 
     /**
      * Constructs a listIndexes command.
@@ -69,31 +62,55 @@ class ListIndexes implements Executable
      * @param array  $options        Command options
      * @throws InvalidArgumentException for parameter/option parsing errors
      */
-    public function __construct(string $databaseName, string $collectionName, array $options = [])
+    public function __construct(private string $databaseName, private string $collectionName, private array $options = [])
     {
-        if (isset($options['maxTimeMS']) && ! is_integer($options['maxTimeMS'])) {
-            throw InvalidArgumentException::invalidType('"maxTimeMS" option', $options['maxTimeMS'], 'integer');
+        if (isset($this->options['maxTimeMS']) && ! is_integer($this->options['maxTimeMS'])) {
+            throw InvalidArgumentException::invalidType('"maxTimeMS" option', $this->options['maxTimeMS'], 'integer');
         }
 
-        if (isset($options['session']) && ! $options['session'] instanceof Session) {
-            throw InvalidArgumentException::invalidType('"session" option', $options['session'], Session::class);
+        if (isset($this->options['session']) && ! $this->options['session'] instanceof Session) {
+            throw InvalidArgumentException::invalidType('"session" option', $this->options['session'], Session::class);
         }
-
-        $this->databaseName = $databaseName;
-        $this->collectionName = $collectionName;
-        $this->options = $options;
     }
 
     /**
      * Execute the operation.
      *
-     * @see Executable::execute()
-     * @return IndexInfoIterator
+     * @return Iterator<int, IndexInfo>
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function execute(Server $server)
+    public function execute(Server $server): Iterator
     {
-        return $this->executeCommand($server);
+        $cmd = ['listIndexes' => $this->collectionName];
+
+        foreach (['comment', 'maxTimeMS'] as $option) {
+            if (isset($this->options[$option])) {
+                $cmd[$option] = $this->options[$option];
+            }
+        }
+
+        try {
+            /** @var CursorInterface<array> $cursor */
+            $cursor = $server->executeReadCommand($this->databaseName, new Command($cmd), $this->createOptions());
+            $cursor->setTypeMap(['root' => 'array', 'document' => 'array']);
+        } catch (CommandException $e) {
+            /* The server may return an error if the collection does not exist.
+             * Check for possible error codes (see: SERVER-20463) and return an
+             * empty iterator instead of throwing.
+             */
+            if ($e->getCode() === self::ERROR_CODE_NAMESPACE_NOT_FOUND || $e->getCode() === self::ERROR_CODE_DATABASE_NOT_FOUND) {
+                return new EmptyIterator();
+            }
+
+            throw $e;
+        }
+
+        return new CachingIterator(
+            new CallbackIterator(
+                $cursor,
+                fn (array $indexInfo): IndexInfo => new IndexInfo($indexInfo),
+            ),
+        );
     }
 
     /**
@@ -113,40 +130,5 @@ class ListIndexes implements Executable
         }
 
         return $options;
-    }
-
-    /**
-     * Returns information for all indexes for this collection using the
-     * listIndexes command.
-     *
-     * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
-     */
-    private function executeCommand(Server $server): IndexInfoIteratorIterator
-    {
-        $cmd = ['listIndexes' => $this->collectionName];
-
-        foreach (['comment', 'maxTimeMS'] as $option) {
-            if (isset($this->options[$option])) {
-                $cmd[$option] = $this->options[$option];
-            }
-        }
-
-        try {
-            $cursor = $server->executeReadCommand($this->databaseName, new Command($cmd), $this->createOptions());
-        } catch (CommandException $e) {
-            /* The server may return an error if the collection does not exist.
-             * Check for possible error codes (see: SERVER-20463) and return an
-             * empty iterator instead of throwing.
-             */
-            if ($e->getCode() === self::ERROR_CODE_NAMESPACE_NOT_FOUND || $e->getCode() === self::ERROR_CODE_DATABASE_NOT_FOUND) {
-                return new IndexInfoIteratorIterator(new EmptyIterator());
-            }
-
-            throw $e;
-        }
-
-        $cursor->setTypeMap(['root' => 'array', 'document' => 'array']);
-
-        return new IndexInfoIteratorIterator(new CachingIterator($cursor), $this->databaseName . '.' . $this->collectionName);
     }
 }

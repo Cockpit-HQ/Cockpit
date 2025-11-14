@@ -18,17 +18,15 @@
 namespace MongoDB\Command;
 
 use MongoDB\Driver\Command;
+use MongoDB\Driver\CursorInterface;
 use MongoDB\Driver\Exception\RuntimeException as DriverRuntimeException;
 use MongoDB\Driver\Server;
 use MongoDB\Driver\Session;
 use MongoDB\Exception\InvalidArgumentException;
-use MongoDB\Model\CachingIterator;
-use MongoDB\Operation\Executable;
 
-use function is_array;
 use function is_bool;
 use function is_integer;
-use function is_object;
+use function MongoDB\is_document;
 
 /**
  * Wrapper for the listCollections command.
@@ -36,14 +34,8 @@ use function is_object;
  * @internal
  * @see https://mongodb.com/docs/manual/reference/command/listCollections/
  */
-class ListCollections implements Executable
+final class ListCollections
 {
-    /** @var string */
-    private $databaseName;
-
-    /** @var array */
-    private $options;
-
     /**
      * Constructs a listCollections command.
      *
@@ -73,14 +65,14 @@ class ListCollections implements Executable
      * @param array  $options      Command options
      * @throws InvalidArgumentException for parameter/option parsing errors
      */
-    public function __construct(string $databaseName, array $options = [])
+    public function __construct(private string $databaseName, private array $options = [])
     {
         if (isset($options['authorizedCollections']) && ! is_bool($options['authorizedCollections'])) {
             throw InvalidArgumentException::invalidType('"authorizedCollections" option', $options['authorizedCollections'], 'boolean');
         }
 
-        if (isset($options['filter']) && ! is_array($options['filter']) && ! is_object($options['filter'])) {
-            throw InvalidArgumentException::invalidType('"filter" option', $options['filter'], 'array or object');
+        if (isset($options['filter']) && ! is_document($options['filter'])) {
+            throw InvalidArgumentException::expectedDocumentType('"filter" option', $options['filter']);
         }
 
         if (isset($options['maxTimeMS']) && ! is_integer($options['maxTimeMS'])) {
@@ -94,23 +86,21 @@ class ListCollections implements Executable
         if (isset($options['session']) && ! $options['session'] instanceof Session) {
             throw InvalidArgumentException::invalidType('"session" option', $options['session'], Session::class);
         }
-
-        $this->databaseName = $databaseName;
-        $this->options = $options;
     }
 
     /**
      * Execute the operation.
      *
-     * @see Executable::execute()
+     * @return CursorInterface<array>
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function execute(Server $server): CachingIterator
+    public function execute(Server $server): CursorInterface
     {
+        /** @var CursorInterface<array> $cursor */
         $cursor = $server->executeReadCommand($this->databaseName, $this->createCommand(), $this->createOptions());
         $cursor->setTypeMap(['root' => 'array', 'document' => 'array']);
 
-        return new CachingIterator($cursor);
+        return $cursor;
     }
 
     /**

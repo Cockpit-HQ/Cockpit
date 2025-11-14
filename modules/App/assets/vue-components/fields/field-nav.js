@@ -1,8 +1,12 @@
 let editItem = {
 
+    _meta: {
+        size: 'large',
+    },
+
     data() {
 
-        let data = _.cloneDeep(this.item);
+        let data = JSON.parse(JSON.stringify(this.item));
 
         if (!data.meta || Array.isArray(data.meta)) {
             data.meta = {};
@@ -49,7 +53,7 @@ let editItem = {
 
             <div class="kiss-flex kiss-flex-middle kiss-margin-bottom">
                 <div>
-                    <kiss-svg :class="{'kiss-color-primary':data.active, 'kiss-color-danger':!data.active}" :src="$base('system:assets/icons/link.svg')" width="45" height="45"></kiss-svg>
+                    <kiss-svg :class="{'kiss-color-primary':data.active, 'kiss-color-danger':!data.active}" :src="$baseUrl('system:assets/icons/link.svg')" width="45" height="45"></kiss-svg>
                 </div>
                 <div class="kiss-flex-1 kiss-margin-left">
                     <span class="kiss-size-xsmall kiss-color-muted kiss-text-upper">{{ t('Navlink') }}</span>
@@ -111,7 +115,6 @@ export default {
     data() {
         return {
             uid: `field-nav-${++instanceCount}`,
-            val: this.modelValue || []
         }
     },
 
@@ -148,13 +151,22 @@ export default {
     },
 
     watch: {
-        val: {
-            handler() { this.update() },
+        modelValue: {
+            handler() {
+                this.val = this.modelValue || [];
+            },
             deep: true
-        },
-        modelValue() {
-            this.val = this.modelValue || [];
-            this.update();
+        }
+    },
+
+    computed: {
+        val: {
+            get() {
+                return this.modelValue || []
+            },
+            set(value) {
+                this.$emit('update:modelValue', value)
+            }
         }
     },
 
@@ -178,13 +190,15 @@ export default {
                 data,
                 children: []
             });
+
+            this.update();
         },
 
         edit(item) {
 
             VueView.ui.modal(editItem, {item, fields: this.fields, url: this.url, locale: this.locale}, {
 
-            }, {size: 'large'})
+            })
         },
 
         remove(item) {
@@ -192,13 +206,10 @@ export default {
             this.update();
         },
 
-        change(evt) {
-            this.update();
-        },
-
         update() {
-            this.$emit('update:modelValue', this.val)
+            this.$emit('update:modelValue', this.val);
         }
+
     },
 
     template: /*html*/`
@@ -209,34 +220,30 @@ export default {
             </kiss-card>
 
             <vue-draggable
-                :list="val"
+                v-model="val"
                 :group="group || uid"
                 :swapThreshold="0.65"
-                :animation="150",
-                :fallbackOnBody="true"
-                @change="change"
+                :animation="150"
                 handle=".lm-handle"
                 class="field-nav-dragarea"
             >
-                <template #item="{ element }">
-                    <div class="kiss-margin-xsmall">
-                        <kiss-card class="kiss-padding-small kiss-margin-xsmall" theme="bordered shadowed" hover="contrast">
-                            <div class="kiss-flex kiss-flex-middle">
-                                <a class="lm-handle kiss-margin-small-right kiss-color-muted"><icon>drag_handle</icon></a>
-                                <div class="kiss-flex-1 kiss-size-xsmall kiss-text-bold" :class="{'kiss-color-muted': !element.title}">
-                                    <a class="kiss-link-muted" @click="edit(element)">{{ element.title || t('Title...') }}<icon class="kiss-color-danger kiss-margin-small-left" size="larger" v-if="!element.active">link_off</icon></a>
-                                </div>
-                                <a class="kiss-margin-small-left" @click="edit(element)"><icon>tune</icon></a>
-                                <a class="kiss-margin-small-left" @click="addItem(element.children)"><icon>create_new_folder</icon></a>
-                                <a class="kiss-margin-small-left kiss-color-danger" @click="remove(element)"><icon>delete</icon></a>
+                <div class="kiss-margin-xsmall" v-for="element in val">
+                    <kiss-card class="kiss-padding-small kiss-margin-xsmall" theme="bordered shadowed" hover="contrast">
+                        <div class="kiss-flex kiss-flex-middle">
+                            <a class="lm-handle kiss-margin-small-right kiss-color-muted"><icon>drag_handle</icon></a>
+                            <div class="kiss-flex-1 kiss-size-xsmall kiss-text-bold" :class="{'kiss-color-muted': !element.title}">
+                                <a class="kiss-link-muted" @click="edit(element)">{{ element.title || t('Title...') }}<icon class="kiss-color-danger kiss-margin-small-left" size="larger" v-if="!element.active">link_off</icon></a>
                             </div>
-                        </kiss-card>
-
-                        <div :style="{paddingLeft: (((level+1)*15)+'px')}">
-                            <field-nav class="kiss-display-block" v-model="element.children" :group="group || uid" :fields="fields" :level="level+1" :url="url"></field-nav>
+                            <a class="kiss-margin-small-left" @click="edit(element)"><icon>tune</icon></a>
+                            <a class="kiss-margin-small-left" @click="addItem(element.children)"><icon>create_new_folder</icon></a>
+                            <a class="kiss-margin-small-left kiss-color-danger" @click="remove(element)"><icon>delete</icon></a>
                         </div>
+                    </kiss-card>
+
+                    <div :style="{paddingLeft: (((level+1)*15)+'px')}">
+                        <field-nav class="kiss-display-block" v-model="element.children" :group="group || uid" :fields="fields" :level="level+1" :url="url"></field-nav>
                     </div>
-                </template>
+                </div>
             </vue-draggable>
 
             <div class="kiss-margin-small kiss-align-center" v-if="!level">

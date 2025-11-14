@@ -76,3 +76,9 @@ export function on(element, name, delegate, fn) {
 export function trigger(ele, name, data = {}) {
     ele.dispatchEvent(new CustomEvent(name, Object.assign({bubbles: true}, data)));
 }
+
+export default {
+    onMutation,
+    on,
+    trigger,
+}

@@ -17,7 +17,8 @@
 
 namespace MongoDB\Operation;
 
-use MongoDB\Driver\Cursor;
+use MongoDB\Codec\DocumentCodec;
+use MongoDB\Driver\CursorInterface;
 use MongoDB\Driver\Exception\RuntimeException as DriverRuntimeException;
 use MongoDB\Driver\Query;
 use MongoDB\Driver\ReadConcern;
@@ -26,16 +27,14 @@ use MongoDB\Driver\Server;
 use MongoDB\Driver\Session;
 use MongoDB\Exception\InvalidArgumentException;
 use MongoDB\Exception\UnsupportedException;
+use MongoDB\Model\CodecCursor;
 
+use function assert;
 use function is_array;
 use function is_bool;
 use function is_integer;
-use function is_object;
 use function is_string;
-use function MongoDB\document_to_array;
-use function trigger_error;
-
-use const E_USER_DEPRECATED;
+use function MongoDB\is_document;
 
 /**
  * Operation for the find command.
@@ -44,23 +43,11 @@ use const E_USER_DEPRECATED;
  * @see https://mongodb.com/docs/manual/tutorial/query-documents/
  * @see https://mongodb.com/docs/manual/reference/operator/query-modifier/
  */
-class Find implements Executable, Explainable
+final class Find implements Explainable
 {
     public const NON_TAILABLE = 1;
     public const TAILABLE = 2;
     public const TAILABLE_AWAIT = 3;
-
-    /** @var string */
-    private $databaseName;
-
-    /** @var string */
-    private $collectionName;
-
-    /** @var array|object */
-    private $filter;
-
-    /** @var array */
-    private $options;
 
     /**
      * Constructs a find command.
@@ -75,6 +62,9 @@ class Find implements Executable, Explainable
      *    some shards are inaccessible (instead of throwing an error).
      *
      *  * batchSize (integer): The number of documents to return per batch.
+     *
+     *  * codec (MongoDB\Codec\DocumentCodec): Codec used to decode documents
+     *    from BSON to PHP objects.
      *
      *  * collation (document): Collation specification.
      *
@@ -97,27 +87,14 @@ class Find implements Executable, Explainable
      *  * maxAwaitTimeMS (integer): The maxium amount of time for the server to wait
      *    on new documents to satisfy a query, if cursorType is TAILABLE_AWAIT.
      *
-     *  * maxScan (integer): Maximum number of documents or index keys to scan
-     *    when executing the query.
-     *
-     *    This option has been deprecated since version 1.4.
-     *
      *  * maxTimeMS (integer): The maximum amount of time to allow the query to
-     *    run. If "$maxTimeMS" also exists in the modifiers document, this
-     *    option will take precedence.
+     *    run.
      *
      *  * min (document): The inclusive upper bound for a specific index.
-     *
-     *  * modifiers (document): Meta operators that modify the output or
-     *    behavior of a query. Use of these operators is deprecated in favor of
-     *    named options.
      *
      *  * noCursorTimeout (boolean): The server normally times out idle cursors
      *    after an inactivity period (10 minutes) to prevent excess memory use.
      *    Set this option to prevent that.
-     *
-     *  * oplogReplay (boolean): Internal replication use only. The driver
-     *    should not set this. This option is deprecated as of MongoDB 4.4.
      *
      *  * projection (document): Limits the fields to return for the matching
      *    document.
@@ -137,14 +114,7 @@ class Find implements Executable, Explainable
      *
      *  * skip (integer): The number of documents to skip before returning.
      *
-     *  * snapshot (boolean): Prevents the cursor from returning a document more
-     *    than once because of an intervening write operation.
-     *
-     *    This options has been deprecated since version 1.4.
-     *
-     *  * sort (document): The order in which to return matching documents. If
-     *    "$orderby" also exists in the modifiers document, this option will
-     *    take precedence.
+     *  * sort (document): The order in which to return matching documents.
      *
      *  * let (document): Map of parameter names and values. Values must be
      *    constant or closed expressions that do not reference document fields.
@@ -160,153 +130,130 @@ class Find implements Executable, Explainable
      * @param array        $options        Command options
      * @throws InvalidArgumentException for parameter/option parsing errors
      */
-    public function __construct(string $databaseName, string $collectionName, $filter, array $options = [])
+    public function __construct(private string $databaseName, private string $collectionName, private array|object $filter, private array $options = [])
     {
-        if (! is_array($filter) && ! is_object($filter)) {
-            throw InvalidArgumentException::invalidType('$filter', $filter, 'array or object');
+        if (! is_document($filter)) {
+            throw InvalidArgumentException::expectedDocumentType('$filter', $filter);
         }
 
-        if (isset($options['allowDiskUse']) && ! is_bool($options['allowDiskUse'])) {
-            throw InvalidArgumentException::invalidType('"allowDiskUse" option', $options['allowDiskUse'], 'boolean');
+        if (isset($this->options['allowDiskUse']) && ! is_bool($this->options['allowDiskUse'])) {
+            throw InvalidArgumentException::invalidType('"allowDiskUse" option', $this->options['allowDiskUse'], 'boolean');
         }
 
-        if (isset($options['allowPartialResults']) && ! is_bool($options['allowPartialResults'])) {
-            throw InvalidArgumentException::invalidType('"allowPartialResults" option', $options['allowPartialResults'], 'boolean');
+        if (isset($this->options['allowPartialResults']) && ! is_bool($this->options['allowPartialResults'])) {
+            throw InvalidArgumentException::invalidType('"allowPartialResults" option', $this->options['allowPartialResults'], 'boolean');
         }
 
-        if (isset($options['batchSize']) && ! is_integer($options['batchSize'])) {
-            throw InvalidArgumentException::invalidType('"batchSize" option', $options['batchSize'], 'integer');
+        if (isset($this->options['batchSize']) && ! is_integer($this->options['batchSize'])) {
+            throw InvalidArgumentException::invalidType('"batchSize" option', $this->options['batchSize'], 'integer');
         }
 
-        if (isset($options['collation']) && ! is_array($options['collation']) && ! is_object($options['collation'])) {
-            throw InvalidArgumentException::invalidType('"collation" option', $options['collation'], 'array or object');
+        if (isset($this->options['codec']) && ! $this->options['codec'] instanceof DocumentCodec) {
+            throw InvalidArgumentException::invalidType('"codec" option', $this->options['codec'], DocumentCodec::class);
         }
 
-        if (isset($options['cursorType'])) {
-            if (! is_integer($options['cursorType'])) {
-                throw InvalidArgumentException::invalidType('"cursorType" option', $options['cursorType'], 'integer');
+        if (isset($this->options['collation']) && ! is_document($this->options['collation'])) {
+            throw InvalidArgumentException::expectedDocumentType('"collation" option', $this->options['collation']);
+        }
+
+        if (isset($this->options['cursorType'])) {
+            if (! is_integer($this->options['cursorType'])) {
+                throw InvalidArgumentException::invalidType('"cursorType" option', $this->options['cursorType'], 'integer');
             }
 
             if (
-                $options['cursorType'] !== self::NON_TAILABLE &&
-                $options['cursorType'] !== self::TAILABLE &&
-                $options['cursorType'] !== self::TAILABLE_AWAIT
+                $this->options['cursorType'] !== self::NON_TAILABLE &&
+                $this->options['cursorType'] !== self::TAILABLE &&
+                $this->options['cursorType'] !== self::TAILABLE_AWAIT
             ) {
-                throw new InvalidArgumentException('Invalid value for "cursorType" option: ' . $options['cursorType']);
+                throw new InvalidArgumentException('Invalid value for "cursorType" option: ' . $this->options['cursorType']);
             }
         }
 
-        if (isset($options['hint']) && ! is_string($options['hint']) && ! is_array($options['hint']) && ! is_object($options['hint'])) {
-            throw InvalidArgumentException::invalidType('"hint" option', $options['hint'], 'string or array or object');
+        if (isset($this->options['hint']) && ! is_string($this->options['hint']) && ! is_document($this->options['hint'])) {
+            throw InvalidArgumentException::expectedDocumentOrStringType('"hint" option', $this->options['hint']);
         }
 
-        if (isset($options['limit']) && ! is_integer($options['limit'])) {
-            throw InvalidArgumentException::invalidType('"limit" option', $options['limit'], 'integer');
+        if (isset($this->options['limit']) && ! is_integer($this->options['limit'])) {
+            throw InvalidArgumentException::invalidType('"limit" option', $this->options['limit'], 'integer');
         }
 
-        if (isset($options['max']) && ! is_array($options['max']) && ! is_object($options['max'])) {
-            throw InvalidArgumentException::invalidType('"max" option', $options['max'], 'array or object');
+        if (isset($this->options['max']) && ! is_document($this->options['max'])) {
+            throw InvalidArgumentException::expectedDocumentType('"max" option', $this->options['max']);
         }
 
-        if (isset($options['maxAwaitTimeMS']) && ! is_integer($options['maxAwaitTimeMS'])) {
-            throw InvalidArgumentException::invalidType('"maxAwaitTimeMS" option', $options['maxAwaitTimeMS'], 'integer');
+        if (isset($this->options['maxAwaitTimeMS']) && ! is_integer($this->options['maxAwaitTimeMS'])) {
+            throw InvalidArgumentException::invalidType('"maxAwaitTimeMS" option', $this->options['maxAwaitTimeMS'], 'integer');
         }
 
-        if (isset($options['maxScan']) && ! is_integer($options['maxScan'])) {
-            throw InvalidArgumentException::invalidType('"maxScan" option', $options['maxScan'], 'integer');
+        if (isset($this->options['maxTimeMS']) && ! is_integer($this->options['maxTimeMS'])) {
+            throw InvalidArgumentException::invalidType('"maxTimeMS" option', $this->options['maxTimeMS'], 'integer');
         }
 
-        if (isset($options['maxTimeMS']) && ! is_integer($options['maxTimeMS'])) {
-            throw InvalidArgumentException::invalidType('"maxTimeMS" option', $options['maxTimeMS'], 'integer');
+        if (isset($this->options['min']) && ! is_document($this->options['min'])) {
+            throw InvalidArgumentException::expectedDocumentType('"min" option', $this->options['min']);
         }
 
-        if (isset($options['min']) && ! is_array($options['min']) && ! is_object($options['min'])) {
-            throw InvalidArgumentException::invalidType('"min" option', $options['min'], 'array or object');
+        if (isset($this->options['noCursorTimeout']) && ! is_bool($this->options['noCursorTimeout'])) {
+            throw InvalidArgumentException::invalidType('"noCursorTimeout" option', $this->options['noCursorTimeout'], 'boolean');
         }
 
-        if (isset($options['modifiers']) && ! is_array($options['modifiers']) && ! is_object($options['modifiers'])) {
-            throw InvalidArgumentException::invalidType('"modifiers" option', $options['modifiers'], 'array or object');
+        if (isset($this->options['projection']) && ! is_document($this->options['projection'])) {
+            throw InvalidArgumentException::expectedDocumentType('"projection" option', $this->options['projection']);
         }
 
-        if (isset($options['noCursorTimeout']) && ! is_bool($options['noCursorTimeout'])) {
-            throw InvalidArgumentException::invalidType('"noCursorTimeout" option', $options['noCursorTimeout'], 'boolean');
+        if (isset($this->options['readConcern']) && ! $this->options['readConcern'] instanceof ReadConcern) {
+            throw InvalidArgumentException::invalidType('"readConcern" option', $this->options['readConcern'], ReadConcern::class);
         }
 
-        if (isset($options['oplogReplay']) && ! is_bool($options['oplogReplay'])) {
-            throw InvalidArgumentException::invalidType('"oplogReplay" option', $options['oplogReplay'], 'boolean');
+        if (isset($this->options['readPreference']) && ! $this->options['readPreference'] instanceof ReadPreference) {
+            throw InvalidArgumentException::invalidType('"readPreference" option', $this->options['readPreference'], ReadPreference::class);
         }
 
-        if (isset($options['projection']) && ! is_array($options['projection']) && ! is_object($options['projection'])) {
-            throw InvalidArgumentException::invalidType('"projection" option', $options['projection'], 'array or object');
+        if (isset($this->options['returnKey']) && ! is_bool($this->options['returnKey'])) {
+            throw InvalidArgumentException::invalidType('"returnKey" option', $this->options['returnKey'], 'boolean');
         }
 
-        if (isset($options['readConcern']) && ! $options['readConcern'] instanceof ReadConcern) {
-            throw InvalidArgumentException::invalidType('"readConcern" option', $options['readConcern'], ReadConcern::class);
+        if (isset($this->options['session']) && ! $this->options['session'] instanceof Session) {
+            throw InvalidArgumentException::invalidType('"session" option', $this->options['session'], Session::class);
         }
 
-        if (isset($options['readPreference']) && ! $options['readPreference'] instanceof ReadPreference) {
-            throw InvalidArgumentException::invalidType('"readPreference" option', $options['readPreference'], ReadPreference::class);
+        if (isset($this->options['showRecordId']) && ! is_bool($this->options['showRecordId'])) {
+            throw InvalidArgumentException::invalidType('"showRecordId" option', $this->options['showRecordId'], 'boolean');
         }
 
-        if (isset($options['returnKey']) && ! is_bool($options['returnKey'])) {
-            throw InvalidArgumentException::invalidType('"returnKey" option', $options['returnKey'], 'boolean');
+        if (isset($this->options['skip']) && ! is_integer($this->options['skip'])) {
+            throw InvalidArgumentException::invalidType('"skip" option', $this->options['skip'], 'integer');
         }
 
-        if (isset($options['session']) && ! $options['session'] instanceof Session) {
-            throw InvalidArgumentException::invalidType('"session" option', $options['session'], Session::class);
+        if (isset($this->options['sort']) && ! is_document($this->options['sort'])) {
+            throw InvalidArgumentException::expectedDocumentType('"sort" option', $this->options['sort']);
         }
 
-        if (isset($options['showRecordId']) && ! is_bool($options['showRecordId'])) {
-            throw InvalidArgumentException::invalidType('"showRecordId" option', $options['showRecordId'], 'boolean');
+        if (isset($this->options['typeMap']) && ! is_array($this->options['typeMap'])) {
+            throw InvalidArgumentException::invalidType('"typeMap" option', $this->options['typeMap'], 'array');
         }
 
-        if (isset($options['skip']) && ! is_integer($options['skip'])) {
-            throw InvalidArgumentException::invalidType('"skip" option', $options['skip'], 'integer');
+        if (isset($this->options['let']) && ! is_document($this->options['let'])) {
+            throw InvalidArgumentException::expectedDocumentType('"let" option', $this->options['let']);
         }
 
-        if (isset($options['snapshot']) && ! is_bool($options['snapshot'])) {
-            throw InvalidArgumentException::invalidType('"snapshot" option', $options['snapshot'], 'boolean');
+        if (isset($this->options['readConcern']) && $this->options['readConcern']->isDefault()) {
+            unset($this->options['readConcern']);
         }
 
-        if (isset($options['sort']) && ! is_array($options['sort']) && ! is_object($options['sort'])) {
-            throw InvalidArgumentException::invalidType('"sort" option', $options['sort'], 'array or object');
+        if (isset($this->options['codec']) && isset($this->options['typeMap'])) {
+            throw InvalidArgumentException::cannotCombineCodecAndTypeMap();
         }
-
-        if (isset($options['typeMap']) && ! is_array($options['typeMap'])) {
-            throw InvalidArgumentException::invalidType('"typeMap" option', $options['typeMap'], 'array');
-        }
-
-        if (isset($options['let']) && ! is_array($options['let']) && ! is_object($options['let'])) {
-            throw InvalidArgumentException::invalidType('"let" option', $options['let'], 'array or object');
-        }
-
-        if (isset($options['readConcern']) && $options['readConcern']->isDefault()) {
-            unset($options['readConcern']);
-        }
-
-        if (isset($options['snapshot'])) {
-            trigger_error('The "snapshot" option is deprecated and will be removed in a future release', E_USER_DEPRECATED);
-        }
-
-        if (isset($options['maxScan'])) {
-            trigger_error('The "maxScan" option is deprecated and will be removed in a future release', E_USER_DEPRECATED);
-        }
-
-        $this->databaseName = $databaseName;
-        $this->collectionName = $collectionName;
-        $this->filter = $filter;
-        $this->options = $options;
     }
 
     /**
      * Execute the operation.
      *
-     * @see Executable::execute()
-     * @return Cursor
      * @throws UnsupportedException if read concern is used and unsupported
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function execute(Server $server)
+    public function execute(Server $server): CursorInterface
     {
         $inTransaction = isset($this->options['session']) && $this->options['session']->isInTransaction();
         if ($inTransaction && isset($this->options['readConcern'])) {
@@ -314,6 +261,10 @@ class Find implements Executable, Explainable
         }
 
         $cursor = $server->executeQuery($this->databaseName . '.' . $this->collectionName, new Query($this->filter, $this->createQueryOptions()), $this->createExecuteOptions());
+
+        if (isset($this->options['codec'])) {
+            return CodecCursor::fromCursor($cursor, $this->options['codec']);
+        }
 
         if (isset($this->options['typeMap'])) {
             $cursor->setTypeMap($this->options['typeMap']);
@@ -326,9 +277,8 @@ class Find implements Executable, Explainable
      * Returns the command document for this operation.
      *
      * @see Explainable::getCommandDocument()
-     * @return array
      */
-    public function getCommandDocument()
+    public function getCommandDocument(): array
     {
         $cmd = ['find' => $this->collectionName, 'filter' => (object) $this->filter];
 
@@ -340,28 +290,6 @@ class Find implements Executable, Explainable
 
         // maxAwaitTimeMS is a Query level option so should not be considered here
         unset($options['maxAwaitTimeMS']);
-
-        $modifierFallback = [
-            ['allowPartialResults', 'partial'],
-            ['comment', '$comment'],
-            ['hint', '$hint'],
-            ['maxScan', '$maxScan'],
-            ['max', '$max'],
-            ['maxTimeMS', '$maxTimeMS'],
-            ['min', '$min'],
-            ['returnKey', '$returnKey'],
-            ['showRecordId', '$showDiskLoc'],
-            ['sort', '$orderby'],
-            ['snapshot', '$snapshot'],
-        ];
-
-        foreach ($modifierFallback as $modifier) {
-            if (! isset($options[$modifier[0]]) && isset($options['modifiers'][$modifier[1]])) {
-                $options[$modifier[0]] = $options['modifiers'][$modifier[1]];
-            }
-        }
-
-        unset($options['modifiers']);
 
         return $cmd + $options;
     }
@@ -407,7 +335,7 @@ class Find implements Executable, Explainable
             }
         }
 
-        foreach (['allowDiskUse', 'allowPartialResults', 'batchSize', 'comment', 'hint', 'limit', 'maxAwaitTimeMS', 'maxScan', 'maxTimeMS', 'noCursorTimeout', 'oplogReplay', 'projection', 'readConcern', 'returnKey', 'showRecordId', 'skip', 'snapshot', 'sort'] as $option) {
+        foreach (['allowDiskUse', 'allowPartialResults', 'batchSize', 'comment', 'hint', 'limit', 'maxAwaitTimeMS', 'maxTimeMS', 'noCursorTimeout', 'projection', 'readConcern', 'returnKey', 'showRecordId', 'skip', 'sort'] as $option) {
             if (isset($this->options[$option])) {
                 $options[$option] = $this->options[$option];
             }
@@ -419,10 +347,14 @@ class Find implements Executable, Explainable
             }
         }
 
-        if (! empty($this->options['modifiers'])) {
-            /** @psalm-var array|object */
-            $modifiers = $this->options['modifiers'];
-            $options['modifiers'] = is_object($modifiers) ? document_to_array($modifiers) : $modifiers;
+        // Ensure no cursor is left behind when limit == batchSize by increasing batchSize
+        if (isset($options['limit'], $options['batchSize']) && $options['limit'] === $options['batchSize']) {
+            assert(is_integer($options['batchSize']));
+            $options['batchSize']++;
+        }
+
+        if (isset($options['limit']) && $options['limit'] === 1) {
+            $options['singleBatch'] = true;
         }
 
         return $options;

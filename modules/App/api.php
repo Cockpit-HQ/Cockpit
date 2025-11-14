@@ -21,7 +21,7 @@ $this->service('gql', function() use($app) {
     return $gql;
 });
 
-// Rest Api service
+// Rest API service
 $this->service('restApi', function() use($app) {
     $restApi = new App\RestApi\Query($app);
     return $restApi;
@@ -49,6 +49,7 @@ $this->bind('/api/*', function($params) {
             return ['error' => 'Authentication failed'];
         }
 
+        $apiUser['_id']  = $user['_id'];
         $apiUser['user'] = $user['user'];
         $apiUser['role'] = $user['role'];
 

@@ -7,7 +7,7 @@
     icon[type="warning"]:before { content: "\e002"; }
 
     icon[type="error"] { color: red;}
-    icon[type="error"]:before { content: "\e031"; }
+    icon[type="error"]:before { content: "\ef55"; }
 
     icon[type="notice"] { color: yellow;}
     icon[type="notice"]:before { content: "\f1fc"; }
@@ -21,7 +21,7 @@
 </style>
 
 
-<kiss-container class="kiss-margin">
+<kiss-container class="kiss-margin-small">
 
     <ul class="kiss-breadcrumbs">
         <li><a href="<?=$this->route('/system')?>"><?=t('Settings')?></a></li>
@@ -39,24 +39,28 @@
 
                 <div class="kiss-flex-1">
 
-                    <div class="kiss-flex kiss-flex-middle kiss-margin-bottom">
-                        <div class="kiss-margin-small-right" v-if="selectedChannel"><kiss-svg class="kiss-color-muted" :src="$base(channels[selectedChannel].icon)" width="25" height="25"><canvas width="20" height="20"></canvas></kiss-svg></div>
-                        <div class="kiss-size-4 kiss-text-light kiss-flex-1">{{ (selectedChannel && channels[selectedChannel].label) || 'All' }}</div>
+                    <div class="kiss-flex kiss-flex-middle kiss-margin-bottom" gap="small">
+                        <div :class="{'kiss-color-muted':!selectedChannel, 'kiss-color-primary':selectedChannel}"><kiss-svg :src="$baseUrl(selectedChannel ? channels[selectedChannel].icon : 'system:assets/icons/logging.svg')" width="40" height="40"><canvas width="40" height="40"></canvas></kiss-svg></div>
+                        <div class="kiss-size-4 kiss-text-light kiss-flex-1">{{ t((selectedChannel && channels[selectedChannel].label) || 'All') }}</div>
                     </div>
 
-                    <div class="kiss-margin">
+                    <div class="kiss-flex kiss-flex-middle kiss-margin">
 
-                        <button class="kiss-button kiss-button-small kiss-margin-small-right" :class="{'kiss-button-primary': !selectedTypes.length}" @click="selectedTypes = []">All</button>
+                        <button class="kiss-button kiss-button-small kiss-margin-small-right" :class="{'kiss-button-primary': !selectedTypes.length}" @click="selectedTypes = []"><?=t('All')?></button>
 
                         <div class="kiss-button-group">
-                            <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': selectedTypes.indexOf('alert') > -1}" @click="toggleType('alert')">Alert</button>
-                            <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': selectedTypes.indexOf('debug') > -1}" @click="toggleType('debug')">Debug</button>
-                            <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': selectedTypes.indexOf('error') > -1}" @click="toggleType('error')">Error</button>
-                            <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': selectedTypes.indexOf('info') > -1}" @click="toggleType('info')">Info</button>
-                            <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': selectedTypes.indexOf('notice') > -1}" @click="toggleType('notice')">Notice</button>
-                            <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': selectedTypes.indexOf('warning') > -1}" @click="toggleType('warning')">Warning</button>
+                            <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': selectedTypes.indexOf('alert') > -1}" @click="toggleType('alert')"><?=t('Alert')?></button>
+                            <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': selectedTypes.indexOf('debug') > -1}" @click="toggleType('debug')"><?=t('Debug')?></button>
+                            <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': selectedTypes.indexOf('error') > -1}" @click="toggleType('error')"><?=t('Error')?></button>
+                            <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': selectedTypes.indexOf('info') > -1}" @click="toggleType('info')"><?=t('Info')?></button>
+                            <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': selectedTypes.indexOf('notice') > -1}" @click="toggleType('notice')"><?=t('Notice')?></button>
+                            <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': selectedTypes.indexOf('warning') > -1}" @click="toggleType('warning')"><?=t('Warning')?></button>
                         </div>
                     </div>
+
+                    <form class="kiss-flex kiss-flex-middle kiss-margin">
+                        <input type="text" class="kiss-input" :placeholder="t('Filter message...')" v-model="filter">
+                    </form>
 
                     <app-loader class="kiss-margin" v-if="loading"></app-loader>
 
@@ -70,17 +74,17 @@
                     <table class="kiss-table animated fadeIn" v-if="!loading && items.length">
                         <thead>
                             <tr>
-                                <th width="30">Type</th>
-                                <th width="100">Date</th>
-                                <th width="25" v-if="!selectedChannel">Channel</th>
-                                <th>Message</th>
+                                <th width="30"><?=t('Type')?></th>
+                                <th width="100"><?=t('Date')?></th>
+                                <th width="25" v-if="!selectedChannel"><?=t('Channel')?></th>
+                                <th><?=t('Message')?></th>
                                 <th width="25"></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="item in items">
                                 <td class="kiss-align-center"><icon class="kiss-size-3" :type="item.type"></icon></td>
-                                <td class="kiss-text-bold kiss-text-monospace"><div class="kiss-size-xsmall">{{ (new Date(item.timestamp * 1000).toLocaleString()) }}</div></td>
+                                <td class="kiss-text-bold kiss-text-monospace"><div class="kiss-size-xsmall"><app-datetime :datetime="item.timestamp" /></div></td>
                                 <td class="kiss-text-bold kiss-color-muted kiss-align-center" v-if="!selectedChannel"><app-avatar :name="item.channel" size="25" kiss-tooltip="bottom" :aria-label="item.channel"></app-avatar></td>
                                 <td>{{ item.message }}</td>
                                 <td class="kiss-align-center"><a class="kiss-color-primary kiss-size-3" v-if="item.context" @click="showContext(item.context)"><icon>more_horiz</icon></a></td>
@@ -93,18 +97,18 @@
 
                     <kiss-navlist>
                         <ul>
-                            <li class="kiss-nav-header kiss-padding-small">Channels</li>
+                            <li class="kiss-nav-header kiss-padding-small"><?=t('Channels')?></li>
                             <li>
                                 <kiss-card class="kiss-padding-small" :theme="!selectedChannel && 'bordered contrast'">
                                     <a class="kiss-display-block" @click="selectedChannel = null" :class="!selectedChannel ? 'kiss-text-bold kiss-color-primary':'kiss-color-muted'">{{ t('All') }}</a>
                                 </kiss-card>
                             </li>
                             <li class="kiss-nav-divider"></li>
-                            <li v-for="channel in channels">
+                            <li v-for="channel in sortedChannels">
                                 <kiss-card class="kiss-flex kiss-flex-middle kiss-padding-small" :theme="selectedChannel == channel.name && 'bordered contrast'">
-                                    <a class="kiss-flex-1" @click="selectedChannel = channel.name" :class="selectedChannel == channel.name ? 'kiss-text-bold kiss-color-primary':'kiss-color-muted'">{{ channel.label}}</a>
+                                    <a class="kiss-flex-1" @click="selectedChannel = channel.name" :class="selectedChannel == channel.name ? 'kiss-text-bold kiss-color-primary':'kiss-color-muted'">{{ t(channel.label) }}</a>
                                     <div class="kiss-margin-xsmall-left" v-if="selectedChannel == channel.name">
-                                        <kiss-svg class="kiss-color-muted" :src="$base(channel.icon)" width="20" height="20"><canvas width="20" height="20"></canvas></kiss-svg>
+                                        <kiss-svg class="kiss-color-muted" :src="$baseUrl(channel.icon)" width="20" height="20"><canvas width="20" height="20"></canvas></kiss-svg>
                                     </div>
                                 </kiss-card>
                             </li>
@@ -149,7 +153,6 @@
                         selectedTypes: [],
                         items: [],
                         filter: '',
-                        txtFilter: '',
                         page: 1,
                         pages: 1,
                         limit: 50,
@@ -162,6 +165,12 @@
                     this.load();
                 },
 
+                computed: {
+                    sortedChannels() {
+                        return Object.values(this.channels).sort((a, b) => a.name.localeCompare(b.name));
+                    }
+                },
+
                 watch: {
                     selectedChannel() {
                         this.load(1);
@@ -169,12 +178,13 @@
                     selectedTypes: {
                         handler() { this.load(1) },
                         deep: true
-                    }
+                    },
+                    filter: KISS.utils.debounce(function() { this.load(1) }, 600)
                 },
 
                 methods: {
 
-                    load(page = 1, history = true) {
+                    load(page = 1) {
 
                         let options = {
                             limit: this.limit,
@@ -185,9 +195,13 @@
                         this.loading = true;
                         this.selected = [];
 
+                        if (this.filter) {
+                            options.filter = { message: {'$regex': this.filter}};
+                        }
+
                         if (this.selectedChannel || this.selectedTypes.length) {
 
-                            options.filter = {};
+                            if (!options.filter) options.filter = {};
 
                             if (this.selectedChannel) options.filter.channel = this.selectedChannel;
                             if (this.selectedTypes.length) options.filter.type = {$in: this.selectedTypes};
@@ -198,13 +212,13 @@
                             this.page = rsp.page;
                             this.pages = rsp.pages;
                             this.count = rsp.count;
-
+                        }).finally(() => {
                             this.loading = false;
                         });
                     },
 
                     showContext(context) {
-                        VueView.ui.offcanvas('system:assets/dialogs/json-viewer.js', {data: context, caption: 'LOG Context'}, {}, {flip: true, size: 'xlarge'})
+                        VueView.ui.offcanvas('system:assets/dialogs/json-viewer.js', {data: context, caption: 'LOG Context'});
                     },
 
                     toggleType($type) {

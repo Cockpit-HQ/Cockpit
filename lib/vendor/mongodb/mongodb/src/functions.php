@@ -21,6 +21,7 @@ use Exception;
 use MongoDB\BSON\Document;
 use MongoDB\BSON\PackedArray;
 use MongoDB\BSON\Serializable;
+use MongoDB\Builder\Type\StageInterface;
 use MongoDB\Driver\Exception\RuntimeException as DriverRuntimeException;
 use MongoDB\Driver\Manager;
 use MongoDB\Driver\ReadPreference;
@@ -31,8 +32,10 @@ use MongoDB\Exception\InvalidArgumentException;
 use MongoDB\Exception\RuntimeException;
 use MongoDB\Operation\ListCollections;
 use MongoDB\Operation\WithTransaction;
+use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use ReflectionException;
+use stdClass;
 
 use function array_is_list;
 use function array_key_first;
@@ -42,9 +45,46 @@ use function get_object_vars;
 use function is_array;
 use function is_object;
 use function is_string;
-use function MongoDB\BSON\fromPHP;
-use function MongoDB\BSON\toPHP;
+use function str_ends_with;
 use function substr;
+
+/**
+ * Registers a PSR-3 logger to receive log messages from the driver/library.
+ *
+ * Calling this method again with a logger that has already been added will have
+ * no effect.
+ */
+function add_logger(LoggerInterface $logger): void
+{
+    PsrLogAdapter::addLogger($logger);
+}
+
+/**
+ * Unregisters a PSR-3 logger.
+ *
+ * Calling this method with a logger that has not been added will have no
+ * effect.
+ */
+function remove_logger(LoggerInterface $logger): void
+{
+    PsrLogAdapter::removeLogger($logger);
+}
+
+/**
+ * Create a new stdClass instance with the provided properties.
+ * Use named arguments to specify the property names.
+ *     object( property1: value1, property2: value2 )
+ *
+ * If property names contain a dot or a dollar characters, use array unpacking syntax.
+ *     object( ...[ 'author.name' => 1, 'array.$' => 1 ] )
+ *
+ * @psalm-suppress MoreSpecificReturnType
+ * @psalm-suppress LessSpecificReturnStatement
+ */
+function object(mixed ...$values): stdClass
+{
+    return (object) $values;
+}
 
 /**
  * Check whether all servers support executing a write stage on a secondary.
@@ -82,16 +122,15 @@ function all_servers_support_write_stage_on_secondary(array $servers): bool
  * @internal
  * @param array|object $document Document to which the type map will be applied
  * @param array        $typeMap  Type map for BSON deserialization.
- * @return array|object
  * @throws InvalidArgumentException
  */
-function apply_type_map_to_document($document, array $typeMap)
+function apply_type_map_to_document(array|object $document, array $typeMap): array|object
 {
-    if (! is_array($document) && ! is_object($document)) {
-        throw InvalidArgumentException::invalidType('$document', $document, 'array or object');
+    if (! is_document($document)) {
+        throw InvalidArgumentException::expectedDocumentType('$document', $document);
     }
 
-    return toPHP(fromPHP($document), $typeMap);
+    return Document::fromPHP($document)->toPHP($typeMap);
 }
 
 /**
@@ -105,10 +144,9 @@ function apply_type_map_to_document($document, array $typeMap)
  * encode as BSON arrays.
  *
  * @internal
- * @param array|object $document
  * @throws InvalidArgumentException if $document is not an array or object
  */
-function document_to_array($document): array
+function document_to_array(array|object $document): array
 {
     if ($document instanceof Document || $document instanceof PackedArray) {
         /* Nested documents and arrays are intentionally left as BSON. We avoid
@@ -132,10 +170,6 @@ function document_to_array($document): array
         $document = get_object_vars($document);
     }
 
-    if (! is_array($document)) {
-        throw InvalidArgumentException::invalidType('$document', $document, 'array or object');
-    }
-
     return $document;
 }
 
@@ -148,9 +182,8 @@ function document_to_array($document): array
  * @see Collection::drop()
  * @see Database::createCollection()
  * @see Database::dropCollection()
- * @return array|object|null
  */
-function get_encrypted_fields_from_driver(string $databaseName, string $collectionName, Manager $manager)
+function get_encrypted_fields_from_driver(string $databaseName, string $collectionName, Manager $manager): array|object|null
 {
     $encryptedFieldsMap = (array) $manager->getEncryptedFieldsMap();
 
@@ -164,15 +197,9 @@ function get_encrypted_fields_from_driver(string $databaseName, string $collecti
  * @see https://github.com/mongodb/specifications/blob/master/source/client-side-encryption/client-side-encryption.rst#collection-encryptedfields-lookup-getencryptedfields
  * @see Collection::drop()
  * @see Database::dropCollection()
- * @return array|object|null
  */
-function get_encrypted_fields_from_server(string $databaseName, string $collectionName, Manager $manager, Server $server)
+function get_encrypted_fields_from_server(string $databaseName, string $collectionName, Server $server): array|object|null
 {
-    // No-op if the encryptedFieldsMap autoEncryption driver option was omitted
-    if ($manager->getEncryptedFieldsMap() === null) {
-        return null;
-    }
-
     $collectionInfoIterator = (new ListCollections($databaseName, ['filter' => ['name' => $collectionName]]))->execute($server);
 
     foreach ($collectionInfoIterator as $collectionInfo) {
@@ -187,6 +214,19 @@ function get_encrypted_fields_from_server(string $databaseName, string $collecti
 }
 
 /**
+ * Returns whether a given value is a valid document.
+ *
+ * This method returns true for any array or object, but specifically excludes
+ * BSON PackedArray instances
+ *
+ * @internal
+ */
+function is_document(mixed $document): bool
+{
+    return is_array($document) || (is_object($document) && ! $document instanceof PackedArray);
+}
+
+/**
  * Return whether the first key in the document starts with a "$" character.
  *
  * This is used for validating aggregation pipeline stages and differentiating
@@ -195,11 +235,14 @@ function get_encrypted_fields_from_server(string $databaseName, string $collecti
  * $document has an unexpected type instead of returning false.
  *
  * @internal
- * @param array|object $document
  * @throws InvalidArgumentException if $document is not an array or object
  */
-function is_first_key_operator($document): bool
+function is_first_key_operator(array|object $document): bool
 {
+    if ($document instanceof PackedArray) {
+        return false;
+    }
+
     $document = document_to_array($document);
 
     $firstKey = array_key_first($document);
@@ -234,10 +277,9 @@ function is_first_key_operator($document): bool
  * returns a non-array, non-object value from its bsonSerialize() method.
  *
  * @internal
- * @param array|object $pipeline
  * @throws InvalidArgumentException
  */
-function is_pipeline($pipeline, bool $allowEmpty = false): bool
+function is_pipeline(array|object $pipeline, bool $allowEmpty = false): bool
 {
     if ($pipeline instanceof PackedArray) {
         /* Nested documents and arrays are intentionally left as BSON. We avoid
@@ -266,7 +308,7 @@ function is_pipeline($pipeline, bool $allowEmpty = false): bool
     }
 
     foreach ($pipeline as $stage) {
-        if (! is_array($stage) && ! is_object($stage)) {
+        if (! is_document($stage)) {
             return false;
         }
 
@@ -276,6 +318,27 @@ function is_pipeline($pipeline, bool $allowEmpty = false): bool
     }
 
     return true;
+}
+
+/**
+ * Returns whether the argument is a list that contains at least one
+ * {@see StageInterface} object.
+ *
+ * @internal
+ */
+function is_builder_pipeline(array $pipeline): bool
+{
+    if (! $pipeline || ! array_is_list($pipeline)) {
+        return false;
+    }
+
+    foreach ($pipeline as $stage) {
+        if (is_object($stage) && $stage instanceof StageInterface) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 /**
@@ -320,24 +383,6 @@ function is_last_pipeline_operator_write(array $pipeline): bool
 }
 
 /**
- * Return whether the "out" option for a mapReduce operation is "inline".
- *
- * This is used to determine if a mapReduce command requires a primary.
- *
- * @internal
- * @see https://mongodb.com/docs/manual/reference/command/mapReduce/#output-inline
- * @param string|array|object $out Output specification
- */
-function is_mapreduce_output_inline($out): bool
-{
-    if (! is_array($out) && ! is_object($out)) {
-        return false;
-    }
-
-    return array_key_first(document_to_array($out)) === 'inline';
-}
-
-/**
  * Return whether the write concern is acknowledged.
  *
  * This function is similar to mongoc_write_concern_is_acknowledged but does not
@@ -374,9 +419,8 @@ function server_supports_feature(Server $server, int $feature): bool
  * Return whether the input is an array of strings.
  *
  * @internal
- * @param mixed $input
  */
-function is_string_array($input): bool
+function is_string_array(mixed $input): bool
 {
     if (! is_array($input)) {
         return false;
@@ -399,10 +443,9 @@ function is_string_array($input): bool
  * @internal
  * @see https://bugs.php.net/bug.php?id=49664
  * @param mixed $element Value to be copied
- * @return mixed
  * @throws ReflectionException
  */
-function recursive_copy($element)
+function recursive_copy(mixed $element): mixed
 {
     if (is_array($element)) {
         foreach ($element as $key => $value) {
@@ -456,7 +499,7 @@ function create_field_path_type_map(array $typeMap, string $fieldPath): array
     /* Special case if we want to convert an array, in which case we need to
      * ensure that the field containing the array is exposed as an array,
      * instead of the type given in the type map's array key. */
-    if (substr($fieldPath, -2, 2) === '.$') {
+    if (str_ends_with($fieldPath, '.$')) {
         $typeMap['fieldPaths'][substr($fieldPath, 0, -2)] = 'array';
     }
 
@@ -503,11 +546,11 @@ function with_transaction(Session $session, callable $callback, array $transacti
  */
 function extract_session_from_options(array $options): ?Session
 {
-    if (! isset($options['session']) || ! $options['session'] instanceof Session) {
-        return null;
+    if (isset($options['session']) && $options['session'] instanceof Session) {
+        return $options['session'];
     }
 
-    return $options['session'];
+    return null;
 }
 
 /**
@@ -517,16 +560,19 @@ function extract_session_from_options(array $options): ?Session
  */
 function extract_read_preference_from_options(array $options): ?ReadPreference
 {
-    if (! isset($options['readPreference']) || ! $options['readPreference'] instanceof ReadPreference) {
-        return null;
+    if (isset($options['readPreference']) && $options['readPreference'] instanceof ReadPreference) {
+        return $options['readPreference'];
     }
 
-    return $options['readPreference'];
+    return null;
 }
 
 /**
- * Performs server selection, respecting the readPreference and session options
- * (if given)
+ * Performs server selection, respecting the readPreference and session options.
+ *
+ * The pinned server for an active transaction takes priority, followed by an
+ * operation-level read preference, followed by an active transaction's read
+ * preference, followed by a primary read preference.
  *
  * @internal
  */
@@ -534,16 +580,23 @@ function select_server(Manager $manager, array $options): Server
 {
     $session = extract_session_from_options($options);
     $server = $session instanceof Session ? $session->getServer() : null;
+
+    // Pinned server for an active transaction takes priority
     if ($server !== null) {
         return $server;
     }
 
+    // Operation read preference takes priority
     $readPreference = extract_read_preference_from_options($options);
-    if (! $readPreference instanceof ReadPreference) {
-        // TODO: PHPLIB-476: Read transaction read preference once PHPC-1439 is implemented
-        $readPreference = new ReadPreference(ReadPreference::PRIMARY);
+
+    // Read preference for an active transaction takes priority
+    if ($readPreference === null && $session instanceof Session && $session->isInTransaction()) {
+        /* Session::getTransactionOptions() should always return an array if the
+         * session is in a transaction, but we can be defensive. */
+        $readPreference = extract_read_preference_from_options($session->getTransactionOptions() ?? []);
     }
 
+    // Manager::selectServer() defaults to a primary read preference
     return $manager->selectServer($readPreference);
 }
 
@@ -560,7 +613,11 @@ function select_server_for_aggregate_write_stage(Manager $manager, array &$optio
     $readPreference = extract_read_preference_from_options($options);
 
     /* If there is either no read preference or a primary read preference, there
-     * is no special server selection logic to apply. */
+     * is no special server selection logic to apply.
+     *
+     * Note: an alternative read preference could still be inherited from an
+     * active transaction's options, but we can rely on libmongoc to raise a
+     * "read preference in a transaction must be primary" error if necessary. */
     if ($readPreference === null || $readPreference->getModeString() === ReadPreference::PRIMARY) {
         return select_server($manager, $options);
     }
@@ -593,4 +650,19 @@ function select_server_for_aggregate_write_stage(Manager $manager, array &$optio
     assert($server instanceof Server);
 
     return $server;
+}
+
+/**
+ * Performs server selection for a write operation.
+ *
+ * The pinned server for an active transaction takes priority, followed by an
+ * operation-level read preference, followed by a primary read preference. This
+ * is similar to select_server() except that it ignores a read preference from
+ * an active transaction's options.
+ *
+ * @internal
+ */
+function select_server_for_write(Manager $manager, array $options): Server
+{
+    return select_server($manager, $options + ['readPreference' => new ReadPreference(ReadPreference::PRIMARY)]);
 }

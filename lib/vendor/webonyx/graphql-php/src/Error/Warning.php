@@ -40,7 +40,7 @@ final class Warning
      *
      * @api
      */
-    public static function setWarningHandler(callable $warningHandler = null): void
+    public static function setWarningHandler(?callable $warningHandler = null): void
     {
         self::$warningHandler = $warningHandler;
     }
@@ -62,11 +62,11 @@ final class Warning
             self::$enableWarnings = 0;
         } elseif ($suppress === false) {
             self::$enableWarnings = self::ALL;
-            // @phpstan-ignore-next-line necessary until we can use proper unions
-        } elseif (\is_int($suppress)) {
+        // @phpstan-ignore-next-line necessary until we can use proper unions
+        } elseif (is_int($suppress)) {
             self::$enableWarnings &= ~$suppress;
         } else {
-            $type = \gettype($suppress);
+            $type = gettype($suppress);
             throw new \InvalidArgumentException("Expected type bool|int, got {$type}.");
         }
     }
@@ -88,16 +88,16 @@ final class Warning
             self::$enableWarnings = self::ALL;
         } elseif ($enable === false) {
             self::$enableWarnings = 0;
-            // @phpstan-ignore-next-line necessary until we can use proper unions
-        } elseif (\is_int($enable)) {
+        // @phpstan-ignore-next-line necessary until we can use proper unions
+        } elseif (is_int($enable)) {
             self::$enableWarnings |= $enable;
         } else {
-            $type = \gettype($enable);
+            $type = gettype($enable);
             throw new \InvalidArgumentException("Expected type bool|int, got {$type}.");
         }
     }
 
-    public static function warnOnce(string $errorMessage, int $warningId, int $messageLevel = null): void
+    public static function warnOnce(string $errorMessage, int $warningId, ?int $messageLevel = null): void
     {
         $messageLevel ??= \E_USER_WARNING;
 
@@ -105,18 +105,18 @@ final class Warning
             (self::$warningHandler)($errorMessage, $warningId, $messageLevel);
         } elseif ((self::$enableWarnings & $warningId) > 0 && ! isset(self::$warned[$warningId])) {
             self::$warned[$warningId] = true;
-            \trigger_error($errorMessage, $messageLevel);
+            trigger_error($errorMessage, $messageLevel);
         }
     }
 
-    public static function warn(string $errorMessage, int $warningId, int $messageLevel = null): void
+    public static function warn(string $errorMessage, int $warningId, ?int $messageLevel = null): void
     {
         $messageLevel ??= \E_USER_WARNING;
 
         if (self::$warningHandler !== null) {
             (self::$warningHandler)($errorMessage, $warningId, $messageLevel);
         } elseif ((self::$enableWarnings & $warningId) > 0) {
-            \trigger_error($errorMessage, $messageLevel);
+            trigger_error($errorMessage, $messageLevel);
         }
     }
 }

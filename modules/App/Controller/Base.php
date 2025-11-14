@@ -41,9 +41,15 @@ class Base extends \Lime\AppAware {
      */
     protected function render(string $view, array $params = []): mixed {
 
+        $this->app->trigger('layout.render.before', [&$view, &$params]);
+
         $view .= $this->layout ? " with {$this->layout}" : '';
 
-        return $this->app->render($view, $params);
+        $contents = $this->app->render($view, $params);
+
+        $this->app->trigger('layout.render.after', [&$contents, $view, $params]);
+
+        return $contents;
     }
 
     /**

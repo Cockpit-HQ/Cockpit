@@ -1,5 +1,5 @@
 
-<kiss-container class="kiss-margin" size="small">
+<kiss-container class="kiss-margin-small" size="small">
 
     <ul class="kiss-breadcrumbs">
         <li><a href="<?=$this->route('/system')?>"><?=t('Settings')?></a></li>
@@ -25,15 +25,15 @@
 
                 <li v-for="(locale, idx) in locales">
 
-                    <div class="kiss-margin kiss-flex kiss-flex-middle" :class="{'kiss-color-muted': locale.enabled === false}">
+                    <kiss-card class="kiss-padding-small kiss-flex kiss-flex-middle" :class="{'kiss-color-muted': locale.enabled === false}" hover="contrast scale-small">
                         <div class="kiss-margin-small-right"><icon>language</icon></div>
                         <div class="kiss-size-5 kiss-flex-1 kiss-position-relative">
                             <strong>{{locale.name || locale.i18n}}</strong>
-                            <a class="kiss-cover" :href="$route('/system/locales/locale/'+locale._id)"></a>
+                            <a class="kiss-cover" :href="$routeUrl('/system/locales/locale/'+locale._id)"></a>
                         </div>
                         <div class="kiss-margin-left kiss-size-small kiss-align-right" :class="locale.i18n == 'default' ? 'kiss-color-primary' : 'kiss-color-muted'"><strong>{{ locale.i18n }}</strong></div>
                         <a class="kiss-display-block kiss-margin-left kiss-color-danger" @click="remove(locale)"><icon class="kiss-size-large">delete</icon></a>
-                    </div>
+                    </kiss-card>
 
                 </li>
 

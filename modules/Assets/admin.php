@@ -35,11 +35,12 @@ $this->on('app.layout.init', function() {
         'active' => false,
         'prio'   => 1
     ]);
+
+    $this->helper('theme')->vars('ffmpeg', $this->retrieve('assets/ffmpeg') ? true : false);
 });
 
-$this->on('app.layout.assets', function(array &$assets) {
-    $assets[] = ['src' => 'assets:assets/js/assets.js', 'type' => 'module'];
-    $assets[] = ['src' => 'assets:assets/components/display-image.js', 'type' => 'module'];
+$this->on('app.layout.assets', function(array &$assets, $context) {
+    if ($context === 'app:footer') $assets[] = ['src' => 'assets:assets/js/assets.js', 'type' => 'module'];
 });
 
 $this->on('app.permissions.collect', function($permissions) {
@@ -52,4 +53,32 @@ $this->on('app.permissions.collect', function($permissions) {
         'assets/folders/edit' => 'Edit folders',
         'assets/folders/delete' => 'Delete folders',
     ];
+});
+
+$this->on('spaces.config.create', function($config) {
+
+    $cfg = $this['assets'];
+
+    if (isset($cfg['vips']) || isset($cfg['ffmpeg'])) {
+
+        $config['assets'] = [];
+
+        if ($cfg['vips'] ?? false) $config['assets']['vips'] = $cfg['vips'];
+        if ($cfg['ffmpeg'] ?? false) $config['assets']['ffmpeg'] = $cfg['ffmpeg'];
+    }
+
+});
+
+$this->on('app.dashboard.widgets', function($widgets) {
+
+    if (!$this->dataStorage->count('assets')) {
+        return;
+    }
+
+    $widgets[] = [
+        'name' => 'dashboard-assets-widget',
+        'area' => 'tertiary',
+        'component' => 'assets:assets/vue-components/dashboard-widget.js'
+    ];
+
 });

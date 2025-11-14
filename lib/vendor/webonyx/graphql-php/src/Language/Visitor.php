@@ -28,10 +28,10 @@ use GraphQL\Utils\Utils;
  * visit function.
  *
  *   $editedAST = Visitor::visit($ast, [
- *       'enter' => function ($node, $key, $parent, $path, $ancestors) {
+ *       'enter' => function (Node $node, $key, $parent, array $path, array $ancestors) {
  *           // ...
  *       },
- *       'leave' => function ($node, $key, $parent, $path, $ancestors) {
+ *       'leave' => function (Node $node, $key, $parent, array $path, array $ancestors) {
  *           // ...
  *       }
  *   ]);
@@ -44,8 +44,8 @@ use GraphQL\Utils\Utils;
  * 1. Named visitors triggered when entering a node a specific kind.
  *
  *     Visitor::visit($ast, [
- *       'Kind' => function ($node) {
- *         // enter the "Kind" node
+ *       NodeKind::OBJECT_TYPE_DEFINITION => function (ObjectTypeDefinitionNode $node) {
+ *         // enter the "ObjectTypeDefinition" node
  *       }
  *     ]);
  *
@@ -53,12 +53,12 @@ use GraphQL\Utils\Utils;
  *    a specific kind.
  *
  *     Visitor::visit($ast, [
- *       'Kind' => [
- *         'enter' => function ($node) {
- *           // enter the "Kind" node
+ *       NodeKind::OBJECT_TYPE_DEFINITION => [
+ *         'enter' => function (ObjectTypeDefinitionNode $node) {
+ *           // enter the "ObjectTypeDefinition" node
  *         }
- *         'leave' => function ($node) {
- *           // leave the "Kind" node
+ *         'leave' => function (ObjectTypeDefinitionNode $node) {
+ *           // leave the "ObjectTypeDefinition" node
  *         }
  *       ]
  *     ]);
@@ -66,10 +66,10 @@ use GraphQL\Utils\Utils;
  * 3. Generic visitors that trigger upon entering and leaving any node.
  *
  *     Visitor::visit($ast, [
- *       'enter' => function ($node) {
+ *       'enter' => function (Node $node) {
  *         // enter any node
  *       },
- *       'leave' => function ($node) {
+ *       'leave' => function (Node $node) {
  *         // leave any node
  *       }
  *     ]);
@@ -78,18 +78,18 @@ use GraphQL\Utils\Utils;
  *
  *     Visitor::visit($ast, [
  *       'enter' => [
- *         'Kind' => function($node) {
- *           // enter the "Kind" node
+ *         NodeKind::OBJECT_TYPE_DEFINITION => function (ObjectTypeDefinitionNode $node) {
+ *           // enter the "ObjectTypeDefinition" node
  *         }
  *       },
  *       'leave' => [
- *         'Kind' => function ($node) {
- *           // leave the "Kind" node
+ *         NodeKind::OBJECT_TYPE_DEFINITION => function (ObjectTypeDefinitionNode $node) {
+ *           // leave the "ObjectTypeDefinition" node
  *         }
  *       ]
  *     ]);
  *
- * @phpstan-type NodeVisitor callable(Node): (VisitorOperation|null|false|void)
+ * @phpstan-type NodeVisitor callable(Node): (VisitorOperation|Node|NodeList<Node>|null|false|void)
  * @phpstan-type VisitorArray array<string, NodeVisitor>|array<string, array<string, NodeVisitor>>
  *
  * @see \GraphQL\Tests\Language\VisitorTest
@@ -168,7 +168,7 @@ class Visitor
      *
      * @api
      */
-    public static function visit(object $root, array $visitor, array $keyMap = null)
+    public static function visit(object $root, array $visitor, ?array $keyMap = null)
     {
         $visitorKeys = $keyMap ?? self::VISITOR_KEYS;
 
@@ -190,7 +190,7 @@ class Visitor
 
         do {
             ++$index;
-            $isLeaving = $index === \count($keys);
+            $isLeaving = $index === count($keys);
             $key = null;
             $node = null;
             $isEdited = $isLeaving && $edits !== [];
@@ -198,9 +198,9 @@ class Visitor
             if ($isLeaving) {
                 $key = $ancestors === []
                     ? null
-                    : $path[\count($path) - 1];
+                    : $path[count($path) - 1];
                 $node = $parent;
-                $parent = \array_pop($ancestors);
+                $parent = array_pop($ancestors);
                 if ($isEdited) {
                     if ($node instanceof Node || $node instanceof NodeList) {
                         $node = $node->cloneDeep();
@@ -217,12 +217,15 @@ class Visitor
                             $node->splice($editKey, 1);
                             ++$editOffset;
                         } elseif ($node instanceof NodeList) {
-                            if (! $editValue instanceof Node) {
-                                $notNode = Utils::printSafe($editValue);
-                                throw new \Exception("Can only add Node to NodeList, got: {$notNode}.");
+                            if ($editValue instanceof NodeList) {
+                                $node->splice($editKey, 1, $editValue);
+                                $editOffset -= count($editValue) - 1;
+                            } elseif ($editValue instanceof Node) {
+                                $node[$editKey] = $editValue;
+                            } else {
+                                $notNodeOrNodeList = Utils::printSafe($editValue);
+                                throw new \Exception("Can only add Node or NodeList to NodeList, got: {$notNodeOrNodeList}.");
                             }
-
-                            $node[$editKey] = $editValue;
                         } else {
                             $node->{$editKey} = $editValue;
                         }
@@ -234,7 +237,7 @@ class Visitor
                     'keys' => $keys,
                     'edits' => $edits,
                     'inList' => $inList,
-                ] = \array_pop($stack);
+                ] = array_pop($stack);
             } elseif ($parent === null) {
                 $node = $root;
             } else {
@@ -269,7 +272,7 @@ class Visitor
 
                         if ($result instanceof VisitorSkipNode) {
                             if (! $isLeaving) {
-                                \array_pop($path);
+                                array_pop($path);
                             }
                             continue;
                         }
@@ -281,7 +284,7 @@ class Visitor
                         $edits[] = [$key, $editValue];
                         if (! $isLeaving) {
                             if (! ($editValue instanceof Node)) {
-                                \array_pop($path);
+                                array_pop($path);
                                 continue;
                             }
 
@@ -296,7 +299,7 @@ class Visitor
             }
 
             if ($isLeaving) {
-                \array_pop($path);
+                array_pop($path);
             } else {
                 $stack[] = [
                     'inList' => $inList,
@@ -367,7 +370,7 @@ class Visitor
      */
     public static function visitInParallel(array $visitors): array
     {
-        $visitorsCount = \count($visitors);
+        $visitorsCount = count($visitors);
         $skipping = new \SplFixedArray($visitorsCount);
 
         return [
@@ -387,7 +390,7 @@ class Visitor
                         continue;
                     }
 
-                    $result = $fn(...\func_get_args());
+                    $result = $fn(...func_get_args());
 
                     if ($result instanceof VisitorSkipNode) {
                         $skipping[$i] = $node;
@@ -412,7 +415,7 @@ class Visitor
                         );
 
                         if ($fn !== null) {
-                            $result = $fn(...\func_get_args());
+                            $result = $fn(...func_get_args());
 
                             if ($result instanceof VisitorStop) {
                                 $skipping[$i] = $result;
@@ -450,7 +453,7 @@ class Visitor
                     return null;
                 }
 
-                $result = $fn(...\func_get_args());
+                $result = $fn(...func_get_args());
                 if ($result === null) {
                     return null;
                 }
@@ -465,7 +468,7 @@ class Visitor
             'leave' => static function (Node $node) use ($typeInfo, $visitor) {
                 $fn = self::extractVisitFn($visitor, $node->kind, true);
                 $result = $fn !== null
-                    ? $fn(...\func_get_args())
+                    ? $fn(...func_get_args())
                     : null;
 
                 $typeInfo->leave($node);
@@ -478,13 +481,13 @@ class Visitor
     /**
      * @phpstan-param VisitorArray $visitor
      *
-     * @return callable(Node $node, string $key, Node|NodeList $parent, array<int, int|string $path, array<int, Node|NodeList> $ancestors): VisitorOperation|Node|null
+     * @return (callable(Node $node, string|int|null $key, Node|NodeList<Node>|null $parent, array<int, int|string> $path, array<int, Node|NodeList<Node>> $ancestors): (VisitorOperation|Node|null))|(callable(Node): (VisitorOperation|Node|NodeList<Node>|void|false|null))|null
      */
     protected static function extractVisitFn(array $visitor, string $kind, bool $isLeaving): ?callable
     {
         $kindVisitor = $visitor[$kind] ?? null;
 
-        if (\is_array($kindVisitor)) {
+        if (is_array($kindVisitor)) {
             return $isLeaving
                 ? $kindVisitor['leave'] ?? null
                 : $kindVisitor['enter'] ?? null;
@@ -498,7 +501,7 @@ class Visitor
             ? $visitor['leave'] ?? null
             : $visitor['enter'] ?? null;
 
-        if (\is_array($specificVisitor)) {
+        if (is_array($specificVisitor)) {
             return $specificVisitor[$kind] ?? null;
         }
 

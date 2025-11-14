@@ -3,8 +3,7 @@ export default {
     data: function () {
 
         return {
-            agGrid: null,
-            api: null
+            api: null,
         }
     },
 
@@ -37,7 +36,7 @@ export default {
             handler: function (data) {
 
                 if (this.api) {
-                    this.api.setRowData(data);
+                    this.api.setGridOption('rowData', data);
                 }
             },
             deep: true,
@@ -46,13 +45,16 @@ export default {
     mounted() {
 
         let opts = Object.assign({
+            theme: 'legacy',
             columnDefs: this.columns,
             rowData: this.rows,
+            suppressScrollOnNewData: true,
+            onCellEditingStarted: (e) => e.api.setGridOption('suppressRowDrag', true),
+            onCellEditingStopped: (e) => e.api.setGridOption('suppressRowDrag', false),
         }, this.gridOptions || {});
 
         //instantiate Tabulator when element is mounted
-        this.agGrid = new agGrid.Grid(this.$refs.table, opts);
-        this.api = opts.api;
+        this.api = agGrid.createGrid(this.$refs.table, opts);
 
     },
 

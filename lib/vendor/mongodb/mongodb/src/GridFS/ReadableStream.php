@@ -18,7 +18,7 @@
 namespace MongoDB\GridFS;
 
 use MongoDB\BSON\Binary;
-use MongoDB\Driver\Cursor;
+use MongoDB\Driver\CursorInterface;
 use MongoDB\Exception\InvalidArgumentException;
 use MongoDB\GridFS\Exception\CorruptFileException;
 
@@ -37,37 +37,23 @@ use function substr;
  *
  * @internal
  */
-class ReadableStream
+final class ReadableStream
 {
-    /** @var string|null */
-    private $buffer;
+    private ?string $buffer = null;
 
-    /** @var integer */
-    private $bufferOffset = 0;
+    private int $bufferOffset = 0;
 
-    /** @var integer */
-    private $chunkSize;
+    private int $chunkSize;
 
-    /** @var integer */
-    private $chunkOffset = 0;
+    private int $chunkOffset = 0;
 
-    /** @var Cursor|null */
-    private $chunksIterator;
+    private ?CursorInterface $chunksIterator = null;
 
-    /** @var CollectionWrapper */
-    private $collectionWrapper;
+    private int $expectedLastChunkSize = 0;
 
-    /** @var integer */
-    private $expectedLastChunkSize = 0;
+    private int $length;
 
-    /** @var object */
-    private $file;
-
-    /** @var integer */
-    private $length;
-
-    /** @var integer */
-    private $numChunks = 0;
+    private int $numChunks = 0;
 
     /**
      * Constructs a readable GridFS stream.
@@ -76,7 +62,7 @@ class ReadableStream
      * @param object            $file              GridFS file document
      * @throws CorruptFileException
      */
-    public function __construct(CollectionWrapper $collectionWrapper, object $file)
+    public function __construct(private CollectionWrapper $collectionWrapper, private object $file)
     {
         if (! isset($file->chunkSize) || ! is_integer($file->chunkSize) || $file->chunkSize < 1) {
             throw new CorruptFileException('file.chunkSize is not an integer >= 1');
@@ -90,11 +76,8 @@ class ReadableStream
             throw new CorruptFileException('file._id does not exist');
         }
 
-        $this->file = $file;
         $this->chunkSize = $file->chunkSize;
         $this->length = $file->length;
-
-        $this->collectionWrapper = $collectionWrapper;
 
         if ($this->length > 0) {
             $this->numChunks = (integer) ceil($this->length / $this->chunkSize);
@@ -106,7 +89,6 @@ class ReadableStream
      * Return internal properties for debugging purposes.
      *
      * @see https://php.net/manual/en/language.oop5.magic.php#language.oop5.magic.debuginfo
-     * @return array
      */
     public function __debugInfo(): array
     {

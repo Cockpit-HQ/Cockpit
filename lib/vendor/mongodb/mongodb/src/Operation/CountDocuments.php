@@ -17,7 +17,6 @@
 
 namespace MongoDB\Operation;
 
-use MongoDB\Driver\Cursor;
 use MongoDB\Driver\Exception\RuntimeException as DriverRuntimeException;
 use MongoDB\Driver\Server;
 use MongoDB\Exception\InvalidArgumentException;
@@ -25,13 +24,12 @@ use MongoDB\Exception\UnexpectedValueException;
 use MongoDB\Exception\UnsupportedException;
 
 use function array_intersect_key;
-use function assert;
 use function count;
 use function current;
-use function is_array;
 use function is_float;
 use function is_integer;
 use function is_object;
+use function MongoDB\is_document;
 
 /**
  * Operation for obtaining an exact count of documents in a collection
@@ -39,25 +37,13 @@ use function is_object;
  * @see \MongoDB\Collection::countDocuments()
  * @see https://github.com/mongodb/specifications/blob/master/source/crud/crud.rst#countdocuments
  */
-class CountDocuments implements Executable
+final class CountDocuments
 {
-    /** @var string */
-    private $databaseName;
+    private array $aggregateOptions;
 
-    /** @var string */
-    private $collectionName;
+    private array $countOptions;
 
-    /** @var array|object */
-    private $filter;
-
-    /** @var array */
-    private $aggregateOptions;
-
-    /** @var array */
-    private $countOptions;
-
-    /** @var Aggregate */
-    private $aggregate;
+    private Aggregate $aggregate;
 
     /**
      * Constructs an aggregate command for counting documents
@@ -94,10 +80,10 @@ class CountDocuments implements Executable
      * @param array        $options        Command options
      * @throws InvalidArgumentException for parameter/option parsing errors
      */
-    public function __construct(string $databaseName, string $collectionName, $filter, array $options = [])
+    public function __construct(private string $databaseName, private string $collectionName, private array|object $filter, array $options = [])
     {
-        if (! is_array($filter) && ! is_object($filter)) {
-            throw InvalidArgumentException::invalidType('$filter', $filter, 'array or object');
+        if (! is_document($filter)) {
+            throw InvalidArgumentException::expectedDocumentType('$filter', $filter);
         }
 
         if (isset($options['limit']) && ! is_integer($options['limit'])) {
@@ -108,10 +94,6 @@ class CountDocuments implements Executable
             throw InvalidArgumentException::invalidType('"skip" option', $options['skip'], 'integer');
         }
 
-        $this->databaseName = $databaseName;
-        $this->collectionName = $collectionName;
-        $this->filter = $filter;
-
         $this->aggregateOptions = array_intersect_key($options, ['collation' => 1, 'comment' => 1, 'hint' => 1, 'maxTimeMS' => 1, 'readConcern' => 1, 'readPreference' => 1, 'session' => 1]);
         $this->countOptions = array_intersect_key($options, ['limit' => 1, 'skip' => 1]);
 
@@ -121,16 +103,13 @@ class CountDocuments implements Executable
     /**
      * Execute the operation.
      *
-     * @see Executable::execute()
-     * @return integer
      * @throws UnexpectedValueException if the command response was malformed
      * @throws UnsupportedException if collation or read concern is used and unsupported
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function execute(Server $server)
+    public function execute(Server $server): int
     {
         $cursor = $this->aggregate->execute($server);
-        assert($cursor instanceof Cursor);
 
         $allResults = $cursor->toArray();
 

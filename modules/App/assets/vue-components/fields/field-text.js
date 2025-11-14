@@ -18,9 +18,11 @@ export default {
         ],
         render(value, field, context) {
 
-            if (typeof(value) === 'object') {
+            if (typeof(value) !== 'string') {
                 value = JSON.stringify(value);
             }
+
+            value = App.utils.stripTags(value);
 
             return context == 'table-cell' && value.length > 100 ? App.utils.truncate(value, 100) : value;
         }

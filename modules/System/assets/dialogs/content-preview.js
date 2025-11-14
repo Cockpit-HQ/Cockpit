@@ -1,6 +1,8 @@
-import fieldsRenderer from "../vue-components/fields-renderer.js"
+import fieldsRenderer from "../vue-components/fields/renderer.js"
 
 export default {
+
+    _meta: {size: 'screen'},
 
     data() {
 
@@ -44,8 +46,27 @@ export default {
     },
 
     computed: {
+
         url() {
-            return this.uri;
+
+            let url = this.uri;
+
+            // Replace field placeholders
+            this.fields.forEach(field => {
+                const fieldName = field.i18n && this.locale?.i18n !== 'default' ? `${field.name}_${this.locale.i18n}` : field.name;
+                const regex = new RegExp(`{${fieldName}}`, 'g');
+                url = url.replace(regex, this.data[fieldName] || '');
+            });
+
+            // Replace locale placeholder
+            url = url.replace(/{locale}/g, this.locale?.i18n || 'default');
+
+            // replace id
+            if (this.data._id) {
+                url = url.replace(/{(id|_id)}/g, this.data._id);
+            }
+
+            return url;
         }
     },
 
@@ -63,6 +84,41 @@ export default {
         }
     },
 
+    methods: {
+
+        iframeReady() {
+            this.previewLoaded = true;
+            this.updateIframe();
+        },
+
+        updateIframe() {
+
+            if (!this.$refs.iframe) return;
+
+            let evtData = JSON.parse(JSON.stringify({
+                event: 'cockpit:content.preview',
+                data: this.data,
+                context: this.context,
+                locale: (this.locale && this.locale.i18n) || 'default'
+            }));
+
+            const update = (data) => {
+                this.$refs.iframe.contentWindow.postMessage(JSON.parse(JSON.stringify(data)), '*');
+            }
+
+            if (this.resolver) {
+                this.resolver(evtData, update);
+            } else {
+                update(evtData);
+            }
+        },
+
+        updateClose() {
+            this.$call('update', this.data);
+            this.$close()
+        }
+    },
+
     template: /*html*/`
 
         <div class="app-offcanvas-container">
@@ -70,8 +126,10 @@ export default {
                 <div class="kiss-flex-1 kiss-text-bold kiss-margin-small-left">{{ t('Content preview') }}</div>
 
                 <div class="kiss-margin-small-left kiss-margin-right" v-if="locales.length">
-                    <a class="kiss-text-bold kiss-flex kiss-flex-middle" kiss-popout="#content-preview-locales">
-                        <icon class="kiss-margin-xsmall-right">language</icon> {{ locale.name }}
+                    <a class="kiss-text-bold kiss-link-muted kiss-flex kiss-flex-middle" gap="xsmall" kiss-popout="#content-preview-locales">
+                        <icon size="larger" class="kiss-color-primary">translate</icon>
+                        <div class="kiss-size-small kiss-margin-xsmall-left">{{ locale.name }}</div>
+                        <icon class="kiss-color-muted">unfold_more</icon>
                     </a>
                 </div>
 
@@ -121,39 +179,4 @@ export default {
             </kiss-popout>
         </teleport>
     `,
-
-    methods: {
-
-        iframeReady() {
-            this.previewLoaded = true;
-            this.updateIframe();
-        },
-
-        updateIframe() {
-
-            if (!this.$refs.iframe) return;
-
-            let evtData = JSON.parse(JSON.stringify({
-                event: 'cockpit:content.preview',
-                data: this.data,
-                context: this.context,
-                locale: (this.locale && this.locale.i18n) || 'default'
-            }));
-
-            const update = (data) => {
-                this.$refs.iframe.contentWindow.postMessage(JSON.parse(JSON.stringify(data)), '*');
-            }
-
-            if (this.resolver) {
-                this.resolver(evtData, update);
-            } else {
-                update(evtData);
-            }
-        },
-
-        updateClose() {
-            this.$call('update', this.data);
-            this.$close()
-        }
-    }
 }

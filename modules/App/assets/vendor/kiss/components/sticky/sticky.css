@@ -1,0 +1,8 @@
+kiss-sticky {
+    display: block;
+}
+
+kiss-sticky, [data-sticky="true"] {
+    position: -webkit-sticky;
+    position: sticky;
+}

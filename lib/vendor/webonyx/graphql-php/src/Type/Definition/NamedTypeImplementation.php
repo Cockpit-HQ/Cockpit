@@ -4,9 +4,7 @@ namespace GraphQL\Type\Definition;
 
 use GraphQL\Error\InvariantViolation;
 
-/**
- * @see NamedType
- */
+/** @see NamedType */
 trait NamedTypeImplementation
 {
     public string $name;
@@ -21,7 +19,7 @@ trait NamedTypeImplementation
     /** @throws InvariantViolation */
     protected function inferName(): string
     {
-        if (isset($this->name)) {
+        if (isset($this->name)) { // @phpstan-ignore-line property might be uninitialized
             return $this->name;
         }
 
@@ -32,7 +30,7 @@ trait NamedTypeImplementation
         $name = $reflection->getShortName();
 
         if ($reflection->getNamespaceName() !== __NAMESPACE__) {
-            $withoutPrefixType = \preg_replace('~Type$~', '', $name);
+            $withoutPrefixType = preg_replace('~Type$~', '', $name);
             assert(is_string($withoutPrefixType), 'regex is statically known to be correct');
 
             return $withoutPrefixType;
@@ -43,7 +41,7 @@ trait NamedTypeImplementation
 
     public function isBuiltInType(): bool
     {
-        return \in_array($this->name, Type::BUILT_IN_TYPE_NAMES, true);
+        return in_array($this->name, Type::BUILT_IN_TYPE_NAMES, true);
     }
 
     public function name(): string

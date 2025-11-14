@@ -1,5 +1,12 @@
 <?php
 
+function generateRandomCockpitPassword($length = 12) {
+    $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%&*';
+    $password = '';
+    for ($i = 0; $i < $length; $i++) $password .= $chars[random_int(0, strlen($chars) - 1)];
+    return $password;
+}
+
 function hasSQLiteSupport() {
     try {
 
@@ -32,19 +39,19 @@ function ensureWritableStorageFolder($path) {
 }
 
 // misc checks
-$checks = array(
-    'Php version >= 8.1.0'                              => (version_compare(PHP_VERSION, '8.1.0') >= 0),
-    'Missing PDO extension with Sqlite support'         => hasSQLiteSupport(),
-    'Curl extension not available'                      => extension_loaded('curl'),
-    'Fileinfo extension not available'                  => extension_loaded('fileinfo'),
-    'GD extension not available'                        => extension_loaded('gd'),
-    'OpenSSL extension not available'                   => extension_loaded('openssl'),
-    'Data folder is not writable: /storage/data'        => ensureWritableStorageFolder('/data'),
-    'Cache folder is not writable: /storage/cache'      => ensureWritableStorageFolder('/cache'),
-    'Temp folder is not writable: /storage/tmp'         => ensureWritableStorageFolder('/tmp'),
-    'Thumbs folder is not writable: /storage/thumbs'    => ensureWritableStorageFolder('/thumbs'),
-    'Uploads folder is not writable: /storage/uploads'  => ensureWritableStorageFolder('/uploads'),
-);
+$checks = [
+    'Php version >= 8.3.0'                               => (version_compare(PHP_VERSION, '8.3.0') >= 0),
+    'Missing PDO extension with Sqlite support'          => hasSQLiteSupport(),
+    'Curl extension not available'                       => extension_loaded('curl'),
+    'Fileinfo extension not available'                   => extension_loaded('fileinfo'),
+    'GD extension not available'                         => extension_loaded('gd'),
+    'OpenSSL extension not available'                    => extension_loaded('openssl'),
+    'Data folder is not writable: /storage/data'         => ensureWritableStorageFolder('/data'),
+    'Cache folder is not writable: /storage/cache'       => ensureWritableStorageFolder('/cache'),
+    'Temp folder is not writable: /storage/tmp'          => ensureWritableStorageFolder('/tmp'),
+    'Thumbs folder is not writable: /storage/tmp/thumbs' => ensureWritableStorageFolder('/tmp/thumbs'),
+    'Uploads folder is not writable: /storage/uploads'   => ensureWritableStorageFolder('/uploads'),
+];
 
 $failed = [];
 
@@ -58,7 +65,7 @@ $APP_SPACE = null;
 // support ?space=myenv to install custom cockpit instance from /.spaces/*
 if (isset($_GET['space']) && $_GET['space']) {
 
-    $APP_SPACE = $_GET['space'];
+    $APP_SPACE = preg_replace('/[^a-z0-9\-_]/', '', $_GET['space']);
     $spaceDir  = $APP_SPACE_DIR."/.spaces/{$APP_SPACE}";
 
     if (!file_exists($spaceDir)) {
@@ -81,6 +88,13 @@ if (!count($failed)) {
     // check whether cockpit is already installed
     try {
 
+        // check memory config
+        @$app->memory->get('test');
+
+        if (ini_get('session.save_handler') == 'redis') {
+            $connection = @(new MemoryStorage\Client(ini_get('session.save_path')))->get('test');
+        }
+
         if ($app->dataStorage->getCollection('system/users')->count()) {
 
             header('Location: ../'.($APP_SPACE ? ":{$APP_SPACE}" : ""));
@@ -88,13 +102,14 @@ if (!count($failed)) {
         }
 
         $created = time();
+        $password = generateRandomCockpitPassword();
 
         $user = [
             'active' => true,
             'user' => 'admin',
             'name' => 'Admin',
             'email' => 'admin@admin.com',
-            'password' => $app->hash('admin'),
+            'password' => $app->hash($password),
             'i18n' => 'en',
             'role' => 'admin',
             'theme' => 'auto',
@@ -107,8 +122,11 @@ if (!count($failed)) {
 
     } catch(Throwable $e) {
 
-        $failed[] = $e->getMessage();
-
+        if (str_contains(get_class($e), 'MongoDB')) {
+            $failed[] = 'MongoDB connection failed';
+        } else {
+            $failed[] = $e->getMessage();
+        }
     }
 
 }
@@ -143,12 +161,12 @@ if (!count($failed)) {
 
             <div>
                 <div class="kiss-flex kiss-margin">
-                    <div class="kiss-margin-right">
-                        <img src="../modules/App/assets/logo.svg" width="30" height="30"alt="logo">
+                    <div class="kiss-margin-small-right">
+                        <img src="../modules/App/assets/img/logo.svg" width="35" height="35"alt="logo">
                     </div>
-                    <div class="kiss-flex-1 kiss-size-xsmall">
+                    <div class="kiss-flex-1">
                         <strong>Cockpit</strong>
-                        <div class="kiss-color-muted">Content Platform</div>
+                        <div class="kiss-color-muted kiss-size-xsmall">Content Platform</div>
                     </div>
                 </div>
 
@@ -194,11 +212,11 @@ if (!count($failed)) {
 
                     <kiss-card class="kiss-text-monospace kiss-padding kiss-bgcolor-contrast kiss-flex kiss-flex-column kiss-margin">
                         <div><icon class="kiss-color-muted kiss-margin-right" size="larger">person</icon>admin</div>
-                        <div><icon class="kiss-color-muted kiss-margin-right" size="larger">key</icon>admin</div>
+                        <div><icon class="kiss-color-muted kiss-margin-right" size="larger">key</icon><?=$password?></div>
                     </kiss-card>
 
                     <div class="kiss-margin-large-bottom kiss-color-muted">
-                        Don't forget to change the credentials after your initial login to prevent bad things from bad people.
+                        You can change the credentials after your initial login to prevent bad things from bad people.
                     </div>
 
                     <div class="kiss-margin-large">

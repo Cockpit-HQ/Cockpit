@@ -6,19 +6,17 @@ class Projection {
 
     public static function onDocuments(array $documents, array $fields): array {
 
-        $vals = array_values($fields);
-        $isInclusion = in_array(1, $vals) ? true : false;
-
-        if (!$isInclusion && !in_array(0, $vals)) {
-            $isInclusion = true;
-        }
-
+        $hasInclusion = self::hasInclusion($fields);
         $projection = self::normalizeProjection($fields);
 
         foreach ($documents as &$document) {
 
+            if (!is_array($document)) {
+                continue;
+            }
+
             $id = $document['_id'] ?? null;
-            $document = self::process($document, $projection, $isInclusion);
+            $document = self::process($document, $projection, $hasInclusion);
 
             if ($id && ($fields['_id'] ?? true)) {
                 $document['_id'] = $id;
@@ -32,13 +30,38 @@ class Projection {
         return self::onDocuments([$document], $fields)[0];
     }
 
+    public static function hasInclusion(array $fields): bool {
+        $hasInclusion = false;
+        $hasExclusion = false;
+
+        $stack = [$fields];
+        while (!empty($stack)) {
+            $current = array_pop($stack);
+            foreach ($current as $value) {
+                if (is_array($value)) {
+                    $stack[] = $value;
+                } elseif ($value === 1) {
+                    $hasInclusion = true;
+                } elseif ($value === 0) {
+                    $hasExclusion = true;
+                }
+
+                if ($hasInclusion && $hasExclusion) {
+                    throw new \InvalidArgumentException("Projection cannot have a mix of inclusion and exclusion.");
+                }
+            }
+        }
+
+        return $hasInclusion || !$hasExclusion;
+    }
+
     protected static function normalizeProjection($fields): array {
 
         $projection = [];
 
         foreach ($fields as $field => $value) {
 
-            if (strpos($field, '.') !== false) {
+            if (str_contains($field, '.')) {
                 $projection = array_replace_recursive($projection, self::dotNotationToArray($field, $value));
             } else {
                 $projection[$field] = $value;
@@ -48,13 +71,18 @@ class Projection {
         return $projection;
     }
 
-    protected static function process(array $document, array $fields, bool $isInclusion): array {
+    protected static function process(array $document, array $fields, bool $hasInclusion): array {
 
         $result = [];
 
         if (self::is_sequential($document)) {
             foreach ($document as $key => $value) {
-                $result[] = self::process($value, $fields, $isInclusion);
+
+                if (is_array($value)) {
+                    $result[] = self::process($value, $fields, $hasInclusion);
+                } else {
+                    $result[] = $value;
+                }
             }
             return $result;
         }
@@ -63,13 +91,17 @@ class Projection {
 
             if (is_array($value) && isset($fields[$field]) && is_array($fields[$field])) {
 
-                $result[$field] = self::process($value, $fields[$field], $isInclusion);
+                if (is_array($fields[$field])) {
+                    $result[$field] = self::process($value, $fields[$field], $hasInclusion);
+                } else {
+                    $result[$field] = $value;
+                }
 
             } else {
 
-                if ($isInclusion && isset($fields[$field]) && $fields[$field] == 1) {
+                if ($hasInclusion && isset($fields[$field]) && $fields[$field] == 1) {
                     $result[$field] = $value;
-                } elseif (!$isInclusion && (!isset($fields[$field]) || $fields[$field] != 0)) {
+                } elseif (!$hasInclusion && (!isset($fields[$field]) || $fields[$field] != 0)) {
                     $result[$field] = $value;
                 }
             }

@@ -1,42 +1,49 @@
+import "../components/display-image.js";
+
 // Global Vue components
 VueView.component('asset-preview', 'assets:assets/vue-components/asset-preview.js');
 VueView.component('field-asset', 'assets:assets/vue-components/field-asset.js');
 
-App.on('field-wysiwyg-init', evt => {
-    let opts = evt.params[0];
-    opts.toolbar += ` | insertAssetButton`;
-});
-
-App.on('field-wysiwyg-setup', evt => {
-
+App.on('field-richtext-init', evt => {
     let editor = evt.params[0];
 
-    if (editor.getParam('assetsPicker') === false) {
-        return;
-    }
-
-    editor.ui.registry.addButton("insertAssetButton", {
-        text: 'Asset',
-        onAction: function () {
-
-            VueView.ui.modal('assets:assets/dialogs/asset-picker.js', {}, {
-
-                selectAsset: (asset) => {
-
-                    let content, url = App.base(`#uploads:${asset.path}`);
-
-                    if (/^image\//.test(asset.mime)) {
-                        content = `<img src="${url}" alt="${asset.title}">`;
-                    } else {
-                        content = `<a href="${url}">${asset.title}</a>`;
-                    }
-
-                    editor.insertContent(content);
-                }
-
-            }, {size: 'xlarge'})
+    editor.extensionManager.extensions.forEach(ext => {
+        switch (ext.name) {
+            case 'link':
+                ext.options.protocols.push('assets')
+                break;
         }
     });
+});
+
+App.on('field-richtext-image-sources', evt => {
+    let img = evt.params[0];
+
+    img.sources['Assets'] = () => {
+
+        VueView.ui.modal('assets:assets/dialogs/asset-picker.js', {filter: {type: 'image'}}, {
+
+            onSelect: (asset) => {
+                img.src = App.base(`#uploads:${asset.path}`);
+            }
+
+        });
+    };
+});
+
+App.on('field-richtext-link-sources', evt => {
+    let link = evt.params[0];
+
+    link.sources['Assets'] = () => {
+
+        VueView.ui.modal('assets:assets/dialogs/asset-picker.js', {}, {
+
+            onSelect: (asset) => {
+                link.href = location.origin + App.route(`/assets/link/${asset._id}`);
+            }
+
+        });
+    };
 });
 
 App.utils.$interpolate.fns.$image = function(asset, w = 25, h = 25, mode = 'bestFit', q = 80) {
@@ -46,3 +53,11 @@ App.utils.$interpolate.fns.$image = function(asset, w = 25, h = 25, mode = 'best
     return `<display-image class="kiss-display-inline-block" src="${asset._id}" w="${w}" h="${h}" mode="${mode}" q="${q}" style="vertical-align: middle;"></display-image>`;
 };
 
+App.utils.selectAsset = function(callback, filter = {}) {
+
+    VueView.ui.modal('assets:assets/dialogs/asset-picker.js', {filter}, {
+        onSelect: (asset) => {
+            callback(asset);
+        }
+    });
+}

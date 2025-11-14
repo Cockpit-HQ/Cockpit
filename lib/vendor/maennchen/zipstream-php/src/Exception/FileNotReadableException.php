@@ -1,24 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ZipStream\Exception;
 
 use ZipStream\Exception;
 
 /**
- * This Exception gets invoked if a file wasn't found
+ * This Exception gets invoked if a file isn't readable
  *
- * @author Jonatan Männchen <jonatan@maennchen.ch>
- * @copyright Copyright (c) 2014, Jonatan Männchen
+ * @api
  */
 class FileNotReadableException extends Exception
 {
     /**
-     * Constructor of the Exception
-     *
-     * @param String $path - The path which wasn't found
+     * @internal
      */
-    public function __construct($path)
-    {
-        parent::__construct("Ths file with the path $path isn't readable.");
+    public function __construct(
+        public readonly string $path
+    ) {
+        parent::__construct("The file with the path $path isn't readable.");
     }
 }

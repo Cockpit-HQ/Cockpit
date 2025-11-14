@@ -17,14 +17,14 @@
 
 namespace MongoDB\Operation;
 
+use MongoDB\Codec\DocumentCodec;
 use MongoDB\Driver\Exception\RuntimeException as DriverRuntimeException;
 use MongoDB\Driver\Server;
 use MongoDB\Exception\InvalidArgumentException;
 use MongoDB\Exception\UnsupportedException;
 use MongoDB\UpdateResult;
 
-use function is_array;
-use function is_object;
+use function MongoDB\is_document;
 use function MongoDB\is_first_key_operator;
 use function MongoDB\is_pipeline;
 
@@ -34,10 +34,9 @@ use function MongoDB\is_pipeline;
  * @see \MongoDB\Collection::replaceOne()
  * @see https://mongodb.com/docs/manual/reference/command/update/
  */
-class ReplaceOne implements Executable
+final class ReplaceOne
 {
-    /** @var Update */
-    private $update;
+    private Update $update;
 
     /**
      * Constructs an update command.
@@ -46,6 +45,9 @@ class ReplaceOne implements Executable
      *
      *  * bypassDocumentValidation (boolean): If true, allows the write to
      *    circumvent document level validation.
+     *
+     *  * codec (MongoDB\Codec\DocumentCodec): Codec used to encode PHP objects
+     *    into BSON.
      *
      *  * collation (document): Collation specification.
      *
@@ -70,6 +72,12 @@ class ReplaceOne implements Executable
      *    Parameters can then be accessed as variables in an aggregate
      *    expression context (e.g. "$$var").
      *
+     *   * sort (document): Determines which document the operation modifies if
+     *     the query selects multiple documents.
+     *
+     *     This is not supported for server versions < 8.0 and will result in an
+     *     exception at execution time if used.
+     *
      *  * writeConcern (MongoDB\Driver\WriteConcern): Write concern.
      *
      * @param string       $databaseName   Database name
@@ -79,10 +87,44 @@ class ReplaceOne implements Executable
      * @param array        $options        Command options
      * @throws InvalidArgumentException for parameter/option parsing errors
      */
-    public function __construct(string $databaseName, string $collectionName, $filter, $replacement, array $options = [])
+    public function __construct(string $databaseName, string $collectionName, array|object $filter, array|object $replacement, array $options = [])
     {
-        if (! is_array($replacement) && ! is_object($replacement)) {
-            throw InvalidArgumentException::invalidType('$replacement', $replacement, 'array or object');
+        if (isset($options['codec']) && ! $options['codec'] instanceof DocumentCodec) {
+            throw InvalidArgumentException::invalidType('"codec" option', $options['codec'], DocumentCodec::class);
+        }
+
+        if (isset($options['codec'], $options['typeMap'])) {
+            throw InvalidArgumentException::cannotCombineCodecAndTypeMap();
+        }
+
+        $this->update = new Update(
+            $databaseName,
+            $collectionName,
+            $filter,
+            $this->validateReplacement($replacement, $options['codec'] ?? null),
+            ['multi' => false] + $options,
+        );
+    }
+
+    /**
+     * Execute the operation.
+     *
+     * @throws UnsupportedException if collation is used and unsupported
+     * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
+     */
+    public function execute(Server $server): UpdateResult
+    {
+        return $this->update->execute($server);
+    }
+
+    private function validateReplacement(array|object $replacement, ?DocumentCodec $codec): array|object
+    {
+        if ($codec) {
+            $replacement = $codec->encode($replacement);
+        }
+
+        if (! is_document($replacement)) {
+            throw InvalidArgumentException::expectedDocumentType('$replacement', $replacement);
         }
 
         // Treat empty arrays as replacement documents for BC
@@ -98,25 +140,6 @@ class ReplaceOne implements Executable
             throw new InvalidArgumentException('$replacement is an update pipeline');
         }
 
-        $this->update = new Update(
-            $databaseName,
-            $collectionName,
-            $filter,
-            $replacement,
-            ['multi' => false] + $options
-        );
-    }
-
-    /**
-     * Execute the operation.
-     *
-     * @see Executable::execute()
-     * @return UpdateResult
-     * @throws UnsupportedException if collation is used and unsupported
-     * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
-     */
-    public function execute(Server $server)
-    {
-        return $this->update->execute($server);
+        return $replacement;
     }
 }

@@ -1,0 +1,565 @@
+# Assets Module
+
+[![Core Module](https://img.shields.io/badge/Type-Core%20Module-blue.svg)](https://getcockpit.com)
+
+> **Comprehensive asset management system for Cockpit CMS**
+
+The Assets module provides powerful file upload, processing, and delivery capabilities with automatic image optimization, video processing, and flexible storage backends. Perfect for building media-rich applications with performance-optimized asset delivery.
+
+## ✨ Features
+
+### 📁 **File Management**
+- **Multiple Upload Methods** - Drag & drop, file picker, programmatic upload
+- **Folder Organization** - Hierarchical folder structure for content organization
+- **File Type Detection** - Automatic MIME type detection and categorization
+- **Duplicate Detection** - MD5 hash-based duplicate prevention
+
+### 🖼️ **Image Processing**
+- **Automatic Thumbnails** - On-demand thumbnail generation with caching
+- **Multiple Resize Modes** - Thumbnail, best fit, exact dimensions, aspect ratio
+- **Format Conversion** - Convert between JPEG, PNG, WebP, AVIF formats
+- **Color Extraction** - Automatic color palette extraction from images
+- **Thumbhash Generation** - Compact image placeholders for better UX
+
+### 🎥 **Video Processing**
+- **Video Thumbnails** - Automatic frame extraction for video previews
+- **Video Metadata** - Duration, codec, resolution extraction
+- **FFmpeg Integration** - Advanced video processing capabilities
+- **Streaming Support** - Optimized delivery for video content
+
+### 🚀 **Performance & Delivery**
+- **VIPS Integration** - High-performance image processing
+- **HTTP Caching** - Browser and CDN-friendly cache headers
+- **Responsive Images** - Multiple sizes for different devices
+- **Lazy Loading Support** - Thumbhash placeholders for smooth loading
+
+### 🔧 **Storage Flexibility**
+- **Local Storage** - File system storage for simple setups
+- **Cloud Storage** - S3, Azure Blob, Google Cloud via Flysystem
+- **CDN Integration** - Seamless CDN delivery with CloudFlare, AWS CloudFront
+- **Stream Processing** - Memory-efficient handling of large files
+
+
+
+## 🖼️ Image Processing
+
+### Thumbnail Generation
+
+```php
+// Basic thumbnail
+$url = $app->helper('asset')->image([
+    'src' => '/2023/12/15/image.jpg',
+    'width' => 300,
+    'height' => 200
+]);
+
+// Advanced options
+$url = $app->helper('asset')->image([
+    'src' => '/2023/12/15/image.jpg',
+    'width' => 800,
+    'height' => 600,
+    'mode' => 'bestFit',        // Resize mode
+    'quality' => 85,            // Quality (1-100)
+    'mime' => 'webp',           // Output format
+    'filters' => []             // Additional filters
+]);
+```
+
+### Resize Modes
+
+| Mode | Description | Use Case |
+|------|-------------|----------|
+| `thumbnail` | Crop to exact dimensions | Profile pictures, grid layouts |
+| `bestFit` | Fit within dimensions, maintain aspect | Responsive images |
+| `resize` | Stretch to exact dimensions | When exact size needed |
+| `fitToWidth` | Scale to width, maintain aspect | Full-width banners |
+| `fitToHeight` | Scale to height, maintain aspect | Sidebar images |
+
+### Format Conversion
+
+```php
+// Convert to WebP for modern browsers
+$webpUrl = $app->helper('asset')->image([
+    'src' => '/path/to/image.jpg',
+    'width' => 400,
+    'mime' => 'webp',
+    'quality' => 80
+]);
+
+// Convert to AVIF for maximum compression
+$avifUrl = $app->helper('asset')->image([
+    'src' => '/path/to/image.jpg',
+    'width' => 400,
+    'mime' => 'avif',
+    'quality' => 70
+]);
+
+// Progressive JPEG for faster loading
+$progressiveUrl = $app->helper('asset')->image([
+    'src' => '/path/to/image.jpg',
+    'width' => 800,
+    'quality' => 85,
+    'filters' => ['progressive' => true]
+]);
+```
+
+### Smart Cropping (VIPS)
+
+When VIPS is enabled, use intelligent cropping algorithms to focus on the most important parts of an image:
+
+```php
+// Attention-based smart cropping (focuses on areas of interest)
+$url = $app->helper('asset')->image([
+    'src' => '/path/to/image.jpg',
+    'width' => 400,
+    'height' => 300,
+    'mode' => 'thumbnail',
+    'smartcrop' => 'attention'  // Best for most images
+]);
+
+// Entropy-based cropping (focuses on high-detail areas)
+$url = $app->helper('asset')->image([
+    'src' => '/path/to/image.jpg',
+    'width' => 400,
+    'height' => 300,
+    'smartcrop' => 'entropy'    // Good for detailed images
+]);
+```
+
+**Available smartcrop modes:**
+- `attention` - Focuses on areas of visual interest (recommended)
+- `entropy` - Focuses on high-detail/high-contrast areas
+- `centre` / `center` - Crops from the center
+- `low` - Focuses on low-frequency areas
+- `high` - Focuses on high-frequency areas
+
+**Use in API:**
+
+```bash
+# Smart crop with attention algorithm
+GET /api/assets/image/{id}?w=400&h=300&m=thumbnail&smartcrop=attention
+
+# Smart crop with entropy
+GET /api/assets/image/{id}?w=400&h=300&smartcrop=entropy
+```
+
+### Responsive Images
+
+```php
+// Generate multiple sizes
+$sizes = [
+    'small' => ['width' => 400, 'height' => 300],
+    'medium' => ['width' => 800, 'height' => 600], 
+    'large' => ['width' => 1200, 'height' => 900]
+];
+
+$srcset = [];
+foreach ($sizes as $size => $dimensions) {
+    $url = $app->helper('asset')->image(array_merge([
+        'src' => $asset['path'],
+        'quality' => 80,
+        'mime' => 'webp'
+    ], $dimensions));
+    
+    $srcset[] = "{$url} {$dimensions['width']}w";
+}
+
+// Output HTML
+echo '<img src="' . $app->helper('asset')->image(['src' => $asset['path'], 'width' => 800]) . '" 
+           srcset="' . implode(', ', $srcset) . '" 
+           sizes="(max-width: 768px) 100vw, 50vw">';
+```
+
+
+## 📊 API Reference
+
+### REST API
+
+#### Upload Assets
+
+```bash
+# Upload single file
+POST /api/assets/upload
+Content-Type: multipart/form-data
+
+files: (file data)
+
+# Upload with metadata
+POST /api/assets/upload
+Content-Type: multipart/form-data
+
+files: (file data)
+meta[title]: "My Image"
+meta[tags][]: "product"
+meta[folder]: "gallery"
+```
+
+#### Get Assets
+
+```bash
+# Get all assets
+GET /api/assets
+
+# Get assets with filter
+GET /api/assets?filter={"type":"image"}
+
+# Get assets with pagination
+GET /api/assets?limit=20&skip=40
+
+# Get asset by ID
+GET /api/assets/{id}
+```
+
+#### Image Processing API
+
+```bash
+# Get optimized image
+GET /api/assets/image/{id}?w=300&h=200&m=thumbnail&q=80
+
+# Get image with format conversion
+GET /api/assets/image/{id}?w=400&mime=webp&q=75
+
+# Get original image
+GET /api/assets/image/{id}?w=original&h=original
+
+# Smart crop with VIPS
+GET /api/assets/image/{id}?w=400&h=300&smartcrop=attention
+
+# Use named preset
+GET /api/assets/image/{id}/thumbnail
+GET /api/assets/image/{id}/hero
+GET /api/assets/image/{id}/card
+
+# List available presets
+GET /api/assets/presets
+```
+
+#### Asset Management
+
+```bash
+# Update asset metadata
+POST /api/assets/update
+Content-Type: application/json
+Cockpit-Token: your-token
+
+{
+    "_id": "asset-id",
+    "title": "Updated Title",
+    "tags": ["new", "tags"]
+}
+
+# Delete asset
+DELETE /api/assets/{id}
+Cockpit-Token: your-token
+```
+
+### GraphQL API
+
+#### Query Assets
+
+```graphql
+query GetAssets($filter: JSON, $limit: Int) {
+  assets(filter: $filter, limit: $limit) {
+    _id
+    title
+    path
+    type
+    mime
+    width
+    height
+    size
+    colors
+    tags
+    _created
+  }
+}
+```
+
+#### Asset by ID
+
+```graphql
+query GetAsset($id: String!) {
+  asset(id: $id) {
+    _id
+    title
+    path
+    type
+    width
+    height
+    thumbhash
+    colors
+    description
+    tags
+  }
+}
+```
+
+### JavaScript/Frontend Usage
+
+```javascript
+// Upload assets via fetch API
+const formData = new FormData();
+formData.append('files', fileInput.files[0]);
+formData.append('meta[title]', 'Uploaded Image');
+
+const result = await fetch('/api/assets/upload', {
+  method: 'POST',
+  headers: {
+    'Cockpit-Token': 'your-api-token'
+  },
+  body: formData
+}).then(res => res.json());
+
+console.log('Uploaded asset:', result.assets[0]);
+
+// Get optimized image URL
+const imageUrl = `/api/assets/image/${assetId}?w=400&h=300&m=thumbnail&q=80`;
+
+// Responsive image with multiple formats
+const getImageUrl = (assetId, width, format = 'webp') => 
+  `/api/assets/image/${assetId}?w=${width}&f=${format}&q=80`;
+
+// Generate srcset for responsive images
+const generateSrcSet = (assetId, sizes, format = 'webp') => {
+  return sizes.map(size => 
+    `${getImageUrl(assetId, size, format)} ${size}w`
+  ).join(', ');
+};
+```
+
+## ⚙️ Configuration
+
+### Upload Restrictions
+
+```php
+'assets' => [
+    'allowed_uploads' => 'jpg,jpeg,png,gif,svg,pdf,mp4,mp3',  // Specific extensions
+    'max_upload_size' => 10000000,     // 10MB limit
+    'forbidden_extensions' => [         // Additional forbidden extensions
+        'exe', 'bat', 'sh', 'php'
+    ]
+]
+```
+
+### Image Presets
+
+Define reusable image transformation presets in your configuration:
+
+```php
+// config/config.php
+return [
+    'assets' => [
+        'presets' => [
+            'thumbnail' => [
+                'width' => 150,
+                'height' => 150,
+                'mode' => 'thumbnail',
+                'quality' => 80
+            ],
+            'card' => [
+                'width' => 400,
+                'height' => 300,
+                'mode' => 'thumbnail',
+                'quality' => 85,
+                'smartcrop' => 'attention'  // VIPS smart cropping
+            ],
+            'hero' => [
+                'width' => 1920,
+                'height' => 1080,
+                'mode' => 'bestFit',
+                'quality' => 90,
+                'mime' => 'webp'
+            ],
+            'avatar' => [
+                'width' => 200,
+                'height' => 200,
+                'mode' => 'thumbnail',
+                'quality' => 85,
+                'smartcrop' => 'attention',
+                'filters' => ['sharpen']
+            ]
+        ]
+    ]
+];
+```
+
+**Use presets in API:**
+
+```bash
+# Use named preset
+GET /api/assets/image/{id}/thumbnail
+GET /api/assets/image/{id}/hero
+GET /api/assets/image/{id}/card
+
+# Get binary output
+GET /api/assets/image/{id}/thumbnail?o=1
+```
+
+**Use presets in PHP:**
+
+```php
+// Get preset configuration
+$presets = $app->module('assets')->presets();
+
+// Use preset directly
+$url = $app->helper('asset')->image(array_merge(
+    $presets['hero'],
+    ['src' => $assetId]
+));
+```
+
+**Benefits of Presets:**
+- ✅ Consistent image sizes across your application
+- ✅ Easier to maintain and update globally
+- ✅ Better caching with predictable URLs
+- ✅ Prevents arbitrary URL manipulation
+- ✅ Centralized image optimization settings
+
+## 🖥️ CLI Commands
+
+### Preset Generation
+
+```bash
+# Generate all preset variants for all image assets
+./tower assets:presets:generate
+
+# Generate only specific preset
+./tower assets:presets:generate --preset=thumbnail
+./tower assets:presets:generate -p hero
+
+# Rebuild existing preset images (force regenerate)
+./tower assets:presets:generate --rebuild
+./tower assets:presets:generate -r
+
+# Generate presets for filtered assets
+./tower assets:presets:generate --filter='{"folder":"gallery"}'
+./tower assets:presets:generate -f '{"tags":["product"]}'
+
+# Generate specific preset for filtered assets
+./tower assets:presets:generate -p thumbnail -f '{"type":"image"}' -r
+```
+
+**What it does:**
+- Processes all image-based assets (excludes SVGs)
+- Generates cached versions for all configured presets
+- Shows progress bar during generation
+- Reports generation statistics and cache size
+- Skips already cached images (use `-r` to rebuild)
+
+**Use cases:**
+- Pre-warm cache after uploading bulk assets
+- Regenerate thumbnails after preset configuration changes
+- Optimize delivery performance for new galleries
+- Build cache during deployment/maintenance windows
+
+### Thumbnail Management
+
+```bash
+# Generate thumbhash for existing images
+./tower assets:thumbhash:generate
+
+# Fix file visibility permissions
+./tower assets:files:fixvisibility
+```
+
+## 🔧 Advanced Usage
+
+### Custom Image Processing
+
+```php
+// Register custom image processor
+$app->on('assets.asset.upload', function(&$asset, &$meta, &$opts, &$file) {
+    
+    if ($asset['type'] === 'image') {
+        
+        // Add custom watermark
+        $watermarked = $this->addWatermark($file);
+        
+        // Custom thumbnail sizes
+        $this->generateCustomThumbnails($file, $asset);
+        
+        // Add to CDN
+        $this->uploadToCDN($file, $asset);
+    }
+});
+
+// Custom thumbnail generation
+function generateCustomThumbnails($file, &$asset) {
+    $sizes = [
+        'thumb' => [150, 150],
+        'medium' => [400, 300], 
+        'large' => [800, 600]
+    ];
+    
+    foreach ($sizes as $name => $dimensions) {
+        $thumbnail = $this->app->helper('asset')->image([
+            'src' => $asset['path'],
+            'width' => $dimensions[0],
+            'height' => $dimensions[1],
+            'mode' => 'thumbnail'
+        ]);
+        
+        $asset["thumbnail_{$name}"] = $thumbnail;
+    }
+}
+```
+
+### Asset Validation
+
+```php
+// Custom upload validation
+$app->on('assets.asset.upload', function(&$asset, &$meta, &$opts, &$file) {
+    
+    // Validate image dimensions
+    if ($asset['type'] === 'image') {
+        if ($asset['width'] < 800 || $asset['height'] < 600) {
+            // throw error
+        }
+    }
+    
+    // Validate file size per type
+    $maxSizes = [
+        'image' => 5000000,  // 5MB
+        'video' => 100000000, // 100MB
+        'document' => 10000000 // 10MB
+    ];
+    
+    if ($asset['size'] > $maxSizes[$asset['type']]) {
+        // throw error
+    }
+});
+```
+
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+**❌ Large file uploads failing**
+- Check `upload_max_filesize` and `post_max_size` in PHP
+- Verify `max_upload_size` in Assets configuration
+- Ensure sufficient disk space for temporary files
+
+**❌ Image processing errors**
+- Install required extensions: GD
+- For better performance, install VIPS: `apt-get install libvips-tools`
+- Check memory limits for large image processing
+
+**❌ Video thumbnail generation failing**
+- Install FFmpeg: `apt-get install ffmpeg`
+- Verify FFmpeg path in configuration
+- Check video codec compatibility
+
+**❌ Thumbnails not generating**
+- Verify write permissions to thumbnail storage directory
+- Check VIPS/GD installation and configuration
+- Ensure source files are accessible
+
+
+## 📄 License
+
+This is a core module of Cockpit CMS distributed under the MIT license.
+
+---
+
+**Ready to manage assets?** The Assets module provides everything you need for professional media management with automatic optimization and flexible delivery options!

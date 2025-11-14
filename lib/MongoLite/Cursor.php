@@ -2,10 +2,13 @@
 
 namespace MongoLite;
 
+use Iterator;
+use PDO;
+
 /**
  * Cursor object.
  */
-class Cursor implements \Iterator {
+class Cursor implements Iterator {
 
     /**
      * @var boolean|integer
@@ -60,30 +63,52 @@ class Cursor implements \Iterator {
     }
 
     /**
+     * Destructor method to clean up resources or perform necessary actions
+     * when the object is destroyed.
+     *
+     * @return void
+     */
+    public function __destruct() {
+
+        if ($this->criteria) {
+            $this->collection->database->unregisterCriteriaFunction($this->criteria);
+        }
+    }
+
+    /**
      * Documents count
      *
      * @return integer
      */
     public function count(): int {
+        
+        // Get sanitized collection name
+        $sanitizedName = $this->getSanitizedCollectionName();
 
         if (!$this->criteria) {
 
-            $stmt = $this->collection->database->connection->query('SELECT COUNT(*) AS C FROM '.$this->collection->database->connection->quote($this->collection->name));
+            $stmt = $this->collection->database->connection->query("SELECT COUNT(*) AS C FROM `{$sanitizedName}`");
 
         } else {
-
-            $sql = ['SELECT COUNT(*) AS C FROM '.$this->collection->database->connection->quote($this->collection->name)];
-
-            $sql[] = 'WHERE document_criteria("'.$this->criteria.'", document)';
-
-            if ($this->limit) {
-                $sql[] = 'LIMIT '.$this->limit;
+            
+            // Sanitize criteria function ID
+            $sanitizedCriteriaId = $this->collection->database->sanitizeCriteriaId($this->criteria);
+            if (!$sanitizedCriteriaId) {
+                throw new \InvalidArgumentException("Invalid criteria function ID");
             }
 
-            $stmt = $this->collection->database->connection->query(\implode(' ', $sql));
+            $sql = ["SELECT COUNT(*) AS C FROM `{$sanitizedName}`"];
+
+            $sql[] = "WHERE document_criteria('{$sanitizedCriteriaId}', document)";
+
+            if ($this->limit) {
+                $sql[] = "LIMIT ".(int)$this->limit;
+            }
+
+            $stmt = $this->collection->database->connection->query(implode(' ', $sql));
         }
 
-        $res  = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $res  = $stmt->fetch(PDO::FETCH_ASSOC);
 
         return intval(isset($res['C']) ? $res['C']:0);
     }
@@ -159,13 +184,21 @@ class Cursor implements \Iterator {
      * @return array
      */
     protected function getData(): array {
+        
+        // Get sanitized collection name
+        $sanitizedName = $this->getSanitizedCollectionName();
 
         $conn = $this->collection->database->connection;
-        $sql = ['SELECT document FROM '.$conn->quote($this->collection->name)];
+        $sql = ["SELECT document FROM `{$sanitizedName}`"];
 
         if ($this->criteria) {
-
-            $sql[] = 'WHERE document_criteria("'.$this->criteria.'", document)';
+            // Sanitize criteria function ID
+            $sanitizedCriteriaId = $this->collection->database->sanitizeCriteriaId($this->criteria);
+            if (!$sanitizedCriteriaId) {
+                throw new \InvalidArgumentException("Invalid criteria function ID");
+            }
+            
+            $sql[] = "WHERE document_criteria('{$sanitizedCriteriaId}', document)";
         }
 
         if ($this->sort) {
@@ -176,23 +209,23 @@ class Cursor implements \Iterator {
                 $orders[] = 'document_key('.$conn->quote($field).', document) '.($direction==-1 ? 'DESC':'ASC');
             }
 
-            $sql[] = 'ORDER BY '.\implode(',', $orders);
+            $sql[] = 'ORDER BY '. implode(',', $orders);
         }
 
         if ($this->limit) {
-            $sql[] = 'LIMIT '.$this->limit;
+            $sql[] = "LIMIT ".(int)$this->limit;
 
-            if ($this->skip) { $sql[] = 'OFFSET '.$this->skip; }
+            if ($this->skip) { $sql[] = "OFFSET ".(int)$this->skip; }
         }
 
         $sql = implode(' ', $sql);
 
         $stmt      = $conn->query($sql);
-        $result    = $stmt->fetchAll( \PDO::FETCH_ASSOC);
+        $result    = $stmt->fetchAll( PDO::FETCH_ASSOC);
         $documents = [];
 
         foreach ($result as &$doc) {
-            $documents[] = \json_decode($doc['document'], true);
+            $documents[] = json_decode($doc['document'], true);
         }
 
         if (is_array($this->projection)) {
@@ -234,6 +267,22 @@ class Cursor implements \Iterator {
         }
 
         return isset($this->data[$this->position]);
+    }
+    
+    /**
+     * Get sanitized collection name to prevent SQL injection
+     * 
+     * @return string
+     * @throws \InvalidArgumentException if collection name is invalid
+     */
+    protected function getSanitizedCollectionName(): string {
+        $sanitized = $this->collection->database->sanitizeCollectionName($this->collection->name);
+        
+        if ($sanitized === null) {
+            throw new \InvalidArgumentException("Invalid collection name: {$this->collection->name}");
+        }
+        
+        return $sanitized;
     }
 
 }

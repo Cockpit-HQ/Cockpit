@@ -7,11 +7,35 @@ use ArrayObject, DirectoryIterator;
 class Spaces extends \Lime\Helper {
 
     protected array $instances = [];
+    protected bool $isMaster;
+    protected $master = null;
 
-    public function isMaster() {
-        return $this->app->path('#app:') === $this->app->path('#root:');
+    protected function initialize() {
+        $this->isMaster = $this->app->path('#app:') === $this->app->path('#root:');
     }
 
+    /**
+     * Check if the current space is the master space.
+     *
+     * @return boolean
+     */
+    public function isMaster() {
+        return $this->isMaster;
+    }
+
+    /* * Check if the current space is a regular space (not the master).
+     *
+     * @return boolean
+     */
+    public function isSpace() {
+        return !$this->isMaster;
+    }
+
+    /**
+     * Get a list of all spaces.
+     *
+     * @return array
+     */
     public function spaces() {
 
         $folder = APP_SPACES_DIR;
@@ -27,10 +51,17 @@ class Spaces extends \Lime\Helper {
                 if (!$f->isDir() || $f->isDot()) continue;
 
                 $name = $f->getFilename();
+                $group = null;
+
+                if (file_exists($folder."/{$name}/config/config.php")) {
+                    $cfg = include($folder."/{$name}/config/config.php");
+                    $group = $cfg['@space']['group'] ?? null;
+                }
 
                 $spaces[] = [
                     'name' => $name,
-                    'url' => "{$rootUrl}/:{$name}"
+                    'url' => "{$rootUrl}/:{$name}",
+                    'group' => $group
                 ];
             }
         }
@@ -38,6 +69,30 @@ class Spaces extends \Lime\Helper {
         return $spaces;
     }
 
+    /**
+     * Get the master space instance.
+     *
+     * @return \Lime\App|null
+     */
+    public function master() {
+
+        if ($this->isMaster) {
+            return $this->app;
+        }
+
+        if (!$this->master) {
+            $this->master = \Cockpit::instance();
+        }
+
+        return $this->master;
+    }
+
+    /**
+     * Get a specific space instance by name.
+     *
+     * @param string $name The name of the space.
+     * @return \Lime\App|null Returns the space instance or null if it does not exist.
+     */
     public function space(string $name) {
 
         if (isset($this->instances[$name])) {
@@ -57,21 +112,78 @@ class Spaces extends \Lime\Helper {
         return $this->instances[$name];
     }
 
+    /**
+     * Get the site URL for a specific space.
+     *
+     * @param string|null $name The name of the space.
+     * @return string The site URL for the space.
+     */
+    public function getSiteUrl(?string $name = null) {
+
+        if ($name) {
+            return $this->app->getSiteUrl(true) . "/:{$name}";
+        }
+
+        if (!$this->isMaster) {
+            $space = basename(trim($this->app->path('#root:'), '/'));
+            return $this->app->getSiteUrl(true) . "/:{$space}";
+        }
+
+        return $this->app->getSiteUrl(true);
+    }
+
+    /**
+     * Create a new space.
+     *
+     * @param string $name The name of the space.
+     * @param array $options The options for the space.
+     * @return array|false Returns the created space information or false on failure.
+     */
     public function create(string $name, array $options = []) {
 
         $options = array_merge([
+            'group' => null,
             'user' => 'admin',
             'password' => 'admin',
             'email' => 'admin@admin.com',
+            'datastorage' => [
+                'type' => 'mongolite',
+                'server' => '',
+                'database' => ''
+            ]
         ], $options);
 
         $fs = $this->app->helper('fs');
         $name = $this->app->helper('utils')->sluggify(trim($name));
-
         $path = APP_SPACES_DIR."/{$name}";
+
+        // Space
+        $spaceConfig = new ArrayObject([
+            '@space' => [
+                'group' => $options['group'],
+            ]
+        ]);
 
         if (file_exists($path)) {
             return false;
+        }
+
+        if ($options['datastorage']['type'] == 'mongodb') {
+
+            if (
+                !isset($options['datastorage']['server']) ||
+                !isset($options['datastorage']['database']) ||
+                !$options['datastorage']['server'] ||
+                !$options['datastorage']['database']
+            ) {
+                return false;
+            }
+
+            $spaceConfig['database'] = [
+                'server' => $options['datastorage']['server'],
+                'options' => ['db' => $options['datastorage']['database']],
+                'driverOptions' => []
+            ];
         }
 
         // create env folders
@@ -80,8 +192,6 @@ class Spaces extends \Lime\Helper {
         $fs->mkdir("{$path}/storage/data");
         $fs->mkdir("{$path}/storage/tmp");
         $fs->mkdir("{$path}/storage/uploads");
-
-        $spaceConfig = new ArrayObject([]);
 
         $this->app->trigger('spaces.config.create', [$spaceConfig]);
 
@@ -109,13 +219,21 @@ class Spaces extends \Lime\Helper {
         $instance->dataStorage->save('system/users', $user);
         $instance->trigger('app.system.install');
 
+        $this->app->trigger('spaces.spaces.created', [$name, $spaceConfig]);
+
         return [
             'name' => $name,
             'url' => rtrim($this->app->routeUrl('/'), '/')."/:{$name}"
         ];
     }
 
-    public  function remove(string $name) {
+    /**
+     * Remove a space.
+     *
+     * @param string $name The name of the space.
+     * @return boolean Returns true on success, false on failure.
+     */
+    public function remove(string $name) {
 
             $path = APP_SPACES_DIR."/{$name}";
 

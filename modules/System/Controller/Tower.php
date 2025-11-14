@@ -18,12 +18,18 @@ class Tower extends App {
             return $this->stop(403);
         }
 
+        if ($this->app->retrieve('tower.disabled') === true) {
+            return $this->stop(403);
+        }
+
         $this->helper('session')->close();
     }
 
     public function index() {
 
-        return $this->render('system:views/tower.php');
+        $isAvailable = function_exists('proc_open') && (new PhpExecutableFinder())->find();
+
+        return $this->render('system:views/tower.php', compact('isAvailable'));
     }
 
 
@@ -37,11 +43,11 @@ class Tower extends App {
             return $this->stop(['error' => 'Command is missing'], 412);
         }
 
-        if (strpos($command, 'tower ') === 0) {
+        if (str_starts_with($command, 'tower ')) {
             $command = substr($command, 6);
         }
 
-        $command = escapeshellcmd("tower {$command}");
+        $command = "tower {$command}";
         $phpBinaryPath = (new PhpExecutableFinder())->find();
 
         $process = Process::fromShellCommandline("$phpBinaryPath {$command} -n");
@@ -49,8 +55,6 @@ class Tower extends App {
         $process->run();
 
         $output = $process->getOutput();
-
-        //exec("$phpBinaryPath tower $command  2>&1", $output, $retval);
 
         if (is_array($output)) {
             $output = implode("\n\r", $output);

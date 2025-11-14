@@ -35,15 +35,37 @@ customElements.define('kiss-tooltip', class extends HTMLElement {
             offset = 5;
 
             switch (position) {
-                case "right":
+
+                case 'left':
+                    top = (rect.top + rect.height / 2) - this.offsetHeight / 2;
+                    left = rect.left - this.offsetWidth - offset;
+                    break;
+
+                case 'right':
                     top = (rect.top + rect.height / 2) - this.offsetHeight / 2;
                     left = rect.right + offset;
                     break;
 
-                case "bottom":
+                case 'bottom':
                     top = rect.bottom + offset
                     left = rect.left;
                     break;
+
+                case 'bottom-right':
+                    top = rect.bottom + offset;
+                    left = rect.right - this.offsetWidth;
+                    break;
+
+                case 'top':
+                    top = rect.top - this.offsetHeight - offset;
+                    left = rect.left;
+                    break;
+
+                case 'top-right':
+                    top = rect.top - this.offsetHeight - offset;
+                    left = rect.right - this.offsetWidth;
+                    break;
+
                 default:
                     left = rect.left;
                     break;

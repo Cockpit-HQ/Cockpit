@@ -35,28 +35,28 @@ $this->on('restApi.config', function($restApi) {
          *         in="query",
          *         name="filter",
          *         required=false,
-         *         @OA\Schema(type="json")
+         *         @OA\Schema(type="string")
          *     ),
          *     @OA\Parameter(
          *         description="Url encoded fields projection as json",
          *         in="query",
          *         name="fields",
          *         required=false,
-         *         @OA\Schema(type="json")
+         *         @OA\Schema(type="string")
          *     ),
          *     @OA\Parameter(
          *         description="Populate item with linked content items.",
          *         in="query",
          *         name="populate",
          *         required=false,
-         *         @OA\Schema(type="int")
+         *         @OA\Schema(type="integer")
          *     ),
          *     @OA\OpenApi(
          *         security={
          *             {"api_key": {}}
          *         }
          *     ),
-         *     @OA\Response(response="200", description="Get model item"),
+         *     @OA\Response(response="200", description="Get model item", @OA\JsonContent()),
          *     @OA\Response(response="404", description="Model not found"),
          *     @OA\Response(response="401", description="Unauthorized")
          * )
@@ -102,12 +102,19 @@ $this->on('restApi.config', function($restApi) {
                 }
             }
 
+            if (!isset($filter) || !is_array($filter)) {
+                $filter = [];
+            }
+
+            // only published items
+            $filter['_state'] = 1;
+
             if ($populate) {
                 $process['populate'] = $populate;
                 $process['user'] = $app->helper('auth')->getUser();
             }
 
-            $item = $app->module('content')->item($model, $filter ? $filter : [], $fields, $process);
+            $item = $app->module('content')->item($model, $filter, $fields, $process);
 
             if ($item) {
                 $app->trigger('content.api.item', [&$item, $model]);
@@ -140,7 +147,7 @@ $this->on('restApi.config', function($restApi) {
          *             {"api_key": {}}
          *         }
          *     ),
-         *     @OA\Response(response="200", description="Saved model item"),
+         *     @OA\Response(response="200", description="Saved model item", @OA\JsonContent()),
          *     @OA\Response(response="404", description="Model not found"),
          *     @OA\Response(response="401", description="Unauthorized"),
          *     @OA\Response(response="412", description="Item data is missing")
@@ -183,7 +190,7 @@ $this->on('restApi.config', function($restApi) {
                 }
 
                 if (isset($data['_state']) && !$app->helper('acl')->isAllowed("content/{$model['name']}/publish", $app->helper('auth')->getUser('role'))) {
-                    unset($item['_state']);
+                    unset($data['_state']);
                 }
             }
 
@@ -214,7 +221,7 @@ $this->on('restApi.config', function($restApi) {
          *         @OA\Schema(type="string")
          *     ),
          *     @OA\Parameter(
-         *         description="Conten item id",
+         *         description="Content item id",
          *         in="path",
          *         name="id",
          *         required=true,
@@ -232,21 +239,21 @@ $this->on('restApi.config', function($restApi) {
          *         in="query",
          *         name="fields",
          *         required=false,
-         *         @OA\Schema(type="json")
+         *         @OA\Schema(type="string")
          *     ),
          *     @OA\Parameter(
          *         description="Populate item with linked content items.",
          *         in="query",
          *         name="populate",
          *         required=false,
-         *         @OA\Schema(type="int")
+         *         @OA\Schema(type="integer")
          *     ),
          *     @OA\OpenApi(
          *         security={
          *             {"api_key": {}}
          *         }
          *     ),
-         *     @OA\Response(response="200", description="Get content item"),
+         *     @OA\Response(response="200", description="Get content item", @OA\JsonContent()),
          *     @OA\Response(response="404", description="Model not found"),
          *     @OA\Response(response="401", description="Unauthorized")
          * )
@@ -270,7 +277,7 @@ $this->on('restApi.config', function($restApi) {
                 'locale' => $app->param('locale:string', 'default')
             ];
 
-            $filter = ['_id' => $params['id']];
+            $filter = ['_id' => $params['id'], '_state' => 1];
             $fields = $app->param('fields:string', null);
             $populate = $app->param('populate:int', null);
 
@@ -288,7 +295,7 @@ $this->on('restApi.config', function($restApi) {
                 $process['user'] = $app->helper('auth')->getUser();
             }
 
-            $item = $app->module('content')->item($model, $filter ? $filter : [], $fields, $process);
+            $item = $app->module('content')->item($model, $filter, $fields, $process);
 
             if ($item) {
                 $app->trigger('content.api.item', [&$item, $model]);
@@ -320,7 +327,7 @@ $this->on('restApi.config', function($restApi) {
          *             {"api_key": {}}
          *         }
          *     ),
-         *     @OA\Response(response="200", description="Content item removed"),
+         *     @OA\Response(response="200", description="Content item removed", @OA\JsonContent()),
          *     @OA\Response(response="404", description="Model not found"),
          *     @OA\Response(response="401", description="Unauthorized")
          * )
@@ -374,49 +381,66 @@ $this->on('restApi.config', function($restApi) {
      *         in="query",
      *         name="filter",
      *         required=false,
-     *         @OA\Schema(type="json")
+     *         @OA\Schema(type="string")
      *     ),
      *     @OA\Parameter(
      *         description="Url encoded sort json",
      *         in="query",
      *         name="sort",
      *         required=false,
-     *         @OA\Schema(type="json")
+     *         @OA\Schema(type="string")
      *     ),
      *     @OA\Parameter(
      *         description="Url encoded fields projection as json",
      *         in="query",
      *         name="fields",
      *         required=false,
-     *         @OA\Schema(type="json")
+     *         @OA\Schema(type="string")
      *     ),
      *     @OA\Parameter(
      *         description="Max amount of items to return",
      *         in="query",
      *         name="limit",
      *         required=false,
-     *         @OA\Schema(type="int")
+     *         @OA\Schema(type="integer")
      *     ),
      *     @OA\Parameter(
      *         description="Amount of items to skip",
      *         in="query",
      *         name="skip",
      *         required=false,
-     *         @OA\Schema(type="int")
+     *         @OA\Schema(type="integer")
      *     ),
      *     @OA\Parameter(
      *         description="Populate items with linked content items.",
      *         in="query",
      *         name="populate",
      *         required=false,
-     *         @OA\Schema(type="int")
+     *         @OA\Schema(type="integer")
      *     ),
      *     @OA\OpenApi(
      *         security={
      *             {"api_key": {}}
      *         }
      *     ),
-     *     @OA\Response(response="200", description="Get list of published model items"),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Get list of published model items",
+     *         @OA\JsonContent(
+     *             oneOf={
+     *                 @OA\Schema(type="array", @OA\Items(type="object", additionalProperties=true)),
+     *                 @OA\Schema(
+     *                     type="object",
+     *                     @OA\Property(property="data", type="array", @OA\Items(type="object", additionalProperties=true)),
+     *                     @OA\Property(
+     *                         property="meta",
+     *                         type="object",
+     *                         @OA\Property(property="total", type="integer")
+     *                     )
+     *                 )
+     *             }
+     *         )
+     *     ),
      *     @OA\Response(response="401", description="Unauthorized"),
      *     @OA\Response(response="404", description="Model not found")
      * )
@@ -497,11 +521,152 @@ $this->on('restApi.config', function($restApi) {
 		return count($items);
 	    }
 
-            if (count($items)) {
-                $app->trigger('content.api.items', [&$items, $model]);
+            return $items;
+        }
+    ]);
+
+    /**
+     * @OA\Get(
+     *     path="/content/items",
+     *     tags={"content"},
+     *    @OA\Parameter(
+     *         description="Models query as json {model1:{filter:{...}}, model2:{...}}",
+     *         in="query",
+     *         name="models",
+     *         required=false,
+     *         @OA\Schema(type="string")
+     *     ),
+     *    @OA\Parameter(
+     *         description="Return content for specified locale",
+     *         in="query",
+     *         name="locale",
+     *         required=false,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         description="Populate items with linked content items.",
+     *         in="query",
+     *         name="populate",
+     *         required=false,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\OpenApi(
+     *         security={
+     *             {"api_key": {}}
+     *         }
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="Get list of published model items",
+     *         @OA\JsonContent(
+     *             oneOf={
+     *                 @OA\Schema(type="array", @OA\Items(type="object", additionalProperties=true)),
+     *                 @OA\Schema(
+     *                     type="object",
+     *                     @OA\Property(property="data", type="array", @OA\Items(type="object", additionalProperties=true)),
+     *                     @OA\Property(
+     *                         property="meta",
+     *                         type="object",
+     *                         @OA\Property(property="total", type="integer")
+     *                     )
+     *                 )
+     *             }
+     *         )
+     *     ),
+     *     @OA\Response(response="401", description="Unauthorized"),
+     * )
+     */
+    $restApi->addEndPoint('/content/items', [
+
+        'GET' => function($params, $app) {
+
+            $models = $app->param('models:string', null);
+
+            if (!$models) {
+                $app->response->status = 412;
+                return ['error' => '<models> parameter is missing'];
             }
 
-            return $items;
+            try {
+                $models = json5_decode($models, true);
+            } catch(\Throwable $e) {
+                $app->response->status = 412;
+                return ['error' => '<models> is not valid json'];
+            }
+
+            $content = $app->module('content');
+            $acl = $app->helper('acl');
+            $auth = $app->helper('auth');
+
+            $user = $auth->getUser();
+            $locale = $app->param('locale', 'default');
+            $populate = $app->param('populate:int', null);
+
+            $return = [];
+
+            foreach ($models as $model => $opts) {
+
+                $m = $opts['model'] ?? $model;
+                $meta = $content->model($m);
+
+                if (!$meta || !$acl->isAllowed("content/{$m}/read", $user['role'] ?? null)) {
+                    continue;
+                }
+
+                $options = [];
+                $process = ['locale' => $opts['locale'] ?? $locale];
+
+                if (isset($opts['filter'])) $options['filter'] = $opts['filter'];
+                if (isset($opts['sort'])) $options['sort'] = $opts['sort'];
+                if (isset($opts['fields'])) $options['fields'] = $opts['fields'];
+                if (isset($opts['limit'])) $options['limit'] = $opts['limit'];
+                if (isset($opts['skip'])) $options['skip'] = $opts['skip'];
+
+                if ($populate || isset($opts['populate'])) {
+                    $process['populate'] = intval($opts['populate'] ?? $populate);
+                    $process['user'] = $user;
+                }
+
+                if (!isset($options['filter']) || !is_array($options['filter'])) {
+                    $options['filter'] = [];
+                }
+
+                // only published items
+                $options['filter']['_state'] = 1;
+
+                // is model singleton?
+                if ($meta['type'] == 'singleton') {
+
+                    $item = $app->module('content')->item($m, $options['filter'], $options['fields'] ?? null, $process);
+
+                    if ($item) {
+                        $app->trigger('content.api.item', [&$item, $m]);
+                    }
+
+                    $return[$model] = $item;
+
+                    continue;
+                }
+
+                $items = $content->items($m, $options, $process);
+
+                if (count($items)) {
+                    $app->trigger('content.api.items', [&$items, $m]);
+                }
+
+                if (isset($options['skip'], $options['limit'])) {
+                    $return[$model] = [
+                        'data' => $items,
+                        'meta' => [
+                            'total' => $content->count($m, $options['filter'] ?? [])
+                        ]
+                    ];
+                } else {
+                    $return[$model] = $items;
+                }
+            }
+
+            return $return;
         }
     ]);
 
@@ -521,7 +686,7 @@ $this->on('restApi.config', function($restApi) {
      *         in="query",
      *         name="pipeline",
      *         required=true,
-     *         @OA\Schema(type="json")
+     *         @OA\Schema(type="string")
      *     ),
      *    @OA\Parameter(
      *         description="Return content for specified locale",
@@ -535,14 +700,14 @@ $this->on('restApi.config', function($restApi) {
      *         in="query",
      *         name="populate",
      *         required=false,
-     *         @OA\Schema(type="int")
+     *         @OA\Schema(type="integer")
      *     ),
      *     @OA\OpenApi(
      *         security={
      *             {"api_key": {}}
      *         }
      *     ),
-     *     @OA\Response(response="200", description="Get list of aggregated and published model items"),
+     *     @OA\Response(response="200", description="Get list of aggregated and published model items", @OA\JsonContent(type="array", @OA\Items(type="object", additionalProperties=true))),
      *     @OA\Response(response="401", description="Unauthorized"),
      *     @OA\Response(response="404", description="Model not found")
      * )
@@ -622,21 +787,21 @@ $this->on('restApi.config', function($restApi) {
      *         in="query",
      *         name="fields",
      *         required=false,
-     *         @OA\Schema(type="json")
+     *         @OA\Schema(type="string")
      *     ),
      *     @OA\Parameter(
      *         description="Populate items with linked content items.",
      *         in="query",
      *         name="populate",
      *         required=false,
-     *         @OA\Schema(type="int")
+     *         @OA\Schema(type="integer")
      *     ),
      *     @OA\OpenApi(
      *         security={
      *             {"api_key": {}}
      *         }
      *     ),
-     *     @OA\Response(response="200", description="Get items tree"),
+     *     @OA\Response(response="200", description="Get items tree", @OA\JsonContent(type="array", @OA\Items(type="object", additionalProperties=true))),
      *     @OA\Response(response="401", description="Unauthorized"),
      *     @OA\Response(response="404", description="Model not found")
      * )

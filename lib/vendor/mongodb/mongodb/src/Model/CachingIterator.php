@@ -20,7 +20,6 @@ namespace MongoDB\Model;
 use Countable;
 use Iterator;
 use IteratorIterator;
-use ReturnTypeWillChange;
 use Traversable;
 
 use function count;
@@ -36,23 +35,24 @@ use function reset;
  * those operations (e.g. MongoDB\Driver\Cursor).
  *
  * @internal
+ * @template TKey of array-key
+ * @template TValue
+ * @template-implements Iterator<TKey, TValue>
  */
-class CachingIterator implements Countable, Iterator
+final class CachingIterator implements Countable, Iterator
 {
     private const FIELD_KEY = 0;
     private const FIELD_VALUE = 1;
 
-    /** @var array */
-    private $items = [];
+    /** @var list<array{0: TKey, 1: TValue}> */
+    private array $items = [];
 
-    /** @var Iterator */
-    private $iterator;
+    /** @var Iterator<TKey, TValue> */
+    private Iterator $iterator;
 
-    /** @var boolean */
-    private $iteratorAdvanced = false;
+    private bool $iteratorAdvanced = false;
 
-    /** @var boolean */
-    private $iteratorExhausted = false;
+    private bool $iteratorExhausted = false;
 
     /**
      * Initialize the iterator and stores the first item in the cache. This
@@ -60,7 +60,7 @@ class CachingIterator implements Countable, Iterator
      * Additionally, this mimics behavior of the SPL iterators and allows users
      * to omit an explicit call to rewind() before using the other methods.
      *
-     * @param Traversable $traversable
+     * @param Traversable<TKey, TValue> $traversable
      */
     public function __construct(Traversable $traversable)
     {
@@ -78,24 +78,19 @@ class CachingIterator implements Countable, Iterator
         return count($this->items);
     }
 
-    /**
-     * @see https://php.net/iterator.current
-     * @return mixed
-     */
-    #[ReturnTypeWillChange]
-    public function current()
+    /** @see https://php.net/iterator.current */
+    public function current(): mixed
     {
         $currentItem = current($this->items);
 
-        return $currentItem !== false ? $currentItem[self::FIELD_VALUE] : false;
+        return $currentItem !== false ? $currentItem[self::FIELD_VALUE] : null;
     }
 
     /**
      * @see https://php.net/iterator.key
-     * @return mixed
+     * @psalm-return TKey|null
      */
-    #[ReturnTypeWillChange]
-    public function key()
+    public function key(): mixed
     {
         $currentItem = current($this->items);
 
@@ -110,8 +105,6 @@ class CachingIterator implements Countable, Iterator
             $this->iterator->next();
 
             $this->storeCurrentItem();
-
-            $this->iteratorExhausted = ! $this->iterator->valid();
         }
 
         next($this->items);
@@ -152,6 +145,8 @@ class CachingIterator implements Countable, Iterator
     private function storeCurrentItem(): void
     {
         if (! $this->iterator->valid()) {
+            $this->iteratorExhausted = true;
+
             return;
         }
 

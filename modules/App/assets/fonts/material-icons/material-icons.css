@@ -2,8 +2,8 @@
 @font-face {
     font-family: 'Material Icons Outlined';
     font-style: normal;
-    font-weight: 100 700;
-    src: url(material-icons-outlined.woff2?v=2.6.2) format('woff2');
+    font-weight: 400;
+    src: url(material-outline.woff2?v=2024-10-20) format('woff2');
 }
 
 icon {
@@ -40,4 +40,8 @@ icon,
 
 icon[size="larger"] {
     transform: scale(1.2);
+}
+
+icon[size="large"] {
+    transform: scale(2);
 }

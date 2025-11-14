@@ -1,5 +1,5 @@
 
-<kiss-container class="kiss-margin-large" size="small">
+<kiss-container class="kiss-margin-small" size="small">
 
 <ul class="kiss-breadcrumbs">
     <li><a href="<?=$this->route('/system')?>"><?=t('Settings')?></a></li>
@@ -15,7 +15,7 @@
 
         <app-loader v-if="loading"></app-loader>
 
-        <div class="animated fadeIn kiss-height-30vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted" v-if="roles && !roles.length">
+        <div class="animated fadeIn kiss-height-50vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted" v-if="roles && !roles.length">
             <div>
                 <icon class="kiss-size-xlarge">admin_panel_settings</icon>
                 <p class="kiss-size-large kiss-text-bold"><?=t('No roles')?></p>
@@ -26,22 +26,22 @@
 
             <li v-for="(role, idx) in roles">
 
-                <div class="kiss-margin kiss-flex">
+                <kiss-card class="kiss-padding-small kiss-flex" hover="contrast scale-small">
                     <div class="kiss-margin-right kiss-position-relative">
                         <app-avatar size="50" :name="role.name"></app-avatar>
-                        <a class="kiss-cover" :href="$route('/system/users/roles/role/'+role._id)"></a>
+                        <a class="kiss-cover" :href="$routeUrl('/system/users/roles/role/'+role._id)"></a>
                     </div>
                     <div class="kiss-flex-1 kiss-position-relative">
                         <div class="kiss-size-5"><strong>{{role.name || role.appid}}</strong></div>
                         <div class="kiss-color-muted kiss-size-small">
                             {{ role.info || '...' }}
                         </div>
-                        <a class="kiss-cover" :href="$route('/system/users/roles/role/'+role._id)"></a>
+                        <a class="kiss-cover" :href="$routeUrl('/system/users/roles/role/'+role._id)"></a>
                     </div>
                     <div class="kiss-margin-left">
                         <a class="kiss-color-danger" @click="remove(role)"><icon class="kiss-size-large">delete</icon></a>
                     </div>
-                </div>
+                </kiss-card>
 
             </li>
 

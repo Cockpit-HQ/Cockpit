@@ -1,6 +1,7 @@
 # graphql-php
 
-[![CI](https://github.com/webonyx/graphql-php/workflows/CI/badge.svg)](https://github.com/webonyx/graphql-php/actions?query=workflow:CI+branch:master)
+[![Test](https://github.com/webonyx/graphql-php/workflows/Test/badge.svg)](https://github.com/webonyx/graphql-php/actions?query=workflow:Test+branch:master)
+[![Static Analysis](https://github.com/webonyx/graphql-php/workflows/Static%20Analysis/badge.svg)](https://github.com/webonyx/graphql-php/actions?query=workflow:%22Static%20Analysis%22+branch:master)
 [![Coverage Status](https://codecov.io/gh/webonyx/graphql-php/branch/master/graph/badge.svg)](https://codecov.io/gh/webonyx/graphql-php/branch/master)
 [![Latest Stable Version](https://poser.pugx.org/webonyx/graphql-php/version)](https://packagist.org/packages/webonyx/graphql-php)
 
@@ -35,6 +36,10 @@ not part of this backwards compatibility guarantee and may change between minor 
 
 The most recent version is actively developed on [`master`](https://github.com/webonyx/graphql-php/tree/master).
 Older versions are generally no longer supported, although exceptions may be made for sponsors.
+
+## Security
+
+For security related issues, email [benedikt@franke.tech](benedikt@franke.tech) instead of opening a GitHub issue.
 
 ## Contributors
 

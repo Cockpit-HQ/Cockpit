@@ -15,6 +15,10 @@ class MongoLite {
         $this->db     = $options['db'];
     }
 
+    public function isValidId(string $objectId) {
+        return preg_match('/^[0-9a-f]{24}$/', $objectId) === 1;
+    }
+
     public function lstCollections(): array {
 
         $return = [];
@@ -36,7 +40,7 @@ class MongoLite {
 
     public function getCollection(string $name, ?string $db = null): \MongoLite\Collection {
 
-        if (strpos($name, '/') !== false) {
+        if (str_contains($name, '/')) {
             list($db, $name) = explode('/', $name, 2);
         }
 
@@ -51,7 +55,7 @@ class MongoLite {
 
     public function dropCollection(string $name, ?string $db = null) {
 
-        if (strpos($name, '/') !== false) {
+        if (str_contains($name, '/')) {
             list($db, $name) = explode('/', $name, 2);
         }
 
@@ -66,7 +70,7 @@ class MongoLite {
 
     public function renameCollection(string $name, string $newname, ?string $db = null): bool {
 
-        if (strpos($name, '/') !== false) {
+        if (str_contains($name, '/')) {
             list($db, $name) = explode('/', $name, 2);
         }
 
@@ -88,6 +92,18 @@ class MongoLite {
         return true;
     }
 
+    public function createIndex(string $collectionName, array $key, array $options = []) {
+        return uniqid('index.');
+    }
+
+    public function dropIndex(string $collectionName, string $indexName, array $options = []) {
+        return [];
+    }
+
+    public function lstIndexes(string $collectionName, array $options = []): array {
+        return [];
+    }
+
     public function findOne(string $collection, ?array $filter = null, ?array $projection = null): ?array {
         if (!$filter) $filter = [];
 
@@ -102,11 +118,11 @@ class MongoLite {
 
     public function find(string $collection, array $options = []): ResultSet {
 
-        $filter = isset($options['filter']) ? $options['filter'] : [];
+        $filter = $options['filter'] ?? [];
         $fields = isset($options['fields']) && $options['fields'] ? $options['fields'] : null;
-        $limit  = isset($options['limit'])  ? $options['limit'] : null;
-        $sort   = isset($options['sort'])   ? $options['sort'] : null;
-        $skip   = isset($options['skip'])   ? $options['skip'] : null;
+        $limit  = $options['limit'] ?? null;
+        $sort   = $options['sort'] ?? null;
+        $skip   = $options['skip'] ?? null;
 
         $filter = $this->_fixForMongo($filter, true);
         $cursor = $this->getCollection($collection)->find($filter, $fields);
@@ -115,24 +131,58 @@ class MongoLite {
         if ($sort)  $cursor->sort($sort);
         if ($skip)  $cursor->skip($skip);
 
-        $docs      = $cursor->toArray();
-        $resultSet = new ResultSet($this, $docs);
+        $docs = $cursor->toArray();
 
-        return $resultSet;
+        return new ResultSet($this, $docs);
     }
 
-    public function aggregate(string $collection, array $pipeline) {
+    public function aggregate(string $collection, array $pipeline): ResultSet {
 
-        $cursor    = $this->getCollection($collection)->aggregate($pipeline);
-        $docs      = $cursor->toArray();
-        $resultSet = new ResultSet($this, $docs);
+        $cursor = $this->getCollection($collection)->aggregate($pipeline);
+        $docs   = $cursor->toArray();
 
-        return $resultSet;
+        return new ResultSet($this, $docs);
     }
 
-    public function getFindTermFilter($term) {
+    public function sum(string $collection, string $field, array $filter = []): int {
 
-        $terms = str_getcsv(trim($term), ' ');
+        $pipeline = [];
+
+        if (!empty($filter)) {
+            $pipeline[] = ['$match' => $filter];
+        }
+
+        $pipeline[] = [
+            '$group' => [
+                '_id' => null,
+                'total' => ['$sum' => '$'.$field]
+            ]
+        ];
+
+        return $this->aggregate($collection, $pipeline)[0]['total'] ?? 0;
+    }
+
+    public function avg(string $collection, string $field, array $filter = []): float {
+
+        $pipeline = [];
+
+        if (!empty($filter)) {
+            $pipeline[] = ['$match' => $filter];
+        }
+
+        $pipeline[] = [
+            '$group' => [
+                '_id' => null,
+                'avg' => ['$avg' => '$'.$field]
+            ]
+        ];
+
+        return $this->aggregate($collection, $pipeline)[0]['avg'] ?? 0;
+    }
+
+    public function getFindTermFilter($term): \Closure {
+
+        $terms = str_getcsv(trim($term), ' ', escape: '\\');
 
         $filter = function ($doc) use ($term) {
             return stripos(json_encode($doc), $term) !== false;
@@ -145,8 +195,10 @@ class MongoLite {
                 $json = json_encode($doc);
 
                 foreach ($terms as $term) {
-                    return stripos($json, $term) !== false;
+                    if (stripos($json, $term) !== false) return true;
                 }
+
+                return false;
             };
         }
 
@@ -233,20 +285,48 @@ class MongoLite {
                 $data[$k] = $this->_fixForMongo($data[$k], $infinite, $_level + 1);
             }
 
-            if ($k === '_id') {
+            if ($k === '_id' || str_ends_with($k, '._id')) {
 
-                if (is_string($v) && $v[0] === '@') {
-                    $v = \substr($v, 1);
+                if (is_string($v)) {
+                    $v = $this->getObjectID($v);
+                } elseif (is_array($v)) {
+
+                    if (isset($v['$in'])) {
+
+                        foreach ($v['$in'] as &$id) {
+                            $id = $this->getObjectID($id);
+                        }
+                    }
+
+                    if (isset($v['$nin'])) {
+
+                        foreach ($v['$nin'] as &$id) {
+                            $id = $this->getObjectID($id);
+                        }
+                    }
+
+                    if (isset($v['$ne']) && is_string($v['$ne'])) {
+                        $v['$ne'] = $this->getObjectID($v['$ne']);
+                    }
                 }
             }
 
-            if (is_string($v) && strpos($v, '$DATE(') === 0) {
+            if (is_string($v) && str_starts_with($v, '$DATE(')) {
                 $format = trim(substr($v, 6, -1));
-                $v = date($format ? $format : 'Y-m-d');
+                $v = date($format ?: 'Y-m-d');
             }
         }
 
         return $data;
+    }
+
+    protected function getObjectID($v) {
+
+        if (is_string($v) && isset($v[0]) && ($v[0] === '@'  || $v[0] === '#')) {
+            return substr($v, 1);
+        }
+
+        return $v;
     }
 
 }

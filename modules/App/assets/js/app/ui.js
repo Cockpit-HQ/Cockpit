@@ -3,34 +3,36 @@ let uuid = 0;
 
 export default {
 
-    notify: function (message, status, timeout) {
+    notify(message, type, options = {}) {
 
-        if (timeout !== false && !timeout) {
-            timeout = 2500
+        options = Object.assign({
+            type,
+            timeout: 2500,
+        }, options);
+
+        if (options.timeout !== false && !options.timeout) {
+            options.timeout = 2500
         }
 
-        new Noty({
-            type: status || 'info',
-            text: message,
-            timeout: timeout,
-            layout: 'topCenter',
-            theme: 'app',
-            progressBar: true
-        }).show();
+        message = message.replace(/::(.*?)::/g, (match, group) => {
+            return `<span class="kiss-badge kiss-badge-outline">${group}</span>`;
+        });
+
+        KissToast.notify(message, options);
     },
 
-    block: function (info='', context = 'ui-block') {
+    block(info='', context = 'ui-block') {
 
         document.body.insertAdjacentHTML('beforeend', `
             <app-loader-cover class="${context}" label="${info}"></app-loader-cover>
         `);
     },
 
-    unblock: function (context = 'ui-block') {
+    unblock(context = 'ui-block') {
         document.querySelectorAll(`.${context}`).forEach(node => node.parentNode.removeChild(node))
     },
 
-    offcanvas: function (content, options) {
+    offcanvas(content, options) {
 
         let id = `offcanvas-${uuid++}`,
             size = '';
@@ -38,6 +40,8 @@ export default {
         options = options || {};
 
         switch (options.size) {
+            case 'medium':
+                size = 'kiss-width-1-2@m kiss-width-1-3@xl';
             case 'large':
                 size = 'kiss-width-1-3@m kiss-width-1-4@xl';
                 break;
@@ -70,16 +74,16 @@ export default {
         offcanvas.__show = offcanvas.show;
 
         offcanvas.close = function() {
-            offcanvas.__close();
-            setTimeout(() => {
+            return offcanvas.__close().then(() => {
                 offcanvas.parentNode.removeChild(offcanvas);
-            }, 300)
+            });
         };
 
         offcanvas.show = function() {
             offcanvas.__show();
 
             setTimeout(() => {
+
                 let ele = offcanvas.querySelector('[autofocus]');
 
                 if (ele) {
@@ -92,13 +96,13 @@ export default {
     },
 
 
-    dialog: function (content, options, dialogtype) {
+    dialog(content, options, dialogtype) {
 
         let id = `dialog-${uuid++}`;
 
         document.body.insertAdjacentHTML('beforeend', `
             <kiss-dialog id="dialog-${id}" size="${(options && options.size) || ''}" type="${dialogtype}" esc="${(options && options.escape) ? 'true':'false'}">
-                <kiss-content class="animated fadeInUp faster">
+                <kiss-content class="animated fadeIn fast">
                     ${content}
                 </kiss-content>
             </kiss-dialog>
@@ -114,14 +118,16 @@ export default {
         dialog.__show = dialog.show;
 
         dialog.close = function() {
-            dialog.__close();
-            dialog.parentNode.removeChild(dialog);
+            return dialog.__close().then(() => {
+                dialog.parentNode.removeChild(dialog);
+            });
         };
 
         dialog.show = function() {
             dialog.__show();
 
             setTimeout(() => {
+
                 let ele = dialog.querySelector('[autofocus]');
 
                 if (ele) {
@@ -133,7 +139,7 @@ export default {
         return dialog;
     },
 
-    alert: function (content, options) {
+    alert(content, options) {
 
         options = Object.assign({escape:true}, options || {});
 
@@ -149,7 +155,7 @@ export default {
         dialog.show();
     },
 
-    confirm: function (text, onconfirm, oncancel, options) {
+    confirm(text, onconfirm, oncancel, options) {
 
         options = Object.assign({escape:true}, options || {});
 
@@ -176,11 +182,12 @@ export default {
         dialog.show();
     },
 
-    prompt: function (text, value = '', clb, options) {
+    prompt(text, value = '', clb, options) {
 
         options = Object.assign({
             type: 'text',
             info: null,
+            escape: true
         }, options || {});
 
         const info = options.info ? `<div class="kiss-margin kiss-color-muted kiss-dialog-prompt-info">${options.info}</div>` : '';
@@ -218,7 +225,7 @@ export default {
         setTimeout(() => input.focus(), 300);
     },
 
-    popout: function (content, options) {
+    popout(content, options) {
 
         let id = `popout-${uuid++}`,
         size = '';
@@ -243,16 +250,16 @@ export default {
         popout.__show = popout.show;
 
         popout.close = function() {
-            popout.__close();
-            setTimeout(() => {
+            return popout.__close().then(() => {
                 popout.parentNode.removeChild(popout);
-            }, 300)
+            });
         };
 
         popout.show = function() {
             popout.__show();
 
             setTimeout(() => {
+
                 let ele = popout.querySelector('[autofocus]');
 
                 if (ele) {

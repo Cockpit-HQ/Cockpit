@@ -3,7 +3,7 @@ export default {
 
     _meta: {
         label: 'Table',
-        info: 'Mangage table data',
+        info: 'Manage table data',
         icon: 'system:assets/icons/table.svg',
         settings: [
             {
@@ -27,16 +27,20 @@ export default {
     data() {
 
         return {
-            val: this.modelValue || [],
+            val: Array.isArray(this.modelValue) ? [...this.modelValue] : [],
             selected: [],
             gridOptions: {
-                rowSelection: 'multiple',
+                rowSelection: {
+                    mode: 'multiRow',
+                    headerCheckbox: true,
+                    checkboxes: true,
+                    hideDisabledCheckboxes: false,
+                },
                 onSelectionChanged: (e) => {
                     this.selected = e.api.getSelectedRows();
                 },
                 onRowDragEnd: (e) => {
-
-                    let rowData = [];
+                    const rowData = [];
                     e.api.forEachNode((rowNode) => rowData.push(rowNode.data));
                     this.updateTableData(rowData);
                 },
@@ -48,15 +52,15 @@ export default {
 
     props: {
         modelValue: {
-            type: String,
-            default: ''
+            type: Array,
+            default: () => []
         },
         options: {
-            default: {}
+            default: () => ({})
         },
         columns: {
             type: Array,
-            default: []
+            default: () => []
         },
         height: {
             type: String,
@@ -65,13 +69,12 @@ export default {
     },
 
     watch: {
-        modelValue() {
-            this.val = this.modelValue;
-            this.update();
-        },
-
-        val() {
-            this.update();
+        // Watch for external changes to modelValue
+        modelValue: {
+            handler(newVal) {
+                this.val = Array.isArray(newVal) ? [...newVal] : [];
+            },
+            deep: true
         }
     },
 
@@ -82,19 +85,12 @@ export default {
             let cols = [
                 {
                     rowDrag: true,
-                    width: 0,
-                    pinned: 'left',
-                },
-                {
-                    headerCheckboxSelection: true,
-                    checkboxSelection: true,
-                    showDisabledCheckboxes: true,
-                    width: 0,
+                    width: 50,
                     pinned: 'left',
                 }
             ];
 
-            this.columns.forEach(col => {
+            (Array.isArray(this.columns) ? this.columns : []).forEach(col => {
 
                 cols.push({
                     field: col.name,
@@ -109,58 +105,59 @@ export default {
         }
     },
 
-    mounted() {
-
-    },
-
     methods: {
+
         addRow() {
-
-            let val = {};
-            this.columns.forEach(col => val[col.name] = null);
-
-            if (!Array.isArray(this.val)) {
-                this.val = [];
-            }
-
-            this.val.push(val);
-            this.update();
+            const newRow = {};
+            (Array.isArray(this.columns) ? this.columns : []).forEach(col => newRow[col.name] = null);
+            // Use spread operator for proper reactivity
+            this.val = [...this.val, newRow];
+            this.emitUpdate();
         },
 
         removeSelected() {
-            this.val = this.val.filter(row => !this.selected.includes(row));
+            // Create new array for proper reactivity
+            const filteredData = this.val.filter(row => !this.selected.includes(row));
+            this.val = filteredData;
             this.selected = [];
-            this.update();
+            this.emitUpdate();
         },
 
         updateTableData(data) {
-            this.val = data;
-            this.update();
+            // Ensure new array reference for reactivity
+            this.val = Array.isArray(data) ? [...data] : [];
+            this.emitUpdate();
         },
 
-        update() {
-            this.$emit('update:modelValue', this.val ? this.val || [] : null)
+        emitUpdate() {
+            this.$emit('update:modelValue', this.val);
         }
     },
 
     template: /*html*/`
         <div field="table">
-
             <div class="kiss-color-muted" v-if="!cols.length">
                 <icon class="kiss-size-large">info</icon> {{ t('No columns defined') }}
             </div>
 
             <div v-if="cols.length">
-
-                <vue-table :columns="cols" :rows="val" :height="height" :grid-options="gridOptions" @update:row-data="updateTableData"></vue-table>
+                <vue-table
+                    :columns="cols"
+                    :rows="val"
+                    :height="height"
+                    :grid-options="gridOptions"
+                    @update:row-data="updateTableData">
+                </vue-table>
 
                 <div class="kiss-button-group kiss-margin-small-top">
-                    <button type="button" class="kiss-button kiss-button-small" @click="addRow">{{ t('Add row') }}</button>
-                    <button type="button" class="kiss-button kiss-button-danger kiss-button-small" @click="removeSelected" v-if="selected.length">{{ t('Remove selected') }}</button>
+                    <button type="button" class="kiss-button kiss-button-small" @click="addRow">
+                        <icon class="kiss-margin-small-right">control_point</icon> {{ t('Add row') }}
+                    </button>
+                    <button type="button" class="kiss-button kiss-button-danger kiss-button-small" @click="removeSelected" v-if="selected.length">
+                        {{ t('Remove selected') }}
+                    </button>
                 </div>
-
             </div>
-
         </div>
     `
 }

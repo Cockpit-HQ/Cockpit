@@ -22,10 +22,9 @@ $this->on('app.layout.init', function() {
     ]);
 });
 
-$this->on('app.layout.assets', function(array &$assets) {
+$this->on('app.layout.assets', function(array &$assets, $context) {
 
-    $assets[] = ['src' => 'content:assets/js/content.js', 'type' => 'module'];
-    $assets[] = ['src' => 'content:assets/components/display-content.js', 'type' => 'module'];
+    if ($context === 'app:footer') $assets[] = ['src' => 'content:assets/js/content.js', 'type' => 'module'];
 });
 
 $this->on('app.permissions.collect', function($permissions) {
@@ -52,6 +51,11 @@ $this->on('app.search', function($search, $findings) {
             }
 
             $icon  = "content:assets/icons/{$model['type']}.svg";
+
+            if (isset($model['icon']) && $model['icon']) {
+                $icon = $model['icon'];
+            }
+
             $route = match($model['type']) {
                 'singleton' => "/content/singleton/item/{$model['name']}",
                 'collection' => "/content/collection/items/{$model['name']}",
@@ -59,12 +63,39 @@ $this->on('app.search', function($search, $findings) {
             };
 
             $findings[] = [
-                'title' => isset($model['label']) && $model['label'] ? "{$model['label']} ({$model['name']})" : $model['name'],
+                'title' => isset($model['label']) && $model['label'] ? $model['label'] : $model['name'],
                 'route' => $this->routeUrl($route),
                 'group' => 'Content',
-                'icon'  => $icon
+                'icon'  => $icon,
+                'context' => ucfirst($model['type'])
             ];
         }
     }
+
+});
+
+$this->on('app.dashboard.widgets', function($widgets) {
+
+    $models = array_values($this->module('content')->models());
+
+    $models = array_values(array_filter($models, function($model) {
+
+        if (!in_array($model['type'], ['collection', 'tree'])) {
+            return false;
+        }
+
+        return $this->helper('acl')->isAllowed("content/{$model['name']}/read") && $this->module('content')->count($model['name']);
+    }));
+
+    if (!count($models)) {
+        return;
+    }
+
+    $widgets[] = [
+        'name' => 'dashboard-content-widget',
+        'area' => 'primary',
+        'component' => 'content:assets/vue-components/dashboard-widget.js',
+        'data' => compact('models')
+    ];
 
 });

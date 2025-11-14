@@ -140,8 +140,8 @@ class SchemaPrinter
      */
     protected static function printFilteredSchema(Schema $schema, callable $directiveFilter, callable $typeFilter, array $options): string
     {
-        $directives = \array_filter($schema->getDirectives(), $directiveFilter);
-        $types = \array_filter($schema->getTypeMap(), $typeFilter);
+        $directives = array_filter($schema->getDirectives(), $directiveFilter);
+        $types = array_filter($schema->getTypeMap(), $typeFilter);
 
         if (isset($options['sortTypes']) && $options['sortTypes']) {
             ksort($types);
@@ -157,7 +157,8 @@ class SchemaPrinter
             $elements[] = static::printType($type, $options);
         }
 
-        return \implode("\n\n", \array_filter($elements)) . "\n";
+        /** @phpstan-ignore arrayFilter.strict */
+        return implode("\n\n", array_filter($elements)) . "\n";
     }
 
     /** @throws InvariantViolation */
@@ -232,11 +233,11 @@ class SchemaPrinter
             . 'directive @' . $directive->name
             . static::printArgs($options, $directive->args)
             . ($directive->isRepeatable ? ' repeatable' : '')
-            . ' on ' . \implode(' | ', $directive->locations);
+            . ' on ' . implode(' | ', $directive->locations);
     }
 
     /**
-     * @param array<string, bool>                                                          $options
+     * @param array<string, bool> $options
      * @param (Type&NamedType)|Directive|EnumValueDefinition|Argument|FieldDefinition|InputObjectField $def
      *
      * @throws \JsonException
@@ -253,11 +254,11 @@ class SchemaPrinter
             : $indentation;
 
         if (count(Utils::splitLines($description)) === 1) {
-            $description = \json_encode($description, JSON_THROW_ON_ERROR);
+            $description = json_encode($description, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE);
         } else {
             $description = BlockString::print($description);
             $description = $indentation !== ''
-                ? \str_replace("\n", "\n{$indentation}", $description)
+                ? str_replace("\n", "\n{$indentation}", $description)
                 : $description;
         }
 
@@ -265,7 +266,7 @@ class SchemaPrinter
     }
 
     /**
-     * @param array<string, bool>  $options
+     * @param array<string, bool> $options
      * @param array<int, Argument> $args
      *
      * @phpstan-param Options $options
@@ -295,9 +296,9 @@ class SchemaPrinter
 
         if ($allArgsWithoutDescription) {
             return '('
-                . \implode(
+                . implode(
                     ', ',
-                    \array_map(
+                    array_map(
                         [static::class, 'printInputValue'],
                         $args
                     )
@@ -323,7 +324,7 @@ class SchemaPrinter
         }
 
         return "(\n"
-            . \implode("\n", $argsStrings)
+            . implode("\n", $argsStrings)
             . "\n"
             . $indentation
             . ')';
@@ -338,7 +339,7 @@ class SchemaPrinter
      */
     protected static function printInputValue($arg): string
     {
-        $argDecl = "{$arg->name}: {$arg->getType()->toString()}" . static::printDeprecated($arg);
+        $argDecl = "{$arg->name}: {$arg->getType()->toString()}";
 
         if ($arg->defaultValueExists()) {
             $defaultValueAST = AST::astFromValue($arg->defaultValue, $arg->getType());
@@ -348,10 +349,11 @@ class SchemaPrinter
                 throw new InvariantViolation("Unable to convert defaultValue of argument {$arg->name} into AST: {$inconvertibleDefaultValue}.");
             }
 
-            $argDecl .= ' = ' . Printer::doPrint($defaultValueAST);
+            $printedDefaultValue = Printer::doPrint($defaultValueAST);
+            $argDecl .= " = {$printedDefaultValue}";
         }
 
-        return $argDecl;
+        return $argDecl . static::printDeprecated($arg);
     }
 
     /**
@@ -385,7 +387,7 @@ class SchemaPrinter
     }
 
     /**
-     * @param array<string, bool>      $options
+     * @param array<string, bool> $options
      * @param ObjectType|InterfaceType $type
      *
      * @phpstan-param Options $options
@@ -457,9 +459,9 @@ class SchemaPrinter
 
         return $interfaces === []
             ? ''
-            : ' implements ' . \implode(
+            : ' implements ' . implode(
                 ' & ',
-                \array_map(
+                array_map(
                     static fn (InterfaceType $interface): string => $interface->name,
                     $interfaces
                 )
@@ -496,7 +498,7 @@ class SchemaPrinter
         $types = $type->getTypes();
         $types = $types === []
             ? ''
-            : ' = ' . \implode(' | ', $types);
+            : ' = ' . implode(' | ', $types);
 
         return static::printDescription($options, $type) . 'union ' . $type->name . $types;
     }
@@ -561,6 +563,7 @@ class SchemaPrinter
 
         return static::printDescription($options, $type)
             . "input {$type->name}"
+            . ($type->isOneOf() ? ' @oneOf' : '')
             . static::printBlock($fields);
     }
 
@@ -569,6 +572,6 @@ class SchemaPrinter
     {
         return $items === []
             ? ''
-            : " {\n" . \implode("\n", $items) . "\n}";
+            : " {\n" . implode("\n", $items) . "\n}";
     }
 }

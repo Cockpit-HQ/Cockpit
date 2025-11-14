@@ -19,7 +19,7 @@ namespace Symfony\Component\Process;
  */
 class PhpExecutableFinder
 {
-    private $executableFinder;
+    private ExecutableFinder $executableFinder;
 
     public function __construct()
     {
@@ -32,15 +32,8 @@ class PhpExecutableFinder
     public function find(bool $includeArgs = true): string|false
     {
         if ($php = getenv('PHP_BINARY')) {
-            if (!is_executable($php)) {
-                $command = '\\' === \DIRECTORY_SEPARATOR ? 'where' : 'command -v';
-                if ($php = strtok(exec($command.' '.escapeshellarg($php)), \PHP_EOL)) {
-                    if (!is_executable($php)) {
-                        return false;
-                    }
-                } else {
-                    return false;
-                }
+            if (!is_executable($php) && !$php = $this->executableFinder->find($php)) {
+                return false;
             }
 
             if (@is_dir($php)) {

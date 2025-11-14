@@ -1,5 +1,11 @@
-.kiss-flex { display: flex !important; }
-.kiss-flex-inline { display: inline-flex !important; }
+.kiss-flex {
+    display: flex !important;
+    gap: var(--kiss-flex-gap, 0);
+}
+.kiss-flex-inline {
+    display: inline-flex !important;
+    gap: var(--kiss-flex-gap, 0);
+}
 
 .kiss-flex::before,
 .kiss-flex::after,
@@ -36,6 +42,26 @@
 .kiss-flex-first { order: -1;}
 .kiss-flex-last { order: 99;}
 
+.kiss-flex[gap],
+.kiss-flex-inline[gap] { --kiss-flex-gap: var(--kiss-block-element-margin, 1rem); }
+.kiss-flex[gap="none"],
+.kiss-flex-inline[gap="none"] { --kiss-flex-gap: 0;}
+.kiss-flex[gap="xsmall"],
+.kiss-flex-inline[gap="xsmall"] { --kiss-flex-gap: var(--kiss-block-element-margin-xsmall, 4px);}
+.kiss-flex[gap="small"],
+.kiss-flex-inline[gap="small"] { --kiss-flex-gap: var(--kiss-block-element-margin-small, .6rem);}
+.kiss-flex[gap="large"],
+.kiss-flex-inline[gap="large"] { --kiss-flex-gap: var(--kiss-block-element-margin-large, 3rem);}
+
+.kiss-flex-none { flex: none; }
+.kiss-flex-auto { flex: auto; }
+.kiss-flex-1 {
+    flex-grow: 1;
+    min-width: 0;
+    min-height: 0;
+    flex-basis: 0;
+}
+
 /* Phone landscape and bigger */
 @media (min-width: 640px) {
 
@@ -46,29 +72,50 @@
 /* Tablet landscape and bigger */
 @media (min-width: 960px) {
 
+    .kiss-flex-row\@m { flex-direction: row; }
+    .kiss-flex-column\@m { flex-direction: column; }
+
     .kiss-flex-first\@m { order: -1; }
     .kiss-flex-last\@m { order: 99; }
+
+    .kiss-flex-1\@m {
+        flex-grow: 1;
+        min-width: 0;
+        min-height: 0;
+        flex-basis: 0;
+    }
 }
 
 /* Desktop and bigger */
 @media (min-width: 1200px) {
 
+    .kiss-flex-row\@l { flex-direction: row; }
+    .kiss-flex-column\@l { flex-direction: column; }
+
     .kiss-flex-first\@l { order: -1; }
     .kiss-flex-last\@l { order: 99; }
+
+    .kiss-flex-1\@l {
+        flex-grow: 1;
+        min-width: 0;
+        min-height: 0;
+        flex-basis: 0;
+    }
 }
 
 /* Large screen and bigger */
 @media (min-width: 1600px) {
 
+    .kiss-flex-row\@xl { flex-direction: row; }
+    .kiss-flex-column\@xl { flex-direction: column; }
+
     .kiss-flex-first\@xl { order: -1; }
     .kiss-flex-last\@xl { order: 99; }
-}
 
-.kiss-flex-none { flex: none; }
-.kiss-flex-auto { flex: auto; }
-.kiss-flex-1 {
-    flex-grow: 1;
-    min-width: 0;
-    min-height: 0;
-    flex-basis: 0;
+    .kiss-flex-1\@xl {
+        flex-grow: 1;
+        min-width: 0;
+        min-height: 0;
+        flex-basis: 0;
+    }
 }

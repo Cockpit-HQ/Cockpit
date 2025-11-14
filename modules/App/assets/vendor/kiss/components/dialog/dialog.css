@@ -1,5 +1,5 @@
 kiss-dialog {
-    display: flex;
+    display: none;
     align-items: flex-start;
     position: fixed;
     background: var(--kiss-dialog-background, rgba(0,0,0,.1));
@@ -9,17 +9,16 @@ kiss-dialog {
     bottom: 0;
     padding: 20px;
     touch-action: none;
-    opacity: 0;
-    pointer-events: none;
     overflow-y: auto;
     transform: translateZ(0);
     will-change: opacity;
-    z-index: 1000;
+    z-index: var(--kiss-dialog-zIndex, 1000);
 }
 
 kiss-dialog > kiss-content {
     position: relative;
     display: flow-root;
+    box-sizing: border-box;
     margin-top: auto;
     margin-bottom: auto;
     margin-left: auto;
@@ -33,9 +32,8 @@ kiss-dialog > kiss-content {
     width: var(--kiss-dialog-width, 350px);
     max-width: calc(100% - 0.01px) !important;
 
-    transform: translateZ(0);
-
-    box-sizing: border-box;
+    transform: translateY(20px) translateZ(0);
+    will-change: transform;
 }
 
 kiss-dialog[size="medium"] > kiss-content {
@@ -51,6 +49,30 @@ kiss-dialog[size="xlarge"] > kiss-content {
 }
 
 kiss-dialog[open] {
+    display: flex;
+    transition: opacity .2s;
     opacity: 1;
-    pointer-events: auto;
+
+    @starting-style {
+        opacity: 0;
+    }
+
+    & > kiss-content {
+        transform: translateY(0) translateZ(0);
+        transition: transform 200ms, opacity 200ms;
+
+        @starting-style {
+            transform: translateY(20px);
+        }
+    }
+}
+
+/* exit animation state driven by [closing] */
+kiss-dialog[open][closing] {
+    opacity: 0;
+
+    & > kiss-content {
+        transform: translateY(20px);
+        opacity: 0;
+    }
 }

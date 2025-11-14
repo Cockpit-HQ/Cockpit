@@ -26,20 +26,20 @@ class ResumeTokenException extends RuntimeException
      * Thrown when a resume token has an invalid type.
      *
      * @param mixed $value Actual value (used to derive the type)
-     * @return self
+     * @internal
      */
-    public static function invalidType($value)
+    public static function invalidType(mixed $value): self
     {
-        return new static(sprintf('Expected resume token to have type "array or object" but found "%s"', get_debug_type($value)));
+        return new self(sprintf('Expected resume token to have type "array or object" but found "%s"', get_debug_type($value)));
     }
 
     /**
      * Thrown when a resume token is not found in a change document.
      *
-     * @return self
+     * @internal
      */
-    public static function notFound()
+    public static function notFound(): self
     {
-        return new static('Resume token not found in change document');
+        return new self('Resume token not found in change document');
     }
 }

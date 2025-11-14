@@ -64,6 +64,7 @@ class Utils extends App {
 
         $icons = new \ArrayObject([]);
         $dirs  = [
+            'system:assets/icon-sets',
             '#config:icons',
         ];
 
@@ -84,7 +85,7 @@ class Utils extends App {
 
                 $icons[] = [
                     'name' => $f->getBasename('.svg'),
-                    'path' => $p.str_replace($path, '', $f->getRealPath()),
+                    'path' => $p.str_replace([DIRECTORY_SEPARATOR, $path], ['/', ''], $f->getPathname()),
                 ];
             }
 
@@ -106,6 +107,19 @@ class Utils extends App {
         return ['success' => true];
     }
 
+    public function resetOpcache() {
+
+        if (!$this->helper('acl')->isSuperAdmin() || !$this->helper('spaces')->isMaster()) {
+            return $this->stop(401);
+        }
+
+        if (function_exists('opcache_reset')) {
+            opcache_reset();
+        }
+
+        return ['success' => true];
+    }
+
     public function license() {
 
         $helper = $this->helper('license');
@@ -115,6 +129,28 @@ class Utils extends App {
             'isTrial' => $helper->isTrial(),
             'isValidDomain' => $helper->isValidDomain(),
         ];
+    }
+
+    public function env() {
+
+        $this->hasValidCsrfToken(true);
+
+        $password = $this->param('password');
+
+        // verify current logged in user
+        if (!$password || !$this->app->module('system')->verifyUser($password)) {
+            return $this->stop(['error' => 'User verification failed'], 412);
+        }
+
+        if (!$this->app->helper('acl')->isSuperAdmin() || !$this->app->helper('spaces')->isMaster()) {
+            return $this->stop(['error' => 'Permission denied'], 401);
+        }
+
+        $env = getenv();
+
+        ksort($env);
+
+        return compact('env');
     }
 
 }

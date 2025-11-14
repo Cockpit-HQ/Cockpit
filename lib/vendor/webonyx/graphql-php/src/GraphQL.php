@@ -24,6 +24,7 @@ use GraphQL\Validator\Rules\ValidationRule;
  * This is the primary facade for fulfilling GraphQL operations.
  * See [related documentation](executing-queries.md).
  *
+ * @phpstan-import-type ArgsMapper from Executor
  * @phpstan-import-type FieldResolver from Executor
  *
  * @see \GraphQL\Tests\GraphQLTest
@@ -70,10 +71,10 @@ class GraphQL
      *    Empty array would allow to skip query validation (may be convenient for persisted
      *    queries which are validated before persisting and assumed valid during execution)
      *
-     * @param string|DocumentNode        $source
-     * @param mixed                      $rootValue
-     * @param mixed                      $contextValue
-     * @param array<string, mixed>|null  $variableValues
+     * @param string|DocumentNode $source
+     * @param mixed $rootValue
+     * @param mixed $contextValue
+     * @param array<string, mixed>|null $variableValues
      * @param array<ValidationRule>|null $validationRules
      *
      * @api
@@ -86,10 +87,10 @@ class GraphQL
         $source,
         $rootValue = null,
         $contextValue = null,
-        array $variableValues = null,
-        string $operationName = null,
-        callable $fieldResolver = null,
-        array $validationRules = null
+        ?array $variableValues = null,
+        ?string $operationName = null,
+        ?callable $fieldResolver = null,
+        ?array $validationRules = null
     ): ExecutionResult {
         $promiseAdapter = new SyncPromiseAdapter();
 
@@ -128,10 +129,10 @@ class GraphQL
         $source,
         $rootValue = null,
         $context = null,
-        array $variableValues = null,
-        string $operationName = null,
-        callable $fieldResolver = null,
-        array $validationRules = null
+        ?array $variableValues = null,
+        ?string $operationName = null,
+        ?callable $fieldResolver = null,
+        ?array $validationRules = null
     ): Promise {
         try {
             $documentNode = $source instanceof DocumentNode
@@ -242,5 +243,17 @@ class GraphQL
     public static function setDefaultFieldResolver(callable $fn): void
     {
         Executor::setDefaultFieldResolver($fn);
+    }
+
+    /**
+     * Set default args mapper implementation.
+     *
+     * @phpstan-param ArgsMapper $fn
+     *
+     * @api
+     */
+    public static function setDefaultArgsMapper(callable $fn): void
+    {
+        Executor::setDefaultArgsMapper($fn);
     }
 }

@@ -481,14 +481,15 @@ class SVGSanitizer
     {
         $xlinks = $element->getAttributeNS('http://www.w3.org/1999/xlink', 'href');
         if (preg_match(self::SCRIPT_REGEX, $xlinks) === 1) {
-            if (!in_array(substr($xlinks, 0, 14), array(
+            if (!in_array(substr($xlinks, 0, 14), [
+                'data:image/avif', // AVIF
                 'data:image/png', // PNG
                 'data:image/gif', // GIF
                 'data:image/jpg', // JPG
                 'data:image/jpe', // JPEG
                 'data:image/pjp', // PJPEG
                 'data:image/webp', // WEBP
-            ))) {
+            ])) {
                 $element->removeAttributeNS( 'http://www.w3.org/1999/xlink', 'href' );
             }
         }
@@ -591,7 +592,7 @@ class SVGSanitizer
     protected function isUseTagDirty(\DOMElement $element)
     {
         $xlinks = $element->getAttributeNS('http://www.w3.org/1999/xlink', 'href');
-        if ($xlinks && substr($xlinks, 0, 1) !== '#') {
+        if ($xlinks && !str_starts_with($xlinks, '#')) {
             return true;
         }
 

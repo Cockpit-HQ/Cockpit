@@ -5,7 +5,7 @@ export default {
         return {
             loading: true,
             uploading: false,
-            currentpath: App.session.get(`finder.persist.${this.root}`, this.rootPath),
+            currentpath: this.rootPath || '/',
             files: [],
             folders: [],
             selected: [],
@@ -65,7 +65,7 @@ export default {
 
     watch: {
         root() {
-            this.loadpath(App.session.get(`finder.persist.${this.root}`, this.rootPath));
+            this.loadpath(this.rootPath);
         }
     },
 
@@ -141,8 +141,6 @@ export default {
                 this.filter = '';
 
                 this.loading = false;
-
-                App.session.set(`finder.persist.${this.root}`, path);
             });
         },
 
@@ -177,7 +175,11 @@ export default {
         },
 
         download(file) {
-            window.open(this.$route(`/finder/api?cmd=download&path=${file.path}&root=${this.root}`));
+            window.open(this.$routeUrl(`/finder/api?cmd=download&path=${file.path}&root=${encodeURIComponent(this.root)}&xcsrftoken=${App.csrf || ''}`));
+        },
+
+        downloadfolder(folder) {
+            window.open(this.$routeUrl(`/finder/api?cmd=downloadfolder&path=${folder.path}&root=${encodeURIComponent(this.root)}&xcsrftoken=${App.csrf || ''}`));
         },
 
         createFolder() {
@@ -188,6 +190,8 @@ export default {
 
                     this.$request('/finder/api', {root: this.root, cmd: 'createfolder', path: this.currentpath, name}).then(() => {
                         this.loadpath();
+                    }).catch(rsp => {
+                        App.ui.notify(rsp.error || 'Creating folder failed!', 'error');
                     });
                 }
             });
@@ -201,6 +205,8 @@ export default {
 
                     this.$request('/finder/api', {root: this.root, cmd: 'createfile', path: this.currentpath, name}).then(() => {
                         this.loadpath();
+                    }).catch(rsp => {
+                        App.ui.notify(rsp.error || 'Creating file failed!', 'error');
                     });
                 }
             });
@@ -211,7 +217,7 @@ export default {
             VueView.ui.offcanvas('finder:assets/dialogs/file-editor.js', {root: this.root, file}, {
 
 
-            }, {flip: true, size: 'xxlarge'})
+            });
         },
 
         rename(item) {
@@ -224,6 +230,9 @@ export default {
 
                         item.path = item.path.replace(item.name, name);
                         item.name = name;
+
+                    }).catch(rsp => {
+                        App.ui.notify(rsp.error || 'Renaming failed!', 'error');
                     });
                 }
             });
@@ -258,7 +267,7 @@ export default {
 
         open(file) {
 
-            if (file.mime.indexOf('text') > -1 || ['json', 'svg'].includes(file.ext)) {
+            if (file.mime.indexOf('text') > -1 || file.mime.indexOf('x-empty') > -1 || ['json', 'svg'].includes(file.ext)) {
                 return this.edit(file);
             }
 
@@ -323,62 +332,82 @@ export default {
             </ul>
         </div>
 
-        <app-loader v-if="loading"></app-loader>
+        <div :class="{'kiss-flex-1': modal}" class="animated fadeIn kiss-height-30vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center" v-if="loading">
+            <app-loader></app-loader>
+        </div>
 
-        <div class="animated fadeIn kiss-height-30vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted kiss-margin-large" v-if="!loading && !folders.length && !files.length">
+        <div :class="{'kiss-flex-1': modal}" class="animated fadeIn kiss-height-30vh kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-color-muted kiss-margin-large" v-if="!loading && !folders.length && !files.length">
             <div>
-                <kiss-svg class="kiss-margin-auto" src="<?= $this->base('finder:icon.svg') ?>" width="40" height="40"><canvas width="40" height="40"></canvas></kiss-svg>
+                <kiss-svg class="kiss-margin-auto" :src="$baseUrl('finder:icon.svg')" width="40" height="40"><canvas width="40" height="40"></canvas></kiss-svg>
                 <p class="kiss-size-large kiss-text-bold kiss-margin-small-top">{{ t('Empty') }}</p>
             </div>
         </div>
 
-        <div v-if="!loading && (folders.length || files.length)">
+        <div class="finder-contents" :class="{'kiss-flex kiss-flex-column kiss-flex-1': modal}" v-if="!loading && (folders.length || files.length)">
 
             <div class="kiss-margin">
                 <input type="text" class="kiss-input" :placeholder="t('Filter files & folders...')" v-model="filter">
             </div>
 
-            <kiss-grid cols="4@m 5@xl" class="kiss-margin-bottom" gap="small" v-if="folders.length">
+            <div :class="{'kiss-flex-1 kiss-overflow-y-auto': modal}">
 
-                <kiss-card class="kiss-flex kiss-flex-middle" theme="shadowed contrast" v-for="folder in filteredFolders">
-                    <div class="kiss-padding kiss-bgcolor-contrast"><icon size="larger">folder</icon></div>
-                    <div class="kiss-padding kiss-text-truncate kiss-flex-1 kiss-text-bold kiss-size-small">
-                        <a class="kiss-link-muted" @click="loadpath(currentpath+'/'+folder.name)">{{ folder.name }}</a>
-                    </div>
-                    <a class="kiss-padding" @click="toggleFolderActions(folder)"><icon>more_horiz</icon></a>
-                </kiss-card>
+                <kiss-grid cols="4@m 5@xl" class="kiss-margin-bottom" gap="small" v-if="folders.length">
 
-            </kiss-grid>
+                    <kiss-card class="kiss-flex kiss-flex-middle" theme="shadowed contrast" v-for="folder in filteredFolders">
+                        <div class="kiss-padding kiss-bgcolor-contrast"><icon size="larger">folder</icon></div>
+                        <div class="kiss-padding kiss-text-truncate kiss-flex-1 kiss-text-bold kiss-size-small">
+                            <a class="kiss-link-muted" @click="loadpath(currentpath+'/'+folder.name)">{{ folder.name }}</a>
+                        </div>
+                        <a class="kiss-padding" @click="toggleFolderActions(folder)"><icon>more_horiz</icon></a>
+                    </kiss-card>
 
-            <table class="kiss-table animated fadeIn" v-if="files.length">
-                <thead>
-                    <tr>
-                        <th width="30"><input class="kiss-checkbox" type="checkbox" @click="toggleAllSelect"></th>
-                        <th width="10"></th>
-                        <th>{{ t('Name') }}</th>
-                        <th class="kiss-align-right" width="10%">{{ t('Size') }}</th>
-                        <th class="kiss-align-right" width="100">{{ t('Updated') }}</th>
-                        <th width="30"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="file in filteredFiles">
-                        <td><input class="kiss-checkbox" type="checkbox" v-model="selected" :value="file.path"></td>
-                        <td class="kiss-align-center"><a @click="download(file)"><icon size="larger">cloud_download</icon></a></td>
-                        <td class="kiss-position-relative">
-                            {{ file.name }}
-                            <a class="kiss-cover" @click="open(file)"></a>
-                        </td>
-                        <td class="kiss-align-right kiss-text-monospace kiss-color-muted">{{ file.size }}</td>
-                        <td class="kiss-align-right kiss-color-muted"><span class="kiss-display-block kiss-align-center kiss-badge kiss-badge-outline kiss-color-muted">{{ file.lastmodified }}</span></td>
-                        <td class="kiss-align-right"><a class="kiss-padding" @click="toggleFileActions(file)"><icon>more_horiz</icon></a></td>
-                    </tr>
-                </tbody>
-            </table>
+                </kiss-grid>
 
+                <table class="kiss-table animated fadeIn" v-if="files.length">
+                    <thead>
+                        <tr>
+                            <th width="30"><input class="kiss-checkbox" type="checkbox" @click="toggleAllSelect"></th>
+                            <th width="10"></th>
+                            <th>{{ t('Name') }}</th>
+                            <th class="kiss-align-right" width="10%">{{ t('Size') }}</th>
+                            <th class="kiss-align-right" width="100">{{ t('Updated') }}</th>
+                            <th width="30"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="file in filteredFiles">
+                            <td><input class="kiss-checkbox" type="checkbox" v-model="selected" :value="file.path"></td>
+                            <td class="kiss-align-center"><a @click="download(file)"><icon size="larger">cloud_download</icon></a></td>
+                            <td class="kiss-position-relative">
+                                {{ file.name }}
+                                <a class="kiss-cover" @click="open(file)"></a>
+                            </td>
+                            <td class="kiss-align-right kiss-text-monospace kiss-color-muted">{{ file.size }}</td>
+                            <td class="kiss-align-right kiss-color-muted"><span class="kiss-display-block kiss-align-center kiss-badge kiss-badge-outline kiss-color-muted">{{ file.lastmodified }}</span></td>
+                            <td class="kiss-align-right"><a class="kiss-padding" @click="toggleFileActions(file)"><icon>more_horiz</icon></a></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
         </div>
 
-        <app-actionbar :class="{'kiss-disabled':loading}">
+        <div class="finder-actions kiss-flex kiss-flex-middle kiss-margin-small-top" :class="{'kiss-disabled':loading}" v-if="modal">
+            <div class="kiss-margin-right" v-if="selected.length">
+                <button class="kiss-button kiss-button-danger" @click="removeSelected()">{{ t('Delete') }} -{{ selected.length }}-</button>
+            </div>
+            <div class="kiss-flex-1 kiss-margin-right"></div>
+            <div class="kiss-button-group">
+                <button class="kiss-button" @click="createFolder()">{{ t('Create folder') }}</button>
+                <button class="kiss-button" @click="createFile()">{{ t('Create file') }}</button>
+                <button class="kiss-button kiss-button-primary kiss-overlay-input" :disabled="uploading">
+                    {{ t('Upload file') }}
+                    <input type="file" name="files[]" @change="(e) => {uploadFiles(e.target.files)}" multiple v-if="!uploading" />
+                </button>
+            </div>
+        </div>
+
+        <app-actionbar v-if="!modal" :class="{'kiss-disabled':loading}">
             <kiss-container>
                 <div class="kiss-flex kiss-flex-middle">
                     <div class="kiss-margin-right" v-if="selected.length">
@@ -406,7 +435,7 @@ export default {
                             <li v-if="actionFile">
                                 <div class="kiss-color-muted kiss-text-truncate kiss-margin-small-bottom">{{ App.utils.truncate(actionFile.name, 30) }}</div>
                             </li>
-                            <li v-if="actionFile && (actionFile.mime.indexOf('text') > -1 || ['json', 'svg'].includes(actionFile.ext))">
+                            <li v-if="actionFile && (actionFile.mime.indexOf('text') > -1 || actionFile.mime.indexOf('x-empty') > -1 || ['json', 'svg'].includes(actionFile.ext))">
                                 <a class="kiss-flex kiss-flex-middle" @click="edit(actionFile)">
                                     <icon class="kiss-margin-small-right" size="larger">create</icon>
                                     {{ t('Edit') }}
@@ -414,7 +443,7 @@ export default {
                             </li>
                             <li>
                                 <a class="kiss-flex kiss-flex-middle" @click="rename(actionFile)">
-                                    <icon class="kiss-margin-small-right" size="larger">drive_file_rename_outline</icon>
+                                    <icon class="kiss-margin-small-right" size="larger">create</icon>
                                     {{ t('Rename') }}
                                 </a>
                             </li>
@@ -447,13 +476,13 @@ export default {
                             </li>
                             <li>
                                 <a class="kiss-flex kiss-flex-middle" @click="rename(actionFolder)">
-                                    <icon class="kiss-margin-small-right" size="larger">bookmark_manager</icon>
+                                    <icon class="kiss-margin-small-right" size="larger">edit</icon>
                                     {{ t('Rename') }}
                                 </a>
                             </li>
                             <li class="kiss-nav-divider"></li>
                             <li>
-                                <a class="kiss-flex kiss-flex-middle" @click="download(actionFolder)">
+                                <a class="kiss-flex kiss-flex-middle" @click="downloadfolder(actionFolder)">
                                     <icon class="kiss-margin-small-right" size="larger">cloud_download</icon>
                                     {{ t('Download') }}
                                 </a>

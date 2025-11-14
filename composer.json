@@ -18,12 +18,19 @@
         "serve": [
             "Composer\\Config::disableProcessTimeout",
             "php -S localhost:8080 index.php"
-        ]
+        ],
+        "git-pull-all-rebase": "find . -type d -name .git -execdir sh -c 'echo \"\\n=== $(basename $(pwd)) ===\"; git pull --rebase' \\;"
     },
 
     "require": {
-        "php": "^8.1.0",
+        "php": "^8.3.0",
+        "ext-curl": "*",
+        "ext-fileinfo": "*",
+        "ext-gd": "*",
         "ext-json": "*",
+        "ext-pdo": "*",
+        "ext-pdo_sqlite": "*",
+        "ext-zip": "*",
         "phpmailer/phpmailer": "^6.4",
         "guzzlehttp/guzzle": "^7.4.5",
         "claviska/simpleimage": "^4.0",
@@ -31,18 +38,20 @@
         "league/flysystem": "^3.0",
         "league/flysystem-aws-s3-v3": "^3.0",
         "firebase/php-jwt": "^6.0",
-        "mongodb/mongodb": "^1.10",
-        "maennchen/zipstream-php": "^0.5.2",
+        "mongodb/mongodb": "^2.0.0",
+        "maennchen/zipstream-php": "^3.1.0",
         "colinodell/json5": "^2.2",
-        "robthree/twofactorauth": "^1.8",
-        "bacon/bacon-qr-code": "^2.0",
+        "robthree/twofactorauth": "^3.0",
+        "bacon/bacon-qr-code": "^3.0",
         "symfony/polyfill-mbstring": "^1.22",
-        "symfony/polyfill-php82": "^1.22",
-        "symfony/polyfill-php83": "^1.22",
+        "symfony/polyfill-php84": "^1.30",
+        "symfony/polyfill-php85": "^1.33",
         "webonyx/graphql-php": "^15.0",
         "zircote/swagger-php": "^4.5.1",
         "symfony/console": "^5.3",
-        "symfony/process": "^6.2"
+        "symfony/process": "^6.2",
+        "doctrine/annotations": "^2.0",
+        "jumbojett/openid-connect-php": "^1.0.2"
     },
 
     "config": {
@@ -50,7 +59,8 @@
         "optimize-autoloader": true,
         "prefer-dist": true,
         "lock": false,
-        "ignore-platform-reqs": true
+        "ignore-platform-reqs": true,
+        "no-dev": true
     },
 
     "autoload": {

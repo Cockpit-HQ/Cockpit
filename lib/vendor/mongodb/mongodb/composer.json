@@ -6,36 +6,55 @@
     "license": "Apache-2.0",
     "authors": [
         { "name": "Andreas Braun", "email": "andreas.braun@mongodb.com" },
-        { "name": "Jeremy Mikola", "email": "jmikola@gmail.com" }
+        { "name": "Jeremy Mikola", "email": "jmikola@gmail.com" },
+        { "name": "Jérôme Tamarelle", "email": "jerome.tamarelle@mongodb.com" }
     ],
     "require": {
-        "php": "^7.2 || ^8.0",
-        "ext-hash": "*",
-        "ext-json": "*",
-        "ext-mongodb": "^1.16.0",
-        "jean85/pretty-package-versions": "^2.0.1",
-        "symfony/polyfill-php73": "^1.27",
-        "symfony/polyfill-php80": "^1.27",
-        "symfony/polyfill-php81": "^1.27"
+        "php": "^8.1",
+        "ext-mongodb": "^2.1",
+        "composer-runtime-api": "^2.0",
+        "psr/log": "^1.1.4|^2|^3",
+        "symfony/polyfill-php85": "^1.32"
     },
     "require-dev": {
-        "doctrine/coding-standard": "^11.1",
-        "rector/rector": "^0.16.0",
+        "doctrine/coding-standard": "^12.0",
+        "phpunit/phpunit": "^10.5.35",
+        "rector/rector": "^1.2",
         "squizlabs/php_codesniffer": "^3.7",
-        "symfony/phpunit-bridge": "^5.2",
-        "vimeo/psalm": "^4.28"
+        "vimeo/psalm": "6.5.*"
+    },
+    "replace": {
+        "mongodb/builder": "*"
     },
     "autoload": {
         "psr-4": { "MongoDB\\": "src/" },
         "files": [ "src/functions.php" ]
     },
     "autoload-dev": {
-        "psr-4": { "MongoDB\\Tests\\": "tests/" },
-        "files": [ "tests/PHPUnit/Functions.php" ]
+        "psr-4": {
+            "MongoDB\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "pre-install-cmd": "git submodule update --init",
+        "pre-update-cmd": "git submodule update --init",
+        "bench": "cd benchmark && composer update && vendor/bin/phpbench run --report=aggregate",
+        "checks": [
+            "@check:cs",
+            "@check:psalm",
+            "@check:rector"
+        ],
+        "check:cs": "phpcs",
+        "check:psalm": "psalm",
+        "check:rector": "rector --ansi --dry-run",
+        "fix:cs": "phpcbf",
+        "fix:psalm:baseline": "psalm --set-baseline=psalm-baseline.xml",
+        "fix:rector": "rector process --ansi",
+        "test": "phpunit"
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.16.x-dev"
+            "dev-master": "1.x-dev"
         }
     },
     "config": {

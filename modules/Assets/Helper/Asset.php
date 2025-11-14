@@ -2,14 +2,68 @@
 
 namespace Assets\Helper;
 
-use SimpleImageLib as SimpleImage;
+use Assets\Utils\Img;
+use Assets\Utils\Vips;
+use Assets\Utils\Ffmpeg;
 
 class Asset extends \Lime\Helper {
 
+    protected ?Vips $vips = null;
+    protected ?Ffmpeg $ffmpeg = null;
+    protected ?string $storage = null;
+
+    protected function initialize() {
+
+        $this->storage = $this->app->retrieve('assets/storage', 'tmp://thumbs');
+
+        $useVips = $this->app->retrieve('assets/vips');
+
+        if ($useVips) {
+            $this->vips = new Vips(is_string($useVips) ? $useVips : null);
+        }
+
+        $useFfmpeg = $this->app->retrieve('assets/ffmpeg');
+
+        if ($useFfmpeg) {
+            $this->ffmpeg = new Ffmpeg(is_string($useFfmpeg) ? $useFfmpeg : null);
+        }
+    }
+
+    /**
+     * Make an asset available locally.
+     *
+     * @param string $path The asset path.
+     * @return string|false The local path or false on failure.
+     */
+    public function makeAssetLocalAvailable(string $path) {
+
+        $path = trim($path, '/');
+        $src = $this->app->path("#uploads:{$path}");
+
+        if (!$src && $this->app->fileStorage->fileExists("uploads://{$path}")) {
+
+            $stream = $this->app->fileStorage->readStream("uploads://{$path}");
+
+            if ($stream) {
+                $this->app->fileStorage->writeStream("#uploads://{$path}", $stream);
+                $src = $this->app->path("#uploads:{$path}");
+            }
+        }
+
+        return $src;
+    }
+
+    /**
+     * Generate an image asset.
+     *
+     * @param array $options The image options.
+     * @param bool $asPath Whether to return the path or URL.
+     * @return string|false The image path or false on failure.
+     */
     public function image(array $options = [], bool $asPath = false) {
 
         $options = array_merge([
-            'cachefolder' => 'tmp://thumbs',
+            'storage' => $this->storage,
             'src' => '',
             'mode' => 'thumbnail',
             'mime' => null,
@@ -20,7 +74,8 @@ class Asset extends \Lime\Helper {
             'quality' => 100,
             'rebuild' => false,
             'base64' => false,
-            'timestamp' => null
+            'timestamp' => null,
+            'smartcrop' => null
         ], $options);
 
         extract($options);
@@ -37,7 +92,7 @@ class Asset extends \Lime\Helper {
 
         if (!$rebuild && $mime) {
 
-            $thumbpath = $cachefolder."/{$hash}";
+            $thumbpath = $storage."/{$hash}";
 
             if ($this->app->fileStorage->fileExists($thumbpath)) {
 
@@ -52,15 +107,15 @@ class Asset extends \Lime\Helper {
         $src = rawurldecode($src);
 
         // normalize path
-        if (strpos($src, '../') !== false) {
+        if (str_contains($src, '../')) {
             $src = implode('/', array_filter(explode('/', $src), fn ($s) => trim($s, '.')));
         }
 
         $options['src'] = $src;
 
-        if (\strpos($src, 'uploads://') === 0) {
+        if (str_starts_with($src, 'uploads://')) {
 
-            $options['src'] = \str_replace('uploads://', '', $src);
+            $options['src'] = str_replace('uploads://', '', $src);
 
             return $this->imageByPath($options, $asPath, $hash);
         }
@@ -75,7 +130,7 @@ class Asset extends \Lime\Helper {
 
         $asset = null;
 
-        if (\strpos($src, 'assets://') === 0) {
+        if (str_starts_with($src, 'assets://')) {
             $asset = ['path' => \str_replace('assets://', '', $src)];
         } elseif (!preg_match('/\.(png|jpg|jpeg|gif|svg|webp)$/i', $src)) {
             $asset = $this->app->dataStorage->findOne('assets', ['_id' => $src]);
@@ -102,17 +157,7 @@ class Asset extends \Lime\Helper {
 
         $path = trim($src, '/');
         $srcUrl = $this->app->fileStorage->getURL("uploads://{$path}");
-        $src = $this->app->path("#uploads:{$path}");
-
-        if (!$src && $this->app->fileStorage->fileExists("uploads://{$path}")) {
-
-            $stream = $this->app->fileStorage->readStream("uploads://{$path}");
-
-            if ($stream) {
-                $this->app->fileStorage->writeStream("#uploads://{$path}", $stream);
-                $src = $this->app->path("#uploads:{$path}");
-            }
-        }
+        $src = $this->makeAssetLocalAvailable($path);
 
         if (!$src) {
             return false;
@@ -128,6 +173,27 @@ class Asset extends \Lime\Helper {
             }
 
             return $asPath ? "uploads://{$path}" : $srcUrl;
+        }
+
+        // check if video
+        if (in_array($ext, ['mp4', 'avi', 'mov', 'webm', 'mkv', 'flv', 'wmv', 'mpeg', 'mpg', 'm4v']) && $this->ffmpeg) {
+
+            $tmp = $this->app->path('#tmp:').basename($src, '.'.$ext).".jpg";
+
+            if (!file_exists($tmp)) {
+
+                // cache base video image source
+                $this->ffmpeg->thumbnail($tmp, [
+                    'src' => $src,
+                ]);
+
+                if (!file_exists($tmp)) {
+                    return false;
+                }
+            }
+
+            $src = $tmp;
+            $ext = 'jpg';
         }
 
         // check if image
@@ -154,6 +220,9 @@ class Asset extends \Lime\Helper {
             $mode = 'thumbnail';
         }
 
+        if ($mime && substr($mime, 0, 6) == 'image/') $mime = substr($mime, 6);
+        if ($mime === 'jpg') $mime = 'jpeg';
+
         if ($mime && in_array($mime, ['avif', 'gif', 'jpeg', 'png', 'webp', 'bmp'])) {
             $ext = $mime;
             $mime = "image/{$ext}";
@@ -168,7 +237,7 @@ class Asset extends \Lime\Helper {
         $method = $mode;
 
         $hash = $hash ?? md5(json_encode($options))."_{$quality}_{$mode}.{$ext}";
-        $thumbpath = $cachefolder."/{$hash}";
+        $thumbpath = $storage."/{$hash}";
 
         if ($rebuild || !$this->app->fileStorage->fileExists($thumbpath)) {
 
@@ -176,31 +245,55 @@ class Asset extends \Lime\Helper {
                 $this->app->fileStorage->delete($thumbpath);
             }
 
-            $img = new Img($src);
-            $img->{$method}($width, $height, $fp);
+            if ($this->vips) {
 
-            // Apply image filters
-            foreach ($filters as $filter => $opts) {
-                // Handle non-associative array
-                if (is_int($filter)) {
-                    $filter = $opts;
-                    $opts = [];
+                $tmp = $this->app->path('#tmp:').uniqid().".{$ext}";
+
+                $vipsOptions = [
+                    'src' => $src,
+                    'size' => "{$width}x{$height}",
+                    'quality' => $quality
+                ];
+
+                // Add smartcrop if specified
+                if ($smartcrop && in_array($smartcrop, ['attention', 'centre', 'center', 'entropy', 'low', 'high'])) {
+                    $vipsOptions['smartcrop'] = $smartcrop === 'center' ? 'centre' : $smartcrop;
                 }
 
-                if (in_array($filter, [
-                    'blur', 'brighten',
-                    'colorize', 'contrast',
-                    'darken', 'desaturate',
-                    'edgeDetect', 'emboss',
-                    'flip', 'invert', 'opacity', 'pixelate', 'sepia', 'sharpen', 'sketch'
-                ])) {
-                    call_user_func_array([$img, $filter], (array) $opts);
+                $this->vips->thumbnail($tmp, $vipsOptions);
+
+                if (file_exists($tmp)) {
+
+                    if (is_array($filters) && !empty($filters)) {
+
+                        $img = new Img($tmp);
+
+                        // Apply image filters
+                        $this->applyFilters($img, $filters);
+
+                        $this->app->fileStorage->write($thumbpath, $img->toString($mime, $quality));
+                        unset($img);
+                    } else {
+                        $this->app->fileStorage->write($thumbpath, file_get_contents($tmp));
+                    }
+
+                    unlink($tmp);
+                } else {
+                    return false;
                 }
+
+            } else {
+
+                $img = new Img($src);
+                $img->{$method}($width, $height, $fp);
+
+                // Apply image filters
+                $this->applyFilters($img, $filters);
+
+                $this->app->fileStorage->write($thumbpath, $img->toString($mime, $quality));
+
+                unset($img);
             }
-
-            $this->app->fileStorage->write($thumbpath, $img->toString($mime, $quality));
-
-            unset($img);
         }
 
         if ($base64) {
@@ -209,76 +302,111 @@ class Asset extends \Lime\Helper {
 
         return $asPath ? $thumbpath : $this->app->fileStorage->getURL($thumbpath);
     }
-}
 
-class Img {
+    protected function applyFilters(Img $img, array $filters): Img {
 
-    protected $image;
+        if (empty($filters)) return $img;
 
-    public function __construct($img) {
-
-        $this->image = new SimpleImage($img);
-    }
-
-    public function negative() {
-        $this->image->invert();
-        return $this;
-    }
-
-    public function grayscale() {
-        $this->image->desaturate();
-        return $this;
-    }
-
-    public function base64data($format = null, $quality = 100) {
-        return $this->image->toDataUri($format, $quality);
-    }
-
-    public function show($format = null, $quality = 100) {
-        $this->image->toScreen($format, $quality);
-    }
-
-    public function blur($passes = 1, $type = 'gaussian') {
-        return $this->image->blur($type, $passes);
-    }
-
-    public function thumbnail($width, $height, $anchor = 'center') {
-
-
-        if (\preg_match('/\d \d/', $anchor)) {
-
-            // Determine aspect ratios
-            $currentRatio = $this->image->getHeight() / $this->image->getWidth();
-            $targetRatio = $height / $width;
-
-            // Fit to height/width
-            if ($targetRatio > $currentRatio) {
-                $this->image->resize(null, $height);
-            } else {
-                $this->image->resize($width, null);
+        // Apply image filters
+        foreach ($filters as $filter => $opts) {
+            // Handle non-associative array
+            if (is_int($filter)) {
+                $filter = $opts;
+                $opts = [];
             }
 
-            $anchor = \explode(' ', $anchor);
+            $opts = (array) $opts;
 
-            $x1 = \floor(($this->image->getWidth() * $anchor[0]) - ($width * $anchor[0]));
-            $x2 = $width + $x1;
-            $y1 = \floor(($this->image->getHeight() * $anchor[1]) - ($height * $anchor[1]));
-            $y2 = $height + $y1;
+            foreach ($opts as $key => $value) {
+                if (is_numeric($value)) $opts[$key] = $value + 0;
+            }
 
-            return $this->image->crop($x1, $y1, $x2, $y2);
+            if (in_array($filter, [
+                'blur', 'brighten',
+                'colorize', 'contrast',
+                'darken', 'desaturate',
+                'edgeDetect', 'emboss',
+                'flip', 'invert', 'opacity', 'pixelate', 'sepia', 'sharpen', 'sketch'
+            ])) {
+                call_user_func_array([$img, $filter], (array) $opts);
+            }
         }
 
-        return $this->image->thumbnail($width, $height, $anchor);
+        return $img;
     }
 
-    public function __call($method, $args) {
+    /**
+     * Update asset references in an array.
+     *
+     * @param array $array The array to update.
+     * @return array The updated array.
+     */
+    public function updateRefs(array $array): array {
 
-        $ret = \call_user_func_array([$this->image, $method], $args);
+        static $refs;
 
-        if ($ret !== $this->image) {
-            return $ret;
+        if (is_null($refs)) $refs = [];
+
+        if (!is_array($array)) {
+            return $array;
         }
 
-        return $this;
+        foreach ($array as $k => $v) {
+
+            if (is_array($array[$k])) {
+                $array[$k] = $this->updateRefs($array[$k]);
+            }
+
+            // check if is asset
+            if (isset($v['_id'], $v['path'], $v['mime'], $v['type'])) {
+
+                if (!isset($refs[$v['_id']])) {
+                    $refs[$v['_id']] = $this->app->dataStorage->findOne('assets', ['_id' => $v['_id']]);;
+                }
+
+                // update with latest asset data
+                $array[$k] = $refs[$v['_id']];
+            }
+        }
+
+        return $array;
+    }
+
+    /**
+     * Get video metadata.
+     *
+     * @param string $path The video path.
+     * @return array|null The video metadata or null if not found.
+     */
+    public function getVideoMeta(string $path): ?array {
+        return $this->ffmpeg?->getVideoMeta($path);
+    }
+
+    /**
+     * Transcode a video asset.
+     *
+     * @param string $src The source video path.
+     * @param string $dest The destination video path.
+     * @param array $options The transcoding options.
+     * @return bool True on success, false on failure.
+     */
+    public function videoTranscode(string $src, string $dest, array $options = []) {
+
+        if (!$this->ffmpeg) {
+            return false;
+        }
+
+        if (str_starts_with($src, 'uploads://')) {
+            $src = str_replace('uploads://', '', $src);
+            $src = $this->makeAssetLocalAvailable($src);
+        }
+
+        if (!$src) {
+            return false;
+        }
+
+        $this->ffmpeg->transcode($src, $dest, $options);
+
+        return true;
     }
 }

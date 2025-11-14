@@ -2,7 +2,7 @@
 
     $roles = $this->helper('acl')->roles();
 ?>
-<kiss-container class="kiss-margin" size="small">
+<kiss-container class="kiss-margin-small" size="small">
 
     <ul class="kiss-breadcrumbs">
         <li><a href="<?=$this->route('/system')?>"><?=t('Settings')?></a></li>
@@ -43,6 +43,7 @@
                                 <div class="kiss-text-capitalize kiss-text-bold" :class="{'kiss-color-muted': !key.role}">{{ key.role || t('No role set') }}</div>
                                 <select class="kiss-input kiss-select" v-model="key.role">
                                     <option value="">No role</option>
+                                    <hr />
                                     <option v-for="role in roles" :value="role.appid">{{ role.name }}</option>
                                 </select>
                             </div>

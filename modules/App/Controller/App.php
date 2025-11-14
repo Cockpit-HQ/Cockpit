@@ -12,7 +12,7 @@ class App extends Authenticated {
 
     protected function render(string $view, array $params = []): mixed {
 
-        $this->app->trigger('app.layout.render');
+        $this->app->trigger('app.layout.render', [&$view, &$params]);
 
         return parent::render($view, $params);
     }

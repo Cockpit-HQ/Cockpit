@@ -113,7 +113,6 @@ export default {
                         </div>
 
                         <div v-if="fields.length">
-                            <div class="kiss-text-caption kiss-size-xsmall kiss-text-bold">{{ t('Data') }}</div>
                             <fields-renderer class="kiss-margin" v-model="data" :fields="fields" :locales="locales"></fields-renderer>
                         </div>
 

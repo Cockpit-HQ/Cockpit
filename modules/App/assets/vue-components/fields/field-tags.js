@@ -4,10 +4,10 @@ let instanceCount = 0;
 let ready = new Promise(function(resolve) {
 
     App.assets.require([
-        'app:assets/vendor/choices/choices.js',
-        'app:assets/vendor/choices/choices.css',
+        'app:assets/components/app-tags/app-tags.js',
+        'app:assets/components/app-tags/app-tags.css',
     ], function() {
-        resolve(window.Choices);
+        resolve();
     });
 });
 
@@ -38,7 +38,9 @@ export default {
         return {
             uid: `field-tags-${++instanceCount}`,
             val: this.modelValue || [],
-            options: []
+            options: [],
+            loading: false,
+            tagsElement: null
         }
     },
 
@@ -54,58 +56,86 @@ export default {
         max: {
             type: Number
         },
+        minChars: {
+            type: Number,
+            default: 0
+        },
+        strictMode: {
+            type: Boolean,
+            default: false
+        },
         list: {
             type: Array,
             default: []
+        },
+        src: {
+            type: Object,
+            default: null
         }
     },
 
     mounted() {
 
+        this.tagsElement = this.$refs.tags;
+
         ready.then(() => {
 
-            if (Array.isArray(this.list) && this.list.length) {
-
-                this.options = this.list.map((item, idx) => {
-                    return { id: idx, value: item}
-                });
+            // Set other options
+            if (this.max) {
+                this.tagsElement.setAttribute('max-tags', this.max);
+            }
+            if (this.minChars) {
+                this.tagsElement.setAttribute('min-chars', this.minChars);
+            }
+            if (this.placeholder) {
+                this.tagsElement.setAttribute('placeholder', this.placeholder);
+            }
+            if (this.strictMode) {
+                this.tagsElement.setAttribute('strict-mode', '');
             }
 
-            this.input = this.$el.querySelector('input, select');
+            if (this.src || (Array.isArray(this.list) && this.list.length)) {
+                this.resolveOptions();
+            }
 
-            this.choices = new Choices(this.input, {
-                paste: false,
-                duplicateItemsAllowed: false,
-                maxItemCount: this.max || -1,
-                placeholder: this.placeholder ? true : false,
-                placeholderValue: this.placeholder || '',
-                removeItemButton: true,
-                searchResultLimit: 8,
-                choices: this.options,
-
-                loadingText: App.i18n.get('Loading...'),
-                noResultsText: App.i18n.get('No results found'),
-                noChoicesText: App.i18n.get('No choices to choose from'),
-                itemSelectText: App.i18n.get('Press to select'),
-            })
-
-            this.updateChoices();
-
-            this.input.addEventListener('change', (e) => {
-                this.val = this.choices.getValue(true);
-                this.update();
-            });
+            this.tagsElement.addEventListener('tags-changed', this.update);
+            this.tagsElement.setTags(Array.isArray(this.modelValue) ? this.modelValue : []);
         });
 
     },
 
+    beforeUnmount() {
+        if (this.tagsElement) {
+            this.tagsElement.removeEventListener('tags-changed', this.update);
+            // Destroy the tags element completely to prevent memory leaks
+            if (typeof this.tagsElement.destroy === 'function') {
+                this.tagsElement.destroy();
+            }
+            this.tagsElement = null;
+        }
+    },
+
     watch: {
-        modelValue() {
+        modelValue: {
+            handler(newValue) {
+                if (this.tagsElement) {
+                    const currentTags = this.tagsElement.getTags();
+                    if (JSON.stringify(currentTags) !== JSON.stringify(newValue)) {
+                        this.tagsElement.setTags(newValue);
+                    }
+                }
+            },
+            deep: true
+        },
 
-            this.val = this.modelValue;
+        list: {
+            handler() { this.resolveOptions(); },
+            deep: true
+        },
 
-            this.updateChoices();
-            this.update();
+        src: {
+            handler() { this.resolveOptions(); },
+            deep: true
         }
     },
 
@@ -115,35 +145,93 @@ export default {
 
     methods: {
 
-        updateChoices() {
-
-            if (!this.choices) return;
-
-            this.choices.removeActiveItems();
-
-            if (Array.isArray(this.list) && this.list.length) {
-
-                if (Array.isArray(this.val)) {
-                    this.val.forEach(val => this.choices.setChoiceByValue(val))
-                }
-
-                //this.choices.setChoices(this.val || []);
-            } else {
-
-                this.choices.setValue(this.val || []);
-            }
-
+        updateOptions() {
+            if (this.loading) return;
+            this.tagsElement.setSuggestions(this.options);
         },
 
-        update() {
-            this.$emit('update:modelValue', this.val)
+        update(e) {
+            this.$emit('update:modelValue', e.detail.tags);
+        },
+
+        resolveOptions() {
+
+            this.options = [];
+
+            if (!this.src && (!Array.isArray(this.list) || !this.list.length)) {
+                return;
+            }
+
+            this.loading = true;
+
+            (this.src ? this.resolveItemsBySrc() : this.resolveItemsByList()).then(options => {
+                this.loading = false;
+                this.options = options;
+                this.updateOptions();
+            });
+        },
+
+        resolveItemsByList() {
+
+            return new Promise((resolve) => {
+
+                if (Array.isArray(this.list) && this.list.length) {
+
+                    let id, value, label, options = [];
+
+                    options = this.list.map((item, idx) => {
+
+                        id = item.id ?? idx;
+                        value = item.value ?? item;
+                        label = item.label ?? value;
+
+                        return { id, value, label }
+                    });
+
+                    resolve(options)
+                }
+            });
+        },
+
+        resolveItemsBySrc() {
+
+            const mapping = Object.assign({
+                value: '',
+                label: '',
+            }, this.src.map || {});
+
+            return new Promise((resolve) => {
+
+                let options = [];
+
+                this.$request(this.src.route, this.src.params || {}).then(list => {
+
+                    if (!Array.isArray(list)) {
+                        resolve(options);
+                        return;
+                    }
+
+                    list.forEach((item, idx) => {
+
+                        options.push({
+                            value: item[mapping.value] ?? item,
+                            label: item[mapping.label] || item[mapping.value] || item,
+                            id: item[mapping.id] ?? item[mapping.value] ?? idx
+                        });
+                    });
+
+                    resolve(options);
+                }).catch((err) => {
+                    console.error(err);
+                    resolve([]);
+                });
+            });
         }
     },
 
     template: /*html*/`
         <div field="tags">
-            <input type="text" hidden v-if="!Array.isArray(list) || !list.length" />
-            <select multiple v-if="Array.isArray(list) && list.length" hidden></select>
+            <app-tags ref="tags" />
         </div>
     `
 }

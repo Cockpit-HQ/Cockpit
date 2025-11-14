@@ -1,45 +1,39 @@
-<vue-view>
+<vue-view class="kiss-position-relative">
     <template>
 
-        <kiss-container class="login-wrapper animated pulse">
+        <kiss-container class="auth-wrapper">
 
-            <div class="kiss-flex kiss-flex-center kiss-margin">
-                <img class="app-logo" src="<?=$this->helper('theme')->logo()?>" style="height:40px;width:auto;" alt="Logo">
-            </div>
+            <div class="auth-dialog animated pulse">
 
-            <form :class="{'kiss-disabled': loading}" @submit.prevent="login" v-if="view=='form'">
-
-                <div class="kiss-text-bold kiss-text-caption kiss-margin-bottom"><?=t('Welcome')?></div>
-
-                <div class="kiss-margin">
-                    <input class="kiss-input" type="text" placeholder="<?=t('Username or Email')?>" aria-label="<?=t('Username or Email')?>" v-model="auth.user" autocomplete="off" autofocus required>
-                </div>
-
-                <div class="kiss-margin">
-                    <input class="kiss-input" type="password" autocomplete="current-password" placeholder="<?=t('Password')?>" aria-label="<?=t('Password')?>" v-model="auth.password" required>
-                </div>
-
-                <div class="kiss-margin">
-                    <button class="kiss-button kiss-button-primary kiss-width-1-1"><?=t('Log in')?></button>
-                </div>
-
-            </form>
-
-            <kiss-card class="kiss-padding animated fadeIn" theme="contrast" v-if="!loading && view=='success' && !user.twofa">
-
-                <kiss-row class="kiss-flex-middle">
-                    <div><app-avatar size="50" :name="user.name"></app-avatar></div>
-                    <div class="kiss-size-small">
-                        <div class="kiss-text-bold">{{ user.name }}</div>
-                        <div class="kiss-color-muted">{{ user.email }}</div>
+                <div class="kiss-flex kiss-flex-middle kiss-margin-large" gap>
+                    <div><img class="app-logo" src="<?= $this->helper('theme')->logo() ?>" style="height:40px;width:auto;" alt="Logo"></div>
+                    <div>
+                        <strong class="kiss-size-5"><?= $this['app.name'] ?></strong>
+                        <div class="kiss-color-muted kiss-size-xsmall kiss-margin-xsmall"><?= t('Log in to your account') ?></div>
                     </div>
-                </kiss-row>
+                </div>
 
-            </kiss-card>
+                <form :class="{'kiss-disabled': loading}" @submit.prevent="login" v-if="view=='form'">
 
-            <div class="kiss-padding animated fadeIn" :class="{'kiss-disabled': loading}" v-if="view=='success' && user.twofa">
+                    <div class="kiss-margin">
+                        <input class="kiss-input" type="text" placeholder="<?= t('Username or Email') ?>" aria-label="<?= t('Username or Email') ?>" v-model="auth.user" autocomplete="off" autofocus required>
+                    </div>
 
-                <kiss-card class="kiss-padding-small" theme="contrast">
+                    <div class="kiss-margin">
+                        <input class="kiss-input" type="password" autocomplete="current-password" placeholder="<?= t('Password') ?>" aria-label="<?= t('Password') ?>" v-model="auth.password" required>
+                    </div>
+
+                    <div class="kiss-margin">
+                        <button class="kiss-button kiss-button-large kiss-button-primary kiss-width-1-1"><?= t('Log in') ?></button>
+                    </div>
+
+                    <?php if ($this->mailer->getTransport() !== 'mail'): ?>
+                    <div class="kiss-size-small kiss-text-caption kiss-color-muted"><a class="kiss-link-muted" kiss-popout="#login-options"><?=t('More Options')?> <icon size="large">arrow_drop_down</icon></a></div>
+                    <?php endif ?>
+
+                </form>
+
+                <kiss-card class="animated fadeIn" v-if="!loading && view=='success' && !user.twofa">
 
                     <kiss-row class="kiss-flex-middle">
                         <div><app-avatar size="50" :name="user.name"></app-avatar></div>
@@ -51,16 +45,35 @@
 
                 </kiss-card>
 
-                <form class="kiss-margin-top" @submit.prevent="verify2FA" v-if="!loading">
-                    <div>
-                        <input class="kiss-input kiss-text-monospace" type="text" placeholder="2FA Code" aria-label="2FA Code" v-model="twofaCode" autofocus required>
-                    </div>
-                    <div class="kiss-margin-top">
-                        <button class="kiss-button kiss-button-outline kiss-button-primary kiss-width-1-1">{{ t('Verify code') }}</button>
-                    </div>
-                </form>
+                <div class="kiss-padding animated fadeIn" :class="{'kiss-disabled': loading}" v-if="view=='success' && user.twofa">
+
+                    <kiss-card>
+
+                        <kiss-row class="kiss-flex-middle">
+                            <div><app-avatar size="50" :name="user.name"></app-avatar></div>
+                            <div class="kiss-size-small">
+                                <div class="kiss-text-bold">{{ user.name }}</div>
+                                <div class="kiss-color-muted">{{ user.email }}</div>
+                            </div>
+                        </kiss-row>
+
+                    </kiss-card>
+
+                    <form class="kiss-margin-top" @submit.prevent="verify2FA" v-if="!loading">
+                        <div>
+                            <input class="kiss-input kiss-text-monospace" type="text" placeholder="2FA Code" aria-label="2FA Code" v-model="twofaCode" autofocus required>
+                        </div>
+                        <div class="kiss-margin-top">
+                            <button class="kiss-button kiss-button-outline kiss-button-primary kiss-width-1-1">{{ t('Verify code') }}</button>
+                        </div>
+                    </form>
+
+                </div>
 
             </div>
+
+
+            <?php $this->trigger('app.login.dialog.footer') ?>
 
         </kiss-container>
 
@@ -69,13 +82,15 @@
     </template>
 
     <script type="module">
-
         export default {
 
             data() {
 
                 return {
-                    auth: {user:'',password:''},
+                    auth: {
+                        user: '',
+                        password: ''
+                    },
                     view: 'form',
                     loading: false,
                     user: null,
@@ -109,7 +124,7 @@
 
                     this.$request('/auth/check', {
                         auth: this.auth,
-                        csrf : "<?=$this->helper('csrf')->token('login')?>"
+                        csrf: "<?= $csrfToken ?>"
                     }).then(rsp => {
 
                         this.loading = false;
@@ -133,12 +148,19 @@
 
                         // redirect if twofa is disabled for the user
                         if (!this.user.twofa) {
-                            setTimeout(() => window.location = '<?=$redirectTo?>', 1500);
+                            setTimeout(() => window.location = '<?= $redirectTo ?>', 1500);
                         }
 
-                    }, rsp => {
+                    }, (rsp) => {
+
+                        if (rsp?.error === 'APP_LOGIN_SESSION_INVALID') {
+                            App.ui.notify('Login session expired.', 'error');
+                            setTimeout(() => location.reload() , 600);
+                            return;
+                        }
+
                         this.loading = false;
-                        App.ui.notify(rsp && (rsp.message || rsp.error) ? (rsp.message || rsp.error) : '<?=t('Login failed.')?>', 'error');
+                        App.ui.notify(rsp && (rsp.message || rsp.error) ? (rsp.message || rsp.error) : '<?= t('Login failed.') ?>', 'error');
                     });
                 },
 
@@ -148,11 +170,11 @@
 
                     this.$request('/auth/validate2FA', {
                         code: this.twofaCode,
-                        token : this.user.twofa
+                        token: this.user.twofa
                     }).then(rsp => {
 
                         if (rsp && rsp.success) {
-                            setTimeout(() => window.location = '<?=$redirectTo?>', 1500);
+                            setTimeout(() => window.location = '<?= $redirectTo ?>', 1500);
                             return;
                         }
 
@@ -160,7 +182,7 @@
 
                         this.loading = false;
 
-                        App.ui.notify(rsp && (rsp.message || rsp.error) ? (rsp.message || rsp.error) : '<?=t('Verification failed.')?>', 'error');
+                        App.ui.notify(rsp && (rsp.message || rsp.error) ? (rsp.message || rsp.error) : '<?= t('Verification failed.') ?>', 'error');
 
                         setTimeout(() => {
                             this.$el.parentNode.classList.add('animated');
@@ -171,7 +193,33 @@
                 }
             }
         }
-
     </script>
 
 </vue-view>
+
+<?php if ($this->mailer->getTransport() !== 'mail'): ?>
+ <kiss-popout id="login-options">
+    <kiss-content>
+        <kiss-navlist>
+            <ul>
+                <li class="kiss-nav-header"><?=t('Login Options')?></li>
+                <?php if ($this->retrieve('auth.login.magiclink', true)): ?>
+                <li>
+                    <a class="kiss-flex kiss-flex-middle" href="<?=$this->route('/auth/magiclink')?>">
+                        <icon class="kiss-margin-small-right">bolt</icon>
+                        <?= t('Login via Magic Link') ?>
+                    </a>
+                </li>
+                <li class="kiss-nav-divider"></li>
+                <?php endif ?>
+                <li>
+                    <a class="kiss-flex kiss-flex-middle kiss-text-bold" href="<?=$this->route('/auth/reset')?>">
+                        <icon class="kiss-margin-small-right">lock_reset</icon>
+                        <?= t('Reset Password') ?>
+                    </a>
+                </li>
+            </ul>
+        </kiss-navlist>
+    </kiss-content>
+</kiss-popout>
+<?php endif ?>

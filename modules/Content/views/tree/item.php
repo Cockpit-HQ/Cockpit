@@ -1,4 +1,15 @@
+<?php
 
+$fields = $model['fields'];
+$locales = $this->helper('locales')->locales();
+
+if (count($locales) == 1) {
+    $locales = [];
+} else {
+    $locales[0]['visible'] = true;
+}
+
+?>
 <vue-view class="kiss-margin-small">
 
     <template>
@@ -10,18 +21,20 @@
             </ul>
 
             <div class="kiss-flex kiss-flex-middle">
-                <div class="kiss-flex kiss-position-relative">
-                    <span class="kiss-badge" style="<?=($model['color'] ? "background:{$model['color']};border-color:{$model['color']}":"")?>"><?=$this->escape($model['label'] ? $model['label'] : $model['name'])?></span>
-                    <a class="kiss-cover" href="<?=$this->route("/content/tree/items/{$model['name']}")?>"></a>
+
+                <div class="kiss-margin-small-right">
+                    <kiss-svg class="kiss-margin-auto" src="<?= $this->base(isset($model['icon']) && $model['icon'] ? $model['icon'] : 'content:assets/icons/tree.svg') ?>" width="30" height="30" style="color:<?= ($this->escape($model['color'] ?? 'inherit')) ?>"><canvas width="30" height="30"></canvas></kiss-svg>
                 </div>
-                <a class="kiss-color-muted kiss-margin-small-left" onclick="VueView.ui.offcanvas('content:assets/dialogs/switch-model-view.js')">
+                <a class="kiss-color-muted kiss-margin-small-right" onclick="VueView.ui.offcanvas('content:assets/dialogs/switch-model-view.js')">
                     <icon>expand_circle_down</icon>
                 </a>
-                <div class="kiss-margin-small-left kiss-size-5 kiss-text-bold">
-                    <span v-if="!item._id"><?=t('New Item')?></span>
-                    <span v-if="item._id"><?=t('Edit Item')?></span>
+                <div class="kiss-margin-small-right">
+                    <a class="kiss-link-muted kiss-size-4 kiss-text-bold" href="<?=$this->route("/content/tree/items/{$model['name']}")?>"><?= $this->escape($model['label'] ? $model['label'] : $model['name']) ?></a>
                 </div>
-                <a class="kiss-size-large kiss-margin-small-left" kiss-popout="#model-item-menu-actions"><icon>more_horiz</icon></a>
+                <span class="kiss-badge kiss-badge-outline kiss-color-primary kiss-margin-small-right" v-if="!item._id">
+                    <?=t('New Item')?>
+                </span>
+                <a class="kiss-size-large kiss-margin-small-right" href kiss-popout="#model-item-menu-actions"><icon>more_horiz</icon></a>
             </div>
         </kiss-container>
 
@@ -34,10 +47,11 @@
             </div>
 
             <kiss-row class="kiss-margin-large" gap="large" v-if="fields.length">
+                <div class="kiss-visible@m kiss-width-1-5@m kiss-width-1-8@xl kiss-width-max-small">
+                    <kiss-sticky id="content-fields-outline" data-offset="20"></kiss-sticky>
+                </div>
                 <div class="kiss-flex-1">
-                    <div class="kiss-width-3-4@xl kiss-margin-auto">
-                        <fields-renderer v-model="item" :fields="fields" :locales="locales"></fields-renderer>
-                    </div>
+                    <fields-renderer v-model="item" :fields="fields" :locales="locales" outline="#content-fields-outline"></fields-renderer>
                 </div>
                 <div class="kiss-width-1-4@m kiss-width-1-5@xl">
 
@@ -58,7 +72,7 @@
                             <div class="kiss-margin-xsmall">
                                 <div class="kiss-flex kiss-flex-middle">
                                     <div class="kiss-size-4 kiss-margin-small-right kiss-flex kiss-color-muted" :title="t('Created at')"><icon>more_time</icon></div>
-                                    <div class="kiss-text-truncate kiss-size-small kiss-text-monospace kiss-color-muted kiss-flex-1">{{ (new Date(item._created * 1000).toLocaleString()) }}</div>
+                                    <div class="kiss-text-truncate kiss-size-small kiss-text-monospace kiss-color-muted kiss-flex-1"><app-datetime :datetime="item._created" /></div>
                                     <user-info :user-id="item._cby"></user-info>
                                 </div>
                             </div>
@@ -66,7 +80,7 @@
                             <div class="kiss-margin-xsmall" v-if="item._created != item._modified">
                                 <div class="kiss-flex kiss-flex-middle">
                                     <div class="kiss-size-4 kiss-margin-small-right kiss-flex kiss-color-muted" :title="t('Modified at')"><icon>history</icon></div>
-                                    <div class="kiss-text-truncate kiss-size-small kiss-text-monospace kiss-color-muted kiss-flex-1">{{ (new Date(item._modified * 1000).toLocaleString()) }}</div>
+                                    <div class="kiss-text-truncate kiss-size-small kiss-text-monospace kiss-color-muted kiss-flex-1"><app-datetime :datetime="item._modified" /></div>
                                     <user-info :user-id="item._mby"></user-info>
                                 </div>
                             </div>
@@ -101,7 +115,7 @@
 
                         <div class="kiss-margin-small" v-if="locales.length">
 
-                            <kiss-card class="kiss-position-relative kiss-padding-small kiss-margin-small kiss-text-bolder kiss-flex kiss-flex-middle" :class="{'kiss-color-muted': !loc.visible}" :theme="!loc.visible ? 'bordered':'bordered contrast'" v-for="loc in locales">
+                            <kiss-card class="kiss-position-relative kiss-padding-small kiss-margin-xsmall kiss-text-bolder kiss-flex kiss-flex-middle" :class="{'kiss-color-muted': !loc.visible}" :theme="!loc.visible ? 'bordered':'bordered contrast'" v-for="loc in locales">
                                 <icon class="kiss-margin-small-right" :class="{'kiss-color-primary': loc.visible}">{{ loc.visible ? 'visibility' : 'visibility_off' }}</icon>
                                 <span class="kiss-size-small kiss-flex-1">{{ loc.name }}</span>
                                 <span class="kiss-color-muted kiss-size-xsmall" v-if="loc.i18n == 'default'">{{ t('Default') }}</span>
@@ -137,10 +151,10 @@
             <kiss-container>
                 <div class="kiss-flex kiss-flex-middle">
                     <div class="kiss-button-group" v-if="item._id">
-                        <a class="kiss-button" :href="$route(`/content/tree/item/${model.name}`)">
+                        <a class="kiss-button" :href="$routeUrl(`/content/tree/item/${model.name}`)">
                             <?=t('Create new item')?>
                         </a>
-                        <a class="kiss-button" :href="$route(`/content/tree/clone/${model.name}/${item._id}`)">
+                        <a class="kiss-button" :href="$routeUrl(`/content/tree/clone/${model.name}/${item._id}`)">
                             <?=t('Clone item')?>
                         </a>
                     </div>
@@ -193,19 +207,19 @@
                     <ul>
                         <li class="kiss-nav-header"><?=t('Actions')?></li>
                         <li>
-                            <a class="kiss-flex kiss-flex-middle" @click="showJSON()">
+                            <a class="kiss-flex kiss-flex-middle" href @click.prevent="showJSON()">
                                 <icon class="kiss-margin-small-right">manage_search</icon>
-                                <?=t('Json Object')?>
+                                <?=t('JSON Object')?>
                             </a>
                         </li>
                         <li v-if="item._id">
-                            <a class="kiss-flex kiss-flex-middle" :href="$route(`/content/tree/item/${model.name}`)">
+                            <a class="kiss-flex kiss-flex-middle" :href="$routeUrl(`/content/tree/item/${model.name}`)">
                                 <icon class="kiss-margin-small-right">add_circle</icon>
                                 <?=t('Create new item')?>
                             </a>
                         </li>
                         <li v-if="item._id">
-                            <a class="kiss-flex kiss-flex-middle" :href="$route(`/content/tree/clone/${model.name}/${item._id}`)">
+                            <a class="kiss-flex kiss-flex-middle" :href="$routeUrl(`/content/tree/clone/${model.name}/${item._id}`)">
                                 <icon class="kiss-margin-small-right">control_point_duplicate</icon>
                                 <?=t('Clone item')?>
                             </a>
@@ -304,7 +318,7 @@
                     this.$request(`/content/models/saveItem/${model}`, {item: this.item}).then(item => {
 
                         this.item = Object.assign(this.item, item);
-                        this.savedItemState = JSON.stringify(this.item);
+                        setTimeout(() => this.savedItemState = JSON.stringify(this.item), 20);
                         this.saving = false;
                         App.ui.notify('Data updated!');
 
@@ -319,7 +333,7 @@
                 },
 
                 showJSON() {
-                    VueView.ui.offcanvas('system:assets/dialogs/json-viewer.js', {data: this.item}, {}, {flip: true, size: 'large'})
+                    VueView.ui.offcanvas('system:assets/dialogs/json-viewer.js', {data: this.item}, {})
                 },
 
                 showPreviewUri(uri) {
@@ -332,7 +346,7 @@
                         context: {
                             model: this.model.name
                         },
-                        resolver: _.debounce((data, update) => {
+                        resolver: KISS.utils.debounce((data, update) => {
 
                             this.$request(`/content/populate`, {data: data.data, locale: data.locale}).then(resolvedData => {
                                 update(Object.assign(data, {data: resolvedData}));
@@ -345,7 +359,7 @@
                         update: (item) => {
                             this.item = Object.assign(this.item, item);
                         }
-                    }, {size: 'screen'})
+                    });
                 }
             }
         }

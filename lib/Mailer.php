@@ -14,10 +14,13 @@ class Mailer {
         $this->options = $options;
     }
 
+    public function getTransport(): string {
+        return $this->transport;
+    }
+
     public function mail(mixed $to, string $subject, string $message, array $options = []) {
 
         $options = array_merge($this->options, is_array($options) ? $options: []);
-
         $message = $this->createMessage($to, $subject, $message, $options);
 
         if (isset($options['from'])) {
@@ -31,7 +34,7 @@ class Mailer {
         return $message->send();
     }
 
-    public function createMessage(mixed $to, string $subject, string $message, array $options=[]) {
+    public function createMailer(): PHPMailer {
 
         $mail = new PHPMailer(true);
 
@@ -68,6 +71,13 @@ class Mailer {
                 $mail->SMTPOptions = $this->options['smtp'];
             }
         }
+
+        return $mail;
+    }
+
+    public function createMessage(mixed $to, string $subject, string $message, array $options=[]) {
+
+        $mail = $this->createMailer();
 
         $mail->Subject = $subject;
         $mail->Body    = $message;
@@ -119,6 +129,12 @@ class Mailer {
             }
         }
 
+        if (isset($options['headers']) && is_array($options['headers'])) {
+            foreach ($options['headers'] as $name => $value) {
+                $mail->addCustomHeader($name, $value);
+            }
+        }
+
         $msg = new Mailer_Message($mail);
 
         return $msg;
@@ -144,7 +160,7 @@ class Mailer_Message {
 
     public function setFrom(string $email, ?string $name = null): void {
         $this->mail->From = $email;
-        $this->mail->FromName = $name ? $name : $email;
+        $this->mail->FromName = $name ?: $email;
     }
 
     public function addReplyTo(string $email, string $name = ''): void {
@@ -165,5 +181,9 @@ class Mailer_Message {
 
     public function attach(mixed $file, string $alias = ''): mixed {
         return $this->mail->AddAttachment($file, $alias);
+    }
+
+    public function addCustomHeader(string $name, ?string $value = null): bool {
+        return $this->mail->addCustomHeader($name, $value);
     }
 }

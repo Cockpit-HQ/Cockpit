@@ -5,6 +5,8 @@ $this->helpers['settings'] = 'System\\Helper\\Settings';
 
 // Register routes
 $this->bindClass('System\\Controller\\Api', '/system/api');
+$this->bindClass('System\\Controller\\Buckets', '/system/buckets');
+$this->bindClass('System\\Controller\\Worker', '/system/worker');
 $this->bindClass('System\\Controller\\Locales', '/system/locales');
 $this->bindClass('System\\Controller\\Logs', '/system/logs');
 $this->bindClass('System\\Controller\\Users\\Roles', '/system/users/roles');
@@ -23,19 +25,19 @@ $this->on('app.layout.init', function() {
     }
 
     $this->helper('menus')->addLink('modules', [
-        'label'  => 'Api',
+        'label'  => 'API & Security',
         'icon'   => 'system:assets/icons/api.svg',
         'route'  => '/system/api',
         'active' => false
     ]);
 });
 
-$this->on('app.layout.assets', function(&$assets, $version, $context) {
+$this->on('app.layout.assets', function(&$assets, $context) {
 
-    // include app license component
-    $assets[] = 'system:assets/components/app-license/app-license.js';
-    $assets[] = 'system:assets/components/app-license/app-license.css';
-
+    // include app license component (app header)
+    if ($this->request->route !== '/' && $context === 'app:footer') {
+        $assets[] = ['src' => 'system:assets/components/app-license/app-license.js'];
+    }
 });
 
 $this->on('app.permissions.collect', function (ArrayObject $permissions) {
@@ -122,7 +124,7 @@ $this->on('app.search', function($search, $findings) {
 
         foreach ($this->helper('spaces')->spaces() as $space) {
 
-            if (strpos($space['name'], $search) !== false) {
+            if (str_contains($space['name'], $search)) {
                 $findings[] = [
                     'title' => $space['name'],
                     'route' => $space['url'],
@@ -134,3 +136,32 @@ $this->on('app.search', function($search, $findings) {
     }
 
 });
+
+$this->on('app.dashboard.widgets', function($widgets) {
+
+    if ($this->helper('spaces')->isMaster() && $this->helper('acl')->isAllowed('app/spaces')) {
+
+        $spaces = $this->helper('spaces')->spaces();
+
+        if (count($spaces)) {
+
+            $widgets[] = [
+                'name' => 'dashboard-spaces-widget',
+                'area' => 'secondary',
+                'prio' => 100,
+                'component' => 'system:assets/vue-components/dashboard/spaces.js',
+                'data' => compact('spaces')
+            ];
+        }
+    }
+
+    if (count($widgets) > 1 && $this->helper('license')->isTrial()) {
+
+        $widgets[] = [
+            'name' => 'dashboard-license-widget',
+            'area' => 'secondary',
+            'prio' => 1000,
+            'component' => 'system:assets/vue-components/dashboard/license.js'
+        ];
+    }
+}, -100);

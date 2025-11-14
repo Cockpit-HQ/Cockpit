@@ -1,8 +1,5 @@
 <?php
 
-// Register routes
-$this->bindClass('Finder\\Controller\\Buckets', '/finder/buckets');
-
 // load only on master instance + only for super admins
 if ($this->helper('acl')->isSuperAdmin() && $this->helper('spaces')->isMaster()) {
 

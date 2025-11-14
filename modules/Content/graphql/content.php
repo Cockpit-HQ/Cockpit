@@ -45,16 +45,25 @@ $gql->queries['fields']['content'] = [
             $process['populate'] = $args['populate'];
         }
 
-        if (isset($args['fields'])) $options['fields'] = $args['fields'];
         if (isset($args['limit'])) $options['limit'] = $args['limit'];
         if (isset($args['skip'])) $options['skip'] = $args['skip'];
 
-        if (isset($args['sort'])) {
-            $options['sort'] = $args['sort'];
+        if (isset($args['fields'])) {
+            $fields = $args['fields'];
+            $app->helper('content')->resolveLocalesInProjectionOptions($fields);
+            $options['fields'] = $fields;
         }
 
-        if ($args['filter']) {
-            $options['filter'] = $args['filter'];
+        if (isset($args['sort'])) {
+            $sort = $args['sort'];
+            $app->helper('content')->replaceLocaleInArrayKeys($sort, $process['locale'] ?? '');
+            $options['sort'] = $sort;
+        }
+
+        if (isset($args['filter'])) {
+            $filter = $args['filter'];
+            $app->helper('content')->replaceLocaleInArrayKeys($filter, $process['locale'] ?? '');
+            $options['filter'] = $filter;
         }
 
         if (!isset($options['filter']) || !is_array($options['filter'])) {
@@ -106,7 +115,14 @@ $gql->queries['fields']['contentTree'] = [
             $process['populate'] = $args['populate'];
         }
 
-        return $app->module('content')->tree($model, $args['parent'], ['_state' => 1], $args['fields'], $process);
+        $fields = null;
+
+        if (isset($args['fields'])) {
+            $fields = $args['fields'];
+            $app->helper('content')->resolveLocalesInProjectionOptions($fields);
+        }
+
+        return $app->module('content')->tree($model, $args['parent'], ['_state' => 1], $fields, $process);
     }
 ];
 

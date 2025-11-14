@@ -1,5 +1,7 @@
 export default {
 
+    _meta: {flip: true, size: 'xxlarge'},
+
     data() {
         return {
             contents: null,
@@ -62,9 +64,12 @@ export default {
     template: /*html*/`
         <div class="app-offcanvas-container">
 
-            <div class="kiss-padding kiss-text-bold kiss-flex kiss-flex-middle">
+            <div class="kiss-padding kiss-flex kiss-flex-middle">
                 <icon class="kiss-margin-small-right kiss-size-3" size="larger">create</icon>
-                <div class="kiss-flex-1">{{ t('Edit file') }}</div>
+                <div class="kiss-flex-1">
+                    <strong>{{ t('Edit file') }}</strong>
+                    <div class="kiss-color-muted kiss-size-xsmall">{{ file.name }}</div>
+                </div>
                 <span class="kiss-badge kiss-badge-outline kiss-color-danger" v-if="!file.is_writable">{{ t('Readonly') }}</span>
             </div>
 

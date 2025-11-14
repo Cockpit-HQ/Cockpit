@@ -52,7 +52,7 @@ class SyncPromise
     }
 
     /** @param Executor|null $executor */
-    public function __construct(callable $executor = null)
+    public function __construct(?callable $executor = null)
     {
         if ($executor === null) {
             return;
@@ -80,7 +80,7 @@ class SyncPromise
                     throw new \Exception('Cannot resolve promise with self');
                 }
 
-                if (\is_object($value) && \method_exists($value, 'then')) {
+                if (is_object($value) && method_exists($value, 'then')) {
                     $value->then(
                         function ($resolvedValue): void {
                             $this->resolve($resolvedValue);
@@ -184,7 +184,7 @@ class SyncPromise
      *
      * @throws InvariantViolation
      */
-    public function then(callable $onFulfilled = null, callable $onRejected = null): self
+    public function then(?callable $onFulfilled = null, ?callable $onRejected = null): self
     {
         if ($this->state === self::REJECTED && $onRejected === null) {
             return $this;

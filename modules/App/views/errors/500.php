@@ -19,7 +19,7 @@
     <kiss-container class="kiss-align-center">
 
         <div class="kiss-margin-bottom">
-            <img class="app-logo kiss-margin-auto" src="<?=$this->base('app:assets/logo.svg')?>" width="40" alt="Logo">
+            <img class="app-logo kiss-margin-auto" src="<?=$this->base('app:assets/img/logo.svg')?>" width="40" alt="Logo">
         </div>
 
         <h1>500</h1>

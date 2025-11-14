@@ -1,0 +1,53 @@
+[field="wysiwyg"] .tiptap-content-wrapper {
+
+    &:focus, .tiptap:focus {
+        outline: none;
+    }
+
+    ul, ol {
+        li p {
+            all: unset;
+            margin-top: 0.25em;
+            margin-bottom: 0.25em;
+        }
+    }
+
+    hr.ProseMirror-selectednode,
+    img.ProseMirror-selectednode {
+        outline: 3px solid var(--kiss-color-primary);
+    }
+
+    .tiptap-node-is-empty:not(table)::before {
+        color: var(--kiss-color-muted);
+        content: attr(data-placeholder);
+        float: left;
+        height: 0;
+        pointer-events: none;
+    }
+
+    .tableWrapper table {
+
+        border-collapse: collapse;
+        margin: 0;
+        overflow: hidden;
+        table-layout: fixed;
+        width: 100%;
+
+        td, th {
+            color: inherit;
+            border: 1px dotted var(--kiss-color-muted);
+            box-sizing: border-box;
+            p {
+                margin-top: 0.25em;
+                margin-bottom: 0.25em;
+            }
+        }
+
+    }
+
+    .resize-cursor {
+        cursor: ew-resize;
+        cursor: col-resize;
+    }
+
+}

@@ -25,7 +25,7 @@ class Validator
      *                           "max", and "pattern". If a key is not
      *                           provided, the constraint will assume false.
      */
-    public function __construct(array $constraints = null)
+    public function __construct(?array $constraints = null)
     {
         static $assumedFalseValues = [
             'required' => false,
@@ -248,17 +248,7 @@ class Validator
 
     private function checkArray($arr)
     {
-        return $this->isIndexed($arr) || $this->isAssociative($arr);
-    }
-
-    private function isAssociative($arr)
-    {
-        return count(array_filter(array_keys($arr), "is_string")) == count($arr);
-    }
-
-    private function isIndexed(array $arr)
-    {
-        return $arr == array_values($arr);
+        return array_is_list($arr) || Aws\is_associative($arr);
     }
 
     private function checkCanString($value)

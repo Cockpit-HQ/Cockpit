@@ -1,5 +1,7 @@
 export default {
 
+    _meta: {flip: true, size: 'xxlarge'},
+
     data() {
 
         return {
@@ -26,7 +28,7 @@ export default {
             let primaryColor = computedStyle.getPropertyValue('--kiss-color-primary').trim().replace('#', '%23');
             let textColor = computedStyle.getPropertyValue('--kiss-base-text-color').trim().replace('#', '%23');
 
-            return this.$route(`/system/api/restApiViewer?specUrl=${this.openApiUrl}&bgColor=${bgColor}&primaryColor=${primaryColor}&textColor=${textColor}&apiKey=${apiKey}`);
+            return this.$routeUrl(`/system/api/restApiViewer?specUrl=${this.openApiUrl}&bgColor=${bgColor}&primaryColor=${primaryColor}&textColor=${textColor}&apiKey=${apiKey}`);
         }
     },
 
@@ -34,7 +36,7 @@ export default {
 
         <div class="app-offcanvas-container">
             <div class="kiss-padding kiss-text-bold">
-                {{ t('Rest-Api Viewer') }}
+                {{ t('REST-API Viewer') }}
             </div>
             <div class="app-offcanvas-content kiss-position-relative kiss-bgcolor-contrast kiss-flex-1 kiss-flex kiss-flex-middle kiss-flex-center">
                 <div v-if="!loaded"><app-loader></app-loader></div>

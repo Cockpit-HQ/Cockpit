@@ -11,9 +11,11 @@ class Finder extends App {
 
     protected function before() {
 
-        if (!$this->helper('acl')->isSuperAdmin()) {
+        if (!$this->helper('acl')->isSuperAdmin() || !$this->helper('spaces')->isMaster()) {
             return $this->stop(401);
         }
+
+        $this->helper('session')->close();
     }
 
     public function index() {
@@ -25,10 +27,33 @@ class Finder extends App {
         return $this->render('finder:views/index.php', compact('roots'));
     }
 
+    protected function getRoots() {
+
+        $roots = [
+            'Cockpit' => '#root:',
+        ];
+
+        $docsRoot = rtrim($this->app->retrieve('docs_root', ''), '/');
+        $cockpitRoot = rtrim($this->app->path('#root:'), '/');
+
+        if ($docsRoot && $docsRoot !== $cockpitRoot) {
+            $roots['Root'] = $docsRoot;
+        }
+
+        $spaces = $this->helper('spaces')->spaces();
+
+        foreach ($spaces as $space) {
+            $roots["Space: {$space['name']}"] = APP_SPACES_DIR.'/'.$space['name'];
+        }
+
+        $this->app->trigger('finder.collect.roots', [&$roots]);
+
+        return $roots;
+    }
+
 
     public function api() {
 
-        $this->helper('session')->close();
         $this->hasValidCsrfToken(true);
 
         $root = $this->param('root');
@@ -38,7 +63,7 @@ class Finder extends App {
             return false;
         }
 
-        $this->root = $this->app->path($root);
+        $this->root = rtrim($this->app->path($root), '/');
         $cmd = $this->param('cmd', false);
 
         if (file_exists($this->root) && in_array($cmd, get_class_methods($this))) {
@@ -48,17 +73,6 @@ class Finder extends App {
         }
 
         return false;
-    }
-
-    protected function getRoots() {
-
-        $roots = [
-            'Cockpit' => '#root:',
-        ];
-
-        $this->app->trigger('finder.collect.roots', [&$roots]);
-
-        return $roots;
     }
 
     protected function ls() {
@@ -179,10 +193,11 @@ class Finder extends App {
         if (!$path) return false;
 
         $name = $this->param('name', false);
+        $file = $this->root.'/'.trim($path, '/').'/'.$name;
         $ret  = false;
 
         if ($name && $this->_isFileTypeAllowed($name) && $path) {
-            $ret = @file_put_contents($this->root.'/'.trim($path, '/').'/'.$name, '');
+            $ret = @file_put_contents($file, '');
         }
 
         return json_encode(['success' => $ret]);
@@ -237,7 +252,12 @@ class Finder extends App {
 
         $name = $this->param('name', false);
 
+        if (!$this->_isValidFilename($name)) {
+            return $this->stop(['error' => 'Invalid file name'], 412);
+        }
+
         if ($path && $name && $this->_isFileTypeAllowed($name)) {
+
             $source = $this->root.'/'.trim($path, '/');
             $target = dirname($source).'/'.$name;
 
@@ -364,7 +384,6 @@ class Finder extends App {
 
     protected function downloadfolder() {
 
-
         $path   = $this->_getPathParameter();
 
         if (!$path) return false;
@@ -379,7 +398,7 @@ class Finder extends App {
 
         $prefix = basename($path);
         $files  = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($folder), \RecursiveIteratorIterator::LEAVES_ONLY);
-        $zip    = new \ZipStream\ZipStream("{$prefix}.zip");
+        $zip    = new \ZipStream\ZipStream(outputName: "{$prefix}.zip", sendHttpHeaders: true);
 
         foreach ($files as $name => $file) {
 
@@ -387,7 +406,10 @@ class Finder extends App {
 
             $filePath = $file->getRealPath();
             $relativePath = substr($filePath, strlen($folder) + 1);
-            $zip->addFileFromPath("{$prefix}/{$relativePath}", $filePath);
+            $zip->addFileFromPath(
+                fileName: "{$prefix}/{$relativePath}",
+                path: $filePath
+            );
         }
 
         $zip->finish();
@@ -437,7 +459,7 @@ class Finder extends App {
 
             $path = trim($path);
 
-            if (strpos($path, '../') !== false) {
+            if (str_contains($path, '../')) {
                 $path = false;
             }
         }
@@ -460,6 +482,21 @@ class Finder extends App {
         $allowed = str_replace([' ', ','], ['', '|'], preg_quote(is_array($allowed) ? implode(',', $allowed) : $allowed));
 
         return preg_match("/\.({$allowed})$/i", $file);
+    }
+
+    protected function _isValidFilename($filename) {
+
+        // Basic check to exclude directory traversal attempts and null byte
+        if (strpos($filename, '../') !== false || strpos($filename, '..\\') !== false || strpos($filename, "\0") !== false) {
+            return false;
+        }
+
+        // Regular expression to check for invalid characters
+        if (preg_match('/[\/:*?"<>|]/', $filename)) {
+            return false;
+        }
+
+        return true;
     }
 
 }

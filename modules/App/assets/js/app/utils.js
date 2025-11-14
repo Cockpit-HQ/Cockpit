@@ -1,4 +1,4 @@
-let formatSize = function (bytes) {
+let formatSize = function(bytes) {
     if (bytes == 0) { return "0.00 B"; }
     let e = Math.floor(Math.log(bytes) / Math.log(1024));
     return ((bytes / Math.pow(1024, e)).toFixed(2) + ' ' + ' KMGTP'.charAt(e) + 'B').replace('.00', '');
@@ -8,7 +8,7 @@ let formatNumber = function(num, round = 2) {
     return (new Intl.NumberFormat(navigator.language, { style: 'decimal', maximumFractionDigits: round})).format(num);
 }
 
-let formatDuration = function (time) {
+let formatDuration = function(time) {
     // Hours, minutes and seconds
     let hrs = ~~(time / 3600);
     let mins = ~~((time % 3600) / 60);
@@ -26,12 +26,14 @@ let formatDuration = function (time) {
     return ret;
 }
 
-let on = function (element, name, delegate, fn) {
+let isNumeric = function(n) { return !isNaN(parseFloat(n)) && isFinite(n); }
+
+let on = function(element, name, delegate, fn) {
 
     if (!fn) {
         element.addEventListener(name, arguments[2]);
     } else {
-        element.addEventListener(name, function (e) {
+        element.addEventListener(name, function(e) {
 
             let target = e.target;
 
@@ -57,7 +59,7 @@ let toKebabCase = function(str) {
     return str.replace(/([a-z])([A-Z])/g, '$1-$2').replace(/\s+/g, '-').toLowerCase();
 };
 
-let copyText = function (text, cb) {
+let copyText = function(text, cb) {
     let inp = document.createElement('textarea');
     document.body.appendChild(inp)
     inp.value = text
@@ -67,7 +69,7 @@ let copyText = function (text, cb) {
     if (cb) cb();
 }
 
-let interpolate = function (str, params) {
+let interpolate = function(str, params) {
     const names = Object.keys(params);
     const vals = Object.values(params);
     return new Function(...names, `return \`${str}\`;`)(...vals);
@@ -83,6 +85,23 @@ let uuid = function() {
         (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
     );
 }
+
+let nanoid = function(size = 10) {
+
+    const alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    let id = '';
+
+    if (typeof (crypto.getRandomValues) === 'function') {
+        const bytes = new Uint8Array(size);
+        crypto.getRandomValues(bytes);
+        for (let i = 0; i < size; i++) id += alphabet[bytes[i] % alphabet.length];
+        return id;
+    }
+
+    for (let i = 0; i < size; i++) id += alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+    return id;
+}
+
 
 let truncate = function(text, length, clamp = '...') {
     let content = text || '';
@@ -134,6 +153,8 @@ export default {
     formatDuration,
     formatNumber,
     interpolate,
+    isNumeric,
+    nanoid,
     on,
     toKebabCase,
     uuid,

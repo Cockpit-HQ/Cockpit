@@ -8,8 +8,12 @@ if (!isset($user['twofa'])) {
     ];
 }
 
+if (!isset($user['_meta']) || (is_array($user['_meta']) && array_is_list($user['_meta']))) {
+    $user['_meta'] = new ArrayObject([]);
+}
+
 ?>
-<kiss-container class="kiss-margin-large" size="small">
+<kiss-container class="kiss-margin-small" size="small">
 
     <ul class="kiss-breadcrumbs">
         <li><a href="<?= $this->route('/system') ?>"><?= t('Settings') ?></a></li>
@@ -36,121 +40,146 @@ if (!isset($user['twofa'])) {
                     <div class="kiss-text-bold">{{user.name}}</div>
                     <div class="kiss-color-muted kiss-size-small"><span class="kiss-color-primary">{{user.user}}</span> &bullet; {{user.email}}</div>
                 </div>
+                <?php if ($this->helper('acl')->isAllowed('app/users/manage')): ?>
+                <kiss-card class="kiss-overlay-input kiss-flex kiss-flex-middle kiss-padding-small">
+                    <div class="kiss-align-right">
+                        <span class="kiss-text-caption kiss-color-muted">{{ t('Form') }}</span>
+                        <div class="kiss-text-capitalize kiss-text-bold">{{ t(view) }}</div>
+                    </div>
+                    <select v-model="view">
+                        <option :value="'general'">{{ t('General') }}</option>
+                        <hr>
+                        <option :value="'meta'">{{ t('Meta') }}</option>
+                    </select>
+                </kiss-card>
+                <?php endif ?>
             </div>
-
 
             <form :class="{'kiss-disabled':saving}" @submit.prevent="save">
 
-                <?php if (!isset($user['_id']) || $user['_id'] != $this['user/_id']) : ?>
+                <div v-if="view=='general'">
+
+                    <?php if (!isset($user['_id']) || $user['_id'] != $this['user/_id']) : ?>
+                        <div class="kiss-margin">
+                            <label><?= t('Active') ?></label>
+                            <field-boolean class="kiss-size-3" v-model="user.active"></field-boolean>
+                        </div>
+                    <?php endif ?>
+
                     <div class="kiss-margin">
-                        <label><?= t('Active') ?></label>
-                        <field-boolean class="kiss-size-3" v-model="user.active"></field-boolean>
+                        <label><?= t('Name') ?></label>
+                        <input class="kiss-input" type="text" v-model="user.name" autocomplete="off" autofocus required>
                     </div>
-                <?php endif ?>
 
-                <div class="kiss-margin">
-                    <label><?= t('Name') ?></label>
-                    <input class="kiss-input" type="text" v-model="user.name" autocomplete="off" autofocus required>
-                </div>
+                    <div class="kiss-margin">
+                        <label><?= t('User') ?> <icon class="kiss-size-5 kiss-color-danger kiss-margin-xsmall-left" title="Required">trip_origin</icon></label>
+                        <input class="kiss-input" type="text" v-model="user.user" autocomplete="off" required>
+                    </div>
 
-                <div class="kiss-margin">
-                    <label><?= t('User') ?> <icon class="kiss-size-5 kiss-color-danger kiss-margin-xsmall-left" title="Required">trip_origin</icon></label>
-                    <input class="kiss-input" type="text" v-model="user.user" autocomplete="off" required>
-                </div>
+                    <div class="kiss-margin">
+                        <label><?= t('Email') ?> <icon class="kiss-size-5 kiss-color-danger kiss-margin-xsmall-left" title="Required">trip_origin</icon></label>
+                        <input class="kiss-input" type="email" v-model="user.email" autocomplete="off" required>
+                    </div>
 
-                <div class="kiss-margin">
-                    <label><?= t('Email') ?> <icon class="kiss-size-5 kiss-color-danger kiss-margin-xsmall-left" title="Required">trip_origin</icon></label>
-                    <input class="kiss-input" type="email" v-model="user.email" autocomplete="off" required>
-                </div>
+                    <div class="kiss-margin">
+                        <label><?= t('Password') ?> <icon class="kiss-size-5 kiss-color-danger kiss-margin-xsmall-left" title="Required" v-if="!user._id">trip_origin</icon></label>
+                        <input class="kiss-input" type="password" v-model="user.password" :placeholder="user._id ? '<?= t('Keep current password') ?>':''" :required="!user._id" autocomplete="off">
+                    </div>
 
-                <div class="kiss-margin">
-                    <label><?= t('Password') ?> <icon class="kiss-size-5 kiss-color-danger kiss-margin-xsmall-left" title="Required" v-if="!user._id">trip_origin</icon></label>
-                    <input class="kiss-input" type="password" v-model="user.password" :placeholder="user._id ? '<?= t('Keep current password') ?>':''" :required="!user._id" autocomplete="off">
-                </div>
+                    <?php if (!isset($user['_id']) || $user['_id'] != $this['user/_id']) : ?>
+                        <div class="kiss-margin-large">
+                            <label><?= t('Role') ?></label>
+                            <select class="kiss-select kiss-input" v-model="user.role" required>
+                                <option value=""></option>
+                                <option :value="role.appid" v-for="role in roles">{{ role.name }}</option>
+                            </select>
+                        </div>
+                    <?php endif ?>
 
-                <?php if (!isset($user['_id']) || $user['_id'] != $this['user/_id']) : ?>
-                    <div class="kiss-margin-large">
-                        <label><?= t('Role') ?></label>
-                        <select class="kiss-select kiss-input" v-model="user.role" required>
-                            <option value=""></option>
-                            <option :value="role.appid" v-for="role in roles">{{ role.name }}</option>
+                    <div class="kiss-margin" v-if="languages.length > 1">
+                        <label><?= t('Admin UI language') ?></label>
+                        <select class="kiss-input" type="password" v-model="user.i18n">
+                            <?php foreach ($languages as $lang) : ?>
+                                <option value="<?= $lang['i18n'] ?>"><?= $lang['language'] ?></option>
+                            <?php endforeach ?>
                         </select>
                     </div>
-                <?php endif ?>
 
-                <div class="kiss-margin" v-if="languages.length > 1">
-                    <label><?= t('Admin UI language') ?></label>
-                    <select class="kiss-input" type="password" v-model="user.i18n">
-                        <?php foreach ($languages as $lang) : ?>
-                            <option value="<?= $lang['i18n'] ?>"><?= $lang['language'] ?></option>
-                        <?php endforeach ?>
-                    </select>
-                </div>
-
-                <kiss-card class="kiss-margin kiss-margin-large-top kiss-padding" :theme="user.apiKey ? 'bordered contrast':'bordered'">
-                    <label><?= t('API Key') ?></label>
-                    <div class="kiss-flex kiss-flex-middle">
-                        <div class="kiss-flex-1 kiss-margin-small-right kiss-text-truncate kiss-disabled">
-                            <span class="kiss-text-caption" v-if="!user.apiKey"><?= t('No api key created yet') ?></span>
-                            <span class="kiss-text-monospace kiss-text-bold" v-if="user.apiKey">{{ user.apiKey }}</span>
-                        </div>
-                        <a @click="generateToken">
-                            <icon>refresh</icon>
-                        </a>
-                        <a class="kiss-margin-small-left" v-if="user.apiKey" @click="copyToken">
-                            <icon>content_copy</icon>
-                        </a>
-                    </div>
-                </kiss-card>
-
-                <kiss-card class="kiss-margin kiss-padding" :theme="user.twofa.enabled ? 'bordered contrast':'bordered'">
-                    <label><?= t('Two-factor authentication (2FA)') ?></label>
-                    <div class="kiss-margin-small-top">
-                        <field-boolean class="kiss-size-3" v-model="user.twofa.enabled"></field-boolean>
-                    </div>
-                    <kiss-row class="kiss-margin animated fadeIn" v-if="user.twofa.enabled">
-                        <div><img src="<?= $this->route("/system/users/getSecretQRCode/{$user['twofa']['secret']}/150") ?>" width="150" height="150" loading="lazy" style="background:#fff;border:10px #fff solid;"></div>
-                        <div class="kiss-flex-1">
-
-                            <p class="kiss-text-caption">
-                                Scan the QR code with your 2FA mobile app<br>
-                                or enter your secret manually:
-                            </p>
-
-                            <div class="kiss-margin kiss-text-monospace kiss-text-bold kiss-color-primary">
-                                <?= $user['twofa']['secret'] ?>
+                    <kiss-card class="kiss-margin kiss-margin-large-top kiss-padding" :theme="user.apiKey ? 'bordered contrast':'bordered'">
+                        <label><?= t('API Key') ?></label>
+                        <div class="kiss-flex kiss-flex-middle">
+                            <div class="kiss-flex-1 kiss-margin-small-right kiss-text-truncate kiss-disabled">
+                                <span class="kiss-text-caption" v-if="!user.apiKey"><?= t('No api key created yet') ?></span>
+                                <span class="kiss-text-monospace kiss-text-bold" v-if="user.apiKey">{{ user.apiKey }}</span>
                             </div>
+                            <a @click="generateToken">
+                                <icon>refresh</icon>
+                            </a>
+                            <a class="kiss-margin-small-left" v-if="user.apiKey" @click="copyToken">
+                                <icon>content_copy</icon>
+                            </a>
                         </div>
-                    </kiss-row>
+                    </kiss-card>
 
-                </kiss-card>
+                    <kiss-card class="kiss-margin kiss-padding" :theme="user.twofa.enabled ? 'bordered contrast':'bordered'">
+                        <label><?= t('Two-factor authentication (2FA)') ?></label>
+                        <div class="kiss-margin-small-top">
+                            <field-boolean class="kiss-size-3" v-model="user.twofa.enabled"></field-boolean>
+                        </div>
+                        <kiss-row class="kiss-margin animated fadeIn" v-if="user.twofa.enabled">
+                            <div><img src="<?= $this->route("/system/users/getSecretQRCode/{$user['twofa']['secret']}/150") ?>" width="150" height="150" loading="lazy" style="background:#fff;border:10px #fff solid;"></div>
+                            <div class="kiss-flex-1">
 
-                <div class="kiss-margin-large">
-                    <label><?= t('Color theme') ?></label>
+                                <p class="kiss-text-monospace kiss-color-muted">
+                                    Scan the QR code with your 2FA mobile app<br>
+                                    or enter your secret manually:
+                                </p>
 
-                    <kiss-grid cols="3@m" gap="small">
+                                <kiss-card class="kiss-padding-small kiss-flex" theme="bordered" gap="small">
+                                    <div class="kiss-flex-1 kiss-text-monospace kiss-text-bold kiss-text-truncate">
+                                        <?= $user['twofa']['secret'] ?>
+                                    </div>
+                                    <a :title="t('Copy')" @click="copyTwofaSecret"><icon>content_copy</icon></a>
+                                </kiss-card>
+                            </div>
+                        </kiss-row>
 
-                        <kiss-card class="kiss-padding kiss-position-relative" :theme="user.theme == 'auto' ? 'bordered contrast': 'bordered'" :class="{'kiss-color-muted': user.theme != 'auto'}" :style="{borderColor: user.theme == 'auto' ? 'var(--kiss-color-primary)':null}">
-                            <strong class="kiss-size-small"><?= t('Auto') ?></strong>
-                            <div class="kiss-color-muted kiss-size-xsmall kiss-margin-xsmall-top"><?= t('Use system preference') ?></div>
-                            <a class="kiss-cover" @click="user.theme = 'auto'"></a>
-                        </kiss-card>
+                    </kiss-card>
 
-                        <kiss-card class="kiss-padding kiss-position-relative" :theme="user.theme == 'dark' ? 'bordered contrast': 'bordered'" :class="{'kiss-color-muted': user.theme != 'dark'}" :style="{borderColor: user.theme == 'dark' ? 'var(--kiss-color-primary)':null}">
-                            <strong class="kiss-size-small"><?= t('Dark') ?></strong>
-                            <div class="kiss-color-muted kiss-size-xsmall kiss-margin-xsmall-top"><?= t('Dark mode') ?></div>
-                            <a class="kiss-cover" @click="user.theme = 'dark'"></a>
-                        </kiss-card>
+                    <div class="kiss-margin-large">
+                        <label><?= t('Color theme') ?></label>
 
-                        <kiss-card class="kiss-padding kiss-position-relative" :theme="user.theme == 'light' ? 'bordered contrast': 'bordered'" :class="{'kiss-color-muted': user.theme != 'light'}" :style="{borderColor: user.theme == 'light' ? 'var(--kiss-color-primary)':null}">
-                            <strong class="kiss-size-small"><?= t('Light') ?></strong>
-                            <div class="kiss-color-muted kiss-size-xsmall kiss-margin-xsmall-top"><?= t('Light mode') ?></div>
-                            <a class="kiss-cover" @click="user.theme = 'light'"></a>
-                        </kiss-card>
+                        <kiss-grid cols="3@m" gap="small">
 
-                    </kiss-grid>
+                            <kiss-card class="kiss-padding kiss-position-relative" :theme="user.theme == 'auto' ? 'bordered contrast': 'bordered'" :class="{'kiss-color-muted': user.theme != 'auto'}" :style="{borderColor: user.theme == 'auto' ? 'var(--kiss-color-primary)':null}">
+                                <strong class="kiss-size-small"><?= t('Auto') ?></strong>
+                                <div class="kiss-color-muted kiss-size-xsmall kiss-margin-xsmall-top"><?= t('Use system preference') ?></div>
+                                <a class="kiss-cover" @click="user.theme = 'auto'"></a>
+                            </kiss-card>
 
+                            <kiss-card class="kiss-padding kiss-position-relative" :theme="user.theme == 'dark' ? 'bordered contrast': 'bordered'" :class="{'kiss-color-muted': user.theme != 'dark'}" :style="{borderColor: user.theme == 'dark' ? 'var(--kiss-color-primary)':null}">
+                                <strong class="kiss-size-small"><?= t('Dark') ?></strong>
+                                <div class="kiss-color-muted kiss-size-xsmall kiss-margin-xsmall-top"><?= t('Dark mode') ?></div>
+                                <a class="kiss-cover" @click="user.theme = 'dark'"></a>
+                            </kiss-card>
+
+                            <kiss-card class="kiss-padding kiss-position-relative" :theme="user.theme == 'light' ? 'bordered contrast': 'bordered'" :class="{'kiss-color-muted': user.theme != 'light'}" :style="{borderColor: user.theme == 'light' ? 'var(--kiss-color-primary)':null}">
+                                <strong class="kiss-size-small"><?= t('Light') ?></strong>
+                                <div class="kiss-color-muted kiss-size-xsmall kiss-margin-xsmall-top"><?= t('Light mode') ?></div>
+                                <a class="kiss-cover" @click="user.theme = 'light'"></a>
+                            </kiss-card>
+
+                        </kiss-grid>
+
+                    </div>
                 </div>
+
+                <?php if ($this->helper('acl')->isAllowed('app/users/manage')): ?>
+                <div v-if="view=='meta'">
+                    <label><?= t('Meta') ?></label>
+                    <field-object v-model="user._meta"></field-object>
+                </div>
+                <?php endif ?>
 
                 <app-actionbar>
 
@@ -180,11 +209,13 @@ if (!isset($user['twofa'])) {
         <script type="module">
             export default {
                 data() {
+
                     return {
                         saving: false,
                         user: <?= json_encode($user) ?>,
                         roles: <?= json_encode($this->helper('acl')->roles()) ?>,
                         languages: <?= json_encode($languages) ?>,
+                        view: 'general'
                     };
                 },
 
@@ -211,6 +242,12 @@ if (!isset($user['twofa'])) {
                         });
                     },
 
+                    copyTwofaSecret() {
+                        App.utils.copyText(this.user.twofa.secret, () => {
+                            App.ui.notify('Secret copied!');
+                        });
+                    },
+
                     save() {
 
                         let isUpdate = this.user._id;
@@ -223,18 +260,25 @@ if (!isset($user['twofa'])) {
                                 user: this.user,
                                 password: pwdVerification,
                             }).then(user => {
+
                                 this.user = user;
-                                this.saving = false;
 
                                 if (isUpdate) {
                                     App.ui.notify('User updated!');
                                 } else {
                                     App.ui.notify('User created!');
                                 }
+
+                                // reload to get the new csrf token
+                                if (App.user._id === user._id) {
+                                    setTimeout(() => location.reload(), 600);
+                                }
+
                             }).catch(res => {
-                                this.saving = false;
                                 App.ui.notify(res.error || 'Saving failed!', 'error');
-                            })
+                            }).finally(() => {
+                                this.saving = false;
+                            });
                         };
 
                         if (!isUpdate) {

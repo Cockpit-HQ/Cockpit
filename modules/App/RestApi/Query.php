@@ -42,7 +42,7 @@ class Query extends \Lime\AppAware {
 
         // custom file based route
         // normalize path
-        if (strpos($path, '../') !== false) {
+        if (str_contains($path, '../')) {
             $path = implode('/', array_filter(explode('/', $path), fn($s) => trim($s, '.')));
         }
 
@@ -130,7 +130,7 @@ class Query extends \Lime\AppAware {
             return null;
         }
 
-        if (strpos($route, '[...all]') !== false) {
+        if (str_contains($route, '[...all]')) {
             return null;
         }
 

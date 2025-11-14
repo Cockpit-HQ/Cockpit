@@ -1,3 +1,71 @@
+## 5.65.20 (2025-08-10)
+
+### Bug fixes
+
+[show-hint addon](https://codemirror.net/5/doc/manual.html#addon_show-hint): Fix a positioning issue when the tooltip is at the bottom of the screen.
+
+[gas mode](https://codemirror.net/5/mode/gas/index.html): Properly define the MIME type the mode's demo page mentions.
+
+## 5.65.19 (2025-03-20)
+
+### Bug fixes
+
+[gherkin mode](https://codemirror.net/5/mode/gherkin/index.html): Add support for Rule Example keywords
+
+[pascal mode](https://codemirror.net/5/mode/pascal/index.html) Make keywords case-insensitive
+
+[sql mode](https://codemirror.net/5/mode/sql/) Support quoted identifier for PostgreSQL
+
+## 5.65.18 (2024-09-20)
+
+### Bug fixes
+
+[dart mode](https://codemirror.net/5/mode/dart/index.html): Handle numeric separators.
+
+[groovy mode](https://codemirror.net/5/mode/groovy/index.html): Fix a bug in highlighting interpolated variable names.
+
+## 5.65.17 (2024-07-20)
+
+### Bug fixes
+
+[crystal mode](https://codemirror.net/5/mode/crystal/index.html): Fix an infinite loop bug when tokenizing heredoc strings.
+
+## 5.65.16 (2023-11-20)
+
+### Bug fixes
+
+Fix focus tracking in shadow DOM.
+
+[go mode](https://codemirror.net/5/mode/go/): Allow underscores in numbers.
+
+[jsx mode](https://codemirror.net/5/mode/jsx/index.html): Support TS generics marked by trailing comma.
+
+## 5.65.15 (2023-08-29)
+
+### Bug fixes
+
+[lint addon](https://codemirror.net/5/doc/manual.html#addon_lint): Prevent tooltips from sticking out of the viewport.
+
+[yaml mode](https://codemirror.net/5/mode/yaml/): Fix an exponential-complexity regular expression.
+
+## 5.65.14 (2023-07-17)
+
+### Bug fixes
+
+[clike mode](https://codemirror.net/5/mode/clike/): Fix poor indentation in some Java code.
+
+[nsis mode](https://codemirror.net/5/mode/nsis/index.html): Recognize `!assert` command.
+
+[lint addon](https://codemirror.net/5/doc/manual.html#addon_lint): Remove broken annotation deduplication.
+
+## 5.65.13 (2023-04-27)
+
+### Bug fixes
+
+[dart mode](https://codemirror.net/5/mode/dart/index.html): Add some new keywords.
+
+[clike mode](https://codemirror.net/5/mode/clike/): Tokenize Scala character literals.
+
 ## 5.65.12 (2023-02-20)
 
 ### Bug fixes

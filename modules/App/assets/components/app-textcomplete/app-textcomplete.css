@@ -1,0 +1,23 @@
+app-textcomplete {
+    display: block;
+    position: relative;
+}
+.app-textcomplete-autocomplete-list {
+    position: absolute;
+    width: 100%;
+    background-color: var(--app-textcomplete-bgcolor, #fff);
+    z-index: 10000;
+    max-height: 200px;
+    overflow-y: auto;
+    display: block;
+}
+.app-textcomplete-autocomplete-list .autocomplete-item {
+    padding: var(--app-textcomplete-item-padding, 10px);
+    cursor: pointer;
+}
+.app-textcomplete-autocomplete-list .autocomplete-item:hover {
+    background-color: var(--app-textcomplete-bgcolor-hover, #f1f1f1);
+}
+.app-textcomplete-autocomplete-list .autocomplete-item.active {
+    background-color: var(--app-textcomplete-bgcolor-active, #e9e9e9);
+}

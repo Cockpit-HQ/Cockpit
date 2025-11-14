@@ -8,6 +8,9 @@ $this->helpers['log']       = 'System\\Helper\\Log';
 $this->helpers['revisions'] = 'System\\Helper\\Revisions';
 $this->helpers['system']    = 'System\\Helper\\System';
 $this->helpers['spaces']    = 'System\\Helper\\Spaces';
+$this->helpers['worker']    = 'System\\Helper\\Worker';
+
+// events
 
 $this->on('app.admin.init', function() {
     include(__DIR__.'/admin.php');
@@ -23,10 +26,16 @@ $this->on('app.cli.init', function($cli) {
     include(__DIR__.'/cli.php');
 });
 
-$this->on('error', function($error, $exception) {
+$this->on('error', function($error, $exception = null) {
 
     try {
+
+        if ($exception && $exception instanceof \App\Exception\AppNotification) {
+            return;
+        }
+
         $this->module('system')->log("System error: {$error['message']}", type: 'error', context: $error);
+
     } catch(Throwable $e) {}
 });
 

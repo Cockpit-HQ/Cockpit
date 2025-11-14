@@ -1,5 +1,271 @@
 # Release Notes
 
+## 2.12.1 (2025-10-26)
+
+- Fix Identi module usage with spaces
+- Fix video preview in assets manager spotlight
+- Improve RedisLite and ESQL lib
+- Fix missing fixToHeight method for image api
+- Add image assets preset support
+- Fix nested _id filtering (mongodb)
+- Enhance field-object component to support strict JSON mode
+- Enhance field-boolean component with integer mode support
+- Update Uppy.js from v4 to v5
+- Fix missing _id on assets folder creation (mongodb)
+
+
+## 2.12.0 (2025-08-01)
+
+- Trigger additional `app.user.logout.after` on user logout
+- Improve IndexLite lib
+- Improve MongoLite compatibility with MongoDB
+- Add chart.js lib + vue-chart component
+- Add lightweight SQL pdo wrapper `ESQL` lib
+- Add Identi module to enable OAuth based logins - sponsored by @unchainedshop
+- Add custom folder icon support in assets manager
+- Add `assets.before.remove` event
+- Added an experimental feature to filter content based on the attributes of its linked items. This allows for more granular queries using the `@{fieldname.property}` syntax, such as `@author.name: 'Ozzy'`
+
+## 2.11.4 (2025-07-01)
+
+- Assets: add video transcoding helper function
+- Assets: Improved HTTP caching when output parameter `o` is used (image api)
+- Add color picker functionality to wysiwyg field
+- Escape user-provided data to prevent XSS vulnerabilities in views (admin ui).
+- Add config setting `tower.disabled` to disable tower in admin ui
+- Update Vue to v3.5.17
+
+## 2.11.3 (2025-05-01)
+
+- Fix assets image api to support "original" value for width and height
+- Fix nav field
+- Fix memory leaks when using MongoLite (because of eval based filter process)
+- Optimize video thumbnail creation using ffmpeg
+- Optimize MongoLite Aggregation Implementation
+- Initial (beta) lite job worker implementation
+
+## 2.11.2 (2025-03-11)
+
+- Update content dashboard widget to sort models by latest updated item
+- Fix login dialog loading in spaces
+- IndexLite fixes + improvements
+- Fix MongoLite db options
+
+## 2.11.1 (2025-02-25)
+
+- Include filename in file editor header (finder)
+- Add video duration meta info on asset upload (if ffmpeg is available)
+- Refactor content model picker field
+- Refactored Dashboard
+
+## 2.11.0 (2025-02-17)
+
+- Update PHP requirement to v8.3
+- Add App.utils.selectAsset helper
+- Add support for sorting content items in content item picker dialog
+- Fix cache helper: ensure cache file existence before reading cache content
+- Add assets:files:fixvisibility tower helper command
+- Add password reset functionality
+- Use fallback i18n root config path for spaces
+- Add PHP version compatibility check during update
+- Generate random admin password on initial installation
+- Enhance view rendering flow with pre/post render hooks
+
+## 2.10.3 (2024-12-30)
+
+- Allow to send custom headers via mailer service
+- Remove choices.js dependency
+- Fix kiss-sticky z-index issue
+- Fix IndexLite\Index::removeDocument
+
+## 2.10.2 (2024-12-08)
+
+- Fix $near filter for MongoLite
+- Add content.index.side-panel and content.collection.items.side-panel triggers
+- Add meta information field to accounts
+- Improve user filtering (admin ui)
+- Improve php 8.4 compatibility
+- Add unique field value check configuration
+
+## 2.10.1 (2024-11-17)
+
+- Update Vue to v3.5.13
+- Improve field condition behavior
+- Fix avif output using image api
+- Fix MongoLite edge error (table exists)
+- Add more checks during Cockpit update
+- Make field actions available for multiple values fields
+- Locale data support for asset information
+- Update GraphQL playground
+- Add app:request:after event triggered after fastcgi_finish_request (if available)
+- Improve tower terminal ux (admin ui)
+- Add message filter to logs ui
+
+## 2.10.0 (2024-11-05)
+
+- Update Vue to v3.5.12
+- Fix request param casting (array to string)
+- Replace TinyMCE with Tiptap
+- Fix verbose required field error messages
+- Fix locale fields projection in content api
+- Optimize admin assets loading
+- Replace drag-n-drop lib (admin ui)
+
+## 2.9.4 (2024-10-07)
+
+- Update Vue to v3.5.11
+- Fix debug error view
+- Fix delayed field projection on populated fields
+- Catch + debug warnings
+- Add filter env vars
+- VACUUM all sqlite dbs on clear cache
+- Remove noty, lodash lib dependencies
+
+## 2.9.3 (2024-09-20)
+
+- Fix adding users error due to uncomplete 2FA lib
+
+## 2.9.2 (2024-09-19)
+
+- Improve clean file name generation on upload
+- Fix SQLSTATE[HY000] error on update items with newer SQLite versions
+- Update Vue to v3.5.6
+- Replace placeholders in preview urls (id, locale, field value)
+- Mark unpublished linked content items
+- Pass a list of checks to perform on system healthcheck route (db, memory, fs, redis, smtp, custom)
+- Improve locale editing ui
+- Update 2FA lib
+
+## 2.9.1 (2024-08-26)
+
+- Sort env variables by name
+- Update Vue to v3.4.38
+- Update Uppy to 4.2.0
+- Fix late fields projection used on populated fields
+- Add collection content views
+
+## 2.9.0 (2024-08-08)
+
+- Update Uppy to 4.0.4
+- Update Vue to v3.4.36
+- Add spaces.spaces.created event
+- Fix SQLite double-quoted string literals issue #194
+- Add content:index:list, content:index:create and content:index:remove tower commands
+- Add $near operator support for MongoLite queries
+- Fix App.storage.get call error
+
+## 2.8.6 (2024-07-14)
+
+- Add missing response schema to OpenApi config
+- Update Vue to 3.4.31
+- Change internal $route, $base to $routeUrl, $baseUrl
+- Add /content/items endpoint to batch collect content from multiple models
+- Fix publish state check on single content item api
+- Add magiclink login option (if smtp config available)
+
+## 2.8.5 (2024-05-31)
+
+- Update Vue to 3.4.27
+- Fix upload asset modal zIndex issue
+- Fix Uppy init/creation/cleanup
+- Fix Uppy init on drag'n drop
+- Add color set option to color field type
+- Fix GraphQL query error requesting select type fields with multiple option
+- Add missing HTTP status codes
+- Add api rate limits config
+- Add api allowed origins config
+- Fix modal zIndex layer issues (admin ui)
+
+## 2.8.4 (2024-05-05)
+
+- Fix Content model creation edge case
+- Fix GraphQL queries with float values in number typed fields
+- Update icon font
+- make /api/system/healthcheck available without token
+- Update Vue to 3.4.26
+- Improve system health check
+- Fix possible dialog, offcanvas and popup z-index conflicts
+
+## 2.8.3 (2024-04-08)
+
+- Fix: Reflected Cross-Site Scripting via GraphQL Viewer
+- Fix: Stored Cross-Site Scripting in Content Item using text fields
+- Fix: Arbitrary File Write through Path Traversal and Rename Functionality of Finder
+- Fix: Static Cross-Site Request Forgery Csrf Token
+- Fix session after account save
+- Fix deprecation message on mime check (image api)
+- Update TinyMCE to v7.0.0
+- Update uppy.js to v.3.23.0
+- Add finder.disabled setting
+- Add error notification on failed asset upload
+
+## 2.8.2 (2024-03-19)
+
+- Update Vue to 3.4.21
+- Support $regex filter on list of strings (MongoLite)
+- Add more schema configuration support for Redis based MemoryStorage connection strings
+- Update referenced asset items on content item save
+- Add App.utils.isNumeric helper function
+- Add default icon-set
+- Add system update admin ui
+
+## 2.8.1 (2024-02-11)
+
+- Allow to configure thumbnail storage path via config
+- Fix content preview #171
+- Update Vue to 3.4.18
+
+## 2.8.0 (2024-01-31)
+
+- Lazy loading of asset preview images
+- Update Vue to version 3.4.15
+- Require PHP >=8.2
+- Add vips config option for more performant thumbnail generation
+- Add ffmpeg config option for more video thumbnail generation support
+- Fix download file / folder (Finder)
+- Add alt text info for image assets
+- Render asset field with multiple values as grid
+- Add support for ${ENV_VAR} in config values
+- Allow custom database settings on space creation
+- Spaces groups
+- Add account verification before deleting a space
+- Add assets sorting
+- Add quick sort tree item (move first or last)
+
+## 2.7.2 (2023-12-30)
+
+- Refactor fields renderer to support custom actions on fields
+- Update Vue to version 3.4.0
+- Sort content models alphabetically on overview page
+- Add config option to store content models in database
+- Fix table field scrollposition jump on editing data
+- Filter also assets folder on simple string based search queries
+- Add assets view limit setting (assets manger view)
+- Trigger upload dialog when dragging files into assets manager
+- Upload assets one by one to overcome max upload size limit
+
+## 2.7.1 (2023-10-08)
+
+- Fix broken assets loading for asset field with multiple values
+- Fix referenced assets updates for content tree items
+- Fix mime type of generated thumbnails in assets manager
+- Add tower web console availability check
+- Add fields outline for better navigation
+
+## 2.7.0 (2023-09-15)
+
+- Fix mime type detection on asset upload
+- Fix possible Cross-site Scripting (XSS) in Rest/GraphQL viewer
+- Add src setting for slect and tag fields to load options from internal sources
+- Sanitize space name during installation
+- Multiselect & delete of assets
+- Add thumbhash to image assets on upload
+- Move buckets code to system module
+- Add support for custom meta data for asset fields
+- Support for multiple assets selection (eg asset field with multiple values)
+- Add color field value render function to show color in items list
+- Add table view to assets manager
+
 ## 2.6.3 (2023-08-15)
 
 - Prevent uploading .phps + .(x)html files in assets manager

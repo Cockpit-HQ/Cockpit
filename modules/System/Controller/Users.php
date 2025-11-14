@@ -65,7 +65,8 @@ class Users extends App {
             'email'  => '',
             'role'   => 'admin',
             'theme'  => 'auto',
-            'i18n'   => $this->app->helper('i18n')->locale
+            'i18n'   => $this->app->helper('i18n')->locale,
+            '_meta'  => new \ArrayObject([])
         ];
 
         $isAccountView = false;
@@ -137,6 +138,10 @@ class Users extends App {
             $user[$key] = strip_tags(trim($user[$key]));
         }
 
+        if (isset($user['_meta']) && (!is_array($user['_meta']) || array_is_list($user['_meta']))) {
+            $user['_meta'] = new \ArrayObject([]);
+        }
+
         // unique check
 
         $_user = $this->app->dataStorage->findOne('system/users', ['user' => $user['user']]);
@@ -160,7 +165,9 @@ class Users extends App {
         unset($user['password'], $user['_reset_token']);
 
         if ($user['_id'] == $this->user['_id']) {
+            $this->unlockResource($user['_id']);
             $this->helper('auth')->setUser($user);
+            $this->checkAndLockResource($user['_id']);
         }
 
         return $user;
@@ -229,6 +236,15 @@ class Users extends App {
             $options['filter'] = $filter;
         }
 
+        if (isset($options['role']) && $options['role']) {
+
+            if (!isset($options['filter'])) {
+                $options['filter'] = [];
+            }
+
+            $options['filter']['role'] = $options['role'];
+        }
+
         $users = $this->app->dataStorage->find('system/users', $options)->toArray();
         $count = (!isset($options['skip']) && !isset($options['limit'])) ? count($users) : $this->app->dataStorage->count('system/users', isset($options['filter']) ? $options['filter'] : []);
         $pages = isset($options['limit']) ? ceil($count / $options['limit']) : 1;
@@ -265,8 +281,13 @@ class Users extends App {
     protected function geti18n() {
 
         $languages = [['i18n' => 'en', 'language' => 'English']];
+        $i18nFolder = '#config:i18n';
 
-        foreach ($this->app->helper('fs')->ls('#config:i18n') as $dir) {
+        if (!$this->helper('spaces')->isMaster() && !$this->app->path($i18nFolder)) {
+            $i18nFolder = '#app:config/i18n';
+        }
+
+        foreach ($this->app->helper('fs')->ls($i18nFolder) as $dir) {
 
             if (!$dir->isDir() || $dir->isDot() || !file_exists($dir->getRealPath().'/App.php')) {
                 continue;

@@ -4,6 +4,13 @@ namespace App\Helper;
 
 class Admin extends \Lime\Helper {
 
+    /**
+     * Check if a resource is locked.
+     *
+     * @param string $resourceId The resource ID.
+     * @param int|null $ttl The time-to-live for the lock.
+     * @return array|false The lock metadata or false if not locked.
+     */
     public function isResourceLocked($resourceId, $ttl = null) {
 
         $ttl  = $ttl ?? 300;
@@ -22,6 +29,13 @@ class Admin extends \Lime\Helper {
         return false;
     }
 
+    /**
+     * Check if a resource is editable by the current user.
+     *
+     * @param string $resourceId The resource ID.
+     * @param array|null $meta The lock metadata.
+     * @return bool True if the resource is editable, false otherwise.
+     */
     public function isResourceEditableByCurrentUser($resourceId, &$meta = null) {
 
         $meta = $this->isResourceLocked($resourceId);
@@ -39,6 +53,13 @@ class Admin extends \Lime\Helper {
         return false;
     }
 
+    /**
+     * Lock a resource for editing.
+     *
+     * @param string $resourceId The resource ID.
+     * @param array|null $user The user information.
+     * @return bool True if the resource was locked, false otherwise.
+     */
     public function lockResourceId($resourceId, $user = null) {
 
         if (!$resourceId) {
@@ -56,7 +77,7 @@ class Admin extends \Lime\Helper {
 
         $meta = [
             'rid'  => $resourceId,
-            'user' => ['_id' => $user['_id'], 'name' => $user['name'], 'user' => $user['user'], 'email' => $user['email']],
+            'user' => ['_id' => $user['_id'], 'name' => $user['name'] ?? '', 'user' => $user['user'], 'email' => $user['email']],
             'sid'  => md5(session_id()),
             'time' => $now,
             '_created' => $now,
@@ -68,6 +89,12 @@ class Admin extends \Lime\Helper {
         return true;
     }
 
+    /**
+     * Update the lock metadata for a resource.
+     *
+     * @param string $resourceId The resource ID.
+     * @return bool True if the lock metadata was updated, false otherwise.
+     */
     public function updateLockedResourceId($resourceId) {
 
         $meta = null;
@@ -87,6 +114,12 @@ class Admin extends \Lime\Helper {
         return true;
     }
 
+    /**
+     * Unlock a resource for editing.
+     *
+     * @param string $resourceId The resource ID.
+     * @return bool True if the resource was unlocked, false otherwise.
+     */
     public function unlockResourceId($resourceId) {
 
         $meta = $this->isResourceLocked($resourceId);

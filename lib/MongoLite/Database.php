@@ -54,21 +54,21 @@ class Database {
             $document = \json_decode($document, true);
             $val      = '';
 
-            if (strpos($key, '.') !== false) {
-
+            // Use generic traversal for any depth of nesting
+            if (str_contains($key, '.')) {
                 $keys = \explode('.', $key);
-
-                switch (\count($keys)) {
-                    case 2:
-                        $val = isset($document[$keys[0]][$keys[1]]) ? $document[$keys[0]][$keys[1]] : '';
+                $current = $document;
+                
+                // Traverse the nested structure
+                foreach ($keys as $k) {
+                    if (is_array($current) && isset($current[$k])) {
+                        $current = $current[$k];
+                    } else {
+                        $current = '';
                         break;
-                    case 3:
-                        $val = isset($document[$keys[0]][$keys[1]][$keys[2]]) ? $document[$keys[0]][$keys[1]][$keys[2]] : '';
-                        break;
-                    default:
-                        $val = isset($document[$keys[0]]) ? $document[$keys[0]] : '';
+                    }
                 }
-
+                $val = $current;
             } else {
                 $val = isset($document[$key]) ? $document[$key] : '';
             }
@@ -83,9 +83,21 @@ class Database {
             return $database->callCriteriaFunction($funcid, $document);
         }, 2);
 
-        $this->connection->exec('PRAGMA journal_mode = MEMORY');
-        $this->connection->exec('PRAGMA synchronous = OFF');
-        $this->connection->exec('PRAGMA PAGE_SIZE = 4096');
+        $pragma = [
+            'journal_mode'  => $options['journal_mode'] ??  'WAL',
+            'temp_store'  => $options['temp_store'] ??  'MEMORY',
+            'journal_size_limit' => $options['journal_size_limit'] ?? '27103364',
+            'synchronous'   => $options['synchronous'] ?? 'NORMAL',
+            'mmap_size'     => $options['mmap_size'] ?? '134217728',
+            'cache_size'    => $options['cache_size'] ?? '-20000',
+            'page_size'     => $options['page_size'] ?? '8192',
+            'busy_timeout'  => $options['busy_timeout'] ?? '5000',
+            'auto_vacuum'  => $options['auto_vacuum'] ?? 'INCREMENTAL',
+        ];
+
+        foreach ($pragma as $key => $value) {
+            $this->connection->exec("PRAGMA {$key} = {$value}");
+        }
     }
 
     /**
@@ -105,9 +117,7 @@ class Database {
 
         if (is_array($criteria)) {
 
-            $fn = null;
-
-            eval('$fn = function($document) { return '.UtilArrayQuery::buildCondition($criteria).'; };');
+            $fn = UtilArrayQuery::getFilterFunction($criteria);
 
             $this->document_criterias[$id] = $fn;
 
@@ -115,6 +125,16 @@ class Database {
         }
 
         return null;
+    }
+
+    /**
+     * Unregisters a criteria function by its identifier.
+     *
+     * @param string $id The identifier of the criteria function to be unregistered.
+     * @return void
+     */
+    public function unregisterCriteriaFunction(string $id): void {
+        if (isset($this->document_criterias[$id])) unset($this->document_criterias[$id]);
     }
 
     /**
@@ -139,8 +159,12 @@ class Database {
      * Drop database
      */
     public function drop(): void {
-        if ($this->path != static::DSN_PATH_MEMORY) {
-            \unlink($this->path);
+
+        if ($this->path !== static::DSN_PATH_MEMORY) {
+            if (file_exists($this->path)) unlink($this->path);
+            if (file_exists("{$this->path}-shm")) unlink("{$this->path}-shm");
+            if (file_exists("{$this->path}-wal")) unlink("{$this->path}-wal");
+            if (file_exists("{$this->path}-journal")) unlink("{$this->path}-journal");
         }
     }
 
@@ -150,7 +174,13 @@ class Database {
      * @param  string $name
      */
     public function createCollection(string $name): void {
-        $this->connection->exec("CREATE TABLE `{$name}` ( id INTEGER PRIMARY KEY AUTOINCREMENT, document TEXT )");
+        // Sanitize collection name to prevent SQL injection
+        $sanitizedName = $this->sanitizeCollectionName($name);
+        if (!$sanitizedName) {
+            throw new \InvalidArgumentException("Invalid collection name: {$name}");
+        }
+        
+        $this->connection->exec("CREATE TABLE IF NOT EXISTS `{$sanitizedName}` ( id INTEGER PRIMARY KEY AUTOINCREMENT, document TEXT )");
     }
 
     /**
@@ -159,7 +189,13 @@ class Database {
      * @param  string $name
      */
     public function dropCollection(string $name): void {
-        $this->connection->exec("DROP TABLE `{$name}`");
+        // Sanitize collection name to prevent SQL injection
+        $sanitizedName = $this->sanitizeCollectionName($name);
+        if (!$sanitizedName) {
+            throw new \InvalidArgumentException("Invalid collection name: {$name}");
+        }
+        
+        $this->connection->exec("DROP TABLE `{$sanitizedName}`");
 
         // Remove collection from cache
         unset($this->collections[$name]);
@@ -220,8 +256,43 @@ class Database {
     }
 
     public function __get($collection) {
-
         return $this->selectCollection($collection);
+    }
+    
+    /**
+     * Sanitize collection name to prevent SQL injection
+     * Only allow alphanumeric characters, underscores, and hyphens
+     * 
+     * @param string $name
+     * @return string|null Sanitized name or null if invalid
+     */
+    public function sanitizeCollectionName(string $name): ?string {
+        // Remove any characters that aren't alphanumeric, underscore, or hyphen
+        $sanitized = preg_replace('/[^a-zA-Z0-9_-]/', '', $name);
+        
+        // Check if the sanitized name matches the original and isn't empty
+        if ($sanitized === $name && !empty($sanitized) && strlen($sanitized) <= 64) {
+            return $sanitized;
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Sanitize criteria function ID to prevent SQL injection
+     * 
+     * @param string $id
+     * @return string|null Sanitized ID or null if invalid
+     */
+    public function sanitizeCriteriaId(string $id): ?string {
+        // Only allow alphanumeric characters - criteria IDs are generated by uniqid()
+        $sanitized = preg_replace('/[^a-zA-Z0-9]/', '', $id);
+        
+        if ($sanitized === $id && !empty($sanitized)) {
+            return $sanitized;
+        }
+        
+        return null;
     }
 }
 
@@ -234,26 +305,26 @@ function createMongoDbLikeId(): string {
         return (string)$objId;
     }
 
-    // based on https://gist.github.com/h4cc/9b716dc05869296c1be6
+    // 4 bytes: timestamp (seconds since epoch)
+    $timestamp = pack('N', time());
 
-    $timestamp = \microtime(true);
-    $processId = \random_int(10000, 99999);
-    $id        = \random_int(10, 1000);
-    $result    = '';
+    // 5 bytes: combination of host-specific and random data
+    // Instead of trying to convert hex strings directly, use binary data
+    $hostHash = md5(php_uname('n'), true); // Get binary hash
+    $processHash = md5(getmypid(), true); // Get binary hash
 
-    // Building binary data.
-    $bin = \sprintf(
-        '%s%s%s%s',
-        \pack('N', $timestamp * 10000),
-        \substr(md5(uniqid()), 0, 3),
-        \pack('n', $processId),
-        \substr(\pack('N', $id), 1, 3)
-    );
+    // Take portions of these hashes to create 5 bytes
+    $machineSpecificBytes = substr($hostHash, 0, 3) . substr($processHash, 0, 2);
 
-    // Convert binary to hex.
-    for ($i = 0; $i < 12; $i++) {
-        $result .= \sprintf('%02x', ord($bin[$i]));
+    // 3 bytes: incrementing counter
+    static $counter = null;
+    if ($counter === null) {
+        // Start from a random position each time the function is first called
+        $counter = random_int(0, 0xFFFFFF);
     }
+    $counter = ($counter + 1) & 0xFFFFFF;
+    $counterBytes = substr(pack('N', $counter), 1, 3);
 
-    return $result;
+    // Combine all parts and convert to hex
+    return bin2hex($timestamp . $machineSpecificBytes . $counterBytes);
 }

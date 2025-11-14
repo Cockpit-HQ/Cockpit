@@ -1,13 +1,15 @@
 
 :root {
-    --kiss-base-font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;
+    --kiss-base-font-family: -apple-system, BlinkMacSystemFont, SF Pro Display, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;
     --kiss-base-background-color: #131720;
     --kiss-base-text-color: #fafafa;
     --kiss-base-font-size: 15px;
     --kiss-font-size-1: 2rem;
+    --kiss-font-size-4: 1.3rem;
     --kiss-hr-color: rgba(255,255,255,.1);
     --kiss-link-color: var(--kiss-color-primary);
     --kiss-link-hover-color: #1994ff;
+    --kiss-link-focus-color: var(--kiss-link-hover-color);
 
     --kiss-block-element-margin: 1.5rem;
 
@@ -27,6 +29,7 @@
 
     --kiss-input-border-color: rgba(255,255,255,.1);
     --kiss-input-background: rgba(255,255,255,.05);
+    --kiss-form-large-padding-horizontal: .6em;
 
     --kiss-badge-bgcolor: var(--kiss-color-primary);
 
@@ -55,10 +58,11 @@
 
     --kiss-card-shadowed-color: rgba(0, 0, 0, 0.85);
     --kiss-card-bordered-color: rgb(106, 85, 85, .15);
+    --kiss-card-theme-contrast-color: #171d28;
 
     --kiss-breadcrumbs-size: 11px;
     --kiss-table-heading-background-color: #171b24;
-    --kiss-table-row-hover-color: #222;
+    --kiss-table-row-hover-color: #1a212f;
 }
 
 [kiss-container="medium"],
@@ -87,8 +91,12 @@ kiss-tooltip {
 
 .kiss-bgcolor-transparentimage {
     background-image: linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%), linear-gradient(-45deg, rgba(255, 255, 255, .15) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, rgba(255, 255, 255, .15) 75%), linear-gradient(-45deg, transparent 75%, rgba(255, 255, 255, .15) 75%);
-    background-size: 20px 20px;
-    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+    background-size: var(--kiss-bgcolor-transparentimage-size, 20px) var(--kiss-bgcolor-transparentimage-size, 20px);
+    background-position: 0 0, 0 calc(var(--kiss-bgcolor-transparentimage-size, 20px) / 2), calc(var(--kiss-bgcolor-transparentimage-size, 20px) / 2) calc(-1 * var(--kiss-bgcolor-transparentimage-size, 20px) / 2), calc(-1 * var(--kiss-bgcolor-transparentimage-size, 20px) / 2) 0px;
+}
+
+.kiss-bgcolor-base {
+    background: var(--kiss-base-background-color);
 }
 
 .kiss-height-30vh { min-height: 30vh; }
@@ -123,10 +131,18 @@ kiss-popout kiss-navlist > ul > li > a > icon {
     transform: scale(1.2);
 }
 
+kiss-navlist ul > li > a {
+    transition: color .3s;
+
+    &:focus, &:hover {
+        color: var(--kiss-color-primary) !important;
+    }
+}
+
 .kiss-input {
     padding: .6em .6em;
     color: var(--kiss-base-text-color);
-    background: var(--kiss-input-background);
+    background-color: var(--kiss-input-background);
     border: 1px var(--kiss-input-border-color) solid;
     border-radius: var(--app-border-radius);
     transition: all 250ms;
@@ -142,13 +158,20 @@ select.kiss-input option {
     background: var(--kiss-base-background-color);
 }
 
+select.kiss-input {
+    background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjRweCIgdmlld0JveD0iMCAtOTYwIDk2MCA5NjAiIHdpZHRoPSIyNHB4IiBmaWxsPSIjNjY2NjY2Ij48cGF0aCBkPSJNNDgwLTEyMCAzMDAtMzAwbDU4LTU4IDEyMiAxMjIgMTIyLTEyMiA1OCA1OC0xODAgMTgwWk0zNTgtNTk4bC01OC01OCAxODAtMTgwIDE4MCAxODAtNTggNTgtMTIyLTEyMi0xMjIgMTIyWiIvPjwvc3ZnPg==");
+    background-repeat: no-repeat;
+    background-position: right 0.7em top 50%, 0 0;
+    background-size: 1.25em auto, 100%;
+}
+
 .kiss-input[type="text"],
 .kiss-input[type="password"] {
     width: 100%;
 }
 
 .kiss-input:focus {
-    background: var(--kiss-input-background-active, rgba(255,255,255,.15));
+    background-color: var(--kiss-input-background-active, rgba(255,255,255,.15));
     border-color: var(--kiss-input-border-color-active, var(--kiss-color-primary));
 }
 
@@ -162,6 +185,69 @@ select.kiss-input option {
 
 .kiss-input-small {
     padding: .3em .3em;
+    font-size: .8em;
+}
+
+@supports (appearance: base-select) {
+    
+
+    .kiss-overlay-input {
+        
+        select,
+        ::picker(select) {
+            appearance: base-select;
+            border-radius: var(--app-border-radius);
+            background: none;
+
+            hr {
+                margin: 0 auto;
+                background: var(--kiss-input-border-color);
+            }
+        }
+
+        ::picker(select) {
+            border: none;
+            color: var(--kiss-base-text-color);
+            background-color: var(--kiss-base-background-color);
+            font-size: .9em;
+            line-height: 2;
+            opacity: 0;
+            transition: all 0.4s allow-discrete;
+        }
+
+        ::picker(select):popover-open {
+            opacity: 1;
+        }
+
+        @starting-style {
+            ::picker(select):popover-open {
+                opacity: 0;
+            }
+        }
+
+        option {
+            background: var(--kiss-base-background-color);
+            color: var(--kiss-base-text-color);
+            padding: 4px 8px;
+            border-left: 1px var(--kiss-input-border-color) solid;
+            border-right: 1px var(--kiss-input-border-color) solid;
+        }
+
+        option:first-of-type {
+            border-top: 1px var(--kiss-input-border-color) solid;
+            border-radius: var(--app-border-radius) var(--app-border-radius) 0 0;
+        }
+
+        option:last-of-type {
+            border-bottom: 1px var(--kiss-input-border-color) solid;
+            border-radius: 0 0 var(--app-border-radius) var(--app-border-radius);
+        }
+
+        option:hover {
+            background: var(--kiss-color-primary);
+            color: #fff;
+        }
+    }
 }
 
 .kiss-disabled,
@@ -232,14 +318,25 @@ kiss-card[hover="shadow"]:hover {
 
 kiss-card[theme*="contrast"],
 kiss-card[hover*="contrast"]:hover {
-    background: var(--kiss-card-theme-contrast-color, #141923);
-    background: var(--kiss-card-theme-contrast-color, #171d28);
+    background: var(--kiss-card-theme-contrast-color);
 }
 
 
-.kiss-button:active {
-    transform: scale(.99);
-    filter: brightness(.9);
+.kiss-button {
+
+    position: relative;
+    overflow: hidden;
+
+    &:active {
+        transform: scale(.999);
+        filter: brightness(.9);
+    }
+
+    icon {
+        transform: scale(2);
+        line-height: 1;
+    }
+
 }
 
 .kiss-button-group {
@@ -266,11 +363,6 @@ kiss-card[hover*="contrast"]:hover {
     border-bottom-right-radius: var(--app-border-radius);
 }
 
-.kiss-button icon {
-    transform: scale(2);
-    line-height: 1;
-}
-
 .kiss-breadcrumbs {
     text-transform: uppercase;
     letter-spacing: 2px;
@@ -291,15 +383,11 @@ kiss-card[hover*="contrast"]:hover {
     font-weight: bold;
 }
 
-.kiss-tabs-nav {
-    border-bottom: 1px var(--kiss-hr-color) solid;
-}
-
 .kiss-tabs-nav-link {
     padding-left: 0;
     padding-right: 0;
     margin-right: 25px;
-    text-transform: uppercase;
+    letter-spacing: .05em;
 }
 
 [active="true"] > .kiss-tabs-nav-link:after {
@@ -403,4 +491,8 @@ kiss-card[hover*="contrast"]:hover {
 
 .kiss-dialog-overflow[expand="true"] {
     height: 60vh;
+}
+
+.kiss-toast-message .kiss-badge {
+    font-size: .85em;
 }

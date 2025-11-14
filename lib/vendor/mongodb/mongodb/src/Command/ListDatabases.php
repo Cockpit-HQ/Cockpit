@@ -23,13 +23,12 @@ use MongoDB\Driver\Server;
 use MongoDB\Driver\Session;
 use MongoDB\Exception\InvalidArgumentException;
 use MongoDB\Exception\UnexpectedValueException;
-use MongoDB\Operation\Executable;
 
 use function current;
 use function is_array;
 use function is_bool;
 use function is_integer;
-use function is_object;
+use function MongoDB\is_document;
 
 /**
  * Wrapper for the ListDatabases command.
@@ -37,11 +36,8 @@ use function is_object;
  * @internal
  * @see https://mongodb.com/docs/manual/reference/command/listDatabases/
  */
-class ListDatabases implements Executable
+final class ListDatabases
 {
-    /** @var array */
-    private $options;
-
     /**
      * Constructs a listDatabases command.
      *
@@ -70,14 +66,14 @@ class ListDatabases implements Executable
      * @param array $options Command options
      * @throws InvalidArgumentException for parameter/option parsing errors
      */
-    public function __construct(array $options = [])
+    public function __construct(private array $options = [])
     {
         if (isset($options['authorizedDatabases']) && ! is_bool($options['authorizedDatabases'])) {
             throw InvalidArgumentException::invalidType('"authorizedDatabases" option', $options['authorizedDatabases'], 'boolean');
         }
 
-        if (isset($options['filter']) && ! is_array($options['filter']) && ! is_object($options['filter'])) {
-            throw InvalidArgumentException::invalidType('"filter" option', $options['filter'], ['array', 'object']);
+        if (isset($options['filter']) && ! is_document($options['filter'])) {
+            throw InvalidArgumentException::expectedDocumentType('"filter" option', $options['filter']);
         }
 
         if (isset($options['maxTimeMS']) && ! is_integer($options['maxTimeMS'])) {
@@ -91,14 +87,11 @@ class ListDatabases implements Executable
         if (isset($options['session']) && ! $options['session'] instanceof Session) {
             throw InvalidArgumentException::invalidType('"session" option', $options['session'], Session::class);
         }
-
-        $this->options = $options;
     }
 
     /**
      * Execute the operation.
      *
-     * @see Executable::execute()
      * @return array An array of database info structures
      * @throws UnexpectedValueException if the command response was malformed
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
@@ -107,6 +100,7 @@ class ListDatabases implements Executable
     {
         $cursor = $server->executeReadCommand('admin', $this->createCommand(), $this->createOptions());
         $cursor->setTypeMap(['root' => 'array', 'document' => 'array']);
+
         $result = current($cursor->toArray());
 
         if (! isset($result['databases']) || ! is_array($result['databases'])) {

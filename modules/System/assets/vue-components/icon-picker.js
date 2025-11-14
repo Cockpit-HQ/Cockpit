@@ -107,7 +107,7 @@ let IconPicker = {
                 <canvas :width="size" :height="size" :class="{'kiss-bgcolor-transparentimage': !icon}"></canvas>
                 <div class="kiss-cover kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center">
                     <div v-if="icon || placeholder">
-                        <kiss-svg :src="$base(icon || placeholder)" width="100%"></kiss-svg>
+                        <kiss-svg :src="$baseUrl(icon || placeholder)" width="100%"></kiss-svg>
                     </div>
                 </div>
                 <a class="kiss-cover" @click="select = true"></a>
@@ -137,7 +137,7 @@ let IconPicker = {
 
                         <kiss-grid gap="small" cols="4 8@m 10@xl" v-if="Array.isArray(icons) && icons.length">
                             <kiss-card class="kiss-padding kiss-align-center kiss-position-relative app-icon-preview" theme="bordered" hover="shadow contrast" v-for="icn in filtered">
-                                <img loading="lazy" width="100" height="100" :src="$base(icn.path)">
+                                <img loading="lazy" width="100" height="100" :src="$baseUrl(icn.path)">
                                 <a class="kiss-cover" @click="selectIcon(icn)"></a>
                             </kiss-card>
                         </kiss-grid>

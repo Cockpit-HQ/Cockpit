@@ -2,6 +2,7 @@
 
 namespace GraphQL\Utils;
 
+use GraphQL\Error\ClientAware;
 use GraphQL\Error\CoercionError;
 use GraphQL\Error\Error;
 use GraphQL\Error\InvariantViolation;
@@ -32,11 +33,11 @@ class Value
      *
      * @phpstan-param InputPath|null $path
      *
-     * @phpstan-return CoercedValue|CoercedErrors
-     *
      * @throws InvariantViolation
+     *
+     * @phpstan-return CoercedValue|CoercedErrors
      */
-    public static function coerceInputValue($value, InputType $type, array $path = null): array
+    public static function coerceInputValue($value, InputType $type, ?array $path = null): array
     {
         if ($type instanceof NonNull) {
             if ($value === null) {
@@ -61,7 +62,10 @@ class Value
             try {
                 return self::ofValue($type->parseValue($value));
             } catch (\Throwable $error) {
-                if ($error instanceof Error) {
+                if (
+                    $error instanceof Error
+                    || ($error instanceof ClientAware && $error->isClientSafe())
+                ) {
                     return self::ofErrors([
                         CoercionError::make($error->getMessage(), $path, $value, $error),
                     ]);
@@ -167,6 +171,38 @@ class Value
             );
         }
 
+        // Validate OneOf constraints if this is a OneOf input type
+        if ($type->isOneOf()) {
+            $providedFieldCount = 0;
+            $nullFieldName = null;
+
+            foreach ($coercedValue as $fieldName => $fieldValue) {
+                if ($fieldValue !== null) {
+                    ++$providedFieldCount;
+                } else {
+                    $nullFieldName = $fieldName;
+                }
+            }
+
+            // Check for null field values first (takes precedence)
+            if ($nullFieldName !== null) {
+                $errors = self::add(
+                    $errors,
+                    CoercionError::make("OneOf input object \"{$type->name}\" field \"{$nullFieldName}\" must be non-null.", $path, $value)
+                );
+            } elseif ($providedFieldCount === 0) {
+                $errors = self::add(
+                    $errors,
+                    CoercionError::make("OneOf input object \"{$type->name}\" must specify exactly one field.", $path, $value)
+                );
+            } elseif ($providedFieldCount > 1) {
+                $errors = self::add(
+                    $errors,
+                    CoercionError::make("OneOf input object \"{$type->name}\" must specify exactly one field.", $path, $value)
+                );
+            }
+        }
+
         return $errors === []
             ? self::ofValue($type->parseValue($coercedValue))
             : self::ofErrors($errors);
@@ -193,7 +229,7 @@ class Value
     }
 
     /**
-     * @param array<int, CoercionError>       $errors
+     * @param array<int, CoercionError> $errors
      * @param CoercionError|array<int, CoercionError> $errorOrErrors
      *
      * @return array<int, CoercionError>

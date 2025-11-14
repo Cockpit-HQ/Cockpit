@@ -7,6 +7,12 @@ class Content extends \Lime\Helper {
 
     protected array $allowedModels = [];
 
+    /**
+     * Get the allowed models for a specific role.
+     *
+     * @param string|null $role The role to check (default: current user role).
+     * @return array The list of allowed models.
+     */
     public function allowedModels(?string $role = null): array {
 
         $role = $role ?? $this->app->helper('auth')->getUser('role');
@@ -37,25 +43,139 @@ class Content extends \Lime\Helper {
         return $this->allowedModels[$role];
     }
 
+    /**
+     * Replace locale placeholders in array keys.
+     *
+     * @param array $array The array to modify.
+     * @param string $locale The locale to use (default: '').
+     * @param bool $keepDefault Whether to keep the default locale key (default: false).
+     * @return void
+     */
     public function replaceLocaleInArrayKeys(array &$array, string $locale = '', $keepDefault = false) {
 
-        foreach ($array as $key => &$value) {
-            if (strpos($key, ':locale') !== false) {
+        $locale = trim($locale);
 
-                $newKey = str_replace(':locale', $locale ? "_{$locale}" : '', $key);
+        if ($locale === 'default') {
+            $locale = '';
+        }
+
+        foreach ($array as $key => &$value) {
+
+            if (str_contains($key, ':locale')) {
+
+                $defKey = str_replace(':locale', '', $key);
+                $newKey = $defKey.($locale ? "_{$locale}" : '');
                 $array[$newKey] = &$value;
 
                 if ($keepDefault) {
-                    $newKey = str_replace(':locale', '', $key);
-                    $array[$newKey] = &$value;
+                    $array[$defKey] = &$value;
                 }
 
                 unset($array[$key]);
             }
 
             if (is_array($value)) {
-                $this->replaceLocaleInArrayKeys($value, $locale);
+                $this->replaceLocaleInArrayKeys($value, $locale, $keepDefault);
             }
         }
+    }
+
+    /**
+     * Resolve locale placeholders in projection options.
+     *
+     * @param array $fields The fields to modify.
+     * @return void
+     */
+    public function resolveLocalesInProjectionOptions(array &$fields) {
+
+        $locales = array_keys($this->app->helper('locales')->locales(true));
+
+        foreach ($fields as $key => &$value) {
+
+            if (str_contains($key, ':locale')) {
+
+                $defKey = str_replace(':locale', '', $key);
+                $fields[$defKey] = &$value;
+
+                foreach ($locales as $locale) {
+                    if ($locale === 'default') continue;
+                    $fields["{$defKey}_{$locale}"] = &$value;
+                }
+
+                unset($fields[$key]);
+            }
+
+            if (is_array($value)) {
+                $this->resolveLocalesInProjectionOptions($value);
+            }
+        }
+    }
+
+    /**
+     * Check if content is unique.
+     *
+     * @param string|array $model The model name or array.
+     * @param array $data The content data.
+     * @param string|array $fields The fields to check.
+     * @param mixed &$info Additional information (passed by reference).
+     * @return bool True if unique, false if not.
+     */
+    public function isContentUnique(string|array $model, array $data, string|array $fields, mixed &$info = []): bool {
+
+        $model = is_string($model) ? $this->app->module('content')->model($model) : $model;
+        $fields = is_string($fields) ? explode(',', $fields) : $fields;
+
+        if (!$model || !in_array($model['type'], ['collection', 'tree'])) {
+            return false;
+        }
+
+        $locales = array_keys($this->app->helper('locales')->locales(true));
+        $collection = "content/collections/{$model['name']}";
+        $projection = ['_id' => 1];
+        $filter = [];
+
+        foreach ($fields as $field) {
+
+            $field = trim($field);
+
+            if (!isset($data[$field]) || !$data[$field] || !is_string($data[$field])) continue;
+
+            $projection[$field] = 1;
+            $value = $data[$field];
+            $filter[] = [$field => $value];
+
+            $mfield = array_find($model['fields'], fn($f) => $f['name'] === $field);
+
+            if ($mfield && $mfield['i18n']) {
+
+                foreach ($locales as $locale) {
+                    $key = "{$field}_{$locale}";
+                    if ($locale === 'default' || !isset($data[$key]) || !$data[$key] || !is_string($data[$key])) continue;
+
+                    $filter[] = [$key => $data[$key]];
+                    $projection[$key] = 1;
+                }
+            }
+        }
+
+        $exists = $this->app->dataStorage->findOne($collection, ['$or' => $filter], $projection);
+
+        if ($exists && (($data['_id'] ?? null) !== $exists['_id'])) {
+
+            foreach ($projection as $key => $val) {
+
+                if ($key === '_id') continue;
+
+                if ($exists[$key] === $data[$key]) {
+                    $info['field'] = $key;
+                    $info['value'] = $data[$key];
+                    break;
+                }
+            }
+
+            return false;
+        }
+
+        return true;
     }
 }

@@ -7,7 +7,6 @@ use ArrayObject;
 
 class Singleton extends App {
 
-
     public function item($model = null) {
 
         if (!$model) {

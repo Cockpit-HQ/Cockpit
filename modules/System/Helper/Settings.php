@@ -6,6 +6,12 @@ use ArrayObject;
 
 class Settings extends \Lime\Helper {
 
+    /**
+     * Get the groups for the settings.
+     *
+     * @param bool $filter Whether to filter the groups by permissions.
+     * @return ArrayObject The groups for the settings.
+     */
     public function groups(bool $filter = false): ArrayObject {
 
         $items = [];
@@ -32,7 +38,7 @@ class Settings extends \Lime\Helper {
         ];
 
         $items[] = [
-            'icon' => null,
+            'icon' => 'system:assets/icons/api.svg',
             'route' => '/system/api',
             'label' => 'Api & Security',
             'permission' => 'app/api/manage'
@@ -54,13 +60,24 @@ class Settings extends \Lime\Helper {
                 'permission' => 'app/spaces'
             ];
 
-            $items[] = [
-                'icon' => 'system:assets/icons/console.svg',
-                'route' => '/system/tower',
-                'label' => 'Tower',
-                'permission' => 'system/tower'
-            ];
+            if (!$this->app->retrieve('tower.disabled')) {
+
+                $items[] = [
+                    'icon' => 'system:assets/icons/console.svg',
+                    'route' => '/system/tower',
+                    'label' => 'Tower',
+                    'permission' => 'system/tower'
+                ];
+            }
+
         }
+
+        $items[] = [
+            'icon' => 'system:assets/icons/queue.svg',
+            'route' => '/system/worker',
+            'label' => 'Worker',
+            'permission' => 'system/workers'
+        ];
 
         $items[] = [
             'icon' => 'system:assets/icons/logging.svg',
