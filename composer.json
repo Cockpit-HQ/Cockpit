@@ -1,9 +1,13 @@
 {
-
     "name": "cockpit-hq/cockpit",
     "type": "project",
     "description": "Cockpit Content Platform",
-    "keywords": ["cms", "headless", "api", "cockpit"],
+    "keywords": [
+        "cms",
+        "headless",
+        "api",
+        "cockpit"
+    ],
     "homepage": "https://getcockpit.com/",
     "license": "MIT",
     "authors": [
@@ -12,7 +16,6 @@
             "email": "artur@agentejo.com"
         }
     ],
-
     "scripts": {
         "pre-autoload-dump": "Aws\\Script\\Composer\\Composer::removeUnusedServices",
         "serve": [
@@ -21,7 +24,6 @@
         ],
         "git-pull-all-rebase": "find . -type d -name .git -execdir sh -c 'echo \"\\n=== $(basename $(pwd)) ===\"; git pull --rebase' \\;"
     },
-
     "require": {
         "php": "^8.3.0",
         "ext-curl": "*",
@@ -47,13 +49,12 @@
         "symfony/polyfill-php84": "^1.30",
         "symfony/polyfill-php85": "^1.33",
         "webonyx/graphql-php": "^15.0",
-        "zircote/swagger-php": "^4.5.1",
+        "zircote/swagger-php": "^5.0",
         "symfony/console": "^5.3",
         "symfony/process": "^6.2",
         "doctrine/annotations": "^2.0",
         "jumbojett/openid-connect-php": "^1.0.2"
     },
-
     "config": {
         "vendor-dir": "lib/vendor",
         "optimize-autoloader": true,
@@ -62,11 +63,11 @@
         "ignore-platform-reqs": true,
         "no-dev": true
     },
-
     "autoload": {
-        "classmap": ["lib/"]
+        "classmap": [
+            "lib/"
+        ]
     },
-
     "extra": {
         "aws/aws-sdk-php": [
             "S3"

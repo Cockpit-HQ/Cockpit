@@ -7,7 +7,6 @@
 namespace OpenApi;
 
 use OpenApi\Annotations as OA;
-use OpenApi\Processors\ProcessorInterface;
 
 /**
  * Result of the analyser.
@@ -17,50 +16,34 @@ use OpenApi\Processors\ProcessorInterface;
  */
 class Analysis
 {
-    /**
-     * @var \SplObjectStorage
-     */
-    public $annotations;
+    public \SplObjectStorage $annotations;
 
     /**
      * Class definitions.
-     *
-     * @var array
      */
-    public $classes = [];
+    public array $classes = [];
 
     /**
      * Interface definitions.
-     *
-     * @var array
      */
-    public $interfaces = [];
+    public array $interfaces = [];
 
     /**
      * Trait definitions.
-     *
-     * @var array
      */
-    public $traits = [];
+    public array $traits = [];
 
     /**
      * Enum definitions.
-     *
-     * @var array
      */
-    public $enums = [];
+    public array $enums = [];
 
     /**
      * The target OpenApi annotation.
-     *
-     * @var OA\OpenApi|null
      */
-    public $openapi = null;
+    public ?OA\OpenApi $openapi = null;
 
-    /**
-     * @var Context|null
-     */
-    public $context = null;
+    public ?Context $context = null;
 
     public function __construct(array $annotations = [], ?Context $context = null)
     {
@@ -150,7 +133,7 @@ class Analysis
         $this->interfaces = array_merge($this->interfaces, $analysis->interfaces);
         $this->traits = array_merge($this->traits, $analysis->traits);
         $this->enums = array_merge($this->enums, $analysis->enums);
-        if ($this->openapi === null && $analysis->openapi !== null) {
+        if (!$this->openapi instanceof OA\OpenApi && $analysis->openapi instanceof OA\OpenApi) {
             $this->openapi = $analysis->openapi;
         }
     }
@@ -299,10 +282,12 @@ class Analysis
     }
 
     /**
-     * @param class-string|array<class-string> $classes one or more class names
-     * @param bool                             $strict  in non-strict mode child classes are also detected
+     * @template T extends OA\AbstractAnnotation
      *
-     * @return OA\AbstractAnnotation[]
+     * @param class-string<T>|array<class-string<T>> $classes one or more class names
+     * @param bool                                   $strict  in non-strict mode child classes are also detected
+     *
+     * @return array<T>
      */
     public function getAnnotationsOfType($classes, bool $strict = false): array
     {
@@ -324,6 +309,7 @@ class Analysis
 
     /**
      * @param string $fqdn the source class/interface/trait
+     * @deprecated use getAnnotationForSource() instead
      */
     public function getSchemaForSource(string $fqdn): ?OA\Schema
     {
@@ -333,11 +319,11 @@ class Analysis
     /**
      * @template T of OA\AbstractAnnotation
      *
-     * @param  string          $fqdn  the source class/interface/trait
-     * @param  class-string<T> $class
+     * @param  string          $fqdn        the source class/interface/trait
+     * @param  class-string<T> $sourceClass
      * @return T|null
      */
-    public function getAnnotationForSource(string $fqdn, string $class): ?OA\AbstractAnnotation
+    public function getAnnotationForSource(string $fqdn, string $sourceClass = OA\Schema::class): ?OA\AbstractAnnotation
     {
         $fqdn = '\\' . ltrim($fqdn, '\\');
 
@@ -347,7 +333,7 @@ class Analysis
                 if (is_iterable($definition['context']->annotations)) {
                     /** @var OA\AbstractAnnotation $annotation */
                     foreach (array_reverse($definition['context']->annotations) as $annotation) {
-                        if (is_a($annotation, $class) && $annotation->isRoot($class) && !$annotation->_context->is('generated')) {
+                        if ($annotation instanceof $sourceClass && $annotation->isRoot($sourceClass) && !$annotation->_context->is('generated')) {
                             return $annotation;
                         }
                     }
@@ -379,7 +365,7 @@ class Analysis
      */
     public function merged(): Analysis
     {
-        if ($this->openapi === null) {
+        if (!$this->openapi instanceof OA\OpenApi) {
             throw new OpenApiException('No openapi target set. Run the MergeIntoOpenApi processor');
         }
         $unmerged = $this->openapi->_unmerged;
@@ -404,7 +390,7 @@ class Analysis
      *
      * @return \stdClass {merged: Analysis, unmerged: Analysis}
      */
-    public function split()
+    public function split(): \stdClass
     {
         $result = new \stdClass();
         $result->merged = $this->merged();
@@ -421,11 +407,12 @@ class Analysis
     /**
      * Apply the processor(s).
      *
-     * @param callable|ProcessorInterface|array<ProcessorInterface|callable> $processors One or more processors
+     * @param callable|array<callable> $processors One or more processors
+     * @deprecated use Generator::withProcessorPipeline() instead
      */
     public function process($processors = null): void
     {
-        if (is_array($processors) === false && is_callable($processors) || $processors instanceof ProcessorInterface) {
+        if (false === is_array($processors) && is_callable($processors)) {
             $processors = [$processors];
         }
 
@@ -436,7 +423,7 @@ class Analysis
 
     public function validate(): bool
     {
-        if ($this->openapi !== null) {
+        if ($this->openapi instanceof OA\OpenApi) {
             return $this->openapi->validate();
         }
 

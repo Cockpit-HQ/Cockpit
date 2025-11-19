@@ -13,21 +13,25 @@ use OpenApi\Processors\Concerns\AnnotationTrait;
 /**
  * Allows to filter endpoints based on tags and/or path.
  *
- * If no `tags` or `paths` filters are set, no filtering is performed.
+ * If no <code>tags</code> or <code>paths</code> filters are set, no filtering is performed.
+ *
  * All filter (regular) expressions must be enclosed within delimiter characters as they are used as-is.
  */
-class PathFilter implements ProcessorInterface
+class PathFilter
 {
     use AnnotationTrait;
 
-    protected $tags = [];
+    protected array $tags;
 
-    protected $paths = [];
+    protected array $paths;
 
-    public function __construct(array $tags = [], array $paths = [])
+    protected bool $recurseCleanup;
+
+    public function __construct(array $tags = [], array $paths = [], bool $recurseCleanup = false)
     {
         $this->tags = $tags;
         $this->paths = $paths;
+        $this->recurseCleanup = $recurseCleanup;
     }
 
     public function getTags(): array
@@ -64,7 +68,20 @@ class PathFilter implements ProcessorInterface
         return $this;
     }
 
-    public function __invoke(Analysis $analysis)
+    public function isRecurseCleanup(): bool
+    {
+        return $this->recurseCleanup;
+    }
+
+    /**
+     * Flag to do a recursive cleanup of unused paths and their nested annotations.
+     */
+    public function setRecurseCleanup(bool $recurseCleanup): void
+    {
+        $this->recurseCleanup = $recurseCleanup;
+    }
+
+    public function __invoke(Analysis $analysis): void
     {
         if (($this->tags || $this->paths) && !Generator::isDefault($analysis->openapi->paths)) {
             $filtered = [];
@@ -93,7 +110,7 @@ class PathFilter implements ProcessorInterface
                 if ($matched) {
                     $filtered[] = $matched;
                 } else {
-                    $this->removeAnnotation($analysis->annotations, $pathItem);
+                    $this->removeAnnotation($analysis->annotations, $pathItem, $this->recurseCleanup);
                 }
             }
 

@@ -5,14 +5,14 @@
     "bin": [
         "bin/openapi"
     ],
-    "description": "swagger-php - Generate interactive documentation for your RESTful API using phpdoc annotations",
+    "description": "Generate interactive documentation for your RESTful API using PHP attributes (preferred) or PHPDoc annotations",
     "keywords": [
         "json",
         "rest",
         "api",
         "service discovery"
     ],
-    "homepage": "https://github.com/zircote/swagger-php/",
+    "homepage": "https://github.com/zircote/swagger-php",
     "authors": [
         {
             "name": "Robert Allen",
@@ -40,32 +40,23 @@
     "minimum-stability": "stable",
     "extra": {
         "branch-alias": {
-            "dev-master": "4.x-dev"
+            "dev-master": "5.x-dev"
         }
     },
     "require": {
-        "php": ">=7.2",
+        "php": ">=7.4",
         "ext-json": "*",
+        "nikic/php-parser": "^4.19 || ^5.0",
+        "phpstan/phpdoc-parser": "^2.0",
         "psr/log": "^1.1 || ^2.0 || ^3.0",
         "symfony/deprecation-contracts": "^2 || ^3",
-        "symfony/finder": ">=2.2",
-        "symfony/yaml": ">=3.3"
+        "symfony/finder": "^5.0 || ^6.0 || ^7.0",
+        "symfony/yaml": "^5.4 || ^6.0 || ^7.0"
     },
     "autoload": {
         "psr-4": {
             "OpenApi\\": "src"
         }
-    },
-    "require-dev": {
-        "composer/package-versions-deprecated": "^1.11",
-        "doctrine/annotations": "^1.7 || ^2.0",
-        "friendsofphp/php-cs-fixer": "^2.17 || 3.62.0",
-        "phpstan/phpstan": "^1.6",
-        "phpunit/phpunit": ">=8",
-        "vimeo/psalm": "^4.23"
-    },
-    "suggest": {
-        "doctrine/annotations": "^1.7 || ^2.0"
     },
     "autoload-dev": {
         "exclude-from-classmap": [
@@ -77,45 +68,69 @@
             "AnotherNamespace\\": "tests/Fixtures/AnotherNamespace"
         }
     },
+    "require-dev": {
+        "composer/package-versions-deprecated": "^1.11",
+        "doctrine/annotations": "^2.0",
+        "friendsofphp/php-cs-fixer": "^3.62.0",
+        "phpstan/phpstan": "^1.6 || ^2.0",
+        "phpunit/phpunit": "^9.0",
+        "rector/rector": "^1.0 || ^2.0",
+        "vimeo/psalm": "^4.30 || ^5.0"
+    },
+    "conflict": {
+        "symfony/process": ">=6, <6.4.14"
+    },
+    "suggest": {
+        "radebatz/type-info-extras": "^1.0.2",
+        "doctrine/annotations": "^2.0"
+    },
     "scripts-descriptions": {
         "cs": "Fix all codestyle issues",
+        "rector": "Automatic refactoring",
         "lint": "Test codestyle",
-        "test": "Run all non-legacy and codestyle tests",
-        "testlegacy": "Run tests using the legacy TokenAnalyser",
-        "testall": "Run all tests (test + testlegacy)",
+        "test": "Run all PHP, codestyle and rector tests",
         "analyse": "Run static analysis (phpstan/psalm)",
-        "spectral-examples": "Run spectral lint over all .yaml files in the Examples folder",
+        "spectral-examples": "Run spectral lint over all .yaml files in the docs/examples folder",
         "spectral-scratch": "Run spectral lint over all .yaml files in the tests/Fixtures/Scratch folder",
         "spectral": "Run all spectral tests",
+        "redocly-examples": "Run redocly lint over all .yaml files in the docs/examples folder",
+        "redocly-scratch": "Run redocly lint over all .yaml files in the tests/Fixtures/Scratch folder",
+        "redocly": "Run all redocly tests",
         "docs:gen": "Rebuild reference documentation",
         "docs:dev": "Run dev server for local development of gh-pages",
         "docs:build": "Re-build static gh-pages"
     },
     "scripts": {
         "cs": "export XDEBUG_MODE=off && php-cs-fixer fix --allow-risky=yes",
-        "lint": "@cs --dry-run",
+        "rector": "rector process src",
+        "lint": [
+            "@cs --dry-run",
+            "@rector --dry-run"
+        ],
         "test": [
             "export XDEBUG_MODE=off && phpunit",
             "@lint"
         ],
-        "testlegacy": "export XDEBUG_MODE=off && export PHPUNIT_ANALYSER=legacy && phpunit",
-        "testall": [
-            "@test",
-            "@testlegacy"
-        ],
         "analyse": [
             "export XDEBUG_MODE=off && phpstan analyse --memory-limit=2G",
-            "export XDEBUG_MODE=off && psalm"
+            "export XDEBUG_MODE=off && psalm --threads=1"
         ],
-        "spectral-examples": "for ff in `find Examples -name '*.yaml'`; do spectral lint $ff; done",
-        "spectral-scratch": "for ff in `find tests/Fixtures/Scratch -name '*.yaml'`; do spectral lint $ff; done",
+        "spectral-examples": "for ff in `find docs/examples -name '*.yaml'`; do npm run spectral lint $ff; done",
+        "spectral-scratch": "for ff in `find tests/Fixtures/Scratch -name '*.yaml'`; do npm run spectral lint $ff; done",
         "spectral": [
             "@spectral-examples",
             "@spectral-scratch"
         ],
+        "redocly-examples": "for ff in `find docs/examples -name '*.yaml'`; do npm run redocly lint $ff; done",
+        "redocly-scratch": "for ff in `find tests/Fixtures/Scratch -name '*.yaml'`; do npm run redocly lint $ff; done",
+        "redocly": [
+            "@redocly-examples",
+            "@redocly-scratch"
+        ],
         "docs:gen": [
             "@php tools/refgen.php",
-            "@php tools/procgen.php"
+            "@php tools/procgen.php",
+            "@php tools/examplegen.php"
         ],
         "docs:dev": "cd docs && npm run dev",
         "docs:build": [

@@ -13,11 +13,10 @@ use OpenApi\Generator;
 /**
  * Ensures that all tags used on operations also exist in the global <code>tags</code> list.
  */
-class AugmentTags implements ProcessorInterface
+class AugmentTags
 {
-
     /** @var array<string> */
-    protected $whitelist = [];
+    protected array $whitelist = [];
 
     public function __construct(array $whitelist = [])
     {
@@ -34,7 +33,7 @@ class AugmentTags implements ProcessorInterface
         return $this;
     }
 
-    public function __invoke(Analysis $analysis)
+    public function __invoke(Analysis $analysis): void
     {
         /** @var OA\Operation[] $operations */
         $operations = $analysis->getAnnotationsOfType(OA\Operation::class);
@@ -71,7 +70,7 @@ class AugmentTags implements ProcessorInterface
         $this->removeUnusedTags($usedTagNames, $declaredTags, $analysis);
     }
 
-    private function removeUnusedTags(array $usedTagNames, array $declaredTags, Analysis $analysis)
+    private function removeUnusedTags(array $usedTagNames, array $declaredTags, Analysis $analysis): void
     {
         if (in_array('*', $this->whitelist)) {
             return;

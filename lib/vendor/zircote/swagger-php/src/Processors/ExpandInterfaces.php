@@ -19,7 +19,7 @@ class ExpandInterfaces
 {
     use Concerns\MergePropertiesTrait;
 
-    public function __invoke(Analysis $analysis)
+    public function __invoke(Analysis $analysis): void
     {
         /** @var OA\Schema[] $schemas */
         $schemas = $analysis->getAnnotationsOfType(OA\Schema::class, true);
@@ -43,7 +43,7 @@ class ExpandInterfaces
                     $interfaceName = $interface['context']->fullyQualifiedName($interface['interface']);
                     $interfaceSchema = $analysis->getSchemaForSource($interfaceName);
                     if ($interfaceSchema) {
-                        $refPath = !Generator::isDefault($interfaceSchema->schema) ? $interfaceSchema->schema : $interface['interface'];
+                        $refPath = Generator::isDefault($interfaceSchema->schema) ? $interface['interface'] : $interfaceSchema->schema;
                         $this->inheritFrom($analysis, $schema, $interfaceSchema, $refPath, $interface['context']);
                     } else {
                         $this->mergeMethods($schema, $interface, $existing);

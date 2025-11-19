@@ -6,32 +6,31 @@
 
 namespace OpenApi;
 
-use Doctrine\Common\Annotations\AnnotationRegistry;
 use OpenApi\Analysers\AnalyserInterface;
 use OpenApi\Analysers\AttributeAnnotationFactory;
 use OpenApi\Analysers\DocBlockAnnotationFactory;
 use OpenApi\Analysers\ReflectionAnalyser;
 use OpenApi\Annotations as OA;
 use OpenApi\Loggers\DefaultLogger;
-use OpenApi\Processors\ProcessorInterface;
+use OpenApi\Type\LegacyTypeResolver;
+use OpenApi\Type\TypeInfoTypeResolver;
 use Psr\Log\LoggerInterface;
+use Radebatz\TypeInfoExtras\TypeResolver\StringTypeResolver;
 
 /**
  * OpenApi spec generator.
  *
  * Scans PHP source code and generates OpenApi specifications from the found OpenApi annotations.
  *
- * This is an object-oriented alternative to using the now deprecated `\OpenApi\scan()` function and
- * static class properties of the `Analyzer` and `Analysis` classes.
+ * This is an object-oriented alternative to using the now deprecated <code>\OpenApi\scan()</code> function and
+ * static class properties of the <code>Analyzer</code> and <code>Analysis</code> classes.
  */
 class Generator
 {
     /**
      * Allows Annotation classes to know the context of the annotation that is being processed.
-     *
-     * @var Context|null
      */
-    public static $context;
+    public static ?Context $context = null;
 
     /** @var string Magic value to differentiate between null and undefined. */
     public const UNDEFINED = '@OA\Generator::UNDEFINED🙈';
@@ -42,36 +41,31 @@ class Generator
     public const DEFAULT_NAMESPACES = ['OpenApi\\Annotations\\'];
 
     /** @var array<string,string> Map of namespace aliases to be supported by doctrine. */
-    protected $aliases;
+    protected array $aliases;
 
     /** @var array<string>|null List of annotation namespaces to be autoloaded by doctrine. */
-    protected $namespaces;
+    protected ?array $namespaces;
 
-    /** @var AnalyserInterface|null The configured analyzer. */
-    protected $analyser = null;
+    protected ?AnalyserInterface $analyser = null;
 
     /** @var array<string,mixed> */
-    protected $config = [];
+    protected array $config = [];
 
-    /** @var Pipeline|null */
-    protected $processorPipeline = null;
+    protected ?Pipeline $processorPipeline = null;
 
-    /** @var LoggerInterface|null PSR logger. */
-    protected $logger = null;
+    protected ?TypeResolverInterface $typeResolver = null;
+
+    protected ?LoggerInterface $logger = null;
 
     /**
      * OpenApi version override.
      *
-     * If set, it will override the version set in the `OpenApi` annotation.
+     * If set, it will override the version set in the <code>OpenApi</code> annotation.
      *
-     * Due to the order of processing any conditional code using this (via `Context::$version`)
+     * Due to the order of processing, any conditional code using this (via <code>Context::$version</code>)
      * must come only after the analysis is finished.
-     *
-     * @var string|null
      */
-    protected $version = null;
-
-    private $configStack;
+    protected ?string $version = null;
 
     public function __construct(?LoggerInterface $logger = null)
     {
@@ -79,54 +73,17 @@ class Generator
 
         $this->setAliases(self::DEFAULT_ALIASES);
         $this->setNamespaces(self::DEFAULT_NAMESPACES);
-
-        // kinda config stack to stay BC...
-        // @deprecated Can be removed once doctrine/annotations 2.0 becomes mandatory
-        $this->configStack = new class() {
-            protected $generator;
-
-            public function push(Generator $generator): void
-            {
-                $this->generator = $generator;
-                /* @phpstan-ignore-next-line */
-                if (class_exists(AnnotationRegistry::class, true) && method_exists(AnnotationRegistry::class, 'registerLoader')) {
-                    // keeping track of &this->generator allows to 'disable' the loader after we are done;
-                    // no unload, unfortunately :/
-                    $gref = &$this->generator;
-                    AnnotationRegistry::registerLoader(
-                        function (string $class) use (&$gref): bool {
-                            if ($gref) {
-                                foreach ($gref->getNamespaces() as $namespace) {
-                                    if (strtolower(substr($class, 0, strlen($namespace))) === strtolower($namespace)) {
-                                        $loaded = class_exists($class);
-                                        if (!$loaded && $namespace === 'OpenApi\\Annotations\\') {
-                                            if (in_array(strtolower(substr($class, 20)), ['definition', 'path'])) {
-                                                // Detected an 2.x annotation?
-                                                throw new OpenApiException('The annotation @SWG\\' . substr($class, 20) . '() is deprecated. Found in ' . Generator::$context . "\nFor more information read the migration guide: https://github.com/zircote/swagger-php/blob/master/docs/Migrating-to-v3.md");
-                                            }
-                                        }
-
-                                        return $loaded;
-                                    }
-                                }
-                            }
-
-                            return false;
-                        }
-                    );
-                }
-            }
-
-            public function pop(): void
-            {
-                $this->generator = null;
-            }
-        };
     }
 
-    public static function isDefault($value): bool
+    public static function isDefault(...$value): bool
     {
-        return $value === Generator::UNDEFINED;
+        foreach ($value as $v) {
+            if ($v !== Generator::UNDEFINED) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -176,7 +133,11 @@ class Generator
 
     public function getAnalyser(): AnalyserInterface
     {
-        $this->analyser = $this->analyser ?: new ReflectionAnalyser([new DocBlockAnnotationFactory(), new AttributeAnnotationFactory()]);
+        $generatorConfig = $this->getConfig()['generator'];
+        $this->analyser = $this->analyser ?: new ReflectionAnalyser([
+            new AttributeAnnotationFactory($generatorConfig['ignoreOtherAttributes']),
+            new DocBlockAnnotationFactory(),
+        ]);
         $this->analyser->setGenerator($this);
 
         return $this->analyser;
@@ -192,6 +153,9 @@ class Generator
     public function getDefaultConfig(): array
     {
         return [
+            'generator' => [
+                'ignoreOtherAttributes' => false,
+            ],
             'operationId' => [
                 'hash' => true,
             ],
@@ -209,7 +173,7 @@ class Generator
         foreach ($config as $key => $value) {
             if (is_numeric($key)) {
                 $token = explode('=', $value);
-                if (2 == count($token)) {
+                if (2 === count($token)) {
                     // 'operationId.hash=false'
                     [$key, $value] = $token;
                 }
@@ -219,11 +183,11 @@ class Generator
                 $value = 'true' == $value;
             }
 
-            if ($isList = ('[]' == substr($key, -2))) {
+            if ($isList = ('[]' === substr($key, -2))) {
                 $key = substr($key, 0, -2);
             }
             $token = explode('.', $key);
-            if (2 == count($token)) {
+            if (2 === count($token)) {
                 // 'operationId.hash' => false
                 // namespaced / processor
                 if ($isList) {
@@ -257,7 +221,7 @@ class Generator
 
     public function getProcessorPipeline(): Pipeline
     {
-        if (null === $this->processorPipeline) {
+        if (!$this->processorPipeline instanceof Pipeline) {
             $this->processorPipeline = new Pipeline([
                 new Processors\DocBlockDescriptions(),
                 new Processors\MergeIntoOpenApi(),
@@ -269,11 +233,13 @@ class Generator
                 new Processors\AugmentSchemas(),
                 new Processors\AugmentRequestBody(),
                 new Processors\AugmentProperties(),
+                new Processors\AugmentDiscriminators(),
                 new Processors\BuildPaths(),
                 new Processors\AugmentParameters(),
                 new Processors\AugmentRefs(),
                 new Processors\MergeJsonContent(),
                 new Processors\MergeXmlContent(),
+                new Processors\AugmentMediaType(),
                 new Processors\OperationId(),
                 new Processors\CleanUnmerged(),
                 new Processors\PathFilter(),
@@ -283,7 +249,7 @@ class Generator
         }
 
         $config = $this->getConfig();
-        $walker = function (callable $pipe) use ($config) {
+        $walker = function (callable $pipe) use ($config): void {
             $rc = new \ReflectionClass($pipe);
 
             // apply config
@@ -296,6 +262,10 @@ class Generator
                     }
                 }
             }
+
+            if (is_a($pipe, GeneratorAwareInterface::class)) {
+                $pipe->setGenerator($this);
+            }
         };
 
         return $this->processorPipeline->walk($walker);
@@ -305,6 +275,16 @@ class Generator
     {
         $this->processorPipeline = $processor;
 
+        $walker = function (callable $pipe): void {
+            if (is_a($pipe, GeneratorAwareInterface::class)) {
+                $pipe->setGenerator($this);
+            }
+        };
+
+        if ($this->processorPipeline) {
+            $this->processorPipeline->walk($walker);
+        }
+
         return $this;
     }
 
@@ -313,7 +293,7 @@ class Generator
      *
      * @param callable $with callable with the current processor pipeline passed in
      */
-    public function withProcessor(callable $with): Generator
+    public function withProcessorPipeline(callable $with): Generator
     {
         $with($this->getProcessorPipeline());
 
@@ -321,89 +301,34 @@ class Generator
     }
 
     /**
-     * @return array<ProcessorInterface|callable>
-     *
-     * @deprecated
+     * @deprecated use `withProcessorPipeline()` instead
      */
-    public function getProcessors(): array
+    public function withProcessor(callable $with): Generator
     {
-        return $this->getProcessorPipeline()->pipes();
+        return $this->withProcessorPipeline($with);
     }
 
-    /**
-     * @param array<ProcessorInterface|callable>|null $processors
-     *
-     * @deprecated
-     */
-    public function setProcessors(?array $processors): Generator
+    public function setTypeResolver(?TypeResolverInterface $typeResolver): Generator
     {
-        $this->processorPipeline = null !== $processors ? new Pipeline($processors) : null;
+        $this->typeResolver = $typeResolver;
 
         return $this;
     }
 
-    /**
-     * @param callable|ProcessorInterface $processor
-     * @param class-string|null           $before
-     *
-     * @deprecated
-     */
-    public function addProcessor($processor, ?string $before = null): Generator
+    public function getTypeResolver(): TypeResolverInterface
     {
-        $processors = $this->processorPipeline ?: $this->getProcessorPipeline();
-        if (!$before) {
-            $processors->add($processor);
-        } else {
-            $processors->insert($processor, $before);
-        }
+        $this->typeResolver ??= class_exists(StringTypeResolver::class)
+                    ? new TypeInfoTypeResolver()
+                    : new LegacyTypeResolver();
 
-        $this->processorPipeline = $processors;
-
-        return $this;
-    }
-
-    /**
-     * @param callable|ProcessorInterface $processor
-     *
-     * @deprecated
-     */
-    public function removeProcessor($processor, bool $silent = false): Generator
-    {
-        $processors = $this->processorPipeline ?: $this->getProcessorPipeline();
-        $processors->remove($processor);
-        $this->processorPipeline = $processors;
-
-        return $this;
-    }
-
-    /**
-     * Update/replace an existing processor with a new one.
-     *
-     * @param ProcessorInterface|callable $processor the new processor
-     * @param null|callable               $matcher   Optional matcher callable to identify the processor to replace.
-     *                                               If none given, matching is based on the processors class.
-     *
-     * @deprecated
-     */
-    public function updateProcessor($processor, ?callable $matcher = null): Generator
-    {
-        $matcher = $matcher ?: function ($other) use ($processor): bool {
-            $otherClass = get_class($other);
-
-            return $processor instanceof $otherClass;
-        };
-
-        $processors = array_map(function ($other) use ($processor, $matcher) {
-            return $matcher($other) ? $processor : $other;
-        }, $this->getProcessors());
-        $this->setProcessors($processors);
-
-        return $this;
+        return $this->typeResolver;
     }
 
     public function getLogger(): ?LoggerInterface
     {
-        return $this->logger ?: new DefaultLogger();
+        $this->logger ??= new DefaultLogger();
+
+        return $this->logger;
     }
 
     public function getVersion(): ?string
@@ -418,6 +343,9 @@ class Generator
         return $this;
     }
 
+    /**
+     * @deprecated use non-static `generate()` instead
+     */
     public static function scan(iterable $sources, array $options = []): ?OA\OpenApi
     {
         // merge with defaults
@@ -451,9 +379,9 @@ class Generator
      * Run code in the context of this generator.
      *
      * @param callable $callable Callable in the form of
-     *                           `function(Generator $generator, Analysis $analysis, Context $context): mixed`
+     *                           <code>function(Generator $generator, Analysis $analysis, Context $context): mixed</code>
      *
-     * @return mixed the result of the `callable`
+     * @return mixed the result of the <code>callable</code>
      */
     public function withContext(callable $callable)
     {
@@ -463,12 +391,7 @@ class Generator
         ]);
         $analysis = new Analysis([], $rootContext);
 
-        $this->configStack->push($this);
-        try {
-            return $callable($this, $analysis, $rootContext);
-        } finally {
-            $this->configStack->pop();
-        }
+        return $callable($this, $analysis, $rootContext);
     }
 
     /**
@@ -492,26 +415,21 @@ class Generator
         $analysis = $analysis ?: new Analysis([], $rootContext);
         $analysis->context = $analysis->context ?: $rootContext;
 
-        $this->configStack->push($this);
-        try {
-            $this->scanSources($sources, $analysis, $rootContext);
+        $this->scanSources($sources, $analysis, $rootContext);
 
-            // post-processing
-            $this->getProcessorPipeline()->process($analysis);
+        // post-processing
+        $this->getProcessorPipeline()->process($analysis);
 
-            if ($analysis->openapi) {
-                // overwrite default/annotated version
-                $analysis->openapi->openapi = $this->getVersion() ?: $analysis->openapi->openapi;
-                // update context to provide the same to validation/serialisation code
-                $rootContext->version = $analysis->openapi->openapi;
-            }
+        if ($analysis->openapi) {
+            // overwrite default/annotated version
+            $analysis->openapi->openapi = $this->getVersion() ?: $analysis->openapi->openapi;
+            // update context to provide the same to validation/serialisation code
+            $rootContext->version = $analysis->openapi->openapi;
+        }
 
-            // validation
-            if ($validate) {
-                $analysis->validate();
-            }
-        } finally {
-            $this->configStack->pop();
+        // validation
+        if ($validate) {
+            $analysis->validate();
         }
 
         return $analysis->openapi;
