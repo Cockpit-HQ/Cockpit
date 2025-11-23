@@ -1,8 +1,9 @@
-import {on} from '../../js/events.js';
+import { on } from '../../js/events.js';
+import { setHighestZindex } from '../../js/utils.js';
 
 let tooltipContainer = null;
 
-on(document.documentElement, 'mouseenter', '[kiss-tooltip]', function(e) {
+on(document.documentElement, 'mouseenter', '[kiss-tooltip]', function (e) {
 
     e.preventDefault();
 
@@ -30,9 +31,9 @@ customElements.define('kiss-tooltip', class extends HTMLElement {
 
         if (ele) {
             let rect = ele.getBoundingClientRect(),
-            left = null,
-            top = null,
-            offset = 5;
+                left = null,
+                top = null,
+                offset = 5;
 
             switch (position) {
 
@@ -76,6 +77,8 @@ customElements.define('kiss-tooltip', class extends HTMLElement {
                 left: `${left}px`
             });
 
+            setHighestZindex(this);
+
             this.$element = ele;
 
             if (!ele.__tooltiped) {
@@ -92,6 +95,7 @@ customElements.define('kiss-tooltip', class extends HTMLElement {
 
     hide() {
         this.setAttribute('show', 'false');
+        this.style.zIndex = null;
     }
 
     isActive() {
