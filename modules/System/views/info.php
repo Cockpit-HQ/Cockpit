@@ -279,7 +279,7 @@
 
                     testMailer() {
 
-                        App.ui.prompt('Target Email', null, (email) => {
+                        App.ui.prompt('Target email', null, (email) => {
 
                             App.ui.block('Sending test mail...');
 
