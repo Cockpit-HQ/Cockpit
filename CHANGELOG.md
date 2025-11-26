@@ -1,5 +1,9 @@
 # Release Notes
 
+## WIP
+
+- Add system mailer test functionality
+
 ## 2.12.1 (2025-10-26)
 
 - Fix Identi module usage with spaces

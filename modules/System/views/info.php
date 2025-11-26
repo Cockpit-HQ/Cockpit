@@ -52,6 +52,12 @@
                                 <td width="30%" class="kiss-size-xsmall"><?=t('Datastorage')?></td>
                                 <td class="kiss-size-small kiss-text-monospace kiss-color-muted"><?=$this->dataStorage->type?></td>
                             </tr>
+                            <?php if ($this->helper('acl')->isSuperAdmin()): ?>
+                            <tr>
+                                <td width="30%" class="kiss-size-xsmall"><?=t('Mailer')?></td>
+                                <td class="kiss-size-small kiss-text-monospace kiss-color-muted"><button type="button" class="kiss-button kiss-button-small" @click="testMailer()"><icon class="kiss-margin-small-right">email</icon><?=t('Test mailer')?></button></td>
+                            </tr>
+                            <?php endif ?>
                         </tbody>
                     </table>
 
@@ -269,7 +275,24 @@
                             type: 'password',
                             info: 'Please enter your password to verify this action'
                         });
-                    }
+                    },
+
+                    testMailer() {
+
+                        App.ui.prompt('Target Email', null, (email) => {
+
+                            App.ui.block('Sending test mail...');
+
+                            this.$request('/system/utils/testMailer', {email}).then(res => {
+                                App.ui.notify('Test mail sent!');
+                            }).catch(res => {
+                                App.ui.notify(res.error || 'Test mail failed!', 'error');
+                            }).finally(() => {
+                                App.ui.unblock();
+                            });
+                        })
+                        
+                    },
                 }
             }
         </script>
