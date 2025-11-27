@@ -10,7 +10,7 @@ use OpenApi\Analysers\AnalyserInterface;
 /**
  * Extracts swagger-php annotations from php code using static analysis.
  */
-class LegacyTokenAnalyser implements AnalyserInterface
+class AlternativeTokenAnalyser implements AnalyserInterface
 {
     /** @var Generator|null */
     protected $generator;
@@ -64,7 +64,7 @@ class LegacyTokenAnalyser implements AnalyserInterface
     {
         $generator = $this->generator ?: new Generator();
         $analysis = new Analysis([], $parseContext);
-        $docBlockParser = new LegacyDocBlockParser($generator->getAliases());
+        $docBlockParser = new AlternativeDocBlockParser($generator->getAliases());
 
         reset($tokens);
         $token = '';
@@ -460,7 +460,7 @@ class LegacyTokenAnalyser implements AnalyserInterface
     /**
      * Parse comment and add annotations to analysis.
      */
-    private function analyseComment(Analysis $analysis, LegacyDocBlockParser $docBlockParser, string $comment, Context $context): void
+    private function analyseComment(Analysis $analysis, AlternativeDocBlockParser $docBlockParser, string $comment, Context $context): void
     {
         $analysis->addAnnotations($docBlockParser->fromComment($comment, $context), $context);
     }

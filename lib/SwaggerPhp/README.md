@@ -1,23 +1,22 @@
-# SwaggerPhp Legacy Analysers
+# SwaggerPhp Alternative Analysers
 
-This directory contains legacy analyser classes adapted from `zircote/swagger-php` v4.
+This folder contains a custom `AlternativeTokenAnalyser` and `AlternativeDocBlockParser` to support parsing Swagger annotations using `phpstan/phpdoc-parser` instead of `doctrine/annotations`.
 
-## Purpose
+This allows us to continue using DocBlock annotations with `swagger-php` v5 without relying on the deprecated `doctrine/annotations` library.
 
-`zircote/swagger-php` v5.0 removed the `TokenAnalyser` class, which Cockpit CMS relies on for extracting annotations.
-To maintain compatibility and functionality with `swagger-php` v5+, these classes were copied and adapted to work with the new version.
+The `AlternativeTokenAnalyser` is used in `modules/System/Controller/Api.php` to generate the OpenAPI specification.
 
 ## Classes
 
-- **LegacyTokenAnalyser**: Replaces the removed `OpenApi\Analysers\TokenAnalyser`. It performs static analysis on PHP tokens to extract annotations.
-- **LegacyDocBlockParser**: A helper class used by `LegacyTokenAnalyser` to parse docblocks using `Doctrine\Common\Annotations\DocParser`.
+- **AlternativeTokenAnalyser**: Replaces the removed `OpenApi\Analysers\TokenAnalyser`. It performs static analysis on PHP tokens to extract annotations.
+- **AlternativeDocBlockParser**: A helper class used by `AlternativeTokenAnalyser` to parse docblocks using `phpstan/phpdoc-parser`.
 
 ## Usage
 
 These classes are used in `modules/System/Controller/Api.php` to configure the `OpenApi\Generator`:
 
 ```php
-use SwaggerPhp\LegacyTokenAnalyser;
-
-$yaml = \OpenApi\Generator::scan($paths, ['analyser' => new LegacyTokenAnalyser()])->toYaml();
+use SwaggerPhp\AlternativeTokenAnalyser;
+ 
+ $yaml = \OpenApi\Generator::scan($paths, ['analyser' => new AlternativeTokenAnalyser()])->toYaml();
 ```
