@@ -48,7 +48,15 @@ class Cursor implements Iterator {
     /**
      * @var null|array
      */
+    /**
+     * @var null|array
+     */
     protected ?array $sort = null;
+
+    /**
+     * @var null|string
+     */
+    protected ?string $criteriaSql = null;
 
     /**
      * Constructor
@@ -56,10 +64,11 @@ class Cursor implements Iterator {
      * @param object $collection
      * @param mixed $criteria
      */
-    public function __construct(Collection $collection, mixed $criteria, ?array $projection = null) {
+    public function __construct(Collection $collection, mixed $criteria, ?array $projection = null, ?string $criteriaSql = null) {
         $this->collection  = $collection;
         $this->criteria    = $criteria;
         $this->projection  = $projection;
+        $this->criteriaSql = $criteriaSql;
     }
 
     /**
@@ -85,21 +94,24 @@ class Cursor implements Iterator {
         // Get sanitized collection name
         $sanitizedName = $this->getSanitizedCollectionName();
 
-        if (!$this->criteria) {
+        if (!$this->criteria && !$this->criteriaSql) {
 
             $stmt = $this->collection->database->connection->query("SELECT COUNT(*) AS C FROM `{$sanitizedName}`");
 
         } else {
             
-            // Sanitize criteria function ID
-            $sanitizedCriteriaId = $this->collection->database->sanitizeCriteriaId($this->criteria);
-            if (!$sanitizedCriteriaId) {
-                throw new \InvalidArgumentException("Invalid criteria function ID");
-            }
-
             $sql = ["SELECT COUNT(*) AS C FROM `{$sanitizedName}`"];
 
-            $sql[] = "WHERE document_criteria('{$sanitizedCriteriaId}', document)";
+            if ($this->criteriaSql) {
+                $sql[] = "WHERE {$this->criteriaSql}";
+            } else {
+                // Sanitize criteria function ID
+                $sanitizedCriteriaId = $this->collection->database->sanitizeCriteriaId($this->criteria);
+                if (!$sanitizedCriteriaId) {
+                    throw new \InvalidArgumentException("Invalid criteria function ID");
+                }
+                $sql[] = "WHERE document_criteria('{$sanitizedCriteriaId}', document)";
+            }
 
             if ($this->limit) {
                 $sql[] = "LIMIT ".(int)$this->limit;
@@ -191,7 +203,9 @@ class Cursor implements Iterator {
         $conn = $this->collection->database->connection;
         $sql = ["SELECT document FROM `{$sanitizedName}`"];
 
-        if ($this->criteria) {
+        if ($this->criteriaSql) {
+            $sql[] = "WHERE {$this->criteriaSql}";
+        } elseif ($this->criteria) {
             // Sanitize criteria function ID
             $sanitizedCriteriaId = $this->collection->database->sanitizeCriteriaId($this->criteria);
             if (!$sanitizedCriteriaId) {

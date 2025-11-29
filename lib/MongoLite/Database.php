@@ -35,6 +35,11 @@ class Database {
     protected array $document_criterias = [];
 
     /**
+     * @var QueryOptimizer|null
+     */
+    protected ?QueryOptimizer $queryOptimizer = null;
+
+    /**
      * Constructor
      *
      * @param string $path
@@ -293,6 +298,16 @@ class Database {
         }
         
         return null;
+    }
+
+    /**
+     * Get QueryOptimizer instance
+     */
+    public function getQueryOptimizer(): QueryOptimizer {
+        if (!isset($this->queryOptimizer)) {
+            $this->queryOptimizer = new QueryOptimizer($this->connection);
+        }
+        return $this->queryOptimizer;
     }
 }
 

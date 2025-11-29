@@ -4,6 +4,7 @@
 
 - Add system mailer test functionality
 - Clean up inactive worker PIDs
+- Add query optimizer to MongoLite
 
 ## 2.12.1 (2025-10-26)
 
