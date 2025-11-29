@@ -4,7 +4,7 @@ namespace IndexHybrid;
 
 class Manager {
 
-    protected \IndexLite\Manager|Meilisearch\Manager $manager;
+    protected \IndexLite\Manager|Meilisearch\Manager|null $manager = null;
     protected ?string $type = null;
 
     public function __construct(string $server, array $options = []) {
