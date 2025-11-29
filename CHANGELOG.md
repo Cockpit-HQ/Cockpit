@@ -6,6 +6,7 @@
 - Clean up inactive worker PIDs
 - Add query optimizer to MongoLite
 - Make IndexLite more compatible with Meilisearch
+- Add group filtering to app search results
 
 ## 2.12.1 (2025-10-26)
 
