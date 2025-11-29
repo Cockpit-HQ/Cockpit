@@ -141,6 +141,121 @@ $results = $index->search('important', [
 ]);
 ```
 
+### Geo Search
+
+IndexLite supports geospatial filtering using Meilisearch-compatible syntax.
+
+**Requirements:**
+- Documents must have a `_geo` field in their payload: `{"_geo": {"lat": 48.8, "lng": 2.35}}`
+
+**Available Filters:**
+
+1.  **_geoRadius(lat, lng, distance_in_meters)**
+    ```php
+    $results = $index->search('restaurant', [
+        'filter' => '_geoRadius(48.8566, 2.3522, 1000)' // 1km around Paris
+    ]);
+    ```
+
+2.  **_geoBoundingBox([lat1, lng1], [lat2, lng2])**
+    Defines a rectangular area (top-right, bottom-left).
+    ```php
+    $results = $index->search('park', [
+        'filter' => '_geoBoundingBox([48.9, 2.4], [48.8, 2.3])'
+    ]);
+    ```
+
+3.  **_geoPolygon([lat, lng], [lat, lng], ...)**
+    Defines a custom polygon area.
+    ```php
+    $results = $index->search('zone', [
+        'filter' => '_geoPolygon([48.8, 2.3], [48.9, 2.3], [48.9, 2.4])'
+    ]);
+    ```
+
+## Meilisearch Compatibility
+
+IndexLite accepts Meilisearch-compatible parameters and returns a compatible response structure, making it easier to switch or integrate.
+
+### Supported Parameters
+
+| Meilisearch Parameter | IndexLite Equivalent |
+|-----------------------|----------------------|
+| `q` | `query` (first argument) |
+| `attributesToRetrieve` | `fields` |
+| `attributesToHighlight` | `highlight` |
+| `hitsPerPage` | `limit` |
+| `page` | `offset` (calculated) |
+| `filter` | `filter` (supports array of strings) |
+| `sort` | `sort` |
+
+### Response Structure
+
+The response includes standard Meilisearch fields:
+
+```json
+{
+  "hits": [...],
+  "query": "search term",
+  "processingTimeMs": 12,
+  "hitsPerPage": 20,
+  "page": 1,
+  "totalPages": 5,
+  "estimatedTotalHits": 100,
+  "facetDistribution": {
+    "category": {
+      "electronics": 10,
+      "books": 5
+    }
+  }
+}
+```
+
+## Meilisearch-like Features
+
+IndexLite supports advanced features similar to Meilisearch to improve search experience.
+
+### Result Highlighting
+
+You can request highlighted snippets in the search results using the `highlight` option.
+
+```php
+$results = $index->search('query', [
+    'highlight' => true, // or ['title', 'content'] to specify fields
+]);
+
+// Access highlighted fields in '_formatted'
+foreach ($results['hits'] as $hit) {
+    if (isset($hit['_formatted']['title'])) {
+        echo $hit['_formatted']['title']; // "Matching <em>query</em>..."
+    }
+}
+```
+
+### Synonyms
+
+You can provide synonyms to expand search terms automatically.
+
+```php
+$results = $index->search('phone', [
+    'synonyms' => [
+        'phone' => ['mobile', 'smartphone'],
+        'laptop' => ['notebook']
+    ]
+]);
+// Searches for: (phone OR mobile OR smartphone)
+```
+
+### Custom Sorting
+
+Sort results by specific fields while maintaining relevance as a secondary sort order.
+
+```php
+$results = $index->search('query', [
+    'sort' => ['price' => 'asc']
+]);
+```
+
 ## Faceted Search
 
 ```php

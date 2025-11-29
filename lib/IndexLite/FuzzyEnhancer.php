@@ -20,7 +20,7 @@ class FuzzyEnhancer {
     /**
      * Register custom SQLite functions for enhanced fuzzy matching
      */
-    protected function registerFunctions(): void {
+    public function registerFunctions(): void {
         // Use connection ID to track registration per database connection
         $connectionId = spl_object_id($this->db);
         

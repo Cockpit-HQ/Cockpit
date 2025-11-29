@@ -45,11 +45,11 @@ class Manager {
             'enhanced_fuzzy' => $this->type === 'indexlite', // Built into base IndexLite now
             'facets' => true, // Both backends support facets
             'multiple_facets' => true, // Both backends support multiple facets
-            'highlights' => $this->type === 'meilisearch',
-            'synonyms' => $this->type === 'meilisearch',
+            'highlights' => true, // Both backends support highlights
+            'synonyms' => true, // Both backends support synonyms
+            'custom_ranking' => true, // Both backends support custom ranking (sort)
             'typo_tolerance' => $this->type === 'meilisearch',
             'geo_search' => $this->type === 'meilisearch',
-            'custom_ranking' => $this->type === 'meilisearch',
             default => false
         };
     }
