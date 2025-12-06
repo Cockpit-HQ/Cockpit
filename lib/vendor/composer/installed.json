@@ -59,17 +59,17 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.363.3",
-            "version_normalized": "3.363.3.0",
+            "version": "3.366.2",
+            "version_normalized": "3.366.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "0ec2218d32e291b988b1602583032ca5d11f8e8d"
+                "reference": "de3b25e2d86aa081814e198fe5cde4ef0ff7f879"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/0ec2218d32e291b988b1602583032ca5d11f8e8d",
-                "reference": "0ec2218d32e291b988b1602583032ca5d11f8e8d",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/de3b25e2d86aa081814e198fe5cde4ef0ff7f879",
+                "reference": "de3b25e2d86aa081814e198fe5cde4ef0ff7f879",
                 "shasum": ""
             },
             "require": {
@@ -82,7 +82,8 @@
                 "guzzlehttp/psr7": "^2.4.5",
                 "mtdowling/jmespath.php": "^2.8.0",
                 "php": ">=8.1",
-                "psr/http-message": "^1.0 || ^2.0"
+                "psr/http-message": "^1.0 || ^2.0",
+                "symfony/filesystem": "^v6.4.3 || ^v7.1.0 || ^v8.0.0"
             },
             "require-dev": {
                 "andrewsville/php-token-reflection": "^1.4",
@@ -93,13 +94,11 @@
                 "doctrine/cache": "~1.4",
                 "ext-dom": "*",
                 "ext-openssl": "*",
-                "ext-pcntl": "*",
                 "ext-sockets": "*",
-                "phpunit/phpunit": "^5.6.3 || ^8.5 || ^9.5",
+                "phpunit/phpunit": "^9.6",
                 "psr/cache": "^2.0 || ^3.0",
                 "psr/simple-cache": "^2.0 || ^3.0",
                 "sebastian/comparator": "^1.2.3 || ^4.0 || ^5.0",
-                "symfony/filesystem": "^v6.4.0 || ^v7.1.0",
                 "yoast/phpunit-polyfills": "^2.0"
             },
             "suggest": {
@@ -107,9 +106,10 @@
                 "doctrine/cache": "To use the DoctrineCacheAdapter",
                 "ext-curl": "To send requests using cURL",
                 "ext-openssl": "Allows working with CloudFront private distributions and verifying received SNS messages",
+                "ext-pcntl": "To use client-side monitoring",
                 "ext-sockets": "To use client-side monitoring"
             },
-            "time": "2025-11-26T19:05:22+00:00",
+            "time": "2025-12-05T19:09:22+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -153,7 +153,7 @@
             "support": {
                 "forum": "https://github.com/aws/aws-sdk-php/discussions",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.363.3"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.366.2"
             },
             "install-path": "../aws/aws-sdk-php"
         },
@@ -1477,17 +1477,17 @@
         },
         {
             "name": "nikic/php-parser",
-            "version": "v5.6.2",
-            "version_normalized": "5.6.2.0",
+            "version": "v5.7.0",
+            "version_normalized": "5.7.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "3a454ca033b9e06b63282ce19562e892747449bb"
+                "reference": "dca41cd15c2ac9d055ad70dbfd011130757d1f82"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/3a454ca033b9e06b63282ce19562e892747449bb",
-                "reference": "3a454ca033b9e06b63282ce19562e892747449bb",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/dca41cd15c2ac9d055ad70dbfd011130757d1f82",
+                "reference": "dca41cd15c2ac9d055ad70dbfd011130757d1f82",
                 "shasum": ""
             },
             "require": {
@@ -1500,7 +1500,7 @@
                 "ircmaxell/php-yacc": "^0.0.7",
                 "phpunit/phpunit": "^9.0"
             },
-            "time": "2025-10-21T19:32:17+00:00",
+            "time": "2025-12-06T11:56:16+00:00",
             "bin": [
                 "bin/php-parse"
             ],
@@ -1532,7 +1532,7 @@
             ],
             "support": {
                 "issues": "https://github.com/nikic/PHP-Parser/issues",
-                "source": "https://github.com/nikic/PHP-Parser/tree/v5.6.2"
+                "source": "https://github.com/nikic/PHP-Parser/tree/v5.7.0"
             },
             "install-path": "../nikic/php-parser"
         },
@@ -2488,6 +2488,79 @@
                 }
             ],
             "install-path": "../symfony/deprecation-contracts"
+        },
+        {
+            "name": "symfony/filesystem",
+            "version": "v7.4.0",
+            "version_normalized": "7.4.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/filesystem.git",
+                "reference": "d551b38811096d0be9c4691d406991b47c0c630a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/filesystem/zipball/d551b38811096d0be9c4691d406991b47c0c630a",
+                "reference": "d551b38811096d0be9c4691d406991b47c0c630a",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.2",
+                "symfony/polyfill-ctype": "~1.8",
+                "symfony/polyfill-mbstring": "~1.8"
+            },
+            "require-dev": {
+                "symfony/process": "^6.4|^7.0|^8.0"
+            },
+            "time": "2025-11-27T13:27:24+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Filesystem\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Provides basic utilities for the filesystem",
+            "homepage": "https://symfony.com",
+            "support": {
+                "source": "https://github.com/symfony/filesystem/tree/v7.4.0"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/nicolas-grekas",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "install-path": "../symfony/filesystem"
         },
         {
             "name": "symfony/finder",
@@ -3574,17 +3647,17 @@
         },
         {
             "name": "webonyx/graphql-php",
-            "version": "v15.26.0",
-            "version_normalized": "15.26.0.0",
+            "version": "v15.27.1",
+            "version_normalized": "15.27.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webonyx/graphql-php.git",
-                "reference": "b4a36b2756148661946afb84543497bf330a1708"
+                "reference": "2d1f63cdc424473d97729bb97038d6a813223d45"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webonyx/graphql-php/zipball/b4a36b2756148661946afb84543497bf330a1708",
-                "reference": "b4a36b2756148661946afb84543497bf330a1708",
+                "url": "https://api.github.com/repos/webonyx/graphql-php/zipball/2d1f63cdc424473d97729bb97038d6a813223d45",
+                "reference": "2d1f63cdc424473d97729bb97038d6a813223d45",
                 "shasum": ""
             },
             "require": {
@@ -3597,13 +3670,13 @@
                 "amphp/http-server": "^2.1",
                 "dms/phpunit-arraysubset-asserts": "dev-master",
                 "ergebnis/composer-normalize": "^2.28",
-                "friendsofphp/php-cs-fixer": "3.89.2",
+                "friendsofphp/php-cs-fixer": "3.91.2",
                 "mll-lab/php-cs-fixer-config": "5.11.0",
                 "nyholm/psr7": "^1.5",
                 "phpbench/phpbench": "^1.2",
                 "phpstan/extension-installer": "^1.1",
                 "phpstan/phpstan": "2.1.32",
-                "phpstan/phpstan-phpunit": "2.0.8",
+                "phpstan/phpstan-phpunit": "2.0.9",
                 "phpstan/phpstan-strict-rules": "2.0.7",
                 "phpunit/phpunit": "^9.5 || ^10.5.21 || ^11",
                 "psr/http-message": "^1 || ^2",
@@ -3611,7 +3684,7 @@
                 "react/promise": "^2.0 || ^3.0",
                 "rector/rector": "^2.0",
                 "symfony/polyfill-php81": "^1.23",
-                "symfony/var-exporter": "^5 || ^6 || ^7",
+                "symfony/var-exporter": "^5 || ^6 || ^7 || ^8",
                 "thecodingmachine/safe": "^1.3 || ^2 || ^3",
                 "ticketswap/phpstan-error-formatter": "1.2.3"
             },
@@ -3620,7 +3693,7 @@
                 "psr/http-message": "To use standard GraphQL server",
                 "react/promise": "To leverage async resolving on React PHP platform"
             },
-            "time": "2025-11-20T10:06:36+00:00",
+            "time": "2025-12-05T09:40:56+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -3640,7 +3713,7 @@
             ],
             "support": {
                 "issues": "https://github.com/webonyx/graphql-php/issues",
-                "source": "https://github.com/webonyx/graphql-php/tree/v15.26.0"
+                "source": "https://github.com/webonyx/graphql-php/tree/v15.27.1"
             },
             "funding": [
                 {
@@ -3652,17 +3725,17 @@
         },
         {
             "name": "zircote/swagger-php",
-            "version": "5.7.5",
-            "version_normalized": "5.7.5.0",
+            "version": "5.7.6",
+            "version_normalized": "5.7.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zircote/swagger-php.git",
-                "reference": "9a37739401485b42d779495e70548309820d11d6"
+                "reference": "e4727bad28cf426b026421162af384f893c0142c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zircote/swagger-php/zipball/9a37739401485b42d779495e70548309820d11d6",
-                "reference": "9a37739401485b42d779495e70548309820d11d6",
+                "url": "https://api.github.com/repos/zircote/swagger-php/zipball/e4727bad28cf426b026421162af384f893c0142c",
+                "reference": "e4727bad28cf426b026421162af384f893c0142c",
                 "shasum": ""
             },
             "require": {
@@ -3691,7 +3764,7 @@
                 "doctrine/annotations": "^2.0",
                 "radebatz/type-info-extras": "^1.0.2"
             },
-            "time": "2025-11-28T23:22:21+00:00",
+            "time": "2025-12-04T01:33:01+00:00",
             "bin": [
                 "bin/openapi"
             ],
@@ -3737,7 +3810,7 @@
             ],
             "support": {
                 "issues": "https://github.com/zircote/swagger-php/issues",
-                "source": "https://github.com/zircote/swagger-php/tree/5.7.5"
+                "source": "https://github.com/zircote/swagger-php/tree/5.7.6"
             },
             "install-path": "../zircote/swagger-php"
         }

@@ -21,6 +21,7 @@ return array(
     'Symfony\\Component\\String\\' => array($vendorDir . '/symfony/string'),
     'Symfony\\Component\\Process\\' => array($vendorDir . '/symfony/process'),
     'Symfony\\Component\\Finder\\' => array($vendorDir . '/symfony/finder'),
+    'Symfony\\Component\\Filesystem\\' => array($vendorDir . '/symfony/filesystem'),
     'Symfony\\Component\\Console\\' => array($vendorDir . '/symfony/console'),
     'RobThree\\Auth\\' => array($vendorDir . '/robthree/twofactorauth/lib'),
     'Psr\\Log\\' => array($vendorDir . '/psr/log/src'),
