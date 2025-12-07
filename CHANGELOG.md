@@ -7,6 +7,7 @@
 - Add query optimizer to MongoLite
 - Make IndexLite more compatible with Meilisearch
 - Add group filtering to app search results
+- Upgrade TipTap to v3
 
 ## 2.12.1 (2025-10-26)
 
