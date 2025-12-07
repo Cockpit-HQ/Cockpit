@@ -163,7 +163,7 @@ export default {
                         VueTiptap.Placeholder.configure({
                             emptyNodeClass: 'tiptap-node-is-empty',
                             showOnlyCurrent: true,
-                            placeholder: $this.placeholder || 'Start writing...'
+                            placeholder: $this.placeholder || App.i18n.get('Start writing...')
                         }),
                     ],
 
@@ -234,7 +234,7 @@ export default {
                     <editor-content :id="uid" class="tiptap-content-wrapper" :editor="editor"  />
                 </div>
                 
-                <floating-menu :editor="editor" :options="{ duration: 100, offset: {mainAxis: 20} }" v-if="editor">
+                <floating-menu :editor="editor" :options="{ duration: 100, offset: {mainAxis: 0, crossAxis: 30} }" v-if="editor">
                     <kiss-card class="kiss-button-group" theme="shadowed" hover="bordered-primary">
                         <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-button-primary': editor.isActive('heading', { level: 1 })}" @click="editor.chain().focus().toggleHeading({ level: 1 }).run()">H1</button>
                         <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-button-primary': editor.isActive('heading', { level: 2 })}" @click="editor.chain().focus().toggleHeading({ level: 2 }).run()">H2</button>
