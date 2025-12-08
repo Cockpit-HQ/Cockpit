@@ -128,14 +128,13 @@ export default {
                         }),
                         VueTiptap.Link.configure({
                             openOnClick: false,
+                            protocols: ['ftp', 'mailto', 'http', 'https', 'tel', 'sms'],
                             isAllowedUri: (url, ctx) => {
-
-                                const allowedProtocols = ['ftp', 'mailto', 'http', 'https', 'tel', 'sms', 'assets', 'pages'];
 
                                 if (url.includes('://')) {
                                     try {
                                         const uri = new URL(url);
-                                        return allowedProtocols.includes(uri.protocol.replace(':', ''));
+                                        return ctx.protocols.includes(uri.protocol.replace(':', ''));
                                     } catch (e) {
                                         return false;
                                     }
