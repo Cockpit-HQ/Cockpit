@@ -23,8 +23,10 @@ export default {
 
             let primaryColor = computedStyle.getPropertyValue('--kiss-color-primary').trim().replace('#', '%23');
             let theme = computedStyle.getPropertyValue('--app-auto-theme').trim()
+            let bgColor = computedStyle.getPropertyValue('--kiss-base-background-color').trim().replace('#', '%23');
+            let textColor = computedStyle.getPropertyValue('--kiss-base-text-color').trim().replace('#', '%23');
 
-            return this.$routeUrl(`/system/api/graphqlViewer?theme=${theme}&primaryColor=${primaryColor}&apiKey=${apiKey}`);
+            return this.$routeUrl(`/system/api/graphqlViewer?theme=${theme}&primaryColor=${primaryColor}&bgColor=${bgColor}&textColor=${textColor}&apiKey=${apiKey}`);
         }
     },
 
