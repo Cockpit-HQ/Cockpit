@@ -192,6 +192,15 @@ extract(".var_export($params, true).");
     }
 
     /**
+     * Check if parallel extension is available.
+     *
+     * @return bool True if parallel is available, false otherwise.
+     */
+    public function hasParallel() {
+        return extension_loaded('parallel');
+    }
+
+    /**
      * Check if an asynchronous process is possible.
      *
      * @return bool True if an asynchronous process is possible, false otherwise.

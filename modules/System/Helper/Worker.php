@@ -5,12 +5,15 @@ namespace System\Helper;
 use QueueLite\Queue;
 use QueueLite\Worker as QueueWorker;
 use ArrayObject;
+use parallel\Runtime;
+use parallel\Future;
 
 class Worker extends \Lime\Helper {
 
     protected ?Queue $queue = null;
     protected ?ArrayObject $handlers = null;
     protected ?QueueWorker $worker = null;
+    protected ?array $parallelRuntimes = null;
 
     protected function initialize() {
 
@@ -61,6 +64,11 @@ class Worker extends \Lime\Helper {
      */
     public function process(int $limit = 10) {
 
+        if ($this->app->helper('async')->hasParallel()) {
+            $this->processParallel($limit);
+            return;
+        }
+
         if (!$this->handlers) {
 
             $this->handlers = new ArrayObject([]);
@@ -84,6 +92,140 @@ class Worker extends \Lime\Helper {
             return call_user_func($handle, $data, $context);
 
         }, $limit);
+    }
+
+    /**
+     * Process jobs using parallel extension (if available).
+     *
+     * @param int $limit The maximum number of jobs to process.
+     * @return void
+     */
+    protected function processParallel(int $limit = 10) {
+
+        $jobs = [];
+        $count = 0;
+
+        // Reserve multiple jobs
+        while ($count < $limit) {
+            $msg = $this->queue->reserve();
+            if (!$msg) break;
+            $jobs[] = $msg;
+            $count++;
+        }
+
+        if (empty($jobs)) return;
+
+        // Prepare environment info for bootstrap
+        $appDir = APP_DIR;
+        $envDir = rtrim($this->app->path('#root:'), '/');
+        $envAppVars = [
+            'app_space' => $this->app->retrieve('app_space'),
+            'base_route' => $this->app->retrieve('base_route'),
+            'base_url' => $this->app->retrieve('base_url')
+        ];
+
+        $globals = [
+            'APP_SPACES_DIR' => defined('APP_SPACES_DIR') ? APP_SPACES_DIR : null,
+            'APP_DOCUMENT_ROOT' => defined('APP_DOCUMENT_ROOT') ? APP_DOCUMENT_ROOT : null,
+        ];
+
+        // Initialize runtimes if needed
+        if (!$this->parallelRuntimes) {
+            $this->parallelRuntimes = [];
+            // Create pool of runtimes equal to limit or smaller?
+            // Let's create one runtime per job for simplicity, or reuse a pool.
+            // Reusing is better. Let's make a pool of 4 workers or $limit.
+            // For now, let's just make runtimes on demand or pool them.
+            // A simple pool:
+            for ($i = 0; $i < min($limit, 8); $i++) {
+                $this->parallelRuntimes[] = new Runtime(APP_DIR.'/bootstrap.php');
+            }
+        }
+
+        $futures = [];
+        $runtimeIndex = 0;
+
+        foreach ($jobs as $msg) {
+            
+            $runtime = $this->parallelRuntimes[$runtimeIndex % count($this->parallelRuntimes)];
+            $runtimeIndex++;
+
+            try {
+                $futures[$msg['_id']] = $runtime->run(function($msg, $appDir, $envDir, $envAppVars, $globals) {
+
+                    // Define globals
+                    foreach ($globals as $key => $value) {
+                        if ($value !== null && !defined($key)) {
+                            define($key, $value);
+                        }
+                    }
+
+                    // Bootstrap inside thread
+                    if (!class_exists('Cockpit')) {
+                        include($appDir.'/bootstrap.php');
+                    }
+
+                    $app = \Cockpit::instance($envDir, $envAppVars);
+                    
+                    // Collect handlers
+                    $handlers = new ArrayObject([]);
+                    $app->trigger('worker.handlers.collect', [$handlers]);
+
+                    $job = $msg['data']['job'] ?? null;
+                    $data = $msg['data']['data'] ?? [];
+                    $handler = $handlers[$job] ?? null;
+
+                    if (!$job || !$handler) {
+                        return false;
+                    }
+                    
+                    // Handler might expect $this to be App, but here it's likely just a Closure.
+                    // If it was bound to $app in main thread, it won't be here.
+                    // But typically handlers form `worker.handlers.collect` are closures defined in-place or static calls.
+                    // If they rely on $this, we might need to bind providing the local $app.
+                    if ($handler instanceof \Closure) {
+                        $handler = \Closure::bind($handler, $app, $app);
+                    }
+
+                    $context = new ArrayObject([]);
+                    return call_user_func($handler, $data, $context);
+
+                }, [$msg, $appDir, $envDir, $envAppVars, $globals]);
+
+            } catch (\Throwable $e) {
+                // Runtime might have crashed or closed.
+                // Mark job as failed and replace valid runtime.
+                $this->queue->fail($msg['_id'], ['error' => 'Runtime Error: '.$e->getMessage()]);
+                
+                // Replace the broken runtime
+                try {
+                    $this->parallelRuntimes[$runtimeIndex % count($this->parallelRuntimes) - 1] = new Runtime(APP_DIR.'/bootstrap.php');
+                } catch (\Throwable $err) {
+                     // If we can't create a new runtime, maybe parallel is broken or memory issue.
+                     // Just unset it to reduce pool size or leave it broken?
+                     // Let's trying closing it if possible, allowing GC.
+                     unset($this->parallelRuntimes[$runtimeIndex % count($this->parallelRuntimes) - 1]);
+                     $this->parallelRuntimes = array_values($this->parallelRuntimes); // reindex
+                }
+            }
+        }
+
+        // Wait for results
+        foreach ($jobs as $msg) {
+            $id = $msg['_id'];
+            if (isset($futures[$id])) {
+                try {
+                    $result = $futures[$id]->value();
+                    if ($result === true) {
+                        $this->queue->complete($id);
+                    } else {
+                        $this->queue->fail($id);
+                    }
+                } catch (\Throwable $e) {
+                     $this->queue->fail($id, ['error' => $e->getMessage()]);
+                }
+            }
+        }
     }
 
     /**
