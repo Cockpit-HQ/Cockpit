@@ -9,6 +9,7 @@
 - Add group filtering to app search results
 - Upgrade TipTap to v3
 - Add parallel job processing to worker using the `parallel` extension if available
+- Fix App.utils.selectAsset causing MongoDB error with empty filter
 
 ## 2.12.1 (2025-10-26)
 
