@@ -209,4 +209,104 @@ extract(".var_export($params, true).");
         return $this->isExecAvailable() || function_exists('fsockopen');
     }
 
+    /**
+     * Execute one or multiple callables in parallel.
+     *
+     * @param callable|array $tasks The task(s) to execute.
+     * @return array The results of the tasks.
+     */
+    public function batch($tasks) {
+
+        if (!is_array($tasks)) {
+            $tasks = [$tasks];
+        }
+
+        $results = [];
+
+        if ($this->hasParallel()) {
+
+            $runtimes = [];
+            $futures = [];
+
+            // Initialize runtimes
+            // We use a simple pool strategy: create as many runtimes as tasks, up to a sane limit (e.g. 8)
+            $limit = 8;
+            $runtimeCount = min(count($tasks), $limit);
+
+            for ($i = 0; $i < $runtimeCount; $i++) {
+                $runtimes[] = new \parallel\Runtime(APP_DIR.'/bootstrap.php');
+            }
+
+            // Prepare environment info
+            $appDir = APP_DIR;
+            $envDir = rtrim($this->app->path('#root:'), '/');
+            $envAppVars = [
+                'app_space' => $this->app->retrieve('app_space'),
+                'base_route' => $this->app->retrieve('base_route'),
+                'base_url' => $this->app->retrieve('base_url')
+            ];
+
+            $globals = [
+                'APP_SPACES_DIR' => defined('APP_SPACES_DIR') ? APP_SPACES_DIR : null,
+                'APP_DOCUMENT_ROOT' => defined('APP_DOCUMENT_ROOT') ? APP_DOCUMENT_ROOT : null,
+            ];
+
+            $i = 0;
+            foreach ($tasks as $key => $task) {
+
+                $runtime = $runtimes[$i % count($runtimes)];
+                $i++;
+
+                $future = $runtime->run(function($task, $appDir, $envDir, $envAppVars, $globals) {
+
+                    // Define globals
+                    foreach ($globals as $k => $v) {
+                        if ($v !== null && !defined($k)) {
+                            define($k, $v);
+                        }
+                    }
+
+                    // Bootstrap inside thread
+                    if (!class_exists('Cockpit')) {
+                        include($appDir.'/bootstrap.php');
+                    }
+
+                    $app = \Cockpit::instance($envDir, $envAppVars);
+
+                    // Bind task to app instance if it's a closure
+                    if ($task instanceof \Closure) {
+                        $task = \Closure::bind($task, $app, $app);
+                    }
+
+                    return call_user_func($task, $app);
+
+                }, [$task, $appDir, $envDir, $envAppVars, $globals]);
+
+                $futures[$key] = $future;
+            }
+
+            // Collect results
+            foreach ($futures as $key => $future) {
+                try {
+                    $results[$key] = $future->value();
+                } catch (\Throwable $e) {
+                    $results[$key] = $e;
+                }
+            }
+
+        } else {
+
+            // Sequential fallback
+            foreach ($tasks as $key => $task) {
+                try {
+                    $results[$key] = call_user_func($task, $this->app);
+                } catch (\Throwable $e) {
+                    $results[$key] = $e;
+                }
+            }
+        }
+
+        return $results;
+    }
+
 }
