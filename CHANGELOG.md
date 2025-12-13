@@ -10,6 +10,7 @@
 - Upgrade TipTap to v3
 - Add parallel job processing to worker using the `parallel` extension if available
 - Fix App.utils.selectAsset causing MongoDB error with empty filter
+- Add parallel batch execution method to Async helper
 
 ## 2.12.1 (2025-10-26)
 
