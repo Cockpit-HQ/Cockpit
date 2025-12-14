@@ -64,7 +64,7 @@ export default {
             <div class="kiss-flex kiss-flex-middle kiss-margin-small" gap>
 
                 <ul class="kiss-tabs-nav kiss-flex-1" :class="{'kiss-disabled':loading}">
-                    <li :active="mode == 'all' ? 'true':'false'"><a class="kiss-tabs-nav-link" @click="mode='all'">{{ t('All items') }}</a></li>
+                    <li :active="mode == 'all' ? 'true':'false'"><a class="kiss-tabs-nav-link" @click="mode='all'">{{ t('All assets') }}</a></li>
                     <li :active="mode == 'all' ? 'false':'true'"><a class="kiss-tabs-nav-link"  @click="mode='byme'">{{ t('By me') }}</a></li>
                 </ul>
 
