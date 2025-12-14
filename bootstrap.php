@@ -25,7 +25,15 @@ class Cockpit {
 
     protected static array $instance = [];
 
-    public static function instance(?string $envDir = null, array $config = []): Lime\App {
+    /*
+     * Public interface to initialize the Cockpit instance.
+     *
+     * @param string $envDir The environment directory.
+     * @param array $config The configuration array.
+     * @param array $modulesPaths The modules paths array.
+     * @return Lime\App The initialized Lime application.
+    */
+    public static function instance(string $envDir = null, array $config = [], array $modulesPaths = []): Lime\App {
 
         if (!$envDir) {
             $envDir = APP_DIR;
@@ -38,6 +46,13 @@ class Cockpit {
         return static::$instance[$envDir];
     }
 
+    /*
+     * Initialize the Cockpit instance.
+     *
+     * @param string $envDir The environment directory.
+     * @param array $config The configuration array.
+     * @return Lime\App The initialized Lime application.
+    */
     protected static function init(?string $envDir = null, array $config = []): Lime\App {
 
         $appDir = APP_DIR;
@@ -304,7 +319,16 @@ class Cockpit {
         return $app;
     }
 
-    protected static function loadModules($envDir, $app, $config, $modulesPaths) {
+    /*
+     * Load modules.
+     *
+     * @param string $envDir The environment directory.
+     * @param Lime\App $app The Lime application.
+     * @param array $config The configuration array.
+     * @param array $modulesPaths The modules paths array.
+     * @return void
+    */
+    protected static function loadModules(string $envDir, Lime\App $app, array $config = [], array $modulesPaths = []): void {
 
         if ($config['debug']) {
             $app->loadModules($modulesPaths);
