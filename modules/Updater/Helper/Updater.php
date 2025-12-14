@@ -4,7 +4,7 @@ namespace Updater\Helper;
 
 class Updater extends \Lime\Helper {
 
-    protected string $releasesUrl;
+    protected ?string $releasesUrl = null;
 
     protected function initialize() {
 
