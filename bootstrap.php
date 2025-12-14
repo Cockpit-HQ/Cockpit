@@ -33,7 +33,7 @@ class Cockpit {
      * @param array $modulesPaths The modules paths array.
      * @return Lime\App The initialized Lime application.
     */
-    public static function instance(string $envDir = null, array $config = [], array $modulesPaths = []): Lime\App {
+    public static function instance(?string $envDir = null, array $config = [], array $modulesPaths = []): Lime\App {
 
         if (!$envDir) {
             $envDir = APP_DIR;
