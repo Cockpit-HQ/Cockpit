@@ -23,23 +23,23 @@
                         <kiss-card class="kiss-padding-larger">
                             <div>
                                 <div class="kiss-text-light kiss-size-4 kiss-color-muted kiss-margin-small">
-                                    <?=t('Current')?>
+                                    {{ t('Current') }}
                                 </div>
-                                <div class="kiss-size-xlarge kiss-text-light"><?=APP_VERSION?></div>
+                                <div class="kiss-size-xlarge kiss-text-light">{{ APP_VERSION }}</div>
                             </div>
                         </kiss-card>
 
                         <kiss-card class="kiss-padding-larger" theme="contrast">
                             <div class="kiss-overlay-input">
                                 <div class="kiss-text-light kiss-size-4 kiss-color-muted kiss-margin-small">
-                                    <?=t('Target')?>
+                                    {{ t('Target') }}
                                 </div>
-                                <div class="kiss-size-xlarge kiss-text-light" :class="{'kiss-color-muted':!selectedVersion}">{{ selectedVersion ? (selectedVersion == 'develop' ? 'Develop':'<?=$meta['version']?>') : t('Select...') }}</div>
+                                <div class="kiss-size-xlarge kiss-text-light" :class="{'kiss-color-muted':!selectedVersion}">{{ selectedVersion ? (selectedVersion == 'develop' ? 'Develop':meta.version) : t('Select...') }}</div>
                                 <select v-model="selectedVersion">
-                                    <option :value="null"><?=t('Select version...')?></option>
+                                    <option :value="null">{{ t('Select version...') }}</option>
                                     <hr>
-                                    <option value="master" v-if="isNewVersionAvailable">v<?=$meta['version']?></option>
-                                    <option value="develop"><?=t('Latest development version')?></option>
+                                    <option value="master" v-if="meta.isNewVersionAvailable">v{{ meta.version }}</option>
+                                    <option value="develop">{{ t('Latest development version') }}</option>
                                 </select>
                             </div>
                         </kiss-card>
@@ -49,6 +49,16 @@
                 <kiss-card class="kiss-margin-large" v-if="selectedVersion">
 
                     <div>
+
+                        <div v-if="meta.notices.length">
+                            <div class="kiss-margin kiss-text-light kiss-size-3 kiss-text-capitalize kiss-color-muted">{{ selectedVersion }}</div>
+                            
+                            <div class="kiss-margin kiss-text-caption kiss-color-muted">{{ t('Notices') }}</div>
+                            
+                            <div class="kiss-margin kiss-text-bold" v-for="notice in meta.notices"><icon class="kiss-color-danger kiss-margin-small-right" size="large">error</icon> {{ notice }}</div>
+                        </div>
+
+                        <hr v-if="meta.notices.length">
 
                         <div class="kiss-margin kiss-text-light kiss-size-3 kiss-color-muted">
                             Proceeding with this update is at your own risk. It may affect system stability and data integrity.
@@ -83,9 +93,9 @@
 
                 data() {
                     return {
-                        isNewVersionAvailable: <?=(version_compare($meta['version'], APP_VERSION, '>') ? 'true' : 'false')?>,
+                        meta: <?=json_encode($meta)?>,
                         confirmed: false,
-                        selectedVersion: null
+                        selectedVersion: null,
                     }
                 },
 

@@ -42,13 +42,27 @@ class Updater extends \Lime\Helper {
         $contents = $this->app->helper('utils')->urlGetContents($url);
 
         if (!$contents) {
-            return [
+
+            $meta = [
                 'version' => APP_VERSION,
                 'date' => date('Y-m-d'),
+                'php' => [
+                    'min' => PHP_VERSION,
+                ],
             ];
+
+        } else {
+            $meta = json_decode($contents, true);
         }
 
-        return json_decode($contents, true);
+        $meta['notices'] = [];
+        $meta['isNewVersionAvailable'] = version_compare($meta['version'] ?? APP_VERSION, APP_VERSION, '>');
+
+        if (isset($meta['php']['min']) && version_compare(PHP_VERSION, $meta['php']['min'], '<')) {
+            $meta['notices'][] = 'Your PHP version is too low';
+        }
+
+        return $meta;
     }
 
     /**
