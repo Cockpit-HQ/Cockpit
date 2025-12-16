@@ -11,6 +11,7 @@
 - Add parallel job processing to worker using the `parallel` extension if available
 - Fix App.utils.selectAsset causing MongoDB error with empty filter
 - Add parallel batch execution method to Async helper
+- Add FrankenPHP worker mode support
 
 ## 2.12.1 (2025-10-26)
 

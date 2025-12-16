@@ -275,6 +275,10 @@ class Cockpit {
 
             set_exception_handler(function($exception) use($app) {
 
+                if ($exception instanceof \Lime\StopException) {
+                    return;
+                }
+
                 $error = [
                     'time' => date('d-M-Y H:i:s'),
                     'message' => $exception->getMessage(),
