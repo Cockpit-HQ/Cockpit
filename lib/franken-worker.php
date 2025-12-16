@@ -15,10 +15,10 @@ define('APP_ADMIN', true);
 define('APP_START_TIME', microtime(true));
 
 // Load bootstrap (this loads autoloader, config, etc.)
-require __DIR__.'/bootstrap.php';
+require __DIR__.'/../bootstrap.php';
 
 // Initialize the Master App Instance
-$masterApp = Cockpit::instance(__DIR__, ['app.run_mode' => 'worker']);
+$masterApp = Cockpit::instance(dirname(__DIR__), ['app.run_mode' => 'worker']);
 
 // Prevent the master app from accumulating junk if any
 if (gc_enabled()) {
@@ -27,8 +27,8 @@ if (gc_enabled()) {
 
 echo "Cockpit (FrankenPHP Worker) started.\n";
 
-$APP_DIR           = __DIR__;
-$APP_DOCUMENT_ROOT = realpath($_SERVER['DOCUMENT_ROOT'] ?? __DIR__);
+$APP_DIR           = dirname(__DIR__);
+$APP_DOCUMENT_ROOT = realpath($_SERVER['DOCUMENT_ROOT'] ?? $APP_DIR);
 $APP_BASE          = trim(str_replace($APP_DOCUMENT_ROOT, '', $APP_DIR), DIRECTORY_SEPARATOR);
 $APP_BASE_URL      = strlen($APP_BASE) ? "/{$APP_BASE}": $APP_BASE;
 $APP_BASE_URL      = str_replace(DIRECTORY_SEPARATOR, '/', $APP_BASE_URL);
