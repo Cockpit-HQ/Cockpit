@@ -220,7 +220,7 @@ export default {
                 </div>
             </div>
 
-            <div class="kiss-flex kiss-flex-right kiss-margin-top" gap>
+            <div class="kiss-flex kiss-flex-end kiss-margin-top" gap>
 
                 <div class="kiss-flex kiss-flex-middle kiss-flex-1" v-if="!loading && count">
                     <app-pagination>

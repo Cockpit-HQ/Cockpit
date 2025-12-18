@@ -167,7 +167,7 @@
                 <app-actionbar>
 
                     <kiss-container size="small">
-                        <div class="kiss-flex kiss-flex-middle kiss-flex-right">
+                        <div class="kiss-flex kiss-flex-middle kiss-flex-end">
 
                             <div class="kiss-flex-1" v-if="isUpdate">
                                 <a class="kiss-button" :href="$routeUrl(`/content/tree/items/${model.name}`)" v-if="model.type == 'tree'"><?=t('Goto items')?></a>

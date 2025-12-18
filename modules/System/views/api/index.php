@@ -90,7 +90,7 @@
             <app-actionbar>
 
                 <kiss-container size="small">
-                    <div class="kiss-flex kiss-flex-middle kiss-flex-right">
+                    <div class="kiss-flex kiss-flex-middle kiss-flex-end">
                         <a class="kiss-button kiss-button-primary" href="<?=$this->route('/system/api/create')?>"><?=t('Add key')?></a>
                     </div>
                 </kiss-container>

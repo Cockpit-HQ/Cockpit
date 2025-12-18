@@ -50,7 +50,7 @@
         <app-actionbar>
 
             <kiss-container size="small">
-                <div class="kiss-flex kiss-flex-middle kiss-flex-right">
+                <div class="kiss-flex kiss-flex-middle kiss-flex-end">
                     <div class="kiss-button-group">
                         <?php if ($this->helper('acl')->isAllowed('app.users.manage')): ?>
                         <a class="kiss-button" href="<?=$this->route('/system/users')?>"><?=t('Manage users')?></a>

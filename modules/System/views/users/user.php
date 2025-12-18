@@ -184,7 +184,7 @@ if (!isset($user['_meta']) || (is_array($user['_meta']) && array_is_list($user['
                 <app-actionbar>
 
                     <kiss-container size="small">
-                        <div class="kiss-flex kiss-flex-middle kiss-flex-right">
+                        <div class="kiss-flex kiss-flex-middle kiss-flex-end">
                             <div class="kiss-button-group">
                                 <?php if (!$isAccountView && $this->helper('acl')->isAllowed('app.users.manage')) : ?>
                                     <a class="kiss-button" href="<?= $this->route('/system/users') ?>">

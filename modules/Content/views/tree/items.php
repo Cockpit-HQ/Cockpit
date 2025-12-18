@@ -79,7 +79,7 @@
 
                 <app-actionbar>
                     <kiss-container>
-                        <div class="kiss-flex kiss-flex-middle kiss-flex-right">
+                        <div class="kiss-flex kiss-flex-middle kiss-flex-end">
                             <div class="kiss-button-group">
                                 <a class="kiss-button" href="<?= $this->route('/content') ?>"><?=t('Close')?></a>
                                 <a class="kiss-button kiss-button-primary" href="<?= $this->route("/content/tree/item/{$model['name']}") ?>"><?=t('Create item')?></a>

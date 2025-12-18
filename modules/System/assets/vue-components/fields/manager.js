@@ -339,7 +339,7 @@ let FieldsManager = {
                             </tab>
                             <tab :caption="t('Options')">
 
-                                <div class="kiss-margin-bottom kiss-flex kiss-flex-right" v-if="fieldTypes[field.type] && fieldTypes[field.type].settings">
+                                <div class="kiss-margin-bottom kiss-flex kiss-flex-end" v-if="fieldTypes[field.type] && fieldTypes[field.type].settings">
                                     <div class="kiss-button-group">
                                         <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': state.optionsView != 'json'}" @click="state.optionsView = 'form'" type="button">{{t('Fields')}}</button>
                                         <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': state.optionsView === 'json'}" @click="state.optionsView = 'json'" type="button">JSON</button>
@@ -369,7 +369,7 @@ let FieldsManager = {
                         </kiss-tabs>
 
 
-                        <div class="kiss-margin-large-top kiss-flex kiss-flex-right">
+                        <div class="kiss-margin-large-top kiss-flex kiss-flex-end">
 
                             <div class="kiss-button-group">
                                 <a class="kiss-button" @click="field=null" v-if="!state.editField">
