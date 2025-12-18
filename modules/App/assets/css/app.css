@@ -306,11 +306,6 @@ html[data-theme='light'] body::before {
     background: var(--kiss-color-primary);
 }
 
-html[dir='rtl'] .app-container-aside-menu kiss-navlist ul>li.active>a:before {
-    left: auto;
-    right: 0;
-}
-
 .app-container-aside-menu kiss-navlist ul>li>* {
     display: flex;
     align-items: center;
@@ -707,6 +702,11 @@ html[dir='rtl'] {
     .app-container-aside-menu {
         right: 0;
         left: auto;
+    }
+
+    .app-container-aside-menu kiss-navlist ul>li.active>a:before {
+        left: auto;
+        right: 0;
     }
 
     .app-container-aside-panel {
