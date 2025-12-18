@@ -59,17 +59,17 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.368.1",
-            "version_normalized": "3.368.1.0",
+            "version": "3.368.2",
+            "version_normalized": "3.368.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "f7916ea27b5214fa1b4b6ecfa0c3f549b388a70c"
+                "reference": "96397db9a3fd0b5e6b3c52e363b6a55831a93b1d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/f7916ea27b5214fa1b4b6ecfa0c3f549b388a70c",
-                "reference": "f7916ea27b5214fa1b4b6ecfa0c3f549b388a70c",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/96397db9a3fd0b5e6b3c52e363b6a55831a93b1d",
+                "reference": "96397db9a3fd0b5e6b3c52e363b6a55831a93b1d",
                 "shasum": ""
             },
             "require": {
@@ -109,7 +109,7 @@
                 "ext-pcntl": "To use client-side monitoring",
                 "ext-sockets": "To use client-side monitoring"
             },
-            "time": "2025-12-17T19:06:44+00:00",
+            "time": "2025-12-18T19:07:30+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -153,7 +153,7 @@
             "support": {
                 "forum": "https://github.com/aws/aws-sdk-php/discussions",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.368.1"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.368.2"
             },
             "install-path": "../aws/aws-sdk-php"
         },
@@ -3647,17 +3647,17 @@
         },
         {
             "name": "webonyx/graphql-php",
-            "version": "v15.28.0",
-            "version_normalized": "15.28.0.0",
+            "version": "v15.29.0",
+            "version_normalized": "15.29.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webonyx/graphql-php.git",
-                "reference": "7eda5ab49f1f5e847e5c1a477b6b1b18a8fa2302"
+                "reference": "06850357fbee9a34027285a1a987aafb70176a12"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webonyx/graphql-php/zipball/7eda5ab49f1f5e847e5c1a477b6b1b18a8fa2302",
-                "reference": "7eda5ab49f1f5e847e5c1a477b6b1b18a8fa2302",
+                "url": "https://api.github.com/repos/webonyx/graphql-php/zipball/06850357fbee9a34027285a1a987aafb70176a12",
+                "reference": "06850357fbee9a34027285a1a987aafb70176a12",
                 "shasum": ""
             },
             "require": {
@@ -3670,7 +3670,7 @@
                 "amphp/http-server": "^2.1",
                 "dms/phpunit-arraysubset-asserts": "dev-master",
                 "ergebnis/composer-normalize": "^2.28",
-                "friendsofphp/php-cs-fixer": "3.92.0",
+                "friendsofphp/php-cs-fixer": "3.92.3",
                 "mll-lab/php-cs-fixer-config": "5.11.0",
                 "nyholm/psr7": "^1.5",
                 "phpbench/phpbench": "^1.2",
@@ -3686,14 +3686,14 @@
                 "symfony/polyfill-php81": "^1.23",
                 "symfony/var-exporter": "^5 || ^6 || ^7 || ^8",
                 "thecodingmachine/safe": "^1.3 || ^2 || ^3",
-                "ticketswap/phpstan-error-formatter": "1.2.3"
+                "ticketswap/phpstan-error-formatter": "1.2.4"
             },
             "suggest": {
                 "amphp/http-server": "To leverage async resolving with webserver on AMPHP platform",
                 "psr/http-message": "To use standard GraphQL server",
                 "react/promise": "To leverage async resolving on React PHP platform"
             },
-            "time": "2025-12-15T09:49:09+00:00",
+            "time": "2025-12-18T16:27:00+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -3713,7 +3713,7 @@
             ],
             "support": {
                 "issues": "https://github.com/webonyx/graphql-php/issues",
-                "source": "https://github.com/webonyx/graphql-php/tree/v15.28.0"
+                "source": "https://github.com/webonyx/graphql-php/tree/v15.29.0"
             },
             "funding": [
                 {

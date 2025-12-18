@@ -510,6 +510,7 @@ return array(
     'GraphQL\\Executor\\Promise\\Adapter\\ReactPromiseAdapter' => $vendorDir . '/webonyx/graphql-php/src/Executor/Promise/Adapter/ReactPromiseAdapter.php',
     'GraphQL\\Executor\\Promise\\Adapter\\SyncPromise' => $vendorDir . '/webonyx/graphql-php/src/Executor/Promise/Adapter/SyncPromise.php',
     'GraphQL\\Executor\\Promise\\Adapter\\SyncPromiseAdapter' => $vendorDir . '/webonyx/graphql-php/src/Executor/Promise/Adapter/SyncPromiseAdapter.php',
+    'GraphQL\\Executor\\Promise\\Adapter\\SyncPromiseQueue' => $vendorDir . '/webonyx/graphql-php/src/Executor/Promise/Adapter/SyncPromiseQueue.php',
     'GraphQL\\Executor\\Promise\\Promise' => $vendorDir . '/webonyx/graphql-php/src/Executor/Promise/Promise.php',
     'GraphQL\\Executor\\Promise\\PromiseAdapter' => $vendorDir . '/webonyx/graphql-php/src/Executor/Promise/PromiseAdapter.php',
     'GraphQL\\Executor\\ReferenceExecutor' => $vendorDir . '/webonyx/graphql-php/src/Executor/ReferenceExecutor.php',
