@@ -3086,6 +3086,31 @@ kiss-offcanvas[open][closing] {
         transform: translateX(100%) translateZ(0);
     }
 }
+/* RTL Support */
+[dir="rtl"] kiss-offcanvas > kiss-content {
+    left: auto;
+    right: 0;
+}
+[dir="rtl"] kiss-offcanvas[flip="true"] > kiss-content {
+    right: auto;
+    left: 0;
+}
+[dir="rtl"] kiss-offcanvas[open] > kiss-content {
+    @starting-style {
+        transform: translateX(100%) translateZ(0);
+    }
+}
+[dir="rtl"] kiss-offcanvas[open][flip="true"] > kiss-content {
+    @starting-style {
+        transform: translateX(-100%) translateZ(0);
+    }
+}
+[dir="rtl"] kiss-offcanvas[open][closing] > kiss-content {
+    transform: translateX(100%) translateZ(0);
+}
+[dir="rtl"] kiss-offcanvas[open][closing][flip="true"] > kiss-content {
+    transform: translateX(-100%) translateZ(0);
+}
 kiss-popout {
     display: none;
     align-items: flex-start;

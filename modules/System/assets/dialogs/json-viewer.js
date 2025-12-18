@@ -56,7 +56,7 @@ export default {
                 {{ caption || t('JSON Viewer') }}
             </div>
             <div class="app-offcanvas-content kiss-padding kiss-bgcolor-contrast kiss-flex-1">
-                <pre class="kiss-size-small" v-html="highlighted"></pre>
+                <pre class="kiss-size-small" style="direction: ltr;" v-html="highlighted"></pre>
             </div>
             <div class="kiss-padding kiss-bgcolor-contrast">
                 <div class="kiss-button-group kiss-flex kiss-child-width-1-2">
