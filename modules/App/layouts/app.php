@@ -26,6 +26,7 @@
 <!DOCTYPE html>
 <html
     lang="en"
+    dir="<?= $this->helper('i18n')->isRTL() ? 'rtl' : 'ltr' ?>"
     class="<?= $this->helper('theme')->pageClass() ?>"
     data-base="<?= rtrim($this->baseUrl('/'), '/') ?>"
     data-route="<?= rtrim($this->routeUrl('/'), '/') ?>"
@@ -121,7 +122,7 @@
 
             <app-header data-sticky="true">
                 <kiss-container class="kiss-flex kiss-flex-middle">
-                    <a class="kiss-display-block kiss-margin-small-right kiss-visible@m" href="<?= $this->route('/') ?>">
+                    <a class="kiss-display-block kiss-margin-small-end kiss-visible@m" href="<?= $this->route('/') ?>">
                         <img class="app-logo kiss-margin-auto" src="<?= $this->helper('theme')->logo() ?>" alt="Logo" style="height:30px;width:auto;">
                     </a>
                     <div>
@@ -129,16 +130,16 @@
                             <span class="kiss-text-bold"><?= $this['app.name'] ?></span>
                         </a>
                     </div>
-                    <a class="kiss-link-muted kiss-margin-small-left kiss-hidden@m" href="#app-offcanvas" kiss-offcanvas>
+                    <a class="kiss-link-muted kiss-margin-small-start kiss-hidden@m" href="#app-offcanvas" kiss-offcanvas>
                         <icon>more_horiz</icon>
                     </a>
                     <?php if ($this->retrieve('app_space')) : ?>
-                        <div class="kiss-margin-small-left"><span class="kiss-badge kiss-color-primary kiss-badge-outline kiss-text-upper"><?= str_replace(['-', '_'], ' ', $this->retrieve('app_space')) ?></span></div>
+                        <div class="kiss-margin-small-start"><span class="kiss-badge kiss-color-primary kiss-badge-outline kiss-text-upper"><?= str_replace(['-', '_'], ' ', $this->retrieve('app_space')) ?></span></div>
                     <?php endif ?>
                     <app-license></app-license>
-                    <div class="kiss-flex-1 kiss-margin-left"></div>
+                    <div class="kiss-flex-1 kiss-margin-start"></div>
                     <?php $this->block('app.layout.header') ?>
-                    <a class="kiss-margin-left" href="#app-account-menu" aria-label="<?=t('Account')?>" kiss-popout>
+                    <a class="kiss-margin-start" href="#app-account-menu" aria-label="<?=t('Account')?>" kiss-popout>
                         <app-avatar size="30" name="<?= $this->escape($this['user/name']) ?>"></app-avatar>
                     </a>
                 </kiss-container>
@@ -167,11 +168,11 @@
                 <ul>
                     <li class="kiss-nav-header"><?= t('System') ?></li>
                     <li><a class="kiss-flex kiss-flex-middle" href="<?= $this->route('/system/users/user') ?>">
-                            <icon class="kiss-margin-small-right">account_circle</icon> <?= t('Account') ?>
+                            <icon class="kiss-margin-small-end">account_circle</icon> <?= t('Account') ?>
                         </a></li>
                     <li class="kiss-nav-divider"></li>
                     <li><a class="kiss-flex kiss-flex-middle kiss-color-danger" href="<?= $this->route('/auth/logout') ?>">
-                            <icon class="kiss-margin-small-right">power_settings_new</icon> <?= t('Logout') ?>
+                            <icon class="kiss-margin-small-end">power_settings_new</icon> <?= t('Logout') ?>
                         </a></li>
                 </ul>
             </kiss-navlist>
@@ -182,7 +183,7 @@
         <kiss-content class="kiss-flex kiss-flex-column">
             <div class="kiss-padding kiss-flex kiss-bgcolor-contrast kiss-flex kiss-flex-middle">
                 <div><app-avatar size="30" name="<?=$this->escape($this['user/name'])?>"></app-avatar></div>
-                <div class="kiss-margin-small-left kiss-flex-1 kiss-size-xsmall">
+                <div class="kiss-margin-small-start kiss-flex-1 kiss-size-xsmall">
                     <div class="kiss-text-bold kiss-text-truncate"><?= $this->escape($this['user/name']) ?></div>
                     <div class="kiss-color-muted kiss-text-truncate"><?= $this->escape($this['user/email']) ?></div>
                 </div>
@@ -199,7 +200,7 @@
                         <ul>
                             <li class="<?= ($this->request->route == '/') ? 'active' : '' ?>">
                                 <a href="<?= $this->route('/') ?>">
-                                    <kiss-svg class="kiss-margin-small-right" src="<?= $this->base('app:icon.svg') ?>" width="25" height="25"></kiss-svg>
+                                    <kiss-svg class="kiss-margin-small-end" src="<?= $this->base('app:icon.svg') ?>" width="25" height="25"></kiss-svg>
                                     <?= t('Dashboard') ?>
                                 </a>
                             </li>
@@ -216,7 +217,7 @@
                                 <?php foreach ($links as $link) : ?>
                                     <li class="<?= (str_starts_with($this->request->route, $link['route'])) ? 'active' : '' ?>">
                                         <a href="<?= $this->route($link['route']) ?>">
-                                            <kiss-svg class="kiss-margin-small-right" src="<?= $this->base($link['icon']) ?>" width="25" height="25"></kiss-svg>
+                                            <kiss-svg class="kiss-margin-small-end" src="<?= $this->base($link['icon']) ?>" width="25" height="25"></kiss-svg>
                                             <?= t($link['label']) ?>
                                         </a>
                                     </li>
@@ -235,18 +236,18 @@
                         <li class="kiss-nav-header kiss-flex kiss-flex-middle"><?= t('System') ?></li>
                         <li>
                             <a class="kiss-flex kiss-flex-middle" href="<?= $this->route('/system/users/user') ?>">
-                                <icon class="kiss-margin-small-right">account_circle</icon> <?= t('Account') ?>
+                                <icon class="kiss-margin-small-end">account_circle</icon> <?= t('Account') ?>
                             </a>
                         </li>
                         <li>
                             <a class="kiss-flex kiss-flex-middle" href="<?= $this->route('/system') ?>">
-                                <icon class="kiss-margin-small-right">tune</icon> <?= t('Settings') ?>
+                                <icon class="kiss-margin-small-end">tune</icon> <?= t('Settings') ?>
                             </a>
                         </li>
                         <?php if ($this->helper('acl')->isAllowed('app.users.manage')) : ?>
                             <li>
                                 <a class="kiss-flex kiss-flex-middle" href="<?= $this->route('/system/users') ?>">
-                                    <icon class="kiss-margin-small-right">supervisor_account</icon> <?= t('Users') ?>
+                                    <icon class="kiss-margin-small-end">supervisor_account</icon> <?= t('Users') ?>
                                 </a>
                             </li>
                         <?php endif ?>

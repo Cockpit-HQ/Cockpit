@@ -393,10 +393,10 @@ export default {
         </div>
 
         <div class="finder-actions kiss-flex kiss-flex-middle kiss-margin-small-top" :class="{'kiss-disabled':loading}" v-if="modal">
-            <div class="kiss-margin-right" v-if="selected.length">
+            <div class="kiss-margin-end" v-if="selected.length">
                 <button class="kiss-button kiss-button-danger" @click="removeSelected()">{{ t('Delete') }} -{{ selected.length }}-</button>
             </div>
-            <div class="kiss-flex-1 kiss-margin-right"></div>
+            <div class="kiss-flex-1 kiss-margin-end"></div>
             <div class="kiss-button-group">
                 <button class="kiss-button" @click="createFolder()">{{ t('Create folder') }}</button>
                 <button class="kiss-button" @click="createFile()">{{ t('Create file') }}</button>
@@ -410,10 +410,10 @@ export default {
         <app-actionbar v-if="!modal" :class="{'kiss-disabled':loading}">
             <kiss-container>
                 <div class="kiss-flex kiss-flex-middle">
-                    <div class="kiss-margin-right" v-if="selected.length">
+                    <div class="kiss-margin-end" v-if="selected.length">
                         <button class="kiss-button kiss-button-danger" @click="removeSelected()">{{ t('Delete') }} -{{ selected.length }}-</button>
                     </div>
-                    <div class="kiss-flex-1 kiss-margin-right"></div>
+                    <div class="kiss-flex-1 kiss-margin-end"></div>
                     <div class="kiss-button-group">
                         <button class="kiss-button" @click="createFolder()">{{ t('Create folder') }}</button>
                         <button class="kiss-button" @click="createFile()">{{ t('Create file') }}</button>
@@ -437,27 +437,27 @@ export default {
                             </li>
                             <li v-if="actionFile && (actionFile.mime.indexOf('text') > -1 || actionFile.mime.indexOf('x-empty') > -1 || ['json', 'svg'].includes(actionFile.ext))">
                                 <a class="kiss-flex kiss-flex-middle" @click="edit(actionFile)">
-                                    <icon class="kiss-margin-small-right" size="larger">create</icon>
+                                    <icon class="kiss-margin-small-end" size="larger">create</icon>
                                     {{ t('Edit') }}
                                 </a>
                             </li>
                             <li>
                                 <a class="kiss-flex kiss-flex-middle" @click="rename(actionFile)">
-                                    <icon class="kiss-margin-small-right" size="larger">create</icon>
+                                    <icon class="kiss-margin-small-end" size="larger">create</icon>
                                     {{ t('Rename') }}
                                 </a>
                             </li>
                             <li class="kiss-nav-divider"></li>
                             <li>
                                 <a class="kiss-flex kiss-flex-middle" @click="download(actionFile)">
-                                    <icon class="kiss-margin-small-right" size="larger">cloud_download</icon>
+                                    <icon class="kiss-margin-small-end" size="larger">cloud_download</icon>
                                     {{ t('Download') }}
                                 </a>
                             </li>
                             <li class="kiss-nav-divider"></li>
                             <li>
                                 <a class="kiss-color-danger kiss-flex kiss-flex-middle" @click="remove(actionFile)">
-                                    <icon class="kiss-margin-small-right" size="larger">delete</icon>
+                                    <icon class="kiss-margin-small-end" size="larger">delete</icon>
                                     {{ t('Delete') }}
                                 </a>
                             </li>
@@ -476,21 +476,21 @@ export default {
                             </li>
                             <li>
                                 <a class="kiss-flex kiss-flex-middle" @click="rename(actionFolder)">
-                                    <icon class="kiss-margin-small-right" size="larger">edit</icon>
+                                    <icon class="kiss-margin-small-end" size="larger">edit</icon>
                                     {{ t('Rename') }}
                                 </a>
                             </li>
                             <li class="kiss-nav-divider"></li>
                             <li>
                                 <a class="kiss-flex kiss-flex-middle" @click="downloadfolder(actionFolder)">
-                                    <icon class="kiss-margin-small-right" size="larger">cloud_download</icon>
+                                    <icon class="kiss-margin-small-end" size="larger">cloud_download</icon>
                                     {{ t('Download') }}
                                 </a>
                             </li>
                             <li class="kiss-nav-divider"></li>
                             <li>
                                 <a class="kiss-color-danger kiss-flex kiss-flex-middle" @click="remove(actionFolder)">
-                                    <icon class="kiss-margin-small-right" size="larger">delete</icon>
+                                    <icon class="kiss-margin-small-end" size="larger">delete</icon>
                                     {{ t('Delete') }}
                                 </a>
                             </li>

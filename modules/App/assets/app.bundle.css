@@ -22,7 +22,6 @@ icon,
     display: inline-block;
     white-space: nowrap;
     word-wrap: normal;
-    direction: ltr;
     vertical-align: middle;
 
     /* Support for all WebKit browsers. */
@@ -2416,6 +2415,29 @@ kiss-dropdownbox[pos="aside-left"] {
 kiss-dropdown[open="true"] kiss-dropdownbox[pos="aside-left"] {
     transform: translateY(0px) translateX(-100%);
 }
+/* RTL Support */
+[dir="rtl"] kiss-dropdownbox {
+    left: 0;
+    right: auto;
+}
+[dir="rtl"] kiss-dropdownbox[pos="center"] {
+    right: auto;
+    left: 50%;
+    transform: translateY(-40%) translateX(50%);
+}
+[dir="rtl"] kiss-dropdown[open="true"] kiss-dropdownbox[pos="center"] {
+    transform: translateY(-50%) translateX(50%);
+}
+[dir="rtl"] kiss-dropdownbox[pos="aside-left"] {
+    left: auto;
+    right: 0;
+    margin-left: 0;
+    margin-right: -10px;
+    transform: translateY(20px) translateX(100%);
+}
+[dir="rtl"] kiss-dropdown[open="true"] kiss-dropdownbox[pos="aside-left"] {
+    transform: translateY(0px) translateX(100%);
+}
 kiss-dialog {
     display: none;
     align-items: flex-start;
@@ -3753,6 +3775,9 @@ kiss-tooltip[show="true"] {
 .kiss-flex-top { align-items: flex-start; }
 .kiss-flex-middle { align-items: center; }
 .kiss-flex-bottom { align-items: flex-end; }
+/* logical aliases */
+.kiss-flex-start { justify-content: flex-start; }
+.kiss-flex-end { justify-content: flex-end; }
 .kiss-flex-row { flex-direction: row; }
 .kiss-flex-row-reverse { flex-direction: row-reverse; }
 .kiss-flex-column { flex-direction: column; }
@@ -3852,12 +3877,16 @@ kiss-tooltip[show="true"] {
 .kiss-align-right {
   text-align: right !important;
 }
+.kiss-align-start { text-align: start !important; }
+.kiss-align-end { text-align: end !important; }
 /* Phone landscape and bigger */
 @media (min-width: 640px) {
   .kiss-align-center\@s { text-align: center !important; }
   .kiss-align-justified\@s { text-align: justify !important; }
   .kiss-align-left\@s { text-align: left !important; }
   .kiss-align-right\@s { text-align: right !important; }
+  .kiss-align-start\@s { text-align: start !important; }
+  .kiss-align-end\@s { text-align: end !important; }
 }
 /* Tablet landscape and bigger */
 @media (min-width: 960px) {
@@ -3865,6 +3894,8 @@ kiss-tooltip[show="true"] {
   .kiss-align-justified\@m { text-align: justify !important; }
   .kiss-align-left\@m { text-align: left !important; }
   .kiss-align-right\@m { text-align: right !important; }
+  .kiss-align-start\@m { text-align: start !important; }
+  .kiss-align-end\@m { text-align: end !important; }
 }
 /* Desktop and bigger */
 @media (min-width: 1200px) {
@@ -3872,6 +3903,8 @@ kiss-tooltip[show="true"] {
   .kiss-align-justified\@l { text-align: justify !important; }
   .kiss-align-left\@l { text-align: left !important; }
   .kiss-align-right\@l { text-align: right !important; }
+  .kiss-align-start\@l { text-align: start !important; }
+  .kiss-align-end\@l { text-align: end !important; }
 }
 /* Large screen and bigger */
 @media (min-width: 1600px) {
@@ -3879,6 +3912,8 @@ kiss-tooltip[show="true"] {
   .kiss-align-justified\@xl { text-align: justify !important; }
   .kiss-align-left\@xl { text-align: left !important; }
   .kiss-align-right\@xl { text-align: right !important; }
+  .kiss-align-start\@xl { text-align: start !important; }
+  .kiss-align-end\@xl { text-align: end !important; }
 }
 .kiss-position-absolute { position: absolute; }
 .kiss-position-relative { position: relative; }
@@ -3907,6 +3942,26 @@ kiss-tooltip[show="true"] {
     position: absolute;
     bottom: 0;
     right: 0;
+}
+.kiss-position-top-start {
+    position: absolute;
+    top: 0;
+    inset-inline-start: 0;
+}
+.kiss-position-top-end {
+    position: absolute;
+    top: 0;
+    inset-inline-end: 0;
+}
+.kiss-position-bottom-start {
+    position: absolute;
+    bottom: 0;
+    inset-inline-start: 0;
+}
+.kiss-position-bottom-end {
+    position: absolute;
+    bottom: 0;
+    inset-inline-end: 0;
 }
 h1,
 .kiss-size-1 {
@@ -4067,6 +4122,27 @@ small,
     padding-left: 0 !important;
     padding-right: 0 !important;
 }
+/* RTL support */
+.kiss-margin-start { margin-inline-start: var(--kiss-block-element-margin, 1rem) !important; }
+.kiss-margin-end { margin-inline-end: var(--kiss-block-element-margin, 1rem) !important; }
+.kiss-margin-small-start { margin-inline-start: var(--kiss-block-element-margin-small, .6rem) !important; }
+.kiss-margin-small-end { margin-inline-end: var(--kiss-block-element-margin-small, .6rem) !important; }
+.kiss-margin-xsmall-start { margin-inline-start: var(--kiss-block-element-margin-xsmall, 4px) !important; }
+.kiss-margin-xsmall-end { margin-inline-end: var(--kiss-block-element-margin-xsmall, 4px) !important; }
+.kiss-margin-large-start { margin-inline-start: var(--kiss-block-element-margin-large, 3rem) !important; }
+.kiss-margin-large-end { margin-inline-end: var(--kiss-block-element-margin-large, 3rem) !important; }
+.kiss-margin-auto-start { margin-inline-start: auto !important; }
+.kiss-margin-auto-end { margin-inline-end: auto !important; }
+.kiss-padding-start { padding-inline-start: var(--kiss-padding, 1rem) !important; }
+.kiss-padding-end { padding-inline-end: var(--kiss-padding, 1rem) !important; }
+.kiss-padding-small-start { padding-inline-start: var(--kiss-padding-small, .6rem) !important; }
+.kiss-padding-small-end { padding-inline-end: var(--kiss-padding-small, .6rem) !important; }
+.kiss-padding-xsmall-start { padding-inline-start: var(--kiss-padding-xsmall, .3rem) !important; }
+.kiss-padding-xsmall-end { padding-inline-end: var(--kiss-padding-xsmall, .3rem) !important; }
+.kiss-padding-larger-start { padding-inline-start: var(--kiss-padding-larger, 2rem) !important; }
+.kiss-padding-larger-end { padding-inline-end: var(--kiss-padding-larger, 2rem) !important; }
+.kiss-padding-large-start { padding-inline-start: var(--kiss-padding-large, 3rem) !important; }
+.kiss-padding-large-end { padding-inline-end: var(--kiss-padding-large, 3rem) !important; }
 .kiss-text-bold { font-weight: bold !important; }
 .kiss-text-light { font-weight: 100 !important;}
 .kiss-text-bolder { font-weight: bolder !important; }
@@ -4822,6 +4898,31 @@ kiss-card[hover*="contrast"]:hover {
     border-top-right-radius: var(--app-border-radius);
     border-bottom-right-radius: var(--app-border-radius);
 }
+html[dir='rtl'] {
+
+    .kiss-button-group .kiss-button:not(:last-child) {
+        border-left-width: 1px;
+        border-left-color: rgba(0,0,0,.08);
+        border-left-style: solid;
+        border-right-style: none;
+    }
+
+    .kiss-button-group .kiss-button:first-child:not(:last-child) {
+        border-top-right-radius: var(--app-border-radius);
+        border-bottom-right-radius: var(--app-border-radius);
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        border-left-style: none;
+    }
+
+    .kiss-button-group .kiss-button:last-child:not(:first-child) {
+        border-top-left-radius: var(--app-border-radius);
+        border-bottom-left-radius: var(--app-border-radius);
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        border-right-style: none;
+    }
+}
 .kiss-breadcrumbs {
     text-transform: uppercase;
     letter-spacing: 2px;
@@ -5476,8 +5577,18 @@ kiss-dialog[type="prompt"]>kiss-content {
         padding-left: 70px;
     }
 
+    html[dir='rtl'] app-actionbar {
+        padding-left: 0;
+        padding-right: 70px;
+    }
+
     .has-side-panel app-actionbar {
         padding-left: 340px;
+    }
+
+    html[dir='rtl'] .has-side-panel app-actionbar {
+        padding-left: 0;
+        padding-right: 340px;
     }
 
     .app-container-aside {
@@ -5498,5 +5609,26 @@ kiss-dialog[type="prompt"]>kiss-content {
 @container (min-width: 980px) {
     .field-multiple-sortable-grid {
         grid-template-columns: repeat(4, 1fr);
+    }
+}
+html[dir='rtl'] {
+
+    direction: rtl;
+
+    .app-container-aside {
+        right: 0;
+        left: auto;
+        margin-left: 20px;
+        margin-right: 0;
+    }
+
+    .app-container-aside-menu {
+        right: 0;
+        left: auto;
+    }
+
+    .app-container-aside-panel {
+        right: 50px;
+        left: auto;
     }
 }

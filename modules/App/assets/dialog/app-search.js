@@ -158,10 +158,10 @@ export default {
     template: /*html*/`
         <form id="app-search" role="search">
             <div class="kiss-flex kiss-flex-middle kiss-margin-small">
-                <div class="kiss-color-muted kiss-margin-small-right">
+                <div class="kiss-color-muted kiss-margin-small-end">
                     <kiss-svg :src="$baseUrl('system:assets/icons/search.svg')" width="25"><canvas width="25" height="25"></canvas></kiss-svg>
                 </div>
-                <div class="kiss-flex-1 kiss-margin-small-right">
+                <div class="kiss-flex-1 kiss-margin-small-end">
                     <input autofocus class="kiss-input kiss-input-blank kiss-form-large kiss-width-1-1" :class="{'kiss-disabled': loading}" type="search" v-model="search" :placeholder="t('Search...')" :aria-label="t('Search...')" :disabled="loading" @keydown="keydown" @input="selected=null" ref="searchInput" style="font-size:25px;padding:0;">
                 </div>
                 <button type="button" :aria-label="t('Close')" class="kiss-input-blank" kiss-dialog-close>
@@ -198,7 +198,7 @@ export default {
                         </div>
                         <kiss-card :id="'app-search-finding-'+idx" class="kiss-padding-small" :theme="idx == this.selected && 'contrast'">
                             <a :href="finding.route" class="kiss-flex kiss-flex-middle" :class="{'kiss-color-primary': idx == this.selected, 'kiss-color-muted': idx != this.selected}">
-                                <div class="kiss-margin-small-right">
+                                <div class="kiss-margin-small-end">
                                     <kiss-svg :src="$baseUrl(finding.icon || 'system:assets/icons/link.svg')" width="20" height="20"></kiss-svg>
                                 </div>
                                 <div class="kiss-flex-1 kiss-text-truncate">{{ finding.title }}</div>

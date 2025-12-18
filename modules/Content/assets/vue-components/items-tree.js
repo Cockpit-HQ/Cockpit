@@ -257,20 +257,20 @@ export default {
                             </li>
                             <li>
                                 <a class="kiss-flex kiss-flex-middle" :href="$routeUrl('/content/tree/item/'+model.name+'/'+actionItem.item._id)">
-                                    <icon class="kiss-margin-small-right" size="larger">create</icon>
+                                    <icon class="kiss-margin-small-end" size="larger">create</icon>
                                     {{ t('Edit') }}
                                 </a>
                             </li>
                             <li v-if="!actionItem.tree.isMaxLevel">
                                 <a class="kiss-flex kiss-flex-middle" @click="actionItem.tree.createItem(actionItem.item._id)">
-                                    <icon class="kiss-margin-small-right" size="larger">create_new_folder</icon>
+                                    <icon class="kiss-margin-small-end" size="larger">create_new_folder</icon>
                                     {{ t('Add child item') }}
                                 </a>
                             </li>
                             <li class="kiss-nav-divider"></li>
                             <li>
                                 <a class="kiss-flex kiss-flex-middle kiss-color-danger"  @click="actionItem.tree.remove(actionItem.item)">
-                                    <icon class="kiss-margin-small-right" size="larger">delete</icon>
+                                    <icon class="kiss-margin-small-end" size="larger">delete</icon>
                                     {{ t('Delete') }}
                                 </a>
                             </li>
@@ -279,13 +279,13 @@ export default {
                             <li class="kiss-nav-header">{{ t('Move item') }}</li>
                             <li v-if="actionItem.tree.items.indexOf(actionItem.item) !== 0">
                                 <a class="kiss-flex kiss-flex-middle" @click="actionItem.tree.moveItem(actionItem.item, 'first')">
-                                        <icon class="kiss-margin-small-right">arrow_upward</icon>
+                                        <icon class="kiss-margin-small-end">arrow_upward</icon>
                                         {{ t('Move first') }}
                                     </a>
                                 </li>
                             <li v-if="actionItem.tree.items.indexOf(actionItem.item) !== actionItem.tree.items.length - 1">
                                 <a class="kiss-flex kiss-flex-middle" @click="actionItem.tree.moveItem(actionItem.item, 'last')">
-                                    <icon class="kiss-margin-small-right">arrow_downward</icon>
+                                    <icon class="kiss-margin-small-end">arrow_downward</icon>
                                     {{ t('Move last') }}
                                 </a>
                             </li>

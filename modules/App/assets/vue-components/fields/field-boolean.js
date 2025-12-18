@@ -62,7 +62,7 @@ export default {
     template: /*html*/`
         <div class="kiss-flex kiss-flex-middle" field="boolean">
             <input :id="uuid" class="app-switch" type="checkbox" v-model="val" @change="update">
-            <label :for="uuid" class="kiss-margin-small-left" :class="{'kiss-color-muted':!val}" v-if="label">{{ label }}</label>
+            <label :for="uuid" class="kiss-margin-small-start" :class="{'kiss-color-muted':!val}" v-if="label">{{ label }}</label>
         </div>
     `,
 }

@@ -26,13 +26,13 @@
                 <li v-for="(locale, idx) in locales">
 
                     <kiss-card class="kiss-padding-small kiss-flex kiss-flex-middle" :class="{'kiss-color-muted': locale.enabled === false}" hover="contrast scale-small">
-                        <div class="kiss-margin-small-right"><icon>language</icon></div>
+                        <div class="kiss-margin-small-end"><icon>language</icon></div>
                         <div class="kiss-size-5 kiss-flex-1 kiss-position-relative">
                             <strong>{{locale.name || locale.i18n}}</strong>
                             <a class="kiss-cover" :href="$routeUrl('/system/locales/locale/'+locale._id)"></a>
                         </div>
-                        <div class="kiss-margin-left kiss-size-small kiss-align-right" :class="locale.i18n == 'default' ? 'kiss-color-primary' : 'kiss-color-muted'"><strong>{{ locale.i18n }}</strong></div>
-                        <a class="kiss-display-block kiss-margin-left kiss-color-danger" @click="remove(locale)"><icon class="kiss-size-large">delete</icon></a>
+                        <div class="kiss-margin-start kiss-size-small kiss-align-right" :class="locale.i18n == 'default' ? 'kiss-color-primary' : 'kiss-color-muted'"><strong>{{ locale.i18n }}</strong></div>
+                        <a class="kiss-display-block kiss-margin-start kiss-color-danger" @click="remove(locale)"><icon class="kiss-size-large">delete</icon></a>
                     </kiss-card>
 
                 </li>

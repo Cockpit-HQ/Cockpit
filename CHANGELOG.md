@@ -13,6 +13,7 @@
 - Add parallel batch execution method to Async helper
 - Add FrankenPHP worker mode support
 - Fix PHP v8.5 MongoLite database compatibility by using Pdo\Sqlite if available.
+- Add initial RTL support
 
 ## 2.12.1 (2025-10-26)
 

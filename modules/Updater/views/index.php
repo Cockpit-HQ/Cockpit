@@ -13,7 +13,7 @@
             <div>
 
                 <kiss-card class="kiss-text-monospace kiss-text-caption kiss-margin" v-if="!isNewVersionAvailable" >
-                    <icon class="kiss-color-primary kiss-margin-xsmall-right" size="large">check_circle</icon> <?=t('Your system is up to date')?>
+                    <icon class="kiss-color-primary kiss-margin-xsmall-end" size="large">check_circle</icon> <?=t('Your system is up to date')?>
                 </kiss-card>
 
                 <kiss-card theme="bordered">
@@ -55,7 +55,7 @@
                             
                             <div class="kiss-margin kiss-text-caption kiss-color-muted">{{ t('Notices') }}</div>
                             
-                            <div class="kiss-margin kiss-text-bold" v-for="notice in meta.notices"><icon class="kiss-color-danger kiss-margin-small-right" size="large">error</icon> {{ notice }}</div>
+                            <div class="kiss-margin kiss-text-bold" v-for="notice in meta.notices"><icon class="kiss-color-danger kiss-margin-small-end" size="large">error</icon> {{ notice }}</div>
                         </div>
 
                         <hr v-if="meta.notices.length">
@@ -68,7 +68,7 @@
                         <hr>
 
                         <div class="kiss-text-monospace">
-                            <input class="kiss-checkbox kiss-margin-small-right" type="checkbox" v-model="confirmed">
+                            <input class="kiss-checkbox kiss-margin-small-end" type="checkbox" v-model="confirmed">
                             <span>{{ t('I acknowledge the risks') }}</span>
                         </div>
                     </div>

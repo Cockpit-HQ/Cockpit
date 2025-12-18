@@ -36,7 +36,7 @@ if (!isset($user['_meta']) || (is_array($user['_meta']) && array_is_list($user['
                 <div>
                     <app-avatar size="50" :name="user.name"></app-avatar>
                 </div>
-                <div class="kiss-margin-left kiss-flex-1">
+                <div class="kiss-margin-start kiss-flex-1">
                     <div class="kiss-text-bold">{{user.name}}</div>
                     <div class="kiss-color-muted kiss-size-small"><span class="kiss-color-primary">{{user.user}}</span> &bullet; {{user.email}}</div>
                 </div>
@@ -72,17 +72,17 @@ if (!isset($user['_meta']) || (is_array($user['_meta']) && array_is_list($user['
                     </div>
 
                     <div class="kiss-margin">
-                        <label><?= t('User') ?> <icon class="kiss-size-5 kiss-color-danger kiss-margin-xsmall-left" title="Required">trip_origin</icon></label>
+                        <label><?= t('User') ?> <icon class="kiss-size-5 kiss-color-danger kiss-margin-xsmall-start" title="Required">trip_origin</icon></label>
                         <input class="kiss-input" type="text" v-model="user.user" autocomplete="off" required>
                     </div>
 
                     <div class="kiss-margin">
-                        <label><?= t('Email') ?> <icon class="kiss-size-5 kiss-color-danger kiss-margin-xsmall-left" title="Required">trip_origin</icon></label>
+                        <label><?= t('Email') ?> <icon class="kiss-size-5 kiss-color-danger kiss-margin-xsmall-start" title="Required">trip_origin</icon></label>
                         <input class="kiss-input" type="email" v-model="user.email" autocomplete="off" required>
                     </div>
 
                     <div class="kiss-margin">
-                        <label><?= t('Password') ?> <icon class="kiss-size-5 kiss-color-danger kiss-margin-xsmall-left" title="Required" v-if="!user._id">trip_origin</icon></label>
+                        <label><?= t('Password') ?> <icon class="kiss-size-5 kiss-color-danger kiss-margin-xsmall-start" title="Required" v-if="!user._id">trip_origin</icon></label>
                         <input class="kiss-input" type="password" v-model="user.password" :placeholder="user._id ? '<?= t('Keep current password') ?>':''" :required="!user._id" autocomplete="off">
                     </div>
 
@@ -108,14 +108,14 @@ if (!isset($user['_meta']) || (is_array($user['_meta']) && array_is_list($user['
                     <kiss-card class="kiss-margin kiss-margin-large-top kiss-padding" :theme="user.apiKey ? 'bordered contrast':'bordered'">
                         <label><?= t('API Key') ?></label>
                         <div class="kiss-flex kiss-flex-middle">
-                            <div class="kiss-flex-1 kiss-margin-small-right kiss-text-truncate kiss-disabled">
+                            <div class="kiss-flex-1 kiss-margin-small-end kiss-text-truncate kiss-disabled">
                                 <span class="kiss-text-caption" v-if="!user.apiKey"><?= t('No api key created yet') ?></span>
                                 <span class="kiss-text-monospace kiss-text-bold" v-if="user.apiKey">{{ user.apiKey }}</span>
                             </div>
                             <a @click="generateToken">
                                 <icon>refresh</icon>
                             </a>
-                            <a class="kiss-margin-small-left" v-if="user.apiKey" @click="copyToken">
+                            <a class="kiss-margin-small-start" v-if="user.apiKey" @click="copyToken">
                                 <icon>content_copy</icon>
                             </a>
                         </div>

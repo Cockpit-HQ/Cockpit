@@ -23,6 +23,10 @@
 .kiss-flex-middle { align-items: center; }
 .kiss-flex-bottom { align-items: flex-end; }
 
+/* logical aliases */
+.kiss-flex-start { justify-content: flex-start; }
+.kiss-flex-end { justify-content: flex-end; }
+
 .kiss-flex-row { flex-direction: row; }
 .kiss-flex-row-reverse { flex-direction: row-reverse; }
 .kiss-flex-column { flex-direction: column; }

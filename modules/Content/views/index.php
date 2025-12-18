@@ -170,27 +170,27 @@
                             <li class="kiss-nav-header">{{ actionModel.label || actionModel.name }}</li>
                             <li>
                                 <a class="kiss-flex kiss-flex-middle" :href="$routeUrl(`/content/models/edit/${actionModel.name}`)">
-                                    <icon class="kiss-margin-small-right">create</icon>
+                                    <icon class="kiss-margin-small-end">create</icon>
                                     <?= t('Edit') ?>
                                 </a>
                             </li>
                             <li class="kiss-nav-divider"></li>
                             <li>
                                 <a class="kiss-flex kiss-flex-middle" @click="clone(actionModel)">
-                                    <icon class="kiss-margin-small-right">control_point_duplicate</icon>
+                                    <icon class="kiss-margin-small-end">control_point_duplicate</icon>
                                     <?= t('Clone') ?>
                                 </a>
                             </li>
                             <li v-if="actionModel.type=='collection'">
                                 <a class="kiss-flex kiss-flex-middle" :href="$routeUrl(`/content/collection/item/${actionModel.name}`)">
-                                    <icon class="kiss-margin-small-right">add_circle</icon>
+                                    <icon class="kiss-margin-small-end">add_circle</icon>
                                     <?= t('Create item') ?>
                                 </a>
                             </li>
                             <li class="kiss-nav-divider"></li>
                             <li>
                                 <a class="kiss-color-danger kiss-flex kiss-flex-middle" @click="remove(actionModel)">
-                                    <icon class="kiss-margin-small-right">delete</icon>
+                                    <icon class="kiss-margin-small-end">delete</icon>
                                     <?= t('Delete') ?>
                                 </a>
                             </li>
@@ -380,7 +380,7 @@
     <ul>
         <li>
             <a class="kiss-link-muted kiss-flex kiss-flex-middle kiss-text-bold" href="<?= $this->route('/content') ?>">
-                <kiss-svg class="kiss-margin-small-right" src="<?= $this->base('content:icon.svg') ?>" width="20" height="20"><canvas width="20" height="20"></canvas></kiss-svg>
+                <kiss-svg class="kiss-margin-small-end" src="<?= $this->base('content:icon.svg') ?>" width="20" height="20"><canvas width="20" height="20"></canvas></kiss-svg>
                 <?= t('Overview') ?>
             </a>
         </li>

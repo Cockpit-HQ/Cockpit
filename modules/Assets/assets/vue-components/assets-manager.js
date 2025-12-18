@@ -346,9 +346,9 @@ export default {
         </div>
 
         <form class="kiss-margin kiss-flex kiss-flex-middle" v-if="(!loading && (assets.length || folders.length)) || filter" @submit.prevent="filter = txtFilter">
-            <input type="text" class="kiss-input kiss-flex-1 kiss-margin-xsmall-right" :placeholder="t('Search for assets or folders')" v-model="txtFilter">
+            <input type="text" class="kiss-input kiss-flex-1 kiss-margin-xsmall-end" :placeholder="t('Search for assets or folders')" v-model="txtFilter">
 
-            <div class="kiss-button-group kiss-margin-small-left">
+            <div class="kiss-button-group kiss-margin-small-start">
                 <button type="button" class="kiss-button" @click="filter = ''" v-if="filter">{{ t('Reset') }}</button>
                 <button class="kiss-button kiss-flex">{{ t('Search') }}</button>
             </div>
@@ -430,23 +430,23 @@ export default {
             <div class="kiss-flex kiss-flex-middle" v-if="!loading && count">
                 <app-pagination>
                     <div class="kiss-color-muted">{{ count }} {{ count == 1 ? t('Item') : t('Items') }}</div>
-                    <a class="kiss-margin-small-left" v-if="(page - 1) >= 1" @click="load(page - 1)">{{ t('Previous') }}</a>
-                    <div class="kiss-margin-small-left kiss-overlay-input" v-if="count > limit">
+                    <a class="kiss-margin-small-start" v-if="(page - 1) >= 1" @click="load(page - 1)">{{ t('Previous') }}</a>
+                    <div class="kiss-margin-small-start kiss-overlay-input" v-if="count > limit">
                         <strong>{{ page }} &mdash; {{pages}}</strong>
                         <select v-model="page" @change="load(page)" v-if="pages > 1">
                             <option v-for="p in pages" :value="p">{{ p }}</option>
                         </select>
                     </div>
-                    <a class="kiss-margin-small-left" v-if="(page + 1) <= pages" @click="load(page + 1)">{{ t('Next') }}</a>
-                    <div class="kiss-margin-left kiss-overlay-input">
+                    <a class="kiss-margin-small-start" v-if="(page + 1) <= pages" @click="load(page + 1)">{{ t('Next') }}</a>
+                    <div class="kiss-margin-start kiss-overlay-input">
                         <span class="kiss-color-muted">{{ t('Show') }}:</span> {{ limit}}
                         <select v-model="limit">
                             <option v-for="l in [15, 30, 50, 100]" :value="l">{{ l }}</option>
                         </select>
                     </div>
-                    <div class="kiss-margin-left">
+                    <div class="kiss-margin-start">
                         <a @click="sort[sortKey] = sortDir == -1 ? 1 : -1"><icon>{{ sortDir == 1 ? 'arrow_downward':'arrow_upward' }}</icon></a>
-                        <div class="kiss-margin-xsmall-left kiss-overlay-input">
+                        <div class="kiss-margin-xsmall-start kiss-overlay-input">
                             <span class="kiss-color-muted">{{ t(sortOptions[sortKey]) }}</span>
                             <select @change="updateSortBy">
                                 <option v-for="(lbl, key) in sortOptions" :value="key" :selected="key==sortKey">{{ t(lbl) }}</option>
@@ -459,8 +459,8 @@ export default {
                 <a class="kiss-link-muted" :class="view=='cards' ? 'kiss-color-primary' : 'kiss-color-muted'" @click="view='cards'"><icon size="large">grid_view</icon></a>
                 <a class="kiss-link-muted" :class="view=='table' ? 'kiss-color-primary' : 'kiss-color-muted'" @click="view='table'"><icon size="large">dns</icon></a>
             </div>
-            <div class="kiss-flex-1 kiss-margin-right"></div>
-            <div class="kiss-button-group kiss-margin-right">
+            <div class="kiss-flex-1 kiss-margin-end"></div>
+            <div class="kiss-button-group kiss-margin-end">
                 <button class="kiss-button" @click="createFolder()">{{ t('Create folder') }}</button>
                 <button class="kiss-button" @click="upload()">{{ t('Upload asset') }}</button>
             </div>
@@ -476,23 +476,23 @@ export default {
                     <div class="kiss-flex kiss-flex-middle" v-if="!loading && count">
                         <app-pagination>
                             <div class="kiss-color-muted">{{ count }} {{ count == 1 ? t('Item') : t('Items') }}</div>
-                            <a class="kiss-margin-small-left" v-if="(page - 1) >= 1" @click="load(page - 1)">{{ t('Previous') }}</a>
-                            <div class="kiss-margin-small-left kiss-overlay-input" v-if="count > limit">
+                            <a class="kiss-margin-small-start" v-if="(page - 1) >= 1" @click="load(page - 1)">{{ t('Previous') }}</a>
+                            <div class="kiss-margin-small-start kiss-overlay-input" v-if="count > limit">
                                 <strong>{{ page }} &mdash; {{pages}}</strong>
                                 <select v-model="page" @change="load(page)" v-if="pages > 1">
                                     <option v-for="p in pages" :value="p">{{ p }}</option>
                                 </select>
                             </div>
-                            <a class="kiss-margin-small-left" v-if="(page + 1) <= pages" @click="load(page + 1)">{{ t('Next') }}</a>
-                            <div class="kiss-margin-left kiss-overlay-input">
+                            <a class="kiss-margin-small-start" v-if="(page + 1) <= pages" @click="load(page + 1)">{{ t('Next') }}</a>
+                            <div class="kiss-margin-start kiss-overlay-input">
                                 <span class="kiss-color-muted">{{ t('Show') }}:</span> {{ limit}}
                                 <select v-model="limit">
                                     <option v-for="l in [15, 30, 50, 100]" :value="l">{{ l }}</option>
                                 </select>
                             </div>
-                            <div class="kiss-margin-left">
+                            <div class="kiss-margin-start">
                                 <a @click="sort[sortKey] = sortDir == -1 ? 1 : -1"><icon>{{ sortDir == 1 ? 'arrow_downward':'arrow_upward' }}</icon></a>
-                                <div class="kiss-margin-xsmall-left kiss-overlay-input">
+                                <div class="kiss-margin-xsmall-start kiss-overlay-input">
                                     <span class="kiss-color-muted">{{ t(sortOptions[sortKey]) }}</span>
                                     <select @change="updateSortBy">
                                         <option v-for="(lbl, key) in sortOptions" :value="key" :selected="key==sortKey">{{ t(lbl) }}</option>
@@ -505,7 +505,7 @@ export default {
                         <a class="kiss-link-muted" :class="view=='cards' ? 'kiss-color-primary' : 'kiss-color-muted'" @click="view='cards'"><icon size="large">grid_view</icon></a>
                         <a class="kiss-link-muted" :class="view=='table' ? 'kiss-color-primary' : 'kiss-color-muted'" @click="view='table'"><icon size="large">dns</icon></a>
                     </div>
-                    <div class="kiss-flex-1 kiss-margin-right"></div>
+                    <div class="kiss-flex-1 kiss-margin-end"></div>
                     <div v-if="selected.length">
                         <button type="button" class="kiss-button kiss-button-danger" @click="removeSelected()">{{ t('Delete') }} -{{ selected.length }}-</button>
                     </div>
@@ -528,27 +528,27 @@ export default {
                             </li>
                             <li>
                                 <a class="kiss-flex kiss-flex-middle" @click="edit(actionAsset)">
-                                    <icon class="kiss-margin-small-right" size="larger">create</icon>
+                                    <icon class="kiss-margin-small-end" size="larger">create</icon>
                                     {{ t('Edit') }}
                                 </a>
                             </li>
                             <li class="kiss-nav-divider"></li>
                             <li>
                                 <a class="kiss-flex kiss-flex-middle" @click="copyAssetLinkID(actionAsset)">
-                                    <icon class="kiss-margin-small-right" size="larger">share</icon>
+                                    <icon class="kiss-margin-small-end" size="larger">share</icon>
                                     {{ t('Copy asset link') }}
                                 </a>
                             </li>
                             <li>
                                 <a class="kiss-flex kiss-flex-middle" :href="actionAsset && $baseUrl('#uploads:'+actionAsset.path)" target="_blank" rel="noopener" download>
-                                    <icon class="kiss-margin-small-right" size="larger">cloud_download</icon>
+                                    <icon class="kiss-margin-small-end" size="larger">cloud_download</icon>
                                     {{ t('Download') }}
                                 </a>
                             </li>
                             <li class="kiss-nav-divider"></li>
                             <li>
                                 <a class="kiss-color-danger kiss-flex kiss-flex-middle" @click="remove(actionAsset)">
-                                    <icon class="kiss-margin-small-right" size="larger">delete</icon>
+                                    <icon class="kiss-margin-small-end" size="larger">delete</icon>
                                     {{ t('Delete') }}
                                 </a>
                             </li>
@@ -567,14 +567,14 @@ export default {
                             </li>
                             <li>
                                 <a class="kiss-flex kiss-flex-middle" @click="editFolder(actionFolder)">
-                                    <icon class="kiss-margin-small-right" size="larger">edit</icon>
+                                    <icon class="kiss-margin-small-end" size="larger">edit</icon>
                                     {{ t('Edit') }}
                                 </a>
                             </li>
                             <li class="kiss-nav-divider"></li>
                             <li>
                                 <a class="kiss-color-danger kiss-flex kiss-flex-middle" @click="removeFolder(actionFolder)">
-                                    <icon class="kiss-margin-small-right" size="larger">delete</icon>
+                                    <icon class="kiss-margin-small-end" size="larger">delete</icon>
                                     {{ t('Delete') }}
                                 </a>
                             </li>

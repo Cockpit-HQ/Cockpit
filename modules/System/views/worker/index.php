@@ -89,7 +89,7 @@
 
             <form class="kiss-flex kiss-flex-middle" gap="small" @submit.prevent="load()" :class="{'kiss-disabled': loading}" v-if="stats">
 
-                <app-textcomplete class="kiss-flex-1 kiss-margin-xsmall-right" :items="handlers" trigger="@">
+                <app-textcomplete class="kiss-flex-1 kiss-margin-xsmall-end" :items="handlers" trigger="@">
                     <input type="text" class="kiss-input" :placeholder="t('Filter jobs...')" v-model="filter">
                 </app-textcomplete>
 

@@ -650,8 +650,18 @@ kiss-dialog[type="prompt"]>kiss-content {
         padding-left: 70px;
     }
 
+    html[dir='rtl'] app-actionbar {
+        padding-left: 0;
+        padding-right: 70px;
+    }
+
     .has-side-panel app-actionbar {
         padding-left: 340px;
+    }
+
+    html[dir='rtl'] .has-side-panel app-actionbar {
+        padding-left: 0;
+        padding-right: 340px;
     }
 
     .app-container-aside {
@@ -675,5 +685,27 @@ kiss-dialog[type="prompt"]>kiss-content {
 @container (min-width: 980px) {
     .field-multiple-sortable-grid {
         grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+html[dir='rtl'] {
+
+    direction: rtl;
+
+    .app-container-aside {
+        right: 0;
+        left: auto;
+        margin-left: 20px;
+        margin-right: 0;
+    }
+
+    .app-container-aside-menu {
+        right: 0;
+        left: auto;
+    }
+
+    .app-container-aside-panel {
+        right: 50px;
+        left: auto;
     }
 }
