@@ -4,6 +4,7 @@ export default {
         return {
             assets: [],
             loading: true,
+            mode: 'all'
         }
     },
 
@@ -11,17 +12,29 @@ export default {
         this.load();
     },
 
+    watch: {
+        mode() {
+            this.load();
+        }
+    },
+
     methods: {
         load() {
 
             this.loading = true;
 
-            const options = {
-                sort: {_created: -1},
+            let options = {
+                sort: { _created: -1 },
                 limit: 12,
             };
 
-            this.$request('/assets/assets', {options}).then(rsp => {
+            if (this.mode === 'byme') {
+                options.filter = JSON.stringify({
+                    _cby: App.user._id
+                });
+            }
+
+            this.$request('/assets/assets', { options }).then(rsp => {
 
                 this.assets = rsp.assets;
                 this.loading = false;
@@ -30,7 +43,7 @@ export default {
 
         show(asset) {
 
-            VueView.ui.offcanvas('assets:assets/dialogs/asset.js', {asset}, {
+            VueView.ui.offcanvas('assets:assets/dialogs/asset.js', { asset }, {
 
                 update: updatedAsset => {
                     Object.assign(asset, updatedAsset)
@@ -47,6 +60,15 @@ export default {
             <div class="kiss-text-caption kiss-text-bold">{{ t('Assets') }}</div>
             <div class="kiss-color-muted kiss-size-small kiss-margin-xsmall">{{ t('Latest uploaded assets') }}</div>
             <div class="kiss-padding-large" v-if="loading"><app-loader size="small"></app-loader></div>
+
+            <div class="kiss-flex kiss-flex-middle kiss-margin-small" gap>
+
+                <ul class="kiss-tabs-nav kiss-flex-1" :class="{'kiss-disabled':loading}">
+                    <li :active="mode == 'all' ? 'true':'false'"><a class="kiss-tabs-nav-link" @click="mode='all'">{{ t('All assets') }}</a></li>
+                    <li :active="mode == 'all' ? 'false':'true'"><a class="kiss-tabs-nav-link"  @click="mode='byme'">{{ t('By me') }}</a></li>
+                </ul>
+
+            </div>
 
             <kiss-grid class="animated fadeIn kiss-margin-small" cols="3@s 3@m" gap="small" v-if="!loading && assets.length">
                 <kiss-card class="kiss-position-relative" theme="bordered" :class="asset.type === 'image' ? 'kiss-bgcolor-transparentimage':'kiss-bgcolor-contrast'" hover="bordered-primary" v-for="asset in assets">

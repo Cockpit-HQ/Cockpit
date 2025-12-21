@@ -124,7 +124,7 @@ final class CountDocuments
             throw new UnexpectedValueException('count command did not return a numeric "n" value');
         }
 
-        return (integer) $result->n;
+        return (int) $result->n;
     }
 
     private function createAggregate(): Aggregate

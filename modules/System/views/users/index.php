@@ -13,9 +13,9 @@
 
                 <div class="kiss-flex kiss-flex-middle">
 
-                    <input type="text" class="kiss-input kiss-flex-1 kiss-margin-xsmall-right" :placeholder="t('Filter users...')" v-model="txtFilter">
+                    <input type="text" class="kiss-input kiss-flex-1 kiss-margin-xsmall-end" :placeholder="t('Filter users...')" v-model="txtFilter">
 
-                    <div class="kiss-button-group kiss-margin-small-left">
+                    <div class="kiss-button-group kiss-margin-small-start">
                         <button type="button" class="kiss-button" @click="filter = ''" v-if="filter"><?= t('Reset') ?></button>
                         <button class="kiss-button kiss-flex"><?= t('Search') ?></button>
                     </div>
@@ -25,7 +25,7 @@
                 <div class="kiss-margin">
 
                     <button class="kiss-button kiss-button-small kiss-overlay-input" type="button">
-                        <span class="kiss-margin-small-right">{{ role || t('All') }}</span><icon>expand_more</icon>
+                        <span class="kiss-margin-small-end">{{ role || t('All') }}</span><icon>expand_more</icon>
 
                         <select v-model="role">
                             <option value="">{{ t('All') }}</option>
@@ -51,7 +51,7 @@
                     <li v-for="(user, idx) in users" :class="{'kiss-inactive': !user.active}">
 
                         <kiss-card class="kiss-padding-small kiss-flex" hover="contrast scale-small">
-                            <div class="kiss-margin-right kiss-position-relative">
+                            <div class="kiss-margin-end kiss-position-relative">
                                 <app-avatar size="50" :name="user.name"></app-avatar>
                                 <a class="kiss-cover" :href="$routeUrl('/system/users/user/'+user._id)"></a>
                             </div>
@@ -64,7 +64,7 @@
                                 </div>
                                 <a class="kiss-cover" :href="$routeUrl('/system/users/user/'+user._id)"></a>
                             </div>
-                            <div class="kiss-margin-left" v-if="user._id != '<?= $this['user/_id'] ?>'">
+                            <div class="kiss-margin-start" v-if="user._id != '<?= $this['user/_id'] ?>'">
                                 <a class="kiss-color-danger" @click="remove(user)">
                                     <icon class="kiss-size-large">delete</icon>
                                 </a>
@@ -82,14 +82,14 @@
                     <div class="kiss-flex kiss-flex-middle">
                         <div class="kiss-flex kiss-flex-middle" v-if="!loading && count">
                             <div class="kiss-size-small">{{ `${count} ${count == 1 ? t('User') : t('Users')}` }}</div>
-                            <div class="kiss-margin-small-left kiss-overlay-input">
+                            <div class="kiss-margin-small-start kiss-overlay-input">
                                 <span class="kiss-badge kiss-badge-outline kiss-color-muted">{{ page }} / {{pages}}</span>
                                 <select v-model="page" @change="load(page)" v-if="pages > 1">
                                     <option v-for="p in pages" :value="p">{{ p }}</option>
                                 </select>
                             </div>
-                            <div class="kiss-margin-small-left kiss-size-small">
-                                <a class="kiss-margin-small-right" v-if="(page - 1) >= 1" @click="load(page - 1)"><?= t('Previous') ?></a>
+                            <div class="kiss-margin-small-start kiss-size-small">
+                                <a class="kiss-margin-small-end" v-if="(page - 1) >= 1" @click="load(page - 1)"><?= t('Previous') ?></a>
                                 <a v-if="(page + 1) <= pages" @click="load(page + 1)"><?= t('Next') ?></a>
                             </div>
                         </div>

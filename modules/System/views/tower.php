@@ -5,7 +5,7 @@
     </ul>
 
     <div class="kiss-margin-bottom kiss-flex kiss-flex-middle">
-        <icon class="kiss-size-4 kiss-margin-small-right" size="larger">terminal</icon>
+        <icon class="kiss-size-4 kiss-margin-small-end" size="larger">terminal</icon>
         <div class="kiss-size-4 kiss-flex-1">
             <strong>Tower</strong>
         </div>

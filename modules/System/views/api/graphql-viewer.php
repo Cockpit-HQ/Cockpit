@@ -4,6 +4,11 @@
         return;
     }
 
+    $theme = $this->param('theme');
+    $primaryColor = $this->param('primaryColor');
+    $bgColor = $this->param('bgColor');
+    $textColor = $this->param('textColor');
+
 ?><!doctype html>
 <html lang="en">
     <head>
@@ -23,12 +28,49 @@
         <style>
             <?php include($this->path('system:assets/vendor/graphiql/graphiql.min.css')) ?>
 
-            .graphiql-logo {
-                display: none;
+            :root {
+                --color-primary: <?=$this->escape($primaryColor ? $primaryColor : '#0000ff')?>;
+                <?php if($bgColor): ?>
+                --editor-background: <?=$this->escape($bgColor)?>;
+                <?php endif ?>
+                <?php if($textColor): ?>
+                --color-base: <?=$this->escape($textColor)?>;
+                <?php endif ?>
             }
 
-            .graphiql-session-header-right {
-                padding-right: 20px;
+            #graphiql {
+
+                .graphiql-logo {
+                    display: none;
+                }
+
+                .graphiql-session-header-right {
+                    padding-right: 20px;
+                }
+
+                .graphiql-sessions,
+                .graphiql-container {
+                    <?php if($bgColor): ?>
+                    background-color: <?=$this->escape($bgColor)?>;
+                    <?php endif ?>
+                }
+
+                .graphiql-container .graphiql-sidebar button,
+                .graphiql-toolbar-button svg {
+                    <?php if($textColor): ?>
+                    color: <?=$this->escape($textColor)?>;
+                    <?php endif ?>
+                }
+
+                .graphiql-editors {
+                    background: none;
+                }
+
+                .graphiql-execute-button {
+                    <?php if($primaryColor): ?>
+                    background-color: <?=$this->escape($primaryColor)?>;
+                    <?php endif ?>
+                }
             }
         </style>
         <script>
@@ -40,7 +82,7 @@
         </script>
     </head>
 
-<body>
+<body class="<?=$theme == 'dark' ? 'graphiql-dark' : ''?>">
     <div id="graphiql"></div>
     <script>
 
@@ -60,3 +102,4 @@
     </script>
 </body>
 </html>
+

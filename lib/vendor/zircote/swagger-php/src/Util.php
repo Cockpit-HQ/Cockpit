@@ -10,6 +10,8 @@ use Symfony\Component\Finder\Finder;
 
 /**
  * Convenient utility functions that don't neatly fit anywhere else.
+ *
+ * @deprecated
  */
 class Util
 {
@@ -21,7 +23,7 @@ class Util
      * is always a chance it was a valid relative path to begin with.
      *
      * It should be noted that these are "relative paths" primarily in Finder's sense of them,
-     * and conform specifically to what is expected by functions like `exclude()` and `notPath()`.
+     * and conform specifically to what is expected by functions like <code>exclude()</code> and <code>notPath()</code>.
      * In particular, leading and trailing slashes are removed.
      *
      * @param array|string $basePaths
@@ -34,13 +36,13 @@ class Util
         } else { // an array of paths
             foreach ($basePaths as $basePath) {
                 $relativePath = self::removePrefix($fullPath, $basePath);
-                if (!empty($relativePath)) {
+                if (!in_array($relativePath, [null, '', '0'], true)) {
                     break;
                 }
             }
         }
 
-        return !empty($relativePath) ? trim($relativePath, '/') : $fullPath;
+        return in_array($relativePath, [null, '', '0'], true) ? $fullPath : trim($relativePath, '/');
     }
 
     /**
@@ -48,7 +50,7 @@ class Util
      */
     private static function removePrefix(string $str, string $prefix): ?string
     {
-        if (substr($str, 0, strlen($prefix)) == $prefix) {
+        if (substr($str, 0, strlen($prefix)) === $prefix) {
             return substr($str, strlen($prefix));
         }
 

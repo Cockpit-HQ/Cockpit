@@ -52,6 +52,12 @@
                                 <td width="30%" class="kiss-size-xsmall"><?=t('Datastorage')?></td>
                                 <td class="kiss-size-small kiss-text-monospace kiss-color-muted"><?=$this->dataStorage->type?></td>
                             </tr>
+                            <?php if ($this->helper('acl')->isSuperAdmin()): ?>
+                            <tr>
+                                <td width="30%" class="kiss-size-xsmall"><?=t('Mailer')?></td>
+                                <td class="kiss-size-small kiss-text-monospace kiss-color-muted"><button type="button" class="kiss-button kiss-button-small" @click="testMailer()"><icon class="kiss-margin-small-end">email</icon><?=t('Test mailer')?></button></td>
+                            </tr>
+                            <?php endif ?>
                         </tbody>
                     </table>
 
@@ -73,7 +79,7 @@
                     <kiss-grid cols="4@m 6@xl" gap="small">
                         <?php foreach($addons as $name): $icon = $this->path("{$name}:icon.svg"); ?>
                         <kiss-card class="kiss-padding kiss-size-small kiss-text-capitalize kiss-flex kiss-flex-middle" theme="shadowed contrast">
-                            <div class="kiss-margin-small-right"><kiss-svg src="<?=$this->base($icon ? "{$name}:icon.svg" : 'system:assets/icons/module.svg')?>" width="30" height="30"></kiss-svg></div>
+                            <div class="kiss-margin-small-end"><kiss-svg src="<?=$this->base($icon ? "{$name}:icon.svg" : 'system:assets/icons/module.svg')?>" width="30" height="30"></kiss-svg></div>
                             <div><?=t($name)?></div>
                         </kiss-card>
                         <?php endforeach ?>
@@ -269,7 +275,24 @@
                             type: 'password',
                             info: 'Please enter your password to verify this action'
                         });
-                    }
+                    },
+
+                    testMailer() {
+
+                        App.ui.prompt('Target email', null, (email) => {
+
+                            App.ui.block('Sending test mail...');
+
+                            this.$request('/system/utils/testMailer', {email}).then(res => {
+                                App.ui.notify('Test mail sent!');
+                            }).catch(res => {
+                                App.ui.notify(res.error || 'Test mail failed!', 'error');
+                            }).finally(() => {
+                                App.ui.unblock();
+                            });
+                        })
+                        
+                    },
                 }
             }
         </script>

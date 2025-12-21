@@ -63,7 +63,7 @@ class DatabaseInfo implements ArrayAccess
     public function getSizeOnDisk(): int
     {
         /* The MongoDB server might return this number as an integer or float */
-        return (integer) $this->info['sizeOnDisk'];
+        return (int) $this->info['sizeOnDisk'];
     }
 
     /**
@@ -71,7 +71,7 @@ class DatabaseInfo implements ArrayAccess
      */
     public function isEmpty(): bool
     {
-        return (boolean) $this->info['empty'];
+        return (bool) $this->info['empty'];
     }
 
     /**

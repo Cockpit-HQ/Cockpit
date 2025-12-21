@@ -145,7 +145,7 @@ let IconPicker = {
                     </div>
 
 
-                    <div class="kiss-margin kiss-flex kiss-flex-right">
+                    <div class="kiss-margin kiss-flex kiss-flex-end">
 
                         <div class="kiss-button-group">
                             <a class="kiss-button" @click="selectIcon(null)" v-if="icon">

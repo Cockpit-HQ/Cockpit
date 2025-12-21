@@ -8,10 +8,13 @@ kiss-row {
     gap: var(--row-gap);
 }
 
-kiss-row > * {
+kiss-row>* {
     margin: 0;
 }
-kiss-row > * > :last-child { margin-bottom: 0; }
+
+kiss-row>*> :last-child {
+    margin-bottom: 0;
+}
 
 
 /*
@@ -43,16 +46,294 @@ kiss-row[gap="none"] {
     --row-gap: 0px;
 }
 
+/*
+ * Alignment
+ */
+kiss-row[align="center"] {
+    justify-content: center;
+}
 
-kiss-row[match] > *,
+kiss-row[align="right"] {
+    justify-content: flex-end;
+}
+
+kiss-row[align="between"] {
+    justify-content: space-between;
+}
+
+kiss-row[align="around"] {
+    justify-content: space-around;
+}
+
+kiss-row[align="evenly"] {
+    justify-content: space-evenly;
+}
+
+kiss-row[valign="middle"] {
+    align-items: center;
+}
+
+kiss-row[valign="bottom"] {
+    align-items: flex-end;
+}
+
+kiss-row[valign="top"] {
+    align-items: flex-start;
+}
+
+kiss-row[valign="stretch"] {
+    align-items: stretch;
+}
+
+/*
+ * Utility attributes
+ */
+kiss-row[nowrap] {
+    flex-wrap: nowrap;
+}
+
+/*
+ * Match Height
+ */
+kiss-row[match]>*,
 .kiss-row-item-match {
     display: flex;
+    flex-direction: column;
     flex-wrap: wrap;
 }
 
-kiss-row[match] > * > :not([class*='kiss-width']),
-.kiss-row-item-match > :not([class*='kiss-width']) {
+kiss-row[match]>*> :not([class*='kiss-width']),
+.kiss-row-item-match> :not([class*='kiss-width']) {
     box-sizing: border-box;
     width: 100%;
     flex: auto;
+}
+
+/*
+ * Divider System
+ */
+
+/* 1. Base Setup: Hidden by default */
+kiss-row> :not(:first-child) {
+    position: relative;
+}
+
+kiss-row> :not(:first-child)::before {
+    content: "";
+    display: none;
+    position: absolute;
+    left: calc(var(--row-gap) * -0.5);
+    top: 0.2em;
+    bottom: 0.2em;
+    border-left: 1px solid var(--kiss-row-divider-color, rgba(0, 0, 0, 0.1));
+    pointer-events: none;
+}
+
+/* 2. Root Level Activation */
+/* Default presence turns it on */
+kiss-row[divider]> :not(:first-child)::before {
+    display: block;
+}
+
+/* Explicit OFF overrides default presence */
+kiss-row[divider~="off"]> :not(:first-child)::before {
+    display: none;
+}
+
+kiss-row[divider~="on"]> :not(:first-child)::before {
+    display: block;
+}
+
+/* 3. Child Level Overrides */
+kiss-row>[divider~="on"]:not(:first-child)::before {
+    display: block;
+}
+
+kiss-row>[divider~="off"]:not(:first-child)::before {
+    display: none;
+}
+
+
+/* 
+ * Responsive alignments & dividers
+*/
+
+/* Phone landscape and bigger */
+@media (max-width: 960px) {
+    kiss-row[align~="center@s"] {
+        justify-content: center;
+    }
+
+    kiss-row[align~="right@s"] {
+        justify-content: flex-end;
+    }
+
+    kiss-row[align~="between@s"] {
+        justify-content: space-between;
+    }
+
+    kiss-row[valign~="middle@s"] {
+        align-items: center;
+    }
+
+    kiss-row[valign~="bottom@s"] {
+        align-items: flex-end;
+    }
+
+    kiss-row[valign~="top@s"] {
+        align-items: flex-start;
+    }
+
+    /* Divider Root */
+    kiss-row[divider~="on@s"]> :not(:first-child)::before {
+        display: block;
+    }
+
+    kiss-row[divider~="off@s"]> :not(:first-child)::before {
+        display: none;
+    }
+
+    /* Divider Child */
+    kiss-row>[divider~="on@s"]:not(:first-child)::before {
+        display: block;
+    }
+
+    kiss-row>[divider~="off@s"]:not(:first-child)::before {
+        display: none;
+    }
+}
+
+/* Tablet landscape and bigger */
+@media (min-width: 960px) {
+    kiss-row[align~="center@m"] {
+        justify-content: center;
+    }
+
+    kiss-row[align~="right@m"] {
+        justify-content: flex-end;
+    }
+
+    kiss-row[align~="between@m"] {
+        justify-content: space-between;
+    }
+
+    kiss-row[valign~="middle@m"] {
+        align-items: center;
+    }
+
+    kiss-row[valign~="bottom@m"] {
+        align-items: flex-end;
+    }
+
+    kiss-row[valign~="top@m"] {
+        align-items: flex-start;
+    }
+
+    /* Divider Root */
+    kiss-row[divider~="on@m"]> :not(:first-child)::before {
+        display: block;
+    }
+
+    kiss-row[divider~="off@m"]> :not(:first-child)::before {
+        display: none;
+    }
+
+    /* Divider Child */
+    kiss-row>[divider~="on@m"]:not(:first-child)::before {
+        display: block;
+    }
+
+    kiss-row>[divider~="off@m"]:not(:first-child)::before {
+        display: none;
+    }
+}
+
+/* Desktop and bigger */
+@media (min-width: 1200px) {
+    kiss-row[align~="center@l"] {
+        justify-content: center;
+    }
+
+    kiss-row[align~="right@l"] {
+        justify-content: flex-end;
+    }
+
+    kiss-row[align~="between@l"] {
+        justify-content: space-between;
+    }
+
+    kiss-row[valign~="middle@l"] {
+        align-items: center;
+    }
+
+    kiss-row[valign~="bottom@l"] {
+        align-items: flex-end;
+    }
+
+    kiss-row[valign~="top@l"] {
+        align-items: flex-start;
+    }
+
+    /* Divider Root */
+    kiss-row[divider~="on@l"]> :not(:first-child)::before {
+        display: block;
+    }
+
+    kiss-row[divider~="off@l"]> :not(:first-child)::before {
+        display: none;
+    }
+
+    /* Divider Child */
+    kiss-row>[divider~="on@l"]:not(:first-child)::before {
+        display: block;
+    }
+
+    kiss-row>[divider~="off@l"]:not(:first-child)::before {
+        display: none;
+    }
+}
+
+/* Large screen and bigger */
+@media (min-width: 1600px) {
+    kiss-row[align~="center@xl"] {
+        justify-content: center;
+    }
+
+    kiss-row[align~="right@xl"] {
+        justify-content: flex-end;
+    }
+
+    kiss-row[align~="between@xl"] {
+        justify-content: space-between;
+    }
+
+    kiss-row[valign~="middle@xl"] {
+        align-items: center;
+    }
+
+    kiss-row[valign~="bottom@xl"] {
+        align-items: flex-end;
+    }
+
+    kiss-row[valign~="top@xl"] {
+        align-items: flex-start;
+    }
+
+    /* Divider Root */
+    kiss-row[divider~="on@xl"]> :not(:first-child)::before {
+        display: block;
+    }
+
+    kiss-row[divider~="off@xl"]> :not(:first-child)::before {
+        display: none;
+    }
+
+    /* Divider Child */
+    kiss-row>[divider~="on@xl"]:not(:first-child)::before {
+        display: block;
+    }
+
+    kiss-row>[divider~="off@xl"]:not(:first-child)::before {
+        display: none;
+    }
 }

@@ -45,7 +45,7 @@
 
                 <form class="kiss-flex kiss-flex-middle" gap="small" @submit.prevent="filter = txtFilter">
 
-                    <app-textcomplete class="kiss-flex-1 kiss-margin-xsmall-right" :items="model.fields.map(f => f.name)" trigger="@">
+                    <app-textcomplete class="kiss-flex-1 kiss-margin-xsmall-end" :items="model.fields.map(f => f.name)" trigger="@">
                         <input type="text" class="kiss-input" :placeholder="t('Filter items...')" v-model="txtFilter">
                     </app-textcomplete>
 
@@ -60,7 +60,7 @@
 
                     <div class="kiss-overlay-input">
                         <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': state !== false}" type="button">
-                            <span class="kiss-margin-small-right">{{ selectedState }}</span>
+                            <span class="kiss-margin-small-end">{{ selectedState }}</span>
                             <icon>expand_more</icon>
                         </button>
                         <select v-model="state">
@@ -93,7 +93,7 @@
                                 <th fixed="left" class="kiss-align-center" width="70">
                                     <div class="kiss-flex kiss-flex-middle">
                                         <input class="kiss-checkbox" type="checkbox" @click="toggleAllSelect">
-                                        <span class="kiss-margin-small-left">ID</span>
+                                        <span class="kiss-margin-small-start">ID</span>
                                     </div>
                                 </th>
                                 <th class="kiss-position-relative kiss-align-center" width="20">
@@ -136,7 +136,7 @@
                                 <td fixed="left" class="kiss-align-center">
                                     <div class="kiss-flex kiss-flex-middle">
                                         <input class="kiss-checkbox" type="checkbox" v-model="selected" :value="item._id">
-                                        <a class="kiss-badge kiss-link-muted kiss-margin-small-left" :href="$routeUrl(`/content/collection/item/${model.name}/${item._id}`)" :title="item._id">
+                                        <a class="kiss-badge kiss-link-muted kiss-margin-small-start" :href="$routeUrl(`/content/collection/item/${model.name}/${item._id}`)" :title="item._id">
                                             <icon>edit</icon>...{{ item._id.substr(-5) }}
                                         </a>
                                     </div>
@@ -173,17 +173,17 @@
                         <div class="kiss-flex kiss-flex-middle" v-if="!loading && count">
                             <app-pagination>
                                 <div class="kiss-color-muted">{{ `${count} ${count == 1 ? t('Item') : t('Items')}` }}</div>
-                                <a class="kiss-margin-small-left" v-if="(page - 1) >= 1" @click="load(page - 1)"><?= t('Previous') ?></a>
-                                <div class="kiss-margin-small-left kiss-overlay-input" v-if="count > limit">
+                                <a class="kiss-margin-small-start" v-if="(page - 1) >= 1" @click="load(page - 1)"><?= t('Previous') ?></a>
+                                <div class="kiss-margin-small-start kiss-overlay-input" v-if="count > limit">
                                     <strong>{{ page }} &mdash; {{pages}}</strong>
                                     <select v-model="page" @change="load(page)" v-if="pages > 1">
                                         <option v-for="p in pages" :value="p">{{ p }}</option>
                                     </select>
                                 </div>
-                                <a class="kiss-margin-small-left" v-if="(page + 1) <= pages" @click="load(page + 1)"><?= t('Next') ?></a>
+                                <a class="kiss-margin-small-start" v-if="(page + 1) <= pages" @click="load(page + 1)"><?= t('Next') ?></a>
                             </app-pagination>
                         </div>
-                        <div class="kiss-button-group kiss-margin-large-left" v-if="selected.length">
+                        <div class="kiss-button-group kiss-margin-large-start" v-if="selected.length">
                             <button class="kiss-button" @click="updateStateSelected()" v-if="acl.canPublish">{{ t('Update state') }} <span class="kiss-color-muted">{{ selected.length }}</span></button>
                             <?php if ($this->helper('acl')->isAllowed("content/{$model['name']}/update")) : ?>
                                 <button class="kiss-button" @click="batchEdit(selected)">{{ t('Batch edit') }} <span class="kiss-color-muted">{{ selected.length }}</span></button>
@@ -211,20 +211,20 @@
                                 <li class="kiss-nav-header">{{ t('Item actions') }}</li>
                                 <li>
                                     <a class="kiss-flex kiss-flex-middle" :href="$routeUrl(`/content/collection/item/${model.name}/${actionItem._id}`)">
-                                        <icon class="kiss-margin-small-right">create</icon>
+                                        <icon class="kiss-margin-small-end">create</icon>
                                         <?= t('Edit') ?>
                                     </a>
                                 </li>
                                 <li>
                                     <a class="kiss-flex kiss-flex-middle" :href="$routeUrl(`/content/collection/clone/${model.name}/${actionItem._id}`)">
-                                        <icon class="kiss-margin-small-right">control_point_duplicate</icon>
+                                        <icon class="kiss-margin-small-end">control_point_duplicate</icon>
                                         <?= t('Clone') ?>
                                     </a>
                                 </li>
                                 <li class="kiss-nav-divider"></li>
                                 <li>
                                     <a class="kiss-color-danger kiss-flex kiss-flex-middle" @click="remove(actionItem)">
-                                        <icon class="kiss-margin-small-right">delete</icon>
+                                        <icon class="kiss-margin-small-end">delete</icon>
                                         <?= t('Delete') ?>
                                     </a>
                                 </li>
@@ -243,7 +243,7 @@
                             <ul class="kiss-overflow-y-auto" style="max-height:250px;">
                                 <li v-for="field in fields">
                                     <div class="kiss-flex kiss-flex-middle" :class="field.__visible === false ? 'kiss-color-muted':''">
-                                        <div class="kiss-margin-small-right"><input class="kiss-checkbox" type="checkbox" v-model="field.__visible"></div>
+                                        <div class="kiss-margin-small-end"><input class="kiss-checkbox" type="checkbox" v-model="field.__visible"></div>
                                         <div>{{ field.label || field.name}}</div>
                                     </div>
                                 </li>
@@ -266,19 +266,19 @@
                                 <ul class="app-list-items kiss-margin-small-top">
                                     <li>
                                         <a class="kiss-flex kiss-flex-middle" @click="updateStateSelected(1)">
-                                            <icon class="kiss-margin-small-right kiss-color-success">trip_origin</icon>
+                                            <icon class="kiss-margin-small-end kiss-color-success">trip_origin</icon>
                                             <?= t('Published') ?>
                                         </a>
                                     </li>
                                     <li>
                                         <a class="kiss-flex kiss-flex-middle" @click="updateStateSelected(0)">
-                                            <icon class="kiss-margin-small-right kiss-color-danger">trip_origin</icon>
+                                            <icon class="kiss-margin-small-end kiss-color-danger">trip_origin</icon>
                                             <?= t('Unpublished') ?>
                                         </a>
                                     </li>
                                     <li>
                                         <a class="kiss-flex kiss-flex-middle" @click="updateStateSelected(-1)">
-                                            <icon class="kiss-margin-small-right kiss-color-muted">trip_origin</icon>
+                                            <icon class="kiss-margin-small-end kiss-color-muted">trip_origin</icon>
                                             <?= t('Archive') ?>
                                         </a>
                                     </li>
@@ -295,13 +295,13 @@
                                 <li class="kiss-nav-header"><?= t('Collection actions') ?></li>
                                 <li>
                                     <a class="kiss-flex kiss-flex-middle" @click="load(page)">
-                                        <icon class="kiss-margin-small-right">refresh</icon>
+                                        <icon class="kiss-margin-small-end">refresh</icon>
                                         {{ t('Reload content') }}
                                     </a>
                                 </li>
                                 <li>
                                     <a class="kiss-flex kiss-flex-middle" href="<?= $this->route("/content/collection/item/{$model['name']}") ?>">
-                                        <icon class="kiss-margin-small-right">add_circle</icon>
+                                        <icon class="kiss-margin-small-end">add_circle</icon>
                                         <?= t('Create item') ?>
                                     </a>
                                 </li>
@@ -309,7 +309,7 @@
                                     <li class="kiss-nav-divider"></li>
                                     <li>
                                         <a class="kiss-flex kiss-flex-middle" @click="batchEdit()">
-                                            <icon class="kiss-margin-small-right">edit_note</icon>
+                                            <icon class="kiss-margin-small-end">edit_note</icon>
                                             {{ t('Batch edit') }}
                                         </a>
                                     </li>
@@ -317,7 +317,7 @@
                                 <li class="kiss-nav-divider"></li>
                                 <li>
                                     <a class="kiss-flex kiss-flex-middle" href="<?= $this->route("/content/models/edit/{$model['name']}") ?>">
-                                        <icon class="kiss-margin-small-right">create</icon>
+                                        <icon class="kiss-margin-small-end">create</icon>
                                         <?= t('Edit model') ?>
                                     </a>
                                 </li>

@@ -131,6 +131,33 @@ class SQLToMongoQuery
     private const K_REGEXP = 'REGEXP';
     private const K_TRUE = 'TRUE';
     private const K_FALSE = 'FALSE';
+    private const K_ESCAPE = 'ESCAPE';
+
+    // Regex pattern for tokenization
+    private const TOKENIZER_REGEX = '/
+            \s* # Skip leading whitespace
+            (
+                # Capture one of the following:
+                (?<string_single>\'(?:\\\\.|[^\'])*\') # Single-quoted strings with escape sequences
+                |
+                (?<string_double>"(?:\\\\.|[^"])*") # Double-quoted strings with escape sequences
+                |
+                (?<identifier_backtick>`(?:\\\\`|[^`])*`) # Backtick-quoted identifiers with escaped backticks
+                |
+                (?<number>-?\d+(?:\.\d+)?) # Numbers (integer or float, with optional leading minus)
+                |
+                (?<operator><=|>=|!=|<>|=|<|>) # Comparison operators (longest first)
+                |
+                # Keywords (case-insensitive match using (?i:...))
+                (?<keyword>(?i:AND|OR|NOT|IN|LIKE|IS|NULL|BETWEEN|REGEXP|TRUE|FALSE|ESCAPE))
+                |
+                # Plain Identifiers (field names, potentially dotted)
+                (?<identifier>[a-zA-Z_][a-zA-Z0-9_\.]*)
+                |
+                (?<paren>[\(\),]) # Parentheses and comma
+            )
+            \s* # Skip trailing whitespace
+        /x';
 
     private const OP_EQ = '=';
     private const OP_NE = '!=';
@@ -250,47 +277,11 @@ class SQLToMongoQuery
      */
     private function tokenize(): void
     {
-        // Regex breakdown:
-        // \s* : Skip leading whitespace
-        // Capturing groups (?<name>...) for different token types:
-        // string_single: '...' with escaped \'
-        // string_double: "..." with escaped \"
-        // identifier_backtick: `...` with escaped \`
-        // number: Integer or float (simple form)
-        // operator: <=, >=, !=, <>, =, <, > (order matters: longest first)
-        // keyword: Case-insensitive match for known keywords
-        // identifier: Standard SQL identifiers (letters, numbers, _, starting with letter or _) including dot notation
-        // paren: (, ), or ,
-        // \s* : Skip trailing whitespace
-        // x modifier: Ignore whitespace in pattern, allow comments (#)
-        $pattern = '/
-            \s* # Skip leading whitespace
-            (
-                # Capture one of the following:
-                (?<string_single>\'(?:\\\\.|[^\'])*\') # Single-quoted strings with escape sequences
-                |
-                (?<string_double>"(?:\\\\.|[^"])*") # Double-quoted strings with escape sequences
-                |
-                (?<identifier_backtick>`(?:\\\\`|[^`])*`) # Backtick-quoted identifiers with escaped backticks
-                |
-                (?<number>-?\d+(?:\.\d+)?) # Numbers (integer or float, with optional leading minus)
-                |
-                (?<operator><=|>=|!=|<>|=|<|>) # Comparison operators (longest first)
-                |
-                # Keywords (case-insensitive match using (?i:...))
-                (?<keyword>(?i:AND|OR|NOT|IN|LIKE|IS|NULL|BETWEEN|REGEXP|TRUE|FALSE))
-                |
-                # Plain Identifiers (field names, potentially dotted)
-                (?<identifier>[a-zA-Z_][a-zA-Z0-9_\.]*)
-                |
-                (?<paren>[\(\),]) # Parentheses and comma
-            )
-            \s* # Skip trailing whitespace
-        /x';
+
 
         $flags = PREG_SET_ORDER | PREG_OFFSET_CAPTURE;
         $matches = []; // Initialize $matches
-        $result = preg_match_all($pattern, $this->processedQuery, $matches, $flags);
+        $result = preg_match_all(self::TOKENIZER_REGEX, $this->processedQuery, $matches, $flags);
 
         // Check for preg_match_all errors (e.g., regex compilation issues, backtrack limits)
         if ($result === false) {
@@ -764,8 +755,28 @@ class SQLToMongoQuery
             );
         }
 
+
+
+        // Check for optional ESCAPE clause
+        $escapeChar = null;
+        if ($this->peekKeyword(self::K_ESCAPE)) {
+            $this->position++; // Consume ESCAPE
+            
+            // value after ESCAPE should be a string of length 1
+            if ($this->position >= count($this->tokens)) {
+                $this->throwParsingException("Expected escape character after ESCAPE clause", null, true);
+            }
+            
+            $escapeVal = $this->parseValue();
+            
+            if (!is_string($escapeVal) || mb_strlen($escapeVal) !== 1) {
+                 $this->throwParsingException("The escape character must be a single character string", is_scalar($escapeVal) ? (string)$escapeVal : gettype($escapeVal), false, $this->position - 1);
+            }
+            $escapeChar = $escapeVal;
+        }
+
         try {
-            $regex = $this->sqlLikeToRegex($patternValue);
+            $regex = $this->sqlLikeToRegex($patternValue, $escapeChar);
         } catch (Throwable $e) {
             // Catch potential errors during regex conversion/quoting
             $this->throwParsingException("Error converting LIKE pattern to regex: " . $e->getMessage(), $patternValue, false, $this->position - 1);
@@ -989,31 +1000,90 @@ class SQLToMongoQuery
      * @return string The equivalent PCRE regex pattern.
      * @throws \RuntimeException If `preg_quote` fails (highly unlikely).
      */
-    private function sqlLikeToRegex(string $pattern): string
+    /**
+     * Converts a SQL LIKE pattern string (using % and _ wildcards) to a PCRE regex pattern.
+     * Use $escapeChar to treat wildcards as literals.
+     *
+     * @param string $pattern The SQL LIKE pattern.
+     * @param ?string $escapeChar Optional custom escape character.
+     * @return string The equivalent PCRE regex pattern.
+     */
+    private function sqlLikeToRegex(string $pattern, ?string $escapeChar = null): string
     {
-        // 1. Escape all PCRE special characters in the input pattern string.
-        //    This treats characters like '.', '+', '*', '?', '^', '$', etc. literally.
-        //    We use '/' as the delimiter for our final regex.
-        $regex = preg_quote($pattern, '/');
-        if ($regex === false) {
-             // preg_quote failing is extremely rare, maybe memory issues?
-             throw new \RuntimeException("preg_quote failed during LIKE to regex conversion");
+        // If no escape char used, standard logic applies (assuming standard backslash escaping isn't standard SQL but widely supported? 
+        // Actually standard SQL doesn't use backslash unless specified, but for backward compatibility with this class's 
+        // previous behavior (which relied on preg_quote), we should be careful. 
+        // The previous implementation used preg_quote which escapes everything including \, but then unescaped % and _.
+        // So `\%` in input became `\\%` in regex which matches literal `\`.
+        
+        $regex = '';
+        $len = strlen($pattern); // byte length sufficient for this token processing unless multi-byte chars match wildcard logic?
+        // Using iterating approach for robustness
+        
+        for ($i = 0; $i < $len; $i++) {
+            $char = $pattern[$i];
+            
+            if ($escapeChar !== null && $char === $escapeChar) {
+                // Next character is literal
+                if ($i + 1 < $len) {
+                    $next = $pattern[$i + 1];
+                    $regex .= preg_quote($next, '/');
+                    $i++; // Skip next char
+                } else {
+                    // Trailing escape char - ignore or treat as literal?
+                    // Treating as literal escape char for safety
+                    $regex .= preg_quote($char, '/');
+                }
+            } elseif ($char === '%') {
+                 $regex .= '.*';
+            } elseif ($char === '_') {
+                 $regex .= '.';
+            } else {
+                 $regex .= preg_quote($char, '/');
+            }
         }
 
-
-        // 2. Convert the SQL wildcards (%) and (_) to their PCRE equivalents (.* and .)
-        //    We replace the *escaped* versions produced by preg_quote.
-        //    Example: If pattern is 'a%b_c', preg_quote makes it 'a\%b\_c'.
-        //    We need to change '\%' to '.*' and '\_' to '.'.
-        //    Using strtr for simultaneous replacement.
-        $regex = strtr($regex, ['%' => '.*', '_' => '.']);
-
-        // 3. Add PCRE anchors (^ for start, $ for end) conditionally.
-        //    Anchoring ensures the pattern matches the entire string by default.
-        //    However, if the original SQL pattern started or ended with '%',
-        //    it implies matching anywhere, so we omit the corresponding anchor.
+        // Add PCRE anchors
         $anchorStart = !str_starts_with($pattern, '%');
         $anchorEnd = !str_ends_with($pattern, '%');
+        
+        // If using escape char, we need to be careful with anchor logic.
+        // If pattern starts with escaped %, it is literal %, so anchor IS needed.
+        // The above simple check `str_starts_with` sees `\%` (if \ is escape) as not starting with %.
+        // BUT if $pattern is just raw string, `str_starts_with($pattern, '%')` checks the first char.
+        // If pattern is `%abc` -> starts with %. Anchor skipped. Correct.
+        // If pattern is `!%abc` (escape !) -> starts with !. Anchor added. Correct.
+        // If pattern is `abc%` -> ends with %. Anchor skipped. Correct.
+        // If pattern is `abc!%` -> ends with %. Anchor skipped??? NO!
+        // `str_ends_with` checks the last char. If last char is %, it returns true.
+        // But if that % was escaped, it is a literal %, so we MUST anchor.
+        
+        if ($escapeChar !== null) {
+            // Re-evaluate anchors based on ESCAPED wildcards being literals.
+            
+            // Check start: Is the first char a non-escaped wildcard?
+            $anchorStart = true;
+            if ($len > 0) {
+                $first = $pattern[0];
+                 // If first is %, and not escaped (cannot be escaped if it's 0th char unless escape was previous... impossible)
+                 if ($first === '%') {
+                     $anchorStart = false;
+                 }
+            }
+            
+            // Check end: Is the last char a non-escaped wildcard?
+            // Need to trace back to see if it's escaped? Or just rely on the loop?
+            // Actually, logical "ends with wildcard" is property of the parsed regex.
+            // If regex ends with `.*`, it ends with wildcard.
+            $anchorEnd = !str_ends_with($regex, '.*'); 
+            
+            // Wait, . matches _ too. 
+            // If regex ends with `.` (from `_`), strict match would require anchor? 
+            // LIKE 'abc_' matches 'abcd' but not 'abcde'. So yes, anchor needed if it's `_`.
+            // ONLY if it is `%` (.*) do we skip anchor.
+            
+            // Correction: `str_ends_with($regex, '.*')` is safer.
+        }
 
         return ($anchorStart ? '^' : '') . $regex . ($anchorEnd ? '$' : '');
     }

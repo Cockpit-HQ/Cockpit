@@ -11,7 +11,7 @@ use OpenApi\Generator;
 /**
  * License information for the exposed API.
  *
- * @see [OAI License Object](https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.1.0.md#license-object)
+ * @see [License Object](https://spec.openapis.org/oas/v3.1.1.html#license-object)
  *
  * @Annotation
  */
@@ -25,16 +25,16 @@ class License extends AbstractAnnotation
     public $name = Generator::UNDEFINED;
 
     /**
-     * An SPDX license expression for the API. The `identifier` field is mutually exclusive of the `url` field.
+     * An SPDX license expression for the API. The <code>identifier</code> field is mutually exclusive of the <code>url</code> field.
      *
      * @var string
      */
     public $identifier = Generator::UNDEFINED;
 
     /**
-     * An URL to the license used for the API. This MUST be in the form of a URL.
+     * A URL to the license used for the API. This MUST be in the form of a URL.
      *
-     * The `url` field is mutually exclusive of the `identifier` field.
+     * The <code>url</code> field is mutually exclusive of the <code>identifier</code> field.
      *
      * @var string
      */
@@ -76,7 +76,7 @@ class License extends AbstractAnnotation
     {
         $data = parent::jsonSerialize();
 
-        if ($this->_context->isVersion(OpenApi::VERSION_3_0_0)) {
+        if ($this->_context->isVersion('3.0.x')) {
             unset($data->identifier);
         }
 
@@ -86,11 +86,11 @@ class License extends AbstractAnnotation
     /**
      * @inheritdoc
      */
-    public function validate(array $stack = [], array $skip = [], string $ref = '', $context = null): bool
+    public function validate(array $stack = [], array $skip = [], string $ref = '', ?object $context = null): bool
     {
         $valid = parent::validate($stack, $skip, $ref, $context);
 
-        if ($this->_context->isVersion(OpenApi::VERSION_3_1_0)) {
+        if ($this->_context->isVersion('3.1.x')) {
             if (!Generator::isDefault($this->url) && $this->identifier !== Generator::UNDEFINED) {
                 $this->_context->logger->warning($this->identity() . ' url and identifier are mutually exclusive');
                 $valid = false;

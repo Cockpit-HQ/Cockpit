@@ -20,8 +20,8 @@
                         <div class="kiss-text-truncate kiss-text-monospace kiss-flex-1">
                         <?=$this->module('system')->spaceUrl('/api')?>
                         </div>
-                        <div class="kiss-margin-left"><a href="#" @click.prevent="copyEndpoint('<?=$this->module('system')->spaceUrl('/api')?>', 'REST-Api endpoint copied!')"><icon>content_copy</icon></a></div>
-                        <div class="kiss-margin-small-left kiss-width-1-5 kiss-visible@m"><a class="kiss-button kiss-button-small kiss-width-1-1" href="#" @click="showApiViewer()">{{ t('Playground') }}</a></div>
+                        <div class="kiss-margin-start"><a href="#" @click.prevent="copyEndpoint('<?=$this->module('system')->spaceUrl('/api')?>', 'REST-Api endpoint copied!')"><icon>content_copy</icon></a></div>
+                        <div class="kiss-margin-small-start kiss-width-1-5 kiss-visible@m"><a class="kiss-button kiss-button-small kiss-width-1-1" href="#" @click="showApiViewer()">{{ t('Playground') }}</a></div>
                     </div>
                 </div>
                 <hr class="kiss-margin-remove">
@@ -31,8 +31,8 @@
                         <div class="kiss-text-truncate kiss-text-monospace kiss-flex-1">
                         <?=$this->module('system')->spaceUrl('/api/gql')?>
                         </div>
-                        <div class="kiss-margin-left"><a href="#" @click.prevent="copyEndpoint('<?=$this->getSiteUrl(true)?>/api/gql', 'GraphQL endpoint copied!')"><icon>content_copy</icon></a></div>
-                        <div class="kiss-margin-small-left kiss-width-1-5 kiss-visible@m"><a class="kiss-button kiss-button-small kiss-width-1-1" href="#" @click="showGraphQLViewer()">{{ t('Playground') }}</a></div>
+                        <div class="kiss-margin-start"><a href="#" @click.prevent="copyEndpoint('<?=$this->getSiteUrl(true)?>/api/gql', 'GraphQL endpoint copied!')"><icon>content_copy</icon></a></div>
+                        <div class="kiss-margin-small-start kiss-width-1-5 kiss-visible@m"><a class="kiss-button kiss-button-small kiss-width-1-1" href="#" @click="showGraphQLViewer()">{{ t('Playground') }}</a></div>
                     </div>
                 </div>
             </kiss-card>
@@ -43,12 +43,12 @@
 
             <kiss-card class="kiss-padding kiss-flex kiss-flex-middle kiss-margin-small" theme="bordered contrast">
                 <div></div><icon>public</icon></div>
-                <div class="kiss-flex-1 kiss-margin-small-left kiss-margin-small-right">
+                <div class="kiss-flex-1 kiss-margin-small-start kiss-margin-small-end">
                     <div class="kiss-color-muted kiss-size-small">
                         <?=t('Public API access permissions for unauthenticated requests.')?>
                     </div>
                 </div>
-                <div class="kiss-margin-small-left kiss-width-1-5"><a class="kiss-button kiss-button-small kiss-width-1-1" :href="$routeUrl('/system/api/public')"><?=t('Configure')?></a></div>
+                <div class="kiss-margin-small-start kiss-width-1-5"><a class="kiss-button kiss-button-small kiss-width-1-1" :href="$routeUrl('/system/api/public')"><?=t('Configure')?></a></div>
             </kiss-card>
 
             <app-loader class="kiss-margin-large" v-if="loading"></app-loader>
@@ -68,15 +68,15 @@
 
                     <li v-for="(key, idx) in keys">
                         <div class="kiss-flex kiss-flex-middle">
-                            <div class="kiss-margin-small-right"><icon>vpn_key</icon></div>
+                            <div class="kiss-margin-small-end"><icon>vpn_key</icon></div>
                             <div class="kiss-size-5 kiss-position-relative">
                                 <strong>{{key.name}}</strong>
                                 <a class="kiss-cover" :href="$routeUrl('/system/api/key/'+key._id)"></a>
                             </div>
-                            <div class="kiss-flex-1 kiss-margin-left kiss-align-right kiss-text-monospace kiss-color-muted">*****{{ key.key.substr(-5, 5)}}</div>
-                            <a class="kiss-margin-left" href="#" @click="copyApiKey(key.key)"><icon>content_copy</icon></a>
-                            <a class="kiss-margin-small-left kiss-color-danger" @click="remove(key)"><icon>delete</icon></a>
-                            <div class="kiss-margin-left kiss-width-1-5 kiss-button-group kiss-visible@m" :class="{'kiss-disabled': !key.key}">
+                            <div class="kiss-flex-1 kiss-margin-start kiss-align-right kiss-text-monospace kiss-color-muted">*****{{ key.key.substr(-5, 5)}}</div>
+                            <a class="kiss-margin-start" href="#" @click="copyApiKey(key.key)"><icon>content_copy</icon></a>
+                            <a class="kiss-margin-small-start kiss-color-danger" @click="remove(key)"><icon>delete</icon></a>
+                            <div class="kiss-margin-start kiss-width-1-5 kiss-button-group kiss-visible@m" :class="{'kiss-disabled': !key.key}">
                                 <a class="kiss-button kiss-button-small kiss-flex-1" href="#" @click="showApiViewer(key.key)">REST</a>
                                 <a class="kiss-button kiss-button-small kiss-flex-1" href="#" @click="showGraphQLViewer(key.key)">GraphQL</a>
                             </div>
@@ -90,7 +90,7 @@
             <app-actionbar>
 
                 <kiss-container size="small">
-                    <div class="kiss-flex kiss-flex-middle kiss-flex-right">
+                    <div class="kiss-flex kiss-flex-middle kiss-flex-end">
                         <a class="kiss-button kiss-button-primary" href="<?=$this->route('/system/api/create')?>"><?=t('Add key')?></a>
                     </div>
                 </kiss-container>

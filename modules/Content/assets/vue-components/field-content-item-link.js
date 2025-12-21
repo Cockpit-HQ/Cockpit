@@ -169,7 +169,7 @@ export default {
                 </div>
 
                 <button type="button" class="kiss-button kiss-button-small" @click="pickItem()">
-                    <icon class="kiss-margin-small-right">link</icon>
+                    <icon class="kiss-margin-small-end">link</icon>
                     {{ 'Link '+(model.name || model.label)+' item' }}
                 </button>
 

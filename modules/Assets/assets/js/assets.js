@@ -21,7 +21,7 @@ App.on('field-richtext-image-sources', evt => {
 
     img.sources['Assets'] = () => {
 
-        VueView.ui.modal('assets:assets/dialogs/asset-picker.js', {filter: {type: 'image'}}, {
+        VueView.ui.modal('assets:assets/dialogs/asset-picker.js', { filter: { type: 'image' } }, {
 
             onSelect: (asset) => {
                 img.src = App.base(`#uploads:${asset.path}`);
@@ -46,16 +46,20 @@ App.on('field-richtext-link-sources', evt => {
     };
 });
 
-App.utils.$interpolate.fns.$image = function(asset, w = 25, h = 25, mode = 'bestFit', q = 80) {
+App.utils.$interpolate.fns.$image = function (asset, w = 25, h = 25, mode = 'bestFit', q = 80) {
 
     if (!asset || !asset.type || asset.type !== 'image') return '';
 
     return `<display-image class="kiss-display-inline-block" src="${asset._id}" w="${w}" h="${h}" mode="${mode}" q="${q}" style="vertical-align: middle;"></display-image>`;
 };
 
-App.utils.selectAsset = function(callback, filter = {}) {
+App.utils.selectAsset = function (callback, filter = null) {
 
-    VueView.ui.modal('assets:assets/dialogs/asset-picker.js', {filter}, {
+    let opts = {};
+
+    if (filter) opts.filter = filter;
+
+    VueView.ui.modal('assets:assets/dialogs/asset-picker.js', opts, {
         onSelect: (asset) => {
             callback(asset);
         }

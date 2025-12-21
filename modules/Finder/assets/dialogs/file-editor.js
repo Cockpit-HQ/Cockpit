@@ -65,7 +65,7 @@ export default {
         <div class="app-offcanvas-container">
 
             <div class="kiss-padding kiss-flex kiss-flex-middle">
-                <icon class="kiss-margin-small-right kiss-size-3" size="larger">create</icon>
+                <icon class="kiss-margin-small-end kiss-size-3" size="larger">create</icon>
                 <div class="kiss-flex-1">
                     <strong>{{ t('Edit file') }}</strong>
                     <div class="kiss-color-muted kiss-size-xsmall">{{ file.name }}</div>

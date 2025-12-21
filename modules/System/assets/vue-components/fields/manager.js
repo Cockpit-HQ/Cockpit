@@ -238,8 +238,8 @@ let FieldsManager = {
 
                 <div class="kiss-position-relative" style="margin: 8px 0;" v-for="(element, index) in fields">
                     <kiss-card class="kiss-padding-small kiss-flex kiss-flex-middle kiss-visible-toggle" gap="small" theme="bordered contrast" hover="bordered-primary">
-                        <a class="fm-handle kiss-margin-small-right kiss-color-muted"><icon>drag_handle</icon></a>
-                        <div class="kiss-margin-small-right">
+                        <a class="fm-handle kiss-margin-small-end kiss-color-muted"><icon>drag_handle</icon></a>
+                        <div class="kiss-margin-small-end">
                             <div class="kiss-padding-small app-border-radius" :style="{background: fieldTypes?.[element.type]?.color ?? 'rgb(255, 248, 214)'}">
                                 <img :src="$baseUrl(fieldTypes?.[element.type]?.icon ?? 'system:assets/icons/edit.svg')" width="20" height="20" style="opacity:.6" :title="element.type">
                             </div>
@@ -272,7 +272,7 @@ let FieldsManager = {
             </vue-draggable>
 
             <div class="kiss-margin-small" v-if="fieldTypes">
-                <button type="button" class="kiss-button kiss-button-small" @click="add()"><icon class="kiss-margin-small-right">control_point</icon> {{ t('Add field') }}</button>
+                <button type="button" class="kiss-button kiss-button-small" @click="add()"><icon class="kiss-margin-small-end">control_point</icon> {{ t('Add field') }}</button>
             </div>
 
         </div>
@@ -282,7 +282,7 @@ let FieldsManager = {
                 <kiss-content class="animated fadeInUp faster">
 
                     <div class="kiss-size-4 kiss-text-bold kiss-flex kiss-flex-middle">
-                        <icon class="kiss-size-3 kiss-margin-small-right">tune</icon>
+                        <icon class="kiss-size-3 kiss-margin-small-end">tune</icon>
                         {{ t('Field settings') }}
                     </div>
 
@@ -297,7 +297,7 @@ let FieldsManager = {
                             <label>{{t('Type')}}</label>
 
                             <kiss-card class="kiss-padding-small kiss-flex kiss-flex-middle kiss-position-relative" theme="bordered">
-                                <div class="kiss-padding-small app-border-radius kiss-margin-right" :style="{background: fieldTypes?.[field.type]?.color ?? 'rgb(255, 248, 214)'}">
+                                <div class="kiss-padding-small app-border-radius kiss-margin-end" :style="{background: fieldTypes?.[field.type]?.color ?? 'rgb(255, 248, 214)'}">
                                     <img :src="$baseUrl(fieldTypes?.[field.type]?.icon ?? 'system:assets/icons/edit.svg')" width="20" height="20">
                                 </div>
                                 <div>
@@ -339,7 +339,7 @@ let FieldsManager = {
                             </tab>
                             <tab :caption="t('Options')">
 
-                                <div class="kiss-margin-bottom kiss-flex kiss-flex-right" v-if="fieldTypes[field.type] && fieldTypes[field.type].settings">
+                                <div class="kiss-margin-bottom kiss-flex kiss-flex-end" v-if="fieldTypes[field.type] && fieldTypes[field.type].settings">
                                     <div class="kiss-button-group">
                                         <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': state.optionsView != 'json'}" @click="state.optionsView = 'form'" type="button">{{t('Fields')}}</button>
                                         <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': state.optionsView === 'json'}" @click="state.optionsView = 'json'" type="button">JSON</button>
@@ -369,7 +369,7 @@ let FieldsManager = {
                         </kiss-tabs>
 
 
-                        <div class="kiss-margin-large-top kiss-flex kiss-flex-right">
+                        <div class="kiss-margin-large-top kiss-flex kiss-flex-end">
 
                             <div class="kiss-button-group">
                                 <a class="kiss-button" @click="field=null" v-if="!state.editField">

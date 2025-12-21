@@ -13,15 +13,16 @@ use OpenApi\Generator;
 /**
  * Ensures that all tags used on operations also exist in the global <code>tags</code> list.
  */
-class AugmentTags implements ProcessorInterface
+class AugmentTags
 {
-
     /** @var array<string> */
-    protected $whitelist = [];
+    protected array $whitelist;
+    protected bool $withDescription;
 
-    public function __construct(array $whitelist = [])
+    public function __construct(array $whitelist = [], bool $withDescription = true)
     {
         $this->whitelist = $whitelist;
+        $this->withDescription = $withDescription;
     }
 
     /**
@@ -34,7 +35,17 @@ class AugmentTags implements ProcessorInterface
         return $this;
     }
 
-    public function __invoke(Analysis $analysis)
+    /**
+     * Enables/disables generation of default tag descriptions.
+     */
+    public function setWithDescription(bool $withDescription): AugmentTags
+    {
+        $this->withDescription = $withDescription;
+
+        return $this;
+    }
+
+    public function __invoke(Analysis $analysis): void
     {
         /** @var OA\Operation[] $operations */
         $operations = $analysis->getAnnotationsOfType(OA\Operation::class);
@@ -63,7 +74,12 @@ class AugmentTags implements ProcessorInterface
             $declatedTagNames = array_keys($declaredTags);
             foreach ($usedTagNames as $tagName) {
                 if (!in_array($tagName, $declatedTagNames)) {
-                    $analysis->openapi->merge([new OA\Tag(['name' => $tagName, 'description' => $tagName])]);
+                    $analysis->openapi->merge([new OA\Tag([
+                        'name' => $tagName,
+                        'description' => $this->withDescription
+                            ? $tagName
+                            : Generator::UNDEFINED,
+                    ])]);
                 }
             }
         }
@@ -71,7 +87,7 @@ class AugmentTags implements ProcessorInterface
         $this->removeUnusedTags($usedTagNames, $declaredTags, $analysis);
     }
 
-    private function removeUnusedTags(array $usedTagNames, array $declaredTags, Analysis $analysis)
+    private function removeUnusedTags(array $usedTagNames, array $declaredTags, Analysis $analysis): void
     {
         if (in_array('*', $this->whitelist)) {
             return;
@@ -81,7 +97,7 @@ class AugmentTags implements ProcessorInterface
         foreach ($declaredTags as $tag) {
             if (!in_array($tag->name, $tagsToKeep)) {
                 if (false !== $index = array_search($tag, $analysis->openapi->tags, true)) {
-                    $analysis->annotations->detach($tag);
+                    $analysis->annotations->offsetUnset($tag);
                     unset($analysis->openapi->tags[$index]);
                     $analysis->openapi->tags = array_values($analysis->openapi->tags);
                 }

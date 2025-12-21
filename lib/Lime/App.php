@@ -31,6 +31,9 @@ include(__DIR__.'/Request.php');
 include(__DIR__.'/Response.php');
 
 
+
+class StopException extends \Exception {}
+
 class App implements \ArrayAccess {
 
     protected static $apps = [];
@@ -199,14 +202,16 @@ class App implements \ArrayAccess {
     */
     public function stop(mixed $data = null, ?int $status = null): void {
 
-        register_shutdown_function(function () {
+        if ($this->retrieve('app.run_mode') !== 'worker') {
+            register_shutdown_function(function () {
 
-            if (isset($this->response) && !function_exists('fastcgi_finish_request')) {
-                $this->trigger('app:request:after');
-            }
+                if (isset($this->response) && !function_exists('fastcgi_finish_request')) {
+                    $this->trigger('app:request:after');
+                }
 
-            $this->trigger('shutdown', [true]);
-        });
+                $this->trigger('shutdown', [true]);
+            });
+        }
 
         if (!isset($this->response)) {
 
@@ -219,7 +224,8 @@ class App implements \ArrayAccess {
             }
 
             $this->trigger('after', [true]);
-            exit;
+            // exit;
+            throw new StopException();
         }
 
         if ($status) {
@@ -250,12 +256,13 @@ class App implements \ArrayAccess {
             session_write_close();
         }
 
-        if (function_exists('fastcgi_finish_request')) {
+        if ($this->retrieve('app.run_mode') !== 'worker' && function_exists('fastcgi_finish_request')) {
             fastcgi_finish_request();
             $this->trigger('app:request:after');
         }
 
-        exit;
+        // exit;
+        throw new StopException();
     }
 
     /**
@@ -876,24 +883,31 @@ class App implements \ArrayAccess {
 
                 if ($this->response->status === 307 && isset($this->response->headers['Location'])) {
                     header("Location: {$this->response->headers['Location']}");
-                    exit;
+                    // exit;
+                    throw new StopException();
                 }
 
                 $this->response->flush();
             });
         }
 
-        if (!$this->request->stopped) {
-
-            $contents = $this->dispatch($route);
+        try {
 
             if (!$this->request->stopped) {
-                $this->response->body = $contents;
-            }
-        }
 
-        if ($this->response->status == 200 && $this->response->body === false) {
-            $this->response->status = 404;
+                $contents = $this->dispatch($route);
+    
+                if (!$this->request->stopped) {
+                    $this->response->body = $contents;
+                }
+            }
+    
+            if ($this->response->status == 200 && $this->response->body === false) {
+                $this->response->status = 404;
+            }
+
+        } catch (StopException $e) {
+            // handle stop exception
         }
 
         $this->trigger('after');
@@ -902,7 +916,8 @@ class App implements \ArrayAccess {
 
             if ($this->response->status === 307 && isset($this->response->headers['Location'])) {
                 header("Location: {$this->response->headers['Location']}");
-                exit;
+                // exit;
+                throw new StopException();
             }
 
             $this->response->flush();

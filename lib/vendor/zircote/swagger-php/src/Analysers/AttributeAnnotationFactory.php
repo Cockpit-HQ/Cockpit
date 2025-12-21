@@ -7,22 +7,25 @@
 namespace OpenApi\Analysers;
 
 use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OAT;
 use OpenApi\Context;
 use OpenApi\Generator;
+use OpenApi\GeneratorAwareTrait;
 
 class AttributeAnnotationFactory implements AnnotationFactoryInterface
 {
-    /** @var Generator|null */
-    protected $generator;
+    use GeneratorAwareTrait;
+
+    protected bool $ignoreOtherAttributes = false;
+
+    public function __construct(bool $ignoreOtherAttributes = false)
+    {
+        $this->ignoreOtherAttributes = $ignoreOtherAttributes;
+    }
 
     public function isSupported(): bool
     {
         return \PHP_VERSION_ID >= 80100;
-    }
-
-    public function setGenerator(Generator $generator): void
-    {
-        $this->generator = $generator;
     }
 
     public function build(\Reflector $reflector, Context $context): array
@@ -42,13 +45,17 @@ class AttributeAnnotationFactory implements AnnotationFactoryInterface
         /** @var OA\AbstractAnnotation[] $annotations */
         $annotations = [];
         try {
-            foreach ($reflector->getAttributes() as $attribute) {
+            $attributeName = $this->ignoreOtherAttributes
+                ? [OA\AbstractAnnotation::class, \ReflectionAttribute::IS_INSTANCEOF]
+                : [];
+
+            foreach ($reflector->getAttributes(...$attributeName) as $attribute) {
                 if (class_exists($attribute->getName())) {
                     $instance = $attribute->newInstance();
                     if ($instance instanceof OA\AbstractAnnotation) {
                         $annotations[] = $instance;
                     } else {
-                        if ($context->is('other') === false) {
+                        if (false === $context->is('other')) {
                             $context->other = [];
                         }
                         $context->other[] = $instance;
@@ -61,53 +68,35 @@ class AttributeAnnotationFactory implements AnnotationFactoryInterface
             if ($reflector instanceof \ReflectionMethod) {
                 // also look at parameter attributes
                 foreach ($reflector->getParameters() as $rp) {
-                    foreach ([OA\Property::class, OA\Parameter::class, OA\RequestBody::class] as $attributeName) {
+                    foreach ([OA\Property::class, OAT\Parameter::class, OA\RequestBody::class] as $attributeName) {
                         foreach ($rp->getAttributes($attributeName, \ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
-                            /** @var OA\Property|OA\Parameter|OA\RequestBody $instance */
+                            /** @var OA\Property|OAT\Parameter|OA\RequestBody $instance */
                             $instance = $attribute->newInstance();
+                            $instance->_context = new Context([
+                                'nested' => false,
+                                'property' => $rp->getName(),
+                                'reflector' => $rp,
+                            ], $context);
 
-                            $type = (($rnt = $rp->getType()) && $rnt instanceof \ReflectionNamedType) ? $rnt->getName() : Generator::UNDEFINED;
-                            $nullable = $rnt ? $rnt->allowsNull() : true;
-
-                            if ($instance instanceof OA\RequestBody) {
-                                $instance->required = !$nullable;
-                            } elseif ($instance instanceof OA\Property) {
-                                if (Generator::isDefault($instance->property)) {
-                                    $instance->property = $rp->getName();
-                                }
-                                if (Generator::isDefault($instance->type)) {
-                                    $instance->type = $type;
-                                }
-                                $instance->nullable = $nullable ?: Generator::UNDEFINED;
-
+                            if ($instance instanceof OA\Property) {
                                 if ($rp->isPromoted()) {
                                     // ensure each property has its own context
-                                    $instance->_context = new Context(['generated' => true, 'annotations' => [$instance]], $context);
+                                    $instance->_context = new Context([
+                                        'generated' => true,
+                                        'annotations' => [$instance],
+                                        'property' => $rp->getName(),
+                                        'reflector' => $rp,
+                                    ], $context);
 
                                     // promoted parameter - docblock is available via class/property
                                     if ($comment = $rp->getDeclaringClass()->getProperty($rp->getName())->getDocComment()) {
                                         $instance->_context->comment = $comment;
                                     }
+                                } else {
+                                    $instance->_context->property = $rp->getName();
                                 }
-                            } else {
-                                if (!$instance->name || Generator::isDefault($instance->name)) {
-                                    $instance->name = $rp->getName();
-                                }
-                                $instance->required = !$nullable;
-                                $context = new Context(['nested' => $this], $context);
-                                $context->comment = null;
-                                $instance->merge([new OA\Schema(['type' => $type, '_context' => $context])]);
                             }
                             $annotations[] = $instance;
-                        }
-                    }
-                }
-
-                if (($rrt = $reflector->getReturnType()) && $rrt instanceof \ReflectionNamedType) {
-                    foreach ($annotations as $annotation) {
-                        if ($annotation instanceof OA\Property && Generator::isDefault($annotation->type)) {
-                            // pick up simple return types
-                            $annotation->type = $rrt->getName();
                         }
                     }
                 }
@@ -115,10 +104,6 @@ class AttributeAnnotationFactory implements AnnotationFactoryInterface
         } finally {
             Generator::$context = null;
         }
-
-        $annotations = array_values(array_filter($annotations, function ($a) {
-            return $a instanceof OA\AbstractAnnotation;
-        }));
 
         // merge backwards into parents...
         $isParent = function (OA\AbstractAnnotation $annotation, OA\AbstractAnnotation $possibleParent): bool {
@@ -141,7 +126,7 @@ class AttributeAnnotationFactory implements AnnotationFactoryInterface
 
             // Attachables can always be nested (unless explicitly restricted)
             return ($isAttachable && $isParentAllowed)
-                || ($annotation->getRoot() != $possibleParent->getRoot() && $explicitParent);
+                || ($annotation->getRoot() !== $possibleParent->getRoot() && $explicitParent);
         };
 
         $annotationsWithoutParent = [];

@@ -16,14 +16,14 @@ class Examples extends AbstractAnnotation
     /**
      * The relative or absolute path to an example.
      *
-     * @see [Using refs](https://swagger.io/docs/specification/using-ref/)
+     * @see [Reference Object](https://spec.openapis.org/oas/v3.1.1.html#reference-object)
      *
      * @var string|class-string|object
      */
     public $ref = Generator::UNDEFINED;
 
     /**
-     * The key into `#/components/examples`.
+     * The key into <code>#/components/examples</code>.
      *
      * @var string
      */

@@ -167,7 +167,7 @@ export default {
                                 <div class="kiss-text-bold kiss-text-caption">{{ item.key }}</div>
 
                                 <kiss-card class="kiss-margin-small-top kiss-padding-small kiss-flex kiss-flex-middle" theme="contrast shadowed" hover="shadow">
-                                    <pre class="kiss-text-monospace kiss-size-small kiss-overflow-y-auto kiss-margin-small-right kiss-flex-1" style="max-height:15vh" v-html="item.diff"></pre>
+                                    <pre class="kiss-text-monospace kiss-size-small kiss-overflow-y-auto kiss-margin-small-end kiss-flex-1" style="max-height:15vh" v-html="item.diff"></pre>
                                     <div><a @click="restoreField(item.key)"><icon class="kiss-size-4">settings_backup_restore</icon></a></div>
                                 </kiss-card>
                             </div>
@@ -200,7 +200,7 @@ export default {
             <div class="kiss-padding">
                 <kiss-row>
                     <div class="kiss-flex-1">
-                        <button class="kiss-button kiss-button-primary kiss-width-1-1 kiss-margin-right" @click="restoreAll()" v-if="selectedRev && changes.length">{{ t('Restore all fields') }}</button>
+                        <button class="kiss-button kiss-button-primary kiss-width-1-1 kiss-margin-end" @click="restoreAll()" v-if="selectedRev && changes.length">{{ t('Restore all fields') }}</button>
                     </div>
                     <div class="kiss-width-1-5">
                         <button class="kiss-button kiss-width-1-1" kiss-offcanvas-close>{{ t('Close') }}</button>

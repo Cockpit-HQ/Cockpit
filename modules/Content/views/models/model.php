@@ -20,7 +20,7 @@
                     <kiss-grid cols="3@m" gap="small">
 
                         <kiss-card class="kiss-flex kiss-padding kiss-position-relative kiss-padding" theme="bordered" :class="model.type == 'collection' ? '': 'kiss-color-muted'" :style="{borderColor:model.type == 'collection' ? 'var(--kiss-color-primary)': null}">
-                            <div class="kiss-margin-small-right"><kiss-svg src="<?=$this->base('content:assets/icons/collection.svg')?>" width="30" height="30"><canvas width="30" height="30"></canvas></kiss-svg></div>
+                            <div class="kiss-margin-small-end"><kiss-svg src="<?=$this->base('content:assets/icons/collection.svg')?>" width="30" height="30"><canvas width="30" height="30"></canvas></kiss-svg></div>
                             <div class="kiss-size-small">
                                 <strong>{{ t('Collection') }}</strong>
                                 <div class="kiss-size-xsmall kiss-color-muted kiss-margin-xsmall-top">
@@ -31,7 +31,7 @@
                         </kiss-card>
 
                         <kiss-card class="kiss-flex kiss-padding kiss-position-relative kiss-padding" theme="bordered" :class="model.type == 'tree' ? '': 'kiss-color-muted'" :style="{borderColor:model.type == 'tree' ? 'var(--kiss-color-primary)': null}">
-                            <div class="kiss-margin-small-right"><kiss-svg src="<?=$this->base('content:assets/icons/tree.svg')?>" width="30" height="30"><canvas width="30" height="30"></canvas></kiss-svg></div>
+                            <div class="kiss-margin-small-end"><kiss-svg src="<?=$this->base('content:assets/icons/tree.svg')?>" width="30" height="30"><canvas width="30" height="30"></canvas></kiss-svg></div>
                             <div class="kiss-size-small">
                                 <strong>{{ t('Tree') }}</strong>
                                 <div class="kiss-size-xsmall kiss-color-muted kiss-margin-xsmall-top">
@@ -42,7 +42,7 @@
                         </kiss-card>
 
                         <kiss-card class="kiss-flex kiss-padding kiss-position-relative" theme="bordered" :class="model.type == 'singleton' ? '': 'kiss-color-muted'" :style="{borderColor:model.type == 'singleton' ? 'var(--kiss-color-primary)': null}">
-                            <div class="kiss-margin-small-right"><kiss-svg src="<?=$this->base('content:assets/icons/singleton.svg')?>" width="30" height="30"><canvas width="30" height="30"></canvas></kiss-svg></div>
+                            <div class="kiss-margin-small-end"><kiss-svg src="<?=$this->base('content:assets/icons/singleton.svg')?>" width="30" height="30"><canvas width="30" height="30"></canvas></kiss-svg></div>
                             <div class="kiss-size-small">
                                 <strong>{{ t('Singleton') }}</strong>
                                 <div class="kiss-size-xsmall kiss-color-muted kiss-margin-xsmall-top">
@@ -57,9 +57,9 @@
 
                 <div class="kiss-margin-large" v-if="isUpdate">
                     <kiss-card class="kiss-flex kiss-padding" theme="bordered">
-                        <div class="kiss-margin-small-right" v-if="model.type=='singleton'"><kiss-svg src="<?=$this->base('content:assets/icons/singleton.svg')?>" width="40" height="40"><canvas width="40" height="40"></canvas></kiss-svg></div>
-                        <div class="kiss-margin-small-right" v-if="model.type=='collection'"><kiss-svg src="<?=$this->base('content:assets/icons/collection.svg')?>" width="40" height="40"><canvas width="40" height="40"></canvas></kiss-svg></div>
-                        <div class="kiss-margin-small-right" v-if="model.type=='tree'"><kiss-svg src="<?=$this->base('content:assets/icons/tree.svg')?>" width="40" height="40"><canvas width="40" height="40"></canvas></kiss-svg></div>
+                        <div class="kiss-margin-small-end" v-if="model.type=='singleton'"><kiss-svg src="<?=$this->base('content:assets/icons/singleton.svg')?>" width="40" height="40"><canvas width="40" height="40"></canvas></kiss-svg></div>
+                        <div class="kiss-margin-small-end" v-if="model.type=='collection'"><kiss-svg src="<?=$this->base('content:assets/icons/collection.svg')?>" width="40" height="40"><canvas width="40" height="40"></canvas></kiss-svg></div>
+                        <div class="kiss-margin-small-end" v-if="model.type=='tree'"><kiss-svg src="<?=$this->base('content:assets/icons/tree.svg')?>" width="40" height="40"><canvas width="40" height="40"></canvas></kiss-svg></div>
                         <div class="kiss-size-small">
                             <strong v-if="model.type=='singleton'">{{ t('Singleton') }}</strong>
                             <strong v-if="model.type=='collection'">{{ t('Collection') }}</strong>
@@ -118,7 +118,7 @@
                             </vue-draggable>
 
                             <div class="kiss-margin-small">
-                                <button type="button" class="kiss-button kiss-button-small" @click="model.preview.push({name:'', uri:''})"><icon class="kiss-margin-small-right">control_point</icon> {{ t('Add url') }}</button>
+                                <button type="button" class="kiss-button kiss-button-small" @click="model.preview.push({name:'', uri:''})"><icon class="kiss-margin-small-end">control_point</icon> {{ t('Add url') }}</button>
                             </div>
 
                         </tab>
@@ -167,7 +167,7 @@
                 <app-actionbar>
 
                     <kiss-container size="small">
-                        <div class="kiss-flex kiss-flex-middle kiss-flex-right">
+                        <div class="kiss-flex kiss-flex-middle kiss-flex-end">
 
                             <div class="kiss-flex-1" v-if="isUpdate">
                                 <a class="kiss-button" :href="$routeUrl(`/content/tree/items/${model.name}`)" v-if="model.type == 'tree'"><?=t('Goto items')?></a>

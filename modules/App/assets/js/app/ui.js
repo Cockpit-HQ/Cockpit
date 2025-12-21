@@ -161,7 +161,7 @@ export default {
 
         let dialog = this.dialog(/*html*/`
             <div class="kiss-margin-bottom kiss-dialog-confirm-message">
-                ${text}
+                ${App.i18n.get(text)}
             </div>
             <div class="kiss-margin-top kiss-flex kiss-flex-middle kiss-button-group">
                 <button type="button" class="kiss-button-cancel kiss-button kiss-button-large kiss-flex-1">${App.i18n.get('Cancel')}</button>

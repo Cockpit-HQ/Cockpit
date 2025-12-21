@@ -1445,9 +1445,6 @@ class OpenIDConnectClient
             throw new OpenIDConnectClientException('Curl error: (' . curl_errno($ch) . ') ' . curl_error($ch));
         }
 
-        // Close the cURL resource, and free system resources
-        curl_close($ch);
-
         return $output;
     }
 

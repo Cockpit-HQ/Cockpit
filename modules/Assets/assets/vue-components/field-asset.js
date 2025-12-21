@@ -210,7 +210,7 @@ export default {
             </div>
 
             <button type="button" class="kiss-button kiss-button-small" @click="pickAsset()">
-                <icon class="kiss-margin-small-right">link</icon>
+                <icon class="kiss-margin-small-end">link</icon>
                 {{ val ? t('Replace asset') : t('Link asset') }}
             </button>
         </div>

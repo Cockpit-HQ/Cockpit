@@ -134,7 +134,7 @@ export default {
                                         <ul class="kiss-overflow-y-auto" style="max-height:200px;">
                                             <li v-for="field in modelFields">
                                                 <div class="kiss-flex kiss-flex-middle" :class="field._selected === false ? 'kiss-color-muted':''">
-                                                    <div class="kiss-margin-small-right"><input class="kiss-checkbox" type="checkbox" v-model="field._selected"></div>
+                                                    <div class="kiss-margin-small-end"><input class="kiss-checkbox" type="checkbox" v-model="field._selected"></div>
                                                     <div>{{ field.label || field.name}}</div>
                                                 </div>
                                             </li>
@@ -145,7 +145,7 @@ export default {
                             </kiss-dropdown>
 
                             <kiss-card class="kiss-position-relative kiss-padding-small kiss-margin-small kiss-text-bolder kiss-flex kiss-flex-middle" :class="{'kiss-color-muted': !field._selected}" :theme="!field._selected ? 'bordered':'bordered contrast'" v-for="field in fields">
-                                <icon class="kiss-margin-small-right kiss-color-primary">edit</icon>
+                                <icon class="kiss-margin-small-end kiss-color-primary">edit</icon>
                                 <span class="kiss-size-small kiss-flex-1">{{ field.label || field.name }}</span>
                                 <a class="kiss-color-danger" @click="field._selected = !field._selected"><icon>delete</icon></a>
                             </kiss-card>
@@ -157,7 +157,7 @@ export default {
                             <div class="kiss-text-caption kiss-size-xsmall kiss-text-bold">{{ t('Locales') }}</div>
 
                             <kiss-card class="kiss-position-relative kiss-padding-small kiss-margin-small kiss-text-bolder kiss-flex kiss-flex-middle" :class="{'kiss-color-muted': !loc.visible}" :theme="!loc.visible ? 'bordered':'bordered contrast'" v-for="loc in locales">
-                                <icon class="kiss-margin-small-right" :class="{'kiss-color-primary': loc.visible}">{{ loc.visible ? 'visibility' : 'visibility_off' }}</icon>
+                                <icon class="kiss-margin-small-end" :class="{'kiss-color-primary': loc.visible}">{{ loc.visible ? 'visibility' : 'visibility_off' }}</icon>
                                 <span class="kiss-size-small kiss-flex-1">{{ loc.name }}</span>
                                 <span class="kiss-color-muted kiss-size-xsmall" v-if="loc.i18n == 'default'">{{ t('Default') }}</span>
                                 <a class="kiss-cover" @click="loc.visible = !loc.visible"></a>

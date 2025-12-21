@@ -424,19 +424,28 @@ class Collection {
         if (!$criteria) {
             $stmt = $this->database->connection->query("SELECT COUNT(*) AS C FROM `{$sanitizedName}`");
         } else {
-            // Register and sanitize criteria
-            $criteriaId = $this->database->registerCriteriaFunction($criteria);
-            $sanitizedCriteriaId = $this->database->sanitizeCriteriaId($criteriaId);
-            
-            if (!$sanitizedCriteriaId) {
-                throw new \InvalidArgumentException("Invalid criteria function ID");
+            // Try to optimize query
+            $optimizer = $this->database->getQueryOptimizer();
+            $criteriaSql = is_array($criteria) ? $optimizer->optimize($criteria) : null;
+
+            if ($criteriaSql) {
+                $sql = "SELECT COUNT(*) AS C FROM `{$sanitizedName}` WHERE {$criteriaSql}";
+                $stmt = $this->database->connection->query($sql);
+            } else {
+                // Register and sanitize criteria
+                $criteriaId = $this->database->registerCriteriaFunction($criteria);
+                $sanitizedCriteriaId = $this->database->sanitizeCriteriaId($criteriaId);
+                
+                if (!$sanitizedCriteriaId) {
+                    throw new \InvalidArgumentException("Invalid criteria function ID");
+                }
+                
+                $sql = "SELECT COUNT(*) AS C FROM `{$sanitizedName}` WHERE document_criteria('{$sanitizedCriteriaId}', document)";
+                $stmt = $this->database->connection->query($sql);
+                
+                // Unregister criteria to prevent memory leaks
+                $this->database->unregisterCriteriaFunction($criteriaId);
             }
-            
-            $sql = "SELECT COUNT(*) AS C FROM `{$sanitizedName}` WHERE document_criteria('{$sanitizedCriteriaId}', document)";
-            $stmt = $this->database->connection->query($sql);
-            
-            // Unregister criteria to prevent memory leaks
-            $this->database->unregisterCriteriaFunction($criteriaId);
         }
         
         $res = $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -467,7 +476,19 @@ class Collection {
      * @return Cursor Cursor
      */
     public function find(mixed $criteria = null, ?array $projection = null): Cursor {
-        return new Cursor($this, $this->database->registerCriteriaFunction($criteria), $projection);
+        $criteriaSql = null;
+        $criteriaFn = null;
+
+        if (is_array($criteria)) {
+            $optimizer = $this->database->getQueryOptimizer();
+            $criteriaSql = $optimizer->optimize($criteria);
+        }
+
+        if ($criteriaSql === null) {
+            $criteriaFn = $this->database->registerCriteriaFunction($criteria);
+        }
+
+        return new Cursor($this, $criteriaFn, $projection, $criteriaSql);
     }
 
     /**

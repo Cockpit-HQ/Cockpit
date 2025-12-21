@@ -123,21 +123,21 @@ export default {
 
         <div class="app-offcanvas-container">
             <div class="kiss-padding-small kiss-flex kiss-flex-middle kiss-bgcolor-contrast">
-                <div class="kiss-flex-1 kiss-text-bold kiss-margin-small-left">{{ t('Content preview') }}</div>
+                <div class="kiss-flex-1 kiss-text-bold kiss-margin-small-start">{{ t('Content preview') }}</div>
 
-                <div class="kiss-margin-small-left kiss-margin-right" v-if="locales.length">
+                <div class="kiss-margin-small-start kiss-margin-end" v-if="locales.length">
                     <a class="kiss-text-bold kiss-link-muted kiss-flex kiss-flex-middle" gap="xsmall" kiss-popout="#content-preview-locales">
                         <icon size="larger" class="kiss-color-primary">translate</icon>
-                        <div class="kiss-size-small kiss-margin-xsmall-left">{{ locale.name }}</div>
+                        <div class="kiss-size-small kiss-margin-xsmall-start">{{ locale.name }}</div>
                         <icon class="kiss-color-muted">unfold_more</icon>
                     </a>
                 </div>
 
-                <div class="kiss-size-4 kiss-margin-small-left"><a :class="(device=='phone') ? 'kiss-link-muted':'kiss-color-muted'" @click="device='phone'"><icon class="larger">smartphone</icon></a></div>
-                <div class="kiss-size-4 kiss-margin-small-left"><a :class="(device=='tablet') ? 'kiss-link-muted':'kiss-color-muted'" @click="device='tablet'"><icon class="larger">tablet_mac</icon></a></div>
-                <div class="kiss-size-4 kiss-margin-small-left"><a :class="(device=='laptop') ? 'kiss-link-muted':'kiss-color-muted'" @click="device='laptop'"><icon class="larger">laptop</icon></a></div>
-                <div class="kiss-size-4 kiss-margin-small-left"><a :class="(device=='computer') ? 'kiss-link-muted':'kiss-color-muted'" @click="device='computer'"><icon class="larger">desktop_windows</icon></a></div>
-                <a class="kiss-button kiss-button-small kiss-margin-large-left kiss-margin-small-right" kiss-offcanvas-close>{{ t('Close preview') }}</a>
+                <div class="kiss-size-4 kiss-margin-small-start"><a :class="(device=='phone') ? 'kiss-link-muted':'kiss-color-muted'" @click="device='phone'"><icon class="larger">smartphone</icon></a></div>
+                <div class="kiss-size-4 kiss-margin-small-start"><a :class="(device=='tablet') ? 'kiss-link-muted':'kiss-color-muted'" @click="device='tablet'"><icon class="larger">tablet_mac</icon></a></div>
+                <div class="kiss-size-4 kiss-margin-small-start"><a :class="(device=='laptop') ? 'kiss-link-muted':'kiss-color-muted'" @click="device='laptop'"><icon class="larger">laptop</icon></a></div>
+                <div class="kiss-size-4 kiss-margin-small-start"><a :class="(device=='computer') ? 'kiss-link-muted':'kiss-color-muted'" @click="device='computer'"><icon class="larger">desktop_windows</icon></a></div>
+                <a class="kiss-button kiss-button-small kiss-margin-large-start kiss-margin-small-end" kiss-offcanvas-close>{{ t('Close preview') }}</a>
             </div>
             <div class="app-offcanvas-content kiss-position-relative kiss-flex kiss-flex-1">
                 <div class="kiss-flex kiss-flex-column" style="width:600px;">
@@ -169,7 +169,7 @@ export default {
                             <li class="kiss-nav-header">{{ t('Switch locale') }}</li>
                             <li v-for="l in locales">
                                 <a class="kiss-flex kiss-flex-middle" :class="{'kiss-color-primary': l===locale}" @click="locale = l">
-                                    <icon class="kiss-margin-small-right">language</icon>
+                                    <icon class="kiss-margin-small-end">language</icon>
                                     {{ l.name }}
                                 </a>
                             </li>

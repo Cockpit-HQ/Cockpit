@@ -153,4 +153,32 @@ class Utils extends App {
         return compact('env');
     }
 
+    public function testMailer() {
+
+        $this->hasValidCsrfToken(true);
+
+        if (!$this->helper('acl')->isSuperAdmin()) {
+            return $this->stop(401);
+        }
+
+        $email = $this->param('email');
+
+        if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return $this->stop(['error' => 'Email is missing or invalid'], 412);
+        }
+
+        $appName = $this->app->retrieve('app.name');
+
+        $subject = "{$appName}: System Test Mail";
+        $msg = "This is a test mail sent from the {$appName} system.";
+
+        try {
+            $this->mailer->mail($email, $subject, $msg);
+        } catch (\Exception $e) {
+            return $this->stop(['error' => $e->getMessage()], 500);
+        }
+
+        return ['success' => true];
+    }
+
 }

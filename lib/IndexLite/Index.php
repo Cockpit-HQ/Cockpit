@@ -16,7 +16,54 @@ class Index {
     public function __construct(string $path, array $options = []) {
 
         $this->db = new PDO("sqlite:{$path}");
+        $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        
         $this->fields = $this->getFieldsFromExistingTable();
+
+        // Register fuzzy search functions
+        $this->fuzzyEnhancer = new FuzzyEnhancer($this->db);
+        $this->fuzzyEnhancer->registerFunctions();
+
+        // Register Geo functions
+        $this->db->sqliteCreateFunction('geodist', function($lat1, $lon1, $lat2, $lon2) {
+            $earthRadius = 6371000; // meters
+            
+            $lat1 = deg2rad((float)$lat1);
+            $lon1 = deg2rad((float)$lon1);
+            $lat2 = deg2rad((float)$lat2);
+            $lon2 = deg2rad((float)$lon2);
+            
+            $dLat = $lat2 - $lat1;
+            $dLon = $lon2 - $lon1;
+            
+            $a = sin($dLat/2) * sin($dLat/2) + cos($lat1) * cos($lat2) * sin($dLon/2) * sin($dLon/2);
+            $c = 2 * atan2(sqrt($a), sqrt(1-$a));
+            
+            return $earthRadius * $c;
+        }, 4);
+
+        $this->db->sqliteCreateFunction('geopoly', function() {
+            $args = func_get_args();
+            $lat = (float)array_shift($args);
+            $lon = (float)array_shift($args);
+            $polygon = $args;
+            
+            $vertices = [];
+            for ($i = 0; $i < count($polygon); $i += 2) {
+                $vertices[] = ['lat' => (float)$polygon[$i], 'lon' => (float)$polygon[$i+1]];
+            }
+            
+            // Ray casting algorithm
+            $inside = false;
+            $count = count($vertices);
+            for ($i = 0, $j = $count - 1; $i < $count; $j = $i++) {
+                if ((($vertices[$i]['lat'] > $lat) != ($vertices[$j]['lat'] > $lat)) &&
+                    ($lon < ($vertices[$j]['lon'] - $vertices[$i]['lon']) * ($lat - $vertices[$i]['lat']) / ($vertices[$j]['lat'] - $vertices[$i]['lat']) + $vertices[$i]['lon'])) {
+                    $inside = !$inside;
+                }
+            }
+            return $inside;
+        });
 
         $pragma = [
             'journal_mode'  => $options['journal_mode'] ??  'WAL',
@@ -274,16 +321,82 @@ class Index {
      *   - offset: The offset used for retrieving documents.
      *   - estimatedTotalHits: The estimated total number of documents that match the search query.
      */
+
+
+    private function parseGeoFilter(string $filter): string {
+        
+        // _geoRadius(lat, lng, distance_in_meters)
+        $filter = preg_replace_callback('/_geoRadius\s*\(\s*([-\d\.]+)\s*,\s*([-\d\.]+)\s*,\s*(\d+)\s*\)/', function($matches) {
+            $lat = $matches[1];
+            $lng = $matches[2];
+            $dist = $matches[3];
+            return "geodist(json_extract(__payload, '$._geo.lat'), json_extract(__payload, '$._geo.lng'), {$lat}, {$lng}) <= {$dist}";
+        }, $filter);
+
+        // _geoBoundingBox(lat1, lng1, lat2, lng2) -> top_right, bottom_left
+        // Meilisearch: [lat1, lng1], [lat2, lng2] (top right, bottom left)
+        $filter = preg_replace_callback('/_geoBoundingBox\s*\(\s*\[\s*([-\d\.]+)\s*,\s*([-\d\.]+)\s*\]\s*,\s*\[\s*([-\d\.]+)\s*,\s*([-\d\.]+)\s*\]\s*\)/', function($matches) {
+            $lat1 = (float)$matches[1];
+            $lng1 = (float)$matches[2];
+            $lat2 = (float)$matches[3];
+            $lng2 = (float)$matches[4];
+            
+            $minLat = min($lat1, $lat2);
+            $maxLat = max($lat1, $lat2);
+            $minLng = min($lng1, $lng2);
+            $maxLng = max($lng1, $lng2);
+
+            return "json_extract(__payload, '$._geo.lat') BETWEEN {$minLat} AND {$maxLat} AND json_extract(__payload, '$._geo.lng') BETWEEN {$minLng} AND {$maxLng}";
+        }, $filter);
+
+        // _geoPolygon([lat, lng], [lat, lng], ...)
+        $filter = preg_replace_callback('/_geoPolygon\s*\((.*?)\)/', function($matches) {
+            // Extract all coordinates
+            preg_match_all('/\[\s*([-\d\.]+)\s*,\s*([-\d\.]+)\s*\]/', $matches[1], $coords);
+            
+            $args = [];
+            foreach ($coords[1] as $i => $lat) {
+                $args[] = $lat;
+                $args[] = $coords[2][$i];
+            }
+            
+            $polyArgs = implode(', ', $args);
+            return "geopoly(json_extract(__payload, '$._geo.lat'), json_extract(__payload, '$._geo.lng'), {$polyArgs})";
+        }, $filter);
+
+        return $filter;
+    }
+
     public function search(string $query, array $options = []) {
 
         $start = microtime(true);
+
+        // Meilisearch compatibility: Input aliases
+        if (isset($options['attributesToRetrieve'])) {
+            $options['fields'] = $options['attributesToRetrieve'];
+        }
+        if (isset($options['attributesToHighlight'])) {
+            $options['highlight'] = $options['attributesToHighlight'];
+        }
+        if (isset($options['hitsPerPage'])) {
+            $options['limit'] = $options['hitsPerPage'];
+        }
+        if (isset($options['page'])) {
+            $options['offset'] = ($options['page'] - 1) * ($options['limit'] ?? 50);
+        }
+        if (isset($options['filter']) && is_array($options['filter'])) {
+            $options['filter'] = implode(' AND ', $options['filter']);
+        }
 
         $options = array_merge([
             'fields' => '*',
             'limit' => 50,
             'offset' => 0,
             'filter' => '',
+            'sort' => null,
             'boosts' => [],
+            'highlight' => false,
+            'synonyms' => [],
             'fuzzy' => null,
             'fuzzy_algorithm' => 'fts5',        // Algorithm: fts5, levenshtein, jaro_winkler, trigram, soundex, hybrid
             'fuzzy_threshold' => 2,             // Threshold for distance-based algorithms
@@ -299,6 +412,16 @@ class Index {
         }
 
         $where = '';
+        $highlightFields = [];
+
+        // Prepare highlighting fields
+        if ($options['highlight']) {
+            if ($options['highlight'] === true) {
+                $highlightFields = array_filter($this->fields, fn($f) => !in_array($f, ['id', '__payload']));
+            } elseif (is_array($options['highlight'])) {
+                $highlightFields = array_intersect($options['highlight'], $this->fields);
+            }
+        }
 
         if ($query) {
             
@@ -307,25 +430,81 @@ class Index {
                 return $this->enhancedFuzzySearch($query, $options);
             }
 
-            $where = $this->buildMatchQuery($query, $options['fuzzy'], $options['boosts']);
+            $where = $this->buildMatchQuery($query, $options['fuzzy'], $options['boosts'], $options['synonyms']);
 
             $safeFilter = $this->sanitizeFilter($options['filter']);
+            
+            // Apply Geo Filters
+            if ($safeFilter) {
+                $safeFilter = $this->parseGeoFilter($safeFilter);
+            }
+
             if ($safeFilter) {
                 $where = "({$where}) AND {$safeFilter}";
             }
 
-            // Use bm25() for ranking; apply boosts via column weights
-            $orderExpr = $this->buildBm25OrderExpression($options['boosts'] ?? []);
-            $sql = "SELECT * FROM documents WHERE {$where} ORDER BY {$orderExpr} ASC LIMIT :limit OFFSET :offset";
+            // Build ORDER BY clause
+            $orderClause = [];
+            
+            if (!empty($options['sort']) && is_array($options['sort'])) {
+                foreach ($options['sort'] as $field => $dir) {
+                    // Handle _geoPoint sorting? (Not implemented yet, standard fields only)
+                    if (in_array($field, $this->fields) && !in_array($field, ['id', '__payload'])) {
+                        $dir = strtoupper($dir) === 'DESC' ? 'DESC' : 'ASC';
+                        $orderClause[] = "{$field} {$dir}";
+                    }
+                }
+            }
+
+            // Use bm25() for ranking as fallback or primary sort
+            $orderClause[] = $this->buildBm25OrderExpression($options['boosts'] ?? []) . " ASC";
+            
+            $orderBy = implode(', ', $orderClause);
+
+            // Build SELECT clause with highlighting
+            $select = "*";
+            if (!empty($highlightFields)) {
+                $snippets = [];
+                foreach ($highlightFields as $field) {
+                    $colIndex = array_search($field, $this->fields);
+                    if ($colIndex !== false) {
+                        // snippet(table, colIndex, start, end, ellipsis, maxTokens)
+                        $snippets[] = "snippet(documents, {$colIndex}, '<em>', '</em>', '...', 64) as \"_snippet_{$field}\"";
+                    }
+                }
+                if (!empty($snippets)) {
+                    $select .= ", " . implode(', ', $snippets);
+                }
+            }
+
+            $sql = "SELECT {$select} FROM documents WHERE {$where} ORDER BY {$orderBy} LIMIT :limit OFFSET :offset";
 
         } else {
             $safeFilter = $this->sanitizeFilter($options['filter']);
+            
+            // Apply Geo Filters
+            if ($safeFilter) {
+                $safeFilter = $this->parseGeoFilter($safeFilter);
+            }
+
+            // Build ORDER BY clause for non-search queries
+            $orderClause = [];
+            if (!empty($options['sort']) && is_array($options['sort'])) {
+                foreach ($options['sort'] as $field => $dir) {
+                    if (in_array($field, $this->fields) && !in_array($field, ['id', '__payload'])) {
+                        $dir = strtoupper($dir) === 'DESC' ? 'DESC' : 'ASC';
+                        $orderClause[] = "{$field} {$dir}";
+                    }
+                }
+            }
+            $orderBy = !empty($orderClause) ? "ORDER BY " . implode(', ', $orderClause) : "";
+
             if ($safeFilter) {
                 $where = $safeFilter;
-                $sql = "SELECT * FROM documents WHERE {$where} LIMIT :limit OFFSET :offset";
+                $sql = "SELECT * FROM documents WHERE {$where} {$orderBy} LIMIT :limit OFFSET :offset";
             } else {
                 $where = '1';
-                $sql = "SELECT * FROM documents LIMIT :limit OFFSET :offset";
+                $sql = "SELECT * FROM documents {$orderBy} LIMIT :limit OFFSET :offset";
             }
         }
 
@@ -342,8 +521,23 @@ class Index {
             $item = array_merge($item, $payload);
             unset($item['__payload']);
 
+            // Process highlights
+            if (!empty($highlightFields)) {
+                $item['_formatted'] = $item;
+                foreach ($highlightFields as $field) {
+                    if (isset($item["_snippet_{$field}"])) {
+                        $item['_formatted'][$field] = $item["_snippet_{$field}"];
+                        unset($item["_snippet_{$field}"]);
+                    }
+                }
+            }
+
             if ($options['fields'] !== '*') {
                 $item = array_intersect_key($item, $intersectFields);
+                // Keep _formatted if it exists
+                if (isset($item['_formatted'])) {
+                    $item['_formatted'] = array_intersect_key($item['_formatted'], $intersectFields);
+                }
             }
         }
 
@@ -371,6 +565,22 @@ class Index {
                 $result['facets'] = $facetData;
             }
         }
+
+        // Meilisearch compatibility: Response format
+        if (isset($result['facets'])) {
+            $result['facetDistribution'] = [];
+            foreach ($result['facets'] as $field => $values) {
+                $distribution = [];
+                foreach ($values as $item) {
+                    $distribution[$item['value']] = $item['count'];
+                }
+                $result['facetDistribution'][$field] = $distribution;
+            }
+        }
+        
+        $result['hitsPerPage'] = $result['limit'];
+        $result['page'] = $result['limit'] > 0 ? floor($result['offset'] / $result['limit']) + 1 : 1;
+        $result['totalPages'] = $result['limit'] > 0 ? ceil($result['estimatedTotalHits'] / $result['limit']) : 1;
 
         return $result;
     }
@@ -608,6 +818,46 @@ class Index {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+
+    /**
+     * Expands query terms with synonyms and formats for FTS5
+     */
+    private function expandSynonyms(string $query, array $synonyms, ?int $fuzzyDistance = null): string {
+        
+        // If no synonyms and no fuzzy distance, preserve original phrase behavior (backward compat)
+        if (empty($synonyms) && $fuzzyDistance === null) {
+            return "\"" . $this->escapeForMatch($query) . "\"";
+        }
+
+        // Tokenize
+        $terms = preg_split('/\s+/', $query, -1, PREG_SPLIT_NO_EMPTY);
+        $expandedTerms = [];
+        
+        foreach ($terms as $term) {
+            $termLower = strtolower($term);
+            $variants = [$term];
+            
+            if (isset($synonyms[$termLower])) {
+                $syns = is_array($synonyms[$termLower]) ? $synonyms[$termLower] : [$synonyms[$termLower]];
+                $variants = array_merge($variants, $syns);
+            }
+            
+            // Escape and format each variant
+            $escapedVariants = array_map(function($v) use ($fuzzyDistance) {
+                $esc = $this->escapeForMatch($v);
+                return $fuzzyDistance !== null ? "\"{$esc}\" NEAR/{$fuzzyDistance}" : "\"{$esc}\"";
+            }, $variants);
+            
+            if (count($escapedVariants) > 1) {
+                $expandedTerms[] = '(' . implode(' OR ', $escapedVariants) . ')';
+            } else {
+                $expandedTerms[] = $escapedVariants[0];
+            }
+        }
+        
+        return implode(' AND ', $expandedTerms);
+    }
+
     /**
      * Builds a match query for searching documents based on the given query and fuzzy distance.
      *
@@ -616,7 +866,7 @@ class Index {
      *
      * @return string The built match query as a string.
      */
-    private function buildMatchQuery(string $query, ?int $fuzzyDistance = null, array $boosts = []): string {
+    private function buildMatchQuery(string $query, ?int $fuzzyDistance = null, array $boosts = [], array $synonyms = []): string {
 
         $fields = [];
         $_fields = $this->fields;
@@ -632,13 +882,13 @@ class Index {
 
                 $field = $match[1];
                 $value = trim($match[2], '\'"');
-                $fields[$field] = $this->escapeForMatch($value);
+                $fields[$field] = $this->expandSynonyms($value, $synonyms, $fuzzyDistance);
             }
 
         } else {
 
             foreach ($_fields as $field) {
-                $fields[$field] = $this->escapeForMatch($query);
+                $fields[$field] = $this->expandSynonyms($query, $synonyms, $fuzzyDistance);
             }
         }
 
@@ -650,15 +900,8 @@ class Index {
                 continue;
             }
 
-            // Apply fuzzy search if specified
-            if ($fuzzyDistance !== null) {
-                $matchTerm = "\"{$q}\" NEAR/{$fuzzyDistance}";
-            } else {
-                $matchTerm = $q;
-            }
-
             // Build boolean MATCH expression (boosting is applied via bm25 weights in ORDER BY)
-            $searchQuery = "\"{$field}\" MATCH '{$matchTerm}'";
+            $searchQuery = "\"{$field}\" MATCH '{$q}'";
 
             $searchQueries[] = $searchQuery;
         }

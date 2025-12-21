@@ -151,7 +151,7 @@ export default {
 
                 <div class="kiss-button-group kiss-margin-small-top">
                     <button type="button" class="kiss-button kiss-button-small" @click="addRow">
-                        <icon class="kiss-margin-small-right">control_point</icon> {{ t('Add row') }}
+                        <icon class="kiss-margin-small-end">control_point</icon> {{ t('Add row') }}
                     </button>
                     <button type="button" class="kiss-button kiss-button-danger kiss-button-small" @click="removeSelected" v-if="selected.length">
                         {{ t('Remove selected') }}

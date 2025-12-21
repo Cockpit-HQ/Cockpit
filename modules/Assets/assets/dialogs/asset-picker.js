@@ -31,7 +31,7 @@ export default {
         <div>
 
             <div class="kiss-size-4 kiss-text-bold kiss-margin kiss-flex kiss-flex-middle">
-                <icon class="kiss-margin-small-right kiss-size-3" size="larger">link</icon>
+                <icon class="kiss-margin-small-end kiss-size-3" size="larger">link</icon>
                 <div class="kiss-flex-1">{{ t('Select asset') }}</div>
             </div>
 

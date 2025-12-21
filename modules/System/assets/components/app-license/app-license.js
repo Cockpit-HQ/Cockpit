@@ -19,7 +19,7 @@ customElements.define('app-license', class extends HTMLElement {
             if (rsp.isTrial) {
 
                 this.innerHTML = /*html*/`
-                <a class="kiss-button kiss-button-small kiss-button-danger kiss-margin-left animated fadeInDown" href="https://getcockpit.com" target="_blank">
+                <a class="kiss-button kiss-button-small kiss-button-danger kiss-margin-start animated fadeInDown" href="https://getcockpit.com" target="_blank">
                     Pro trial version
                 </a>`;
 

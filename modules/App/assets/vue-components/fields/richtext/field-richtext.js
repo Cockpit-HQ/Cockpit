@@ -23,7 +23,7 @@ export default {
                 return value.length ? `${value.length}x...` : '';
             }
 
-            if (typeof(value) !== 'string') {
+            if (typeof (value) !== 'string') {
                 return 'n/a';
             }
 
@@ -95,59 +95,96 @@ export default {
 
         ready.then(() => {
 
-            let config = {
-                extensions: [
-                    VueTiptap.extensions.StarterKit,
-                    VueTiptap.extensions.Subscript,
-                    VueTiptap.extensions.Superscript,
-                    VueTiptap.extensions.Underline,
-                    VueTiptap.extensions.ListKeymap,
-                    VueTiptap.extensions.TextStyle,
-                    VueTiptap.extensions.Color,
+            App.utils.import('app:assets/vue-components/fields/richtext/components/image-resizer.js').then(resizer => {
 
-                    VueTiptap.extensions.Table.configure({
-                        resizable: true,
-                        HTMLAttributes: {
-                            class: 'kiss-table',
-                        },
-                    }),
-                    VueTiptap.extensions.TableRow,
-                    VueTiptap.extensions.TableHeader,
-                    VueTiptap.extensions.TableCell,
+                let ImageResizer = resizer.default || resizer;
 
-                    VueTiptap.extensions.Placeholder.configure({
-                        emptyNodeClass: 'tiptap-node-is-empty',
-                        showOnlyCurrent: true,
-                        placeholder: ({ node }) => {
-                            return $this.modelValue ? '...' : '';
-                        }
-                    }),
-                    VueTiptap.extensions.TextAlign.configure({
-                        types: ['heading', 'paragraph'],
-                    }),
-                    VueTiptap.extensions.Link.configure({
-                        openOnClick: false,
-                        protocols: ['ftp', 'mailto'],
+                let config = {
+                    extensions: [
+                        VueTiptap.StarterKit.configure({
+                            link: false,
+                            underline: false,
+                            listKeymap: false,
+                        }),
+                        VueTiptap.Subscript,
+                        VueTiptap.Superscript,
+                        VueTiptap.Underline,
+                        VueTiptap.ListKeymap,
+                        VueTiptap.TextStyle,
+                        VueTiptap.Color,
 
-                    }),
-                    VueTiptap.extensions.Image.configure({
-                        inline: false,
-                        allowBase64: true,
-                    }),
-                ],
+                        VueTiptap.Table.configure({
+                            resizable: true,
+                            HTMLAttributes: {
+                                class: 'kiss-table',
+                            },
+                        }),
+                        VueTiptap.TableRow,
+                        VueTiptap.TableHeader,
+                        VueTiptap.TableCell,
 
-                onUpdate: ({ editor }) => {
-                    $this.update()
-                }
-            };
+                        VueTiptap.TextAlign.configure({
+                            types: ['heading', 'paragraph'],
+                        }),
+                        VueTiptap.Link.configure({
+                            openOnClick: false,
+                            protocols: ['ftp', 'mailto', 'http', 'https', 'tel', 'sms'],
+                            isAllowedUri: (url, ctx) => {
 
-            App.trigger('field-richtext-config', [config]);
+                                if (url.includes('://')) {
+                                    try {
+                                        const uri = new URL(url);
+                                        return ctx.protocols.includes(uri.protocol.replace(':', ''));
+                                    } catch (e) {
+                                        return false;
+                                    }
+                                }
 
-            this.editor = new VueTiptap.Editor(config);
+                                return true;
+                            }
+                        }),
+                        VueTiptap.Image.extend({
+                            addAttributes() {
+                                return {
+                                    ...this.parent?.(),
+                                    width: {
+                                        default: null,
+                                    },
+                                }
+                            },
+                            addNodeView() {
+                                return VueTiptap.VueNodeViewRenderer(ImageResizer)
+                            },
+                        }).configure({
+                            inline: false,
+                            allowBase64: true,
+                        }),
+                        VueTiptap.Placeholder.configure({
+                            emptyNodeClass: 'tiptap-node-is-empty',
+                            showOnlyCurrent: true,
+                            placeholder: $this.placeholder || App.i18n.get('Start writing...')
+                        }),
+                    ],
 
-            App.trigger('field-richtext-init', [this.editor]);
+                    onUpdate: ({ editor }) => {
+                        $this.update()
+                    }
+                };
 
-            this.editor.commands.setContent(this.modelValue || '', false);
+                //if (VueTiptap.TaskList) config.extensions.push(VueTiptap.TaskList);
+                //if (VueTiptap.TaskItem) config.extensions.push(VueTiptap.TaskItem.configure({ nested: true }));
+                if (VueTiptap.Highlight) config.extensions.push(VueTiptap.Highlight);
+                if (VueTiptap.Focus) config.extensions.push(VueTiptap.Focus.configure({ className: 'has-focus', mode: 'all' }));
+
+                App.trigger('field-richtext-config', [config]);
+
+                this.editor = new VueTiptap.Editor(config);
+
+                App.trigger('field-richtext-init', [this.editor]);
+
+                this.editor.commands.setContent(this.modelValue || '', false);
+
+            }); // end import
         });
     },
 
@@ -163,7 +200,28 @@ export default {
             if (selection.empty) return false;
             if (selection.node?.type.name === 'image') return false;
 
-            return ['paragraph', 'heading', 'listItem', 'tableCell'].some(n => this.editor.isActive(n))
+            return ['paragraph', 'heading', 'listItem', 'tableCell', 'taskItem'].some(n => this.editor.isActive(n))
+        },
+
+        focus(e) {
+            if (e.target.closest('.ProseMirror')) return;
+            if (e.target.closest('button')) return;
+            if (e.target.closest('.kiss-button-group')) return;
+            this.editor?.commands.focus('end');
+        },
+
+        openImageDialog() {
+            VueView.ui.modal('app:assets/vue-components/fields/richtext/dialogs/image.js', {}, {
+                save: meta => {
+                    if (meta && meta.src) {
+                        this.editor.chain().focus().setImage(meta).run();
+                    }
+                }
+            });
+        },
+
+        insertTable() {
+            this.editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run();
         }
     },
 
@@ -171,14 +229,28 @@ export default {
         <div field="wysiwyg" v-if="editor">
             <kiss-card class="kiss-padding-small kiss-flex kiss-flex-column" theme="contrast bordered" :style="{height}">
                 <menu-bar :euid="uid" :editor="editor" :toolbar="toolbar" />
-                <div class="kiss-padding-small kiss-flex-1" :style="{overflow: 'auto'}">
+                <div class="editor-container kiss-padding-small kiss-flex-1" :style="{overflow: 'auto'}" @click="focus">
                     <editor-content :id="uid" class="tiptap-content-wrapper" :editor="editor"  />
                 </div>
-                <bubble-menu :editor="editor" :tippy-options="{ placement: 'bottom', duration: 100 }" :should-show="shouldBubbleMenuTextShow" v-if="editor">
+                
+                <floating-menu :editor="editor" :options="{ duration: 100, offset: {mainAxis: 0, crossAxis: 30} }" v-if="editor">
+                    <kiss-card class="kiss-button-group" theme="shadowed" hover="bordered-primary">
+                        <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-button-primary': editor.isActive('heading', { level: 1 })}" @click="editor.chain().focus().toggleHeading({ level: 1 }).run()">H1</button>
+                        <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-button-primary': editor.isActive('heading', { level: 2 })}" @click="editor.chain().focus().toggleHeading({ level: 2 }).run()">H2</button>
+                        <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-button-primary': editor.isActive('heading', { level: 3 })}" @click="editor.chain().focus().toggleHeading({ level: 3 }).run()">H3</button>
+                        <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-button-primary': editor.isActive('bulletList')}" @click="editor.chain().focus().toggleBulletList().run()"><icon>format_list_bulleted</icon></button>
+                        <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-button-primary': editor.isActive('orderedList')}" @click="editor.chain().focus().toggleOrderedList().run()"><icon>format_list_numbered</icon></button>
+                        <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-button-primary': editor.isActive('image')}" @click="openImageDialog"><icon>image</icon></button>
+                        <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-button-primary': editor.isActive('table')}" @click="insertTable"><icon>table</icon></button>
+                    </kiss-card>
+                </floating-menu>
+
+                <bubble-menu :editor="editor" :options="{ placement: 'bottom', duration: 100 }" :should-show="shouldBubbleMenuTextShow" v-if="editor">
                     <kiss-card class="kiss-button-group" theme="shadowed" hover="bordered-primary">
                         <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-button-primary': editor.isActive('bold')}" @click="editor.chain().focus().toggleBold().run()" :title="t('Bold')"><icon>format_bold</icon></button>
                         <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-button-primary': editor.isActive('italic')}" @click="editor.chain().focus().toggleItalic().run()" :title="t('Italic')"><icon>format_italic</icon></button>
                         <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-button-primary': editor.isActive('underline')}" @click="editor.chain().focus().toggleUnderline().run()" :title="t('Underline')"><icon>format_underlined</icon></button>
+                        <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-button-primary': editor.isActive('highlight')}" @click="editor.chain().focus().toggleHighlight().run()" :title="t('Highlight')"><icon>ink_highlighter</icon></button>
                         <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-button-primary': editor.isActive('subscript')}" @click="editor.chain().focus().toggleSubscript().run()" :title="t('Subscript')"><icon>subscript</icon></button>
                         <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-button-primary': editor.isActive('superscript')}" @click="editor.chain().focus().toggleSuperscript().run()" :title="t('Superscript')"><icon>superscript</icon></button>
                     </kiss-card>

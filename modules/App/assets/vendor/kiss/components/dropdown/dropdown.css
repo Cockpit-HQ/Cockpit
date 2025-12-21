@@ -64,3 +64,32 @@ kiss-dropdownbox[pos="aside-left"] {
 kiss-dropdown[open="true"] kiss-dropdownbox[pos="aside-left"] {
     transform: translateY(0px) translateX(-100%);
 }
+
+/* RTL Support */
+
+[dir="rtl"] kiss-dropdownbox {
+    left: 0;
+    right: auto;
+}
+
+[dir="rtl"] kiss-dropdownbox[pos="center"] {
+    right: auto;
+    left: 50%;
+    transform: translateY(-40%) translateX(50%);
+}
+
+[dir="rtl"] kiss-dropdown[open="true"] kiss-dropdownbox[pos="center"] {
+    transform: translateY(-50%) translateX(50%);
+}
+
+[dir="rtl"] kiss-dropdownbox[pos="aside-left"] {
+    left: auto;
+    right: 0;
+    margin-left: 0;
+    margin-right: -10px;
+    transform: translateY(20px) translateX(100%);
+}
+
+[dir="rtl"] kiss-dropdown[open="true"] kiss-dropdownbox[pos="aside-left"] {
+    transform: translateY(0px) translateX(100%);
+}

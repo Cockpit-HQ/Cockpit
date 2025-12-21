@@ -98,7 +98,7 @@ export default {
                                 <li class="kiss-nav-header">{{ t('Select color') }}</li>
                                 <li v-for="color in colors">
                                     <a class="kiss-flex kiss-flex-middle" :class="{'kiss-color-muted': (val != color), 'kiss-text-bold': (val == color)}" @click="val = color">
-                                        <icon class="kiss-size-4 kiss-margin-small-right" size="larger" :style="{color}">invert_colors</icon>
+                                        <icon class="kiss-size-4 kiss-margin-small-end" size="larger" :style="{color}">invert_colors</icon>
                                         {{ color }}
                                     </a>
                                 </li>

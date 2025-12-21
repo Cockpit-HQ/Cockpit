@@ -349,7 +349,6 @@ class Utils extends \Lime\Helper {
             curl_setopt($conn, CURLOPT_FOLLOWLOCATION, 1);
             curl_setopt($conn, CURLOPT_VERBOSE, 0);
             $content = (curl_exec($conn));
-            curl_close($conn);
 
         } elseif (function_exists('file_get_contents')){
 

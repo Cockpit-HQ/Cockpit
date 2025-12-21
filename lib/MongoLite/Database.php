@@ -15,7 +15,7 @@ class Database {
     public const DSN_PATH_MEMORY = ':memory:';
 
     /**
-     * @var PDO object
+     * @var PDO|\Pdo\Sqlite object
      */
     public PDO $connection;
 
@@ -35,6 +35,11 @@ class Database {
     protected array $document_criterias = [];
 
     /**
+     * @var QueryOptimizer|null
+     */
+    protected ?QueryOptimizer $queryOptimizer = null;
+
+    /**
      * Constructor
      *
      * @param string $path
@@ -43,13 +48,17 @@ class Database {
     public function __construct(string $path = self::DSN_PATH_MEMORY, array $options = []) {
 
         $dns = "sqlite:{$path}";
-
         $this->path = $path;
-        $this->connection = new PDO($dns, null, null, $options);
+
+        if (class_exists('Pdo\Sqlite')) {
+            $this->connection = new \Pdo\Sqlite($dns, null, null, $options);
+        } else {
+            $this->connection = new PDO($dns, null, null, $options);
+        }
 
         $database = $this;
 
-        $this->connection->sqliteCreateFunction('document_key', function($key, $document){
+        $fn_document_key = function($key, $document){
 
             $document = \json_decode($document, true);
             $val      = '';
@@ -74,14 +83,22 @@ class Database {
             }
 
             return \is_array($val) || \is_object($val) ? \json_encode($val) : $val;
-        }, 2);
+        };
 
-        $this->connection->sqliteCreateFunction('document_criteria', function($funcid, $document) use($database) {
+        $fn_document_criteria = function($funcid, $document) use($database) {
 
             $document = \json_decode($document, true);
 
             return $database->callCriteriaFunction($funcid, $document);
-        }, 2);
+        };
+
+        if (method_exists($this->connection, 'createFunction')) {
+            $this->connection->createFunction('document_key', $fn_document_key, 2);
+            $this->connection->createFunction('document_criteria', $fn_document_criteria, 2);
+        } else {
+            $this->connection->sqliteCreateFunction('document_key', $fn_document_key, 2);
+            $this->connection->sqliteCreateFunction('document_criteria', $fn_document_criteria, 2);
+        }
 
         $pragma = [
             'journal_mode'  => $options['journal_mode'] ??  'WAL',
@@ -293,6 +310,16 @@ class Database {
         }
         
         return null;
+    }
+
+    /**
+     * Get QueryOptimizer instance
+     */
+    public function getQueryOptimizer(): QueryOptimizer {
+        if (!isset($this->queryOptimizer)) {
+            $this->queryOptimizer = new QueryOptimizer($this->connection);
+        }
+        return $this->queryOptimizer;
     }
 }
 

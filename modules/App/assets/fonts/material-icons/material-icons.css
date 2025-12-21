@@ -24,7 +24,6 @@ icon,
     display: inline-block;
     white-space: nowrap;
     word-wrap: normal;
-    direction: ltr;
     vertical-align: middle;
 
     /* Support for all WebKit browsers. */

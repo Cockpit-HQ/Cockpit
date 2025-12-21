@@ -168,7 +168,7 @@ export default {
 
     <div class="app-offcanvas-container">
         <div class="kiss-padding kiss-text-bold kiss-flex kiss-flex-middle">
-            <div class="kiss-margin-small-right"><icon size-larger>create</icon></div>
+            <div class="kiss-margin-small-end"><icon size-larger>create</icon></div>
             <div class="kiss-flex-1">{{ t('Edit asset') }}</div>
             <div class="kiss-overlay-input" v-if="locales.length > 1">
                 <button type="button" class="kiss-button kiss-flex-inline kiss-flex-middle kiss-button-small" gap="small">
@@ -206,7 +206,7 @@ export default {
                     </div>
                     <div class="kiss-position-absolute kiss-position-bottom-right kiss-padding-small">
                         <button type="button" class="kiss-button kiss-button-small" @click="uploadAsset" v-if="!focalPointing"><icon>upload</icon></button>
-                        <button type="button" class="kiss-button kiss-button-small kiss-margin-xsmall-left" :class="{'kiss-bgcolor-warning': focalPointing}" :title="t('Set focal point')" @click="focalPointing = !focalPointing" v-if="item.type == 'image'"><icon>gps_fixed</icon></button>
+                        <button type="button" class="kiss-button kiss-button-small kiss-margin-xsmall-start" :class="{'kiss-bgcolor-warning': focalPointing}" :title="t('Set focal point')" @click="focalPointing = !focalPointing" v-if="item.type == 'image'"><icon>gps_fixed</icon></button>
                     </div>
                 </div>
 
@@ -219,7 +219,7 @@ export default {
                     <div class="kiss-flex-1"></div>
                     <div v-if="item.type == 'image' && Array.isArray(item.colors) && item.colors.length">
                         <div class="kiss-size-4">
-                            <a class="kiss-margin-xsmall-right" :style="{color}" :title="color" @click="copyColor(color)" v-for="color in item.colors"><icon>invert_colors</icon></a>
+                            <a class="kiss-margin-xsmall-end" :style="{color}" :title="color" @click="copyColor(color)" v-for="color in item.colors"><icon>invert_colors</icon></a>
                         </div>
                     </div>
                 </div>
@@ -250,22 +250,22 @@ export default {
             <div class="kiss-size-small">
 
                 <div class="kiss-flex kiss-flex-middle">
-                    <div class="kiss-size-4 kiss-margin-small-right kiss-flex" title="ID"><icon>adjust</icon></div>
+                    <div class="kiss-size-4 kiss-margin-small-end kiss-flex" title="ID"><icon>adjust</icon></div>
                     <div class="kiss-text-truncate kiss-text-bold kiss-text-monospace kiss-size-small kiss-flex-1">
                         {{ item._id }}
                         </div>
-                    <a class="kiss-margin-xsmall-right" :title="t('Copy asset link')" @click="copyAssetLinkID()"><icon>share</icon></a>
+                    <a class="kiss-margin-xsmall-end" :title="t('Copy asset link')" @click="copyAssetLinkID()"><icon>share</icon></a>
                     <a :title="t('Copy')" @click="copyID()"><icon>content_copy</icon></a>
                 </div>
 
                 <div class="kiss-flex kiss-flex-middle">
-                    <div class="kiss-size-4 kiss-margin-small-right kiss-flex kiss-color-muted" :title="t('Created at')"><icon>more_time</icon></div>
+                    <div class="kiss-size-4 kiss-margin-small-end kiss-flex kiss-color-muted" :title="t('Created at')"><icon>more_time</icon></div>
                     <div class="kiss-text-truncate kiss-size-small kiss-text-monospace kiss-color-muted kiss-flex-1"><app-datetime :datetime="item._created" /></div>
                     <user-info :user-id="item._cby"></user-info>
                 </div>
 
                 <div class="kiss-flex kiss-flex-middle" v-if="item._created != item._modified">
-                    <div class="kiss-size-4 kiss-margin-small-right kiss-flex kiss-color-muted" :title="t('Modified at')"><icon>history</icon></div>
+                    <div class="kiss-size-4 kiss-margin-small-end kiss-flex kiss-color-muted" :title="t('Modified at')"><icon>history</icon></div>
                     <div class="kiss-text-truncate kiss-size-small kiss-text-monospace kiss-color-muted kiss-flex-1"><app-datetime :datetime="item._modified" /></div>
                     <user-info :user-id="item._mby"></user-info>
                 </div>

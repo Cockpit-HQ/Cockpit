@@ -363,6 +363,34 @@ kiss-card[hover*="contrast"]:hover {
     border-bottom-right-radius: var(--app-border-radius);
 }
 
+
+
+html[dir='rtl'] {
+
+    .kiss-button-group .kiss-button:not(:last-child) {
+        border-left-width: 1px;
+        border-left-color: rgba(0,0,0,.08);
+        border-left-style: solid;
+        border-right-style: none;
+    }
+
+    .kiss-button-group .kiss-button:first-child:not(:last-child) {
+        border-top-right-radius: var(--app-border-radius);
+        border-bottom-right-radius: var(--app-border-radius);
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        border-left-style: none;
+    }
+
+    .kiss-button-group .kiss-button:last-child:not(:first-child) {
+        border-top-left-radius: var(--app-border-radius);
+        border-bottom-left-radius: var(--app-border-radius);
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        border-right-style: none;
+    }
+}
+
 .kiss-breadcrumbs {
     text-transform: uppercase;
     letter-spacing: 2px;
