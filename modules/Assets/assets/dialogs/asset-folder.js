@@ -53,6 +53,7 @@ export default {
                         v-model="val.name"
                         :placeholder="t('Enter folder name')"
                         required
+                        autofocus
                     >
                 </div>
 
