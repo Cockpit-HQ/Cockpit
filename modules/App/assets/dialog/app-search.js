@@ -164,7 +164,7 @@ export default {
                 <div class="kiss-flex-1 kiss-margin-small-end">
                     <input autofocus class="kiss-input kiss-input-blank kiss-form-large kiss-width-1-1" :class="{'kiss-disabled': loading}" type="search" v-model="search" :placeholder="t('Search...')" :aria-label="t('Search...')" :disabled="loading" @keydown="keydown" @input="selected=null" ref="searchInput" style="font-size:25px;padding:0;">
                 </div>
-                <button type="button" :aria-label="t('Close')" class="kiss-input-blank" kiss-dialog-close>
+                <button type="button" :aria-label="t('Close')" class="kiss-input-blank kiss-cursor-pointer" kiss-dialog-close>
                     <kiss-svg class="kiss-color-muted" :src="$baseUrl('system:assets/icons/close.svg')" width="20"><canvas width="20" height="20"></canvas></kiss-svg>
                 </button>
             </div>
