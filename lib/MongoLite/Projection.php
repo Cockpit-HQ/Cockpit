@@ -19,7 +19,7 @@ class Projection {
             $document = self::process($document, $projection, $hasInclusion);
 
             if ($id && ($fields['_id'] ?? true)) {
-                $document['_id'] = $id;
+                $document = ['_id' => $id] + $document;
             }
         }
 
@@ -32,27 +32,27 @@ class Projection {
 
     public static function hasInclusion(array $fields): bool {
         $hasInclusion = false;
-        $hasExclusion = false;
+        $hasConflict = false;
 
         $stack = [$fields];
         while (!empty($stack)) {
             $current = array_pop($stack);
-            foreach ($current as $value) {
+            foreach ($current as $key => $value) {
                 if (is_array($value)) {
                     $stack[] = $value;
-                } elseif ($value === 1) {
+                } elseif ((bool)$value) {
                     $hasInclusion = true;
-                } elseif ($value === 0) {
-                    $hasExclusion = true;
+                } elseif (!$value && $key !== '_id') {
+                    $hasConflict = true;
                 }
 
-                if ($hasInclusion && $hasExclusion) {
+                if ($hasInclusion && $hasConflict) {
                     throw new \InvalidArgumentException("Projection cannot have a mix of inclusion and exclusion.");
                 }
             }
         }
 
-        return $hasInclusion || !$hasExclusion;
+        return $hasInclusion;
     }
 
     protected static function normalizeProjection($fields): array {
