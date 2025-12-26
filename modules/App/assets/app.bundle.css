@@ -4510,7 +4510,7 @@ td.kiss-text-truncate { max-width: 0; }
  */
 .kiss-svg { transform: translate(0,0); }
 .kiss-cover {
-    position: absolute;
+    position: absolute !important;
     top: 0;
     left: 0;
     right: 0;
