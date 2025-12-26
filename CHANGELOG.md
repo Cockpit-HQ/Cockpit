@@ -1,5 +1,9 @@
 # Release Notes
 
+## WIP
+
+- Fix Updater view
+
 ## 2.13.1 (2025-12-26)
 
 - Fix kiss-cover helper class #294

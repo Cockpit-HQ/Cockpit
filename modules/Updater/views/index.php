@@ -12,7 +12,7 @@
 
             <div>
 
-                <kiss-card class="kiss-text-monospace kiss-text-caption kiss-margin" v-if="!isNewVersionAvailable" >
+                <kiss-card class="kiss-text-monospace kiss-text-caption kiss-margin" v-if="!meta.isNewVersionAvailable" >
                     <icon class="kiss-color-primary kiss-margin-xsmall-end" size="large">check_circle</icon> <?=t('Your system is up to date')?>
                 </kiss-card>
 
@@ -25,7 +25,7 @@
                                 <div class="kiss-text-light kiss-size-4 kiss-color-muted kiss-margin-small">
                                     {{ t('Current') }}
                                 </div>
-                                <div class="kiss-size-xlarge kiss-text-light">{{ APP_VERSION }}</div>
+                                <div class="kiss-size-xlarge kiss-text-light"><?=APP_VERSION?></div>
                             </div>
                         </kiss-card>
 

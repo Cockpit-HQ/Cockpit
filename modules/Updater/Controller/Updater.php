@@ -20,6 +20,8 @@ class Updater extends App {
 
         $meta = $this->helper('updater')->getLatestReleaseInfo();
 
+        $meta['isNewVersionAvailable'] = version_compare($meta['version'], APP_VERSION, '>');
+
         return $this->render('updater:views/index.php', compact('meta'));
     }
 
