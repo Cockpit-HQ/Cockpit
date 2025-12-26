@@ -1,5 +1,9 @@
 # Release Notes
 
+## WIP
+
+- Fix kiss-cover helper class #294
+
 ## 2.13.0 (2025-12-21)
 
 - Add system mailer test functionality
