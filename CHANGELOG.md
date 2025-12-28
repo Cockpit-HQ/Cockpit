@@ -4,6 +4,7 @@
 
 - Fix Updater view
 - Add support for multiple mailer accounts
+- Add possibility to set parent folder for an asset folder
 
 ## 2.13.1 (2025-12-26)
 

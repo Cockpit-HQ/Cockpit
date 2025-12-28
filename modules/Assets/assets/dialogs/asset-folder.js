@@ -12,8 +12,18 @@ export default {
                 _p: this.parent || '',
                 icon: null
             },
+            folders: null,
             loading: false,
         }
+    },
+
+    mounted() {
+
+        this.$request(`/assets/folders`, {nc:Math.random()}).then(folders => {
+            this.folders = folders;
+        }).catch(rsp => {
+            App.ui.notify(rsp.error || 'Loading folders failed!', 'error');
+        });
     },
 
     props: {
@@ -28,8 +38,46 @@ export default {
     },
 
     computed: {
+
+        parentFolder() {
+
+            if (this.val._p && Array.isArray(this.folders) && this.folders.length) {
+                return this.folders.find(folder => folder._id == this.val._p) || null;
+            }
+
+            return null;
+        },
+
         isEdit() {
             return this.folder && !!this.folder._id;
+        },
+
+        selectableFolders() {
+
+            if (!this.folders || !this.folders.length) {
+                return [];
+            }
+
+            if (!this.val._id) {
+                return this.folders;
+            }
+
+            let exclude = [this.val._id];
+            let check = [this.val._id];
+
+            while (check.length) {
+
+                let id = check.pop();
+                
+                this.folders.forEach(folder => {
+                    if (folder._p == id) {
+                        exclude.push(folder._id);
+                        check.push(folder._id);
+                    }
+                });
+            }
+
+            return this.folders.filter(folder => !exclude.includes(folder._id));
         },
 
         dialogTitle() {
@@ -39,12 +87,31 @@ export default {
 
     template: /*html*/`
         <div class="app-offcanvas-container">
+
             <kiss-row class="kiss-flex-middle kiss-padding kiss-text-bold" gap="small">
                 <icon class="kiss-size-3">folder</icon>
                 <div class="kiss-flex-1">{{ dialogTitle }}</div>
             </kiss-row>
 
             <div class="app-offcanvas-content kiss-padding kiss-bgcolor-contrast kiss-flex-1">
+                
+                <div class="kiss-margin" :class="{'kiss-disabled': !val._id}" v-if="Array.isArray(folders) && folders.length">
+                    <label>{{ t('Parent folder') }}</label>
+                    <kiss-card class="kiss-overlay-input kiss-display-block" hover="bordered-primary" theme="bordered">
+                        <kiss-card class="kiss-flex kiss-flex-middle" theme="shadowed contrast">
+                            <div class="kiss-padding kiss-bgcolor-contrast"><icon size="larger">folder</icon></div>
+                            <div class="kiss-padding kiss-text-truncate kiss-flex-1" :class="{'kiss-color-muted kiss-text-caption': !val._p, 'kiss-text-bold': val._p}">
+                                {{ (parentFolder && parentFolder.name) || t('Assign folder') }}
+                            </div>
+                        </kiss-card>
+                        <select v-model="val._p">
+                            <option style="font-weight:bold" value="">- {{ t('none') }} -</option>
+                            <hr v-if="selectableFolders.length">
+                            <option v-for="f in selectableFolders" :value="f._id">{{ (new Array(f._depth+1).join('-'))}} {{ f.name }}</option>
+                        </select>
+                    </kiss-card>
+                </div>
+            
                 <div class="kiss-margin">
                     <label class="kiss-text-caption">{{ t('Folder name') }}</label>
                     <input

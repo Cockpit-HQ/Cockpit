@@ -234,7 +234,8 @@ export default {
                             </div>
                         </kiss-card>
                         <select v-model="item.folder">
-                            <option vlaie="">- {{ t('none') }} -</option>
+                            <option style="font-weight:bold" value="">- {{ t('none') }} -</option>
+                            <hr v-if="folders.length">
                             <option v-for="f in folders" :value="f._id">{{ (new Array(f._depth+1).join('-'))}} {{ f.name }}</option>
                         </select>
                     </kiss-card>
