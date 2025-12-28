@@ -162,6 +162,7 @@ class Utils extends App {
         }
 
         $email = $this->param('email');
+        $account = $this->param('account', 'default');
 
         if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             return $this->stop(['error' => 'Email is missing or invalid'], 412);
@@ -173,7 +174,7 @@ class Utils extends App {
         $msg = "This is a test mail sent from the {$appName} system.";
 
         try {
-            $this->mailer->mail($email, $subject, $msg);
+            $this->mailer->mail($email, $subject, $msg, ['account' => $account]);
         } catch (\Exception $e) {
             return $this->stop(['error' => $e->getMessage()], 500);
         }

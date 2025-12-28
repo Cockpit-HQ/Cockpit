@@ -55,7 +55,19 @@
                             <?php if ($this->helper('acl')->isSuperAdmin()): ?>
                             <tr>
                                 <td width="30%" class="kiss-size-xsmall"><?=t('Mailer')?></td>
-                                <td class="kiss-size-small kiss-text-monospace kiss-color-muted"><button type="button" class="kiss-button kiss-button-small" @click="testMailer()"><icon class="kiss-margin-small-end">email</icon><?=t('Test mailer')?></button></td>
+                                <td class="kiss-size-small kiss-text-monospace kiss-color-muted">
+                                    <kiss-dropdown>
+                                        <button type="button" class="kiss-button kiss-button-small"><icon class="kiss-margin-small-end">email</icon><?=t('Test mailer')?></button>
+                                        <kiss-dropdownbox pos="left">
+                                            <kiss-navlist>
+                                                <ul>
+                                                    <li class="kiss-nav-header">{{ t('Accounts') }}</li>
+                                                    <li v-for="account in mailAccounts" :key="account"><a @click="testMailer(account)"><icon>settings</icon> {{ account }}</a></li>
+                                                </ul>
+                                            </kiss-navlist>
+                                        </kiss-dropdownbox>
+                                    </kiss-dropdown>    
+                                </td>
                             </tr>
                             <?php endif ?>
                         </tbody>
@@ -212,7 +224,9 @@
                     return {
                         env: null,
                         envfilter: '',
-                        loadingEnv: false
+                        loadingEnv: false,
+                        mailAccounts: <?=json_encode($this->mailer->getAccounts())?>,
+                        
                     }
                 },
 
@@ -277,13 +291,13 @@
                         });
                     },
 
-                    testMailer() {
+                    testMailer(account = 'default') {
 
                         App.ui.prompt('Target email', null, (email) => {
 
                             App.ui.block('Sending test mail...');
 
-                            this.$request('/system/utils/testMailer', {email}).then(res => {
+                            this.$request('/system/utils/testMailer', {email, account}).then(res => {
                                 App.ui.notify('Test mail sent!');
                             }).catch(res => {
                                 App.ui.notify(res.error || 'Test mail failed!', 'error');

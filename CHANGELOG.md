@@ -3,6 +3,7 @@
 ## WIP
 
 - Fix Updater view
+- Add support for multiple mailer accounts
 
 ## 2.13.1 (2025-12-26)
 

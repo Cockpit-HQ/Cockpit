@@ -254,7 +254,22 @@ class Cockpit {
                 parse_str($options, $options);
             }
 
-            return new Mailer($options['transport'] ?? 'mail', $options);
+            $accounts = [];
+
+            if (isset($options['transport'])) {
+                $accounts['default'] = $options;
+            } elseif (is_array($options)) {
+
+                $accounts = $options;
+
+                foreach ($accounts as $key => $value) {
+                    if (is_string($value)) {
+                        parse_str($value, $accounts[$key]);
+                    }
+                }
+            }
+
+            return new Mailer($accounts);
         });
 
         $modulesPaths = [
