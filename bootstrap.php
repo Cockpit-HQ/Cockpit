@@ -269,6 +269,8 @@ class Cockpit {
                 }
             }
 
+            $app->trigger('app.mailer.init', [&$accounts]); 
+
             return new Mailer($accounts);
         });
 
