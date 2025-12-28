@@ -94,9 +94,21 @@ export default {
             </kiss-row>
 
             <div class="app-offcanvas-content kiss-padding kiss-bgcolor-contrast kiss-flex-1">
-                
+            
+                <div class="kiss-margin">
+                    <label class="kiss-text-caption">{{ t('Folder name') }}</label>
+                    <input
+                        type="text"
+                        class="kiss-input kiss-margin-xsmall"
+                        v-model="val.name"
+                        :placeholder="t('Enter folder name')"
+                        required
+                        autofocus
+                    >
+                </div>
+
                 <div class="kiss-margin" :class="{'kiss-disabled': !val._id}" v-if="Array.isArray(folders) && folders.length">
-                    <label>{{ t('Parent folder') }}</label>
+                    <label class="kiss-text-caption">{{ t('Parent folder') }}</label>
                     <kiss-card class="kiss-overlay-input kiss-display-block" hover="bordered-primary" theme="bordered">
                         <kiss-card class="kiss-flex kiss-flex-middle" theme="shadowed contrast">
                             <div class="kiss-padding kiss-bgcolor-contrast"><icon size="larger">folder</icon></div>
@@ -110,18 +122,6 @@ export default {
                             <option v-for="f in selectableFolders" :value="f._id">{{ (new Array(f._depth+1).join('-'))}} {{ f.name }}</option>
                         </select>
                     </kiss-card>
-                </div>
-            
-                <div class="kiss-margin">
-                    <label class="kiss-text-caption">{{ t('Folder name') }}</label>
-                    <input
-                        type="text"
-                        class="kiss-input kiss-margin-xsmall"
-                        v-model="val.name"
-                        :placeholder="t('Enter folder name')"
-                        required
-                        autofocus
-                    >
                 </div>
 
                 <div class="kiss-flex">
