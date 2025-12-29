@@ -41,7 +41,7 @@ class FieldTypes {
                     $def['type'] = Type::nonNull($def['type']);
                 }
 
-                if ($field['multiple']) {
+                if (isset($field['multiple']) && $field['multiple']) {
                     $fields[$name] = Type::listOf($def['type']);
                 } else {
                     $fields[$name] = $def;

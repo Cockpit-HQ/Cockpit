@@ -5,6 +5,7 @@
 - Fix Updater view
 - Add support for multiple mailer accounts
 - Add possibility to set parent folder for an asset folder
+- Fix GraphQL error when field definition is missing `multiple` property
 
 ## 2.13.1 (2025-12-26)
 
