@@ -6,6 +6,7 @@
 - Add support for multiple mailer accounts
 - Add possibility to set parent folder for an asset folder
 - Fix GraphQL error when field definition is missing `multiple` property
+- Add `system:fix-mongolite-collection-json` command to fix malformed JSON entries in a MongoLite collection
 
 ## 2.13.1 (2025-12-26)
 
