@@ -1,3 +1,5 @@
+<magma-field class="kiss-cover" colors="#eee" style="opacity: .4;"></magma-field>
+
 <vue-view class="kiss-position-relative">
     <template>
 
@@ -82,6 +84,9 @@
     </template>
 
     <script type="module">
+
+        import 'module-app/assets/components/magma-field/magma-field.js';
+
         export default {
 
             data() {
