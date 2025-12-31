@@ -1,8 +1,8 @@
 /**
- * MAGMA PARTICLE FIELD - CUSTOM ELEMENT
+ * FLUX ANIMATION BACKGROUND - CUSTOM ELEMENT
  * A dependency-free WebGL particle system.
  */
-class MagmaField extends HTMLElement {
+class BgFluxAnimation extends HTMLElement {
     constructor() {
         super();
         this.attachShadow({ mode: 'open' });
@@ -13,6 +13,9 @@ class MagmaField extends HTMLElement {
         this.animationId = null;
         this.resizeObserver = null;
         this.intersectionObserver = null;
+        this.themeMedia = null;
+        this.handleThemeChange = null;
+        this.buffers = {}; // Track buffers for cleanup
         
         // Default to true to ensure initial render, observer will correct if off-screen
         this.isVisible = true; 
@@ -33,21 +36,35 @@ class MagmaField extends HTMLElement {
         this.viewMatrix = new Float32Array(16);
         this.projectionMatrix = new Float32Array(16);
 
-        this.defaultPalette = [
+        // Default Palette (Dark Mode)
+        this.defaultPaletteDark = [
             [1.0, 0.6, 0.0], [1.0, 0.0, 0.3], [1.0, 0.92, 0.0], 
             [1.0, 0.2, 0.0], [1.0, 0.33, 0.0]
         ];
-        this.currentPalette = this.defaultPalette;
+        // Default Palette (Light Mode / Lava Lamp Style)
+        // darker, richer colors to stand out on white
+        this.defaultPaletteLight = [
+            [0.8, 0.2, 0.0], [0.6, 0.0, 0.2], [0.9, 0.4, 0.0],
+            [0.7, 0.1, 0.0], [0.5, 0.0, 0.0]
+        ];
+        
+        this.currentPalette = this.defaultPaletteDark;
         this.colorBuffer = null;
+        this.isLightMode = false;
+        this.rawColorValue = null; // Store raw input for re-generation
     }
 
     static get observedAttributes() {
-        return ['colors'];
+        return ['colors', 'blending', 'particle-count'];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         if (name === 'colors') {
             this.updatePaletteFromAttribute(newValue);
+        } else if (name === 'blending') {
+            this.updateBlending(newValue);
+        } else if (name === 'particle-count') {
+            this.updateParticleCount(newValue);
         }
     }
 
@@ -68,9 +85,9 @@ class MagmaField extends HTMLElement {
                 .glow {
                     position: absolute; top: 0; left: 0; width: 100%; height: 100%;
                     pointer-events: none;
-                    /* Subtle radial glow, kept mainly transparent */
                     background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 40%, transparent 75%);
                     mix-blend-mode: screen; opacity: 0.9;
+                    transition: opacity 0.3s;
                 }
             </style>
             <canvas></canvas>
@@ -79,6 +96,7 @@ class MagmaField extends HTMLElement {
 
         this.canvas = this.shadowRoot.querySelector('canvas');
         
+        // Initial check for colors before WebGL init
         if (this.hasAttribute('colors')) {
             this.updatePaletteFromAttribute(this.getAttribute('colors'), false);
         }
@@ -86,7 +104,23 @@ class MagmaField extends HTMLElement {
         this.initWebGL();
         this.bindEvents();
         
-        // Start loop
+        // --- Blending Mode Logic ---
+        this.handleThemeChange = (e) => {
+            if (!this.hasAttribute('blending')) {
+                const isDark = e.matches;
+                this.updateBlending(isDark ? 'additive' : 'normal');
+            }
+        };
+
+        if (this.hasAttribute('blending')) {
+            this.updateBlending(this.getAttribute('blending'));
+        } else {
+            const media = window.matchMedia('(prefers-color-scheme: dark)');
+            this.handleThemeChange(media); 
+            media.addEventListener('change', this.handleThemeChange);
+            this.themeMedia = media;
+        }
+        
         this.animate = this.animate.bind(this);
         this.animate();
     }
@@ -95,6 +129,9 @@ class MagmaField extends HTMLElement {
         this.stopAnimation();
         if (this.resizeObserver) this.resizeObserver.disconnect();
         if (this.intersectionObserver) this.intersectionObserver.disconnect();
+        if (this.themeMedia && this.handleThemeChange) {
+            this.themeMedia.removeEventListener('change', this.handleThemeChange);
+        }
     }
 
     bindEvents() {
@@ -156,6 +193,53 @@ class MagmaField extends HTMLElement {
         this.gl.uniform1f(this.locs.pixelRatio, dpr);
     }
 
+    updateBlending(mode) {
+        if (!this.gl) return;
+        
+        const prevMode = this.isLightMode;
+        this.isLightMode = (mode === 'normal');
+        
+        const gl = this.gl;
+        const glow = this.shadowRoot.querySelector('.glow');
+        
+        // Update Uniform
+        if (this.locs && this.locs.isNormalBlend) {
+                gl.uniform1f(this.locs.isNormalBlend, this.isLightMode ? 1.0 : 0.0);
+        }
+
+        // Update GL State
+        if (this.isLightMode) {
+            // Standard Transparency for Light Mode "Lava Lamp" look
+            gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+            if (glow) {
+                glow.style.mixBlendMode = 'normal';
+                glow.style.opacity = '0.0'; 
+            }
+        } else {
+            // Additive for Dark Mode "Fire" look
+            gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+            if (glow) {
+                glow.style.mixBlendMode = 'screen';
+                glow.style.opacity = '0.9';
+            }
+        }
+
+        // Regenerate palette if mode changed, to fix colors
+        if (prevMode !== this.isLightMode) {
+            this.updatePaletteFromAttribute(this.rawColorValue); 
+        }
+    }
+
+    updateParticleCount(val) {
+        const count = parseInt(val);
+        if (count && count > 0 && count !== this.particleCount) {
+            this.particleCount = count;
+            if (this.gl && this.program) {
+                this.initParticles();
+            }
+        }
+    }
+
     // --- Color Utilities ---
 
     hexToRgb(hex) {
@@ -210,48 +294,56 @@ class MagmaField extends HTMLElement {
     generatePaletteFromAccent(baseColorHex) {
         const baseRgb = this.hexToRgb(baseColorHex);
         const [h, s, l] = this.rgbToHsl(...baseRgb);
-        return [
-            this.hslToRgb(h, s, Math.max(0, l * 0.4)),           
-            this.hslToRgb(h, s, l),                              
-            this.hslToRgb(h, Math.min(1, s + 0.2), l),           
-            this.hslToRgb((h + 0.05) % 1, s, Math.min(1, l * 1.3)), 
-            this.hslToRgb((h + 0.1) % 1, Math.max(0, s * 0.5), 0.95) 
-        ];
+        
+        if (this.isLightMode) {
+            // Light Mode: Rich, Saturated Colors (Lava Lamp Style)
+            // We keep lightness lower (0.4-0.6) so it shows up on white
+            // We boost saturation to make it pop
+            return [
+                this.hslToRgb(h, s, 0.7),                            // Lightest
+                this.hslToRgb(h, Math.min(1, s + 0.1), 0.5),         // Base
+                this.hslToRgb(h, Math.min(1, s + 0.3), 0.4),         // Vibrant/Mid
+                this.hslToRgb((h - 0.05) % 1, s, 0.3),               // Deep
+                this.hslToRgb((h + 0.05) % 1, Math.min(1, s+0.2), 0.35) // Accent
+            ];
+        } else {
+            // Dark Mode: Standard Glowing Gradient
+            return [
+                this.hslToRgb(h, s, Math.max(0, l * 0.4)),           
+                this.hslToRgb(h, s, l),                              
+                this.hslToRgb(h, Math.min(1, s + 0.2), l),           
+                this.hslToRgb((h + 0.05) % 1, s, Math.min(1, l * 1.3)), 
+                this.hslToRgb((h + 0.1) % 1, Math.max(0, s * 0.5), 0.95) 
+            ];
+        }
     }
 
     updatePaletteFromAttribute(attrValue, updateBuffer = true) {
+        this.rawColorValue = attrValue; 
+        
         if (!attrValue) {
-            this.currentPalette = this.defaultPalette;
+            this.currentPalette = this.isLightMode ? this.defaultPaletteLight : this.defaultPaletteDark;
         } else {
             try {
                 const rawList = attrValue.split(',').filter(s => s.trim());
-                
                 const resolveColor = (str) => {
                     str = str.trim();
-                    // Normalize var() wrapper if present
-                    if (str.startsWith('var(')) {
-                        str = str.replace(/^var\((--[^)]+)\)$/, '$1');
-                    }
-                    // Resolve CSS variable if starts with --
+                    if (str.startsWith('var(')) str = str.replace(/^var\((--[^)]+)\)$/, '$1');
                     if (str.startsWith('--')) {
                         const val = getComputedStyle(this).getPropertyValue(str).trim();
                         return val || str;
                     }
                     return str;
                 };
-
                 const resolvedList = rawList.map(resolveColor);
                 
                 if (resolvedList.length === 1) {
-                    // Single color provided: Generate palette
                     this.currentPalette = this.generatePaletteFromAccent(resolvedList[0]);
                 } else {
-                    // Multiple colors provided: Use as is
                     this.currentPalette = resolvedList.map(c => this.hexToRgb(c));
                 }
             } catch (e) {
-                console.warn("Invalid color format. Use hex codes (#ff0000) or CSS variables (--color).");
-                this.currentPalette = this.defaultPalette;
+                this.currentPalette = this.isLightMode ? this.defaultPaletteLight : this.defaultPaletteDark;
             }
         }
         if (updateBuffer && this.gl && this.colorBuffer) {
@@ -274,6 +366,7 @@ class MagmaField extends HTMLElement {
             const c2 = palette[Math.min(idx + 1, palette.length - 1)];
             const brightness = 0.8 + Math.random() * 0.4;
             
+            // Color mixing
             colors[i3] = (c1[0] + (c2[0]-c1[0])*mix) * brightness;
             colors[i3+1] = (c1[1] + (c2[1]-c1[1])*mix) * brightness;
             colors[i3+2] = (c1[2] + (c2[2]-c1[2])*mix) * brightness;
@@ -282,6 +375,75 @@ class MagmaField extends HTMLElement {
         const gl = this.gl;
         gl.bindBuffer(gl.ARRAY_BUFFER, this.colorBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, colors, gl.STATIC_DRAW);
+    }
+
+    initParticles() {
+        if (!this.gl || !this.program) return;
+        const gl = this.gl;
+
+        if (this.buffers) {
+            if (this.buffers.pos) gl.deleteBuffer(this.buffers.pos);
+            if (this.buffers.size) gl.deleteBuffer(this.buffers.size);
+            if (this.buffers.angle) gl.deleteBuffer(this.buffers.angle);
+            if (this.buffers.random) gl.deleteBuffer(this.buffers.random);
+            if (this.buffers.color) gl.deleteBuffer(this.buffers.color);
+        }
+        this.buffers = {};
+
+        const positions = new Float32Array(this.particleCount * 3);
+        const sizes = new Float32Array(this.particleCount);
+        const angles = new Float32Array(this.particleCount);
+        const randomFactors = new Float32Array(this.particleCount);
+
+        const goldenAngle = Math.PI * (3 - Math.sqrt(5));
+
+        for (let i = 0; i < this.particleCount; i++) {
+            const t = i / this.particleCount;
+            const angle = i * goldenAngle;
+            
+            const baseRadius = 65;
+            const spiralTwist = 6;
+            const pulse = Math.sin(t * Math.PI * 2 + 0.8);
+            const radius = baseRadius * Math.sqrt(t) * (1 + 0.3 * pulse);
+            
+            const pos = {
+                x: radius * Math.cos(angle + t * spiralTwist),
+                y: radius * Math.sin(angle + t * spiralTwist),
+                z: radius * Math.sin(t * 8 + 0.8) * 0.8
+            };
+
+            const i3 = i * 3;
+            positions[i3] = pos.x; positions[i3+1] = pos.y; positions[i3+2] = pos.z;
+            angles[i] = angle;
+            sizes[i] = 1.0 * (1.1 - t * 0.3) * (0.6 + Math.random() * 0.7);
+            randomFactors[i] = Math.random();
+        }
+
+        const createBuffer = (data, name, size) => {
+            const buf = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+            gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
+            const loc = gl.getAttribLocation(this.program, name);
+            gl.enableVertexAttribArray(loc);
+            gl.vertexAttribPointer(loc, size, gl.FLOAT, false, 0, 0);
+            return buf;
+        };
+
+        this.buffers.pos = createBuffer(positions, 'a_originalPos', 3);
+        this.buffers.size = createBuffer(sizes, 'a_size', 1);
+        this.buffers.angle = createBuffer(angles, 'a_angle', 1);
+        this.buffers.random = createBuffer(randomFactors, 'a_randomFactor', 1);
+        
+        this.colorBuffer = gl.createBuffer();
+        this.buffers.color = this.colorBuffer; 
+        
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.colorBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, this.particleCount * 3 * 4, gl.STATIC_DRAW);
+        const colLoc = gl.getAttribLocation(this.program, 'a_color');
+        gl.enableVertexAttribArray(colLoc);
+        gl.vertexAttribPointer(colLoc, 3, gl.FLOAT, false, 0, 0);
+        
+        this.regenerateColorBuffer();
     }
 
     initWebGL() {
@@ -381,6 +543,7 @@ class MagmaField extends HTMLElement {
         const fsSource = `
             precision highp float;
             uniform float u_time;
+            uniform float u_isNormalBlend;
             varying vec3 vColor;
             varying float vIntensity;
             varying float vRandomFactor;
@@ -390,14 +553,27 @@ class MagmaField extends HTMLElement {
                 float dist = length(pc);
                 if (dist > 1.0) discard;
 
+                // Unified Soft Shape Logic for both modes
                 float core = smoothstep(0.2, 0.0, dist) * 0.6;
                 float glow = exp(-dist * 2.4) * 0.7;
+                float darkShape = core + glow;
+                
+                // Sharper circle for light mode to avoid white halo
+                // Increased radius from 0.5 to 0.9 to make particles larger
+                float lightShape = smoothstep(0.9, 0.0, dist); 
 
-                vec3 highlight = vec3(1.0, 1.0, 1.0);
+                // Mix shapes
+                float shape = mix(darkShape, lightShape, u_isNormalBlend);
+
+                // Dynamic highlight: White for dark mode, Black for light mode
+                vec3 highlight = mix(vec3(1.0), vec3(0.0), u_isNormalBlend);
                 vec3 finalColor = mix(vColor, highlight, vIntensity * 0.6);
                 
                 float shimmer = 1.0 + sin((u_time * 60.0 + vRandomFactor * 150.0) * (0.7 + vIntensity * 0.3)) * 0.15 * (1.0 - dist * 0.5);
-                float baseAlpha = (core + glow) * clamp(0.3 + vIntensity * 0.6, 0.0, 1.0);
+                
+                // Boost alpha slightly in light mode to ensure visibility
+                float alphaBoost = 1.0 + u_isNormalBlend * 1.5; 
+                float baseAlpha = shape * clamp(0.3 + vIntensity * 0.6, 0.0, 1.0) * alphaBoost;
                 
                 gl_FragColor = vec4(finalColor, baseAlpha * shimmer);
             }
@@ -423,58 +599,8 @@ class MagmaField extends HTMLElement {
         gl.linkProgram(this.program);
         gl.useProgram(this.program);
 
-        const positions = new Float32Array(this.particleCount * 3);
-        const sizes = new Float32Array(this.particleCount);
-        const angles = new Float32Array(this.particleCount);
-        const randomFactors = new Float32Array(this.particleCount);
-
-        const goldenAngle = Math.PI * (3 - Math.sqrt(5));
-
-        for (let i = 0; i < this.particleCount; i++) {
-            const t = i / this.particleCount;
-            const angle = i * goldenAngle;
-            
-            const baseRadius = 65;
-            const spiralTwist = 6;
-            const pulse = Math.sin(t * Math.PI * 2 + 0.8);
-            const radius = baseRadius * Math.sqrt(t) * (1 + 0.3 * pulse);
-            
-            const pos = {
-                x: radius * Math.cos(angle + t * spiralTwist),
-                y: radius * Math.sin(angle + t * spiralTwist),
-                z: radius * Math.sin(t * 8 + 0.8) * 0.8
-            };
-
-            const i3 = i * 3;
-            positions[i3] = pos.x; positions[i3+1] = pos.y; positions[i3+2] = pos.z;
-            angles[i] = angle;
-            sizes[i] = 1.0 * (1.1 - t * 0.3) * (0.6 + Math.random() * 0.7);
-            randomFactors[i] = Math.random();
-        }
-
-        const createBuffer = (data, name, size) => {
-            const buf = gl.createBuffer();
-            gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-            gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
-            const loc = gl.getAttribLocation(this.program, name);
-            gl.enableVertexAttribArray(loc);
-            gl.vertexAttribPointer(loc, size, gl.FLOAT, false, 0, 0);
-            return buf;
-        };
-
-        createBuffer(positions, 'a_originalPos', 3);
-        createBuffer(sizes, 'a_size', 1);
-        createBuffer(angles, 'a_angle', 1);
-        createBuffer(randomFactors, 'a_randomFactor', 1);
-        
-        this.colorBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.colorBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, this.particleCount * 3 * 4, gl.STATIC_DRAW);
-        const colLoc = gl.getAttribLocation(this.program, 'a_color');
-        gl.enableVertexAttribArray(colLoc);
-        gl.vertexAttribPointer(colLoc, 3, gl.FLOAT, false, 0, 0);
-        
-        this.regenerateColorBuffer();
+        // Separate buffers init to allow re-initialization
+        this.initParticles();
 
         this.locs = {
             view: gl.getUniformLocation(this.program, 'u_viewMatrix'),
@@ -483,7 +609,8 @@ class MagmaField extends HTMLElement {
             shockwave: gl.getUniformLocation(this.program, 'u_shockwaveTime'),
             mousePos: gl.getUniformLocation(this.program, 'u_mousePos'),
             mouseVel: gl.getUniformLocation(this.program, 'u_mouseVel'),
-            pixelRatio: gl.getUniformLocation(this.program, 'u_pixelRatio')
+            pixelRatio: gl.getUniformLocation(this.program, 'u_pixelRatio'),
+            isNormalBlend: gl.getUniformLocation(this.program, 'u_isNormalBlend')
         };
 
         this.resize();
@@ -538,8 +665,8 @@ class MagmaField extends HTMLElement {
         this.cameraPos[1] = Math.cos(this.time * 0.4) * 12;
         this.cameraPos[2] = (this.clientWidth < 800) ? 140 : 110;
 
-        MagmaMath.perspective(this.projectionMatrix, 60 * Math.PI / 180, this.canvas.width / this.canvas.height, 1, 1000);
-        MagmaMath.lookAt(this.viewMatrix, this.cameraPos, [0,0,0], [0,1,0]);
+        FluxMath.perspective(this.projectionMatrix, 60 * Math.PI / 180, this.canvas.width / this.canvas.height, 1, 1000);
+        FluxMath.lookAt(this.viewMatrix, this.cameraPos, [0,0,0], [0,1,0]);
 
         this.updateMouseRay();
         
@@ -561,7 +688,7 @@ class MagmaField extends HTMLElement {
     }
 }
 
-const MagmaMath = {
+const FluxMath = {
     perspective: (out, fovy, aspect, near, far) => {
         const f = 1.0 / Math.tan(fovy / 2);
         const nf = 1 / (near - far);
@@ -598,4 +725,4 @@ const MagmaMath = {
     }
 };
 
-customElements.define('magma-field', MagmaField);
+customElements.define('bg-fluxanimation', BgFluxAnimation);

@@ -1,4 +1,8 @@
-<magma-field class="kiss-cover" colors="#eee" style="opacity: .4;"></magma-field>
+<?=$this->assets([
+    'app:assets/components/bg-fluxanimation/bg-fluxanimation.js',
+], $this->retrieve('app.version'))?>
+
+<bg-fluxanimation class="kiss-cover" colors="--kiss-color-primary" style="opacity: 0.4;"></bg-fluxanimation>
 
 <vue-view class="kiss-position-relative">
     <template>
@@ -84,8 +88,6 @@
     </template>
 
     <script type="module">
-
-        import 'module-app/assets/components/magma-field/magma-field.js';
 
         export default {
 
