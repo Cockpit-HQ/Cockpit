@@ -13,6 +13,11 @@
 
 ?>
 
+<?=$this->assets([
+    'app:assets/components/bg-fluxanimation/bg-fluxanimation.js',
+], $this->retrieve('app.version'))?>
+
+
 <vue-view class="app-dashboard kiss-margin-large-top kiss-margin-large-bottom">
     <template>
 
@@ -39,8 +44,9 @@
 
             <section class="kiss-flex-1">
 
-                <kiss-card class="kiss-padding-large kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-visible@m" :class="widgets.length  ? 'kiss-height-30vh' : 'kiss-height-50vh'" :theme="widgets.length ? 'contrast shadowed':''">
-                    <div class="animated fadeInUp">
+                <kiss-card class="kiss-position-relative kiss-padding-large kiss-flex kiss-flex-middle kiss-flex-center kiss-align-center kiss-visible@m" :class="widgets.length  ? 'kiss-height-30vh' : 'kiss-height-50vh'" :theme="widgets.length ? 'contrast shadowed':''">
+                    <bg-fluxanimation class="kiss-cover" colors="--kiss-color-primary" particle-count="10000" style="opacity: 0.2;"></bg-fluxanimation>
+                    <div class="animated fadeInUp kiss-position-relative">
                         <div class="kiss-size-xlarge kiss-margin-small"><?=_t('Hello, %s', [$this->escape($this['user/name'])])?></div>
                         <div class="kiss-color-muted kiss-size-1 kiss-text-light animated fadeIn delay-1s"><?=t("Excited for your creations today!")?></div>
                     </div>
