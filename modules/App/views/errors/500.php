@@ -19,7 +19,7 @@
 
     <bg-fluxanimation class="kiss-cover" colors="--kiss-color-danger"></bg-fluxanimation>
 
-    <kiss-container class="kiss-align-center">
+    <kiss-container class="kiss-position-relative kiss-align-center">
 
         <div class="kiss-margin-bottom">
             <img class="app-logo kiss-margin-auto" src="<?=$this->base('app:assets/img/logo.svg')?>" width="40" alt="Logo">
