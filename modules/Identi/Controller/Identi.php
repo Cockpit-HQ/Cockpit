@@ -11,13 +11,13 @@ use function Lime\fetch_from_array;
 
 function base64_decode_if_encoded($str) {
 
-    if (preg_match('/[^a-zA-Z0-9\/\+=]/', $str)) {
+    if (\preg_match('/[^a-zA-Z0-9\/\+=]/', $str)) {
         return $str; // Contains characters not part of Base64 alphabet or padding
     }
 
     // Check for misplaced padding characters (e.g., '=' in the middle of data).
-    $length = strlen($str);
-    $first_padding_char_pos = strpos($str, '=');
+    $length = \strlen($str);
+    $first_padding_char_pos = \strpos($str, '=');
 
     if ($first_padding_char_pos !== false) {
 
@@ -46,13 +46,13 @@ function base64_decode_if_encoded($str) {
         }
     }
 
-    $decoded_data = base64_decode($str_to_decode, true);
+    $decoded_data = \base64_decode($str_to_decode, true);
 
     if ($decoded_data === false) {
         return $str;
     }
 
-    return base64_encode($decoded_data) === $str_to_decode ? $decoded_data : $str;
+    return \base64_encode($decoded_data) === $str_to_decode ? $decoded_data : $str;
 }
 
 class Identi extends Base {
@@ -87,13 +87,13 @@ class Identi extends Base {
         $oidc = $this->getOIDCClient();
 
         if ($this->config['pkce']) {
-            $oidc->setCodeChallengeMethod(is_string($this->config['pkce']) ? $this->config['pkce'] : 'S256');
+            $oidc->setCodeChallengeMethod(\is_string($this->config['pkce']) ? $this->config['pkce'] : 'S256');
         }
 
         $oidc->setRedirectURL($this->helper('spaces')->getSiteUrl() . '/identi/callback');
 
         // Add scopes
-        $scopes = explode(' ', trim($this->config['scopes']));
+        $scopes = \explode(' ', \trim($this->config['scopes']));
         $oidc->addScope($scopes);
 
         $this->app->helper('session')->write('identi_oidc_provider', $oidc);
@@ -140,7 +140,7 @@ class Identi extends Base {
 
             $this->app->helper('session')->delete('identi_oidc_provider');
 
-            $userInfo = json_decode(json_encode($oidc->requestUserInfo()), true);
+            $userInfo = \json_decode(\json_encode($oidc->requestUserInfo()), true);
             $data = [
                 'role' => $this->config['default_role'] ?? null,
             ];
@@ -156,7 +156,7 @@ class Identi extends Base {
                 $value = fetch_from_array($userInfo, $mappings[$prop], null);
 
                 if (isset($value)) {
-                    $data[$prop] = is_string($value) ? base64_decode_if_encoded($value) : $value;
+                    $data[$prop] = \is_string($value) ? base64_decode_if_encoded($value) : $value;
                 }
             }
 
@@ -166,33 +166,33 @@ class Identi extends Base {
             }
 
             // use the first available role if an array is mapped
-            if (is_array($data['role'])) {
+            if (\is_array($data['role'])) {
                 $data['role'] = $data['role'][0] ?? null;
             }
 
-            $data['role'] = trim($data['role']);
-            $data['user'] = trim($data['user']);
+            $data['role'] = \trim($data['role']);
+            $data['user'] = \trim($data['user']);
 
             // General data validation
-            if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) return $this->render('identi:views/error.php', ['error' => 'Invalid email format provided by the provider.']);
+            if (!\filter_var($data['email'], FILTER_VALIDATE_EMAIL)) return $this->render('identi:views/error.php', ['error' => 'Invalid email format provided by the provider.']);
             if (!$data['user']) return $this->render('identi:views/error.php', ['error' => 'Invalid username provided by the provider.']);
             if (!$data['role']) return $this->render('identi:views/error.php', ['error' => 'Invalid role provided by the provider.']);
 
             // Remove potentially dangerous characters from username
-            if (preg_match('/[<>"\']/', $data['user']))  return $this->render('identi:views/error.php', ['error' => 'Username contains invalid characters.']);
+            if (\preg_match('/[<>"\']/', $data['user']))  return $this->render('identi:views/error.php', ['error' => 'Username contains invalid characters.']);
 
             // Only allow alphanumeric characters, hyphens, and underscores in role
-            if (!preg_match('/^[a-zA-Z0-9_-]+$/', $data['role'])) return $this->render('identi:views/error.php', ['error' => 'Role contains invalid characters.']);
+            if (!\preg_match('/^[a-zA-Z0-9_-]+$/', $data['role'])) return $this->render('identi:views/error.php', ['error' => 'Role contains invalid characters.']);
 
             // Check if role is in allowed_roles list (if configured)
-            if (is_array($this->config['allowed_roles']) && !in_array($data['role'], $this->config['allowed_roles'])) {
+            if (\is_array($this->config['allowed_roles']) && !\in_array($data['role'], $this->config['allowed_roles'])) {
                 return $this->render('identi:views/error.php', ['error' => 'Role not allowed by configuration.']);
             }
 
             // Validate and sanitize name if present
             if (isset($data['name'])) {
 
-                $data['name'] = trim(preg_replace('/[<>"\']/', '', $data['name']));
+                $data['name'] = \trim(\preg_replace('/[<>"\']/', '', $data['name']));
 
                 if (!$data['name']) {
                     $data['name'] = $data['user'];
@@ -214,7 +214,7 @@ class Identi extends Base {
             }
 
             $data['_identi'] = $userInfo;
-            $data['_modified'] = time();
+            $data['_modified'] = \time();
 
             $user = $this->app->dataStorage->findOne('system/users', ['_identi.sub' => $userInfo['sub']]);
 
@@ -226,7 +226,7 @@ class Identi extends Base {
 
                 $data['_meta'] = new \ArrayObject([]);
                 $data['_created'] = $data['_modified'];
-                $data['password'] = $this->app->hash(substr(strtr(base64_encode(random_bytes(32)), '+/', '-_'), 0, 32));
+                $data['password'] = $this->app->hash(\substr(\strtr(\base64_encode(\random_bytes(32)), '+/', '-_'), 0, 32));
 
                 if (!isset($data['name'])) {
                     $data['name'] = $data['user'];
@@ -235,7 +235,7 @@ class Identi extends Base {
                 $user = $data;
 
             } else {
-                $user = array_merge($user, $data);
+                $user = \array_merge($user, $data);
             }
 
             // Store session ID for back-channel logout support
@@ -245,7 +245,7 @@ class Identi extends Base {
             try {
 
                 if ($idToken) {
-                    $idTokenClaims = json_decode(base64_decode(str_replace(['-', '_'], ['+', '/'], explode('.', $idToken)[1])), true);
+                    $idTokenClaims = \json_decode(\base64_decode(\str_replace(['-', '_'], ['+', '/'], \explode('.', $idToken)[1])), true);
                     if (isset($idTokenClaims['sid'])) {
                         // Update user record with session ID for back-channel logout matching
                         $user['_identi']['sid'] = $idTokenClaims['sid'];
@@ -263,7 +263,7 @@ class Identi extends Base {
 
             $this->app->trigger('app.user.disguise', [&$user]);
             $this->helper('auth')->setUser($user);
-            $this->helper('session')->write('app.session.start', time());
+            $this->helper('session')->write('app.session.start', \time());
             $this->app->trigger('app.user.login', [$user]);
 
             $this->app->helper('session')->write('identi_id_token', $idToken);
@@ -295,7 +295,7 @@ class Identi extends Base {
         // Verify Content-Type header
         $contentType = $this->app->request->server['CONTENT_TYPE'] ?? ($this->app->request->headers['Content-Type'] ?? '');
 
-        if (stripos($contentType, 'application/x-www-form-urlencoded') === false) {
+        if (\stripos($contentType, 'application/x-www-form-urlencoded') === false) {
             return $this->stop('', 400); // Bad Request
         }
 

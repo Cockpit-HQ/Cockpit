@@ -20,9 +20,9 @@ class Updater extends App {
 
         $meta = $this->helper('updater')->getLatestReleaseInfo();
 
-        $meta['isNewVersionAvailable'] = version_compare($meta['version'], APP_VERSION, '>');
+        $meta['isNewVersionAvailable'] = \version_compare($meta['version'], APP_VERSION, '>');
 
-        return $this->render('updater:views/index.php', compact('meta'));
+        return $this->render('updater:views/index.php', \compact('meta'));
     }
 
     public function update() {
@@ -30,11 +30,11 @@ class Updater extends App {
         $version = $this->param('version', 'master');
         $target = $this->helper('license')->isProprietary() ? 'pro' : 'core';
 
-        if (!in_array($target, ['core', 'pro'])) {
+        if (!\in_array($target, ['core', 'pro'])) {
             return $this->stop(400, 'Invalid target');
         }
 
-        if (!in_array($version, ['master', 'develop'])) {
+        if (!\in_array($version, ['master', 'develop'])) {
             return $this->stop(400, 'Invalid version');
         }
 

@@ -16,7 +16,7 @@ class Settings extends App {
             return $this->stop(401);
         }
 
-        $addons = array_filter(array_keys($this->app['modules']->getArrayCopy()), fn($name) => !in_array($name, ['app', 'assets', 'content','system']));
+        $addons = \array_filter(\array_keys($this->app['modules']->getArrayCopy()), fn($name) => !\in_array($name, ['app', 'assets', 'content','system']));
         $license = $this->app->helper('license')->license();
 
         $supportedImageTypes = [];
@@ -29,10 +29,10 @@ class Settings extends App {
             'WEBP' => 'imagewebp',
             'AVIF' => 'imageavif'
         ] as $type => $fn) {
-            if (function_exists($fn)) $supportedImageTypes[] = $type;
+            if (\function_exists($fn)) $supportedImageTypes[] = $type;
         }
 
-        return $this->render('system:views/info.php', compact('supportedImageTypes', 'addons', 'license'));
+        return $this->render('system:views/info.php', \compact('supportedImageTypes', 'addons', 'license'));
     }
 
 }

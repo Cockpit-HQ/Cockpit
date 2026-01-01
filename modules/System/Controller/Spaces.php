@@ -59,13 +59,13 @@ class Spaces extends App {
         $groups = [];
 
         foreach ($this->helper('spaces')->spaces() as $space) {
-            if (!isset($space['group']) || !$space['group'] || in_array($space['group'], $groups)) continue;
+            if (!isset($space['group']) || !$space['group'] || \in_array($space['group'], $groups)) continue;
             $groups[] = $space['group'];
         }
 
-        sort($groups);
+        \sort($groups);
 
-        return $this->render('system:views/spaces/create.php', compact('groups'));
+        return $this->render('system:views/spaces/create.php', \compact('groups'));
     }
 
     public function load() {
@@ -89,7 +89,7 @@ class Spaces extends App {
             return $this->stop(['error' => 'Space is missing'], 412);
         }
 
-        if (str_contains($space['name'], '.') || str_contains($space['name'], '/')) {
+        if (\str_contains($space['name'], '.') || \str_contains($space['name'], '/')) {
             return false;
         }
 

@@ -85,7 +85,7 @@ class Utils extends App {
 
                 $icons[] = [
                     'name' => $f->getBasename('.svg'),
-                    'path' => $p.str_replace([DIRECTORY_SEPARATOR, $path], ['/', ''], $f->getPathname()),
+                    'path' => $p.\str_replace([DIRECTORY_SEPARATOR, $path], ['/', ''], $f->getPathname()),
                 ];
             }
 
@@ -113,8 +113,8 @@ class Utils extends App {
             return $this->stop(401);
         }
 
-        if (function_exists('opcache_reset')) {
-            opcache_reset();
+        if (\function_exists('opcache_reset')) {
+            \opcache_reset();
         }
 
         return ['success' => true];
@@ -146,11 +146,11 @@ class Utils extends App {
             return $this->stop(['error' => 'Permission denied'], 401);
         }
 
-        $env = getenv();
+        $env = \getenv();
 
-        ksort($env);
+        \ksort($env);
 
-        return compact('env');
+        return \compact('env');
     }
 
     public function testMailer() {
@@ -164,7 +164,7 @@ class Utils extends App {
         $email = $this->param('email');
         $account = $this->param('account', 'default');
 
-        if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        if (!$email || !\filter_var($email, FILTER_VALIDATE_EMAIL)) {
             return $this->stop(['error' => 'Email is missing or invalid'], 412);
         }
 

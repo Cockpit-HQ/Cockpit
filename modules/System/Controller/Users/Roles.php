@@ -34,7 +34,7 @@ class Roles extends App {
 
         $role['permissions'] = new ArrayObject($role['permissions']);
 
-        return $this->render('system:views/users/roles/role.php', compact('role'));
+        return $this->render('system:views/users/roles/role.php', \compact('role'));
     }
 
     public function create() {
@@ -46,7 +46,7 @@ class Roles extends App {
             'permissions' => new ArrayObject([])
         ];
 
-        return $this->render('system:views/users/roles/role.php', compact('role'));
+        return $this->render('system:views/users/roles/role.php', \compact('role'));
     }
 
     public function remove() {
@@ -79,7 +79,7 @@ class Roles extends App {
             return $this->stop(['error' => 'Role data is missing'], 412);
         }
 
-        $role['_modified'] = time();
+        $role['_modified'] = \time();
         $isUpdate = isset($role['_id']);
 
         if (!$isUpdate) {
@@ -87,12 +87,12 @@ class Roles extends App {
             $role['_created'] = $role['_modified'];
         }
 
-        if (!isset($role['appid']) || !trim($role['appid'])) {
+        if (!isset($role['appid']) || !\trim($role['appid'])) {
             return $this->stop(['error' => 'appid required'], 412);
         }
 
         foreach (['appid', 'name', 'info'] as $key) {
-            $role[$key] = strip_tags(trim($role[$key]));
+            $role[$key] = \strip_tags(\trim($role[$key]));
         }
 
         // unique check

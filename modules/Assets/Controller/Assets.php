@@ -21,7 +21,7 @@ class Assets extends App {
         $this->helper('session')->close();
         $this->hasValidCsrfToken(true);
 
-        $options = array_merge([
+        $options = \array_merge([
             'sort' => ['_created' => -1]
         ], $this->param('options', []));
 
@@ -30,7 +30,7 @@ class Assets extends App {
         if ($skip   = $this->param('skip'  , null)) $options['skip']   = $skip;
         if ($folder = $this->param('folder', null)) $options['folder'] = $folder;
 
-        if (isset($options['filter']) && (is_string($options['filter']) || \is_countable($options['filter']))) {
+        if (isset($options['filter']) && (\is_string($options['filter']) || \is_countable($options['filter']))) {
 
             $filter = [];
 
@@ -38,14 +38,14 @@ class Assets extends App {
 
             foreach ($options['filter'] as $f) {
 
-                if (!is_string($f)) {
+                if (!\is_string($f)) {
                     $filter[] = $f;
                     continue;
                 }
 
                 if ($f && $f[0] === ':') {
                     try {
-                        $filter[] = SQLToMongoQuery::translate(substr($f, 1));
+                        $filter[] = SQLToMongoQuery::translate(\substr($f, 1));
                     } catch (\Exception $e) {
                         throw new \Exception("Invalid filter!");
                     }
@@ -55,12 +55,12 @@ class Assets extends App {
                 if (\preg_match('/^\{(.*)\}$/', $f)) {
 
                     try {
-                        $f = json5_decode($f, true);
+                        $f = \json5_decode($f, true);
                     } catch (\Exception $e) {}
 
                 } else {
 
-                    $terms = str_getcsv(trim($f), ' ', escape: '\\');
+                    $terms = \str_getcsv(\trim($f), ' ', escape: '\\');
 
                     $f = ['$or' => []];
 
@@ -78,7 +78,7 @@ class Assets extends App {
                 $filter[] = $f;
             }
 
-            $options['filter'] = count($filter) ? ['$and' => $filter] : null;
+            $options['filter'] = \count($filter) ? ['$and' => $filter] : null;
 
         }
 
@@ -90,14 +90,14 @@ class Assets extends App {
         $assets = $this->module('assets')->assets($options);
 
         $count = (!isset($options['skip']) && !isset($options['limit']))
-                    ? count($assets)
+                    ? \count($assets)
                     : $this->app->dataStorage->count('assets', ($options['filter'] ?? null));
 
-        $pages = isset($options['limit']) ? ceil($count / $options['limit']) : 1;
+        $pages = isset($options['limit']) ? \ceil($count / $options['limit']) : 1;
         $page  = 1;
 
         if ($pages > 1 && isset($options['skip'])) {
-            $page = ceil($options['skip'] / $options['limit']) + 1;
+            $page = \ceil($options['skip'] / $options['limit']) + 1;
         }
 
         // virtual folders
@@ -119,7 +119,7 @@ class Assets extends App {
 
         $folders = $this->module('assets')->folders($options);
 
-        return compact('assets', 'count', 'pages', 'page', 'folders');
+        return \compact('assets', 'count', 'pages', 'page', 'folders');
     }
 
     public function asset($id = null) {
@@ -150,7 +150,7 @@ class Assets extends App {
             return false;
         }
 
-        if (!is_string($asset['_id']) || !$this->app->dataStorage->isValidId($asset['_id'])) {
+        if (!\is_string($asset['_id']) || !$this->app->dataStorage->isValidId($asset['_id'])) {
             return $this->stop(['error' => 'Asset ID looks wrong'], 400);
         }
 
@@ -221,8 +221,8 @@ class Assets extends App {
         }
 
         // remove old asset file
-        if ($this->app->fileStorage->fileExists('uploads://'.trim($asset['path'], '/'))) {
-            $this->app->fileStorage->delete('uploads://'.trim($asset['path'], '/'));
+        if ($this->app->fileStorage->fileExists('uploads://'.\trim($asset['path'], '/'))) {
+            $this->app->fileStorage->delete('uploads://'.\trim($asset['path'], '/'));
         }
 
         $asset = $result['assets'][0];
@@ -267,7 +267,7 @@ class Assets extends App {
             return $this->stop(['error' => 'Folder name is required'], 400);
         }
 
-        $folder = array_merge([
+        $folder = \array_merge([
             'name' => '',
             '_p' => $parent,
             'icon' => '',
@@ -325,7 +325,7 @@ class Assets extends App {
 
             $mime = null;
 
-            if (str_contains($this->app->request->headers['Accept'] ?? '', 'image/webp')) {
+            if (\str_contains($this->app->request->headers['Accept'] ?? '', 'image/webp')) {
                 $gdinfo = \gd_info();
                 $mime = isset($gdinfo['WebP Support']) && $gdinfo['WebP Support'] ? 'webp' : null;
             }
@@ -341,17 +341,17 @@ class Assets extends App {
             'filters' => (array) $this->param('f', []),
             'width' => $this->param('w', null),
             'height' => $this->param('h', null),
-            'quality' => intval($this->param('q', 30)),
-            'rebuild' => intval($this->param('r', false)),
+            'quality' => \intval($this->param('q', 30)),
+            'rebuild' => \intval($this->param('r', false)),
             'timestamp' => $this->param('t', null),
         ];
 
         if ($options['width'] !== 'original') {
-            $options['width'] = intval($options['width']);
+            $options['width'] = \intval($options['width']);
         }
 
         if ($options['height'] !== 'original') {
-            $options['height'] = intval($options['height']);
+            $options['height'] = \intval($options['height']);
         }
 
         $thumbUrl = $this->helper('asset')->image($options);

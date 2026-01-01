@@ -27,7 +27,7 @@ class Tree extends App {
         $fields = $model['fields'];
         $locales = $this->helper('locales')->locales();
 
-        if (count($locales) == 1) {
+        if (\count($locales) == 1) {
             $locales = [];
         } else {
             $locales[0]['visible'] = true;
@@ -35,7 +35,7 @@ class Tree extends App {
 
         $this->helper('theme')->favicon(isset($model['icon']) && $model['icon'] ? $model['icon'] : 'content:assets/icons/tree.svg', $model['color'] ?? '#000');
 
-        return $this->render('content:views/tree/items.php', compact('model', 'fields', 'locales', 'allowMoving'));
+        return $this->render('content:views/tree/items.php', \compact('model', 'fields', 'locales', 'allowMoving'));
     }
 
     public function item($model = null, $id = null) {
@@ -81,7 +81,7 @@ class Tree extends App {
 
         $this->helper('theme')->favicon(isset($model['icon']) && $model['icon'] ? $model['icon'] : 'content:assets/icons/tree.svg', $model['color'] ?? '#000');
 
-        return $this->render('content:views/tree/item.php', compact('model', 'item'));
+        return $this->render('content:views/tree/item.php', \compact('model', 'item'));
     }
 
     public function remove($model = null) {
@@ -149,7 +149,7 @@ class Tree extends App {
             $item['_children'] = $this->app->dataStorage->count("content/collections/{$model['name']}", ['_pid' => $item['_id']]);
         }
 
-        if (count($items) && $this->param('locale')) {
+        if (\count($items) && $this->param('locale')) {
             $items = $this->helper('locales')->applyLocales($items, $this->param('locale'));
         }
 
@@ -172,7 +172,7 @@ class Tree extends App {
 
         $items = $this->param('items', null);
 
-        if (!is_array($items)) {
+        if (!\is_array($items)) {
             return false;
         }
 
@@ -222,7 +222,7 @@ class Tree extends App {
 
         $item['_state'] = 0;
 
-        return $this->render('content:views/tree/item.php', compact('model', 'item'));
+        return $this->render('content:views/tree/item.php', \compact('model', 'item'));
     }
 
 }

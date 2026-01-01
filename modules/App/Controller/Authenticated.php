@@ -17,8 +17,8 @@ class Authenticated extends Base {
         if (!$user) {
 
             $route = $this->app->request->route;
-            $query = http_build_query($this->app->request->query);
-            $url   = urlencode($route.($query ? "?{$query}" : ''));
+            $query = \http_build_query($this->app->request->query);
+            $url   = \urlencode($route.($query ? "?{$query}" : ''));
 
             $this->app->reroute("/auth/login?to={$url}");
         }
@@ -50,7 +50,7 @@ class Authenticated extends Base {
         $meta = null;
 
         if (!$this->helper('admin')->isResourceEditableByCurrentUser($resourceId, $meta)) {
-            return $this->stop($this->render('app:views/lockedResouce.php', compact('meta', 'resourceId')), 200);
+            return $this->stop($this->render('app:views/lockedResouce.php', \compact('meta', 'resourceId')), 200);
         }
 
         $this->helper('admin')->lockResourceId($resourceId);
@@ -66,7 +66,7 @@ class Authenticated extends Base {
             $canUnlock = $this->isAllowed('app/resources/unlock');
 
             if (!$canUnlock) {
-                $canUnlock = $meta['sid'] == md5(session_id());
+                $canUnlock = $meta['sid'] == \md5(\session_id());
             }
 
             if ($canUnlock) {
