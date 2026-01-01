@@ -11,7 +11,7 @@ class Projection {
 
         foreach ($documents as &$document) {
 
-            if (!is_array($document)) {
+            if (!\is_array($document)) {
                 continue;
             }
 
@@ -36,9 +36,9 @@ class Projection {
 
         $stack = [$fields];
         while (!empty($stack)) {
-            $current = array_pop($stack);
+            $current = \array_pop($stack);
             foreach ($current as $key => $value) {
-                if (is_array($value)) {
+                if (\is_array($value)) {
                     $stack[] = $value;
                 } elseif ((bool)$value) {
                     $hasInclusion = true;
@@ -61,8 +61,8 @@ class Projection {
 
         foreach ($fields as $field => $value) {
 
-            if (str_contains($field, '.')) {
-                $projection = array_replace_recursive($projection, self::dotNotationToArray($field, $value));
+            if (\str_contains($field, '.')) {
+                $projection = \array_replace_recursive($projection, self::dotNotationToArray($field, $value));
             } else {
                 $projection[$field] = $value;
             }
@@ -78,7 +78,7 @@ class Projection {
         if (self::is_sequential($document)) {
             foreach ($document as $key => $value) {
 
-                if (is_array($value)) {
+                if (\is_array($value)) {
                     $result[] = self::process($value, $fields, $hasInclusion);
                 } else {
                     $result[] = $value;
@@ -89,9 +89,9 @@ class Projection {
 
         foreach ($document as $field => $value) {
 
-            if (is_array($value) && isset($fields[$field]) && is_array($fields[$field])) {
+            if (\is_array($value) && isset($fields[$field]) && \is_array($fields[$field])) {
 
-                if (is_array($fields[$field])) {
+                if (\is_array($fields[$field])) {
                     $result[$field] = self::process($value, $fields[$field], $hasInclusion);
                 } else {
                     $result[$field] = $value;
@@ -113,8 +113,8 @@ class Projection {
     protected static function dotNotationToArray(string $dotNotation, mixed $value = 1): array {
 
         $result = [];
-        $parts = explode('.', $dotNotation);
-        $valPos = count($parts) - 1;
+        $parts = \explode('.', $dotNotation);
+        $valPos = \count($parts) - 1;
         $pointer = &$result;
 
         foreach ($parts as $i => $part) {

@@ -102,7 +102,7 @@ class Index {
      */
     public function search(string $query, array $options = []) {
 
-        $options = array_merge([
+        $options = \array_merge([
             'fields' => '*',
             'limit' => 50,
             'offset' => 0,
@@ -143,30 +143,30 @@ class Index {
 
         // Handle field selection
         if ($options['fields'] !== '*') {
-            $params['attributesToRetrieve'] = is_string($options['fields']) 
-                ? array_map(fn($f) => trim($f), explode(',' , $options['fields'])) 
+            $params['attributesToRetrieve'] = \is_string($options['fields']) 
+                ? \array_map(fn($f) => \trim($f), \explode(',' , $options['fields'])) 
                 : $options['fields'];
         }
 
         // Handle fuzzy search (typo tolerance)
         if ($options['fuzzy'] !== null) {
-            if (is_bool($options['fuzzy']) && $options['fuzzy']) {
+            if (\is_bool($options['fuzzy']) && $options['fuzzy']) {
                 // Enable typo tolerance with default settings
                 $params['typoTolerance'] = ['enabled' => true];
-            } elseif (is_int($options['fuzzy'])) {
+            } elseif (\is_int($options['fuzzy'])) {
                 // Set specific typo tolerance level
                 $params['typoTolerance'] = [
                     'enabled' => true,
-                    'minWordSizeForTypos' => ['oneTypo' => max(1, $options['fuzzy']), 'twoTypos' => max(2, $options['fuzzy'] + 1)]
+                    'minWordSizeForTypos' => ['oneTypo' => \max(1, $options['fuzzy']), 'twoTypos' => \max(2, $options['fuzzy'] + 1)]
                 ];
             }
         }
         
         // Handle direct typo tolerance parameter
         if ($options['typoTolerance'] !== null) {
-            if (is_bool($options['typoTolerance'])) {
+            if (\is_bool($options['typoTolerance'])) {
                 $params['typoTolerance'] = ['enabled' => $options['typoTolerance']];
-            } elseif (is_array($options['typoTolerance'])) {
+            } elseif (\is_array($options['typoTolerance'])) {
                 $params['typoTolerance'] = $options['typoTolerance'];
             }
         }
@@ -186,9 +186,9 @@ class Index {
         if ($options['highlights']) {
             if ($options['attributesToHighlight'] !== null) {
                 // Use specific attributes to highlight
-                if (is_string($options['attributesToHighlight'])) {
-                    $params['attributesToHighlight'] = array_map(fn($f) => trim($f), explode(',', $options['attributesToHighlight']));
-                } elseif (is_array($options['attributesToHighlight'])) {
+                if (\is_string($options['attributesToHighlight'])) {
+                    $params['attributesToHighlight'] = \array_map(fn($f) => \trim($f), \explode(',', $options['attributesToHighlight']));
+                } elseif (\is_array($options['attributesToHighlight'])) {
                     $params['attributesToHighlight'] = $options['attributesToHighlight'];
                 }
             } else {
@@ -203,8 +203,8 @@ class Index {
         }
 
         // Handle multi-facets
-        if (!empty($options['facets']) && is_array($options['facets'])) {
-            $params['facets'] = array_values(array_filter($options['facets'], fn($f) => is_string($f) && $f !== ''));
+        if (!empty($options['facets']) && \is_array($options['facets'])) {
+            $params['facets'] = \array_values(\array_filter($options['facets'], fn($f) => \is_string($f) && $f !== ''));
             // Ensure requested facet fields are configured as filterable attributes
             if (!empty($params['facets'])) {
                 $this->ensureFilterableAttributes($params['facets'], true);
@@ -216,28 +216,28 @@ class Index {
         if (isset($params['filter']) || isset($params['typoTolerance']) || !empty($options['boosts']) || !empty($params['facets'])) {
             $response = $this->manager->sendRequest("/indexes/{$this->name}/search", 'POST', $params);
         } else {
-            $queryString = http_build_query($params);
+            $queryString = \http_build_query($params);
             $response = $this->manager->sendRequest("/indexes/{$this->name}/search?{$queryString}", 'GET');
         }
 
         // Normalize multi-facets to unified 'facets' key (preserve original facetDistribution)
-        if (!empty($options['facets']) && isset($response['facetDistribution']) && is_array($response['facetDistribution'])) {
+        if (!empty($options['facets']) && isset($response['facetDistribution']) && \is_array($response['facetDistribution'])) {
             $facets = [];
             $limit = (int)$options['facet_limit'];
-            $offset = max(0, (int)$options['facet_offset']);
+            $offset = \max(0, (int)$options['facet_offset']);
             foreach ($options['facets'] as $field) {
-                if (!isset($response['facetDistribution'][$field]) || !is_array($response['facetDistribution'][$field])) continue;
+                if (!isset($response['facetDistribution'][$field]) || !\is_array($response['facetDistribution'][$field])) continue;
                 $items = [];
                 foreach ($response['facetDistribution'][$field] as $value => $count) {
                     $items[] = ['value' => $value, 'count' => (int)$count];
                 }
                 // Sort by count desc
-                usort($items, fn($a, $b) => $b['count'] <=> $a['count']);
+                \usort($items, fn($a, $b) => $b['count'] <=> $a['count']);
                 // Apply offset/limit
                 if ($limit > 0) {
-                    $items = array_slice($items, $offset, $limit);
+                    $items = \array_slice($items, $offset, $limit);
                 } elseif ($offset > 0) {
-                    $items = array_slice($items, $offset);
+                    $items = \array_slice($items, $offset);
                 }
                 $facets[$field] = $items;
             }
@@ -254,26 +254,26 @@ class Index {
      */
     private function ensureFilterableAttributes(array $attributes, bool $wait = true): void {
         // Normalize
-        $attributes = array_values(array_unique(array_filter($attributes, fn($a) => is_string($a) && $a !== '')));
+        $attributes = \array_values(\array_unique(\array_filter($attributes, fn($a) => \is_string($a) && $a !== '')));
         if (empty($attributes)) return;
 
         try {
             $current = $this->manager->sendRequest("/indexes/{$this->name}/settings/filterable-attributes", 'GET');
-            if (!is_array($current)) {
+            if (!\is_array($current)) {
                 $current = [];
             }
-            $missing = array_values(array_diff($attributes, $current));
+            $missing = \array_values(\array_diff($attributes, $current));
             if (empty($missing)) {
                 return;
             }
 
-            $new = array_values(array_unique(array_merge($current, $attributes)));
+            $new = \array_values(\array_unique(\array_merge($current, $attributes)));
             $rsp = $this->manager->sendRequest("/indexes/{$this->name}/settings/filterable-attributes", 'PUT', $new);
 
             // Meilisearch returns taskUid for async update; optionally wait
-            if ($wait && is_array($rsp)) {
+            if ($wait && \is_array($rsp)) {
                 $taskUid = $rsp['taskUid'] ?? $rsp['uid'] ?? $rsp['updateId'] ?? null;
-                if (is_int($taskUid)) {
+                if (\is_int($taskUid)) {
                     $this->waitForTask($taskUid, 8000);
                 }
             }
@@ -292,13 +292,13 @@ class Index {
             try {
                 $task = $this->manager->sendRequest("/tasks/{$taskUid}", 'GET');
                 $status = $task['status'] ?? null;
-                if (in_array($status, ['succeeded', 'failed'], true)) {
+                if (\in_array($status, ['succeeded', 'failed'], true)) {
                     return;
                 }
             } catch (\Exception $e) {
                 return;
             }
-            usleep($interval * 1000);
+            \usleep($interval * 1000);
             $waited += $interval;
         }
     }
@@ -333,7 +333,7 @@ class Index {
      * @return array The faceted search results
      */
     public function facetSearch(string $query, string $facetField, array $options = []): array {
-        $options = array_merge([
+        $options = \array_merge([
             'limit' => 50,
             'offset' => 0,
             'filter' => null,
@@ -357,7 +357,7 @@ class Index {
         
         // Transform Meilisearch facet format to match IndexLite format
         $facets = [];
-        if (isset($response['facetDistribution'][$facetField]) && is_array($response['facetDistribution'][$facetField])) {
+        if (isset($response['facetDistribution'][$facetField]) && \is_array($response['facetDistribution'][$facetField])) {
             foreach ($response['facetDistribution'][$facetField] as $value => $count) {
                 $facets[] = [
                     $facetField => $value,
@@ -367,17 +367,17 @@ class Index {
         }
 
         // Sort by count DESC to match IndexLite behavior
-        usort($facets, function($a, $b) {
+        \usort($facets, function($a, $b) {
             return $b['count'] <=> $a['count'];
         });
 
         // Apply offset and limit on the facet list
-        $offset = max(0, (int)$options['offset']);
+        $offset = \max(0, (int)$options['offset']);
         $limit = (int)$options['limit'];
         if ($limit > 0) {
-            $facets = array_slice($facets, $offset, $limit);
+            $facets = \array_slice($facets, $offset, $limit);
         } elseif ($offset > 0) {
-            $facets = array_slice($facets, $offset);
+            $facets = \array_slice($facets, $offset);
         }
 
         return $facets;
@@ -417,7 +417,7 @@ class Index {
             }
             
             public function suggest(string $query, array $options = []): array {
-                return $this->index->search($query, array_merge($options, ['limit' => 10]));
+                return $this->index->search($query, \array_merge($options, ['limit' => 10]));
             }
         };
     }

@@ -9,7 +9,7 @@ class License extends \Lime\Helper {
 
     public function license(?string $key = null) {
 
-        if (is_null($this->license)) {
+        if (\is_null($this->license)) {
             $this->load();
         }
 
@@ -37,7 +37,7 @@ class License extends \Lime\Helper {
 
         try {
 
-            $license = json_decode(file_get_contents($file), $assoc = true, JSON_THROW_ON_ERROR);
+            $license = \json_decode(\file_get_contents($file), $assoc = true, JSON_THROW_ON_ERROR);
 
             if (!isset(
                 $license['domain'],
@@ -63,7 +63,7 @@ class License extends \Lime\Helper {
             // @todo: come up with something more sophisticated 😄
             // md5 is used only due to performance reasons.
             // Key checking against license server will be implemented later.
-            $hash = hash('md5', json_encode($data));
+            $hash = \hash('md5', \json_encode($data));
 
             if ($hash !== $license['signature']) {
                 return false;
@@ -109,7 +109,7 @@ class License extends \Lime\Helper {
      * @return bool
      */
     public function isProprietary() {
-        return ((json_decode(file_get_contents(APP_DIR.'/composer.json'), true)['license'] ?? '') === 'proprietary');
+        return ((\json_decode(\file_get_contents(APP_DIR.'/composer.json'), true)['license'] ?? '') === 'proprietary');
     }
 
     /**
@@ -129,27 +129,27 @@ class License extends \Lime\Helper {
             return false;
         }
 
-        if (!filter_var($domain, FILTER_VALIDATE_URL)) {
+        if (!\filter_var($domain, FILTER_VALIDATE_URL)) {
             $domain = "https://{$domain}";
         }
 
-        $host = parse_url($domain, PHP_URL_HOST);
-        $currentHost = parse_url($this->app->getSiteUrl(), PHP_URL_HOST);
+        $host = \parse_url($domain, PHP_URL_HOST);
+        $currentHost = \parse_url($this->app->getSiteUrl(), PHP_URL_HOST);
 
         if (!$host || !$currentHost) {
             return false;
         }
 
-        $host = strtolower($host);
-        $currentHost = strtolower($currentHost);
+        $host = \strtolower($host);
+        $currentHost = \strtolower($currentHost);
         $valid = $host === $currentHost;
 
         if (!$valid) {
 
             // allo local dev + common dev|test domains
             if (
-                in_array($currentHost, ['localhost', '127.0.0.1']) ||
-                preg_match('/^(dev|staging|preview|uat|test)\./', $currentHost)
+                \in_array($currentHost, ['localhost', '127.0.0.1']) ||
+                \preg_match('/^(dev|staging|preview|uat|test)\./', $currentHost)
             ) {
                 $valid = true;
             }

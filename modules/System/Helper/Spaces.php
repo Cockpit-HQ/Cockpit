@@ -41,10 +41,10 @@ class Spaces extends \Lime\Helper {
         $folder = APP_SPACES_DIR;
         $spaces = [];
 
-        if ($folder && file_exists($folder)) {
+        if ($folder && \file_exists($folder)) {
 
             $dir = new DirectoryIterator($folder);
-            $rootUrl = rtrim($this->app->routeUrl('/'), '/');
+            $rootUrl = \rtrim($this->app->routeUrl('/'), '/');
 
             foreach ($dir as $f) {
 
@@ -53,7 +53,7 @@ class Spaces extends \Lime\Helper {
                 $name = $f->getFilename();
                 $group = null;
 
-                if (file_exists($folder."/{$name}/config/config.php")) {
+                if (\file_exists($folder."/{$name}/config/config.php")) {
                     $cfg = include($folder."/{$name}/config/config.php");
                     $group = $cfg['@space']['group'] ?? null;
                 }
@@ -101,7 +101,7 @@ class Spaces extends \Lime\Helper {
 
         $dir = APP_SPACES_DIR."/{$name}";
 
-        if (!file_exists($dir)) {
+        if (!\file_exists($dir)) {
             return null;
         }
 
@@ -125,7 +125,7 @@ class Spaces extends \Lime\Helper {
         }
 
         if (!$this->isMaster) {
-            $space = basename(trim($this->app->path('#root:'), '/'));
+            $space = \basename(\trim($this->app->path('#root:'), '/'));
             return $this->app->getSiteUrl(true) . "/:{$space}";
         }
 
@@ -141,7 +141,7 @@ class Spaces extends \Lime\Helper {
      */
     public function create(string $name, array $options = []) {
 
-        $options = array_merge([
+        $options = \array_merge([
             'group' => null,
             'user' => 'admin',
             'password' => 'admin',
@@ -154,7 +154,7 @@ class Spaces extends \Lime\Helper {
         ], $options);
 
         $fs = $this->app->helper('fs');
-        $name = $this->app->helper('utils')->sluggify(trim($name));
+        $name = $this->app->helper('utils')->sluggify(\trim($name));
         $path = APP_SPACES_DIR."/{$name}";
 
         // Space
@@ -164,7 +164,7 @@ class Spaces extends \Lime\Helper {
             ]
         ]);
 
-        if (file_exists($path)) {
+        if (\file_exists($path)) {
             return false;
         }
 
@@ -200,7 +200,7 @@ class Spaces extends \Lime\Helper {
         // space config file
         $fs->write("{$path}/config/config.php", "<?php\n\nreturn {$export};");
 
-        $created = time();
+        $created = \time();
         $instance = \Cockpit::instance($path);
 
         $user = [

@@ -35,18 +35,18 @@ class QueryParsingException extends Exception
         ?Throwable $previous = null
     ) {
         $this->query = $query;
-        $this->position = max(0, $position); // Ensure position is not negative
+        $this->position = \max(0, $position); // Ensure position is not negative
         $this->offendingValue = $offendingValue;
 
         // Add context to the error message
         $context = $this->getErrorContext($this->query, $this->position);
-        $fullMessage = sprintf(
+        $fullMessage = \sprintf(
             "%s%s\nAt position ~%d: ...%s...\n%s%s",
             $message,
             ($offendingValue !== null ? " (near '{$offendingValue}')" : ""),
             $this->position,
             $context['snippet'],
-            str_repeat(' ', strlen("At position ~{$this->position}: ...")), // Align pointer
+            \str_repeat(' ', \strlen("At position ~{$this->position}: ...")), // Align pointer
             $context['pointer']
         );
 
@@ -63,19 +63,19 @@ class QueryParsingException extends Exception
      */
     private function getErrorContext(string $query, int $position, int $contextLength = 20): array
     {
-        $queryLength = strlen($query);
-        $start = max(0, $position - $contextLength);
+        $queryLength = \strlen($query);
+        $start = \max(0, $position - $contextLength);
         // Calculate length carefully to avoid going past the end of the string
-        $length = min($queryLength - $start, $contextLength * 2 + 1); // +1 to potentially include the char at position
-        $snippet = substr($query, $start, $length);
+        $length = \min($queryLength - $start, $contextLength * 2 + 1); // +1 to potentially include the char at position
+        $snippet = \substr($query, $start, $length);
 
         // Create a pointer ('^') indicating the error position within the snippet
-        $pointerPosition = max(0, $position - $start); // Position relative to snippet start
+        $pointerPosition = \max(0, $position - $start); // Position relative to snippet start
         // Ensure pointer doesn't exceed snippet length (can happen if error is at the very end)
-        $pointerPosition = min($pointerPosition, strlen($snippet));
+        $pointerPosition = \min($pointerPosition, \strlen($snippet));
 
         // Basic pointer alignment (works well for ASCII/single-byte)
-        $pointer = str_repeat(' ', $pointerPosition) . '^';
+        $pointer = \str_repeat(' ', $pointerPosition) . '^';
 
         // Handle potential multibyte characters if precise alignment is critical (more complex)
         // If multibyte support is needed:
@@ -219,7 +219,7 @@ class SQLToMongoQuery
     public function __construct(string $query, private array $options = [])
     {
         $this->originalQuery = $query;
-        $this->processedQuery = trim($query);
+        $this->processedQuery = \trim($query);
         $this->likeCaseInsensitive = (bool)($this->options['likeCaseInsensitive'] ?? false);
     }
 
@@ -245,7 +245,7 @@ class SQLToMongoQuery
             $result = $this->parseExpression(); // Start parsing with lowest precedence
 
             // After parsing, check if all tokens were consumed
-            if ($this->position < count($this->tokens)) {
+            if ($this->position < \count($this->tokens)) {
                 $this->throwParsingException(
                     "Unexpected token found after main expression",
                     $this->tokens[$this->position]['value'] ?? null // Provide offending token if possible
@@ -259,7 +259,7 @@ class SQLToMongoQuery
         } catch (Throwable $e) {
             // Wrap other potential errors (e.g., regex errors during LIKE conversion)
             $pos = $this->getCurrentTokenCharPosition();
-            $currentToken = ($this->position < count($this->tokens)) ? $this->tokens[$this->position]['value'] : null;
+            $currentToken = ($this->position < \count($this->tokens)) ? $this->tokens[$this->position]['value'] : null;
             throw new QueryParsingException(
                 "Failed to parse SQL query: {$e->getMessage()}",
                 $this->originalQuery,
@@ -281,11 +281,11 @@ class SQLToMongoQuery
 
         $flags = PREG_SET_ORDER | PREG_OFFSET_CAPTURE;
         $matches = []; // Initialize $matches
-        $result = preg_match_all(self::TOKENIZER_REGEX, $this->processedQuery, $matches, $flags);
+        $result = \preg_match_all(self::TOKENIZER_REGEX, $this->processedQuery, $matches, $flags);
 
         // Check for preg_match_all errors (e.g., regex compilation issues, backtrack limits)
         if ($result === false) {
-             throw new QueryParsingException("Regex error during tokenization: " . preg_last_error_msg(), $this->originalQuery, 0);
+             throw new QueryParsingException("Regex error during tokenization: " . \preg_last_error_msg(), $this->originalQuery, 0);
         }
 
         $this->tokens = [];
@@ -326,12 +326,12 @@ class SQLToMongoQuery
 
             $this->tokens[] = ['value' => $value, 'type' => $type, 'pos' => $pos];
 
-            $matchedLength += strlen($match[0][0]); // Length of full match including surrounding whitespace
-            $lastMatchEndPos = $match[0][1] + strlen($match[0][0]);
+            $matchedLength += \strlen($match[0][0]); // Length of full match including surrounding whitespace
+            $lastMatchEndPos = $match[0][1] + \strlen($match[0][0]);
         }
 
         // Check if the entire string was consumed by the tokenizer
-        if ($lastMatchEndPos < strlen($this->processedQuery)) {
+        if ($lastMatchEndPos < \strlen($this->processedQuery)) {
             $this->throwParsingException(
                 "Unrecognized character sequence at the end of the query",
                 null,
@@ -360,7 +360,7 @@ class SQLToMongoQuery
      */
     private function parseExpression(int $minPrecedence = 0): array
     {
-        if ($this->position >= count($this->tokens)) {
+        if ($this->position >= \count($this->tokens)) {
             $this->throwParsingException("Unexpected end of query while parsing expression", null, true); // true -> point to end of previous token
         }
 
@@ -368,12 +368,12 @@ class SQLToMongoQuery
         $left = $this->parsePrimary();
 
         // Loop while the next operator has precedence >= $minPrecedence
-        while ($this->position < count($this->tokens)) {
+        while ($this->position < \count($this->tokens)) {
             $currentToken = $this->tokens[$this->position];
 
             // Check if it's a logical operator we handle at this level
             if ($currentToken['type'] !== 'keyword') break;
-            $operator = strtoupper($currentToken['value']);
+            $operator = \strtoupper($currentToken['value']);
             if ($operator !== self::K_AND && $operator !== self::K_OR) break;
 
             $precedence = $this->getLogicalOperatorPrecedence($operator);
@@ -396,12 +396,14 @@ class SQLToMongoQuery
 
             // Combine left and right operands under the MongoDB operator ($and/$or)
             // Optimize by flattening consecutive operators of the same type
-            if (isset($left[$mongoOp]) && is_array($left[$mongoOp])) {
+            // Combine left and right operands under the MongoDB operator ($and/$or)
+            // Optimize by flattening consecutive operators of the same type
+            if (isset($left[$mongoOp]) && \is_array($left[$mongoOp])) {
                 // Append right to existing $and/$or array in left
                 $left[$mongoOp][] = $right;
-            } elseif (isset($right[$mongoOp]) && is_array($right[$mongoOp]) && count($right[$mongoOp]) === 1 && key($right[$mongoOp]) === 0) {
+            } elseif (isset($right[$mongoOp]) && \is_array($right[$mongoOp]) && \count($right[$mongoOp]) === 1 && \key($right[$mongoOp]) === 0) {
                  // If right is [$mongoOp => [$singleExpr]], prepend left
-                 array_unshift($right[$mongoOp], $left);
+                 \array_unshift($right[$mongoOp], $left);
                  $left = $right;
             } else {
                  // Create a new $and/$or structure
@@ -423,7 +425,7 @@ class SQLToMongoQuery
      */
     private function parsePrimary(): array
     {
-        if ($this->position >= count($this->tokens)) {
+        if ($this->position >= \count($this->tokens)) {
             $this->throwParsingException("Unexpected end of query while looking for an expression or condition", null, true);
         }
 
@@ -434,7 +436,7 @@ class SQLToMongoQuery
             $this->position++; // Consume '('
             $expr = $this->parseExpression(0); // Parse expression inside parens, resetting precedence
 
-            if ($this->position >= count($this->tokens) || $this->tokens[$this->position]['value'] !== ')') {
+            if ($this->position >= \count($this->tokens) || $this->tokens[$this->position]['value'] !== ')') {
                 $expectedToken = $this->tokens[$this->position] ?? null;
                 $this->throwParsingException(
                     "Expected ')' to close parenthesized expression",
@@ -446,7 +448,7 @@ class SQLToMongoQuery
         }
 
         // Handle NOT operator: NOT primary_expression
-        if ($currentToken['type'] === 'keyword' && strtoupper($currentToken['value']) === self::K_NOT) {
+        if ($currentToken['type'] === 'keyword' && \strtoupper($currentToken['value']) === self::K_NOT) {
             $this->position++; // Consume 'NOT'
 
             // Recursively parse the operand of NOT. This handles NOT (expr), NOT NOT expr, NOT field=val etc.
@@ -478,7 +480,7 @@ class SQLToMongoQuery
     private function parseCondition(): array
     {
         // 1. Expect Field Identifier
-        if ($this->position >= count($this->tokens) || $this->tokens[$this->position]['type'] !== 'identifier') {
+        if ($this->position >= \count($this->tokens) || $this->tokens[$this->position]['type'] !== 'identifier') {
             $this->throwParsingException(
                 "Expected field name to start a condition",
                 $this->tokens[$this->position]['value'] ?? null
@@ -487,14 +489,14 @@ class SQLToMongoQuery
         $fieldToken = $this->tokens[$this->position++];
         $field = $this->parseIdentifier($fieldToken['value']); // Handle backticks
 
-        if ($this->position >= count($this->tokens)) {
+        if ($this->position >= \count($this->tokens)) {
             $this->throwParsingException("Unexpected end of query after field name '{$field}'", null, true);
         }
 
         // 2. Expect Operator or Keyword acting as operator (IS, IN, LIKE, BETWEEN, REGEXP, NOT)
         $operatorToken = $this->tokens[$this->position];
         $operatorValue = $operatorToken['value'];
-        $operatorUpper = strtoupper($operatorValue);
+        $operatorUpper = \strtoupper($operatorValue);
         $this->position++; // Consume the operator/keyword token
 
         // --- Handle multi-word operators and special forms ---
@@ -528,11 +530,11 @@ class SQLToMongoQuery
                 }
 
             case self::K_NOT: // Check specifically for NOT IN, NOT LIKE, NOT BETWEEN, NOT REGEXP
-                if ($this->position >= count($this->tokens)) {
+                if ($this->position >= \count($this->tokens)) {
                     $this->throwParsingException("Expected IN, LIKE, BETWEEN, or REGEXP after NOT", null, true);
                 }
                 $nextToken = $this->tokens[$this->position++];
-                $subOperator = strtoupper($nextToken['value']);
+                $subOperator = \strtoupper($nextToken['value']);
                 switch ($subOperator) {
                     case self::K_IN:
                         return $this->parseInCondition($field, true); // isNotIn = true
@@ -542,15 +544,15 @@ class SQLToMongoQuery
                         return $this->parseBetweenCondition($field, true); // isNotBetween = true
                     case self::K_REGEXP:
                         $patternValue = $this->parseValue(); // Expects the regex pattern value next
-                        if (!is_string($patternValue)) {
-                            $this->throwParsingException("REGEXP pattern must be a string value", is_scalar($patternValue) ? (string)$patternValue : gettype($patternValue), false, $this->position -1);
+                        if (!\is_string($patternValue)) {
+                            $this->throwParsingException("REGEXP pattern must be a string value", \is_scalar($patternValue) ? (string)$patternValue : \gettype($patternValue), false, $this->position -1);
                         }
                         
                         // Check if the pattern uses the /pattern/flags syntax
                         $pattern = $patternValue;
                         $options = '';
                         
-                        if (preg_match('#^/(.*)/([\w]*)$#', $patternValue, $matches)) {
+                        if (\preg_match('#^/(.*)/([\w]*)$#', $patternValue, $matches)) {
                             // Pattern is in /pattern/flags format
                             $pattern = $matches[1];
                             $flags = $matches[2];
@@ -559,10 +561,10 @@ class SQLToMongoQuery
                             $validFlags = ['i', 'm', 's', 'x'];
                             $options = '';
                             
-                            for ($i = 0; $i < strlen($flags); $i++) {
+                            for ($i = 0; $i < \strlen($flags); $i++) {
                                 $flag = $flags[$i];
-                                if (in_array($flag, $validFlags)) {
-                                    if (!str_contains($options, $flag)) { // Avoid duplicates
+                                if (\in_array($flag, $validFlags)) {
+                                    if (!\str_contains($options, $flag)) { // Avoid duplicates
                                         $options .= $flag;
                                     }
                                 } else {
@@ -606,7 +608,8 @@ class SQLToMongoQuery
                 }
 
                 // Expect a value after the operator
-                if ($this->position >= count($this->tokens)) {
+                // Expect a value after the operator
+                if ($this->position >= \count($this->tokens)) {
                     $this->throwParsingException("Expected a value after operator '{$operatorValue}' for field '{$field}'", null, true);
                 }
 
@@ -614,15 +617,15 @@ class SQLToMongoQuery
 
                 // REGEXP is handled like other simple operators here (field REGEXP 'pattern')
                 if ($operatorUpper === self::K_REGEXP) {
-                     if (!is_string($value)) {
-                          $this->throwParsingException("REGEXP pattern must be a string value", is_scalar($value) ? (string)$value : gettype($value), false, $this->position -1);
+                     if (!\is_string($value)) {
+                          $this->throwParsingException("REGEXP pattern must be a string value", \is_scalar($value) ? (string)$value : \gettype($value), false, $this->position -1);
                       }
                      
                      // Check if the pattern uses the /pattern/flags syntax
                      $pattern = $value;
                      $options = '';
                      
-                     if (preg_match('#^/(.*)/([\w]*)$#', $value, $matches)) {
+                     if (\preg_match('#^/(.*)/([\w]*)$#', $value, $matches)) {
                          // Pattern is in /pattern/flags format
                          $pattern = $matches[1];
                          $flags = $matches[2];
@@ -632,10 +635,10 @@ class SQLToMongoQuery
                          $validFlags = ['i', 'm', 's', 'x'];
                          $options = '';
                          
-                         for ($i = 0; $i < strlen($flags); $i++) {
+                         for ($i = 0; $i < \strlen($flags); $i++) {
                              $flag = $flags[$i];
-                             if (in_array($flag, $validFlags)) {
-                                 if (!str_contains($options, $flag)) { // Avoid duplicates
+                             if (\in_array($flag, $validFlags)) {
+                                 if (!\str_contains($options, $flag)) { // Avoid duplicates
                                      $options .= $flag;
                                  }
                              } else {
@@ -739,7 +742,7 @@ class SQLToMongoQuery
       */
     private function parseLikeCondition(string $field, bool $isNotLike): array
     {
-        if ($this->position >= count($this->tokens)) {
+        if ($this->position >= \count($this->tokens)) {
              $opStr = $isNotLike ? self::K_NOT . ' ' . self::K_LIKE : self::K_LIKE;
              $this->throwParsingException("Expected pattern value after {$opStr}", null, true);
         }
@@ -763,14 +766,14 @@ class SQLToMongoQuery
             $this->position++; // Consume ESCAPE
             
             // value after ESCAPE should be a string of length 1
-            if ($this->position >= count($this->tokens)) {
+            if ($this->position >= \count($this->tokens)) {
                 $this->throwParsingException("Expected escape character after ESCAPE clause", null, true);
             }
             
             $escapeVal = $this->parseValue();
             
-            if (!is_string($escapeVal) || mb_strlen($escapeVal) !== 1) {
-                 $this->throwParsingException("The escape character must be a single character string", is_scalar($escapeVal) ? (string)$escapeVal : gettype($escapeVal), false, $this->position - 1);
+            if (!\is_string($escapeVal) || \mb_strlen($escapeVal) !== 1) {
+                 $this->throwParsingException("The escape character must be a single character string", \is_scalar($escapeVal) ? (string)$escapeVal : \gettype($escapeVal), false, $this->position - 1);
             }
             $escapeChar = $escapeVal;
         }
@@ -812,7 +815,7 @@ class SQLToMongoQuery
          $opStr = $isNotBetween ? self::K_NOT . ' ' . self::K_BETWEEN : self::K_BETWEEN;
 
         // 1. Parse Lower Bound Value
-        if ($this->position >= count($this->tokens)) {
+        if ($this->position >= \count($this->tokens)) {
              $this->throwParsingException("Expected lower bound value after {$opStr}", null, true);
         }
         $startValue = $this->parseValue();
@@ -823,7 +826,7 @@ class SQLToMongoQuery
         }
 
         // 3. Parse Upper Bound Value
-        if ($this->position >= count($this->tokens)) {
+        if ($this->position >= \count($this->tokens)) {
             $this->throwParsingException("Expected upper bound value after AND in {$opStr}", null, true);
         }
         $endValue = $this->parseValue();
@@ -854,7 +857,7 @@ class SQLToMongoQuery
     {
         $values = [];
 
-        if ($this->position >= count($this->tokens)) {
+        if ($this->position >= \count($this->tokens)) {
              $this->throwParsingException("Unexpected end of query while parsing list", null, true);
         }
 
@@ -869,7 +872,7 @@ class SQLToMongoQuery
         // Loop parsing subsequent values separated by commas
         while ($this->peekParen(',')) {
             $this->position++; // Consume comma
-            if ($this->position >= count($this->tokens)) {
+            if ($this->position >= \count($this->tokens)) {
                 $this->throwParsingException("Unexpected end of query after comma in list", null, true);
             }
             // Handle trailing comma before closing parenthesis: IN (1, 2, )
@@ -893,7 +896,7 @@ class SQLToMongoQuery
      */
     private function parseValue(): mixed
     {
-        if ($this->position >= count($this->tokens)) {
+        if ($this->position >= \count($this->tokens)) {
             $this->throwParsingException("Unexpected end of query, expected a literal value (string, number, TRUE, FALSE, NULL)", null, true);
         }
 
@@ -908,7 +911,7 @@ class SQLToMongoQuery
             case 'string':
                 // Remove outer quotes and process escape sequences
                 $quoteChar = $value[0]; // ' or "
-                $content = substr($value, 1, -1); // Remove outer quotes
+                $content = \substr($value, 1, -1); // Remove outer quotes
                 
                 // Process escape sequences
                 // We need to handle: \', \", \\, \n, \t, \r, \b, \f, and potentially \0
@@ -926,18 +929,18 @@ class SQLToMongoQuery
                 
                 // Apply escape replacements
                 foreach ($escapeMap as $escaped => $replacement) {
-                    $content = str_replace($escaped, $replacement, $content);
+                    $content = \str_replace($escaped, $replacement, $content);
                 }
                 
                 return $content;
 
             case 'number':
                 // Convert to int or float based on presence of decimal point
-                return strpos($value, '.') === false ? (int)$value : (float)$value;
+                return \strpos($value, '.') === false ? (int)$value : (float)$value;
 
             case 'keyword':
                 // Handle TRUE, FALSE, NULL keywords (case-insensitive match)
-                return match (strtoupper($value)) {
+                return match (\strtoupper($value)) {
                     self::K_TRUE => true,
                     self::K_FALSE => false,
                     self::K_NULL => null,
@@ -950,7 +953,7 @@ class SQLToMongoQuery
                 };
 
             case 'identifier': // Check if it's an unquoted NULL keyword (often allowed in SQL)
-                if (strtoupper($value) === self::K_NULL) {
+                if (\strtoupper($value) === self::K_NULL) {
                      return null;
                  }
                 // Fall through intended: An identifier is not a literal value unless it's NULL.
@@ -974,11 +977,11 @@ class SQLToMongoQuery
      */
     private function parseIdentifier(string $identifier): string
     {
-        if (str_starts_with($identifier, '`') && str_ends_with($identifier, '`')) {
+        if (\str_starts_with($identifier, '`') && \str_ends_with($identifier, '`')) {
             // Remove outer backticks (first and last char)
-            $inner = substr($identifier, 1, -1);
+            $inner = \substr($identifier, 1, -1);
             // Unescape internal escaped backticks (\`)
-            return str_replace('\\`', '`', $inner);
+            return \str_replace('\\`', '`', $inner);
         }
         // Return plain identifier (like table.column or simple_field) directly
         return $identifier;
@@ -1017,7 +1020,7 @@ class SQLToMongoQuery
         // So `\%` in input became `\\%` in regex which matches literal `\`.
         
         $regex = '';
-        $len = strlen($pattern); // byte length sufficient for this token processing unless multi-byte chars match wildcard logic?
+        $len = \strlen($pattern); // byte length sufficient for this token processing unless multi-byte chars match wildcard logic?
         // Using iterating approach for robustness
         
         for ($i = 0; $i < $len; $i++) {
@@ -1027,25 +1030,25 @@ class SQLToMongoQuery
                 // Next character is literal
                 if ($i + 1 < $len) {
                     $next = $pattern[$i + 1];
-                    $regex .= preg_quote($next, '/');
+                    $regex .= \preg_quote($next, '/');
                     $i++; // Skip next char
                 } else {
                     // Trailing escape char - ignore or treat as literal?
                     // Treating as literal escape char for safety
-                    $regex .= preg_quote($char, '/');
+                    $regex .= \preg_quote($char, '/');
                 }
             } elseif ($char === '%') {
                  $regex .= '.*';
             } elseif ($char === '_') {
                  $regex .= '.';
             } else {
-                 $regex .= preg_quote($char, '/');
+                 $regex .= \preg_quote($char, '/');
             }
         }
 
         // Add PCRE anchors
-        $anchorStart = !str_starts_with($pattern, '%');
-        $anchorEnd = !str_ends_with($pattern, '%');
+        $anchorStart = !\str_starts_with($pattern, '%');
+        $anchorEnd = !\str_ends_with($pattern, '%');
         
         // If using escape char, we need to be careful with anchor logic.
         // If pattern starts with escaped %, it is literal %, so anchor IS needed.
@@ -1097,7 +1100,7 @@ class SQLToMongoQuery
      */
     private function getLogicalOperatorPrecedence(string $operator): int
     {
-        return match (strtoupper($operator)) {
+        return match (\strtoupper($operator)) {
             self::K_AND => 2,
             self::K_OR => 1,
             default => 0, // Should not be used for non-logical operators in parseExpression
@@ -1109,15 +1112,15 @@ class SQLToMongoQuery
     /** Checks if the next token matches the expected keyword (case-insensitive). Does not consume. */
     private function peekKeyword(string $keyword): bool
     {
-        if ($this->position >= count($this->tokens)) return false;
+        if ($this->position >= \count($this->tokens)) return false;
         $token = $this->tokens[$this->position];
-        return $token['type'] === 'keyword' && strtoupper($token['value']) === $keyword;
+        return $token['type'] === 'keyword' && \strtoupper($token['value']) === $keyword;
     }
 
      /** Checks if the next token matches the expected parenthesis character. Does not consume. */
     private function peekParen(string $paren): bool
     {
-        if ($this->position >= count($this->tokens)) return false;
+        if ($this->position >= \count($this->tokens)) return false;
         $token = $this->tokens[$this->position];
         return $token['type'] === 'paren' && $token['value'] === $paren;
     }
@@ -1145,7 +1148,7 @@ class SQLToMongoQuery
     /** Helper to get the current token's value, or null if at end */
     private function getCurrentTokenValue(): ?string
     {
-        if ($this->position < count($this->tokens)) {
+        if ($this->position < \count($this->tokens)) {
             return $this->tokens[$this->position]['value'];
         }
         return null;
@@ -1158,11 +1161,11 @@ class SQLToMongoQuery
         $idx = $this->position;
         if ($endOfPrevious) {
             // If requested position is end of previous, use the token *before* current index
-            $idx = max(0, $this->position - 1);
-             if ($idx < count($this->tokens)) {
+            $idx = \max(0, $this->position - 1);
+             if ($idx < \count($this->tokens)) {
                  $prevToken = $this->tokens[$idx];
                  // Position after the previous token
-                 return $prevToken['pos'] + strlen($prevToken['value']);
+                 return $prevToken['pos'] + \strlen($prevToken['value']);
              }
              // If no previous token, point to start
               return 0;
@@ -1178,7 +1181,7 @@ class SQLToMongoQuery
 
         // If position is beyond available tokens (end of query reached unexpectedly)
         // point to the position immediately after the last character of the query string.
-        return !empty($this->processedQuery) ? strlen($this->processedQuery) : 0;
+        return !empty($this->processedQuery) ? \strlen($this->processedQuery) : 0;
     }
 
     /**
@@ -1203,15 +1206,15 @@ class SQLToMongoQuery
 
         if ($pointToEndOfPrevious) {
             // Calculate position after the token *before* posIndex
-            $targetIndex = max(0, $posIndex - 1);
-            if ($targetIndex < count($this->tokens)) {
+            $targetIndex = \max(0, $posIndex - 1);
+            if ($targetIndex < \count($this->tokens)) {
                 $token = $this->tokens[$targetIndex];
-                $charPos = $token['pos'] + strlen($token['value']);
+                $charPos = $token['pos'] + \strlen($token['value']);
             } elseif (!empty($this->processedQuery)) {
                  // If pointing after previous but we're at index 0, point to end of query
-                 $charPos = strlen($this->processedQuery);
+                 $charPos = \strlen($this->processedQuery);
             } // else charPos remains 0
-        } elseif ($posIndex < count($this->tokens)) {
+        } elseif ($posIndex < \count($this->tokens)) {
             // Point to the start of the token at posIndex
             $charPos = $this->tokens[$posIndex]['pos'];
             // If offending value wasn't provided, try to get it from the token
@@ -1220,11 +1223,11 @@ class SQLToMongoQuery
              }
         } elseif (!empty($this->tokens)) {
             // If posIndex is beyond the last token, point after the last token
-            $lastToken = $this->tokens[count($this->tokens) - 1];
-            $charPos = $lastToken['pos'] + strlen($lastToken['value']);
+            $lastToken = $this->tokens[\count($this->tokens) - 1];
+            $charPos = $lastToken['pos'] + \strlen($lastToken['value']);
         } elseif (!empty($this->processedQuery)) {
              // If no tokens exist but query isn't empty, point to the end of the query
-             $charPos = strlen($this->processedQuery);
+             $charPos = \strlen($this->processedQuery);
         }
          // else: empty query and no tokens, charPos remains 0
 
@@ -1252,7 +1255,7 @@ class SQLToMongoQuery
             foreach ($expr[self::MGO_AND] as $part) {
                 $negatedParts[] = $this->negateExpression($part);
             }
-            return count($negatedParts) === 1 ? $negatedParts[0] : [self::MGO_OR => $negatedParts];
+            return \count($negatedParts) === 1 ? $negatedParts[0] : [self::MGO_OR => $negatedParts];
         }
         
         // Handle $or: NOT (A OR B) => (NOT A) AND (NOT B)
@@ -1261,7 +1264,7 @@ class SQLToMongoQuery
             foreach ($expr[self::MGO_OR] as $part) {
                 $negatedParts[] = $this->negateExpression($part);
             }
-            return count($negatedParts) === 1 ? $negatedParts[0] : [self::MGO_AND => $negatedParts];
+            return \count($negatedParts) === 1 ? $negatedParts[0] : [self::MGO_AND => $negatedParts];
         }
         
         // Handle $not: NOT (NOT A) => A (double negation)
@@ -1270,12 +1273,12 @@ class SQLToMongoQuery
         }
         
         // Handle single field conditions
-        if (count($expr) === 1) {
-            $field = key($expr);
-            $condition = current($expr);
+        if (\count($expr) === 1) {
+            $field = \key($expr);
+            $condition = \current($expr);
             
             // Skip special operators like $and, $or, $not (already handled above)
-            if (str_starts_with($field, '$')) {
+            if (\str_starts_with($field, '$')) {
                 // This shouldn't happen for valid queries, but wrap in $not as fallback
                 // Actually, for unhandled top-level operators, we can't properly negate
                 // This is an error case
@@ -1287,14 +1290,14 @@ class SQLToMongoQuery
             }
             
             // Simple equality: { field: value } => { field: { $ne: value } }
-            if (!is_array($condition)) {
+            if (!\is_array($condition)) {
                 return [$field => [self::MGO_NE => $condition]];
             }
             
             // Complex field condition: { field: { $op: value, ... } }
-            if (count($condition) === 1) {
-                $op = key($condition);
-                $value = current($condition);
+            if (\count($condition) === 1) {
+                $op = \key($condition);
+                $value = \current($condition);
                 
                 // Try to invert the operator directly
                 $negatedOp = match($op) {
@@ -1346,7 +1349,7 @@ class SQLToMongoQuery
         foreach ($expr as $field => $condition) {
             $negatedParts[] = $this->negateExpression([$field => $condition]);
         }
-        return count($negatedParts) === 1 ? $negatedParts[0] : [self::MGO_OR => $negatedParts];
+        return \count($negatedParts) === 1 ? $negatedParts[0] : [self::MGO_OR => $negatedParts];
     }
 
     /**

@@ -27,17 +27,17 @@ class AlternativeTokenAnalyser implements AnalyserInterface
      */
     public function fromFile(string $filename, Context $context): Analysis
     {
-        if (function_exists('opcache_get_status') && function_exists('opcache_get_configuration')) {
+        if (\function_exists('opcache_get_status') && \function_exists('opcache_get_configuration')) {
             if (empty($GLOBALS['openapi_opcache_warning'])) {
                 $GLOBALS['openapi_opcache_warning'] = true;
-                $status = opcache_get_status();
-                $config = opcache_get_configuration();
-                if (is_array($status) && $status['opcache_enabled'] && $config['directives']['opcache.save_comments'] == false) {
+                $status = \opcache_get_status();
+                $config = \opcache_get_configuration();
+                if (\is_array($status) && $status['opcache_enabled'] && $config['directives']['opcache.save_comments'] == false) {
                     $context->logger->error("php.ini \"opcache.save_comments = 0\" interferes with extracting annotations.\n[LINK] https://www.php.net/manual/en/opcache.configuration.php#ini.opcache.save-comments");
                 }
             }
         }
-        $tokens = token_get_all(file_get_contents($filename));
+        $tokens = \token_get_all(\file_get_contents($filename));
 
         return $this->fromTokens($tokens, new Context(['filename' => $filename], $context));
     }
@@ -50,7 +50,7 @@ class AlternativeTokenAnalyser implements AnalyserInterface
      */
     public function fromCode(string $code, Context $context): Analysis
     {
-        $tokens = token_get_all($code);
+        $tokens = \token_get_all($code);
 
         return $this->fromTokens($tokens, $context);
     }
@@ -66,7 +66,7 @@ class AlternativeTokenAnalyser implements AnalyserInterface
         $analysis = new Analysis([], $parseContext);
         $docBlockParser = new AlternativeDocBlockParser($generator->getAliases());
 
-        reset($tokens);
+        \reset($tokens);
         $token = '';
 
         $aliases = $generator->getAliases();
@@ -88,12 +88,12 @@ class AlternativeTokenAnalyser implements AnalyserInterface
             $previousToken = $token;
             $token = $this->nextToken($tokens, $parseContext);
 
-            if (is_array($token) === false) {
+            if (\is_array($token) === false) {
                 // Ignore tokens like "{", "}", etc
                 continue;
             }
 
-            if (defined('T_ATTRIBUTE') && $token[0] === T_ATTRIBUTE) {
+            if (\defined('T_ATTRIBUTE') && $token[0] === T_ATTRIBUTE) {
                 // consume
                 $this->parseAttribute($tokens, $token, $parseContext);
                 continue;
@@ -109,31 +109,31 @@ class AlternativeTokenAnalyser implements AnalyserInterface
                 continue;
             }
 
-            if (in_array($token[0], [T_ABSTRACT, T_FINAL])) {
+            if (\in_array($token[0], [T_ABSTRACT, T_FINAL])) {
                 // skip
                 $token = $this->nextToken($tokens, $parseContext);
             }
 
             if ($token[0] === T_CLASS) {
                 // Doc-comment before a class?
-                if (is_array($previousToken) && $previousToken[0] === T_DOUBLE_COLON) {
+                if (\is_array($previousToken) && $previousToken[0] === T_DOUBLE_COLON) {
                     // php 5.5 class name resolution (i.e. ClassName::class)
                     continue;
                 }
 
                 $token = $this->nextToken($tokens, $parseContext);
 
-                if (is_string($token) && ($token === '(' || $token === '{')) {
+                if (\is_string($token) && ($token === '(' || $token === '{')) {
                     // php7 anonymous classes (i.e. new class() { public function foo() {} };)
                     continue;
                 }
 
-                if (is_array($token) && ($token[1] === 'extends' || $token[1] === 'implements')) {
+                if (\is_array($token) && ($token[1] === 'extends' || $token[1] === 'implements')) {
                     // php7 anonymous classes with extends (i.e. new class() extends { public function foo() {} };)
                     continue;
                 }
 
-                if (!is_array($token)) {
+                if (!\is_array($token)) {
                     // PHP 8 named argument
                     continue;
                 }
@@ -163,7 +163,7 @@ class AlternativeTokenAnalyser implements AnalyserInterface
 
                 if ($token[0] === T_IMPLEMENTS) {
                     $schemaContext->implements = $this->parseNamespaceList($tokens, $token, $parseContext);
-                    $classDefinition['implements'] = array_map([$schemaContext, 'fullyQualifiedName'], $schemaContext->implements);
+                    $classDefinition['implements'] = \array_map([$schemaContext, 'fullyQualifiedName'], $schemaContext->implements);
                 }
 
                 if ($comment) {
@@ -183,7 +183,7 @@ class AlternativeTokenAnalyser implements AnalyserInterface
 
                 $token = $this->nextToken($tokens, $parseContext);
 
-                if (!is_array($token)) {
+                if (!\is_array($token)) {
                     // PHP 8 named argument
                     continue;
                 }
@@ -204,7 +204,7 @@ class AlternativeTokenAnalyser implements AnalyserInterface
 
                 if ($token[0] === T_EXTENDS) {
                     $schemaContext->extends = $this->parseNamespaceList($tokens, $token, $parseContext);
-                    $interfaceDefinition['extends'] = array_map([$schemaContext, 'fullyQualifiedName'], $schemaContext->extends);
+                    $interfaceDefinition['extends'] = \array_map([$schemaContext, 'fullyQualifiedName'], $schemaContext->extends);
                 }
 
                 if ($comment) {
@@ -224,7 +224,7 @@ class AlternativeTokenAnalyser implements AnalyserInterface
 
                 $token = $this->nextToken($tokens, $parseContext);
 
-                if (!is_array($token)) {
+                if (!\is_array($token)) {
                     // PHP 8 named argument
                     continue;
                 }
@@ -250,14 +250,14 @@ class AlternativeTokenAnalyser implements AnalyserInterface
                 // @todo detect end-of-trait and reset $schemaContext
             }
 
-            if (defined('T_ENUM') && $token[0] === T_ENUM) {
+            if (\defined('T_ENUM') && $token[0] === T_ENUM) {
                 $classDefinition = false;
                 $interfaceDefinition = false;
                 $traitDefinition = false;
 
                 $token = $this->nextToken($tokens, $parseContext);
 
-                if (!is_array($token)) {
+                if (!\is_array($token)) {
                     // PHP 8 named argument
                     continue;
                 }
@@ -289,7 +289,7 @@ class AlternativeTokenAnalyser implements AnalyserInterface
                     // static property
                     $propertyContext = new Context(
                         [
-                            'property' => substr($token[1], 1),
+                            'property' => \substr($token[1], 1),
                             'static' => true,
                             'line' => $line,
                         ],
@@ -310,13 +310,13 @@ class AlternativeTokenAnalyser implements AnalyserInterface
                 }
             }
 
-            if (in_array($token[0], [T_PRIVATE, T_PROTECTED, T_PUBLIC, T_VAR])) { // Scope
+            if (\in_array($token[0], [T_PRIVATE, T_PROTECTED, T_PUBLIC, T_VAR])) { // Scope
                 [$type, $nullable, $token] = $this->parseTypeAndNextToken($tokens, $parseContext);
                 if ($token[0] === T_VARIABLE) {
                     // instance property
                     $propertyContext = new Context(
                         [
-                            'property' => substr($token[1], 1),
+                            'property' => \substr($token[1], 1),
                             'type' => $type,
                             'nullable' => $nullable,
                             'line' => $line,
@@ -391,7 +391,7 @@ class AlternativeTokenAnalyser implements AnalyserInterface
                 }
             }
 
-            if (in_array($token[0], [T_NAMESPACE, T_USE]) === false) {
+            if (\in_array($token[0], [T_NAMESPACE, T_USE]) === false) {
                 // Skip "use" & "namespace" to prevent "never imported" warnings)
                 if ($comment) {
                     // Not a doc-comment for a class, property or method?
@@ -422,11 +422,11 @@ class AlternativeTokenAnalyser implements AnalyserInterface
 
                         $namespaces = $generator->getNamespaces();
                         if (null === $namespaces) {
-                            $aliases[strtolower($alias)] = $target;
+                            $aliases[\strtolower($alias)] = $target;
                         } else {
                             foreach ($namespaces as $namespace) {
-                                if (strcasecmp(substr($target . '\\', 0, strlen($namespace)), $namespace) === 0) {
-                                    $aliases[strtolower($alias)] = $target;
+                                if (\strcasecmp(\substr($target . '\\', 0, \strlen($namespace)), $namespace) === 0) {
+                                    $aliases[\strtolower($alias)] = $target;
                                     break;
                                 }
                             }
@@ -474,13 +474,13 @@ class AlternativeTokenAnalyser implements AnalyserInterface
     private function nextToken(array &$tokens, Context $context)
     {
         while (true) {
-            $token = next($tokens);
-            if (is_array($token)) {
+            $token = \next($tokens);
+            if (\is_array($token)) {
                 if ($token[0] === T_WHITESPACE) {
                     continue;
                 }
                 if ($token[0] === T_COMMENT) {
-                    $pos = strpos($token[1], '@OA\\');
+                    $pos = \strpos($token[1], '@OA\\');
                     if ($pos) {
                         $line = $context->line ? $context->line + $token[2] : $token[2];
                         $commentContext = new Context(['line' => $line], $context);
@@ -499,12 +499,12 @@ class AlternativeTokenAnalyser implements AnalyserInterface
         $nesting = 1;
         while ($token !== false) {
             $token = $this->nextToken($tokens, $parseContext);
-            if (!is_array($token) && '[' === $token) {
+            if (!\is_array($token) && '[' === $token) {
                 ++$nesting;
                 continue;
             }
 
-            if (!is_array($token) && ']' === $token) {
+            if (!\is_array($token) && ']' === $token) {
                 --$nesting;
                 if (!$nesting) {
                     break;
@@ -518,7 +518,7 @@ class AlternativeTokenAnalyser implements AnalyserInterface
      */
     private function php8NamespaceToken(): array
     {
-        return defined('T_NAME_QUALIFIED') ? [T_NAME_QUALIFIED, T_NAME_FULLY_QUALIFIED] : [];
+        return \defined('T_NAME_QUALIFIED') ? [T_NAME_QUALIFIED, T_NAME_FULLY_QUALIFIED] : [];
     }
 
     /**
@@ -529,10 +529,10 @@ class AlternativeTokenAnalyser implements AnalyserInterface
     private function parseNamespace(array &$tokens, &$token, Context $parseContext): string
     {
         $namespace = '';
-        $nsToken = array_merge([T_STRING, T_NS_SEPARATOR], $this->php8NamespaceToken());
+        $nsToken = \array_merge([T_STRING, T_NS_SEPARATOR], $this->php8NamespaceToken());
         while ($token !== false) {
             $token = $this->nextToken($tokens, $parseContext);
-            if (!in_array($token[0], $nsToken)) {
+            if (!\in_array($token[0], $nsToken)) {
                 break;
             }
             $namespace .= $token[1];
@@ -567,20 +567,20 @@ class AlternativeTokenAnalyser implements AnalyserInterface
     private function parseUseStatement(array &$tokens, &$token, Context $parseContext): array
     {
         $normalizeAlias = function ($alias): string {
-            $alias = ltrim($alias, '\\');
-            $elements = explode('\\', $alias);
+            $alias = \ltrim($alias, '\\');
+            $elements = \explode('\\', $alias);
 
-            return array_pop($elements);
+            return \array_pop($elements);
         };
 
         $class = '';
         $alias = '';
         $statements = [];
         $explicitAlias = false;
-        $nsToken = array_merge([T_STRING, T_NS_SEPARATOR], $this->php8NamespaceToken());
+        $nsToken = \array_merge([T_STRING, T_NS_SEPARATOR], $this->php8NamespaceToken());
         while ($token !== false) {
             $token = $this->nextToken($tokens, $parseContext);
-            $isNameToken = in_array($token[0], $nsToken);
+            $isNameToken = \in_array($token[0], $nsToken);
             if (!$explicitAlias && $isNameToken) {
                 $class .= $token[1];
                 $alias = $token[1];
@@ -623,11 +623,11 @@ class AlternativeTokenAnalyser implements AnalyserInterface
             $token = $this->nextToken($tokens, $parseContext);
         }
 
-        $qualifiedToken = array_merge([T_NS_SEPARATOR, T_STRING, T_ARRAY], $this->php8NamespaceToken());
-        $typeToken = array_merge([T_STRING], $this->php8NamespaceToken());
+        $qualifiedToken = \array_merge([T_NS_SEPARATOR, T_STRING, T_ARRAY], $this->php8NamespaceToken());
+        $typeToken = \array_merge([T_STRING], $this->php8NamespaceToken());
         // drill down namespace segments to basename property type declaration
-        while (in_array($token[0], $qualifiedToken)) {
-            if (in_array($token[0], $typeToken)) {
+        while (\in_array($token[0], $qualifiedToken)) {
+            if (\in_array($token[0], $typeToken)) {
                 $type = $token[1];
             }
             $token = $this->nextToken($tokens, $parseContext);

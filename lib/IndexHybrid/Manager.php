@@ -9,13 +9,13 @@ class Manager {
 
     public function __construct(string $server, array $options = []) {
 
-        if (str_starts_with($server, 'indexlite://')) {
+        if (\str_starts_with($server, 'indexlite://')) {
             // Enhanced fuzzy is now built into the base Index class
-            $this->manager = new \IndexLite\Manager(explode('://', $server, 2)[1], $options);
+            $this->manager = new \IndexLite\Manager(\explode('://', $server, 2)[1], $options);
             $this->type = 'indexlite';
-        } elseif (str_starts_with($server, 'meilisearch://')) {
+        } elseif (\str_starts_with($server, 'meilisearch://')) {
 
-            $server = str_replace('meilisearch://', ($options['https'] ?? true) ? 'https://' : 'http://', $server);
+            $server = \str_replace('meilisearch://', ($options['https'] ?? true) ? 'https://' : 'http://', $server);
 
             $this->manager = new Meilisearch\Manager($server, $options);
             $this->type = 'meilisearch';
@@ -71,7 +71,7 @@ class Manager {
     public function drop(string $name): void {
         if ($this->type === 'indexlite') {
             // IndexLite doesn't have a drop method, but Manager might have removeIndex
-            if (method_exists($this->manager, 'removeIndex')) {
+            if (\method_exists($this->manager, 'removeIndex')) {
                 $this->manager->removeIndex($name);
             }
         } else {
@@ -85,7 +85,7 @@ class Manager {
     public function facetSearch(string $indexName, string $query, string $facetField, array $options = []): array {
         $index = $this->index($indexName);
 
-        if (method_exists($index, 'facetSearch')) {
+        if (\method_exists($index, 'facetSearch')) {
             return $index->facetSearch($query, $facetField, $options);
         }
 
@@ -142,7 +142,7 @@ class Manager {
      * @return mixed The result of calling the method with the given arguments.
      */
     public function __call($method, $args) {
-        return call_user_func_array([$this->manager, $method], $args);
+        return \call_user_func_array([$this->manager, $method], $args);
     }
 
 }

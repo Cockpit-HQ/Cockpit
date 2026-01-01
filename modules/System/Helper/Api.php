@@ -29,7 +29,7 @@ class Api extends \Lime\Helper {
      * @return array The list of API keys.
      */
     public function keys(): array {
-        return array_keys($this->keys);
+        return \array_keys($this->keys);
     }
 
     /**

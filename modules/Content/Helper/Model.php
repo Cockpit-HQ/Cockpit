@@ -25,21 +25,21 @@ class Model extends \Lime\Helper {
      */
     public function create(string $name, array $data = []) {
 
-        if (!trim($name)) {
+        if (!\trim($name)) {
             return false;
         }
 
-        $name = preg_replace('/[^A-Za-z0-9]/', '', $name);
+        $name = \preg_replace('/[^A-Za-z0-9]/', '', $name);
 
         if ($this->exists($name)) {
             return false;
         }
 
-        $time = time();
+        $time = \time();
 
         $data['name'] = $name;
 
-        $model = array_replace_recursive([
+        $model = \array_replace_recursive([
             'name'      => $name,
             'label'     => $name,
             'info'      => '',
@@ -96,14 +96,14 @@ class Model extends \Lime\Helper {
             return false;
         }
 
-        $data['_modified'] = time();
+        $data['_modified'] = \time();
 
         if ($this->storage === 'database') {
 
             if (isset($data['_id'])) unset($data['_id']);
 
             $model  = $this->app->dataStorage->findOne('content/models', ['name' => $name]);
-            $model  = array_merge($model, $data);
+            $model  = \array_merge($model, $data);
 
             $this->app->dataStorage->save('content/models', $model);
 
@@ -116,14 +116,14 @@ class Model extends \Lime\Helper {
             }
 
             $model  = include($metapath);
-            $model  = array_merge($model, $data);
+            $model  = \array_merge($model, $data);
             $export = $this->app->helper('utils')->var_export($model, true);
 
             if (!$this->app->helper('fs')->write($metapath, "<?php\n return {$export};")) {
                 return false;
             }
 
-            if (function_exists('opcache_invalidate')) opcache_invalidate($metapath, true);
+            if (\function_exists('opcache_invalidate')) \opcache_invalidate($metapath, true);
         }
 
         $this->app->trigger('content.update.model', [$model]);
@@ -143,7 +143,7 @@ class Model extends \Lime\Helper {
      */
     public function save(string $name, array $data) {
 
-        if (!trim($name)) {
+        if (!\trim($name)) {
             return false;
         }
 
@@ -169,12 +169,12 @@ class Model extends \Lime\Helper {
         } else {
             $metapath = $this->app->path("#storage:content/{$name}.model.php");
             $this->app->helper('fs')->delete($metapath);
-            if (function_exists('opcache_invalidate')) opcache_invalidate($metapath, true);
+            if (\function_exists('opcache_invalidate')) \opcache_invalidate($metapath, true);
         }
 
         if ($model['type'] == 'singleton') {
             $this->app->dataStorage->remove('content/singletons', ['_model' => $name]);
-        } elseif (in_array($model['type'], ['collection', 'tree'])) {
+        } elseif (\in_array($model['type'], ['collection', 'tree'])) {
 
             $this->app->dataStorage->dropCollection("content/collections/{$name}");
 
@@ -248,7 +248,7 @@ class Model extends \Lime\Helper {
             }
         }
 
-        ksort($models);
+        \ksort($models);
 
         if ($persistent) {
             $this->app->memory->set('content.models', $models);

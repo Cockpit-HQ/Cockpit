@@ -29,7 +29,7 @@ class QueryOptimizer {
                 // Handle top-level logical operators ($or, $and)
                 if ($key === '$or') {
                     $orConditions = [];
-                    if (!is_array($value)) return null;
+                    if (!\is_array($value)) return null;
                     
                     foreach ($value as $subCriteria) {
                         $subSql = $this->optimize($subCriteria);
@@ -38,13 +38,13 @@ class QueryOptimizer {
                     }
                     
                     if (empty($orConditions)) return '0'; // Empty $or matches nothing
-                    $conditions[] = '(' . implode(' OR ', $orConditions) . ')';
+                    $conditions[] = '(' . \implode(' OR ', $orConditions) . ')';
                     continue;
                 }
                 
                 if ($key === '$and') {
                     $andConditions = [];
-                    if (!is_array($value)) return null;
+                    if (!\is_array($value)) return null;
                     
                     foreach ($value as $subCriteria) {
                         $subSql = $this->optimize($subCriteria);
@@ -53,12 +53,12 @@ class QueryOptimizer {
                     }
                     
                     if (empty($andConditions)) return '1';
-                    $conditions[] = '(' . implode(' AND ', $andConditions) . ')';
+                    $conditions[] = '(' . \implode(' AND ', $andConditions) . ')';
                     continue;
                 }
 
                 // Skip other top-level operators like $where, $expr for now
-                if (str_starts_with($key, '$')) {
+                if (\str_starts_with($key, '$')) {
                     return null;
                 }
 
@@ -66,7 +66,7 @@ class QueryOptimizer {
                 // because SQLite's json_extract does not support MongoDB's implicit 
                 // array traversal (e.g. "users.name" matching inside an array of user objects).
                 // To maintain 100% compatibility, we fallback to PHP for these cases.
-                if (str_contains($key, '.')) {
+                if (\str_contains($key, '.')) {
                     return null;
                 }
 
@@ -90,7 +90,7 @@ class QueryOptimizer {
         $extracted = "json_extract(document, '{$path}')";
         
         // 1. Direct Equality: ['field' => 'value']
-        if (!is_array($value)) {
+        if (!\is_array($value)) {
             $quoted = $this->quote($value);
             
             if ($value === null) {
@@ -135,7 +135,7 @@ class QueryOptimizer {
                 case '$gte':
                 case '$lt':
                 case '$lte':
-                    if (!is_scalar($opValue)) return null; // Only optimize scalar comparisons
+                    if (!\is_scalar($opValue)) return null; // Only optimize scalar comparisons
                     $operator = match($op) {
                         '$gt' => '>',
                         '$gte' => '>=',
@@ -149,24 +149,24 @@ class QueryOptimizer {
                     break;
 
                 case '$in':
-                    if (!is_array($opValue)) return null;
-                    $list = array_map([$this, 'quote'], $opValue);
+                    if (!\is_array($opValue)) return null;
+                    $list = \array_map([$this, 'quote'], $opValue);
                     if (empty($list)) {
                         $conditions[] = "0"; // Nothing in list matches nothing
                     } else {
-                        $inList = implode(', ', $list);
+                        $inList = \implode(', ', $list);
                         // Match scalar IN list OR any array element IN list
                         $conditions[] = "({$extracted} IN ({$inList}) OR EXISTS (SELECT 1 FROM json_each(document, '{$path}') WHERE value IN ({$inList})))";
                     }
                     break;
 
                 case '$nin':
-                    if (!is_array($opValue)) return null;
-                    $list = array_map([$this, 'quote'], $opValue);
+                    if (!\is_array($opValue)) return null;
+                    $list = \array_map([$this, 'quote'], $opValue);
                     if (empty($list)) {
                         $conditions[] = "1"; // Nothing to exclude
                     } else {
-                        $inList = implode(', ', $list);
+                        $inList = \implode(', ', $list);
                         $conditions[] = "({$extracted} NOT IN ({$inList}) OR {$extracted} IS NULL) AND NOT EXISTS (SELECT 1 FROM json_each(document, '{$path}') WHERE value IN ({$inList}))";
                     }
                     break;
@@ -183,7 +183,7 @@ class QueryOptimizer {
                     break;
 
                 case '$size':
-                    if (!is_int($opValue)) return null;
+                    if (!\is_int($opValue)) return null;
                     // Check if it's an array and has length
                     $conditions[] = "json_type(document, '{$path}') = 'array' AND json_array_length(document, '{$path}') = {$opValue}";
                     break;
@@ -221,7 +221,7 @@ class QueryOptimizer {
                     foreach ($targetTypes as $t) {
                         $typeConditions[] = "{$typeCheck} = '{$t}'";
                     }
-                    $conditions[] = '(' . implode(' OR ', $typeConditions) . ')';
+                    $conditions[] = '(' . \implode(' OR ', $typeConditions) . ')';
                     break;
 
                 default:
@@ -239,10 +239,10 @@ class QueryOptimizer {
     }
 
     protected function quote(mixed $value): string {
-        if (is_int($value) || is_float($value)) {
+        if (\is_int($value) || \is_float($value)) {
             return (string)$value;
         }
-        if (is_bool($value)) {
+        if (\is_bool($value)) {
             // SQLite JSON functions use 1/0 or 'true'/'false' depending on context?
             // json_extract returns native types.
             // But in SQL comparison: json_extract(..) = 1

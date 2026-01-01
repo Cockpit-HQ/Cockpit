@@ -74,7 +74,7 @@ class Revisions extends \Lime\Helper {
             $filtered[$key] = $value;
         }
 
-        if (!count($filtered)) {
+        if (!\count($filtered)) {
             return false;
         }
 
@@ -84,7 +84,7 @@ class Revisions extends \Lime\Helper {
 
             foreach ($filtered as $key => $value) {
 
-                if (json_encode($value) !== json_encode($ref[$key] ?? null)) {
+                if (\json_encode($value) !== \json_encode($ref[$key] ?? null)) {
                     $isDifferent = true;
                     break;
                 }
@@ -100,7 +100,7 @@ class Revisions extends \Lime\Helper {
             'data' => $filtered,
             'meta' => $meta,
             '_by' => $by,
-            '_created' => $created ?? time()
+            '_created' => $created ?? \time()
         ];
 
         $this->storage->insert('system/revisions', $revision);

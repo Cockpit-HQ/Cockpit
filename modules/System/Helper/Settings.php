@@ -111,7 +111,7 @@ class Settings extends \Lime\Helper {
                     return isset($item['permission']) && $item['permission'] ? $acl->isAllowed($item['permission']) : true;
                 });
 
-                if (count($items)) {
+                if (\count($items)) {
                     $filtered[$group] = $items;
                 }
             }

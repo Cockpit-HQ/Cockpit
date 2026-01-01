@@ -46,15 +46,15 @@ class Client {
             PDO::ATTR_EMULATE_PREPARES   => false,
         ];
 
-        $dsnParts = explode(':', $this->dsn, 2);
+        $dsnParts = \explode(':', $this->dsn, 2);
 
-        if (count($dsnParts) < 1 || empty($dsnParts[0])) {
+        if (\count($dsnParts) < 1 || empty($dsnParts[0])) {
             throw new \InvalidArgumentException("Invalid DSN: Unable to determine driver.");
         }
 
-        $this->driverName = strtolower($dsnParts[0]);
+        $this->driverName = \strtolower($dsnParts[0]);
 
-        if (!in_array($this->driverName, ['mysql', 'sqlite', 'pgsql'])) {
+        if (!\in_array($this->driverName, ['mysql', 'sqlite', 'pgsql'])) {
             throw new \InvalidArgumentException("Unsupported driver: {$this->driverName}. Supported: mysql, sqlite, pgsql.");
         }
 
@@ -98,9 +98,9 @@ class Client {
      * Generates a unique parameter name.
      */
     private function generateNamedPlaceholder(string $base = 'p'): string {
-        $base = preg_replace('/[^a-zA-Z0-9_]/', '', $base);
+        $base = \preg_replace('/[^a-zA-Z0-9_]/', '', $base);
         if (empty($base)) { $base = 'p'; }
-        $base = substr($base, 0, 20);
+        $base = \substr($base, 0, 20);
         return ':' . $base . '_' . ($this->paramCounter++);
     }
 
@@ -113,15 +113,15 @@ class Client {
             return $results;
         }
 
-        $isSingleRow = is_array($results) && !is_array(current($results));
+        $isSingleRow = \is_array($results) && !\is_array(\current($results));
         $rows = $isSingleRow ? [$results] : $results;
 
-        if (is_array($rows)) {
+        if (\is_array($rows)) {
             foreach ($rows as &$row) {
-                if (is_array($row)) {
+                if (\is_array($row)) {
                     foreach ($row as &$value) {
-                        if (is_string($value) && json_validate($value)) {
-                            $value = json_decode($value, $decodeAssoc);
+                        if (\is_string($value) && \json_validate($value)) {
+                            $value = \json_decode($value, $decodeAssoc);
                         }
                     }
                 }
@@ -167,10 +167,10 @@ class Client {
     private function quoteSingleIdentifier(string $identifier): string {
         switch ($this->driverName) {
             case 'mysql':
-                return "`" . str_replace("`", "``", $identifier) . "`";
+                return "`" . \str_replace("`", "``", $identifier) . "`";
             case 'pgsql':
             case 'sqlite':
-                return '"' . str_replace('"', '""', $identifier) . '"';
+                return '"' . \str_replace('"', '""', $identifier) . '"';
             default:
                 return $identifier;
         }
@@ -181,31 +181,31 @@ class Client {
             return $identifier; // don't quote complex expressions or numeric literals
         }
 
-        $parts = preg_split('/\s+as\s+|\s+/i', $identifier, 2);
+        $parts = \preg_split('/\s+as\s+|\s+/i', $identifier, 2);
         $mainIdentifier = $parts[0];
         $alias = isset($parts[1]) ? ' ' . $this->quoteSingleIdentifier($parts[1]) : '';
 
-        if (strpos($mainIdentifier, '.') !== false) {
-            $quotedParts = array_map([$this, 'quoteSingleIdentifier'], explode('.', $mainIdentifier));
-            return implode('.', $quotedParts) . $alias;
+        if (\strpos($mainIdentifier, '.') !== false) {
+            $quotedParts = \array_map([$this, 'quoteSingleIdentifier'], \explode('.', $mainIdentifier));
+            return \implode('.', $quotedParts) . $alias;
         }
 
         return $this->quoteSingleIdentifier($mainIdentifier) . $alias;
     }
 
     private function isComplexIdentifier(string $identifier): bool {
-         $trimmed = trim($identifier);
+         $trimmed = \trim($identifier);
          if (empty($trimmed)) {
              return true; // Empty identifier is complex (used for EXISTS)
          }
-         return strpos($trimmed, '(') !== false ||
-               strpos($trimmed, '*') !== false ||
-               ($trimmed[0] === '"' && $trimmed[strlen($trimmed)-1] === '"') ||
-               ($trimmed[0] === '`' && $trimmed[strlen($trimmed)-1] === '`');
+         return \strpos($trimmed, '(') !== false ||
+               \strpos($trimmed, '*') !== false ||
+               ($trimmed[0] === '"' && $trimmed[\strlen($trimmed)-1] === '"') ||
+               ($trimmed[0] === '`' && $trimmed[\strlen($trimmed)-1] === '`');
     }
 
     private function isNumericLiteral(string $id): bool {
-        return preg_match('/^\d+(\.\d+)?$/', $id) === 1;
+        return \preg_match('/^\d+(\.\d+)?$/', $id) === 1;
     }
 
     private function buildConditionalClause(array $conditions, array &$params, string $placeholderPrefix = '', string $defaultOperator = 'AND'): string {
@@ -218,31 +218,31 @@ class Client {
         }
 
         foreach ($conditions as $key => $value) {
-            if (is_string($key) && in_array(strtoupper($key), ['AND', 'OR'])) {
+            if (\is_string($key) && \in_array(\strtoupper($key), ['AND', 'OR'])) {
                 $clauses[] = [
-                    'operator' => strtoupper($key),
+                    'operator' => \strtoupper($key),
                     'clause' => '(' . $this->buildConditionalClause($value, $params, $placeholderPrefix) . ')'
                 ];
                 continue;
             }
 
             $clause = '';
-            if (is_int($key) && is_array($value) && (count($value) === 3 || count($value) === 4)) {
+            if (\is_int($key) && \is_array($value) && (\count($value) === 3 || \count($value) === 4)) {
                 $col = $this->isComplexIdentifier($value[0]) ? $value[0] : $this->quoteIdentifier($value[0]);
-                $op = strtoupper($value[1]);
+                $op = \strtoupper($value[1]);
                 $val = $value[2];
                 if ($val === null) {
                     // Handle NULL comparisons explicitly
-                    if (in_array($op, ['IS', 'IS NOT'], true)) {
+                    if (\in_array($op, ['IS', 'IS NOT'], true)) {
                         $clause = "{$col} {$op} NULL";
                     } elseif ($op === '=') {
                         $clause = "{$col} IS NULL";
-                    } elseif (in_array($op, ['<>', '!='], true)) {
+                    } elseif (\in_array($op, ['<>', '!='], true)) {
                         $clause = "{$col} IS NOT NULL";
                     } else {
                         throw new \InvalidArgumentException("Operator {$op} is not valid with NULL");
                     }
-                } elseif (in_array($op, ['IN', 'NOT IN']) && is_array($val)) {
+                } elseif (\in_array($op, ['IN', 'NOT IN']) && \is_array($val)) {
                     // Handle IN and NOT IN clauses with arrays
                     if (empty($val)) {
                         // Empty array - handle edge case
@@ -250,46 +250,46 @@ class Client {
                     } else {
                         $placeholders = [];
                         foreach ($val as $i => $item) {
-                            $placeholder = $this->generateNamedPlaceholder($placeholderPrefix . preg_replace('/[^a-zA-Z0-9_]/', '', $value[0]) . '_' . $i);
+                            $placeholder = $this->generateNamedPlaceholder($placeholderPrefix . \preg_replace('/[^a-zA-Z0-9_]/', '', $value[0]) . '_' . $i);
                             $placeholders[] = $placeholder;
-                            $params[substr($placeholder, 1)] = $item;
+                            $params[\substr($placeholder, 1)] = $item;
                         }
-                        $clause = "{$col} {$op} (" . implode(', ', $placeholders) . ")";
+                        $clause = "{$col} {$op} (" . \implode(', ', $placeholders) . ")";
                     }
-                } elseif (in_array($op, ['BETWEEN', 'NOT BETWEEN']) && is_array($val) && count($val) === 2) {
+                } elseif (\in_array($op, ['BETWEEN', 'NOT BETWEEN']) && \is_array($val) && \count($val) === 2) {
                     // Handle BETWEEN and NOT BETWEEN clauses with arrays
-                    $placeholder1 = $this->generateNamedPlaceholder($placeholderPrefix . preg_replace('/[^a-zA-Z0-9_]/', '', $value[0]) . '_start');
-                    $placeholder2 = $this->generateNamedPlaceholder($placeholderPrefix . preg_replace('/[^a-zA-Z0-9_]/', '', $value[0]) . '_end');
+                    $placeholder1 = $this->generateNamedPlaceholder($placeholderPrefix . \preg_replace('/[^a-zA-Z0-9_]/', '', $value[0]) . '_start');
+                    $placeholder2 = $this->generateNamedPlaceholder($placeholderPrefix . \preg_replace('/[^a-zA-Z0-9_]/', '', $value[0]) . '_end');
                     $clause = "{$col} {$op} {$placeholder1} AND {$placeholder2}";
-                    $params[substr($placeholder1, 1)] = $val[0];
-                    $params[substr($placeholder2, 1)] = $val[1];
-                } elseif (in_array($op, ['EXISTS', 'NOT EXISTS'])) {
+                    $params[\substr($placeholder1, 1)] = $val[0];
+                    $params[\substr($placeholder2, 1)] = $val[1];
+                } elseif (\in_array($op, ['EXISTS', 'NOT EXISTS'])) {
                     // Handle EXISTS and NOT EXISTS with subquery
-                    if (is_string($val)) {
+                    if (\is_string($val)) {
                         // Raw SQL subquery
                         $clause = "{$op} ({$val})";
-                    } elseif (is_array($val) && isset($val['table'])) {
+                    } elseif (\is_array($val) && isset($val['table'])) {
                         // Build subquery from array definition
                         $subquery = $this->buildExistsSubquery($val, $params, $placeholderPrefix . 'exists_');
                         $clause = "{$op} ({$subquery})";
                     } else {
                         throw new \InvalidArgumentException("EXISTS/NOT EXISTS requires a string subquery or array with 'table' key");
                     }
-                } elseif (in_array($op, ['LIKE_ESC','NOT_LIKE_ESC','ILIKE_ESC','NOT_ILIKE_ESC'], true)) {
+                } elseif (\in_array($op, ['LIKE_ESC','NOT_LIKE_ESC','ILIKE_ESC','NOT_ILIKE_ESC'], true)) {
                     $placeholder = $this->generateNamedPlaceholder(
-                        $placeholderPrefix . preg_replace('/[^a-zA-Z0-9_]/', '', $value[0])
+                        $placeholderPrefix . \preg_replace('/[^a-zA-Z0-9_]/', '', $value[0])
                     );
 
                     // Check if escape character is provided (4th element) or use default
-                    $escapeChar   = isset($value[3]) && is_string($value[3]) ? $value[3] : '~';
-                    $escapeClause = " ESCAPE '" . str_replace("'", "''", $escapeChar) . "'";
+                    $escapeChar   = isset($value[3]) && \is_string($value[3]) ? $value[3] : '~';
+                    $escapeClause = " ESCAPE '" . \str_replace("'", "''", $escapeChar) . "'";
 
                     // Base: already quoted (or left as complex) above
                     $colExpr  = $col;
                     $paramRef = $placeholder;
 
-                    $isNot   = in_array($op, ['NOT_LIKE_ESC','NOT_ILIKE_ESC'], true);
-                    $isILike = in_array($op, ['ILIKE_ESC','NOT_ILIKE_ESC'], true);
+                    $isNot   = \in_array($op, ['NOT_LIKE_ESC','NOT_ILIKE_ESC'], true);
+                    $isILike = \in_array($op, ['ILIKE_ESC','NOT_ILIKE_ESC'], true);
 
                     switch ($this->driverName) {
                         case 'pgsql':
@@ -322,22 +322,22 @@ class Client {
                     }
 
                     $clause = "{$colExpr} {$realOp} {$paramRef}{$escapeClause}";
-                    $params[substr($placeholder, 1)] = $val;
+                    $params[\substr($placeholder, 1)] = $val;
                 } else {
-                    $placeholder = $this->generateNamedPlaceholder($placeholderPrefix . preg_replace('/[^a-zA-Z0-9_]/', '', $value[0]));
+                    $placeholder = $this->generateNamedPlaceholder($placeholderPrefix . \preg_replace('/[^a-zA-Z0-9_]/', '', $value[0]));
                     $clause = "{$col} {$op} {$placeholder}";
-                    $params[substr($placeholder, 1)] = $val;
+                    $params[\substr($placeholder, 1)] = $val;
                 }
-            } elseif (is_string($key)) {
+            } elseif (\is_string($key)) {
                 $col = $this->isComplexIdentifier($key) ? $key : $this->quoteIdentifier($key);
                 if ($value === null) {
                     $clause = "{$col} IS NULL";
                 } else {
-                    $placeholder = $this->generateNamedPlaceholder($placeholderPrefix . preg_replace('/[^a-zA-Z0-9_]/', '', $key));
+                    $placeholder = $this->generateNamedPlaceholder($placeholderPrefix . \preg_replace('/[^a-zA-Z0-9_]/', '', $key));
                     $clause = "{$col} = {$placeholder}";
-                    $params[substr($placeholder, 1)] = $value;
+                    $params[\substr($placeholder, 1)] = $value;
                 }
-            } elseif (is_int($key) && is_string($value)) {
+            } elseif (\is_int($key) && \is_string($value)) {
                 $clause = $value;
             }
 
@@ -360,9 +360,9 @@ class Client {
      * Sanitize JOIN operator to prevent injection
      */
     private function sanitizeJoinOperator(string $op): string {
-        $op = strtoupper(trim($op));
+        $op = \strtoupper(\trim($op));
         $allowed = ['=', '!=', '<>', '<', '<=', '>', '>='];
-        if (!in_array($op, $allowed, true)) {
+        if (!\in_array($op, $allowed, true)) {
             throw new \InvalidArgumentException("Unsupported JOIN operator: {$op}");
         }
         return $op;
@@ -371,13 +371,13 @@ class Client {
     private function buildOnClause(array $conditions): string {
         $clauses = [];
         foreach($conditions as $condition) {
-            if (is_array($condition) && count($condition) === 3) {
+            if (\is_array($condition) && \count($condition) === 3) {
                 $clauses[] = $this->quoteIdentifier($condition[0]) . ' ' . $this->sanitizeJoinOperator($condition[1]) . ' ' . $this->quoteIdentifier($condition[2]);
-            } elseif (is_string($condition)) {
+            } elseif (\is_string($condition)) {
                 $clauses[] = $condition; // allow raw when explicitly requested
             }
         }
-        return implode(' AND ', $clauses);
+        return \implode(' AND ', $clauses);
     }
 
     private function buildExistsSubquery(array $subqueryDef, array &$params, string $placeholderPrefix): string {
@@ -390,20 +390,20 @@ class Client {
         // Build SELECT part - don't quote literal numbers
         $quotedColumns = [];
         foreach ($columns as $col) {
-            if (is_numeric($col)) {
+            if (\is_numeric($col)) {
                 $quotedColumns[] = $col;
             } else {
                 $quotedColumns[] = $this->quoteIdentifier($col);
             }
         }
-        $sql = "SELECT " . implode(', ', $quotedColumns) . " FROM " . $this->quoteIdentifier($table);
+        $sql = "SELECT " . \implode(', ', $quotedColumns) . " FROM " . $this->quoteIdentifier($table);
 
         // Add JOINs if present
         if (!empty($joins)) {
             foreach ($joins as $join) {
-                $joinType = strtoupper(trim($join['type'] ?? 'INNER'));
+                $joinType = \strtoupper(\trim($join['type'] ?? 'INNER'));
                 $joinTable = $this->quoteIdentifier($join['table']);
-                $onCondition = is_array($join['on']) ? $this->buildOnClause($join['on']) : $join['on'];
+                $onCondition = \is_array($join['on']) ? $this->buildOnClause($join['on']) : $join['on'];
                 $sql .= " {$joinType} JOIN {$joinTable} ON {$onCondition}";
             }
         }
@@ -420,14 +420,14 @@ class Client {
 
     public function buildSelectQuery(string $table, array $columns = ['*'], array $joins = [], array $conditions = [], array $groupBy = [], array $having = [], array $orderBy = [], ?int $limit = null, ?int $offset = null): array {
         $this->resetParamCounter();
-        $sql = "SELECT " . implode(', ', array_map([$this, 'quoteIdentifier'], $columns)) . " FROM " . $this->quoteIdentifier($table);
+        $sql = "SELECT " . \implode(', ', \array_map([$this, 'quoteIdentifier'], $columns)) . " FROM " . $this->quoteIdentifier($table);
         $params = [];
 
         if (!empty($joins)) {
             foreach ($joins as $join) {
-                $joinType = strtoupper(trim($join['type'] ?? 'INNER'));
+                $joinType = \strtoupper(\trim($join['type'] ?? 'INNER'));
                 $joinTable = $this->quoteIdentifier($join['table']);
-                $onCondition = is_array($join['on']) ? $this->buildOnClause($join['on']) : $join['on'];
+                $onCondition = \is_array($join['on']) ? $this->buildOnClause($join['on']) : $join['on'];
                 $sql .= " {$joinType} JOIN {$joinTable} ON {$onCondition}";
             }
         }
@@ -437,7 +437,7 @@ class Client {
         }
 
         if (!empty($groupBy)) {
-            $sql .= " GROUP BY " . implode(", ", array_map([$this, 'quoteIdentifier'], $groupBy));
+            $sql .= " GROUP BY " . \implode(", ", \array_map([$this, 'quoteIdentifier'], $groupBy));
         }
 
         if (!empty($having)) {
@@ -447,25 +447,25 @@ class Client {
         if (!empty($orderBy)) {
             $orderClauses = [];
             foreach ($orderBy as $column => $direction) {
-                $colIdentifier = is_int($column) ? explode(' ', (string)$direction, 2)[0] : (string)$column;
-                $dir = strtoupper(is_int($column) ? (explode(' ', (string)$direction, 2)[1] ?? 'ASC') : (string)$direction);
-                if (!in_array($dir, ['ASC', 'DESC'])) $dir = 'ASC';
+                $colIdentifier = \is_int($column) ? \explode(' ', (string)$direction, 2)[0] : (string)$column;
+                $dir = \strtoupper(\is_int($column) ? (\explode(' ', (string)$direction, 2)[1] ?? 'ASC') : (string)$direction);
+                if (!\in_array($dir, ['ASC', 'DESC'])) $dir = 'ASC';
                 $orderClauses[] = $this->quoteIdentifier($colIdentifier) . " {$dir}";
             }
-            $sql .= " ORDER BY " . implode(', ', $orderClauses);
+            $sql .= " ORDER BY " . \implode(', ', $orderClauses);
         }
 
         if ($limit !== null) {
             $sql .= match ($this->driverName) {
-                'mysql' => " LIMIT " . intval($offset) . ", " . intval($limit),
-                default => " LIMIT " . intval($limit) . " OFFSET " . intval($offset),
+                'mysql' => " LIMIT " . \intval($offset) . ", " . \intval($limit),
+                default => " LIMIT " . \intval($limit) . " OFFSET " . \intval($offset),
             };
         } elseif ($offset !== null) {
             // Support OFFSET without LIMIT
             $sql .= match ($this->driverName) {
-                'mysql' => " LIMIT " . intval($offset) . ", 18446744073709551615", // MySQL needs LIMIT with huge value
-                'sqlite' => " LIMIT -1 OFFSET " . intval($offset), // SQLite needs LIMIT -1 for OFFSET
-                default => " OFFSET " . intval($offset), // PostgreSQL supports standalone OFFSET
+                'mysql' => " LIMIT " . \intval($offset) . ", 18446744073709551615", // MySQL needs LIMIT with huge value
+                'sqlite' => " LIMIT -1 OFFSET " . \intval($offset), // SQLite needs LIMIT -1 for OFFSET
+                default => " OFFSET " . \intval($offset), // PostgreSQL supports standalone OFFSET
             };
         }
 
@@ -476,20 +476,20 @@ class Client {
         $this->resetParamCounter();
         $params = [];
         $placeholders = [];
-        $columns = array_map([$this, 'quoteIdentifier'], array_keys($data));
+        $columns = \array_map([$this, 'quoteIdentifier'], \array_keys($data));
 
         foreach ($data as $column => $value) {
-            if ($this->autoEncodeJson && (is_array($value) || is_object($value))) {
-                $value = json_encode($value);
+            if ($this->autoEncodeJson && (\is_array($value) || \is_object($value))) {
+                $value = \json_encode($value);
             }
             $placeholder = $this->generateNamedPlaceholder($column);
             $placeholders[] = $placeholder;
-            $params[substr($placeholder, 1)] = $value;
+            $params[\substr($placeholder, 1)] = $value;
         }
 
-        $sql = "INSERT INTO {$this->quoteIdentifier($table)} (" . implode(', ', $columns) . ") VALUES (" . implode(', ', $placeholders) . ")";
-        if (!empty($returning) && in_array($this->driverName, ['pgsql', 'sqlite'])) {
-            $sql .= " RETURNING " . implode(', ', array_map([$this, 'quoteIdentifier'], $returning));
+        $sql = "INSERT INTO {$this->quoteIdentifier($table)} (" . \implode(', ', $columns) . ") VALUES (" . \implode(', ', $placeholders) . ")";
+        if (!empty($returning) && \in_array($this->driverName, ['pgsql', 'sqlite'])) {
+            $sql .= " RETURNING " . \implode(', ', \array_map([$this, 'quoteIdentifier'], $returning));
         }
         return ['sql' => $sql, 'params' => $params];
     }
@@ -500,9 +500,9 @@ class Client {
         }
         $this->resetParamCounter();
         
-        $firstRow = current($data);
-        $columnsRaw = array_keys($firstRow);
-        $columns = array_map([$this, 'quoteIdentifier'], $columnsRaw);
+        $firstRow = \current($data);
+        $columnsRaw = \array_keys($firstRow);
+        $columns = \array_map([$this, 'quoteIdentifier'], $columnsRaw);
         
         $params = [];
         $rowPlaceholders = [];
@@ -511,20 +511,20 @@ class Client {
             $singleRow = [];
             // Use the column order from first row to ensure alignment
             foreach ($columnsRaw as $colName) {
-                $value = array_key_exists($colName, $row) ? $row[$colName] : null;
-                if ($this->autoEncodeJson && (is_array($value) || is_object($value))) {
-                    $value = json_encode($value);
+                $value = \array_key_exists($colName, $row) ? $row[$colName] : null;
+                if ($this->autoEncodeJson && (\is_array($value) || \is_object($value))) {
+                    $value = \json_encode($value);
                 }
                 $placeholder = $this->generateNamedPlaceholder($colName);
                 $singleRow[] = $placeholder;
-                $params[substr($placeholder, 1)] = $value;
+                $params[\substr($placeholder, 1)] = $value;
             }
-            $rowPlaceholders[] = '(' . implode(', ', $singleRow) . ')';
+            $rowPlaceholders[] = '(' . \implode(', ', $singleRow) . ')';
         }
 
-        $sql = "INSERT INTO {$this->quoteIdentifier($table)} (" . implode(', ', $columns) . ") VALUES " . implode(', ', $rowPlaceholders);
-        if (!empty($returning) && in_array($this->driverName, ['pgsql', 'sqlite'])) {
-            $sql .= " RETURNING " . implode(', ', array_map([$this, 'quoteIdentifier'], $returning));
+        $sql = "INSERT INTO {$this->quoteIdentifier($table)} (" . \implode(', ', $columns) . ") VALUES " . \implode(', ', $rowPlaceholders);
+        if (!empty($returning) && \in_array($this->driverName, ['pgsql', 'sqlite'])) {
+            $sql .= " RETURNING " . \implode(', ', \array_map([$this, 'quoteIdentifier'], $returning));
         }
         return ['sql' => $sql, 'params' => $params];
     }
@@ -535,20 +535,20 @@ class Client {
         $setClauses = [];
 
         foreach ($data as $column => $value) {
-            if ($this->autoEncodeJson && (is_array($value) || is_object($value))) {
-                $value = json_encode($value);
+            if ($this->autoEncodeJson && (\is_array($value) || \is_object($value))) {
+                $value = \json_encode($value);
             }
             $placeholder = $this->generateNamedPlaceholder('set_' . $column);
             $setClauses[] = $this->quoteIdentifier($column) . " = {$placeholder}";
-            $params[substr($placeholder, 1)] = $value;
+            $params[\substr($placeholder, 1)] = $value;
         }
 
-        $sql = "UPDATE {$this->quoteIdentifier($table)} SET " . implode(', ', $setClauses);
+        $sql = "UPDATE {$this->quoteIdentifier($table)} SET " . \implode(', ', $setClauses);
         if (!empty($conditions)) {
             $sql .= " WHERE " . $this->buildConditionalClause($conditions, $params, 'where_');
         }
-        if (!empty($returning) && in_array($this->driverName, ['pgsql', 'sqlite'])) {
-            $sql .= " RETURNING " . implode(', ', array_map([$this, 'quoteIdentifier'], $returning));
+        if (!empty($returning) && \in_array($this->driverName, ['pgsql', 'sqlite'])) {
+            $sql .= " RETURNING " . \implode(', ', \array_map([$this, 'quoteIdentifier'], $returning));
         }
         return ['sql' => $sql, 'params' => $params];
     }
@@ -561,8 +561,8 @@ class Client {
         if (!empty($conditions)) {
             $sql .= " WHERE " . $this->buildConditionalClause($conditions, $params, 'where_');
         }
-        if (!empty($returning) && in_array($this->driverName, ['pgsql', 'sqlite'])) {
-            $sql .= " RETURNING " . implode(', ', array_map([$this, 'quoteIdentifier'], $returning));
+        if (!empty($returning) && \in_array($this->driverName, ['pgsql', 'sqlite'])) {
+            $sql .= " RETURNING " . \implode(', ', \array_map([$this, 'quoteIdentifier'], $returning));
         }
         return ['sql' => $sql, 'params' => $params];
     }
@@ -585,14 +585,14 @@ class Client {
     }
 
     public function select(string $table, array $options = []): array {
-        $opt = array_merge($this->getDefaultQueryOptions(), $options);
+        $opt = \array_merge($this->getDefaultQueryOptions(), $options);
         $queryParts = $this->buildSelectQuery($table, $opt['columns'], $opt['joins'], $opt['conditions'], $opt['groupBy'], $opt['having'], $opt['orderBy'], $opt['limit'], $opt['offset']);
         $results = $this->fetchAll($queryParts['sql'], $queryParts['params'], $opt['fetchStyle']);
         return $this->processResults($results, $opt['jsonDecodeAssoc']);
     }
 
     public function selectOne(string $table, array $options = []) {
-        $opt = array_merge($this->getDefaultQueryOptions(), $options);
+        $opt = \array_merge($this->getDefaultQueryOptions(), $options);
         $opt['limit'] = 1;
         $queryParts = $this->buildSelectQuery(
             $table,
@@ -617,7 +617,7 @@ class Client {
 
         $queryParts = $this->buildInsertQuery($table, $data, $returning);
 
-        if (!empty($returning) && in_array($this->driverName, ['pgsql', 'sqlite'])) {
+        if (!empty($returning) && \in_array($this->driverName, ['pgsql', 'sqlite'])) {
             $result = $this->fetchOne($queryParts['sql'], $queryParts['params']);
             return $this->processResults($result, $options['jsonDecodeAssoc'] ?? true);
         }
@@ -628,11 +628,9 @@ class Client {
         $table = $options['table'] ?? null;
         $data = $options['data'] ?? null;
         $returning = $options['returning'] ?? [];
-        if (!$table || !$data || !is_array(current($data))) throw new \InvalidArgumentException("'table' and 'data' (as array of arrays) are required for insertBatch.");
-
         $queryParts = $this->buildInsertBatchQuery($table, $data, $returning);
 
-        if (!empty($returning) && in_array($this->driverName, ['pgsql', 'sqlite'])) {
+        if (!empty($returning) && \in_array($this->driverName, ['pgsql', 'sqlite'])) {
             $results = $this->fetchAll($queryParts['sql'], $queryParts['params']);
             return $this->processResults($results, $options['jsonDecodeAssoc'] ?? true);
         }
@@ -649,7 +647,7 @@ class Client {
 
         $queryParts = $this->buildUpdateQuery($table, $data, $conditions, $returning);
 
-        if (!empty($returning) && in_array($this->driverName, ['pgsql', 'sqlite'])) {
+        if (!empty($returning) && \in_array($this->driverName, ['pgsql', 'sqlite'])) {
             $results = $this->fetchAll($queryParts['sql'], $queryParts['params']);
             return $this->processResults($results, $options['jsonDecodeAssoc'] ?? true);
         }
@@ -665,7 +663,7 @@ class Client {
 
         $queryParts = $this->buildDeleteQuery($table, $conditions, $returning);
 
-        if (!empty($returning) && in_array($this->driverName, ['pgsql', 'sqlite'])) {
+        if (!empty($returning) && \in_array($this->driverName, ['pgsql', 'sqlite'])) {
             $results = $this->fetchAll($queryParts['sql'], $queryParts['params']);
             return $this->processResults($results, $options['jsonDecodeAssoc'] ?? true);
         }
@@ -673,7 +671,7 @@ class Client {
     }
 
     public function count(string $table, array $options = []): int {
-        $opt = array_merge([
+        $opt = \array_merge([
             'conditions' => [],
             'joins' => [],
             'distinct' => false,
@@ -700,7 +698,7 @@ class Client {
     }
 
     public function avg(string $table, string $column, array $options = []): ?float {
-        $opt = array_merge([
+        $opt = \array_merge([
             'conditions' => [],
             'joins' => [],
             'distinct' => false
@@ -727,7 +725,7 @@ class Client {
     }
 
     public function sum(string $table, string $column, array $options = []): float {
-        $opt = array_merge([
+        $opt = \array_merge([
             'conditions' => [],
             'joins' => [],
             'distinct' => false
@@ -760,7 +758,7 @@ class Client {
             $options = ['conditions' => $options];
         }
 
-        $opt = array_merge([
+        $opt = \array_merge([
             'conditions' => [],
             'joins' => []
         ], $options);
@@ -785,7 +783,7 @@ class Client {
     }
 
     public function pluck(string $table, string $column, array $options = []): array {
-        $opt = array_merge([
+        $opt = \array_merge([
             'conditions' => [],
             'joins' => [],
             'orderBy' => [],
@@ -851,7 +849,7 @@ class Client {
      * @return string The escaped string
      */
     private function escapeForLike(string $str, string $escapeChar = '~'): string {
-        return str_replace(
+        return \str_replace(
             [$escapeChar, '%', '_'],
             [$escapeChar . $escapeChar, $escapeChar . '%', $escapeChar . '_'],
             $str
@@ -898,7 +896,7 @@ class Client {
      */
     public function notLike(string $column, string $search, string $pattern = 'contains', string $escapeChar = '~'): array {
         $like = $this->like($column, $search, $pattern, $escapeChar);
-        if (is_array($like['condition'])) {
+        if (\is_array($like['condition'])) {
             $like['condition'][1] = 'NOT_LIKE_ESC';
         }
         return $like;
@@ -916,7 +914,7 @@ class Client {
     public function ilike(string $column, string $search, string $pattern = 'contains', string $escapeChar = '~'): array {
         $like = $this->like($column, $search, $pattern, $escapeChar);
         // Only modify if it's not a raw string (empty search case)
-        if (is_array($like['condition'])) {
+        if (\is_array($like['condition'])) {
             $like['condition'][1] = 'ILIKE_ESC';
         }
         return $like;
@@ -934,7 +932,7 @@ class Client {
     public function notIlike(string $column, string $search, string $pattern = 'contains', string $escapeChar = '~'): array {
         $like = $this->like($column, $search, $pattern, $escapeChar);
         // Only modify if it's not a raw string (empty search case)
-        if (is_array($like['condition'])) {
+        if (\is_array($like['condition'])) {
             $like['condition'][1] = 'NOT_ILIKE_ESC';
         }
         return $like;

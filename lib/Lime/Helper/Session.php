@@ -15,14 +15,14 @@ class Session extends \Lime\Helper {
 
         if ($this->initialized) return;
 
-        if (session_status() != PHP_SESSION_ACTIVE) {
+        if (\session_status() != \PHP_SESSION_ACTIVE) {
 
             $this->name = $name ?: $this->app->retrieve('session.name');
 
-            session_name($this->name);
-            session_start();
+            \session_name($this->name);
+            \session_start();
         } else {
-            $this->name = session_name();
+            $this->name = \session_name();
         }
 
         $this->initialized = true;
@@ -76,7 +76,7 @@ class Session extends \Lime\Helper {
      * @return void
      */
     public function destroy(): void {
-        session_destroy();
+        \session_destroy();
     }
 
     /**
@@ -85,7 +85,7 @@ class Session extends \Lime\Helper {
      * @return void
      */
     public function close(): void {
-        session_write_close();
+        \session_write_close();
     }
 
     /**
@@ -96,7 +96,7 @@ class Session extends \Lime\Helper {
      */
     public function regenerateId(bool $delete_old_session = false): bool {
 
-        if (session_status() != PHP_SESSION_ACTIVE) {
+        if (\session_status() != \PHP_SESSION_ACTIVE) {
             return false;
         }
 
@@ -107,6 +107,6 @@ class Session extends \Lime\Helper {
             }
         }
 
-        return session_regenerate_id($delete_old_session);
+        return \session_regenerate_id($delete_old_session);
     }
 }

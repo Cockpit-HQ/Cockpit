@@ -1,5 +1,9 @@
 # Release Notes
 
+## WIP
+
+- Micro performance improvements by explicitly marking global functions in a namespace context
+
 ## 2.13.2 (2025-12-31)
 
 - Fix Updater view

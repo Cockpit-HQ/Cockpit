@@ -42,8 +42,8 @@ class Query extends \Lime\AppAware {
 
         // custom file based route
         // normalize path
-        if (str_contains($path, '../')) {
-            $path = implode('/', array_filter(explode('/', $path), fn($s) => trim($s, '.')));
+        if (\str_contains($path, '../')) {
+            $path = \implode('/', \array_filter(\explode('/', $path), fn($s) => \trim($s, '.')));
         }
 
         if ($custom = $this->resolveCustomApiRoute($path, $method)) {
@@ -76,11 +76,11 @@ class Query extends \Lime\AppAware {
 
         $regex = $this->getRegex($pattern);
 
-        if (preg_match($regex, $path, $matches)) {
+        if (\preg_match($regex, $path, $matches)) {
 
-            $params = array_intersect_key(
-                $matches, array_flip(
-                    array_filter(array_keys($matches), 'is_string')
+            $params = \array_intersect_key(
+                $matches, \array_flip(
+                    \array_filter(\array_keys($matches), 'is_string')
                 )
             );
 
@@ -92,21 +92,21 @@ class Query extends \Lime\AppAware {
 
     protected function getRegex($pattern) {
 
-        if (preg_match('/[^-:\/_{}()a-zA-Z\d]/', $pattern)) return false; // Invalid pattern
+        if (\preg_match('/[^-:\/_{}()a-zA-Z\d]/', $pattern)) return false; // Invalid pattern
 
         // Turn "(/)" into "/?"
-        $pattern = preg_replace('#\(/\)#', '/?', $pattern);
+        $pattern = \preg_replace('#\(/\)#', '/?', $pattern);
 
         // Create capture group for ":parameter"
         $allowedParamChars = '[a-zA-Z0-9\_\-]+';
-        $pattern = preg_replace(
+        $pattern = \preg_replace(
             '/:(' . $allowedParamChars . ')/',   # Replace ":parameter"
             '(?<$1>' . $allowedParamChars . ')', # with "(?<parameter>[a-zA-Z0-9\_\-]+)"
             $pattern
         );
 
         // Create capture group for '{parameter}'
-        $pattern = preg_replace(
+        $pattern = \preg_replace(
             '/{('. $allowedParamChars .')}/',    # Replace "{parameter}"
             '(?<$1>' . $allowedParamChars . ')', # with "(?<parameter>[a-zA-Z0-9\_\-]+)"
             $pattern
@@ -121,20 +121,20 @@ class Query extends \Lime\AppAware {
     protected function resolveCustomApiRoute(string $route, string $method) {
 
         $root   = $this->app->path('#config:api');
-        $method = strtolower($method);
-        $route  = trim($route, '/');
-        $parts  = explode('/', $route);
+        $method = \strtolower($method);
+        $route  = \trim($route, '/');
+        $parts  = \explode('/', $route);
         $dir    = '';
 
         if (!$root) {
             return null;
         }
 
-        if (str_contains($route, '[...all]')) {
+        if (\str_contains($route, '[...all]')) {
             return null;
         }
 
-        if (file_exists("{$root}/{$route}.{$method}.php")) {
+        if (\file_exists("{$root}/{$route}.{$method}.php")) {
 
             return [
                 'args' => [],
@@ -142,7 +142,7 @@ class Query extends \Lime\AppAware {
             ];
         }
 
-        if (file_exists("{$root}/{$route}.php")) {
+        if (\file_exists("{$root}/{$route}.php")) {
 
             return [
                 'args' => [],
@@ -152,18 +152,18 @@ class Query extends \Lime\AppAware {
 
         foreach ($parts as $idx => $p) {
 
-            $path = trim("{$dir}/$p", '/');
+            $path = \trim("{$dir}/$p", '/');
             $file = null;
 
-            if (file_exists("{$root}/{$path}")) {
+            if (\file_exists("{$root}/{$path}")) {
                 $dir = $path;
                 continue;
             }
 
             // catch all route file
-            if (file_exists("{$root}/{$dir}/[...all].{$method}.php")) {
+            if (\file_exists("{$root}/{$dir}/[...all].{$method}.php")) {
                 $file = "{$root}/{$dir}/[...all].{$method}.php";
-            } elseif (file_exists("{$root}/{$dir}/[...all].php")) {
+            } elseif (\file_exists("{$root}/{$dir}/[...all].php")) {
                 $file = "{$root}/{$dir}/[...all].php";
             }
 
@@ -172,12 +172,12 @@ class Query extends \Lime\AppAware {
 
                 $splat = [];
 
-                foreach (array_splice($parts, $idx) as $s) {
+                foreach (\array_splice($parts, $idx) as $s) {
 
-                    $param = explode(':', $s, 2);
+                    $param = \explode(':', $s, 2);
 
                     if (isset($param[1])) {
-                        $splat[trim($param[0])] = trim($param[1]);
+                        $splat[\trim($param[0])] = \trim($param[1]);
                     } else {
                         $splat[] = $s;
                     }

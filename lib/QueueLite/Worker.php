@@ -13,13 +13,13 @@ class Worker {
         $this->queue = $queue;
 
         if (isset($options['maxExecutionTime'])) {
-            $this->maxExecutionTime = intval($options['maxExecutionTime']);
+            $this->maxExecutionTime = \intval($options['maxExecutionTime']);
         }
     }
 
     public function process(callable $callback, $limit = 10) {
 
-        $startTime = time();
+        $startTime = \time();
 
         $this->processedCount = 0;
         $this->queue->release();
@@ -27,7 +27,7 @@ class Worker {
         // Process messages until we hit the limit or run out of time
         while ($this->processedCount < $limit) {
             // Check if we're approaching the max execution time
-            if ((time() - $startTime) > $this->maxExecutionTime) {
+            if ((\time() - $startTime) > $this->maxExecutionTime) {
                 break;
             }
 
@@ -43,15 +43,15 @@ class Worker {
 
                 $context = new \ArrayObject([]);
 
-                $startTime = microtime(true);
-                $startMemory = memory_get_usage();
+                $startTime = \microtime(true);
+                $startMemory = \memory_get_usage();
 
                 // Process the message
-                $result = call_user_func($callback, $message, $context);
+                $result = \call_user_func($callback, $message, $context);
 
                 $context['_stats'] = [
-                    'memory' => memory_get_usage() - $startMemory,
-                    'duration' => microtime(true) - $startTime,
+                    'memory' => \memory_get_usage() - $startMemory,
+                    'duration' => \microtime(true) - $startTime,
                 ];
 
                 $context = $context->getArrayCopy();

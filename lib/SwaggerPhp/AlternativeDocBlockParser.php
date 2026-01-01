@@ -89,7 +89,7 @@ class AlternativeDocBlockParser
     private function hydrateAnnotation(DoctrineAnnotation $node, Context $context)
     {
         $class = $this->resolveClass($node->name);
-        if (!class_exists($class)) {
+        if (!\class_exists($class)) {
             return null;
         }
 
@@ -105,7 +105,7 @@ class AlternativeDocBlockParser
         }
 
         if (!empty($unnamed)) {
-            if (count($unnamed) === 1) {
+            if (\count($unnamed) === 1) {
                 $properties['value'] = $unnamed[0];
             } else {
                 $properties['value'] = $unnamed;
@@ -118,21 +118,21 @@ class AlternativeDocBlockParser
     private function resolveClass(string $name): string
     {
         // Remove leading @ if present
-        if (strpos($name, '@') === 0) {
-            $name = substr($name, 1);
+        if (\strpos($name, '@') === 0) {
+            $name = \substr($name, 1);
         }
 
         // Handle leading backslash
-        if (strpos($name, '\\') === 0) {
+        if (\strpos($name, '\\') === 0) {
             return $name;
         }
 
-        $parts = explode('\\', $name);
-        $first = strtolower(array_shift($parts));
+        $parts = \explode('\\', $name);
+        $first = \strtolower(\array_shift($parts));
 
         if (isset($this->aliases[$first])) {
-            array_unshift($parts, $this->aliases[$first]);
-            return implode('\\', $parts);
+            \array_unshift($parts, $this->aliases[$first]);
+            return \implode('\\', $parts);
         }
         
         return $name;

@@ -16,7 +16,7 @@ class NumericType extends ScalarType {
     }
 
     public function parseValue($value) {
-        if (!is_numeric($value)) {
+        if (!\is_numeric($value)) {
             throw new \GraphQL\Error\Error('Value must be numeric');
         }
         return $value + 0; // Returns int if whole number, float if fractional
@@ -24,7 +24,7 @@ class NumericType extends ScalarType {
 
     public function serialize($value) {
 
-        if (!is_numeric($value)) {
+        if (!\is_numeric($value)) {
             throw new \GraphQL\Error\Error('Value must be numeric');
         }
 
@@ -34,9 +34,9 @@ class NumericType extends ScalarType {
     public function parseLiteral($valueNode, ?array $variables = null) {
 
         if ($valueNode instanceof \GraphQL\Language\AST\IntValueNode) {
-            return intval($valueNode->value);
+            return \intval($valueNode->value);
         } elseif ($valueNode instanceof \GraphQL\Language\AST\FloatValueNode) {
-            return floatval($valueNode->value);
+            return \floatval($valueNode->value);
         } else {
             throw new \GraphQL\Error\Error('Value must be a number');
         }
@@ -45,7 +45,7 @@ class NumericType extends ScalarType {
     public static function instance() {
         static $instance;
 
-        if (is_null($instance)) {
+        if (\is_null($instance)) {
             $instance = new static();
         }
 

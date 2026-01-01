@@ -11,12 +11,12 @@ class MongoLite {
 
     public function __construct(string $server, array $options = []) {
 
-        $this->client = new MongoLiteClient(str_replace('mongolite://', '', $server));
+        $this->client = new MongoLiteClient(\str_replace('mongolite://', '', $server));
         $this->db     = $options['db'];
     }
 
     public function isValidId(string $objectId) {
-        return preg_match('/^[0-9a-f]{24}$/', $objectId) === 1;
+        return \preg_match('/^[0-9a-f]{24}$/', $objectId) === 1;
     }
 
     public function lstCollections(): array {
@@ -31,7 +31,7 @@ class MongoLite {
 
             foreach ($collections as $collection) {
 
-                $return[] = str_replace('_', '/', "{$database}/{$collection}");
+                $return[] = \str_replace('_', '/', "{$database}/{$collection}");
             }
         }
 
@@ -40,38 +40,38 @@ class MongoLite {
 
     public function getCollection(string $name, ?string $db = null): \MongoLite\Collection {
 
-        if (str_contains($name, '/')) {
-            list($db, $name) = explode('/', $name, 2);
+        if (\str_contains($name, '/')) {
+            list($db, $name) = \explode('/', $name, 2);
         }
 
         if (!$db) {
             $db = $this->db;
         }
 
-        $name = str_replace('/', '_', $name);
+        $name = \str_replace('/', '_', $name);
 
         return $this->client->selectCollection($db, $name);
     }
 
     public function dropCollection(string $name, ?string $db = null) {
 
-        if (str_contains($name, '/')) {
-            list($db, $name) = explode('/', $name, 2);
+        if (\str_contains($name, '/')) {
+            list($db, $name) = \explode('/', $name, 2);
         }
 
         if (!$db) {
             $db = $this->db;
         }
 
-        $name = str_replace('/', '_', $name);
+        $name = \str_replace('/', '_', $name);
 
         return $this->client->selectDB($db)->dropCollection($name);
     }
 
     public function renameCollection(string $name, string $newname, ?string $db = null): bool {
 
-        if (str_contains($name, '/')) {
-            list($db, $name) = explode('/', $name, 2);
+        if (\str_contains($name, '/')) {
+            list($db, $name) = \explode('/', $name, 2);
         }
 
         if (!$db) {
@@ -80,10 +80,10 @@ class MongoLite {
 
         $db = $this->client->selectDB($db);
 
-        $name = str_replace('/', '_', $name);
-        $newname = str_replace('/', '_', $newname);
+        $name = \str_replace('/', '_', $name);
+        $newname = \str_replace('/', '_', $newname);
 
-        if (!in_array($name, $db->getCollectionNames())) {
+        if (!\in_array($name, $db->getCollectionNames())) {
             return false;
         }
 
@@ -93,7 +93,7 @@ class MongoLite {
     }
 
     public function createIndex(string $collectionName, array $key, array $options = []) {
-        return uniqid('index.');
+        return \uniqid('index.');
     }
 
     public function dropIndex(string $collectionName, string $indexName, array $options = []) {
@@ -182,20 +182,20 @@ class MongoLite {
 
     public function getFindTermFilter($term): \Closure {
 
-        $terms = str_getcsv(trim($term), ' ', escape: '\\');
+        $terms = \str_getcsv(\trim($term), ' ', escape: '\\');
 
         $filter = function ($doc) use ($term) {
-            return stripos(json_encode($doc), $term) !== false;
+            return \stripos(\json_encode($doc), $term) !== false;
         };
 
-        if (count($terms) > 1) {
+        if (\count($terms) > 1) {
 
             $filter = function($doc) use($terms) {
 
-                $json = json_encode($doc);
+                $json = \json_encode($doc);
 
                 foreach ($terms as $term) {
-                    if (stripos($json, $term) !== false) return true;
+                    if (\stripos($json, $term) !== false) return true;
                 }
 
                 return false;
@@ -268,7 +268,7 @@ class MongoLite {
 
     protected function _fixForMongo(mixed &$data, bool $infinite = false, int $_level = 0): mixed {
 
-        if (!is_array($data)) {
+        if (!\is_array($data)) {
             return $data;
         }
 
@@ -281,15 +281,15 @@ class MongoLite {
 
         foreach ($data as $k => &$v) {
 
-            if (is_array($data[$k]) && $infinite) {
+            if (\is_array($data[$k]) && $infinite) {
                 $data[$k] = $this->_fixForMongo($data[$k], $infinite, $_level + 1);
             }
 
-            if ($k === '_id' || str_ends_with($k, '._id')) {
+            if ($k === '_id' || \str_ends_with($k, '._id')) {
 
-                if (is_string($v)) {
+                if (\is_string($v)) {
                     $v = $this->getObjectID($v);
-                } elseif (is_array($v)) {
+                } elseif (\is_array($v)) {
 
                     if (isset($v['$in'])) {
 
@@ -305,15 +305,15 @@ class MongoLite {
                         }
                     }
 
-                    if (isset($v['$ne']) && is_string($v['$ne'])) {
+                    if (isset($v['$ne']) && \is_string($v['$ne'])) {
                         $v['$ne'] = $this->getObjectID($v['$ne']);
                     }
                 }
             }
 
-            if (is_string($v) && str_starts_with($v, '$DATE(')) {
-                $format = trim(substr($v, 6, -1));
-                $v = date($format ?: 'Y-m-d');
+            if (\is_string($v) && \str_starts_with($v, '$DATE(')) {
+                $format = \trim(\substr($v, 6, -1));
+                $v = \date($format ?: 'Y-m-d');
             }
         }
 
@@ -322,8 +322,8 @@ class MongoLite {
 
     protected function getObjectID($v) {
 
-        if (is_string($v) && isset($v[0]) && ($v[0] === '@'  || $v[0] === '#')) {
-            return substr($v, 1);
+        if (\is_string($v) && isset($v[0]) && ($v[0] === '@'  || $v[0] === '#')) {
+            return \substr($v, 1);
         }
 
         return $v;

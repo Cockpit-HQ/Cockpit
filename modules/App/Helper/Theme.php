@@ -59,10 +59,10 @@ class Theme extends \Lime\Helper {
 
             if ($ext == 'svg' && $color) {
                 $path = $this->app->path($url);
-                $svg = file_get_contents($path);
-                $svg = substr($svg, strpos($svg, '<svg'));
-                $svg = preg_replace('/fill="(.*?)"/', 'fill="'.$color.'"', $svg);
-                $this->favicon = 'data:image/svg+xml;base64,'.base64_encode($svg);
+                $svg = \file_get_contents($path);
+                $svg = \substr($svg, \strpos($svg, '<svg'));
+                $svg = \preg_replace('/fill="(.*?)"/', 'fill="'.$color.'"', $svg);
+                $this->favicon = 'data:image/svg+xml;base64,'.\base64_encode($svg);
             }
 
             return null;
@@ -138,7 +138,7 @@ class Theme extends \Lime\Helper {
             $core[] = ['src' => 'app:assets/vendor/JSON5.js', 'position' => 'footer'];
         }
 
-        $assets = array_merge($core, $assets);
+        $assets = \array_merge($core, $assets);
 
         $this->app->trigger('app.layout.assets', [&$assets, $context]);
 
@@ -174,11 +174,11 @@ class Theme extends \Lime\Helper {
      */
     public function vars(...$args) {
 
-        switch (count($args)) {
+        switch (\count($args)) {
             case 1:
 
-                if (is_array($args[0])) {
-                    $this->vars = array_merge($this->vars, $args[0]);
+                if (\is_array($args[0])) {
+                    $this->vars = \array_merge($this->vars, $args[0]);
                     break;
                 }
 

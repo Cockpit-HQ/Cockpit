@@ -10,7 +10,7 @@ class Manager {
 
     public function __construct(string $path, array $options = []) {
         $this->options = $options;
-        $this->path = rtrim($path, '/');
+        $this->path = \rtrim($path, '/');
     }
 
     /**
@@ -52,7 +52,7 @@ class Manager {
             throw new \Exception("Index <{$name}> already exists.");
         }
 
-        $options = array_merge([
+        $options = \array_merge([
             'fields' => $fields,
             'tokenizer' => 'porter unicode61 remove_diacritics 1'
         ], $options);
@@ -78,10 +78,10 @@ class Manager {
             return;
         }
 
-        if (file_exists("{$this->path}/$name.idx")) unlink("{$this->path}/{$name}.idx");
-        if (file_exists("{$this->path}/$name.idx-shm")) unlink("{$this->path}/{$name}.idx-shm");
-        if (file_exists("{$this->path}/$name.idx-wal")) unlink("{$this->path}/{$name}.idx-wal");
-        if (file_exists("{$this->path}/$name.idx-journal")) unlink("{$this->path}/{$name}.idx-journal");
+        if (\file_exists("{$this->path}/$name.idx")) \unlink("{$this->path}/{$name}.idx");
+        if (\file_exists("{$this->path}/$name.idx-shm")) \unlink("{$this->path}/{$name}.idx-shm");
+        if (\file_exists("{$this->path}/$name.idx-wal")) \unlink("{$this->path}/{$name}.idx-wal");
+        if (\file_exists("{$this->path}/$name.idx-journal")) \unlink("{$this->path}/{$name}.idx-journal");
 
         unset($this->indexes[$name]);
     }
@@ -93,6 +93,6 @@ class Manager {
      * @return bool True if the index exists, false otherwise.
      */
     public function exists(string $name): bool {
-        return file_exists("{$this->path}/$name.idx");
+        return \file_exists("{$this->path}/$name.idx");
     }
 }

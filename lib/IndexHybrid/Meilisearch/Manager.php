@@ -12,7 +12,7 @@ class Manager {
 
     public function __construct(string $host, array $options = []) {
 
-        $this->options = array_merge([
+        $this->options = \array_merge([
             'api_key' => null,
             'timeout' => 30,
             'connect_timeout' => 10,
@@ -20,7 +20,7 @@ class Manager {
             'retry_delay' => 1000, // milliseconds
         ], $options);
 
-        $this->host = rtrim($host, '/');
+        $this->host = \rtrim($host, '/');
         
         // Validate connection on construction
         if (!$this->validateConnection()) {
@@ -76,14 +76,14 @@ class Manager {
             throw new Exception("Index <{$name}> already exists.");
         }
 
-        $data = array_merge([
+        $data = \array_merge([
             'uid' => $name,
             'primaryKey' => 'id'
         ], $options);
 
         $this->sendRequest("/indexes", 'POST', $data);
 
-        if (count($fields)) {
+        if (\count($fields)) {
             $this->sendRequest("/indexes/{$name}/settings/filterable-attributes", 'PUT', $fields);
         }
 
@@ -134,10 +134,10 @@ class Manager {
      */
     protected function name(string $name): string {
 
-        $name = preg_replace('/[^a-zA-Z0-9]+/', ' ', $name);
-        $name = ucwords($name);
-        $name = str_replace(' ', '', $name);
-        $name = lcfirst($name);
+        $name = \preg_replace('/[^a-zA-Z0-9]+/', ' ', $name);
+        $name = \ucwords($name);
+        $name = \str_replace(' ', '', $name);
+        $name = \lcfirst($name);
 
         return $name;
     }
@@ -154,7 +154,7 @@ class Manager {
      * @throws Exception If the server returns a HTTP status code of 400 or higher, or if the request fails.
      */
     public function sendRequest(string $url, string $method, mixed $data = null) {
-        $url = trim($url, '/');
+        $url = \trim($url, '/');
         $fullUrl = "{$this->host}/{$url}";
         
         $attempts = 0;
@@ -164,7 +164,7 @@ class Manager {
             $attempts++;
             
             try {
-                $ch = curl_init($fullUrl);
+                $ch = \curl_init($fullUrl);
                 
                 $headers = [
                     'Content-Type: application/json',
@@ -175,7 +175,7 @@ class Manager {
                     $headers[] = "Authorization: Bearer {$this->options['api_key']}";
                 }
 
-                curl_setopt_array($ch, [
+                \curl_setopt_array($ch, [
                     CURLOPT_HTTPHEADER => $headers,
                     CURLOPT_CUSTOMREQUEST => $method,
                     CURLOPT_RETURNTRANSFER => true,
@@ -188,12 +188,12 @@ class Manager {
                 ]);
 
                 if ($data !== null) {
-                    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data, JSON_THROW_ON_ERROR));
+                    \curl_setopt($ch, CURLOPT_POSTFIELDS, \json_encode($data, JSON_THROW_ON_ERROR));
                 }
 
-                $response = curl_exec($ch);
-                $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-                $curlError = curl_error($ch);
+                $response = \curl_exec($ch);
+                $httpCode = \curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                $curlError = \curl_error($ch);
 
                 // Handle cURL errors
                 if ($response === false || !empty($curlError)) {
@@ -202,7 +202,7 @@ class Manager {
 
                 // Handle HTTP errors
                 if ($httpCode >= 400) {
-                    $errorData = json_decode($response, true);
+                    $errorData = \json_decode($response, true);
                     $errorMessage = $errorData['message'] ?? $response;
                     
                     // Don't retry client errors (4xx), only server errors (5xx)
@@ -214,7 +214,7 @@ class Manager {
                 }
 
                 // Success - parse and return response
-                return json_decode($response, true, 512, JSON_THROW_ON_ERROR);
+                return \json_decode($response, true, 512, JSON_THROW_ON_ERROR);
                 
             } catch (Exception $e) {
                 // If this was the last attempt or a client error, rethrow
@@ -223,8 +223,8 @@ class Manager {
                 }
                 
                 // Wait before retrying (exponential backoff)
-                $delay = $this->options['retry_delay'] * pow(2, $attempts - 1);
-                usleep($delay * 1000); // Convert to microseconds
+                $delay = $this->options['retry_delay'] * \pow(2, $attempts - 1);
+                \usleep($delay * 1000); // Convert to microseconds
             }
         }
         

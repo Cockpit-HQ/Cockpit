@@ -552,7 +552,7 @@ class i18n extends \Lime\Helper {
      * @return  bool
      */
     public function isRTL(): bool {
-        return in_array($this->locale, self::$rtl);
+        return \in_array($this->locale, self::$rtl);
     }
 
     /**

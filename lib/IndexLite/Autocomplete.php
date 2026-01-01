@@ -55,9 +55,9 @@ class Autocomplete {
      */
     public function getSuggestions(string $prefix, array $options = []): array {
 
-        $prefix = trim($prefix);
+        $prefix = \trim($prefix);
 
-        $options = array_merge([
+        $options = \array_merge([
             'field' => null,
             'limit' => 10,
             'minLength' => 2,
@@ -68,7 +68,7 @@ class Autocomplete {
         ], $options);
 
         // Don't suggest if prefix is too short
-        if (mb_strlen($prefix) < $options['minLength']) {
+        if (\mb_strlen($prefix) < $options['minLength']) {
             return [
                 'query' => $prefix,
                 'suggestions' => []
@@ -90,27 +90,27 @@ class Autocomplete {
 
         $escapedPrefix = Utils::escapeFts5SpecialChars($prefix);
         // Ensure single quotes are safely doubled for SQL embedding
-        $escapedPrefix = str_replace("'", "''", $escapedPrefix);
+        $escapedPrefix = \str_replace("'", "''", $escapedPrefix);
 
         // Determine the match condition based on fuzzy option
         if ($options['fuzzy']) {
 
             // Process fuzzy option - convert to boolean and extract distance if needed
             $fuzzyDistance = 1;
-            if (is_int($options['fuzzy']) && $options['fuzzy'] > 0) {
-                $fuzzyDistance = min($options['fuzzy'], 3); // Cap at 3 for performance reasons
+            if (\is_int($options['fuzzy']) && $options['fuzzy'] > 0) {
+                $fuzzyDistance = \min($options['fuzzy'], 3); // Cap at 3 for performance reasons
                 $options['fuzzy'] = true;
             }
 
             $matchCondition = "\"{$escapedPrefix}\" NEAR/{$fuzzyDistance}";
         } else {
             // For exact prefix matching, remove trailing quotes and append '*'
-            $escapedPrefix = rtrim($escapedPrefix, '"');
+            $escapedPrefix = \rtrim($escapedPrefix, '"');
             $matchCondition = "{$escapedPrefix}*";
         }
 
         // Build the query based on whether a specific field is specified
-        if ($options['field'] && in_array($options['field'], $this->fields) &&
+        if ($options['field'] && \in_array($options['field'], $this->fields) &&
             $options['field'] !== 'id' && $options['field'] !== '__payload') {
 
             $where = "\"{$options['field']}\" MATCH '{$matchCondition}'";
@@ -138,7 +138,7 @@ class Autocomplete {
                 $fieldQueries[] = "\"{$field}\" MATCH '{$matchCondition}'";
             }
 
-            $where = implode(' OR ', $fieldQueries);
+            $where = \implode(' OR ', $fieldQueries);
 
             $safeFilter = $this->sanitizeFilter($options['filter']);
             if ($safeFilter) {
@@ -196,7 +196,7 @@ class Autocomplete {
      * @return array The popular terms and their frequencies.
      */
     public function getPopularTerms(array $options = []): array {
-        $options = array_merge([
+        $options = \array_merge([
             'field' => null,
             'limit' => 10,
             'minTermFrequency' => 2,
@@ -208,10 +208,10 @@ class Autocomplete {
         $safeFilter = $this->sanitizeFilter($options['filter']);
 
         // If a specific field is provided, get popular terms from that field
-        if ($options['field'] && in_array($options['field'], $this->fields) &&
+        if ($options['field'] && \in_array($options['field'], $this->fields) &&
             $options['field'] !== 'id' && $options['field'] !== '__payload') {
 
-            $columnIndex = array_search($options['field'], $this->fields);
+            $columnIndex = \array_search($options['field'], $this->fields);
 
             if ($safeFilter) {
                 // Use instance mode to allow filtering by documents
@@ -306,7 +306,7 @@ class Autocomplete {
         // Find a field to use if none specified or specified field is invalid
         $field = $options['field'] ?? null;
 
-        if (!$field || $field === 'id' || $field === '__payload' || !in_array($field, $this->fields)) {
+        if (!$field || $field === 'id' || $field === '__payload' || !\in_array($field, $this->fields)) {
             // Find the first valid field
             foreach ($this->fields as $f) {
                 if ($f !== 'id' && $f !== '__payload') {
@@ -335,18 +335,18 @@ class Autocomplete {
         }
 
         // Extract words and count them
-        preg_match_all('/\b(\w{' . $options['minLength'] . ',' . $options['maxLength'] . '})\b/u', $content, $matches);
-        $words = array_count_values($matches[0]);
-        arsort($words);
+        \preg_match_all('/\b(\w{' . $options['minLength'] . ',' . $options['maxLength'] . '})\b/u', $content, $matches);
+        $words = \array_count_values($matches[0]);
+        \arsort($words);
 
         // Filter by minimum frequency
-        $words = array_filter($words, function($count) use ($options) {
+        $words = \array_filter($words, function($count) use ($options) {
             return $count >= $options['minTermFrequency'];
         });
 
         // Format and limit results
         $results = [];
-        foreach (array_slice($words, 0, $options['limit']) as $term => $count) {
+        foreach (\array_slice($words, 0, $options['limit']) as $term => $count) {
             $results[] = [
                 'term' => $term,
                 'count' => $count
@@ -373,7 +373,7 @@ class Autocomplete {
      * @return array The recent search queries.
      */
     public function getRecentSearches(array $options = []): array {
-        $options = array_merge([
+        $options = \array_merge([
             'limit' => 10,
             'minCount' => 1,
             'days' => 30
@@ -383,7 +383,7 @@ class Autocomplete {
         $this->ensureSearchHistoryTable();
 
         // Get recent searches
-        $daysAgo = date('Y-m-d H:i:s', strtotime('-' . (int)$options['days'] . ' days'));
+        $daysAgo = \date('Y-m-d H:i:s', \strtotime('-' . (int)$options['days'] . ' days'));
 
         $sql = "
             SELECT query, COUNT(*) as count, MAX(timestamp) as last_searched
@@ -423,7 +423,7 @@ class Autocomplete {
      * @return bool Whether the query was successfully logged.
      */
     public function logSearch(string $query, array $metadata = []): bool {
-        if (empty(trim($query))) {
+        if (empty(\trim($query))) {
             return false;
         }
 
@@ -438,8 +438,8 @@ class Autocomplete {
 
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':query', $query);
-        $stmt->bindValue(':metadata', json_encode($metadata));
-        $stmt->bindValue(':timestamp', date('Y-m-d H:i:s'));
+        $stmt->bindValue(':metadata', \json_encode($metadata));
+        $stmt->bindValue(':timestamp', \date('Y-m-d H:i:s'));
 
         try {
             return $stmt->execute();
@@ -483,18 +483,18 @@ class Autocomplete {
      * @return string The suggestion with the prefix highlighted.
      */
     private function highlightPrefix(string $suggestion, string $prefix): string {
-        $prefixLen = mb_strlen($prefix);
+        $prefixLen = \mb_strlen($prefix);
 
         // Search for the prefix ignoring case
-        $pos = mb_stripos($suggestion, $prefix);
+        $pos = \mb_stripos($suggestion, $prefix);
 
         if ($pos !== false) {
             // Extract the actual matching substring (preserving original case)
-            $matchingPart = mb_substr($suggestion, $pos, $prefixLen);
+            $matchingPart = \mb_substr($suggestion, $pos, $prefixLen);
 
             // Replace only that occurrence with a highlighted version
-            $before = mb_substr($suggestion, 0, $pos);
-            $after = mb_substr($suggestion, $pos + $prefixLen);
+            $before = \mb_substr($suggestion, 0, $pos);
+            $after = \mb_substr($suggestion, $pos + $prefixLen);
 
             return $before . '<strong>' . $matchingPart . '</strong>' . $after;
         }
@@ -544,9 +544,9 @@ class Autocomplete {
      * Basic sanitization for filter fragments to avoid obvious SQL injection vectors
      */
     private function sanitizeFilter(?string $filter): string {
-        $filter = trim((string)$filter);
+        $filter = \trim((string)$filter);
         if ($filter === '') return '';
-        if (preg_match('/(;|--|\/\*)/', $filter)) {
+        if (\preg_match('/(;|--|\/\*)/', $filter)) {
             return '';
         }
         return $filter;

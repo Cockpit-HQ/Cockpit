@@ -53,7 +53,7 @@ class Content extends \Lime\Helper {
      */
     public function replaceLocaleInArrayKeys(array &$array, string $locale = '', $keepDefault = false) {
 
-        $locale = trim($locale);
+        $locale = \trim($locale);
 
         if ($locale === 'default') {
             $locale = '';
@@ -61,9 +61,9 @@ class Content extends \Lime\Helper {
 
         foreach ($array as $key => &$value) {
 
-            if (str_contains($key, ':locale')) {
+            if (\str_contains($key, ':locale')) {
 
-                $defKey = str_replace(':locale', '', $key);
+                $defKey = \str_replace(':locale', '', $key);
                 $newKey = $defKey.($locale ? "_{$locale}" : '');
                 $array[$newKey] = &$value;
 
@@ -74,7 +74,7 @@ class Content extends \Lime\Helper {
                 unset($array[$key]);
             }
 
-            if (is_array($value)) {
+            if (\is_array($value)) {
                 $this->replaceLocaleInArrayKeys($value, $locale, $keepDefault);
             }
         }
@@ -88,13 +88,13 @@ class Content extends \Lime\Helper {
      */
     public function resolveLocalesInProjectionOptions(array &$fields) {
 
-        $locales = array_keys($this->app->helper('locales')->locales(true));
+        $locales = \array_keys($this->app->helper('locales')->locales(true));
 
         foreach ($fields as $key => &$value) {
 
-            if (str_contains($key, ':locale')) {
+            if (\str_contains($key, ':locale')) {
 
-                $defKey = str_replace(':locale', '', $key);
+                $defKey = \str_replace(':locale', '', $key);
                 $fields[$defKey] = &$value;
 
                 foreach ($locales as $locale) {
@@ -105,7 +105,7 @@ class Content extends \Lime\Helper {
                 unset($fields[$key]);
             }
 
-            if (is_array($value)) {
+            if (\is_array($value)) {
                 $this->resolveLocalesInProjectionOptions($value);
             }
         }
@@ -122,35 +122,35 @@ class Content extends \Lime\Helper {
      */
     public function isContentUnique(string|array $model, array $data, string|array $fields, mixed &$info = []): bool {
 
-        $model = is_string($model) ? $this->app->module('content')->model($model) : $model;
-        $fields = is_string($fields) ? explode(',', $fields) : $fields;
+        $model = \is_string($model) ? $this->app->module('content')->model($model) : $model;
+        $fields = \is_string($fields) ? \explode(',', $fields) : $fields;
 
-        if (!$model || !in_array($model['type'], ['collection', 'tree'])) {
+        if (!$model || !\in_array($model['type'], ['collection', 'tree'])) {
             return false;
         }
 
-        $locales = array_keys($this->app->helper('locales')->locales(true));
+        $locales = \array_keys($this->app->helper('locales')->locales(true));
         $collection = "content/collections/{$model['name']}";
         $projection = ['_id' => 1];
         $filter = [];
 
         foreach ($fields as $field) {
 
-            $field = trim($field);
+            $field = \trim($field);
 
-            if (!isset($data[$field]) || !$data[$field] || !is_string($data[$field])) continue;
+            if (!isset($data[$field]) || !$data[$field] || !\is_string($data[$field])) continue;
 
             $projection[$field] = 1;
             $value = $data[$field];
             $filter[] = [$field => $value];
 
-            $mfield = array_find($model['fields'], fn($f) => $f['name'] === $field);
+            $mfield = \array_find($model['fields'], fn($f) => $f['name'] === $field);
 
             if ($mfield && $mfield['i18n']) {
 
                 foreach ($locales as $locale) {
                     $key = "{$field}_{$locale}";
-                    if ($locale === 'default' || !isset($data[$key]) || !$data[$key] || !is_string($data[$key])) continue;
+                    if ($locale === 'default' || !isset($data[$key]) || !$data[$key] || !\is_string($data[$key])) continue;
 
                     $filter[] = [$key => $data[$key]];
                     $projection[$key] = 1;

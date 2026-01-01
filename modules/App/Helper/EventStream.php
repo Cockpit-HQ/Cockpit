@@ -10,7 +10,7 @@ class EventStream extends \Lime\Helper {
      * @return void
      */
     public function cleanup() {
-        $this->app->dataStorage->remove('app/events/stream', ['_created' => ['$lt' => strtotime('-5 minutes')]]);
+        $this->app->dataStorage->remove('app/events/stream', ['_created' => ['$lt' => \strtotime('-5 minutes')]]);
     }
 
     /**
@@ -43,7 +43,7 @@ class EventStream extends \Lime\Helper {
             'type' => $event,
             'data' => $data,
             'options' => $options,
-            '_created' => time()
+            '_created' => \time()
         ];
 
         $this->dataStorage->save('app/events/stream', $evt);

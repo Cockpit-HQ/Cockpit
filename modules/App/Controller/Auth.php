@@ -24,14 +24,14 @@ class Auth extends Base {
 
         $redirectTo = $this->param('to', '/');
 
-        if (substr($redirectTo, 0, 1) !== '/') {
+        if (\substr($redirectTo, 0, 1) !== '/') {
             $redirectTo = '/';
         }
 
-        $redirectTo = htmlspecialchars($this->app->routeUrl($redirectTo), ENT_QUOTES, 'UTF-8');
+        $redirectTo = \htmlspecialchars($this->app->routeUrl($redirectTo), ENT_QUOTES, 'UTF-8');
         $csrfToken = $this->helper('csrf')->token('app.login');
 
-        return $this->render('app:views/auth/login.php', compact('redirectTo', 'csrfToken'));
+        return $this->render('app:views/auth/login.php', \compact('redirectTo', 'csrfToken'));
     }
 
     public function dialog() {
@@ -42,7 +42,7 @@ class Auth extends Base {
 
         $csrfToken = $this->helper('csrf')->token('app.login');
 
-        return $this->render('app:views/auth/dialog.php', compact('csrfToken'));
+        return $this->render('app:views/auth/dialog.php', \compact('csrfToken'));
     }
 
     public function logout() {
@@ -81,7 +81,7 @@ class Auth extends Base {
             $user = $this->app->dataStorage->findOne('system/users', ['email' => $email, 'active' => true]);
 
             if (!$user) {
-                sleep(1);
+                \sleep(1);
                 return ['success' => true];
             }
 
@@ -90,15 +90,15 @@ class Auth extends Base {
             $token = $this->helper('jwt')->create([
                 'email' => $email,
                 'check' => $this->app->hash($check),
-                'iat' => time(),
-                'exp' => strtotime('+15 minutes'),
+                'iat' => \time(),
+                'exp' => \strtotime('+15 minutes'),
             ]);
 
             // send link with magic link
             $this->app->mailer->mail(
                 $email,
                 'Login: '.$this->app->retrieve('app.name'),
-                $this->app->render('app:emails/magiclink.php with app:layouts/email.php', compact('token', 'email', 'user'))
+                $this->app->render('app:emails/magiclink.php with app:layouts/email.php', \compact('token', 'email', 'user'))
             );
 
             return ['success' => true];
@@ -117,7 +117,7 @@ class Auth extends Base {
                 $user = $this->app->dataStorage->findOne('system/users', ['email' => $payload['email'], 'active' => true]);
                 $check = "{$user['_id']}.{$user['password']}.{$user['_modified']}";
 
-                if (!$user || !password_verify($check, $payload['check'])) {
+                if (!$user || !\password_verify($check, $payload['check'])) {
                     return false;
                 }
 
@@ -154,7 +154,7 @@ class Auth extends Base {
 
         $csrfToken = $this->helper('csrf')->token('app.magiclink');
 
-        return $this->render('app:views/auth/magiclink.php', compact('csrfToken'));
+        return $this->render('app:views/auth/magiclink.php', \compact('csrfToken'));
     }
 
     public function check() {
@@ -165,7 +165,7 @@ class Auth extends Base {
 
         $auth = $this->param('auth');
 
-        if (!$auth || !isset($auth['user'], $auth['password']) || !is_string($auth['user']) || !\is_string($auth['password'])) {
+        if (!$auth || !isset($auth['user'], $auth['password']) || !\is_string($auth['user']) || !\is_string($auth['password'])) {
             return $this->stop(412);
         }
 
@@ -282,7 +282,7 @@ class Auth extends Base {
                 $user = $this->app->dataStorage->findOne('system/users', ['email' => $payload['email'], 'active' => true]);
                 $check = "{$user['_id']}.{$user['password']}.{$user['_modified']}";
 
-                if (!$user || !password_verify($check, $payload['check'])) {
+                if (!$user || !\password_verify($check, $payload['check'])) {
                     return false;
                 }
 
@@ -302,7 +302,7 @@ class Auth extends Base {
             $user = $this->app->dataStorage->findOne('system/users', ['email' => $email, 'active' => true]);
 
             if (!$user) {
-                sleep(1);
+                \sleep(1);
                 return ['success' => true];
             }
 
@@ -311,15 +311,15 @@ class Auth extends Base {
             $token = $this->helper('jwt')->create([
                 'email' => $email,
                 'check' => $this->app->hash($check),
-                'iat' => time(),
-                'exp' => strtotime('+15 minutes'),
+                'iat' => \time(),
+                'exp' => \strtotime('+15 minutes'),
             ]);
 
             // send link to reset password
             $this->app->mailer->mail(
                 $email,
                 'Reset Password: '.$this->app->retrieve('app.name'),
-                $this->app->render('app:emails/reset-password.php with app:layouts/email.php', compact('token', 'email', 'user'))
+                $this->app->render('app:emails/reset-password.php with app:layouts/email.php', \compact('token', 'email', 'user'))
             );
 
             return ['success' => true];
@@ -331,15 +331,15 @@ class Auth extends Base {
 
                 $password = $this->param('password', '');
 
-                if (!is_string($password)) return $this->stop(412);
-                if (!trim($password)) return $this->stop(412);
+                if (!\is_string($password)) return $this->stop(412);
+                if (!\trim($password)) return $this->stop(412);
 
                 $password = $this->app->hash($password);
 
                 $data = [
                     '_id' => $user['_id'],
                     'password' => $password,
-                    '_modified' => time()
+                    '_modified' => \time()
                 ];
 
                 $this->app->dataStorage->save('system/users', $data);
@@ -353,7 +353,7 @@ class Auth extends Base {
 
         $csrfToken = $this->helper('csrf')->token('app.passwordreset');
 
-        return $this->render("app:views/auth/{$view}.php", compact('csrfToken', 'token'));
+        return $this->render("app:views/auth/{$view}.php", \compact('csrfToken', 'token'));
     }
 
     private function setSessionUser($user) {
@@ -364,7 +364,7 @@ class Auth extends Base {
         $this->app->trigger('app.user.disguise', [&$user]);
 
         $this->helper('auth')->setUser($user);
-        $this->helper('session')->write('app.session.start', time());
+        $this->helper('session')->write('app.session.start', \time());
 
         $this->app->trigger('app.user.login', [$user]);
 

@@ -117,12 +117,12 @@ class Cursor implements Iterator {
                 $sql[] = "LIMIT ".(int)$this->limit;
             }
 
-            $stmt = $this->collection->database->connection->query(implode(' ', $sql));
+            $stmt = $this->collection->database->connection->query(\implode(' ', $sql));
         }
 
         $res  = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        return intval(isset($res['C']) ? $res['C']:0);
+        return \intval(isset($res['C']) ? $res['C']:0);
     }
 
     /**
@@ -223,7 +223,7 @@ class Cursor implements Iterator {
                 $orders[] = 'document_key('.$conn->quote($field).', document) '.($direction==-1 ? 'DESC':'ASC');
             }
 
-            $sql[] = 'ORDER BY '. implode(',', $orders);
+            $sql[] = 'ORDER BY '. \implode(',', $orders);
         }
 
         if ($this->limit) {
@@ -232,17 +232,17 @@ class Cursor implements Iterator {
             if ($this->skip) { $sql[] = "OFFSET ".(int)$this->skip; }
         }
 
-        $sql = implode(' ', $sql);
+        $sql = \implode(' ', $sql);
 
         $stmt      = $conn->query($sql);
         $result    = $stmt->fetchAll( PDO::FETCH_ASSOC);
         $documents = [];
 
         foreach ($result as &$doc) {
-            $documents[] = json_decode($doc['document'], true);
+            $documents[] = \json_decode($doc['document'], true);
         }
 
-        if (is_array($this->projection)) {
+        if (\is_array($this->projection)) {
             $documents = Projection::onDocuments($documents, $this->projection);
         }
 

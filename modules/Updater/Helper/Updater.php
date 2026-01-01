@@ -8,7 +8,7 @@ class Updater extends \Lime\Helper {
 
     protected function initialize() {
 
-        $this->releasesUrl = rtrim($this->app->retrieve('updater/releasesUrl', 'https://files.getcockpit.com/releases'), '/');
+        $this->releasesUrl = \rtrim($this->app->retrieve('updater/releasesUrl', 'https://files.getcockpit.com/releases'), '/');
     }
 
     /**
@@ -20,7 +20,7 @@ class Updater extends \Lime\Helper {
      */
     public function update(string $version = 'master', string $target = 'core'): bool {
 
-        if (!in_array($target, ['core', 'pro'])) {
+        if (!\in_array($target, ['core', 'pro'])) {
             $target = 'core';
         }
 
@@ -45,20 +45,20 @@ class Updater extends \Lime\Helper {
 
             $meta = [
                 'version' => APP_VERSION,
-                'date' => date('Y-m-d'),
+                'date' => \date('Y-m-d'),
                 'php' => [
                     'min' => PHP_VERSION,
                 ],
             ];
 
         } else {
-            $meta = json_decode($contents, true);
+            $meta = \json_decode($contents, true);
         }
 
         $meta['notices'] = [];
-        $meta['isNewVersionAvailable'] = version_compare($meta['version'] ?? APP_VERSION, APP_VERSION, '>');
+        $meta['isNewVersionAvailable'] = \version_compare($meta['version'] ?? APP_VERSION, APP_VERSION, '>');
 
-        if (isset($meta['php']['min']) && version_compare(PHP_VERSION, $meta['php']['min'], '<')) {
+        if (isset($meta['php']['min']) && \version_compare(PHP_VERSION, $meta['php']['min'], '<')) {
             $meta['notices'][] = 'Your PHP version is too low';
         }
 
@@ -74,7 +74,7 @@ class Updater extends \Lime\Helper {
      */
     protected function process(string $zipUrl, string $zipRoot = '/'): bool {
 
-        if (!is_writable(APP_DIR)) {
+        if (!\is_writable(APP_DIR)) {
             throw new \Exception("App root is not writable!");
         }
 
@@ -82,18 +82,18 @@ class Updater extends \Lime\Helper {
 
         $fs = $this->app->helper('fs');
         $tempPath = $this->app->path('#tmp:');
-        $zipRoot = trim($zipRoot, '/');
+        $zipRoot = \trim($zipRoot, '/');
 
         // download
-        $zipname = basename($zipUrl);
+        $zipname = \basename($zipUrl);
 
-        if (!file_put_contents("{$tempPath}/{$zipname}", $this->app->helper('utils')->urlGetContents($zipUrl))) {
+        if (!\file_put_contents("{$tempPath}/{$zipname}", $this->app->helper('utils')->urlGetContents($zipUrl))) {
             throw new \Exception("Couldn't download {$zipUrl}!");
         }
 
         // extract zip contents
-        if (!is_dir("{$tempPath}/update-{$zipname}")) {
-            @mkdir("{$tempPath}/update-{$zipname}", 0777);
+        if (!\is_dir("{$tempPath}/update-{$zipname}")) {
+            @\mkdir("{$tempPath}/update-{$zipname}", 0777);
         }
 
         $zip = new \ZipArchive;
@@ -111,10 +111,10 @@ class Updater extends \Lime\Helper {
         }
 
         // check compatible php version
-        $composerContents = json_decode(file_get_contents("{$tempPath}/update-{$zipname}/{$zipRoot}/composer.json"), true);
-        $requiredPhpVersion = str_replace('^', '', $composerContents['require']['php']);
+        $composerContents = \json_decode(\file_get_contents("{$tempPath}/update-{$zipname}/{$zipRoot}/composer.json"), true);
+        $requiredPhpVersion = \str_replace('^', '', $composerContents['require']['php']);
 
-        if (version_compare(PHP_VERSION, $requiredPhpVersion, '<')) {
+        if (\version_compare(PHP_VERSION, $requiredPhpVersion, '<')) {
 
             // cleanup
             $fs->delete("{$tempPath}/{$zipname}");
@@ -150,8 +150,8 @@ class Updater extends \Lime\Helper {
         }
 
         // clear opcache
-        if (function_exists('opcache_reset')) {
-            opcache_reset();
+        if (\function_exists('opcache_reset')) {
+            \opcache_reset();
         }
 
         return true;
