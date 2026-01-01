@@ -15,11 +15,11 @@
                     <div><img class="app-logo" src="<?= $this->helper('theme')->logo() ?>" style="height:40px;width:auto;" alt="Logo"></div>
                     <div>
                         <strong class="kiss-size-5"><?= $this['app.name'] ?></strong>
-                        <div class="kiss-color-muted kiss-size-xsmall kiss-margin-xsmall"><?= t('Log in to your account') ?></div>
+                        <div class="kiss-color-muted kiss-size-xsmall kiss-margin-xsmall"><?= $this['maintenance']?:t('Log in to your account') ?></div>
                     </div>
                 </div>
 
-                <form :class="{'kiss-disabled': loading}" @submit.prevent="login" v-if="view=='form'">
+                <form :class="{'kiss-disabled': loading}" @submit.prevent="login" v-if="view=='form'" v-show="<?= !isset($this['maintenance']) ?>">
 
                     <div class="kiss-margin">
                         <input class="kiss-input" type="text" placeholder="<?= t('Username or Email') ?>" aria-label="<?= t('Username or Email') ?>" v-model="auth.user" autocomplete="off" autofocus required>
