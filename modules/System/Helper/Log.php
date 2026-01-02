@@ -45,7 +45,7 @@ class LogChannel {
      */
     protected function addRecord(string $message, $type = 'info', ?array $context = null): void {
 
-        $time = time();
+        $time = \time();
 
         $record = [
             'message' => $message,
@@ -53,7 +53,7 @@ class LogChannel {
             'channel' => $this->name,
             'context' => $context,
             'timestamp' => $time,
-            'datetime' => date('Y-m-d G:i:s T', $time)
+            'datetime' => \date('Y-m-d G:i:s T', $time)
         ];
 
         try {

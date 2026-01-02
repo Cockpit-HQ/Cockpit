@@ -1,3 +1,9 @@
+<?=$this->assets([
+    'app:assets/components/bg-fluxanimation/bg-fluxanimation.js',
+], $this->retrieve('app.version'))?>
+
+<bg-fluxanimation class="kiss-cover" colors="--kiss-color-primary" style="opacity: 0.4;"></bg-fluxanimation>
+
 <vue-view class="kiss-position-relative">
     <template>
 
@@ -82,6 +88,7 @@
     </template>
 
     <script type="module">
+
         export default {
 
             data() {
@@ -206,7 +213,7 @@
                 <?php if ($this->retrieve('auth.login.magiclink', true)): ?>
                 <li>
                     <a class="kiss-flex kiss-flex-middle" href="<?=$this->route('/auth/magiclink')?>">
-                        <icon class="kiss-margin-small-right">bolt</icon>
+                        <icon class="kiss-margin-small-end">bolt</icon>
                         <?= t('Login via Magic Link') ?>
                     </a>
                 </li>
@@ -214,7 +221,7 @@
                 <?php endif ?>
                 <li>
                     <a class="kiss-flex kiss-flex-middle kiss-text-bold" href="<?=$this->route('/auth/reset')?>">
-                        <icon class="kiss-margin-small-right">lock_reset</icon>
+                        <icon class="kiss-margin-small-end">lock_reset</icon>
                         <?= t('Reset Password') ?>
                     </a>
                 </li>

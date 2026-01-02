@@ -20,9 +20,9 @@ class FuzzyEnhancer {
     /**
      * Register custom SQLite functions for enhanced fuzzy matching
      */
-    protected function registerFunctions(): void {
+    public function registerFunctions(): void {
         // Use connection ID to track registration per database connection
-        $connectionId = spl_object_id($this->db);
+        $connectionId = \spl_object_id($this->db);
         
         // Prevent duplicate registration for this connection
         if (isset(self::$registeredConnections[$connectionId])) {
@@ -31,19 +31,19 @@ class FuzzyEnhancer {
         
         // Basic Levenshtein distance
         $this->db->sqliteCreateFunction('levenshtein', function($s1, $s2) {
-            return levenshtein($s1, $s2);
+            return \levenshtein($s1, $s2);
         }, 2);
         
         // Case-insensitive Levenshtein
         $this->db->sqliteCreateFunction('levenshtein_ci', function($s1, $s2) {
-            return levenshtein(strtolower($s1), strtolower($s2));
+            return \levenshtein(\strtolower($s1), \strtolower($s2));
         }, 2);
         
         // Normalized Levenshtein (0-1 score, where 1 is perfect match)
         $this->db->sqliteCreateFunction('levenshtein_ratio', function($s1, $s2) {
-            $maxLen = max(strlen($s1), strlen($s2));
+            $maxLen = \max(\strlen($s1), \strlen($s2));
             if ($maxLen == 0) return 1.0;
-            $distance = levenshtein($s1, $s2);
+            $distance = \levenshtein($s1, $s2);
             return 1 - ($distance / $maxLen);
         }, 2);
         
@@ -58,22 +58,22 @@ class FuzzyEnhancer {
         
         // Soundex matching
         $this->db->sqliteCreateFunction('soundex_match', function($s1, $s2) {
-            return soundex($s1) === soundex($s2) ? 1 : 0;
+            return \soundex($s1) === \soundex($s2) ? 1 : 0;
         }, 2);
         
         // Metaphone matching (better than soundex)
         $this->db->sqliteCreateFunction('metaphone_match', function($s1, $s2, $phonemes = 5) {
-            return metaphone($s1, $phonemes) === metaphone($s2, $phonemes) ? 1 : 0;
+            return \metaphone($s1, $phonemes) === \metaphone($s2, $phonemes) ? 1 : 0;
         }, 3);
         
         // Contains fuzzy - for partial fuzzy matching within text
         $this->db->sqliteCreateFunction('contains_fuzzy', function($haystack, $needle, $threshold = 2) {
-            $haystack = strtolower($haystack);
-            $needle = strtolower($needle);
-            $words = preg_split('/\s+/', $haystack);
+            $haystack = \strtolower($haystack);
+            $needle = \strtolower($needle);
+            $words = \preg_split('/\s+/', $haystack);
             
             foreach ($words as $word) {
-                if (levenshtein($word, $needle) <= $threshold) {
+                if (\levenshtein($word, $needle) <= $threshold) {
                     return 1;
                 }
             }
@@ -82,8 +82,8 @@ class FuzzyEnhancer {
         
         // Combined fuzzy score (0-100)
         $this->db->sqliteCreateFunction('fuzzy_score', function($s1, $s2) {
-            $s1 = strtolower($s1);
-            $s2 = strtolower($s2);
+            $s1 = \strtolower($s1);
+            $s2 = \strtolower($s2);
             
             // Exact match = 100
             if ($s1 === $s2) return 100;
@@ -92,19 +92,19 @@ class FuzzyEnhancer {
             $scores = [];
             
             // Levenshtein (weighted by string length)
-            $maxLen = max(strlen($s1), strlen($s2));
+            $maxLen = \max(\strlen($s1), \strlen($s2));
             if ($maxLen > 0) {
-                $leven = levenshtein($s1, $s2);
-                $scores[] = max(0, 100 - ($leven * 100 / $maxLen));
+                $leven = \levenshtein($s1, $s2);
+                $scores[] = \max(0, 100 - ($leven * 100 / $maxLen));
             }
             
             // Soundex bonus
-            if (soundex($s1) === soundex($s2)) {
+            if (\soundex($s1) === \soundex($s2)) {
                 $scores[] = 80;
             }
             
             // Prefix match bonus
-            $minLen = min(strlen($s1), strlen($s2));
+            $minLen = \min(\strlen($s1), \strlen($s2));
             $commonPrefix = 0;
             for ($i = 0; $i < $minLen; $i++) {
                 if ($s1[$i] === $s2[$i]) {
@@ -118,7 +118,7 @@ class FuzzyEnhancer {
             }
             
             // Return the highest score
-            return empty($scores) ? 0 : max($scores);
+            return empty($scores) ? 0 : \max($scores);
         }, 2);
         
         self::$registeredConnections[$connectionId] = true;
@@ -129,10 +129,10 @@ class FuzzyEnhancer {
      */
     protected function escapeQueryForSql(string $query): string {
         // Remove any null bytes
-        $query = str_replace("\0", '', $query);
+        $query = \str_replace("\0", '', $query);
         
         // Escape single quotes by doubling them
-        $query = str_replace("'", "''", $query);
+        $query = \str_replace("'", "''", $query);
         
         // Wrap in single quotes
         return "'{$query}'";
@@ -142,8 +142,8 @@ class FuzzyEnhancer {
      * Damerau-Levenshtein distance (includes transpositions)
      */
     public function damerauLevenshtein(string $s1, string $s2): int {
-        $len1 = strlen($s1);
-        $len2 = strlen($s2);
+        $len1 = \strlen($s1);
+        $len2 = \strlen($s2);
         
         if ($len1 == 0) return $len2;
         if ($len2 == 0) return $len1;
@@ -163,7 +163,7 @@ class FuzzyEnhancer {
             for ($j = 1; $j <= $len2; $j++) {
                 $cost = ($s1[$i-1] === $s2[$j-1]) ? 0 : 1;
                 
-                $matrix[$i][$j] = min(
+                $matrix[$i][$j] = \min(
                     $matrix[$i-1][$j] + 1,     // deletion
                     $matrix[$i][$j-1] + 1,     // insertion
                     $matrix[$i-1][$j-1] + $cost // substitution
@@ -173,7 +173,7 @@ class FuzzyEnhancer {
                 if ($i > 1 && $j > 1 && 
                     $s1[$i-1] === $s2[$j-2] && 
                     $s1[$i-2] === $s2[$j-1]) {
-                    $matrix[$i][$j] = min(
+                    $matrix[$i][$j] = \min(
                         $matrix[$i][$j],
                         $matrix[$i-2][$j-2] + $cost
                     );
@@ -192,7 +192,7 @@ class FuzzyEnhancer {
         
         // Calculate common prefix length (up to 4 chars)
         $prefix = 0;
-        $max = min(strlen($s1), strlen($s2), 4);
+        $max = \min(\strlen($s1), \strlen($s2), 4);
         
         for ($i = 0; $i < $max; $i++) {
             if ($s1[$i] === $s2[$i]) {
@@ -209,23 +209,23 @@ class FuzzyEnhancer {
      * Jaro similarity (helper for Jaro-Winkler)
      */
     protected function jaro(string $s1, string $s2): float {
-        $len1 = strlen($s1);
-        $len2 = strlen($s2);
+        $len1 = \strlen($s1);
+        $len2 = \strlen($s2);
         
         if ($len1 == 0 && $len2 == 0) return 1.0;
         if ($len1 == 0 || $len2 == 0) return 0.0;
         
-        $matchDistance = (int) (max($len1, $len2) / 2) - 1;
+        $matchDistance = (int) (\max($len1, $len2) / 2) - 1;
         $matches = 0;
         $transpositions = 0;
         
-        $s1Matches = array_fill(0, $len1, false);
-        $s2Matches = array_fill(0, $len2, false);
+        $s1Matches = \array_fill(0, $len1, false);
+        $s2Matches = \array_fill(0, $len2, false);
         
         // Find matches
         for ($i = 0; $i < $len1; $i++) {
-            $start = max(0, $i - $matchDistance);
-            $end = min($i + $matchDistance + 1, $len2);
+            $start = \max(0, $i - $matchDistance);
+            $end = \min($i + $matchDistance + 1, $len2);
             
             for ($j = $start; $j < $end; $j++) {
                 if ($s2Matches[$j] || $s1[$i] !== $s2[$j]) continue;
@@ -266,8 +266,8 @@ class FuzzyEnhancer {
         if (empty($trigrams1) && empty($trigrams2)) return 1.0;
         if (empty($trigrams1) || empty($trigrams2)) return 0.0;
         
-        $intersection = count(array_intersect($trigrams1, $trigrams2));
-        $union = count(array_unique(array_merge($trigrams1, $trigrams2)));
+        $intersection = \count(\array_intersect($trigrams1, $trigrams2));
+        $union = \count(\array_unique(\array_merge($trigrams1, $trigrams2)));
         
         return $union > 0 ? $intersection / $union : 0.0;
     }
@@ -276,17 +276,17 @@ class FuzzyEnhancer {
      * Extract trigrams from a string
      */
     protected function getTrigrams(string $text): array {
-        $text = ' ' . strtolower($text) . ' ';
+        $text = ' ' . \strtolower($text) . ' ';
         $trigrams = [];
-        $len = strlen($text);
+        $len = \strlen($text);
         
         if ($len < 3) return [];
         
         for ($i = 0; $i < $len - 2; $i++) {
-            $trigrams[] = substr($text, $i, 3);
+            $trigrams[] = \substr($text, $i, 3);
         }
         
-        return array_unique($trigrams);
+        return \array_unique($trigrams);
     }
     
     /**
@@ -310,7 +310,7 @@ class FuzzyEnhancer {
             if ($field === 'id' || $field === '__payload') continue;
             
             // Sanitize field name (only allow alphanumeric and underscore)
-            $sanitizedField = preg_replace('/[^a-zA-Z0-9_]/', '', $field);
+            $sanitizedField = \preg_replace('/[^a-zA-Z0-9_]/', '', $field);
             if ($sanitizedField !== $field || empty($sanitizedField)) {
                 continue; // Skip invalid field names
             }
@@ -349,6 +349,6 @@ class FuzzyEnhancer {
             }
         }
         
-        return implode(' OR ', $conditions);
+        return \implode(' OR ', $conditions);
     }
 }

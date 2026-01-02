@@ -64,7 +64,7 @@ foreach ($permissions as $key => $meta) {
                 <kiss-card class="kiss-margin kiss-padding" theme="bordered contrast" hover="shadow" v-for="(meta, group) in groups">
 
                     <div class="kiss-flex kiss-flex-middle" :class="{'kiss-color-muted': !visible[group]}" @click="visible[group]=!visible[group]">
-                        <icon class="kiss-margin-small-right">workspaces</icon>
+                        <icon class="kiss-margin-small-end">workspaces</icon>
                         <a class="kiss-link-muted kiss-text-caption kiss-text-bold kiss-flex-1">{{ t(group) }}</a>
                         <a :class="visible[group] ? 'kiss-color-primary' : 'kiss-color-muted'">
                             <icon>unfold_more</icon>
@@ -88,7 +88,7 @@ foreach ($permissions as $key => $meta) {
                 <app-actionbar>
 
                     <kiss-container size="small">
-                        <div class="kiss-flex kiss-flex-middle kiss-flex-right">
+                        <div class="kiss-flex kiss-flex-middle kiss-flex-end">
                             <div class="kiss-button-group">
                                 <a class="kiss-button" href="<?= $this->route('/system/users/roles') ?>">
                                     <span v-if="!role._id"><?= t('Cancel') ?></span>

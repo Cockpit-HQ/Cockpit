@@ -27,7 +27,7 @@ class LinkedContentFilter extends \Lime\Helper {
     public function process(array &$filter, $model, array $options = []): mixed
     {
 
-        if (is_string($model)) {
+        if (\is_string($model)) {
             $model = $this->app->module('content')->model($model);
         }
 
@@ -36,7 +36,7 @@ class LinkedContentFilter extends \Lime\Helper {
         }
 
         // Set max depth from options if provided
-        if (isset($options['maxDepth']) && is_int($options['maxDepth']) && $options['maxDepth'] > 0) {
+        if (isset($options['maxDepth']) && \is_int($options['maxDepth']) && $options['maxDepth'] > 0) {
             $this->maxDepth = $options['maxDepth'];
         }
 
@@ -59,9 +59,9 @@ class LinkedContentFilter extends \Lime\Helper {
 
         foreach ($filter as $key => $value) {
             // Handle logical operators recursively
-            if (in_array($key, ['$or', '$and', '$nor'])) {
-                if (is_array($value)) {
-                    $processed[$key] = array_map(
+            if (\in_array($key, ['$or', '$and', '$nor'])) {
+                if (\is_array($value)) {
+                    $processed[$key] = \array_map(
                         fn($condition) => $this->processFilterRecursive($condition, $model, $currentDepth),
                         $value
                     );
@@ -70,11 +70,11 @@ class LinkedContentFilter extends \Lime\Helper {
                 }
             }
             // Handle $not operator
-            elseif ($key === '$not' && is_array($value)) {
+            elseif ($key === '$not' && \is_array($value)) {
                 $processed[$key] = $this->processFilterRecursive($value, $model, $currentDepth);
             }
             // Handle linked fields with @ syntax
-            elseif (is_string($key) && str_starts_with($key, '@')) {
+            elseif (\is_string($key) && \str_starts_with($key, '@')) {
                 $this->processLinkedField($key, $value, $model, $processed, $currentDepth);
             }
             // Pass through regular fields
@@ -105,15 +105,15 @@ class LinkedContentFilter extends \Lime\Helper {
         }
 
         // Remove @ prefix and split by dots
-        $path = substr($path, 1);
-        $parts = explode('.', $path);
+        $path = \substr($path, 1);
+        $parts = \explode('.', $path);
 
-        if (count($parts) < 2) {
+        if (\count($parts) < 2) {
             $processed['@' . $path] = $value;
             return;
         }
 
-        $rootField = array_shift($parts);
+        $rootField = \array_shift($parts);
         $fieldDef = $this->findFieldDefinition($model, $rootField);
 
         if (!$fieldDef || $fieldDef['type'] !== 'contentItemLink' || !isset($fieldDef['opts']['link'])) {
@@ -127,7 +127,7 @@ class LinkedContentFilter extends \Lime\Helper {
             // Resolve the linked IDs
             $ids = $this->resolveLinkedIds(
                 $fieldDef['opts']['link'],
-                implode('.', $parts),
+                \implode('.', $parts),
                 $value
             );
 
@@ -173,7 +173,7 @@ class LinkedContentFilter extends \Lime\Helper {
                 'limit' => 500, // put a reasonable limit
             ])->toArray();
 
-            return array_column($items, '_id');
+            return \array_column($items, '_id');
 
         } catch (\Exception $e) {
             return [];

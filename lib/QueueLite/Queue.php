@@ -31,7 +31,7 @@ class Queue {
 
     public function push(array $data, array $options = []) {
 
-        $options = array_merge([
+        $options = \array_merge([
             'delay' => 0,
             'priority' => 0,
             'maxAttempts' => 1,
@@ -50,12 +50,12 @@ class Queue {
             ]);
         }
 
-        $timestamp = time();
+        $timestamp = \time();
         $availableAt = $timestamp + $delay;
 
         if (isset($options['repeat'])) {
 
-            if (is_string($repeat)) {
+            if (\is_string($repeat)) {
                 $repeat = [
                     'interval' => $repeat,
                     'count' => null,
@@ -63,16 +63,16 @@ class Queue {
                 ];
             }
 
-            if (is_array($repeat)) {
+            if (\is_array($repeat)) {
 
-                $repeat = array_merge([
+                $repeat = \array_merge([
                     'count' => null,
                     'interval' => null,
                     'until' => null
                 ], $repeat);
 
-                if (is_string($repeat['until'])) {
-                    $repeat['until'] = strtotime($repeat['until'], $availableAt);
+                if (\is_string($repeat['until'])) {
+                    $repeat['until'] = \strtotime($repeat['until'], $availableAt);
                 }
 
                 if (isset($repeat['interval'])) {
@@ -93,7 +93,7 @@ class Queue {
             'priority' => $priority,
             'status' => 'pending',
             'attempts' => 0,
-            'max_attempts' => abs($maxAttempts),
+            'max_attempts' => \abs($maxAttempts),
             'uid' => $uid,
         ];
 
@@ -113,7 +113,7 @@ class Queue {
         }
 
         $repeat = $message['repeat'];
-        $currentTimestamp = time();
+        $currentTimestamp = \time();
 
         if (!empty($repeat['until']) && $repeat['until'] < $currentTimestamp) {
             return;
@@ -136,29 +136,29 @@ class Queue {
 
     protected function calculateNextRepeatableInterval(string $interval, int $currentTimestamp) {
 
-        $interval = trim($interval);
+        $interval = \trim($interval);
 
         // Check if the interval is a time of day (contains am/pm or is in 24h format like 15:00)
         if (
-            preg_match('/^(1[0-2]|0?[1-9])(?::([0-5][0-9]))?([ap]m)$/i', $interval) ||
-            preg_match('/^([01]?[0-9]|2[0-3]):([0-5][0-9])$/', $interval)
+            \preg_match('/^(1[0-2]|0?[1-9])(?::([0-5][0-9]))?([ap]m)$/i', $interval) ||
+            \preg_match('/^([01]?[0-9]|2[0-3]):([0-5][0-9])$/', $interval)
         ) {
             // It's a time of day - calculate the next occurrence
             $dt = new \DateTime('@' . $currentTimestamp);
-            $dt->setTimezone(new \DateTimeZone(date_default_timezone_get()));
+            $dt->setTimezone(new \DateTimeZone(\date_default_timezone_get()));
             $today = $dt->format('Y-m-d');
 
             // Try to parse the time for today
-            $todayWithTime = strtotime($today . ' ' . $interval);
+            $todayWithTime = \strtotime($today . ' ' . $interval);
 
             if ($todayWithTime > $currentTimestamp) {
                 // If today's occurrence is in the future, use it
                 return $todayWithTime;
             } else {
                 // Otherwise, use tomorrow's occurrence
-                $tomorrow = strtotime('+1 day', strtotime($today));
-                $tomorrowFormatted = date('Y-m-d', $tomorrow);
-                return strtotime($tomorrowFormatted . ' ' . $interval);
+                $tomorrow = \strtotime('+1 day', \strtotime($today));
+                $tomorrowFormatted = \date('Y-m-d', $tomorrow);
+                return \strtotime($tomorrowFormatted . ' ' . $interval);
             }
         }
 
@@ -174,7 +174,7 @@ class Queue {
         $interval = $mappings[$interval] ?? $interval;
 
         // Use PHP's strtotime for calculation
-        $nextTime = strtotime("+{$interval}", $currentTimestamp);
+        $nextTime = \strtotime("+{$interval}", $currentTimestamp);
 
         return $nextTime !== false ? $nextTime : $currentTimestamp + 86400; // Default to 1 day if parsing fails
     }
@@ -187,7 +187,7 @@ class Queue {
             'filter' => [
                 'queue' => $this->queueName,
                 'status' => 'pending',
-                'available_at' => ['$lte' => time()],
+                'available_at' => ['$lte' => \time()],
             ]
         ])[0] ?? null;
 
@@ -197,7 +197,7 @@ class Queue {
 
         $message['attempts'] = ($message['attempts'] ?? 0) + 1;
         $message['status'] = 'reserved';
-        $message['reserved_at'] = time();
+        $message['reserved_at'] = \time();
 
         $this->storage->save($this->collectionName, $message);
 
@@ -212,10 +212,10 @@ class Queue {
             return false;
         }
 
-        $message = array_merge($message, $data);
+        $message = \array_merge($message, $data);
 
         $message['status'] = 'completed';
-        $message['completed_at'] = time();
+        $message['completed_at'] = \time();
 
         $this->storage->save($this->collectionName, $message);
 
@@ -232,7 +232,7 @@ class Queue {
             return false;
         }
 
-        $message = array_merge($message, $data);
+        $message = \array_merge($message, $data);
 
         $message['status'] = (($message['attempts'] + 1) > $message['max_attempts']) ? 'failed' : 'pending';
         $message['reserved_at'] = null;
@@ -252,7 +252,7 @@ class Queue {
 
     public function release() {
 
-        $timestamp = time();
+        $timestamp = \time();
         $lockExpiry = $timestamp - $this->lockTimeout;
 
         $this->storage->update($this->collectionName,[
@@ -267,11 +267,11 @@ class Queue {
 
     public function delete($ids) {
 
-        if (is_string($ids)) {
+        if (\is_string($ids)) {
             $ids = [$ids];
         }
 
-        if (!is_array($ids)) {
+        if (!\is_array($ids)) {
             return false;
         }
 
@@ -283,7 +283,7 @@ class Queue {
 
     public function messages(array $options = []) {
 
-        $options = array_merge([
+        $options = \array_merge([
             'status' => $options['status'] ?? null,
             'limit' => 10,
             'skip' => 0,
@@ -298,8 +298,8 @@ class Queue {
             $filter['status'] = $options['status'];
         }
 
-        if (isset($options['filter']) && is_array($options['filter'])) {
-            $filter = array_merge($options['filter'], $filter);
+        if (isset($options['filter']) && \is_array($options['filter'])) {
+            $filter = \array_merge($options['filter'], $filter);
         }
 
         return $this->storage->find($this->collectionName, [
@@ -334,8 +334,8 @@ class Queue {
 
     public function cleanup(string $status, int $olderThan = 86400): void {
 
-        $timestamp = time();
-        $cutoff = $timestamp - abs($olderThan);
+        $timestamp = \time();
+        $cutoff = $timestamp - \abs($olderThan);
 
         $filter = [
             'queue' => $this->queueName,

@@ -139,3 +139,29 @@
     padding-left: 0 !important;
     padding-right: 0 !important;
 }
+
+
+/* RTL support */
+
+.kiss-margin-start { margin-inline-start: var(--kiss-block-element-margin, 1rem) !important; }
+.kiss-margin-end { margin-inline-end: var(--kiss-block-element-margin, 1rem) !important; }
+.kiss-margin-small-start { margin-inline-start: var(--kiss-block-element-margin-small, .6rem) !important; }
+.kiss-margin-small-end { margin-inline-end: var(--kiss-block-element-margin-small, .6rem) !important; }
+.kiss-margin-xsmall-start { margin-inline-start: var(--kiss-block-element-margin-xsmall, 4px) !important; }
+.kiss-margin-xsmall-end { margin-inline-end: var(--kiss-block-element-margin-xsmall, 4px) !important; }
+.kiss-margin-large-start { margin-inline-start: var(--kiss-block-element-margin-large, 3rem) !important; }
+.kiss-margin-large-end { margin-inline-end: var(--kiss-block-element-margin-large, 3rem) !important; }
+
+.kiss-margin-auto-start { margin-inline-start: auto !important; }
+.kiss-margin-auto-end { margin-inline-end: auto !important; }
+
+.kiss-padding-start { padding-inline-start: var(--kiss-padding, 1rem) !important; }
+.kiss-padding-end { padding-inline-end: var(--kiss-padding, 1rem) !important; }
+.kiss-padding-small-start { padding-inline-start: var(--kiss-padding-small, .6rem) !important; }
+.kiss-padding-small-end { padding-inline-end: var(--kiss-padding-small, .6rem) !important; }
+.kiss-padding-xsmall-start { padding-inline-start: var(--kiss-padding-xsmall, .3rem) !important; }
+.kiss-padding-xsmall-end { padding-inline-end: var(--kiss-padding-xsmall, .3rem) !important; }
+.kiss-padding-larger-start { padding-inline-start: var(--kiss-padding-larger, 2rem) !important; }
+.kiss-padding-larger-end { padding-inline-end: var(--kiss-padding-larger, 2rem) !important; }
+.kiss-padding-large-start { padding-inline-start: var(--kiss-padding-large, 3rem) !important; }
+.kiss-padding-large-end { padding-inline-end: var(--kiss-padding-large, 3rem) !important; }

@@ -118,7 +118,7 @@ class EditorActions {
                         height: attr.height || ''
                     };
 
-                    VueView.ui.modal('app:assets/vue-components/fields/richtext/dialogs/image.js', {meta}, {
+                    VueView.ui.modal('app:assets/vue-components/fields/richtext/dialogs/image.js', { meta }, {
 
                         save: meta => {
 
@@ -142,7 +142,7 @@ class EditorActions {
                         target: attr.target,
                     }
 
-                    VueView.ui.modal('app:assets/vue-components/fields/richtext/dialogs/link.js', {meta}, {
+                    VueView.ui.modal('app:assets/vue-components/fields/richtext/dialogs/link.js', { meta }, {
 
                         save: meta => {
 
@@ -163,6 +163,18 @@ class EditorActions {
                 icon: 'horizontal_rule',
                 title: 'Horizontal Rule',
                 action: (editor) => editor.chain().focus().setHorizontalRule().run(),
+            },
+            checklist: {
+                icon: 'check_box',
+                title: 'Task List',
+                action: (editor) => editor.chain().focus().toggleTaskList().run(),
+                isActive: (editor) => editor.isActive('taskList')
+            },
+            highlight: {
+                icon: 'ink_highlighter',
+                title: 'Highlight',
+                action: (editor) => editor.chain().focus().toggleHighlight().run(),
+                isActive: (editor) => editor.isActive('highlight')
             },
         };
     }

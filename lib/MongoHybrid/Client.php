@@ -9,7 +9,7 @@ class Client {
 
     public function __construct(string $server, array $options = [], array $driverOptions = []) {
 
-        $scheme = strtolower(explode('://', $server, 2)[0] ?? '');
+        $scheme = \strtolower(\explode('://', $server, 2)[0] ?? '');
 
         switch ($scheme) {
             case 'mongodb':
@@ -101,7 +101,7 @@ class Client {
      * @return integer
      */
     public function removeKey(string $collection, mixed $key): mixed {
-        return $this->driver->remove($collection, ['key' => (is_array($key) ? ['$in' => $key] : $key)]);
+        return $this->driver->remove($collection, ['key' => (\is_array($key) ? ['$in' => $key] : $key)]);
     }
 
     /**
@@ -160,7 +160,7 @@ class Client {
 
         $this->setKey($collection, $key, $list);
 
-        return count($list);
+        return \count($list);
     }
 
     /**
@@ -175,11 +175,11 @@ class Client {
 
         $list = $this->getKey($collection, $key, []);
 
-        array_unshift($list, $value);
+        \array_unshift($list, $value);
 
         $this->setKey($collection, $key, $list);
 
-        return count($list);
+        return \count($list);
     }
 
 
@@ -198,7 +198,7 @@ class Client {
         $list = $this->getKey($collection, $key, []);
 
         if ($index < 0) {
-            $index = count($list) - abs($index);
+            $index = \count($list) - \abs($index);
         }
 
         if (isset($list[$index])){
@@ -224,7 +224,7 @@ class Client {
         $list = $this->getKey($collection, $key, []);
 
         if ($index < 0) {
-            $index = count($list) - abs($index);
+            $index = \count($list) - \abs($index);
         }
 
         return isset($list[$index]) ? $list[$index]:null;
@@ -302,7 +302,7 @@ class Client {
 
         $set = $this->getKey($collection, $key, []);
 
-        return array_keys($set);
+        return \array_keys($set);
     }
 
     /**
@@ -316,7 +316,7 @@ class Client {
 
         $set = $this->getKey($collection, $key, []);
 
-        return array_values($set);
+        return \array_values($set);
     }
 
     /**
@@ -328,7 +328,7 @@ class Client {
      */
     public function hlen(string $collection, string $key): int {
 
-        return count($this->hkeys($collection, $key));
+        return \count($this->hkeys($collection, $key));
     }
 
     /**
@@ -342,11 +342,11 @@ class Client {
 
         $set = $this->getKey($collection, $key, []);
 
-        if (!count($set)) return 0;
+        if (!\count($set)) return 0;
 
-        $fields  = func_get_args();
+        $fields  = \func_get_args();
         $removed = 0;
-        $cnt     = count($fields);
+        $cnt     = \count($fields);
 
         for ($i=1; $i<$cnt; $i++){
 
@@ -391,9 +391,9 @@ class Client {
     public function hmget(string $collection, string $key): array {
 
         $set     = $this->getKey($collection, $key, []);
-        $fields  = func_get_args();
+        $fields  = \func_get_args();
         $values  = [];
-        $cnt     = count($fields);
+        $cnt     = \count($fields);
 
         for ($i=1; $i<$cnt; $i++){
             $field = $fields[$i];
@@ -412,8 +412,8 @@ class Client {
     public function hmset(string $collection, string $key): void {
 
         $set   = $this->getKey($collection, $key, []);
-        $args  = func_get_args();
-        $cnt   = count($args);
+        $args  = \func_get_args();
+        $cnt   = \count($args);
 
         for ($i=1; $i<$cnt; $i++){
             $field = $args[$i];
@@ -429,6 +429,6 @@ class Client {
 
     public function __call($method, $args) {
 
-        return call_user_func_array([$this->driver, $method], $args);
+        return \call_user_func_array([$this->driver, $method], $args);
     }
 }

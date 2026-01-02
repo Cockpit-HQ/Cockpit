@@ -48,26 +48,26 @@ class Locales extends \Lime\Helper {
      */
     public function applyLocales($obj, $locale = 'default', ?array $locales = null) {
 
-        if (!is_array($obj)) {
+        if (!\is_array($obj)) {
             return $obj;
         }
 
         if (!isset($locales)) {
-            $locales = array_keys($this->locales);
+            $locales = \array_keys($this->locales);
         }
 
-        if (!count($locales)) {
+        if (!\count($locales)) {
             return $obj;
         }
 
         $apply = function($obj) use($locales, $locale) {
 
-            if (!is_array($obj)) return $obj;
+            if (!\is_array($obj)) return $obj;
 
-            $keys = array_filter(array_keys($obj), function($key) use($locales) {
+            $keys = \array_filter(\array_keys($obj), function($key) use($locales) {
 
                 foreach ($locales as $l) {
-                    if (preg_match("/_{$l}$/", $key)) return false;
+                    if (\preg_match("/_{$l}$/", $key)) return false;
                 }
 
                 return true;
@@ -93,7 +93,7 @@ class Locales extends \Lime\Helper {
                     unset($obj["{$key}_{$l}"]);
                 }
 
-                if (isset($obj[$key]) && is_array($obj[$key])) {
+                if (isset($obj[$key]) && \is_array($obj[$key])) {
                     $obj[$key] = $this->applyLocales($obj[$key], $locale, $locales);
                 }
             }
@@ -102,7 +102,7 @@ class Locales extends \Lime\Helper {
         };
 
         if (isset($obj[0])) {
-            $obj = array_map($apply, $obj);
+            $obj = \array_map($apply, $obj);
         } else {
             $obj = $apply($obj);
         }

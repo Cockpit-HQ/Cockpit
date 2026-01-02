@@ -32,3 +32,27 @@
     bottom: 0;
     right: 0;
 }
+
+.kiss-position-top-start {
+    position: absolute;
+    top: 0;
+    inset-inline-start: 0;
+}
+
+.kiss-position-top-end {
+    position: absolute;
+    top: 0;
+    inset-inline-end: 0;
+}
+
+.kiss-position-bottom-start {
+    position: absolute;
+    bottom: 0;
+    inset-inline-start: 0;
+}
+
+.kiss-position-bottom-end {
+    position: absolute;
+    bottom: 0;
+    inset-inline-end: 0;
+}

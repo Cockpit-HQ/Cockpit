@@ -31,7 +31,7 @@ export default {
         <div class="app-offcanvas-container">
 
             <div class="kiss-padding kiss-text-bold kiss-flex kiss-flex-middle">
-                <icon class="kiss-margin-small-right kiss-size-3" size="larger">folder</icon>
+                <icon class="kiss-margin-small-end kiss-size-3" size="larger">folder</icon>
                 <div class="kiss-flex-1">{{ t('Finder') }}</div>
             </div>
 

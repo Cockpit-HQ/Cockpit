@@ -14,6 +14,10 @@ class i18n extends \Lime\Helper {
     public string $locale     = 'en';
     private array $_languages = [];
 
+    public static array $rtl = [
+        'ar', 'dv', 'fa', 'he', 'ps', 'ur', 'yi'
+    ];
+
     public static array $locales = [
 
         'aa' => 'Afar',
@@ -540,6 +544,15 @@ class i18n extends \Lime\Helper {
         if ($locale) {
             $this->locale = $locale;
         }
+    }
+
+    /**
+     * Check if locale is RTL
+     *
+     * @return  bool
+     */
+    public function isRTL(): bool {
+        return \in_array($this->locale, self::$rtl);
     }
 
     /**

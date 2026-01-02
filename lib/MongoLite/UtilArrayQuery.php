@@ -35,11 +35,11 @@ class UtilArrayQuery {
                 // List of valid top-level operators
                 $topLevelOperators = ['$and', '$or', '$where', '$nor', '$expr'];
 
-                if (in_array($key, $topLevelOperators)) {
+                if (\in_array($key, $topLevelOperators)) {
 
                     switch ($key) {
                         case '$and':
-                            if (!is_array($value)) {
+                            if (!\is_array($value)) {
                                 return false;
                             }
                             foreach ($value as $subCriteria) {
@@ -50,7 +50,7 @@ class UtilArrayQuery {
                             break;
 
                         case '$or':
-                            if (!is_array($value)) {
+                            if (!\is_array($value)) {
                                 return false;
                             }
                             $orResult = false;
@@ -66,7 +66,7 @@ class UtilArrayQuery {
                             break;
 
                         case '$where':
-                            if (is_string($value) || !is_callable($value)) {
+                            if (\is_string($value) || !\is_callable($value)) {
                                 throw new \InvalidArgumentException($key . ' Function should be callable');
                             }
 
@@ -80,7 +80,7 @@ class UtilArrayQuery {
                             break;
 
                         case '$nor':
-                            if (!is_array($value)) {
+                            if (!\is_array($value)) {
                                 return false;
                             }
                             foreach ($value as $subCriteria) {
@@ -90,7 +90,7 @@ class UtilArrayQuery {
                             }
                             break;
                         case '$expr':
-                            if (!is_array($value)) {
+                            if (!\is_array($value)) {
                                 return false;
                             }
                             if (!self::evaluateExpression($value, $document)) {
@@ -105,11 +105,11 @@ class UtilArrayQuery {
                     $fieldValue = self::getNestedValue($document, $key);
 
                     // Handle as regular field check
-                    if (is_array($value) && !empty($value) && isset(array_keys($value)[0]) && array_keys($value)[0][0] === '$') {
+                    if (\is_array($value) && !empty($value) && isset(\array_keys($value)[0]) && \array_keys($value)[0][0] === '$') {
                         if (!self::check($fieldValue, $value)) {
                             return false;
                         }
-                    } else if (is_null($value)) {
+                    } else if (\is_null($value)) {
                         // MongoDB behavior: null matches both null values and non-existent fields
                         if (self::getNestedValueExists($document, $key) && $fieldValue !== null) {
                             return false;
@@ -126,9 +126,9 @@ class UtilArrayQuery {
                 $fieldValue = self::getNestedValue($document, $key);
 
                 // Check if the value is a condition array or a direct value
-                if (is_array($value) && !empty($value)) {
-                    $firstKey = array_keys($value)[0];
-                    if (is_string($firstKey) && str_starts_with($firstKey, '$')) {
+                if (\is_array($value) && !empty($value)) {
+                    $firstKey = \array_keys($value)[0];
+                    if (\is_string($firstKey) && \str_starts_with($firstKey, '$')) {
                         // This is a condition array with operators like {age: {$gt: 25}}
                         
                         // Handle special case for $exists - it needs to check field presence, not value
@@ -139,7 +139,7 @@ class UtilArrayQuery {
                                 return false;
                             }
                             // If there are other operators besides $exists, continue checking them
-                            $otherConditions = array_diff_key($value, ['$exists' => true]);
+                            $otherConditions = \array_diff_key($value, ['$exists' => true]);
                             if (!empty($otherConditions)) {
                                 if (!$fieldExists) {
                                     // Field doesn't exist, other conditions can't be checked
@@ -151,10 +151,10 @@ class UtilArrayQuery {
                             }
                         }
                         // Handle special case for $elemMatch on arrays
-                        else if (isset($value['$elemMatch']) && is_array($fieldValue)) {
+                        else if (isset($value['$elemMatch']) && \is_array($fieldValue)) {
                             $found = false;
                             foreach ($fieldValue as $element) {
-                                if (is_array($element) && self::evaluateCondition($element, $value['$elemMatch'])) {
+                                if (\is_array($element) && self::evaluateCondition($element, $value['$elemMatch'])) {
                                     $found = true;
                                     break;
                                 }
@@ -167,7 +167,7 @@ class UtilArrayQuery {
                         }
                     } else {
                         // Direct value comparison for arrays without operators
-                        if (is_null($value)) {
+                        if (\is_null($value)) {
                             // MongoDB behavior: null matches both null values and non-existent fields
                             if (self::getNestedValueExists($document, $key) && $fieldValue !== null) {
                                 return false;
@@ -179,14 +179,14 @@ class UtilArrayQuery {
                             }
 
                             // Handle all comparison cases
-                            if (is_array($fieldValue) && !is_array($value)) {
+                            if (\is_array($fieldValue) && !\is_array($value)) {
                                 // If field is array (including nested arrays from dot notation), check if it contains the value
                                 if (!self::checkArrayContains($fieldValue, $value)) {
                                     return false;
                                 }
-                            } else if (is_array($value) && !is_array($fieldValue)) {
+                            } else if (\is_array($value) && !\is_array($fieldValue)) {
                                 // If value is array and field is not, check if value contains the field
-                                if (!in_array($fieldValue, $value)) {
+                                if (!\in_array($fieldValue, $value)) {
                                     return false;
                                 }
                             } else if ($fieldValue != $value) {
@@ -197,7 +197,7 @@ class UtilArrayQuery {
                     }
                 } else {
                     // Direct value comparison
-                    if (is_null($value)) {
+                    if (\is_null($value)) {
                         // MongoDB behavior: null matches both null values and non-existent fields
                         if (self::getNestedValueExists($document, $key) && $fieldValue !== null) {
                             return false;
@@ -209,14 +209,14 @@ class UtilArrayQuery {
                         }
 
                         // Handle all comparison cases
-                        if (is_array($fieldValue) && !is_array($value)) {
+                        if (\is_array($fieldValue) && !\is_array($value)) {
                             // If field is array (including nested arrays from dot notation), check if it contains the value
                             if (!self::checkArrayContains($fieldValue, $value)) {
                                 return false;
                             }
-                        } else if (is_array($value) && !is_array($fieldValue)) {
+                        } else if (\is_array($value) && !\is_array($fieldValue)) {
                             // If value is array and field is not, check if value contains the field
-                            if (!in_array($fieldValue, $value)) {
+                            if (!\in_array($fieldValue, $value)) {
                                 return false;
                             }
                         } else if ($fieldValue != $value) {
@@ -239,35 +239,35 @@ class UtilArrayQuery {
     public static function getNestedValue(array $array, string $key) {
 
         // Security check for illegal characters (from original implementation)
-        if (str_contains($key, '(') || str_contains($key, '"') || str_contains($key, "'")) {
+        if (\str_contains($key, '(') || \str_contains($key, '"') || \str_contains($key, "'")) {
             throw new \InvalidArgumentException('Unallowed characters used in filter keys');
         }
 
-        if (!str_contains($key, '.')) {
+        if (!\str_contains($key, '.')) {
             return $array[$key] ?? null;
         }
 
-        $keys = explode('.', $key);
+        $keys = \explode('.', $key);
         $values = [$array];
 
         foreach ($keys as $k) {
             $newValues = [];
             
             foreach ($values as $value) {
-                if (!is_array($value)) {
+                if (!\is_array($value)) {
                     continue;
                 }
                 
                 // Check if current value is an array without the key
                 // This means we should traverse array elements
-                if (!array_key_exists($k, $value) && !isArrayAssociative($value)) {
+                if (!\array_key_exists($k, $value) && !isArrayAssociative($value)) {
                     // Traverse array elements
                     foreach ($value as $element) {
-                        if (is_array($element) && array_key_exists($k, $element)) {
+                        if (\is_array($element) && \array_key_exists($k, $element)) {
                             $newValues[] = $element[$k];
                         }
                     }
-                } elseif (array_key_exists($k, $value)) {
+                } elseif (\array_key_exists($k, $value)) {
                     $newValues[] = $value[$k];
                 }
             }
@@ -281,7 +281,7 @@ class UtilArrayQuery {
 
         // If we have multiple values, return them as array
         // If single value, return it directly
-        return count($values) === 1 ? $values[0] : $values;
+        return \count($values) === 1 ? $values[0] : $values;
     }
 
     /**
@@ -290,31 +290,31 @@ class UtilArrayQuery {
      */
     private static function getNestedValueExists(array $array, string $key): bool {
 
-        if (!str_contains($key, '.')) {
-            return array_key_exists($key, $array);
+        if (!\str_contains($key, '.')) {
+            return \array_key_exists($key, $array);
         }
 
-        $keys = explode('.', $key);
+        $keys = \explode('.', $key);
         $values = [$array];
 
         foreach ($keys as $k) {
             $newValues = [];
             
             foreach ($values as $value) {
-                if (!is_array($value)) {
+                if (!\is_array($value)) {
                     continue;
                 }
                 
                 // Check if current value is an array without the key
                 // This means we should traverse array elements
-                if (!array_key_exists($k, $value) && !isArrayAssociative($value)) {
+                if (!\array_key_exists($k, $value) && !isArrayAssociative($value)) {
                     // Traverse array elements
                     foreach ($value as $element) {
-                        if (is_array($element) && array_key_exists($k, $element)) {
+                        if (\is_array($element) && \array_key_exists($k, $element)) {
                             $newValues[] = $element[$k];
                         }
                     }
-                } elseif (array_key_exists($k, $value)) {
+                } elseif (\array_key_exists($k, $value)) {
                     $newValues[] = $value[$k];
                 }
             }
@@ -334,7 +334,7 @@ class UtilArrayQuery {
      */
     private static function checkArrayContains(array $arr, mixed $value): bool {
         foreach ($arr as $item) {
-            if (is_array($item)) {
+            if (\is_array($item)) {
                 // Recursively check nested arrays
                 if (self::checkArrayContains($item, $value)) {
                     return true;
@@ -367,7 +367,7 @@ class UtilArrayQuery {
      * Register a closure for the $where operator
      */
     public static function registerClosure(callable $closure): string {
-        $uid = uniqid('mongoliteCallable') . bin2hex(random_bytes(5));
+        $uid = \uniqid('mongoliteCallable') . \bin2hex(\random_bytes(5));
         self::$closures[$uid] = $closure;
         return $uid;
     }
@@ -381,14 +381,14 @@ class UtilArrayQuery {
         $geoOperators = ['$geoWithin', '$geoIntersects', '$near'];
         $hasGeoOperator = false;
         foreach ($condition as $key => $_) {
-            if (in_array($key, $geoOperators)) {
+            if (\in_array($key, $geoOperators)) {
                 $hasGeoOperator = true;
                 break;
             }
         }
         
         // If value is an array and NOT a geo query, check if any element matches
-        if (is_array($value) && !$hasGeoOperator) {
+        if (\is_array($value) && !$hasGeoOperator) {
             // For non-geo queries, traverse array elements
             return self::checkArrayWithCondition($value, $condition);
         }
@@ -407,7 +407,7 @@ class UtilArrayQuery {
      */
     private static function checkArrayWithCondition(array $arr, array $condition): bool {
         foreach ($arr as $item) {
-            if (is_array($item)) {
+            if (\is_array($item)) {
                 // Recursively check nested arrays
                 if (self::checkArrayWithCondition($item, $condition)) {
                     return true;
@@ -453,11 +453,11 @@ class UtilArrayQuery {
                 break;
 
             case '$not':
-                if (is_string($b)) {
-                    if (is_string($a)) {
-                        $r = !preg_match(isset($b[0]) && $b[0] == '/' ? $b : '/' . $b . '/iu', $a);
+                if (\is_string($b)) {
+                    if (\is_string($a)) {
+                        $r = !\preg_match(isset($b[0]) && $b[0] == '/' ? $b : '/' . $b . '/iu', $a);
                     }
-                } elseif (is_array($b)) {
+                } elseif (\is_array($b)) {
                     $r = !self::check($a, $b);
                 }
                 break;
@@ -471,11 +471,11 @@ class UtilArrayQuery {
                 break;
 
             case '$gte':
-                if ((is_numeric($a) && is_numeric($b)) || (is_string($a) && is_string($b))) {
+                if ((\is_numeric($a) && \is_numeric($b)) || (\is_string($a) && \is_string($b))) {
                     $r = $a >= $b;
-                } else if (is_numeric($a) && is_string($b) && is_numeric($b)) {
+                } else if (\is_numeric($a) && \is_string($b) && \is_numeric($b)) {
                     $r = $a >= (float)$b;
-                } else if (is_string($a) && is_numeric($b) && is_numeric($a)) {
+                } else if (\is_string($a) && \is_numeric($b) && \is_numeric($a)) {
                     $r = (float)$a >= $b;
                 } else {
                     // Last resort - compare string representations
@@ -484,11 +484,11 @@ class UtilArrayQuery {
                 break;
 
             case '$gt':
-                if ((is_numeric($a) && is_numeric($b)) || (is_string($a) && is_string($b))) {
+                if ((\is_numeric($a) && \is_numeric($b)) || (\is_string($a) && \is_string($b))) {
                     $r = $a > $b;
-                } else if (is_numeric($a) && is_string($b) && is_numeric($b)) {
+                } else if (\is_numeric($a) && \is_string($b) && \is_numeric($b)) {
                     $r = $a > (float)$b;
-                } else if (is_string($a) && is_numeric($b) && is_numeric($a)) {
+                } else if (\is_string($a) && \is_numeric($b) && \is_numeric($a)) {
                     $r = (float)$a > $b;
                 } else {
                     // Last resort - compare string representations
@@ -497,11 +497,11 @@ class UtilArrayQuery {
                 break;
 
             case '$lte':
-                if ((is_numeric($a) && is_numeric($b)) || (is_string($a) && is_string($b))) {
+                if ((\is_numeric($a) && \is_numeric($b)) || (\is_string($a) && \is_string($b))) {
                     $r = $a <= $b;
-                } else if (is_numeric($a) && is_string($b) && is_numeric($b)) {
+                } else if (\is_numeric($a) && \is_string($b) && \is_numeric($b)) {
                     $r = $a <= (float)$b;
-                } else if (is_string($a) && is_numeric($b) && is_numeric($a)) {
+                } else if (\is_string($a) && \is_numeric($b) && \is_numeric($a)) {
                     $r = (float)$a <= $b;
                 } else {
                     // Last resort - compare string representations
@@ -510,11 +510,11 @@ class UtilArrayQuery {
                 break;
 
             case '$lt':
-                if ((is_numeric($a) && is_numeric($b)) || (is_string($a) && is_string($b))) {
+                if ((\is_numeric($a) && \is_numeric($b)) || (\is_string($a) && \is_string($b))) {
                     $r = $a < $b;
-                } else if (is_numeric($a) && is_string($b) && is_numeric($b)) {
+                } else if (\is_numeric($a) && \is_string($b) && \is_numeric($b)) {
                     $r = $a < (float)$b;
-                } else if (is_string($a) && is_numeric($b) && is_numeric($a)) {
+                } else if (\is_string($a) && \is_numeric($b) && \is_numeric($a)) {
                     $r = (float)$a < $b;
                 } else {
                     // Last resort - compare string representations
@@ -523,43 +523,43 @@ class UtilArrayQuery {
                 break;
 
             case '$in':
-                if (is_array($a)) {
-                    $r = is_array($b) && count(array_intersect($a, $b)) > 0;
+                if (\is_array($a)) {
+                    $r = \is_array($b) && \count(\array_intersect($a, $b)) > 0;
                 } else {
-                    $r = is_array($b) && in_array($a, $b);
+                    $r = \is_array($b) && \in_array($a, $b);
                 }
                 break;
 
             case '$nin':
-                if (is_array($a)) {
-                    $r = is_array($b) && count(array_intersect($a, $b)) === 0;
+                if (\is_array($a)) {
+                    $r = \is_array($b) && \count(\array_intersect($a, $b)) === 0;
                 } else {
-                    $r = is_array($b) && in_array($a, $b) === false;
+                    $r = \is_array($b) && \in_array($a, $b) === false;
                 }
                 break;
 
             case '$has':
-                if (is_array($b))
+                if (\is_array($b))
                     throw new \InvalidArgumentException('Invalid argument for $has array not supported');
-                if (!is_array($a)) $a = @\json_decode($a, true) ?: [];
-                $r = in_array($b, $a);
+                if (!\is_array($a)) $a = @\json_decode($a, true) ?: [];
+                $r = \in_array($b, $a);
                 break;
 
             case '$all':
-                if (!is_array($a)) $a = @\json_decode($a, true) ?: [];
-                if (!is_array($b)) {
+                if (!\is_array($a)) $a = @\json_decode($a, true) ?: [];
+                if (!\is_array($b)) {
                     throw new \InvalidArgumentException('Invalid argument for $all option must be array');
                 }
-                $r = count(array_intersect($b, $a)) == count($b);
+                $r = \count(\array_intersect($b, $a)) == \count($b);
                 break;
 
             case '$regex':
-                if (is_string($b)) {
+                if (\is_string($b)) {
                     $b = isset($b[0]) && $b[0] == '/' ? $b : '/' . $b . '/iu';
-                    if (is_string($a)) {
-                        $r = (boolean)preg_match($b, $a);
-                    } elseif (is_countable($a)) {
-                        $r = (boolean)preg_match($b, implode(' ', $a));
+                    if (\is_string($a)) {
+                        $r = (boolean)\preg_match($b, $a);
+                    } elseif (\is_countable($a)) {
+                        $r = (boolean)\preg_match($b, \implode(' ', $a));
                     }
                 }
                 break;
@@ -568,16 +568,16 @@ class UtilArrayQuery {
                 // Note: This is a fallback. $exists should be handled at a higher level
                 // using getNestedValueExists to properly distinguish between null values
                 // and non-existent fields. This fallback treats null as non-existent.
-                $r = $b ? !is_null($a) : is_null($a);
+                $r = $b ? !\is_null($a) : \is_null($a);
                 break;
 
             case '$size':
-                if (!is_array($a)) $a = @json_decode($a, true) ?: [];
-                $r = (int)$b == count($a);
+                if (!\is_array($a)) $a = @\json_decode($a, true) ?: [];
+                $r = (int)$b == \count($a);
                 break;
 
             case '$mod':
-                if (!is_array($b))
+                if (!\is_array($b))
                     throw new \InvalidArgumentException('Invalid argument for $mod option must be array');
                 $r = $a % $b[0] == ($b[1] ?? 0);
                 break;
@@ -588,17 +588,17 @@ class UtilArrayQuery {
                 }
 
                 // [lng, lat]
-                if (!is_array($a['coordinates']) || !is_array($b['$geometry']['coordinates'])) {
+                if (!\is_array($a['coordinates']) || !\is_array($b['$geometry']['coordinates'])) {
                     return false;
                 }
 
                 $distance = \MongoLite\calculateDistanceInMeters($a['coordinates'], $b['$geometry']['coordinates']);
 
-                if (isset($b['$maxDistance']) && is_numeric($b['$maxDistance']) && $distance > $b['$maxDistance']) {
+                if (isset($b['$maxDistance']) && \is_numeric($b['$maxDistance']) && $distance > $b['$maxDistance']) {
                     return false;
                 }
 
-                if (isset($b['$minDistance']) && is_numeric($b['$minDistance']) && $distance < $b['$minDistance']) {
+                if (isset($b['$minDistance']) && \is_numeric($b['$minDistance']) && $distance < $b['$minDistance']) {
                     return false;
                 }
 
@@ -608,23 +608,23 @@ class UtilArrayQuery {
             case '$text':
                 $distance = 3;
                 $minScore = 0.7;
-                if (is_array($b) && isset($b['$search'])) {
-                    if (isset($b['$minScore']) && is_numeric($b['$minScore'])) $minScore = $b['$minScore'];
-                    if (isset($b['$distance']) && is_numeric($b['$distance'])) $distance = $b['$distance'];
+                if (\is_array($b) && isset($b['$search'])) {
+                    if (isset($b['$minScore']) && \is_numeric($b['$minScore'])) $minScore = $b['$minScore'];
+                    if (isset($b['$distance']) && \is_numeric($b['$distance'])) $distance = $b['$distance'];
                     $b = $b['$search'];
                 }
                 $r = fuzzy_search($b, $a, $distance) >= $minScore;
                 break;
 
             case '$geoWithin':
-                if (!isset($a['coordinates']) || !is_array($a['coordinates'])) {
+                if (!isset($a['coordinates']) || !\is_array($a['coordinates'])) {
                     return false;
                 }
                 
                 if (isset($b['$box'])) {
                     // $box: [[minX, minY], [maxX, maxY]]
                     $box = $b['$box'];
-                    if (!is_array($box) || count($box) != 2) return false;
+                    if (!\is_array($box) || \count($box) != 2) return false;
                     [$minX, $minY] = $box[0];
                     [$maxX, $maxY] = $box[1];
                     [$x, $y] = $a['coordinates'];
@@ -632,22 +632,22 @@ class UtilArrayQuery {
                 } elseif (isset($b['$center'])) {
                     // $center: [[centerX, centerY], radius]
                     $center = $b['$center'];
-                    if (!is_array($center) || count($center) != 2) return false;
-                    if (!is_array($center[0]) || count($center[0]) != 2) return false;
-                    if (!is_numeric($center[1])) return false;
+                    if (!\is_array($center) || \count($center) != 2) return false;
+                    if (!\is_array($center[0]) || \count($center[0]) != 2) return false;
+                    if (!\is_numeric($center[1])) return false;
                     [$centerX, $centerY] = $center[0];
-                    if (!is_numeric($centerX) || !is_numeric($centerY)) return false;
+                    if (!\is_numeric($centerX) || !\is_numeric($centerY)) return false;
                     $radius = $center[1];
                     $distance = \MongoLite\calculateDistanceInMeters($a['coordinates'], [$centerX, $centerY]);
                     $r = $distance <= $radius;
                 } elseif (isset($b['$centerSphere'])) {
                     // $centerSphere: [[centerX, centerY], radiusInRadians]
                     $center = $b['$centerSphere'];
-                    if (!is_array($center) || count($center) != 2) return false;
-                    if (!is_array($center[0]) || count($center[0]) != 2) return false;
-                    if (!is_numeric($center[1])) return false;
+                    if (!\is_array($center) || \count($center) != 2) return false;
+                    if (!\is_array($center[0]) || \count($center[0]) != 2) return false;
+                    if (!\is_numeric($center[1])) return false;
                     [$centerX, $centerY] = $center[0];
-                    if (!is_numeric($centerX) || !is_numeric($centerY)) return false;
+                    if (!\is_numeric($centerX) || !\is_numeric($centerY)) return false;
                     $radiusRadians = $center[1];
                     $radiusMeters = $radiusRadians * 6371000; // Earth radius in meters
                     $distance = \MongoLite\calculateDistanceInMeters($a['coordinates'], [$centerX, $centerY]);
@@ -658,7 +658,7 @@ class UtilArrayQuery {
                 break;
 
             case '$geoIntersects':
-                if (!isset($a['coordinates']) || !is_array($a['coordinates'])) {
+                if (!isset($a['coordinates']) || !\is_array($a['coordinates'])) {
                     return false;
                 }
                 
@@ -679,17 +679,17 @@ class UtilArrayQuery {
                 break;
 
             case '$elemMatch':
-                if (!is_array($a)) {
+                if (!\is_array($a)) {
                     return false;
                 }
-                if (!is_array($b)) {
+                if (!\is_array($b)) {
                     throw new \InvalidArgumentException('Invalid argument for $elemMatch - must be an array/object');
                 }
                 
                 $r = false;
                 // Check if any element in the array matches all conditions in $b
                 foreach ($a as $element) {
-                    if (is_array($element) && self::evaluateCondition($element, $b)) {
+                    if (\is_array($element) && self::evaluateCondition($element, $b)) {
                         $r = true;
                         break;
                     }
@@ -790,7 +790,7 @@ class UtilArrayQuery {
         // Handle conditional operators
         if (isset($expr['$cond'])) {
             $cond = $expr['$cond'];
-            if (is_array($cond) && !isset($cond[0])) {
+            if (\is_array($cond) && !isset($cond[0])) {
                 // Object syntax { if: <boolean-expression>, then: <true-case>, else: <false-case> }
                 $condition = self::evaluateExpression($cond['if'], $doc);
                 return $condition ?
@@ -822,14 +822,14 @@ class UtilArrayQuery {
      */
     public static function evaluateExpressionOperands($operand, array $doc): mixed {
         // If operand is a field path (starts with $)
-        if (is_string($operand) && strlen($operand) > 1 && $operand[0] === '$') {
-            $fieldPath = substr($operand, 1); // Remove leading $
+        if (\is_string($operand) && \strlen($operand) > 1 && $operand[0] === '$') {
+            $fieldPath = \substr($operand, 1); // Remove leading $
             return self::getNestedValue($doc, $fieldPath);
         }
 
         // If operand is a sub-expression
-        if (is_array($operand) && count($operand) > 0 &&
-            isset(array_keys($operand)[0]) && array_keys($operand)[0][0] === '$') {
+        if (\is_array($operand) && \count($operand) > 0 &&
+            isset(\array_keys($operand)[0]) && \array_keys($operand)[0][0] === '$') {
             return self::evaluateExpression($operand, $doc);
         }
 
@@ -847,24 +847,24 @@ function levenshtein_utf8(string $s1, string $s2): int {
         // find all multibyte characters (cf. utf-8 encoding specs)
         $matches = [];
 
-        if (!preg_match_all('/[\xC0-\xF7][\x80-\xBF]+/', $str, $matches)) return $str; // plain ascii string
+        if (!\preg_match_all('/[\xC0-\xF7][\x80-\xBF]+/', $str, $matches)) return $str; // plain ascii string
 
         // update the encoding map with the characters not already met
         foreach ($matches[0] as $mbc) {
-            if (!isset($map[$mbc])) $map[$mbc] = chr(128 + count($map));
+            if (!isset($map[$mbc])) $map[$mbc] = \chr(128 + \count($map));
         }
 
         // finally remap non-ascii characters
-        return strtr($str, $map);
+        return \strtr($str, $map);
     };
 
-    return levenshtein($utf8_to_extended_ascii($s1), $utf8_to_extended_ascii($s2));
+    return \levenshtein($utf8_to_extended_ascii($s1), $utf8_to_extended_ascii($s2));
 }
 
 function fuzzy_search(string $search, string $text, $distance = 3): float {
 
-    $needles = explode(' ', mb_strtolower($search, 'UTF-8'));
-    $tokens = explode(' ', mb_strtolower($text, 'UTF-8'));
+    $needles = \explode(' ', \mb_strtolower($search, 'UTF-8'));
+    $tokens = \explode(' ', \mb_strtolower($text, 'UTF-8'));
     $score = 0;
 
     foreach ($needles as $needle) {
@@ -878,7 +878,7 @@ function fuzzy_search(string $search, string $text, $distance = 3): float {
                 $d = levenshtein_utf8($needle, $token);
 
                 if ($d <= $distance) {
-                    $l = mb_strlen($token, 'UTF-8');
+                    $l = \mb_strlen($token, 'UTF-8');
                     $matches = $l - $d;
                     $score += ($matches / $l);
                 }
@@ -887,7 +887,7 @@ function fuzzy_search(string $search, string $text, $distance = 3): float {
 
     }
 
-    return $score / count($needles);
+    return $score / \count($needles);
 }
 
 function calculateDistanceInMeters($fromPoint, $toPoint) {
@@ -895,20 +895,20 @@ function calculateDistanceInMeters($fromPoint, $toPoint) {
     $earthRadius = 6371000;
 
     // Convert latitude and longitude to radians
-    $lng1 = deg2rad($fromPoint[0]);
-    $lat1 = deg2rad($fromPoint[1]);
-    $lng2 = deg2rad($toPoint[0]);
-    $lat2 = deg2rad($toPoint[1]);
+    $lng1 = \deg2rad($fromPoint[0]);
+    $lat1 = \deg2rad($fromPoint[1]);
+    $lng2 = \deg2rad($toPoint[0]);
+    $lat2 = \deg2rad($toPoint[1]);
 
     // Calculate differences
     $latDiff = $lat2 - $lat1;
     $lngDiff = $lng2 - $lng1;
 
     // Haversine formula
-    $a = sin($latDiff / 2) * sin($latDiff / 2) +
-        cos($lat1) * cos($lat2) *
-        sin($lngDiff / 2) * sin($lngDiff / 2);
-    $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+    $a = \sin($latDiff / 2) * \sin($latDiff / 2) +
+        \cos($lat1) * \cos($lat2) *
+        \sin($lngDiff / 2) * \sin($lngDiff / 2);
+    $c = 2 * \atan2(\sqrt($a), \sqrt(1 - $a));
 
     // distance
     return $earthRadius * $c;
@@ -916,12 +916,12 @@ function calculateDistanceInMeters($fromPoint, $toPoint) {
 
 function isArrayAssociative(array $array): bool {
     if (empty($array)) return false;
-    return array_keys($array) !== range(0, count($array) - 1);
+    return \array_keys($array) !== \range(0, \count($array) - 1);
 }
 
 function checkType($value, $type): bool {
     // Type can be a string name, number, or array of types
-    if (is_array($type)) {
+    if (\is_array($type)) {
         // Check if value matches any of the types
         foreach ($type as $t) {
             if (checkType($value, $t)) {
@@ -934,28 +934,28 @@ function checkType($value, $type): bool {
     // Map of BSON types to PHP checks
     $typeMap = [
         // Numeric type codes
-        1 => fn($v) => is_float($v), // Double
-        2 => fn($v) => is_string($v), // String
-        3 => fn($v) => is_array($v) && isArrayAssociative($v), // Object/Document
-        4 => fn($v) => is_array($v) && !isArrayAssociative($v), // Array
-        8 => fn($v) => is_bool($v), // Boolean
-        9 => fn($v) => is_string($v) && strtotime($v) !== false, // Date
-        10 => fn($v) => is_null($v), // Null
-        16 => fn($v) => is_int($v), // Int
-        18 => fn($v) => is_int($v)&& $v >= PHP_INT_MIN && $v <= PHP_INT_MAX, // Long
+        1 => fn($v) => \is_float($v), // Double
+        2 => fn($v) => \is_string($v), // String
+        3 => fn($v) => \is_array($v) && isArrayAssociative($v), // Object/Document
+        4 => fn($v) => \is_array($v) && !isArrayAssociative($v), // Array
+        8 => fn($v) => \is_bool($v), // Boolean
+        9 => fn($v) => \is_string($v) && \strtotime($v) !== false, // Date
+        10 => fn($v) => \is_null($v), // Null
+        16 => fn($v) => \is_int($v), // Int
+        18 => fn($v) => \is_int($v)&& $v >= PHP_INT_MIN && $v <= PHP_INT_MAX, // Long
 
         // String aliases
-        'double' => fn($v) => is_float($v),
-        'string' => fn($v) => is_string($v),
-        'object' => fn($v) => is_array($v)&& isArrayAssociative($v),
-        'array' => fn($v) => is_array($v)&& !isArrayAssociative($v),
-        'bool' => fn($v) => is_bool($v),
-        'boolean' => fn($v) => is_bool($v),
-        'date' => fn($v) => is_string($v)&& strtotime($v) !== false,
-        'null' => fn($v) => is_null($v),
-        'int' => fn($v) => is_int($v),
-        'long' => fn($v) => is_int($v),
-        'number' => fn($v) => is_numeric($v),
+        'double' => fn($v) => \is_float($v),
+        'string' => fn($v) => \is_string($v),
+        'object' => fn($v) => \is_array($v)&& isArrayAssociative($v),
+        'array' => fn($v) => \is_array($v)&& !isArrayAssociative($v),
+        'bool' => fn($v) => \is_bool($v),
+        'boolean' => fn($v) => \is_bool($v),
+        'date' => fn($v) => \is_string($v)&& \strtotime($v) !== false,
+        'null' => fn($v) => \is_null($v),
+        'int' => fn($v) => \is_int($v),
+        'long' => fn($v) => \is_int($v),
+        'number' => fn($v) => \is_numeric($v),
     ];
 
     // If type exists in the map, use that check
@@ -971,7 +971,7 @@ function pointInPolygon(array $point, array $polygon): bool {
     $y = $point[1];
     $inside = false;
     
-    $n = count($polygon);
+    $n = \count($polygon);
     $j = $n - 1;
     
     for ($i = 0; $i < $n; $i++) {
@@ -986,8 +986,8 @@ function pointInPolygon(array $point, array $polygon): bool {
         }
         
         // Check if point is on edge
-        if (($yi == $yj && $yi == $y && $x >= min($xi, $xj) && $x <= max($xi, $xj)) ||
-            ($xi == $xj && $xi == $x && $y >= min($yi, $yj) && $y <= max($yi, $yj))) {
+        if (($yi == $yj && $yi == $y && $x >= \min($xi, $xj) && $x <= \max($xi, $xj)) ||
+            ($xi == $xj && $xi == $x && $y >= \min($yi, $yj) && $y <= \max($yi, $yj))) {
             return true;
         }
         

@@ -139,6 +139,7 @@ if (!count($failed)) {
     <link rel="icon" type="image/png" href="../favicon.png">
     <link href="../modules/App/assets/css/app.css" type="text/css" rel="stylesheet">
     <script src="../modules/App/assets/vendor/kiss/lib.js" type="module"></script>
+    <script src="../modules/App/assets/components/bg-fluxanimation/bg-fluxanimation.js" type="module"></script>
     <style>
 
         .install-card {
@@ -154,8 +155,10 @@ if (!count($failed)) {
 </head>
 <body class="kiss-flex kiss-flex-center kiss-flex-middle">
 
+    <bg-fluxanimation class="kiss-cover" colors="<?= (count($failed) ? '--kiss-color-danger' : '--kiss-color-primary') ?>"></bg-fluxanimation>
 
-    <kiss-container class="install-container">
+
+    <kiss-container class="kiss-position-relative install-container">
 
         <kiss-card class="install-card kiss-padding-large animated <?=(count($failed) ? 'bounceInDown':'pulse')?>" theme="shadowed contrast">
 

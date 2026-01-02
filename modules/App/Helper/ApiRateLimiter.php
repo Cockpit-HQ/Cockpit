@@ -35,7 +35,7 @@ class ApiRateLimiter extends \Lime\Helper {
             $response = new \Lime\Response();
             $response->status = 429;
             $response->mime = 'json';
-            $response->body = json_encode(['error' => 'Rate limit exceeded']);
+            $response->body = \json_encode(['error' => 'Rate limit exceeded']);
             $response->flush();
             exit;
         }
@@ -55,7 +55,7 @@ class ApiRateLimiter extends \Lime\Helper {
         }
 
         $key     = "api.ratelimit.{$this->rateLimitTime}.{$identifier}";
-        $time    = time();
+        $time    = \time();
         $default = ['requests' => 0, 'time' => $time + $this->rateLimitTime];
         $meta    = $this->app->memory->get($key, $default);
 

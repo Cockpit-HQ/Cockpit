@@ -16,7 +16,54 @@ class Index {
     public function __construct(string $path, array $options = []) {
 
         $this->db = new PDO("sqlite:{$path}");
+        $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        
         $this->fields = $this->getFieldsFromExistingTable();
+
+        // Register fuzzy search functions
+        $this->fuzzyEnhancer = new FuzzyEnhancer($this->db);
+        $this->fuzzyEnhancer->registerFunctions();
+
+        // Register Geo functions
+        $this->db->sqliteCreateFunction('geodist', function($lat1, $lon1, $lat2, $lon2) {
+            $earthRadius = 6371000; // meters
+            
+            $lat1 = \deg2rad((float)$lat1);
+            $lon1 = \deg2rad((float)$lon1);
+            $lat2 = \deg2rad((float)$lat2);
+            $lon2 = \deg2rad((float)$lon2);
+            
+            $dLat = $lat2 - $lat1;
+            $dLon = $lon2 - $lon1;
+            
+            $a = \sin($dLat/2) * \sin($dLat/2) + \cos($lat1) * \cos($lat2) * \sin($dLon/2) * \sin($dLon/2);
+            $c = 2 * \atan2(\sqrt($a), \sqrt(1-$a));
+            
+            return $earthRadius * $c;
+        }, 4);
+
+        $this->db->sqliteCreateFunction('geopoly', function() {
+            $args = \func_get_args();
+            $lat = (float)\array_shift($args);
+            $lon = (float)\array_shift($args);
+            $polygon = $args;
+            
+            $vertices = [];
+            for ($i = 0; $i < \count($polygon); $i += 2) {
+                $vertices[] = ['lat' => (float)$polygon[$i], 'lon' => (float)$polygon[$i+1]];
+            }
+            
+            // Ray casting algorithm
+            $inside = false;
+            $count = \count($vertices);
+            for ($i = 0, $j = $count - 1; $i < $count; $j = $i++) {
+                if ((($vertices[$i]['lat'] > $lat) != ($vertices[$j]['lat'] > $lat)) &&
+                    ($lon < ($vertices[$j]['lon'] - $vertices[$i]['lon']) * ($lat - $vertices[$i]['lat']) / ($vertices[$j]['lat'] - $vertices[$i]['lat']) + $vertices[$i]['lon'])) {
+                    $inside = !$inside;
+                }
+            }
+            return $inside;
+        });
 
         $pragma = [
             'journal_mode'  => $options['journal_mode'] ??  'WAL',
@@ -92,14 +139,14 @@ class Index {
 
         foreach ($fields as $field) {
 
-            if (in_array($field, ['id', '__payload'])) {
+            if (\in_array($field, ['id', '__payload'])) {
                 continue;
             }
 
             $ftsFields[] = $field;
         }
 
-        $ftsFieldsString = implode(', ', $ftsFields);
+        $ftsFieldsString = \implode(', ', $ftsFields);
 
         $db->exec("CREATE VIRTUAL TABLE IF NOT EXISTS documents USING fts5({$ftsFieldsString}, tokenize='{$tokenizer}')");
     }
@@ -188,7 +235,7 @@ class Index {
                 $data[":{$field}"] = $value;
             }
 
-            $data[":__payload"] = json_encode($document);
+            $data[":__payload"] = \json_encode($document);
 
             $insertStmt->execute($data);
         }
@@ -274,16 +321,82 @@ class Index {
      *   - offset: The offset used for retrieving documents.
      *   - estimatedTotalHits: The estimated total number of documents that match the search query.
      */
+
+
+    private function parseGeoFilter(string $filter): string {
+        
+        // _geoRadius(lat, lng, distance_in_meters)
+        $filter = \preg_replace_callback('/_geoRadius\s*\(\s*([-\d\.]+)\s*,\s*([-\d\.]+)\s*,\s*(\d+)\s*\)/', function($matches) {
+            $lat = $matches[1];
+            $lng = $matches[2];
+            $dist = $matches[3];
+            return "geodist(json_extract(__payload, '$._geo.lat'), json_extract(__payload, '$._geo.lng'), {$lat}, {$lng}) <= {$dist}";
+        }, $filter);
+
+        // _geoBoundingBox(lat1, lng1, lat2, lng2) -> top_right, bottom_left
+        // Meilisearch: [lat1, lng1], [lat2, lng2] (top right, bottom left)
+        $filter = \preg_replace_callback('/_geoBoundingBox\s*\(\s*\[\s*([-\d\.]+)\s*,\s*([-\d\.]+)\s*\]\s*,\s*\[\s*([-\d\.]+)\s*,\s*([-\d\.]+)\s*\]\s*\)/', function($matches) {
+            $lat1 = (float)$matches[1];
+            $lng1 = (float)$matches[2];
+            $lat2 = (float)$matches[3];
+            $lng2 = (float)$matches[4];
+            
+            $minLat = \min($lat1, $lat2);
+            $maxLat = \max($lat1, $lat2);
+            $minLng = \min($lng1, $lng2);
+            $maxLng = \max($lng1, $lng2);
+
+            return "json_extract(__payload, '$._geo.lat') BETWEEN {$minLat} AND {$maxLat} AND json_extract(__payload, '$._geo.lng') BETWEEN {$minLng} AND {$maxLng}";
+        }, $filter);
+
+        // _geoPolygon([lat, lng], [lat, lng], ...)
+        $filter = \preg_replace_callback('/_geoPolygon\s*\((.*?)\)/', function($matches) {
+            // Extract all coordinates
+            \preg_match_all('/\[\s*([-\d\.]+)\s*,\s*([-\d\.]+)\s*\]/', $matches[1], $coords);
+            
+            $args = [];
+            foreach ($coords[1] as $i => $lat) {
+                $args[] = $lat;
+                $args[] = $coords[2][$i];
+            }
+            
+            $polyArgs = \implode(', ', $args);
+            return "geopoly(json_extract(__payload, '$._geo.lat'), json_extract(__payload, '$._geo.lng'), {$polyArgs})";
+        }, $filter);
+
+        return $filter;
+    }
+
     public function search(string $query, array $options = []) {
 
-        $start = microtime(true);
+        $start = \microtime(true);
 
-        $options = array_merge([
+        // Meilisearch compatibility: Input aliases
+        if (isset($options['attributesToRetrieve'])) {
+            $options['fields'] = $options['attributesToRetrieve'];
+        }
+        if (isset($options['attributesToHighlight'])) {
+            $options['highlight'] = $options['attributesToHighlight'];
+        }
+        if (isset($options['hitsPerPage'])) {
+            $options['limit'] = $options['hitsPerPage'];
+        }
+        if (isset($options['page'])) {
+            $options['offset'] = ($options['page'] - 1) * ($options['limit'] ?? 50);
+        }
+        if (isset($options['filter']) && \is_array($options['filter'])) {
+            $options['filter'] = \implode(' AND ', $options['filter']);
+        }
+
+        $options = \array_merge([
             'fields' => '*',
             'limit' => 50,
             'offset' => 0,
             'filter' => '',
+            'sort' => null,
             'boosts' => [],
+            'highlight' => false,
+            'synonyms' => [],
             'fuzzy' => null,
             'fuzzy_algorithm' => 'fts5',        // Algorithm: fts5, levenshtein, jaro_winkler, trigram, soundex, hybrid
             'fuzzy_threshold' => 2,             // Threshold for distance-based algorithms
@@ -294,11 +407,21 @@ class Index {
         ], $options);
 
         if ($options['fields'] !== '*') {
-            $options['fields'] = is_string($options['fields']) ? array_map(fn($f) => trim($f), explode(',' , $options['fields'])) : $options['fields'];
-            $intersectFields = array_flip($options['fields']);
+            $options['fields'] = \is_string($options['fields']) ? \array_map(fn($f) => \trim($f), \explode(',' , $options['fields'])) : $options['fields'];
+            $intersectFields = \array_flip($options['fields']);
         }
 
         $where = '';
+        $highlightFields = [];
+
+        // Prepare highlighting fields
+        if ($options['highlight']) {
+            if ($options['highlight'] === true) {
+                $highlightFields = \array_filter($this->fields, fn($f) => !\in_array($f, ['id', '__payload']));
+            } elseif (\is_array($options['highlight'])) {
+                $highlightFields = \array_intersect($options['highlight'], $this->fields);
+            }
+        }
 
         if ($query) {
             
@@ -307,53 +430,124 @@ class Index {
                 return $this->enhancedFuzzySearch($query, $options);
             }
 
-            $where = $this->buildMatchQuery($query, $options['fuzzy'], $options['boosts']);
+            $where = $this->buildMatchQuery($query, $options['fuzzy'], $options['boosts'], $options['synonyms']);
 
             $safeFilter = $this->sanitizeFilter($options['filter']);
+            
+            // Apply Geo Filters
+            if ($safeFilter) {
+                $safeFilter = $this->parseGeoFilter($safeFilter);
+            }
+
             if ($safeFilter) {
                 $where = "({$where}) AND {$safeFilter}";
             }
 
-            // Use bm25() for ranking; apply boosts via column weights
-            $orderExpr = $this->buildBm25OrderExpression($options['boosts'] ?? []);
-            $sql = "SELECT * FROM documents WHERE {$where} ORDER BY {$orderExpr} ASC LIMIT :limit OFFSET :offset";
+            // Build ORDER BY clause
+            $orderClause = [];
+            
+            if (!empty($options['sort']) && \is_array($options['sort'])) {
+                foreach ($options['sort'] as $field => $dir) {
+                    // Handle _geoPoint sorting? (Not implemented yet, standard fields only)
+                    if (\in_array($field, $this->fields) && !\in_array($field, ['id', '__payload'])) {
+                        $dir = \strtoupper($dir) === 'DESC' ? 'DESC' : 'ASC';
+                        $orderClause[] = "{$field} {$dir}";
+                    }
+                }
+            }
+
+            // Use bm25() for ranking as fallback or primary sort
+            $orderClause[] = $this->buildBm25OrderExpression($options['boosts'] ?? []) . " ASC";
+            
+            $orderBy = \implode(', ', $orderClause);
+
+            // Build SELECT clause with highlighting
+            $select = "*";
+            if (!empty($highlightFields)) {
+                $snippets = [];
+                foreach ($highlightFields as $field) {
+                    $colIndex = \array_search($field, $this->fields);
+                    if ($colIndex !== false) {
+                        // snippet(table, colIndex, start, end, ellipsis, maxTokens)
+                        $snippets[] = "snippet(documents, {$colIndex}, '<em>', '</em>', '...', 64) as \"_snippet_{$field}\"";
+                    }
+                }
+                if (!empty($snippets)) {
+                    $select .= ", " . \implode(', ', $snippets);
+                }
+            }
+
+            $sql = "SELECT {$select} FROM documents WHERE {$where} ORDER BY {$orderBy} LIMIT :limit OFFSET :offset";
 
         } else {
             $safeFilter = $this->sanitizeFilter($options['filter']);
+            
+            // Apply Geo Filters
+            if ($safeFilter) {
+                $safeFilter = $this->parseGeoFilter($safeFilter);
+            }
+
+            // Build ORDER BY clause for non-search queries
+            $orderClause = [];
+            if (!empty($options['sort']) && \is_array($options['sort'])) {
+                foreach ($options['sort'] as $field => $dir) {
+                    if (\in_array($field, $this->fields) && !\in_array($field, ['id', '__payload'])) {
+                        $dir = \strtoupper($dir) === 'DESC' ? 'DESC' : 'ASC';
+                        $orderClause[] = "{$field} {$dir}";
+                    }
+                }
+            }
+            $orderBy = !empty($orderClause) ? "ORDER BY " . \implode(', ', $orderClause) : "";
+
             if ($safeFilter) {
                 $where = $safeFilter;
-                $sql = "SELECT * FROM documents WHERE {$where} LIMIT :limit OFFSET :offset";
+                $sql = "SELECT * FROM documents WHERE {$where} {$orderBy} LIMIT :limit OFFSET :offset";
             } else {
                 $where = '1';
-                $sql = "SELECT * FROM documents LIMIT :limit OFFSET :offset";
+                $sql = "SELECT * FROM documents {$orderBy} LIMIT :limit OFFSET :offset";
             }
         }
 
         $stmt = $this->db->prepare($sql);
-        $stmt->bindValue(':limit', intval($options['limit']), PDO::PARAM_INT);
-        $stmt->bindValue(':offset', intval($options['offset']), PDO::PARAM_INT);
+        $stmt->bindValue(':limit', \intval($options['limit']), PDO::PARAM_INT);
+        $stmt->bindValue(':offset', \intval($options['offset']), PDO::PARAM_INT);
         $stmt->execute();
 
         $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         foreach ($items as &$item) {
 
-            $payload = json_decode($item['__payload'] ?? '{}', true);
-            $item = array_merge($item, $payload);
+            $payload = \json_decode($item['__payload'] ?? '{}', true);
+            $item = \array_merge($item, $payload);
             unset($item['__payload']);
 
+            // Process highlights
+            if (!empty($highlightFields)) {
+                $item['_formatted'] = $item;
+                foreach ($highlightFields as $field) {
+                    if (isset($item["_snippet_{$field}"])) {
+                        $item['_formatted'][$field] = $item["_snippet_{$field}"];
+                        unset($item["_snippet_{$field}"]);
+                    }
+                }
+            }
+
             if ($options['fields'] !== '*') {
-                $item = array_intersect_key($item, $intersectFields);
+                $item = \array_intersect_key($item, $intersectFields);
+                // Keep _formatted if it exists
+                if (isset($item['_formatted'])) {
+                    $item['_formatted'] = \array_intersect_key($item['_formatted'], $intersectFields);
+                }
             }
         }
 
-        $count = count($items);
+        $count = \count($items);
 
         if ($options['offset'] || $count === $options['limit']) {
             $count = $this->countDocuments($query);
         }
 
-        $processingTimeMs = (microtime(true) - $start) * 1000;
+        $processingTimeMs = (\microtime(true) - $start) * 1000;
 
         $result = [
             'hits' => $items,
@@ -365,12 +559,28 @@ class Index {
         ];
 
         // Multi-facet support
-        if (!empty($options['facets']) && is_array($options['facets'])) {
+        if (!empty($options['facets']) && \is_array($options['facets'])) {
             $facetData = $this->computeFacets($where, $options['facets'], (int)$options['facet_limit'], (int)$options['facet_offset']);
             if (!empty($facetData)) {
                 $result['facets'] = $facetData;
             }
         }
+
+        // Meilisearch compatibility: Response format
+        if (isset($result['facets'])) {
+            $result['facetDistribution'] = [];
+            foreach ($result['facets'] as $field => $values) {
+                $distribution = [];
+                foreach ($values as $item) {
+                    $distribution[$item['value']] = $item['count'];
+                }
+                $result['facetDistribution'][$field] = $distribution;
+            }
+        }
+        
+        $result['hitsPerPage'] = $result['limit'];
+        $result['page'] = $result['limit'] > 0 ? \floor($result['offset'] / $result['limit']) + 1 : 1;
+        $result['totalPages'] = $result['limit'] > 0 ? \ceil($result['estimatedTotalHits'] / $result['limit']) : 1;
 
         return $result;
     }
@@ -379,7 +589,7 @@ class Index {
      * Enhanced fuzzy search using custom SQLite functions
      */
     private function enhancedFuzzySearch(string $query, array $options): array {
-        $start = microtime(true);
+        $start = \microtime(true);
         $enhancer = $this->getFuzzyEnhancer();
         $fields = $this->getFields();
         
@@ -409,28 +619,28 @@ class Index {
                 LIMIT :limit OFFSET :offset";
         
         $stmt = $this->db->prepare($sql);
-        $stmt->bindValue(':limit', intval($options['limit']), PDO::PARAM_INT);
-        $stmt->bindValue(':offset', intval($options['offset']), PDO::PARAM_INT);
+        $stmt->bindValue(':limit', \intval($options['limit']), PDO::PARAM_INT);
+        $stmt->bindValue(':offset', \intval($options['offset']), PDO::PARAM_INT);
         $stmt->execute();
         
         $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
         // Apply field filtering if needed
         if ($options['fields'] !== '*') {
-            $intersectFields = is_string($options['fields']) 
-                ? array_flip(array_map('trim', explode(',', $options['fields']))) 
-                : array_flip($options['fields']);
+            $intersectFields = \is_string($options['fields']) 
+                ? \array_flip(\array_map('trim', \explode(',', $options['fields']))) 
+                : \array_flip($options['fields']);
         }
         
         // Process results
         foreach ($items as &$item) {
-            $payload = json_decode($item['__payload'] ?? '{}', true);
-            $item = array_merge($item, $payload);
+            $payload = \json_decode($item['__payload'] ?? '{}', true);
+            $item = \array_merge($item, $payload);
             unset($item['__payload']);
             
             // Apply field filtering if needed
             if ($options['fields'] !== '*') {
-                $item = array_intersect_key($item, $intersectFields);
+                $item = \array_intersect_key($item, $intersectFields);
             }
         }
         
@@ -438,7 +648,7 @@ class Index {
         $countSql = "SELECT COUNT(*) FROM documents WHERE {$where}";
         $count = $this->db->query($countSql)->fetchColumn();
         
-        $processingTimeMs = (microtime(true) - $start) * 1000;
+        $processingTimeMs = (\microtime(true) - $start) * 1000;
 
         $result = [
             'hits' => $items,
@@ -451,7 +661,7 @@ class Index {
         ];
 
         // Multi-facet support (use same WHERE)
-        if (!empty($options['facets']) && is_array($options['facets'])) {
+        if (!empty($options['facets']) && \is_array($options['facets'])) {
             $facetData = $this->computeFacets($where, $options['facets'], (int)($options['facet_limit'] ?? 20), (int)($options['facet_offset'] ?? 0));
             if (!empty($facetData)) {
                 $result['facets'] = $facetData;
@@ -468,20 +678,20 @@ class Index {
         $facets = [];
 
         // Validate and sanitize fields
-        $validFields = array_filter($facetFields, function($f) {
-            return in_array($f, $this->fields, true) && !in_array($f, ['id', '__payload'], true);
+        $validFields = \array_filter($facetFields, function($f) {
+            return \in_array($f, $this->fields, true) && !\in_array($f, ['id', '__payload'], true);
         });
 
         if (empty($validFields)) return $facets;
 
         foreach ($validFields as $field) {
             // Sanitize field name: allow alphanumeric + underscore only
-            $sanitized = preg_replace('/[^a-zA-Z0-9_]/', '', $field);
+            $sanitized = \preg_replace('/[^a-zA-Z0-9_]/', '', $field);
             if ($sanitized !== $field || $sanitized === '') continue;
 
             $sql = "SELECT {$sanitized} as value, COUNT(*) as count FROM documents WHERE {$where} GROUP BY {$sanitized} ORDER BY count DESC";
             if ($limit > 0) {
-                $sql .= " LIMIT " . (int)$limit . " OFFSET " . max(0, (int)$offset);
+                $sql .= " LIMIT " . (int)$limit . " OFFSET " . \max(0, (int)$offset);
             }
 
             $stmt = $this->db->prepare($sql);
@@ -513,7 +723,7 @@ class Index {
             if ($field === 'id' || $field === '__payload') continue;
             
             // Sanitize field name (only allow alphanumeric and underscore)
-            $sanitizedField = preg_replace('/[^a-zA-Z0-9_]/', '', $field);
+            $sanitizedField = \preg_replace('/[^a-zA-Z0-9_]/', '', $field);
             if ($sanitizedField !== $field || empty($sanitizedField)) {
                 continue; // Skip invalid field names
             }
@@ -545,11 +755,11 @@ class Index {
             return '0';
         }
         
-        if (count($expressions) === 1) {
+        if (\count($expressions) === 1) {
             return $expressions[0];
         }
         
-        return 'MAX(' . implode(', ', $expressions) . ')';
+        return 'MAX(' . \implode(', ', $expressions) . ')';
     }
 
     /**
@@ -589,7 +799,7 @@ class Index {
         }
 
         // Validate facet field against known fields and exclude non-content columns
-        if (!in_array($facetField, $this->fields, true) || in_array($facetField, ['id', '__payload'], true)) {
+        if (!\in_array($facetField, $this->fields, true) || \in_array($facetField, ['id', '__payload'], true)) {
             return [];
         }
 
@@ -597,8 +807,8 @@ class Index {
 
         if ($options['limit']) {
 
-            $limit  = intval($options['limit']);
-            $offset = intval($options['offset']);
+            $limit  = \intval($options['limit']);
+            $offset = \intval($options['offset']);
             $sql   .= " LIMIT {$limit} OFFSET {$offset}";
         }
 
@@ -606,6 +816,46 @@ class Index {
         $stmt->execute();
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
+    /**
+     * Expands query terms with synonyms and formats for FTS5
+     */
+    private function expandSynonyms(string $query, array $synonyms, ?int $fuzzyDistance = null): string {
+        
+        // If no synonyms and no fuzzy distance, preserve original phrase behavior (backward compat)
+        if (empty($synonyms) && $fuzzyDistance === null) {
+            return "\"" . $this->escapeForMatch($query) . "\"";
+        }
+
+        // Tokenize
+        $terms = \preg_split('/\s+/', $query, -1, PREG_SPLIT_NO_EMPTY);
+        $expandedTerms = [];
+        
+        foreach ($terms as $term) {
+            $termLower = \strtolower($term);
+            $variants = [$term];
+            
+            if (isset($synonyms[$termLower])) {
+                $syns = \is_array($synonyms[$termLower]) ? $synonyms[$termLower] : [$synonyms[$termLower]];
+                $variants = \array_merge($variants, $syns);
+            }
+            
+            // Escape and format each variant
+            $escapedVariants = \array_map(function($v) use ($fuzzyDistance) {
+                $esc = $this->escapeForMatch($v);
+                return $fuzzyDistance !== null ? "\"{$esc}\" NEAR/{$fuzzyDistance}" : "\"{$esc}\"";
+            }, $variants);
+            
+            if (\count($escapedVariants) > 1) {
+                $expandedTerms[] = '(' . \implode(' OR ', $escapedVariants) . ')';
+            } else {
+                $expandedTerms[] = $escapedVariants[0];
+            }
+        }
+        
+        return \implode(' AND ', $expandedTerms);
     }
 
     /**
@@ -616,29 +866,29 @@ class Index {
      *
      * @return string The built match query as a string.
      */
-    private function buildMatchQuery(string $query, ?int $fuzzyDistance = null, array $boosts = []): string {
+    private function buildMatchQuery(string $query, ?int $fuzzyDistance = null, array $boosts = [], array $synonyms = []): string {
 
         $fields = [];
         $_fields = $this->fields;
         $hasBoosts = !empty($boosts);
 
-        if (preg_match('/(\w+):/', $query)) {
+        if (\preg_match('/(\w+):/', $query)) {
 
-            preg_match_all('/(\w+):\s*([\'"][^\'"]+[\'"]|\S+)/', $query, $matches, PREG_SET_ORDER);
+            \preg_match_all('/(\w+):\s*([\'"][^\'"]+[\'"]|\S+)/', $query, $matches, PREG_SET_ORDER);
 
             foreach ($matches as $match) {
 
-                if (!in_array($match[1], $_fields)) continue;
+                if (!\in_array($match[1], $_fields)) continue;
 
                 $field = $match[1];
-                $value = trim($match[2], '\'"');
-                $fields[$field] = $this->escapeForMatch($value);
+                $value = \trim($match[2], '\'"');
+                $fields[$field] = $this->expandSynonyms($value, $synonyms, $fuzzyDistance);
             }
 
         } else {
 
             foreach ($_fields as $field) {
-                $fields[$field] = $this->escapeForMatch($query);
+                $fields[$field] = $this->expandSynonyms($query, $synonyms, $fuzzyDistance);
             }
         }
 
@@ -650,21 +900,14 @@ class Index {
                 continue;
             }
 
-            // Apply fuzzy search if specified
-            if ($fuzzyDistance !== null) {
-                $matchTerm = "\"{$q}\" NEAR/{$fuzzyDistance}";
-            } else {
-                $matchTerm = $q;
-            }
-
             // Build boolean MATCH expression (boosting is applied via bm25 weights in ORDER BY)
-            $searchQuery = "\"{$field}\" MATCH '{$matchTerm}'";
+            $searchQuery = "\"{$field}\" MATCH '{$q}'";
 
             $searchQueries[] = $searchQuery;
         }
 
         // Combine queries with OR
-        $combinedQuery = implode(' OR ', $searchQueries);
+        $combinedQuery = \implode(' OR ', $searchQueries);
 
         return $combinedQuery;
     }
@@ -686,12 +929,12 @@ class Index {
 
         $fields = $this->fields;
 
-        $placeholders = array_map(function ($field) {
+        $placeholders = \array_map(function ($field) {
             return ":{$field}";
         }, $fields);
 
-        $fieldsString = implode(', ', $fields);
-        $placeholdersString = implode(', ', $placeholders);
+        $fieldsString = \implode(', ', $fields);
+        $placeholdersString = \implode(', ', $placeholders);
 
         return "INSERT INTO documents ({$fieldsString}) VALUES ({$placeholdersString})";
     }
@@ -706,30 +949,30 @@ class Index {
      */
     public function updateIndexedFields($fields, ?string $tokenizer = null) {
 
-        $fields = array_filter($fields, fn($field) => $field !== 'id' && $field !== '__payload');
-        $currentFields = array_filter($this->fields, fn($field) => $field !== 'id' && $field !== '__payload');
+        $fields = \array_filter($fields, fn($field) => $field !== 'id' && $field !== '__payload');
+        $currentFields = \array_filter($this->fields, fn($field) => $field !== 'id' && $field !== '__payload');
 
-        if (!count(array_diff($fields, $currentFields))) {
+        if (!\count(\array_diff($fields, $currentFields))) {
             return;
         }
 
         // Rename the current table
         $this->db->exec('ALTER TABLE documents RENAME TO documents_old');
 
-        $fields = array_merge(['id', '__payload'], $fields);
-        $currentFields = array_merge(['id', '__payload'], $currentFields);
-        $columns = implode(', ', array_intersect($currentFields, $fields));
+        $fields = \array_merge(['id', '__payload'], $fields);
+        $currentFields = \array_merge(['id', '__payload'], $currentFields);
+        $columns = \implode(', ', \array_intersect($currentFields, $fields));
 
         // Create a new table with updated fields
         $tokenizer = $tokenizer ?? 'porter unicode61 remove_diacritics 1';
         $ftsFields = ['id UNINDEXED', '__payload UNINDEXED'];
 
         foreach ($fields as $field) {
-            if (in_array($field, ['id', '__payload'])) continue;
+            if (\in_array($field, ['id', '__payload'])) continue;
             $ftsFields[] = $field;
         }
 
-        $ftsFieldsString = implode(', ', $ftsFields);
+        $ftsFieldsString = \implode(', ', $ftsFields);
 
         $this->db->exec("CREATE VIRTUAL TABLE IF NOT EXISTS documents USING fts5({$ftsFieldsString}, tokenize='{$tokenizer}')");
 
@@ -746,10 +989,10 @@ class Index {
      */
     protected function escapeQueryForSql(string $query): string {
         // Remove any null bytes
-        $query = str_replace("\0", '', $query);
+        $query = \str_replace("\0", '', $query);
         
         // Escape single quotes by doubling them
-        $query = str_replace("'", "''", $query);
+        $query = \str_replace("'", "''", $query);
         
         // Wrap in single quotes
         return "'{$query}'";
@@ -761,7 +1004,7 @@ class Index {
     private function escapeForMatch(string $term): string {
         $escaped = Utils::escapeFts5SpecialChars($term);
         // Also ensure any single quotes are doubled for safe SQL embedding
-        $escaped = str_replace("'", "''", $escaped);
+        $escaped = \str_replace("'", "''", $escaped);
         return $escaped;
     }
 
@@ -780,22 +1023,22 @@ class Index {
         }
 
         // If all weights are default, we can omit them
-        $allDefault = count(array_unique($weights)) === 1 && reset($weights) === '1';
+        $allDefault = \count(\array_unique($weights)) === 1 && \reset($weights) === '1';
         if ($allDefault) {
             return 'bm25(documents)';
         }
 
-        return 'bm25(documents, ' . implode(', ', $weights) . ')';
+        return 'bm25(documents, ' . \implode(', ', $weights) . ')';
     }
 
     /**
      * Basic sanitization for filter fragments to avoid obvious SQL injection vectors
      */
     protected function sanitizeFilter(?string $filter): string {
-        $filter = trim((string)$filter);
+        $filter = \trim((string)$filter);
         if ($filter === '') return '';
         // Disallow statement separators and comments
-        if (preg_match('/(;|--|\/\*)/', $filter)) {
+        if (\preg_match('/(;|--|\/\*)/', $filter)) {
             return '';
         }
         return $filter;

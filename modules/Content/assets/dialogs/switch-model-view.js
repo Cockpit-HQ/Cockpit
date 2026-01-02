@@ -51,8 +51,8 @@ export default {
                 <ul class="app-list-items" v-if="!loading && Array.isArray(models)">
                     <li v-for="model in filtered">
                         <kiss-card class="kiss-flex kiss-flex-middle">
-                            <div class="kiss-margin-small-right" :style="{color: model.color || 'inherit' }"><kiss-svg :src="$baseUrl(model.icon || 'content:assets/icons/'+model.type+'.svg')" width="25" height="25"><canvas width="25" height="25"></canvas></kiss-svg></div>
-                            <div class="kiss-flex-1 kiss-position-relative kiss-margin-right kiss-link-muted kiss-size-small">
+                            <div class="kiss-margin-small-end" :style="{color: model.color || 'inherit' }"><kiss-svg :src="$baseUrl(model.icon || 'content:assets/icons/'+model.type+'.svg')" width="25" height="25"><canvas width="25" height="25"></canvas></kiss-svg></div>
+                            <div class="kiss-flex-1 kiss-position-relative kiss-margin-end kiss-link-muted kiss-size-small">
                                 <div class="kiss-text-bold">{{ model.label || model.name }}</div>
                                 <div class="kiss-color-muted kiss-size-xsmall kiss-text-truncate">{{ model.info || t(model.type) }}</div>
                                 <a class="kiss-cover" :href="$routeUrl('/content/singleton/item/'+model.name)" v-if="model.type=='singleton'"></a>

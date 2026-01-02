@@ -225,10 +225,6 @@ Visit [Docker Hub](https://hub.docker.com/r/cockpithq/cockpit/tags) for all avai
 
 ## 💐 Partners
 
-[![ginetta](https://user-images.githubusercontent.com/321047/132780497-37da444d-d910-4433-a92a-d7629f3a4405.png)](https://www.ginetta.net)<br>
-We create websites and apps that click with users.
-
-
 [![BrowserStack](https://user-images.githubusercontent.com/355427/27389060-9f716c82-569d-11e7-923c-bd5fe7f1c55a.png)](https://www.browserstack.com)<br>
 Live, Web-Based Browser Testing
 

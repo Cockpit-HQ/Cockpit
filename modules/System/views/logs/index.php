@@ -46,7 +46,7 @@
 
                     <div class="kiss-flex kiss-flex-middle kiss-margin">
 
-                        <button class="kiss-button kiss-button-small kiss-margin-small-right" :class="{'kiss-button-primary': !selectedTypes.length}" @click="selectedTypes = []"><?=t('All')?></button>
+                        <button class="kiss-button kiss-button-small kiss-margin-small-end" :class="{'kiss-button-primary': !selectedTypes.length}" @click="selectedTypes = []"><?=t('All')?></button>
 
                         <div class="kiss-button-group">
                             <button class="kiss-button kiss-button-small" :class="{'kiss-button-primary': selectedTypes.indexOf('alert') > -1}" @click="toggleType('alert')"><?=t('Alert')?></button>
@@ -107,7 +107,7 @@
                             <li v-for="channel in sortedChannels">
                                 <kiss-card class="kiss-flex kiss-flex-middle kiss-padding-small" :theme="selectedChannel == channel.name && 'bordered contrast'">
                                     <a class="kiss-flex-1" @click="selectedChannel = channel.name" :class="selectedChannel == channel.name ? 'kiss-text-bold kiss-color-primary':'kiss-color-muted'">{{ t(channel.label) }}</a>
-                                    <div class="kiss-margin-xsmall-left" v-if="selectedChannel == channel.name">
+                                    <div class="kiss-margin-xsmall-start" v-if="selectedChannel == channel.name">
                                         <kiss-svg class="kiss-color-muted" :src="$baseUrl(channel.icon)" width="20" height="20"><canvas width="20" height="20"></canvas></kiss-svg>
                                     </div>
                                 </kiss-card>
@@ -124,14 +124,14 @@
                     <kiss-card class="kiss-flex kiss-flex-middle kiss-padding" theme="shadowed contrast" v-if="!loading && count">
 
                         <div class="kiss-size-small">{{ `${count} ${count == 1 ? t('Item') : t('Items')}` }}</div>
-                        <div class="kiss-margin-small-left kiss-overlay-input">
+                        <div class="kiss-margin-small-start kiss-overlay-input">
                             <span class="kiss-badge kiss-badge-outline kiss-color-muted">{{ page }} / {{pages}}</span>
                             <select v-model="page" @change="load(page)" v-if="pages > 1">
                                 <option v-for="p in pages" :value="p">{{ p }}</option>
                             </select>
                         </div>
-                        <div class="kiss-margin-small-left kiss-size-small">
-                            <a class="kiss-margin-small-right" v-if="(page - 1) >= 1" @click="load(page - 1)"><?= t('Previous') ?></a>
+                        <div class="kiss-margin-small-start kiss-size-small">
+                            <a class="kiss-margin-small-end" v-if="(page - 1) >= 1" @click="load(page - 1)"><?= t('Previous') ?></a>
                             <a v-if="(page + 1) <= pages" @click="load(page + 1)"><?= t('Next') ?></a>
                         </div>
 

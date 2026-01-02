@@ -31,7 +31,7 @@ class FieldTypes {
             $def = self::getType($field);
             $name = $field['name'];
 
-            if (is_numeric($name)) {
+            if (\is_numeric($name)) {
                 $name = "_{$name}_";
             }
 
@@ -41,7 +41,7 @@ class FieldTypes {
                     $def['type'] = Type::nonNull($def['type']);
                 }
 
-                if ($field['multiple']) {
+                if (isset($field['multiple']) && $field['multiple']) {
                     $fields[$name] = Type::listOf($def['type']);
                 } else {
                     $fields[$name] = $def;
@@ -87,7 +87,7 @@ class FieldTypes {
                 break;
             case 'set':
                 $def['type'] = new ObjectType([
-                    'name' => self::getName('Set'.ucfirst($field['name'])),
+                    'name' => self::getName('Set'.\ucfirst($field['name'])),
                     'fields' => self::buildFieldsDefinitions($field['opts'])
                 ]);
                 break;
@@ -96,7 +96,7 @@ class FieldTypes {
                 $def['type'] = JsonType::instance();
         }
 
-        return count($def) ? $def : null;
+        return \count($def) ? $def : null;
     }
 
 

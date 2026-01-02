@@ -15,7 +15,7 @@ class Database {
     public const DSN_PATH_MEMORY = ':memory:';
 
     /**
-     * @var PDO object
+     * @var PDO|\Pdo\Sqlite object
      */
     public PDO $connection;
 
@@ -35,6 +35,11 @@ class Database {
     protected array $document_criterias = [];
 
     /**
+     * @var QueryOptimizer|null
+     */
+    protected ?QueryOptimizer $queryOptimizer = null;
+
+    /**
      * Constructor
      *
      * @param string $path
@@ -43,25 +48,29 @@ class Database {
     public function __construct(string $path = self::DSN_PATH_MEMORY, array $options = []) {
 
         $dns = "sqlite:{$path}";
-
         $this->path = $path;
-        $this->connection = new PDO($dns, null, null, $options);
+
+        if (\class_exists('Pdo\Sqlite')) {
+            $this->connection = new \Pdo\Sqlite($dns, null, null, $options);
+        } else {
+            $this->connection = new PDO($dns, null, null, $options);
+        }
 
         $database = $this;
 
-        $this->connection->sqliteCreateFunction('document_key', function($key, $document){
+        $fn_document_key = function($key, $document){
 
             $document = \json_decode($document, true);
             $val      = '';
 
             // Use generic traversal for any depth of nesting
-            if (str_contains($key, '.')) {
+            if (\str_contains($key, '.')) {
                 $keys = \explode('.', $key);
                 $current = $document;
                 
                 // Traverse the nested structure
                 foreach ($keys as $k) {
-                    if (is_array($current) && isset($current[$k])) {
+                    if (\is_array($current) && isset($current[$k])) {
                         $current = $current[$k];
                     } else {
                         $current = '';
@@ -74,14 +83,22 @@ class Database {
             }
 
             return \is_array($val) || \is_object($val) ? \json_encode($val) : $val;
-        }, 2);
+        };
 
-        $this->connection->sqliteCreateFunction('document_criteria', function($funcid, $document) use($database) {
+        $fn_document_criteria = function($funcid, $document) use($database) {
 
             $document = \json_decode($document, true);
 
             return $database->callCriteriaFunction($funcid, $document);
-        }, 2);
+        };
+
+        if (\method_exists($this->connection, 'createFunction')) {
+            $this->connection->createFunction('document_key', $fn_document_key, 2);
+            $this->connection->createFunction('document_criteria', $fn_document_criteria, 2);
+        } else {
+            $this->connection->sqliteCreateFunction('document_key', $fn_document_key, 2);
+            $this->connection->sqliteCreateFunction('document_criteria', $fn_document_criteria, 2);
+        }
 
         $pragma = [
             'journal_mode'  => $options['journal_mode'] ??  'WAL',
@@ -115,7 +132,7 @@ class Database {
            return $id;
         }
 
-        if (is_array($criteria)) {
+        if (\is_array($criteria)) {
 
             $fn = UtilArrayQuery::getFilterFunction($criteria);
 
@@ -161,10 +178,10 @@ class Database {
     public function drop(): void {
 
         if ($this->path !== static::DSN_PATH_MEMORY) {
-            if (file_exists($this->path)) unlink($this->path);
-            if (file_exists("{$this->path}-shm")) unlink("{$this->path}-shm");
-            if (file_exists("{$this->path}-wal")) unlink("{$this->path}-wal");
-            if (file_exists("{$this->path}-journal")) unlink("{$this->path}-journal");
+            if (\file_exists($this->path)) \unlink($this->path);
+            if (\file_exists("{$this->path}-shm")) \unlink("{$this->path}-shm");
+            if (\file_exists("{$this->path}-wal")) \unlink("{$this->path}-wal");
+            if (\file_exists("{$this->path}-journal")) \unlink("{$this->path}-journal");
         }
     }
 
@@ -245,7 +262,7 @@ class Database {
 
         if (!isset($this->collections[$name])) {
 
-            if (!in_array($name, $this->getCollectionNames())) {
+            if (!\in_array($name, $this->getCollectionNames())) {
                 $this->createCollection($name);
             }
 
@@ -268,10 +285,10 @@ class Database {
      */
     public function sanitizeCollectionName(string $name): ?string {
         // Remove any characters that aren't alphanumeric, underscore, or hyphen
-        $sanitized = preg_replace('/[^a-zA-Z0-9_-]/', '', $name);
+        $sanitized = \preg_replace('/[^a-zA-Z0-9_-]/', '', $name);
         
         // Check if the sanitized name matches the original and isn't empty
-        if ($sanitized === $name && !empty($sanitized) && strlen($sanitized) <= 64) {
+        if ($sanitized === $name && !empty($sanitized) && \strlen($sanitized) <= 64) {
             return $sanitized;
         }
         
@@ -286,7 +303,7 @@ class Database {
      */
     public function sanitizeCriteriaId(string $id): ?string {
         // Only allow alphanumeric characters - criteria IDs are generated by uniqid()
-        $sanitized = preg_replace('/[^a-zA-Z0-9]/', '', $id);
+        $sanitized = \preg_replace('/[^a-zA-Z0-9]/', '', $id);
         
         if ($sanitized === $id && !empty($sanitized)) {
             return $sanitized;
@@ -294,37 +311,47 @@ class Database {
         
         return null;
     }
+
+    /**
+     * Get QueryOptimizer instance
+     */
+    public function getQueryOptimizer(): QueryOptimizer {
+        if (!isset($this->queryOptimizer)) {
+            $this->queryOptimizer = new QueryOptimizer($this->connection);
+        }
+        return $this->queryOptimizer;
+    }
 }
 
 
 function createMongoDbLikeId(): string {
 
     // use native MongoDB ObjectId if available
-    if (class_exists('MongoDB\\BSON\\ObjectId')) {
+    if (\class_exists('MongoDB\\BSON\\ObjectId')) {
         $objId = new \MongoDB\BSON\ObjectId();
         return (string)$objId;
     }
 
     // 4 bytes: timestamp (seconds since epoch)
-    $timestamp = pack('N', time());
+    $timestamp = \pack('N', \time());
 
     // 5 bytes: combination of host-specific and random data
     // Instead of trying to convert hex strings directly, use binary data
-    $hostHash = md5(php_uname('n'), true); // Get binary hash
-    $processHash = md5(getmypid(), true); // Get binary hash
+    $hostHash = \md5(\php_uname('n'), true); // Get binary hash
+    $processHash = \md5(\getmypid(), true); // Get binary hash
 
     // Take portions of these hashes to create 5 bytes
-    $machineSpecificBytes = substr($hostHash, 0, 3) . substr($processHash, 0, 2);
+    $machineSpecificBytes = \substr($hostHash, 0, 3) . \substr($processHash, 0, 2);
 
     // 3 bytes: incrementing counter
     static $counter = null;
     if ($counter === null) {
         // Start from a random position each time the function is first called
-        $counter = random_int(0, 0xFFFFFF);
+        $counter = \random_int(0, 0xFFFFFF);
     }
     $counter = ($counter + 1) & 0xFFFFFF;
-    $counterBytes = substr(pack('N', $counter), 1, 3);
+    $counterBytes = \substr(\pack('N', $counter), 1, 3);
 
     // Combine all parts and convert to hex
-    return bin2hex($timestamp . $machineSpecificBytes . $counterBytes);
+    return \bin2hex($timestamp . $machineSpecificBytes . $counterBytes);
 }

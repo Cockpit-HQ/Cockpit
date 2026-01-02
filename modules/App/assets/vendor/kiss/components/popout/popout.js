@@ -101,6 +101,13 @@ customElements.define('kiss-popout', class extends HTMLElement {
                 left = rect.left,
                 top = rect.top + ele.offsetHeight;
 
+            let isRTL = document.documentElement.getAttribute('dir') == 'rtl';
+
+            if (isRTL) {
+                if (position == 'left') position = 'right';
+                else if (position == 'right') position = 'left';
+            }
+
             switch (position) {
                 case 'right':
                     left = rect.right - content.offsetWidth;

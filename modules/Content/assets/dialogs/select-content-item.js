@@ -143,11 +143,11 @@ export default {
 
             <form class="kiss-flex kiss-margin" :class="{'kiss-disabled': loading}" @submit.prevent="fltr = txtFilter">
 
-                <app-textcomplete class="kiss-flex-1 kiss-margin-xsmall-right" :items="model.fields.map(f => f.name)" trigger="@">
+                <app-textcomplete class="kiss-flex-1 kiss-margin-xsmall-end" :items="model.fields.map(f => f.name)" trigger="@">
                     <input type="text" class="kiss-input" :placeholder="t('Filter items...')" v-model="txtFilter">
                 </app-textcomplete>
 
-                <div class="kiss-button-group kiss-margin-small-left">
+                <div class="kiss-button-group kiss-margin-small-start">
                     <button type="button" class="kiss-button" @click="fltr = ''" v-if="fltr">{{ t('Reset') }}</button>
                     <button class="kiss-button kiss-flex">{{ t('Search') }}</button>
                 </div>
@@ -220,19 +220,19 @@ export default {
                 </div>
             </div>
 
-            <div class="kiss-flex kiss-flex-right kiss-margin-top" gap>
+            <div class="kiss-flex kiss-flex-end kiss-margin-top" gap>
 
                 <div class="kiss-flex kiss-flex-middle kiss-flex-1" v-if="!loading && count">
                     <app-pagination>
                         <div class="kiss-color-muted">{{ count }} {{ count == 1 ? t('Item') : t('Items') }}</div>
-                        <a class="kiss-margin-small-left" v-if="(page - 1) >= 1" @click="load(page - 1)">{{ t('Previous') }}</a>
-                        <div class="kiss-margin-small-left kiss-overlay-input" v-if="count > limit">
+                        <a class="kiss-margin-small-start" v-if="(page - 1) >= 1" @click="load(page - 1)">{{ t('Previous') }}</a>
+                        <div class="kiss-margin-small-start kiss-overlay-input" v-if="count > limit">
                             <strong>{{ page }} &mdash; {{pages}}</strong>
                             <select v-model="page" @change="load(page)" v-if="pages > 1">
                                 <option v-for="p in pages" :value="p">{{ p }}</option>
                             </select>
                         </div>
-                        <a class="kiss-margin-small-left" v-if="(page + 1) <= pages" @click="load(page + 1)">{{ t('Next') }}</a>
+                        <a class="kiss-margin-small-start" v-if="(page + 1) <= pages" @click="load(page + 1)">{{ t('Next') }}</a>
                     </app-pagination>
                 </div>
 

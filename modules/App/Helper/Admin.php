@@ -17,7 +17,7 @@ class Admin extends \Lime\Helper {
         $key  = "locked:{$resourceId}";
         $meta = $this->app->dataStorage->getKey('app/options', $key, false);
 
-        if ($meta && ($meta['time'] + $ttl) < time()) {
+        if ($meta && ($meta['time'] + $ttl) < \time()) {
             $this->app->dataStorage->removeKey('app/options', $key);
             $meta = false;
         }
@@ -46,7 +46,7 @@ class Admin extends \Lime\Helper {
 
         $user = $this->app->helper('auth')->getUser();
 
-        if ($meta['user']['_id'] == $user['_id'] && $meta['sid'] == md5(session_id())) {
+        if ($meta['user']['_id'] == $user['_id'] && $meta['sid'] == \md5(\session_id())) {
             return true;
         }
 
@@ -73,12 +73,12 @@ class Admin extends \Lime\Helper {
             return false;
         }
 
-        $now = time();
+        $now = \time();
 
         $meta = [
             'rid'  => $resourceId,
             'user' => ['_id' => $user['_id'], 'name' => $user['name'] ?? '', 'user' => $user['user'], 'email' => $user['email']],
-            'sid'  => md5(session_id()),
+            'sid'  => \md5(\session_id()),
             'time' => $now,
             '_created' => $now,
             '_updated' => $now,
@@ -103,7 +103,7 @@ class Admin extends \Lime\Helper {
             return false;
         }
 
-        $now = time();
+        $now = \time();
         $key  = "locked:{$resourceId}";
 
         $meta['time'] = $now;

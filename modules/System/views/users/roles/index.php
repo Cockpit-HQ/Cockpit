@@ -27,7 +27,7 @@
             <li v-for="(role, idx) in roles">
 
                 <kiss-card class="kiss-padding-small kiss-flex" hover="contrast scale-small">
-                    <div class="kiss-margin-right kiss-position-relative">
+                    <div class="kiss-margin-end kiss-position-relative">
                         <app-avatar size="50" :name="role.name"></app-avatar>
                         <a class="kiss-cover" :href="$routeUrl('/system/users/roles/role/'+role._id)"></a>
                     </div>
@@ -38,7 +38,7 @@
                         </div>
                         <a class="kiss-cover" :href="$routeUrl('/system/users/roles/role/'+role._id)"></a>
                     </div>
-                    <div class="kiss-margin-left">
+                    <div class="kiss-margin-start">
                         <a class="kiss-color-danger" @click="remove(role)"><icon class="kiss-size-large">delete</icon></a>
                     </div>
                 </kiss-card>
@@ -50,7 +50,7 @@
         <app-actionbar>
 
             <kiss-container size="small">
-                <div class="kiss-flex kiss-flex-middle kiss-flex-right">
+                <div class="kiss-flex kiss-flex-middle kiss-flex-end">
                     <div class="kiss-button-group">
                         <?php if ($this->helper('acl')->isAllowed('app.users.manage')): ?>
                         <a class="kiss-button" href="<?=$this->route('/system/users')?>"><?=t('Manage users')?></a>

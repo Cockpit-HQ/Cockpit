@@ -55,9 +55,9 @@ class System extends \Lime\Helper {
 
             foreach ($files as $file) {
 
-                if (!$file->isFile() || preg_match('/(\.gitkeep|\.gitignore|index\.html)$/', $file)) continue;
+                if (!$file->isFile() || \preg_match('/(\.gitkeep|\.gitignore|index\.html)$/', $file)) continue;
 
-                @unlink($file->getRealPath());
+                @\unlink($file->getRealPath());
             }
 
             $fs->removeEmptySubFolders($path);
@@ -67,8 +67,8 @@ class System extends \Lime\Helper {
         $this->app->trigger('app.system.cache.flush');
         $this->vacuumSQLite();
 
-        if (function_exists('opcache_reset')) {
-            opcache_reset();
+        if (\function_exists('opcache_reset')) {
+            \opcache_reset();
         }
     }
 
@@ -82,7 +82,7 @@ class System extends \Lime\Helper {
     public function getDirectorySize(string $directory, bool $format = false) {
 
         // Check if 'exec' is allowed
-        if (function_exists('exec')) {
+        if (\function_exists('exec')) {
 
             try {
                 $process = new Process(['du', '-sb', $directory]);
@@ -94,7 +94,7 @@ class System extends \Lime\Helper {
                 }
 
                 $output = $process->getOutput();
-                $size = explode("\t", $output)[0];
+                $size = \explode("\t", $output)[0];
 
                 return $format ? $this->app->helper('utils')->formatSize($size) : $size;
 
@@ -128,7 +128,7 @@ class System extends \Lime\Helper {
 
             foreach ($iterator as $finfo) {
 
-                if (!$finfo->isFile() || !in_array($finfo->getExtension(), $validExt)) continue;
+                if (!$finfo->isFile() || !\in_array($finfo->getExtension(), $validExt)) continue;
 
                 $file = $finfo->getRealPath();
 

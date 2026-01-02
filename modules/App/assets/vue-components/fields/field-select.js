@@ -215,7 +215,7 @@ export default {
 
                     <div class="kiss-flex kiss-flex-middle kiss-position-relative" :class="{'kiss-color-muted': !selected(option.value)}" v-for="option in lst">
                         <div class="kiss-size-4"><icon>{{ selected(option.value) ? 'radio_button_checked' : 'radio_button_unchecked' }}</icon></div>
-                        <div class="kiss-size-small kiss-margin-small-left">{{ option.label }}</div>
+                        <div class="kiss-size-small kiss-margin-small-start">{{ option.label }}</div>
                         <a class="kiss-cover" @click="select(option.value)"></a>
                     </div>
                 </div>

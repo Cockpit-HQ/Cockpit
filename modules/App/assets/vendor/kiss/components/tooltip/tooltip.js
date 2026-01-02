@@ -1,8 +1,9 @@
-import {on} from '../../js/events.js';
+import { on } from '../../js/events.js';
+import { setHighestZindex } from '../../js/utils.js';
 
 let tooltipContainer = null;
 
-on(document.documentElement, 'mouseenter', '[kiss-tooltip]', function(e) {
+on(document.documentElement, 'mouseenter', '[kiss-tooltip]', function (e) {
 
     e.preventDefault();
 
@@ -30,9 +31,16 @@ customElements.define('kiss-tooltip', class extends HTMLElement {
 
         if (ele) {
             let rect = ele.getBoundingClientRect(),
-            left = null,
-            top = null,
-            offset = 5;
+                left = null,
+                top = null,
+                offset = 5;
+
+            let isRTL = document.documentElement.getAttribute('dir') == 'rtl';
+
+            if (isRTL) {
+                if (position == 'left') position = 'right';
+                else if (position == 'right') position = 'left';
+            }
 
             switch (position) {
 
@@ -48,26 +56,26 @@ customElements.define('kiss-tooltip', class extends HTMLElement {
 
                 case 'bottom':
                     top = rect.bottom + offset
-                    left = rect.left;
+                    left = isRTL ? (rect.right - this.offsetWidth) : rect.left;
                     break;
 
                 case 'bottom-right':
                     top = rect.bottom + offset;
-                    left = rect.right - this.offsetWidth;
+                    left = isRTL ? rect.left : (rect.right - this.offsetWidth);
                     break;
 
                 case 'top':
                     top = rect.top - this.offsetHeight - offset;
-                    left = rect.left;
+                    left = isRTL ? (rect.right - this.offsetWidth) : rect.left;
                     break;
 
                 case 'top-right':
                     top = rect.top - this.offsetHeight - offset;
-                    left = rect.right - this.offsetWidth;
+                    left = isRTL ? rect.left : (rect.right - this.offsetWidth);
                     break;
 
                 default:
-                    left = rect.left;
+                    left = isRTL ? (rect.right - this.offsetWidth) : rect.left;
                     break;
             }
 
@@ -75,6 +83,8 @@ customElements.define('kiss-tooltip', class extends HTMLElement {
                 top: `${top}px`,
                 left: `${left}px`
             });
+
+            setHighestZindex(this);
 
             this.$element = ele;
 
@@ -92,6 +102,7 @@ customElements.define('kiss-tooltip', class extends HTMLElement {
 
     hide() {
         this.setAttribute('show', 'false');
+        this.style.zIndex = null;
     }
 
     isActive() {

@@ -59,8 +59,8 @@ export default {
     template: /*html*/`
         <div class="kiss-flex kiss-flex-middle" v-if="fieldTypes">
             <div><icon :class="{'kiss-color-danger': !item._state, 'kiss-color-success': item._state === 1}">circle</icon></div>
-            <div class="kiss-margin-small-left" v-if="meta.display" v-html="contents"></div>
-            <div class="kiss-margin-small-left" v-if="!meta.display" v-for="field in fields">
+            <div class="kiss-margin-small-start" v-if="meta.display" v-html="contents"></div>
+            <div class="kiss-margin-small-start" v-if="!meta.display" v-for="field in fields">
                 <span class="kiss-badge kiss-badge-outline kiss-color-muted" v-if="item[field.name] == null">n/a</span>
                 <div class="kiss-text-truncate" v-else-if="fieldTypes[field.type] && fieldTypes[field.type].render" v-html="fieldTypes[field.type].render(item[field.name], field, 'table-cell')"></div>
                 <div class="kiss-text-truncate" v-else>

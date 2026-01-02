@@ -15,11 +15,11 @@ use OpenApi\Generator;
  * - merge trait annotations/methods/properties into the schema if the trait does not have a schema itself
  * - inherit from the trait if it has a schema (allOf).
  */
-class ExpandTraits implements ProcessorInterface
+class ExpandTraits
 {
     use Concerns\MergePropertiesTrait;
 
-    public function __invoke(Analysis $analysis)
+    public function __invoke(Analysis $analysis): void
     {
         /** @var OA\Schema[] $schemas */
         $schemas = $analysis->getAnnotationsOfType(OA\Schema::class, true);
@@ -32,7 +32,7 @@ class ExpandTraits implements ProcessorInterface
                 foreach ($traits as $trait) {
                     $traitSchema = $analysis->getSchemaForSource($trait['context']->fullyQualifiedName($trait['trait']));
                     if ($traitSchema) {
-                        $refPath = !Generator::isDefault($traitSchema->schema) ? $traitSchema->schema : $trait['trait'];
+                        $refPath = Generator::isDefault($traitSchema->schema) ? $trait['trait'] : $traitSchema->schema;
                         $this->inheritFrom($analysis, $schema, $traitSchema, $refPath, $trait['context']);
                     } else {
                         $this->mergeMethods($schema, $trait, $existing);
@@ -50,7 +50,7 @@ class ExpandTraits implements ProcessorInterface
                 foreach ($traits as $trait) {
                     $traitSchema = $analysis->getSchemaForSource($trait['context']->fullyQualifiedName($trait['trait']));
                     if ($traitSchema) {
-                        $refPath = !Generator::isDefault($traitSchema->schema) ? $traitSchema->schema : $trait['trait'];
+                        $refPath = Generator::isDefault($traitSchema->schema) ? $trait['trait'] : $traitSchema->schema;
                         $this->inheritFrom($analysis, $schema, $traitSchema, $refPath, $trait['context']);
                     } else {
                         $this->mergeMethods($schema, $trait, $existing);

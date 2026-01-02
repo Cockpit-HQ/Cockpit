@@ -13,7 +13,7 @@ use OpenApi\Generator;
  *
  * A unique parameter is defined by a combination of a name and location.
  *
- * @see [OAA Parameter Object](https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.1.0.md#parameter-object)
+ * @see [Parameter Object](https://spec.openapis.org/oas/v3.1.1.html#parameter-object)
  *
  * @Annotation
  */
@@ -22,7 +22,7 @@ class Parameter extends AbstractAnnotation
     /**
      * The relative or absolute path to the endpoint.
      *
-     * @see [Using refs](https://swagger.io/docs/specification/using-ref/)
+     * @see [Reference Object](https://spec.openapis.org/oas/v3.1.1.html#reference-object)
      *
      * @var string|class-string|object
      */
@@ -269,7 +269,7 @@ class Parameter extends AbstractAnnotation
     /**
      * @inheritdoc
      */
-    public function validate(array $stack = [], array $skip = [], string $ref = '', $context = null): bool
+    public function validate(array $stack = [], array $skip = [], string $ref = '', ?object $context = null): bool
     {
         if (in_array($this, $skip, true)) {
             return true;

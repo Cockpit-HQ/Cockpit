@@ -12,7 +12,7 @@ class Csrf extends \Lime\Helper {
         $key = $this->app->helper('session')->read("app.csrf._key", null);
 
         if (!$key) {
-            $key = bin2hex(random_bytes(32));
+            $key = \bin2hex(\random_bytes(32));
             $this->app->helper('session')->write("app.csrf._key", $key);
         }
 
@@ -29,7 +29,7 @@ class Csrf extends \Lime\Helper {
      * @return void
      */
     public function reset() {
-        $key = bin2hex(random_bytes(32));
+        $key = \bin2hex(\random_bytes(32));
         $this->app->helper('session')->write("app.csrf._key", $key);
         $this->sessionKey = $key;
     }
@@ -45,7 +45,7 @@ class Csrf extends \Lime\Helper {
 
         $payload = ['csrf' => "{$key}.{$this->sessionKey}"];
 
-        if ($expire && is_numeric($expire)) {
+        if ($expire && \is_numeric($expire)) {
             $payload['exp'] = $expire;
         }
 

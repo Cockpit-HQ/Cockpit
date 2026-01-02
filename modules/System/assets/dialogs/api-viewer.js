@@ -1,6 +1,6 @@
 export default {
 
-    _meta: {flip: true, size: 'xxlarge'},
+    _meta: { flip: true, size: 'xxlarge' },
 
     data() {
 
@@ -36,7 +36,7 @@ export default {
 
         <div class="app-offcanvas-container">
             <div class="kiss-padding kiss-text-bold">
-                {{ t('REST-API Viewer') }}
+                {{ t('REST-API Playground') }}
             </div>
             <div class="app-offcanvas-content kiss-position-relative kiss-bgcolor-contrast kiss-flex-1 kiss-flex kiss-flex-middle kiss-flex-center">
                 <div v-if="!loaded"><app-loader></app-loader></div>

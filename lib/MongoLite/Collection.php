@@ -99,7 +99,7 @@ class Collection {
         // Encode document with error handling
         $json = \json_encode($document, JSON_UNESCAPED_UNICODE);
         if ($json === false) {
-            throw new \RuntimeException('Failed to encode document: ' . json_last_error_msg());
+            throw new \RuntimeException('Failed to encode document: ' . \json_last_error_msg());
         }
         $data = ['document' => $json];
 
@@ -121,7 +121,7 @@ class Collection {
             return $document['_id'];
         } else {
             $errorInfo = $this->database->connection->errorInfo();
-            throw new \PDOException('SQL Error: ' . implode(', ', $errorInfo) . " - Query: " . $sql, (int)$errorInfo[1]);
+            throw new \PDOException('SQL Error: ' . \implode(', ', $errorInfo) . " - Query: " . $sql, (int)$errorInfo[1]);
         }
     }
 
@@ -189,9 +189,9 @@ class Collection {
                     $document['_id'] = $_doc['_id'];
 
                     // Encode document with error handling
-                    $json = json_encode($document, JSON_UNESCAPED_UNICODE);
+                    $json = \json_encode($document, JSON_UNESCAPED_UNICODE);
                     if ($json === false) {
-                        throw new \RuntimeException('Failed to encode document during update: ' . json_last_error_msg());
+                        throw new \RuntimeException('Failed to encode document during update: ' . \json_last_error_msg());
                     }
                     
                     $sql = "UPDATE `{$sanitizedName}` SET document=".$conn->quote($json)." WHERE id=".(int)$doc['id'];
@@ -206,7 +206,7 @@ class Collection {
             }
         }
 
-        return count($result);
+        return \count($result);
     }
 
     /**
@@ -221,7 +221,7 @@ class Collection {
         // Check if we have update operators
         $hasOperators = false;
         foreach ($updates as $key => $value) {
-            if (str_starts_with($key, '$')) {
+            if (\str_starts_with($key, '$')) {
                 $hasOperators = true;
                 break;
             }
@@ -267,11 +267,11 @@ class Collection {
                     
                 case '$inc':
                     // Increment numeric fields with dot-notation support
-                    if (is_array($fields)) {
+                    if (\is_array($fields)) {
                         foreach ($fields as $field => $increment) {
-                            if (is_numeric($increment)) {
+                            if (\is_numeric($increment)) {
                                 $current = ValueAccessor::get($document, $field, 0);
-                                if (is_numeric($current)) {
+                                if (\is_numeric($current)) {
                                     ValueAccessor::set($document, $field, $current + $increment);
                                 } else {
                                     throw new \InvalidArgumentException("Cannot increment non-numeric field: {$field}");
@@ -283,17 +283,17 @@ class Collection {
                     
                 case '$push':
                     // Append to array fields with dot-notation support
-                    if (is_array($fields)) {
+                    if (\is_array($fields)) {
                         foreach ($fields as $field => $value) {
                             $current = ValueAccessor::get($document, $field);
                             if ($current === null) {
                                 $current = [];
                             }
-                            if (!is_array($current)) {
+                            if (!\is_array($current)) {
                                 throw new \InvalidArgumentException("Cannot push to non-array field: {$field}");
                             }
                             // Handle $each modifier
-                            if (is_array($value) && isset($value['$each']) && is_array($value['$each'])) {
+                            if (\is_array($value) && isset($value['$each']) && \is_array($value['$each'])) {
                                 foreach ($value['$each'] as $item) {
                                     $current[] = $item;
                                 }
@@ -307,17 +307,17 @@ class Collection {
                     
                 case '$addToSet':
                     // Add to array only if not already present with dot-notation support
-                    if (is_array($fields)) {
+                    if (\is_array($fields)) {
                         foreach ($fields as $field => $value) {
                             $current = ValueAccessor::get($document, $field);
                             if ($current === null) {
                                 $current = [];
                             }
-                            if (!is_array($current)) {
+                            if (!\is_array($current)) {
                                 throw new \InvalidArgumentException("Cannot addToSet to non-array field: {$field}");
                             }
                             // Handle $each modifier
-                            if (is_array($value) && isset($value['$each']) && is_array($value['$each'])) {
+                            if (\is_array($value) && isset($value['$each']) && \is_array($value['$each'])) {
                                 foreach ($value['$each'] as $item) {
                                     if (!$this->arrayContainsValue($current, $item)) {
                                         $current[] = $item;
@@ -335,7 +335,7 @@ class Collection {
                     
                 default:
                     // Unknown operator - for backward compatibility with $set behavior
-                    if (str_starts_with($operator, '$')) {
+                    if (\str_starts_with($operator, '$')) {
                         // Ignore unknown operators
                     } else if ($merge) {
                         // If not an operator and merge is true, treat as field to set
@@ -364,8 +364,8 @@ class Collection {
      * Compare two values for equality (deep comparison for arrays)
      */
     protected function valuesEqual(mixed $a, mixed $b): bool {
-        if (is_array($a) && is_array($b)) {
-            return json_encode($a) === json_encode($b);
+        if (\is_array($a) && \is_array($b)) {
+            return \json_encode($a) === \json_encode($b);
         }
         return $a === $b;
     }
@@ -424,23 +424,32 @@ class Collection {
         if (!$criteria) {
             $stmt = $this->database->connection->query("SELECT COUNT(*) AS C FROM `{$sanitizedName}`");
         } else {
-            // Register and sanitize criteria
-            $criteriaId = $this->database->registerCriteriaFunction($criteria);
-            $sanitizedCriteriaId = $this->database->sanitizeCriteriaId($criteriaId);
-            
-            if (!$sanitizedCriteriaId) {
-                throw new \InvalidArgumentException("Invalid criteria function ID");
+            // Try to optimize query
+            $optimizer = $this->database->getQueryOptimizer();
+            $criteriaSql = \is_array($criteria) ? $optimizer->optimize($criteria) : null;
+
+            if ($criteriaSql) {
+                $sql = "SELECT COUNT(*) AS C FROM `{$sanitizedName}` WHERE {$criteriaSql}";
+                $stmt = $this->database->connection->query($sql);
+            } else {
+                // Register and sanitize criteria
+                $criteriaId = $this->database->registerCriteriaFunction($criteria);
+                $sanitizedCriteriaId = $this->database->sanitizeCriteriaId($criteriaId);
+                
+                if (!$sanitizedCriteriaId) {
+                    throw new \InvalidArgumentException("Invalid criteria function ID");
+                }
+                
+                $sql = "SELECT COUNT(*) AS C FROM `{$sanitizedName}` WHERE document_criteria('{$sanitizedCriteriaId}', document)";
+                $stmt = $this->database->connection->query($sql);
+                
+                // Unregister criteria to prevent memory leaks
+                $this->database->unregisterCriteriaFunction($criteriaId);
             }
-            
-            $sql = "SELECT COUNT(*) AS C FROM `{$sanitizedName}` WHERE document_criteria('{$sanitizedCriteriaId}', document)";
-            $stmt = $this->database->connection->query($sql);
-            
-            // Unregister criteria to prevent memory leaks
-            $this->database->unregisterCriteriaFunction($criteriaId);
         }
         
         $res = $stmt->fetch(\PDO::FETCH_ASSOC);
-        return intval(isset($res['C']) ? $res['C'] : 0);
+        return \intval(isset($res['C']) ? $res['C'] : 0);
     }
 
     /**
@@ -457,7 +466,7 @@ class Collection {
         $stmt = $this->database->connection->query("SELECT COUNT(*) AS C FROM `{$sanitizedName}`");
         $res = $stmt->fetch(\PDO::FETCH_ASSOC);
         
-        return intval(isset($res['C']) ? $res['C'] : 0);
+        return \intval(isset($res['C']) ? $res['C'] : 0);
     }
 
     /**
@@ -467,7 +476,19 @@ class Collection {
      * @return Cursor Cursor
      */
     public function find(mixed $criteria = null, ?array $projection = null): Cursor {
-        return new Cursor($this, $this->database->registerCriteriaFunction($criteria), $projection);
+        $criteriaSql = null;
+        $criteriaFn = null;
+
+        if (\is_array($criteria)) {
+            $optimizer = $this->database->getQueryOptimizer();
+            $criteriaSql = $optimizer->optimize($criteria);
+        }
+
+        if ($criteriaSql === null) {
+            $criteriaFn = $this->database->registerCriteriaFunction($criteria);
+        }
+
+        return new Cursor($this, $criteriaFn, $projection, $criteriaSql);
     }
 
     /**
@@ -501,12 +522,12 @@ class Collection {
      */
     public function renameCollection(string $newname): bool {
 
-        if (!in_array($newname, $this->database->getCollectionNames())) {
+        if (!\in_array($newname, $this->database->getCollectionNames())) {
 
             // Sanitize both old and new collection names
             $sanitizedOldName = $this->getSanitizedCollectionName();
             
-            $sanitizedNewName = preg_replace('/[^a-zA-Z0-9_-]/', '', $newname);
+            $sanitizedNewName = \preg_replace('/[^a-zA-Z0-9_-]/', '', $newname);
             if ($sanitizedNewName !== $newname || empty($sanitizedNewName)) {
                 throw new \InvalidArgumentException("Invalid new collection name: {$newname}");
             }

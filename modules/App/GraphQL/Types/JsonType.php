@@ -41,7 +41,7 @@ class JsonType extends ScalarType
                 return $valueNode->value;
             case ($valueNode instanceof IntValueNode):
             case ($valueNode instanceof FloatValueNode):
-                return floatval($valueNode->value);
+                return \floatval($valueNode->value);
             case ($valueNode instanceof ObjectValueNode): {
                 $value = [];
                 foreach ($valueNode->fields as $field) {
@@ -50,7 +50,7 @@ class JsonType extends ScalarType
                 return $value;
             }
             case ($valueNode instanceof ListValueNode):
-                return array_map([$this, 'parseLiteral'], $valueNode->values);
+                return \array_map([$this, 'parseLiteral'], $valueNode->values);
             default:
                 return null;
         }
@@ -63,7 +63,7 @@ class JsonType extends ScalarType
     public static function instance() {
         static $instance;
 
-        if (is_null($instance)) {
+        if (\is_null($instance)) {
             $instance = new static();
         }
 

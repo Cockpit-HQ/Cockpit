@@ -337,8 +337,8 @@ export default {
                         </div>
                         <div class="kiss-padding kiss-flex kiss-flex-middle">
                             <div><input class="kiss-checkbox" type="checkbox" v-model="selected" :value="file.path"></div>
-                            <div class="kiss-margin-small-left kiss-text-truncate kiss-size-xsmall kiss-flex-1" :title="file.name">{{ App.utils.truncate(file.name, 15) }}</div>
-                            <a class="kiss-margin-small-left" @click="toggleFileActions(file)"><icon>more_horiz</icon></a>
+                            <div class="kiss-margin-small-start kiss-text-truncate kiss-size-xsmall kiss-flex-1" :title="file.name">{{ App.utils.truncate(file.name, 15) }}</div>
+                            <a class="kiss-margin-small-start" @click="toggleFileActions(file)"><icon>more_horiz</icon></a>
                         </div>
                     </kiss-card>
 
@@ -350,17 +350,17 @@ export default {
 
         <div :class="{'kiss-disabled':loading}">
             <div class="kiss-flex kiss-flex-middle">
-                <div class="kiss-margin-right" v-if="selected.length">
+                <div class="kiss-margin-end" v-if="selected.length">
                     <button class="kiss-button kiss-button-danger" @click="removeSelected()">{{ t('Delete') }} -{{ selected.length }}-</button>
                 </div>
-                <div class="kiss-button-group kiss-margin-right">
+                <div class="kiss-button-group kiss-margin-end">
                     <button class="kiss-button" @click="createFolder()">{{ t('Create folder') }}</button>
                     <button class="kiss-button kiss-overlay-input" :disabled="uploading">
                         {{ t('Upload file') }}
                         <input type="file" name="files[]" @change="(e) => {uploadFiles(e.target.files)}" multiple v-if="!uploading" />
                     </button>
                 </div>
-                <div class="kiss-flex-1 kiss-margin-right"></div>
+                <div class="kiss-flex-1 kiss-margin-end"></div>
                 <div class="kiss-button-group">
                     <button class="kiss-button" autofocus kiss-dialog-close>{{ t('Cancel') }}</button>
                     <button class="kiss-button kiss-button-primary" v-if="selectedFile" @click="selectFile && selectFile(selectedFile)" kiss-dialog-close>{{ t('Select file') }}</button>
@@ -379,21 +379,21 @@ export default {
                             </li>
                             <li>
                                 <a class="kiss-flex kiss-flex-middle" @click="rename(actionFile)">
-                                    <icon class="kiss-margin-small-right" size="larger">drive_file_rename_outline</icon>
+                                    <icon class="kiss-margin-small-end" size="larger">drive_file_rename_outline</icon>
                                     {{ t('Rename') }}
                                 </a>
                             </li>
                             <li class="kiss-nav-divider"></li>
                             <li>
                                 <a class="kiss-flex kiss-flex-middle" :href="actionFile.url" target="_blank" :download="actionFile.name">
-                                    <icon class="kiss-margin-small-right" size="larger">cloud_download</icon>
+                                    <icon class="kiss-margin-small-end" size="larger">cloud_download</icon>
                                     {{ t('Download') }}
                                 </a>
                             </li>
                             <li class="kiss-nav-divider"></li>
                             <li>
                                 <a class="kiss-color-danger kiss-flex kiss-flex-middle" @click="remove(actionFile)">
-                                    <icon class="kiss-margin-small-right" size="larger">delete</icon>
+                                    <icon class="kiss-margin-small-end" size="larger">delete</icon>
                                     {{ t('Delete') }}
                                 </a>
                             </li>
@@ -412,14 +412,14 @@ export default {
                             </li>
                             <li>
                                 <a class="kiss-flex kiss-flex-middle" @click="rename(actionFolder)">
-                                    <icon class="kiss-margin-small-right" size="larger">edit</icon>
+                                    <icon class="kiss-margin-small-end" size="larger">edit</icon>
                                     {{ t('Rename') }}
                                 </a>
                             </li>
                             <li class="kiss-nav-divider"></li>
                             <li>
                                 <a class="kiss-color-danger kiss-flex kiss-flex-middle" @click="remove(actionFolder)">
-                                    <icon class="kiss-margin-small-right" size="larger">delete</icon>
+                                    <icon class="kiss-margin-small-end" size="larger">delete</icon>
                                     {{ t('Delete') }}
                                 </a>
                             </li>

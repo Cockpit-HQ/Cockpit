@@ -13,18 +13,18 @@ class CollectionReader {
 
     public function __construct(string $path, bool $asArray = true) {
 
-        if (!file_exists($path)) {
+        if (!\file_exists($path)) {
             throw new \InvalidArgumentException('There is no file at given path');
         }
 
         $this->asArray = $asArray;
 
-        $this->resource = fopen($path, 'rb');
+        $this->resource = \fopen($path, 'rb');
     }
 
     public function close(): void {
-        if (is_resource($this->resource)) {
-            fclose($this->resource);
+        if (\is_resource($this->resource)) {
+            \fclose($this->resource);
         }
     }
 
@@ -33,10 +33,10 @@ class CollectionReader {
         $this->buffer = '';
         $this->nestingLevel = 0;
 
-        rewind($this->resource);
+        \rewind($this->resource);
 
-        while (!feof($this->resource)) {
-            $chunk = fread($this->resource, self::CHUNK_SIZE);
+        while (!\feof($this->resource)) {
+            $chunk = \fread($this->resource, self::CHUNK_SIZE);
             yield from $this->parseChunk($chunk);
         }
     }
@@ -51,7 +51,7 @@ class CollectionReader {
 
         // We want to iterate over chars but since,
         // we can have multibyte strings we can't access them by position alone
-        $split = mb_str_split($this->buffer);
+        $split = \mb_str_split($this->buffer);
 
         foreach ($split as $position => $char) {
             // Start of the collection
@@ -80,8 +80,8 @@ class CollectionReader {
                 if ($this->nestingLevel === 0) {
                     $keepFrom = $position + 1;
 
-                    yield json_decode(
-                        mb_substr($this->buffer, $start, $position - $start + 1),
+                    yield \json_decode(
+                        \mb_substr($this->buffer, $start, $position - $start + 1),
                         $this->asArray
                     );
 
@@ -97,7 +97,7 @@ class CollectionReader {
         }
 
         // Keep the unparsed part for later.
-        $this->buffer = mb_substr($this->buffer, $keepFrom);
+        $this->buffer = \mb_substr($this->buffer, $keepFrom);
     }
 
     public function __destruct() {

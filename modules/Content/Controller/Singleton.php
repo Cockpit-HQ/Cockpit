@@ -31,7 +31,7 @@ class Singleton extends App {
 
         $locales = $this->helper('locales')->locales();
 
-        if (count($locales) == 1) {
+        if (\count($locales) == 1) {
             $locales = [];
         } else {
             $locales[0]['visible'] = true;
@@ -39,7 +39,7 @@ class Singleton extends App {
 
         $this->helper('theme')->favicon(isset($model['icon']) && $model['icon'] ? $model['icon'] : 'content:assets/icons/singleton.svg', $model['color'] ?? '#000');
 
-        return $this->render('content:views/singleton/item.php', compact('model', 'fields', 'locales', 'item'));
+        return $this->render('content:views/singleton/item.php', \compact('model', 'fields', 'locales', 'item'));
     }
 
 }

@@ -10,7 +10,7 @@ class Utils extends App {
 
     public function generateToken($length = 20) {
 
-        return ['token' => bin2hex(random_bytes($length))];
+        return ['token' => \bin2hex(\random_bytes($length))];
     }
 
     public function csrf($name = null, $generate = false, $expire = null) {

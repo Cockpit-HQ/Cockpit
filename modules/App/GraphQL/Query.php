@@ -52,13 +52,13 @@ class Query extends \Lime\AppAware {
 
             foreach ($result['data'] as $key => $value) {
 
-                if ($value && is_string($value)) {
+                if ($value && \is_string($value)) {
 
-                    $start = substr($value,0,1);
-                    $end   = substr($value,-1,1);
+                    $start = \substr($value,0,1);
+                    $end   = \substr($value,-1,1);
 
                     if (($start == '[' && $end == ']') || ($start == '{' && $end == '}')) {
-                        $result['data'][$key] = json_decode($value);
+                        $result['data'][$key] = \json_decode($value);
                     } elseif ($value == 'null') {
                         $result['data'][$key] = null;
                     }

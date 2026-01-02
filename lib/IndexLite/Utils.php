@@ -11,18 +11,18 @@ class Utils {
      */
     public static function uuidv4(): string {
 
-        if (function_exists('random_bytes')) {
-            $uuid = bin2hex(random_bytes(16));
-        } elseif (function_exists('openssl_random_pseudo_bytes')) {
-            $uuid = bin2hex(openssl_random_pseudo_bytes(16));
+        if (\function_exists('random_bytes')) {
+            $uuid = \bin2hex(\random_bytes(16));
+        } elseif (\function_exists('openssl_random_pseudo_bytes')) {
+            $uuid = \bin2hex(\openssl_random_pseudo_bytes(16));
         } else {
-            $uuid = md5(uniqid('', true));
+            $uuid = \md5(\uniqid('', true));
         }
 
         $uuid[12] = '4';
-        $uuid[16] = dechex(hexdec($uuid[16]) & 3 | 8);
+        $uuid[16] = \dechex(\hexdec($uuid[16]) & 3 | 8);
 
-        return substr($uuid, 0, 8) . '-' . substr($uuid, 8, 4) . '-' . substr($uuid, 12, 4) . '-' . substr($uuid, 16, 4) . '-' . substr($uuid, 20);
+        return \substr($uuid, 0, 8) . '-' . \substr($uuid, 8, 4) . '-' . \substr($uuid, 12, 4) . '-' . \substr($uuid, 16, 4) . '-' . \substr($uuid, 20);
     }
 
     /**
@@ -41,19 +41,19 @@ class Utils {
         $ignoreValuePattern = $options['ignoreValuePattern'] ?? null;
 
         // Early return for simple types
-        if (is_null($input)) {
+        if (\is_null($input)) {
             return '';
         }
 
-        if (is_string($input)) {
+        if (\is_string($input)) {
             return $input;
         }
 
-        if (is_numeric($input) || is_bool($input)) {
+        if (\is_numeric($input) || \is_bool($input)) {
             return (string)$input;
         }
 
-        if (!is_array($input) && !is_object($input)) {
+        if (!\is_array($input) && !\is_object($input)) {
             return '';
         }
 
@@ -61,34 +61,34 @@ class Utils {
         $parts = [];
 
         // Convert to array if object
-        $array = is_object($input) ? get_object_vars($input) : $input;
+        $array = \is_object($input) ? \get_object_vars($input) : $input;
 
         // Process each element
         foreach ($array as $key => $value) {
 
-            if ($ignoreKeyPattern && preg_match($ignoreKeyPattern, $key)) {
+            if ($ignoreKeyPattern && \preg_match($ignoreKeyPattern, $key)) {
                 continue;
             }
 
             // Handle key-value pairs more intelligently for search
-            if (is_string($key) && !is_numeric($key)) {
+            if (\is_string($key) && !\is_numeric($key)) {
                 // Include keys as they might be relevant for search when named meaningfully
                 //$parts[] = $key;
             }
 
             $part = null;
 
-            if (is_string($value)) {
+            if (\is_string($value)) {
                 $part = $value;
-            } elseif (is_numeric($value)) {
+            } elseif (\is_numeric($value)) {
                 $part = (string)$value;
-            } elseif (is_array($value) || is_object($value)) {
+            } elseif (\is_array($value) || \is_object($value)) {
                 $part = self::stringifyValue($value, $options);
             }
 
             if ($part) {
 
-                if ($ignoreValuePattern && preg_match($ignoreValuePattern, $part)) {
+                if ($ignoreValuePattern && \preg_match($ignoreValuePattern, $part)) {
                     continue;
                 }
 
@@ -97,8 +97,8 @@ class Utils {
         }
 
         // Join with spaces and normalize whitespace
-        $result = implode(' ', $parts);
-        return preg_replace('/\s+/', ' ', trim($result));
+        $result = \implode(' ', $parts);
+        return \preg_replace('/\s+/', ' ', \trim($result));
     }
 
     /**
@@ -109,28 +109,28 @@ class Utils {
      */
     public static function processHtmlContent(?string $value): ?string {
 
-        if (is_null($value) || !is_string($value)) {
+        if (\is_null($value) || !\is_string($value)) {
             return null;
         }
 
         // Check if the content likely contains HTML
-        if (preg_match('/<[^>]+>/', $value)) {
+        if (\preg_match('/<[^>]+>/', $value)) {
 
             // First handle HTML entities
-            $value = html_entity_decode($value, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+            $value = \html_entity_decode($value, ENT_QUOTES | ENT_HTML5, 'UTF-8');
 
             // Replace common significant whitespace elements with a space
             // This preserves word boundaries while removing HTML structure
-            $value = preg_replace('/<(br|p|div|li|tr|h[1-6]|table|ul|ol)(\s+[^>]*)?>/i', ' ', $value);
+            $value = \preg_replace('/<(br|p|div|li|tr|h[1-6]|table|ul|ol)(\s+[^>]*)?>/i', ' ', $value);
 
             // Strip all HTML tags
-            $value = strip_tags($value);
+            $value = \strip_tags($value);
 
             // Normalize all whitespace to single spaces
-            $value = preg_replace('/\s+/', ' ', $value);
+            $value = \preg_replace('/\s+/', ' ', $value);
 
             // Trim leading/trailing whitespace
-            $value = trim($value);
+            $value = \trim($value);
         }
 
         return $value;
@@ -148,22 +148,22 @@ class Utils {
         $specialChars = '.-@';
 
         // Split the query string into individual terms
-        $terms = preg_split('/\s+/', $query);
+        $terms = \preg_split('/\s+/', $query);
 
         // Iterate through the terms and escape special characters and double quotes
-        $escapedTerms = array_map(function ($term) use ($specialChars) {
+        $escapedTerms = \array_map(function ($term) use ($specialChars) {
             // Replace double quotes with two double quotes
-            $escapedTerm = str_replace('"', '""', $term);
+            $escapedTerm = \str_replace('"', '""', $term);
 
             // Escape special characters with double quotes
-            $pattern = '/([' . preg_quote($specialChars, '/') . '])/';
-            $escapedTerm = preg_replace($pattern, '"$1"', $escapedTerm);
+            $pattern = '/([' . \preg_quote($specialChars, '/') . '])/';
+            $escapedTerm = \preg_replace($pattern, '"$1"', $escapedTerm);
 
             return $escapedTerm;
         }, $terms);
 
         // Combine the escaped terms back into a single query string
-        $escapedQuery = implode(' ', $escapedTerms);
+        $escapedQuery = \implode(' ', $escapedTerms);
 
         return $escapedQuery;
     }

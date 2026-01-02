@@ -27,9 +27,9 @@ class Tower extends App {
 
     public function index() {
 
-        $isAvailable = function_exists('proc_open') && (new PhpExecutableFinder())->find();
+        $isAvailable = \function_exists('proc_open') && (new PhpExecutableFinder())->find();
 
-        return $this->render('system:views/tower.php', compact('isAvailable'));
+        return $this->render('system:views/tower.php', \compact('isAvailable'));
     }
 
 
@@ -37,14 +37,14 @@ class Tower extends App {
 
         $this->hasValidCsrfToken(true);
 
-        $command = trim($this->param('command', ''));
+        $command = \trim($this->param('command', ''));
 
         if (!$command) {
             return $this->stop(['error' => 'Command is missing'], 412);
         }
 
-        if (str_starts_with($command, 'tower ')) {
-            $command = substr($command, 6);
+        if (\str_starts_with($command, 'tower ')) {
+            $command = \substr($command, 6);
         }
 
         $command = "tower {$command}";
@@ -56,11 +56,11 @@ class Tower extends App {
 
         $output = $process->getOutput();
 
-        if (is_array($output)) {
-            $output = implode("\n\r", $output);
+        if (\is_array($output)) {
+            $output = \implode("\n\r", $output);
         }
 
-        return ['success' => true, 'output' => trim($output)];
+        return ['success' => true, 'output' => \trim($output)];
     }
 
 }

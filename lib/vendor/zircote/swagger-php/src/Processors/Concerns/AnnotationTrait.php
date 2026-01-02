@@ -19,9 +19,9 @@ trait AnnotationTrait
     {
         $storage = new \SplObjectStorage();
 
-        $this->traverseAnnotations($root, function ($item) use (&$storage) {
-            if ($item instanceof OA\AbstractAnnotation && !$storage->contains($item)) {
-                $storage->attach($item);
+        $this->traverseAnnotations($root, static function ($item) use (&$storage): void {
+            if ($item instanceof OA\AbstractAnnotation && !$storage->offsetExists($item)) {
+                $storage->offsetSet($item);
             }
         });
 
@@ -29,36 +29,36 @@ trait AnnotationTrait
     }
 
     /**
-     * Remove all annotations that are part of the `$annotation` tree.
+     * Remove all annotations that are part of the <code>$annotation</code> tree.
      */
-    public function removeAnnotation(iterable $root, OA\AbstractAnnotation $annotation): void
+    public function removeAnnotation(iterable $root, OA\AbstractAnnotation $annotation, bool $recurse = true): void
     {
         $remove = $this->collectAnnotations($annotation);
-        $this->traverseAnnotations($root, function ($item) use ($remove) {
+        $this->traverseAnnotations($root, static function ($item) use ($remove): void {
             if ($item instanceof \SplObjectStorage) {
                 foreach ($remove as $annotation) {
-                    $item->detach($annotation);
+                    $item->offsetUnset($annotation);
                 }
             }
-        });
+        }, $recurse);
     }
 
     /**
      * @param string|array|iterable|OA\AbstractAnnotation $root
      */
-    public function traverseAnnotations($root, callable $callable): void
+    public function traverseAnnotations($root, callable $callable, bool $recurse = true): void
     {
         $callable($root);
 
-        if (is_iterable($root)) {
+        if (is_iterable($root) && $recurse) {
             foreach ($root as $value) {
-                $this->traverseAnnotations($value, $callable);
+                $this->traverseAnnotations($value, $callable, $recurse);
             }
         } elseif ($root instanceof OA\AbstractAnnotation) {
             foreach (array_merge($root::$_nested, ['allOf', 'anyOf', 'oneOf', 'callbacks']) as $properties) {
                 foreach ((array) $properties as $property) {
                     if (isset($root->{$property})) {
-                        $this->traverseAnnotations($root->{$property}, $callable);
+                        $this->traverseAnnotations($root->{$property}, $callable, $recurse);
                     }
                 }
             }

@@ -84,7 +84,7 @@ class IndexInfo implements ArrayAccess
      */
     public function getVersion(): int
     {
-        return (integer) $this->info['v'];
+        return (int) $this->info['v'];
     }
 
     /**

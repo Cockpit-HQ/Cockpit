@@ -5,13 +5,13 @@
     </ul>
 
     <div class="kiss-flex kiss-flex-middle">
-        <div class="kiss-margin-small-right">
+        <div class="kiss-margin-small-end">
             <kiss-svg class="kiss-margin-auto" src="<?=$this->base(isset($model['icon']) && $model['icon'] ? $model['icon'] : 'content:assets/icons/singleton.svg')?>" width="30" height="30" style="color:<?=($this->escape($model['color'] ?? 'inherit'))?>"><canvas width="35" height="35"></canvas></kiss-svg>
         </div>
-        <a class="kiss-color-muted kiss-margin-small-right" onclick="VueView.ui.offcanvas('content:assets/dialogs/switch-model-view.js')">
+        <a class="kiss-color-muted kiss-margin-small-end" onclick="VueView.ui.offcanvas('content:assets/dialogs/switch-model-view.js')">
             <icon>expand_circle_down</icon>
         </a>
-        <div class="kiss-margin-small-right">
+        <div class="kiss-margin-small-end">
             <div class="kiss-size-5 kiss-text-bold"><?=$this->escape($model['label'] ? $model['label'] : $model['name'])?></div>
         </div>
         <div>
@@ -52,7 +52,7 @@
 
                             <div class="kiss-margin-xsmall">
                                 <div class="kiss-flex kiss-flex-middle">
-                                    <div class="kiss-size-4 kiss-margin-small-right kiss-flex kiss-color-muted" :title="t('Created at')"><icon>more_time</icon></div>
+                                    <div class="kiss-size-4 kiss-margin-small-end kiss-flex kiss-color-muted" :title="t('Created at')"><icon>more_time</icon></div>
                                     <div class="kiss-text-truncate kiss-size-small kiss-text-monospace kiss-color-muted kiss-flex-1"><app-datetime :datetime="item._created" /></div>
                                     <user-info :user-id="item._cby"></user-info>
                                 </div>
@@ -60,7 +60,7 @@
 
                             <div class="kiss-margin-xsmall" v-if="item._created != item._modified">
                                 <div class="kiss-flex kiss-flex-middle">
-                                    <div class="kiss-size-4 kiss-margin-small-right kiss-flex kiss-color-muted" :title="t('Modified at')"><icon>history</icon></div>
+                                    <div class="kiss-size-4 kiss-margin-small-end kiss-flex kiss-color-muted" :title="t('Modified at')"><icon>history</icon></div>
                                     <div class="kiss-text-truncate kiss-size-small kiss-text-monospace kiss-color-muted kiss-flex-1"><app-datetime :datetime="item._modified" /></div>
                                     <user-info :user-id="item._mby"></user-info>
                                 </div>
@@ -90,14 +90,14 @@
                         <div class="kiss-text-caption kiss-size-xsmall kiss-text-bold">{{ t('Translation') }}</div>
 
                         <kiss-card class="kiss-padding-small kiss-margin-small kiss-text-muted kiss-size-small kiss-color-muted kiss-flex kiss-flex-middle" theme="bordered" v-if="!locales.length">
-                            <span class="kiss-flex-1 kiss-margin-small-right">{{ t('No locales.') }}</span>
+                            <span class="kiss-flex-1 kiss-margin-small-end">{{ t('No locales.') }}</span>
                             <a class="kiss-size-xsmall kiss-text-bolder" href="<?=$this->route('/system/locales')?>">{{ t('Manage') }}</a>
                         </kiss-card>
 
                         <div class="kiss-margin-small" v-if="locales.length">
 
                             <kiss-card class="kiss-position-relative kiss-padding-small kiss-margin-xsmall kiss-text-bolder kiss-flex kiss-flex-middle" :class="{'kiss-color-muted': !loc.visible}" :theme="!loc.visible ? 'bordered':'bordered contrast'" v-for="loc in locales">
-                                <icon class="kiss-margin-small-right" :class="{'kiss-color-primary': loc.visible}">{{ loc.visible ? 'visibility' : 'visibility_off' }}</icon>
+                                <icon class="kiss-margin-small-end" :class="{'kiss-color-primary': loc.visible}">{{ loc.visible ? 'visibility' : 'visibility_off' }}</icon>
                                 <span class="kiss-size-small kiss-flex-1">{{ loc.name }}</span>
                                 <span class="kiss-color-muted kiss-size-xsmall" v-if="loc.i18n == 'default'">{{ t('Default') }}</span>
                                 <a class="kiss-cover" @click="loc.visible = !loc.visible"></a>
@@ -151,14 +151,14 @@
                             <li class="kiss-nav-header"><?=t('Model actions')?></li>
                             <li>
                                 <a class="kiss-flex kiss-flex-middle" href @click.prevent="showJSON()">
-                                    <icon class="kiss-margin-small-right">manage_search</icon>
+                                    <icon class="kiss-margin-small-end">manage_search</icon>
                                     <?=t('JSON Object')?>
                                 </a>
                             </li>
                             <li class="kiss-nav-divider"></li>
                             <li>
                                 <a class="kiss-flex kiss-flex-middle" href="<?=$this->route("/content/models/edit/{$model['name']}")?>">
-                                    <icon class="kiss-margin-small-right">create</icon>
+                                    <icon class="kiss-margin-small-end">create</icon>
                                     <?=t('Edit model')?>
                                 </a>
                             </li>
@@ -177,13 +177,13 @@
                         <ul class="app-list-items kiss-margin-small-top">
                             <li>
                                 <a class="kiss-flex kiss-flex-middle" :class="{'kiss-color-muted': item._state != 1, 'kiss-text-bold': item._state == 1}" @click="item._state=1">
-                                    <icon class="kiss-margin-small-right">{{ item._state != 1 ? 'radio_button_unchecked' : 'radio_button_checked'}}</icon>
+                                    <icon class="kiss-margin-small-end">{{ item._state != 1 ? 'radio_button_unchecked' : 'radio_button_checked'}}</icon>
                                     <?=t('Published')?>
                                 </a>
                             </li>
                             <li>
                                 <a class="kiss-flex kiss-flex-middle" :class="{'kiss-color-muted': item._state != 0, 'kiss-text-bold': item._state == 0}" @click="item._state=0">
-                                    <icon class="kiss-margin-small-right">{{ item._state != 0 ? 'radio_button_unchecked' : 'radio_button_checked'}}</icon>
+                                    <icon class="kiss-margin-small-end">{{ item._state != 0 ? 'radio_button_unchecked' : 'radio_button_checked'}}</icon>
                                     <?=t('Unpublished')?>
                                 </a>
                             </li>
@@ -200,7 +200,7 @@
                             <li class="kiss-nav-header"><?=t('Open preview')?></li>
                             <li v-for="preview in model.preview">
                                 <a class="kiss-flex kiss-flex-middle" @click="showPreviewUri(preview.uri)">
-                                    <icon class="kiss-margin-small-right">travel_explore</icon>
+                                    <icon class="kiss-margin-small-end">travel_explore</icon>
                                     {{ preview.name }}
                                 </a>
                             </li>

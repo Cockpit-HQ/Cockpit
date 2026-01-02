@@ -150,17 +150,17 @@ class Response {
 
     public function flush(): void {
 
-        if ($this->gzip && !ob_start('ob_gzhandler')) {
-            ob_start();
+        if ($this->gzip && !\ob_start('ob_gzhandler')) {
+            \ob_start();
         }
 
-        if (!headers_sent()) {
+        if (!\headers_sent()) {
 
             $body = $this->body;
             $headers = [];
 
-            if (is_array($this->body) || is_object($this->body)) {
-                $body = json_encode($this->body);
+            if (\is_array($this->body) || \is_object($this->body)) {
+                $body = \json_encode($this->body);
                 $this->mime = 'json';
             }
 
@@ -174,28 +174,28 @@ class Response {
             }
 
             if ($this->etag){
-                $headers['ETag'] = md5($body);
+                $headers['ETag'] = \md5($body);
             }
 
-            header('HTTP/1.0 '.$this->status.' '.self::$statusCodes[$this->status]);
+            \header('HTTP/1.0 '.$this->status.' '.self::$statusCodes[$this->status]);
 
-            $headers = array_merge($headers, $this->headers);
+            $headers = \array_merge($headers, $this->headers);
 
             foreach ($headers as $h => $v) {
-                header(is_numeric($h) ? $v : "{$h}: {$v}");
+                \header(\is_numeric($h) ? $v : "{$h}: {$v}");
             }
 
-            if (is_resource($body)) {
-                fpassthru($body);
+            if (\is_resource($body)) {
+                \fpassthru($body);
             } else {
 
                 echo $body;
 
                 // Flush output buffers
-                while (ob_get_level()) {
-                    ob_end_flush();
+                while (\ob_get_level()) {
+                    \ob_end_flush();
                 }
-                flush();
+                \flush();
             }
         }
     }

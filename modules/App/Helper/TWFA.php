@@ -44,7 +44,7 @@ class TWFA extends \Lime\Helper {
      */
     public function getQRCodeImage(string $secret, int $size = 150): mixed {
         $uri = $this->tfa->getQRCodeImageAsDataUri($this->app['app.name'], $secret, $size);
-        $binary = file_get_contents($uri);
+        $binary = \file_get_contents($uri);
         return $binary;
     }
 

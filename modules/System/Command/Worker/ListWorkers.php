@@ -65,6 +65,16 @@ class ListWorkers extends Command {
             }
         }
 
+        // Clean up inactive workers from the PID file
+        if (count($inactiveWorkers) > 0) {
+            $pids = array_column($inactiveWorkers, 'pid');
+            $this->app->helper('worker')->removeWorkerPID($pids);
+
+            if ($showAll) {
+                $output->writeln(sprintf('<comment>Cleaned up %d inactive worker(s)</comment>', count($inactiveWorkers)));
+            }
+        }
+
         // Create and render the table
         $table = new Table($output);
         $table->setHeaders(['PID', 'Mode', 'Started', 'Uptime', 'Status']);
@@ -118,10 +128,7 @@ class ListWorkers extends Command {
             }
         }
 
-        // Clean up inactive workers from the PID file
-        if (count($inactiveWorkers) > 0) {
-            // @todo
-        }
+
 
         return Command::SUCCESS;
     }

@@ -121,7 +121,7 @@ export default {
             <div class="kiss-button-group">
 
                 <button type="button" class="kiss-button kiss-button-small" @click="pickFile()">
-                    <icon class="kiss-margin-small-right">link</icon>
+                    <icon class="kiss-margin-small-end">link</icon>
                     {{ t('Link file') }}
                 </button>
                 <button type="button" class="kiss-button kiss-button-small" @click="val=null" v-if="file">{{ t('Reset') }}</button>

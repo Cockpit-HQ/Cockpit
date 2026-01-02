@@ -20,7 +20,7 @@ class Buckets extends App {
             return false;
         }
 
-        $bucket = preg_replace('/[^a-zA-Z0-9-_\.]/','', str_replace(' ', '-', $bucket));
+        $bucket = \preg_replace('/[^a-zA-Z0-9-_\.]/','', \str_replace(' ', '-', $bucket));
 
         $this->root = "uploads://buckets/{$bucket}";
 
@@ -28,7 +28,7 @@ class Buckets extends App {
             $this->app->fileStorage->createDirectory($this->root);
         }
 
-        if ($this->app->fileStorage->has($this->root) && in_array($cmd, get_class_methods($this))){
+        if ($this->app->fileStorage->has($this->root) && \in_array($cmd, \get_class_methods($this))){
 
             $this->app->response->mime = 'json';
             return $this->{$cmd}();
@@ -58,13 +58,13 @@ class Buckets extends App {
             foreach ($this->app->fileStorage->listContents($dir, false) as $file) {
 
                 $path = $file->path();
-                $pathInfo = pathinfo($path);
+                $pathInfo = \pathinfo($path);
                 $isFile = $file->isFile();
                 $isDir = $file->isDir();
 
                 $filename = $pathInfo['basename'];
 
-                if ($filename[0]=='.' && in_array(strtolower($filename), $toignore)) continue;
+                if ($filename[0]=='.' && \in_array(\strtolower($filename), $toignore)) continue;
 
                 try {
                     $mime = $isDir ? null : $this->app->fileStorage->mimeType($path);
@@ -73,12 +73,12 @@ class Buckets extends App {
                 }
 
                 $type = match(1) {
-                    preg_match('/\.(jpg|jpeg|png|gif|svg|webp)$/i', $filename) => 'image',
-                    preg_match('/\.(mp4|mov|ogv|webv|wmv|flv|avi)$/i', $filename) => 'video',
-                    preg_match('/\.(mp3|weba|ogg|wav|flac)$/i', $filename) => 'audio',
-                    preg_match('/\.(zip|rar|7zip|gz|tar)$/i', $filename) => 'archive',
-                    preg_match('/\.(txt|htm|html|pdf|md)$/i', $filename) => 'document',
-                    preg_match('/\.(htm|html|php|css|less|js|json|md|markdown|yaml|xml|htaccess)$/i', $filename) => 'code',
+                    \preg_match('/\.(jpg|jpeg|png|gif|svg|webp)$/i', $filename) => 'image',
+                    \preg_match('/\.(mp4|mov|ogv|webv|wmv|flv|avi)$/i', $filename) => 'video',
+                    \preg_match('/\.(mp3|weba|ogg|wav|flac)$/i', $filename) => 'audio',
+                    \preg_match('/\.(zip|rar|7zip|gz|tar)$/i', $filename) => 'archive',
+                    \preg_match('/\.(txt|htm|html|pdf|md)$/i', $filename) => 'document',
+                    \preg_match('/\.(htm|html|php|css|less|js|json|md|markdown|yaml|xml|htaccess)$/i', $filename) => 'code',
                     default => 'unknown'
                 };
 
@@ -86,21 +86,21 @@ class Buckets extends App {
                     'is_file' => $isFile,
                     'is_dir' => $isDir,
                     'name' => $filename,
-                    'path' => trim(str_replace($this->root, '', $path), '/'),
+                    'path' => \trim(\str_replace($this->root, '', $path), '/'),
                     'url'  => $this->app->fileStorage->getURL($path),
                     'type' => $type,
                     'size' => $isDir ? null : $this->app->helper('utils')->formatSize($file->fileSize()),
                     'filesize' => $isDir ? null : $file->fileSize(),
                     'mime' => $mime,
-                    'ext'  => $isDir ? null : strtolower($pathInfo['extension']),
-                    'lastmodified' => $isDir ? null : date('d.m.y H:i', $file->lastModified()),
+                    'ext'  => $isDir ? null : \strtolower($pathInfo['extension']),
+                    'lastmodified' => $isDir ? null : \date('d.m.y H:i', $file->lastModified()),
                     'modified' => $isDir ? null : $file->lastModified(),
                 ];
             }
         }
 
-        usort($data['folders'], fn($a, $b) => strcasecmp($a['name'], $b['name']));
-        usort($data['files'], fn($a, $b) => strcasecmp($a['name'], $b['name']));
+        \usort($data['folders'], fn($a, $b) => \strcasecmp($a['name'], $b['name']));
+        \usort($data['files'], fn($a, $b) => \strcasecmp($a['name'], $b['name']));
 
         return $data;
     }
@@ -118,7 +118,7 @@ class Buckets extends App {
             $ret = $this->app->fileStorage->createDirectory($this->root.'/'.$path.'/'.$name);
         }
 
-        return json_encode(['success' => $ret]);
+        return \json_encode(['success' => $ret]);
     }
 
     protected function rename() {
@@ -137,7 +137,7 @@ class Buckets extends App {
             $this->app->fileStorage->move($source, $target);
         }
 
-        return json_encode(['success' => true]);
+        return \json_encode(['success' => true]);
     }
 
     protected function removefiles() {
@@ -147,7 +147,7 @@ class Buckets extends App {
 
         foreach ($paths as $path) {
 
-            $delpath = $this->root.'/'.trim($path, '/');
+            $delpath = $this->root.'/'.\trim($path, '/');
 
             if ($this->app->fileStorage->directoryExists($delpath)) {
                 $this->app->fileStorage->deleteDirectory($delpath);
@@ -158,7 +158,7 @@ class Buckets extends App {
             $deletions[] = $delpath;
         }
 
-        return json_encode(['success' => true]);
+        return \json_encode(['success' => true]);
     }
 
     protected function upload() {
@@ -168,7 +168,7 @@ class Buckets extends App {
         if ($path === false) return false;
 
         $files      = $_FILES['files'] ?? [];
-        $targetpath = trim($this->root.'/'.$path, '/');
+        $targetpath = \trim($this->root.'/'.$path, '/');
         $uploaded   = [];
         $failed     = [];
 
@@ -176,41 +176,41 @@ class Buckets extends App {
         $_uploaded  = [];
         $_failed    = [];
 
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $finfo = \finfo_open(FILEINFO_MIME_TYPE);
 
         if (isset($files['name']) && $this->app->fileStorage->has($targetpath)) {
 
-            $count = count($files['name']);
+            $count = \count($files['name']);
 
             for ($i = 0; $i < $count; $i++) {
 
                 // clean filename
-                $clean = preg_replace('/[^a-zA-Z0-9-_\.]/','', str_replace(' ', '-', $files['name'][$i]));
+                $clean = \preg_replace('/[^a-zA-Z0-9-_\.]/','', \str_replace(' ', '-', $files['name'][$i]));
                 $_file  = $this->app->path('#tmp:').'/'.$files['name'][$i];
 
-                if (!$files['error'][$i] && $this->_isFileTypeAllowed($clean) && move_uploaded_file($files['tmp_name'][$i], $_file)) {
+                if (!$files['error'][$i] && $this->_isFileTypeAllowed($clean) && \move_uploaded_file($files['tmp_name'][$i], $_file)) {
 
                     $uploaded[]  = $files['name'][$i];
                     $_uploaded[] = $_file;
 
                     if (\preg_match('/\.(svg|xml)$/i', $clean)) {
-                        file_put_contents($_file, \SVGSanitizer::clean(\file_get_contents($_file)));
+                        \file_put_contents($_file, \SVGSanitizer::clean(\file_get_contents($_file)));
                     }
 
                     try {
 
                         $opts  = [
-                            'mimetype' => finfo_file($finfo, $_file)
+                            'mimetype' => \finfo_file($finfo, $_file)
                         ];
 
-                        $stream = fopen($_file, 'r+');
+                        $stream = \fopen($_file, 'r+');
                         $this->app->fileStorage->writeStream($targetpath.'/'.$clean, $stream, $opts);
 
-                        if (is_resource($stream)) {
-                            fclose($stream);
+                        if (\is_resource($stream)) {
+                            \fclose($stream);
                         }
 
-                        unlink($_file);
+                        \unlink($_file);
 
                     } catch (\Throwable $exception) {
                         continue;
@@ -223,7 +223,7 @@ class Buckets extends App {
             }
         }
 
-        return json_encode(['uploaded' => $uploaded, 'failed' => $failed]);
+        return \json_encode(['uploaded' => $uploaded, 'failed' => $failed]);
     }
 
     protected function _getPathParameter() {
@@ -232,9 +232,9 @@ class Buckets extends App {
 
         if ($path) {
 
-            $path = trim(trim($path, '/'));
+            $path = \trim(\trim($path, '/'));
 
-            if (str_contains($path, '../')) {
+            if (\str_contains($path, '../')) {
                 $path = false;
             }
         }
@@ -244,9 +244,9 @@ class Buckets extends App {
 
     protected function _isFileTypeAllowed($file) {
 
-        $allowed = trim($this->app->retrieve('finder.allowed_uploads', '*'));
+        $allowed = \trim($this->app->retrieve('finder.allowed_uploads', '*'));
 
-        if (strtolower(pathinfo($file, PATHINFO_EXTENSION)) == 'php') {
+        if (\strtolower(\pathinfo($file, PATHINFO_EXTENSION)) == 'php') {
             return false;
         }
 
@@ -254,9 +254,9 @@ class Buckets extends App {
             return true;
         }
 
-        $allowed = str_replace([' ', ','], ['', '|'], preg_quote(is_array($allowed) ? implode(',', $allowed) : $allowed));
+        $allowed = \str_replace([' ', ','], ['', '|'], \preg_quote(\is_array($allowed) ? \implode(',', $allowed) : $allowed));
 
-        return preg_match("/\.({$allowed})$/i", $file);
+        return \preg_match("/\.({$allowed})$/i", $file);
     }
 
 }

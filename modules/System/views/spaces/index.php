@@ -18,8 +18,8 @@
                 <div class="kiss-flex-1"></div>
 
                 <?php if ($isFinderAvailable): ?>
-                <button class="kiss-button kiss-button-blank kiss-margin-left kiss-padding-remove-horizontal" type="button" @click="openFinder()">
-                    <icon class="kiss-margin-small-right">folder</icon>
+                <button class="kiss-button kiss-button-blank kiss-margin-start kiss-padding-remove-horizontal" type="button" @click="openFinder()">
+                    <icon class="kiss-margin-small-end">folder</icon>
                     {{ t('Open Finder') }}
                 </button>
                 <?php endif ?>
@@ -56,10 +56,10 @@
                             </div>
                             <a class="kiss-cover" :href="space.url" target="_blank" rel="noopener noreferrer"></a>
                         </div>
-                        <div class="kiss-padding-small kiss-margin-small-left kiss-flex-1">
+                        <div class="kiss-padding-small kiss-margin-small-start kiss-flex-1">
                             <a class="kiss-text-bold kiss-link-muted" :href="space.url" target="_blank" rel="noopener noreferrer">{{ space.name}}</a>
                         </div>
-                        <div class="kiss-padding-small kiss-margin-small-left">
+                        <div class="kiss-padding-small kiss-margin-small-start">
                             <a @click="togglespaceActions(space)"><icon>more_horiz</icon></a>
                         </div>
                     </kiss-card>
@@ -95,14 +95,14 @@
                                 <li class="kiss-nav-header">{{ actionSpace.name }}</li>
                                 <li>
                                     <a class="kiss-flex kiss-flex-middle" :href="actionSpace.url" target="_blank" rel="noopener noreferrer">
-                                        <icon class="kiss-margin-small-right">link</icon>
+                                        <icon class="kiss-margin-small-end">link</icon>
                                         <?=t('Open space')?>
                                     </a>
                                 </li>
                                 <?php if ($isFinderAvailable): ?>
                                 <li>
                                     <a class="kiss-flex kiss-flex-middle" @click="openFinder(actionSpace.name)">
-                                        <icon class="kiss-margin-small-right">folder</icon>
+                                        <icon class="kiss-margin-small-end">folder</icon>
                                         <?=t('Open Finder')?>
                                     </a>
                                 </li>
@@ -110,7 +110,7 @@
                                 <li class="kiss-nav-divider"></li>
                                 <li>
                                     <a class="kiss-color-danger kiss-flex kiss-flex-middle" @click="remove(actionSpace)">
-                                        <icon class="kiss-margin-small-right">delete</icon>
+                                        <icon class="kiss-margin-small-end">delete</icon>
                                         <?=t('Delete')?>
                                     </a>
                                 </li>

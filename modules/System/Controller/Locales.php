@@ -39,7 +39,7 @@ class Locales extends App {
             $locale['enabled'] = true;
         }
 
-        return $this->render('system:views/locales/locale.php', compact('locale'));
+        return $this->render('system:views/locales/locale.php', \compact('locale'));
     }
 
     public function create() {
@@ -51,7 +51,7 @@ class Locales extends App {
             'meta' => new ArrayObject([]),
         ];
 
-        return $this->render('system:views/locales/locale.php', compact('locale'));
+        return $this->render('system:views/locales/locale.php', \compact('locale'));
     }
 
     public function remove() {
@@ -83,19 +83,19 @@ class Locales extends App {
             return $this->stop(['error' => 'locale data is missing'], 412);
         }
 
-        $locale['_modified'] = time();
+        $locale['_modified'] = \time();
         $isUpdate = isset($locale['_id']);
 
         if (!$isUpdate) {
             $locale['_created'] = $locale['_modified'];
         }
 
-        if (!isset($locale['i18n']) || !trim($locale['i18n'])) {
+        if (!isset($locale['i18n']) || !\trim($locale['i18n'])) {
             return $this->stop(['error' => 'i18n required'], 412);
         }
 
         foreach (['i18n', 'name'] as $key) {
-            $locale[$key] = strip_tags(trim($locale[$key]));
+            $locale[$key] = \strip_tags(\trim($locale[$key]));
         }
 
         if ($locale['i18n'] == 'default') {
@@ -115,7 +115,7 @@ class Locales extends App {
 
         $locale = $this->app->dataStorage->findOne('system/locales', ['_id' => $locale['_id']]);
 
-        $locale['meta'] = new ArrayObject(is_array($locale['meta']) ? $locale['meta'] : []);
+        $locale['meta'] = new ArrayObject(\is_array($locale['meta']) ? $locale['meta'] : []);
 
         $this->cache();
 

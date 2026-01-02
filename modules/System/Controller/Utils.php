@@ -85,7 +85,7 @@ class Utils extends App {
 
                 $icons[] = [
                     'name' => $f->getBasename('.svg'),
-                    'path' => $p.str_replace([DIRECTORY_SEPARATOR, $path], ['/', ''], $f->getPathname()),
+                    'path' => $p.\str_replace([DIRECTORY_SEPARATOR, $path], ['/', ''], $f->getPathname()),
                 ];
             }
 
@@ -113,8 +113,8 @@ class Utils extends App {
             return $this->stop(401);
         }
 
-        if (function_exists('opcache_reset')) {
-            opcache_reset();
+        if (\function_exists('opcache_reset')) {
+            \opcache_reset();
         }
 
         return ['success' => true];
@@ -146,11 +146,40 @@ class Utils extends App {
             return $this->stop(['error' => 'Permission denied'], 401);
         }
 
-        $env = getenv();
+        $env = \getenv();
 
-        ksort($env);
+        \ksort($env);
 
-        return compact('env');
+        return \compact('env');
+    }
+
+    public function testMailer() {
+
+        $this->hasValidCsrfToken(true);
+
+        if (!$this->helper('acl')->isSuperAdmin()) {
+            return $this->stop(401);
+        }
+
+        $email = $this->param('email');
+        $account = $this->param('account', 'default');
+
+        if (!$email || !\filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return $this->stop(['error' => 'Email is missing or invalid'], 412);
+        }
+
+        $appName = $this->app->retrieve('app.name');
+
+        $subject = "{$appName}: System Test Mail";
+        $msg = "This is a test mail sent from the {$appName} system.";
+
+        try {
+            $this->mailer->mail($email, $subject, $msg, ['account' => $account]);
+        } catch (\Exception $e) {
+            return $this->stop(['error' => $e->getMessage()], 500);
+        }
+
+        return ['success' => true];
     }
 
 }

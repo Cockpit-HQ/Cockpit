@@ -17,7 +17,7 @@ class Logs extends App {
 
         $channels = [];
 
-        foreach (array_keys((array)$this->app->retrieve('modules')) as $m) {
+        foreach (\array_keys((array)$this->app->retrieve('modules')) as $m) {
 
             if ($m == 'app') continue;
 
@@ -28,32 +28,32 @@ class Logs extends App {
 
             $channels[$m] = [
                 'name' => $m,
-                'label' => basename($path),
+                'label' => \basename($path),
                 'icon' => $icon
             ];
         }
 
-        return $this->render('system:views/logs/index.php', compact('channels'));
+        return $this->render('system:views/logs/index.php', \compact('channels'));
     }
 
     public function load() {
 
         $this->helper('session')->close();
 
-        $options = array_merge([
+        $options = \array_merge([
             'sort' => ['timestamp' => -1]
         ],$this->param('options', []));
 
         $items = $this->app->dataStorage->find('system/log', $options)->toArray();
         $count = $this->app->dataStorage->count('system/log', $options['filter'] ?? []);
-        $pages = isset($options['limit']) ? ceil($count / $options['limit']) : 1;
+        $pages = isset($options['limit']) ? \ceil($count / $options['limit']) : 1;
         $page  = 1;
 
         if ($pages > 1 && isset($options['skip'])) {
-            $page = ceil($options['skip'] / $options['limit']) + 1;
+            $page = \ceil($options['skip'] / $options['limit']) + 1;
         }
 
-        return compact('items', 'count', 'pages', 'page');
+        return \compact('items', 'count', 'pages', 'page');
     }
 
 }

@@ -21,7 +21,7 @@ class Menus extends \Lime\Helper {
             $this->menus[$menu] = [];
         }
 
-        $link = array_merge([
+        $link = \array_merge([
             'label'  => '',
             'icon'   => 'cube',
             'route'  => '/',
@@ -46,7 +46,7 @@ class Menus extends \Lime\Helper {
      */
     public function menu(string $name, bool $grouped = false): array {
 
-        if (!isset($this->menus[$name]) || !count($this->menus[$name])) {
+        if (!isset($this->menus[$name]) || !\count($this->menus[$name])) {
             return [];
         }
 

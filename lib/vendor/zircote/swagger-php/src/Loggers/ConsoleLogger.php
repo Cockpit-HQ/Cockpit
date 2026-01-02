@@ -25,8 +25,7 @@ class ConsoleLogger extends AbstractLogger implements LoggerInterface
     /** @var bool */
     protected $loggedMessageAboveNotice = false;
 
-    /** @var bool */
-    protected $debug;
+    protected bool $debug;
 
     public function __construct(bool $debug = false)
     {
@@ -41,7 +40,7 @@ class ConsoleLogger extends AbstractLogger implements LoggerInterface
     /**
      * @param string            $level
      * @param string|\Exception $message
-     * @param array             $context additional details; supports custom `prefix` and `exception`
+     * @param array             $context additional details; supports custom <code>prefix</code> and <code>exception</code>
      */
     public function log($level, $message, array $context = []): void
     {
@@ -64,7 +63,7 @@ class ConsoleLogger extends AbstractLogger implements LoggerInterface
                 $color = static::COLOR_ERROR;
                 break;
         }
-        $stop = !empty($color) ? static::COLOR_STOP : '';
+        $stop = empty($color) ? '' : static::COLOR_STOP;
 
         if (!in_array($level, self::LOG_LEVELS_UP_TO_NOTICE, true)) {
             $this->loggedMessageAboveNotice = true;
@@ -83,7 +82,7 @@ class ConsoleLogger extends AbstractLogger implements LoggerInterface
         if ($this->debug) {
             if ($exception) {
                 error_log($exception->getTraceAsString());
-            } elseif (!empty($logLine)) {
+            } elseif ($logLine !== '' && $logLine !== '0') {
                 $stack = explode(PHP_EOL, (new \Exception())->getTraceAsString());
                 // self
                 array_shift($stack);

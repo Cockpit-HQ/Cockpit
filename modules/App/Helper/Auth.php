@@ -14,7 +14,7 @@ class Auth extends \Lime\Helper {
      */
     public function authenticate(array $data): mixed {
 
-        $data = array_merge([
+        $data = \array_merge([
             'user'     => '',
             'email'    => '',
             'password' => ''
@@ -32,9 +32,9 @@ class Auth extends \Lime\Helper {
 
         $user = $this->app->dataStorage->findOne('system/users', $filter);
 
-        if ($user && (password_verify($data['password'], $user['password']))){
+        if ($user && (\password_verify($data['password'], $user['password']))){
 
-            $user = array_merge($data, (array)$user);
+            $user = \array_merge($data, (array)$user);
 
             unset($user['password']);
 
@@ -57,11 +57,11 @@ class Auth extends \Lime\Helper {
 
         $user = $this->app->retrieve($this->sessionKey);
 
-        if (is_null($user)) {
+        if (\is_null($user)) {
             $user = $this->app->helper('session')->read($this->sessionKey, null);
         }
 
-        if (!is_null($prop)) {
+        if (!\is_null($prop)) {
             return $user && isset($user[$prop]) ? $user[$prop] : $default;
         }
 
@@ -78,7 +78,7 @@ class Auth extends \Lime\Helper {
     public function setUser(array $user, bool $permanent = true): void {
 
         if (isset($user['name'])) {
-            $user['name_short'] = explode(' ', $user['name'])[0];
+            $user['name_short'] = \explode(' ', $user['name'])[0];
         }
 
         if ($permanent) {

@@ -36,7 +36,7 @@ class Models extends App {
 
         $this->helper('theme')->favicon('content:icon.svg');
 
-        return $this->render('content:views/models/model.php', compact('model', 'isUpdate', 'groups'));
+        return $this->render('content:views/models/model.php', \compact('model', 'isUpdate', 'groups'));
     }
 
     public function edit($name = null) {
@@ -56,7 +56,7 @@ class Models extends App {
         }
 
         // legacy model update
-        $model = array_merge([
+        $model = \array_merge([
             'preview' => []
         ], $model);
 
@@ -65,7 +65,7 @@ class Models extends App {
 
         $this->helper('theme')->favicon('content:icon.svg');
 
-        return $this->render('content:views/models/model.php', compact('model', 'isUpdate', 'groups'));
+        return $this->render('content:views/models/model.php', \compact('model', 'isUpdate', 'groups'));
     }
 
     public function remove($name = null) {
@@ -98,7 +98,7 @@ class Models extends App {
         $model = $this->param('model');
         $isUpdate = $this->param('isUpdate', false);
 
-        if (!$model || !isset($model['name'], $model['type']) || !trim($model['name']) || !trim($model['type'])) {
+        if (!$model || !isset($model['name'], $model['type']) || !\trim($model['name']) || !\trim($model['type'])) {
             return $this->stop(['error' => 'Model data is missing'], 412);
         }
 
@@ -123,7 +123,7 @@ class Models extends App {
 
             $acl = $this->helper('acl');
 
-            $models = array_filter($models, function($model) use($acl) {
+            $models = \array_filter($models, function($model) use($acl) {
 
                 if ($acl->isAllowed('content/:models/manage')) {
                     return true;
@@ -133,11 +133,11 @@ class Models extends App {
             });
         }
 
-        $models = array_values($models);
+        $models = \array_values($models);
 
         // sort models
-        usort($models, function ($a, $b) {
-            return mb_strtolower($a['label'] ? $a['label'] : $a['name']) <=> mb_strtolower($b['label'] ? $b['label'] : $b['name']);
+        \usort($models, function ($a, $b) {
+            return \mb_strtolower($a['label'] ? $a['label'] : $a['name']) <=> \mb_strtolower($b['label'] ? $b['label'] : $b['name']);
         });
 
         return $models;
@@ -155,7 +155,7 @@ class Models extends App {
         $model    = $this->module('content')->model($model);
         $isUpdate = isset($item['_id']) && $item['_id'];
 
-        if (isset($item['_id']) && (!is_string($item['_id']) || !$this->app->dataStorage->isValidId($item['_id']))) {
+        if (isset($item['_id']) && (!\is_string($item['_id']) || !$this->app->dataStorage->isValidId($item['_id']))) {
             return $this->stop(['error' => 'Item ID looks wrong'], 400);
         }
 
@@ -179,7 +179,7 @@ class Models extends App {
 
             $current = null;
 
-            if (in_array($model['type'], ['collection', 'tree'])) {
+            if (\in_array($model['type'], ['collection', 'tree'])) {
                 $current = $this->module('content')->item($model['name'], ['_id' => $item['_id']]);
             } else {
                 $current = $this->module('content')->item($model['name']);
@@ -205,7 +205,7 @@ class Models extends App {
 
     public function clone($model = null) {
 
-        $name = str_replace(' ', '', trim($this->param('name', '')));
+        $name = \str_replace(' ', '', \trim($this->param('name', '')));
 
         if (!$name) {
             return $this->stop(['error' => 'Model name is missing'], 412);
@@ -224,7 +224,7 @@ class Models extends App {
         }
 
         $model = $this->module('content')->model($model);
-        $time = time();
+        $time = \time();
 
         $model['name'] = $name;
         $model['label'] = $model['label'] ? $model['label'].' Copy' : '';
@@ -247,7 +247,7 @@ class Models extends App {
             }
         }
 
-        sort($groups);
+        \sort($groups);
 
         return $groups;
     }

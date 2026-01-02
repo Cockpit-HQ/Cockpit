@@ -42,7 +42,7 @@ class Client {
 
         // Return all databases available in memory
         if ($this->path === Database::DSN_PATH_MEMORY) {
-            return array_keys($this->databases);
+            return \array_keys($this->databases);
         }
 
         // Return all databases available on disk
@@ -78,7 +78,7 @@ class Client {
 
         if (!isset($this->databases[$name])) {
             $this->databases[$name] = new Database(
-                $this->path === Database::DSN_PATH_MEMORY ? $this->path : sprintf('%s/%s.sqlite', $this->path, $name),
+                $this->path === Database::DSN_PATH_MEMORY ? $this->path : \sprintf('%s/%s.sqlite', $this->path, $name),
                 $this->options
             );
         }

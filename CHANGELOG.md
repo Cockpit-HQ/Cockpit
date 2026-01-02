@@ -1,5 +1,36 @@
 # Release Notes
 
+## WIP
+
+- Micro performance improvements by explicitly marking global functions in a namespace context
+
+## 2.13.2 (2025-12-31)
+
+- Fix Updater view
+- Add support for multiple mailer accounts
+- Add possibility to set parent folder for an asset folder
+- Fix GraphQL error when field definition is missing `multiple` property
+- Add `system:fix-mongolite-collection-json` command to fix malformed JSON entries in a MongoLite collection
+
+## 2.13.1 (2025-12-26)
+
+- Fix kiss-cover helper class #294
+
+## 2.13.0 (2025-12-21)
+
+- Add system mailer test functionality
+- Clean up inactive worker PIDs
+- Add query optimizer to MongoLite
+- Make IndexLite more compatible with Meilisearch
+- Add group filtering to app search results
+- Upgrade TipTap to v3
+- Add parallel job processing to worker using the `parallel` extension if available
+- Fix App.utils.selectAsset causing MongoDB error with empty filter
+- Add parallel batch execution method to Async helper
+- Add FrankenPHP worker mode support
+- Fix PHP v8.5 MongoLite database compatibility by using Pdo\Sqlite if available.
+- Add initial RTL support
+
 ## 2.12.1 (2025-10-26)
 
 - Fix Identi module usage with spaces

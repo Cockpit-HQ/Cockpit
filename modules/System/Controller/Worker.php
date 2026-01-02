@@ -16,14 +16,14 @@ class Worker extends App {
 
         $this->helper('session')->close();
 
-        $this->cliAvailable = $this->helper('spaces')->isMaster() && function_exists('posix_kill') && function_exists('exec');
+        $this->cliAvailable = $this->helper('spaces')->isMaster() && \function_exists('posix_kill') && \function_exists('exec');
     }
 
     public function index() {
 
         $canStopProcess = $this->cliAvailable;
 
-        return $this->render('system:views/worker/index.php', compact('canStopProcess'));
+        return $this->render('system:views/worker/index.php', \compact('canStopProcess'));
     }
 
     public function load() {
@@ -33,12 +33,12 @@ class Worker extends App {
         $limit  = $this->param('limit', 30);
         $skip   = $this->param('skip', 0);
 
-        if ($filter && is_string($filter) && trim($filter)) {
+        if ($filter && \is_string($filter) && \trim($filter)) {
 
-            $terms = str_getcsv(trim($filter), ' ', escape: '\\');
+            $terms = \str_getcsv(\trim($filter), ' ', escape: '\\');
 
             foreach ($terms as &$term) {
-                $term = ['data.job' => ['$regex' => trim($term), '$options' => 'i']];
+                $term = ['data.job' => ['$regex' => \trim($term), '$options' => 'i']];
             }
 
             $filter = ['$or' => $terms];
@@ -62,8 +62,8 @@ class Worker extends App {
             'jobs'  => $this->helper('worker')->jobs([
                 'filter' => $filter,
                 'status' => $status,
-                'limit' => intval($limit),
-                'skip' => intval($skip),
+                'limit' => \intval($limit),
+                'skip' => \intval($skip),
             ])
         ];
 
@@ -84,7 +84,7 @@ class Worker extends App {
             return $this->stop(['error' => 'Worker PID is missing'], 412);
         }
 
-        $pid = intval($pid);
+        $pid = \intval($pid);
 
         $this->helper('worker')->stopProcess($pid);
 
