@@ -5,6 +5,7 @@ namespace System\Command\i18n;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class CreateTranslation extends Command {
@@ -21,92 +22,92 @@ class CreateTranslation extends Command {
         $this
             ->setHelp('This command creates a language file')
             ->addArgument('locale', InputArgument::REQUIRED, 'What is the target language (e.g. de or fr?')
-            ->addArgument('module', InputArgument::OPTIONAL, 'Create a language file for a module');
+            ->addArgument('module', InputArgument::OPTIONAL, 'Create a language file for a module')
+            ->addOption('translate', 't', InputOption::VALUE_NONE, 'Auto translate strings');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int {
 
-        $translator = null;
         $locale = $input->getArgument('locale');
-        $module = $input->getArgument('module');
+        $targetModule = $input->getArgument('module');
 
-        $extensions = ['php', 'js'];
-
-        if ($module && $module == 'System') {
-            $module = 'App';
+        if ($targetModule && $targetModule == 'System') {
+            $targetModule = 'App';
         }
 
-        if ($module && !($this->app->path("#modules:{$module}") || $this->app->path("#addons:{$module}"))) {
-            $output->writeln("<error>[x] Module <<{$module}>> does not exists!</error>");
+        // Validate target module if specific one requested
+        if ($targetModule && $targetModule != 'App' && !$this->app->path("#modules:{$targetModule}") && !$this->app->path("#addons:{$targetModule}")) {
+            $output->writeln("<error>[x] Module <<{$targetModule}>> does not exist!</error>");
             return Command::FAILURE;
         }
 
-        $modules = array_filter($this->app['modules']->getArrayCopy(), function($m) use($module) {
-
-            $name = basename($m->_dir);
-
-            if ($module && $module == 'App' && $name == 'System') {
-                return true;
-            }
-
-            return !$module || $name == $module;
-        });
-
-        if ($this->app->module('lokalize')) {
-            $translator = $this->app->module('lokalize');
-        }
-
+        $translator = ($input->getOption('translate') && $this->app->module('lokalize')) ? $this->app->module('lokalize') : null;
+        $modules = $this->app['modules']->getArrayCopy();
+        
+        // 1. Collect all strings from all modules
+        $globalStrings = []; // string => [module1 => true, module2 => true]
+        
         foreach ($modules as $m) {
 
-            $dir= $m->_dir;
             $name = basename($m->_dir);
-
-            $strings = [];
-            $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir), \RecursiveIteratorIterator::SELF_FIRST);
-
-            $output->writeln("<info>-></info> {$name}");
-
-            foreach ($iterator as $file) {
-
-                if (!$file->isFile() || !in_array($file->getExtension(), $extensions)) continue;
-
-                $contents = file_get_contents($file->getRealPath());
-
-                preg_match_all('/(?:{{ t|\<\?=t|App\.i18n\.get|App\.ui\.notify)\((["\'])((?:[^\1]|\\.)*?)\1(,\s*(["\'])((?:[^\4]|\\.)*?)\4)?\)/', $contents, $matches);
-
-                if (!isset($matches[2])) continue;
-
-                foreach ($matches[2] as &$string) {
-                    $strings[$string] = $string;
-                }
+            
+            // Normalize System -> App
+            if ($name == 'System') $name = 'App';
+            
+            $strings = $this->extractStringsFromModule($m->_dir);
+            
+            foreach ($strings as $string) {
+                $globalStrings[$string][$name] = true;
             }
+        }
+
+        // 2. Distribute strings to buckets
+        $moduleBuckets = [];
+
+        foreach ($globalStrings as $string => $locations) {
+            
+            $modulesFound = array_keys($locations);
+            $target = $modulesFound[0];
+
+            // Strategy: overlapping strings or strings already in App go to App
+            if (count($modulesFound) > 1 || in_array('App', $modulesFound)) {
+                $target = 'App';
+            }
+
+            $moduleBuckets[$target][$string] = $string;
+        }
+
+        // 3. Determine which modules to write
+        $modulesToWrite = [];
+
+        if ($targetModule) {
+            // If specific module requested, write it AND App (to capture moved globals)
+            $modulesToWrite[] = $targetModule;
+            if ($targetModule !== 'App') {
+                $modulesToWrite[] = 'App';
+            }
+            $modulesToWrite = array_unique($modulesToWrite);
+        } else {
+            // Write all modules that have strings
+            $modulesToWrite = array_keys($moduleBuckets);
+        }
+
+        // 4. Process and Write
+        foreach ($modulesToWrite as $name) {
+            
+            if (empty($moduleBuckets[$name]) && $name != 'App') continue;
+
+            $strings = $moduleBuckets[$name] ?? [];
+            $output->writeln("<info>-></info> {$name}");
 
             if (count($strings)) {
 
-                // try to auto-translate
+                // Auto-translate
                 if ($translator) {
-
-                    $keys = array_keys($strings);
-                    $values = array_values($strings);
-
-                    $ret = $translator->translate(implode("\n@\n", $values), $locale);
-
-                    if ($ret && !isset($ret['error'])) {
-
-                        $values = explode("\n@\n", $ret);
-
-                        foreach ($keys as $idx => $key) {
-
-                            if (!$idx || !isset($values[$idx])) continue;
-                            $strings[$key] = $values[$idx];
-                        }
-                    }
+                    $strings = $this->translateStrings($translator, $strings, $locale);
                 }
 
-                if ($name == 'System') {
-                    $name = 'App';
-                }
-
+                // Merge with existing
                 $strings = array_merge($name == 'App' ? [
                     '@meta' => ['language' => \App\Helper\i18n::$locales[$locale] ?? strtoupper($locale)]
                 ] : [], $strings);
@@ -119,11 +120,59 @@ class CreateTranslation extends Command {
                 ksort($strings);
 
                 $this->app->helper('fs')->write("#config:i18n/{$locale}/{$name}.php", '<?php return '.$this->app->helper('utils')->var_export($strings, true).';');
+                $output->writeln("<info>  [✓]</info> Updated #config:i18n/{$locale}/{$name}.php");
             }
-
         }
 
-        $output->writeln('<info>[✓]</info> Lang file(s) created in <info>#config:i18n</info>!');
         return Command::SUCCESS;
+    }
+
+    protected function extractStringsFromModule($dir): array {
+
+        $strings = [];
+        $extensions = ['php', 'js'];
+        $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir), \RecursiveIteratorIterator::SELF_FIRST);
+
+        foreach ($iterator as $file) {
+
+            // Skip vendor and node_modules folders
+            if (strpos($file->getPathname(), '/vendor/') !== false || strpos($file->getPathname(), '/node_modules/') !== false || strpos($file->getPathname(), '/assets/vendor/') !== false) {
+                continue;
+            }
+
+            if (!$file->isFile() || !in_array($file->getExtension(), $extensions)) continue;
+
+            $contents = file_get_contents($file->getRealPath());
+
+            preg_match_all('/(?:{{\s*t|\<\?=\s*t|App\.i18n\.get|App\.ui\.notify)\((["\'])((?:[^\1]|\\.)*?)\1(,\s*(["\'])((?:[^\4]|\\.)*?)\4)?\s*\)/', $contents, $matches);
+
+            if (!isset($matches[2])) continue;
+
+            foreach ($matches[2] as $string) {
+                $strings[$string] = $string;
+            }
+        }
+
+        return $strings;
+    }
+
+    protected function translateStrings($translator, $strings, $locale): array {
+        
+        $keys = array_keys($strings);
+        $values = array_values($strings);
+
+        $ret = $translator->translate(implode("\n@\n", $values), $locale);
+
+        if ($ret && !isset($ret['error'])) {
+
+            $values = explode("\n@\n", $ret);
+
+            foreach ($keys as $idx => $key) {
+                if (!isset($values[$idx])) continue;
+                $strings[$key] = $values[$idx];
+            }
+        }
+
+        return $strings;
     }
 }
