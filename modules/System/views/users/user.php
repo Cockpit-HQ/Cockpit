@@ -12,6 +12,9 @@ if (!isset($user['_meta']) || (is_array($user['_meta']) && array_is_list($user['
     $user['_meta'] = new ArrayObject([]);
 }
 
+usort($languages, function($a, $b) {
+    return strcasecmp($a['language'], $b['language']);
+});
 ?>
 <kiss-container class="kiss-margin-small" size="small">
 
@@ -286,11 +289,11 @@ if (!isset($user['_meta']) || (is_array($user['_meta']) && array_is_list($user['
                             return;
                         }
 
-                        App.ui.prompt('Action verification', '', (pwd) => {
+                        App.ui.prompt(this.t('Action verification'), '', (pwd) => {
                             sendRequest(pwd);
                         }, {
                             type: 'password',
-                            info: 'Please enter your password to verify this action'
+                            info: this.t('Please enter your password to verify this action')
                         });
                     }
                 }
