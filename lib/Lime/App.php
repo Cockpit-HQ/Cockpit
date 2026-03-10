@@ -41,7 +41,10 @@ class App implements \ArrayAccess {
     protected array $registry = [];
     protected array $routes   = [];
     protected array $paths    = [];
+    protected array $pathCache = [];
+    protected array $pathToUrlCache = [];
     protected array $events   = [];
+    protected array $eventCache = [];
     protected array $blocks   = [];
 
     /** @var Response|null  */
@@ -408,8 +411,12 @@ class App implements \ArrayAccess {
 
                 $file  = $args[0];
 
+                if (isset($this->pathCache[$file])) {
+                    return $this->pathCache[$file];
+                }
+
                 if ($this->isAbsolutePath($file) && \file_exists($file)) {
-                    return $file;
+                    return $this->pathCache[$file] = $file;
                 }
 
                 $parts = \explode(':', $file, 2);
@@ -419,7 +426,7 @@ class App implements \ArrayAccess {
 
                     foreach ($this->paths[$parts[0]] as $path) {
                         if (\file_exists($path.$parts[1])) {
-                            return $path.$parts[1];
+                            return $this->pathCache[$file] = $path.$parts[1];
                         }
                     }
                 }
@@ -432,6 +439,8 @@ class App implements \ArrayAccess {
                     $this->paths[$args[0]] = [];
                 }
                 \array_unshift($this->paths[$args[0]], \rtrim(\str_replace(DIRECTORY_SEPARATOR, '/', $args[1]), '/').'/');
+                $this->pathCache = [];
+                $this->pathToUrlCache = [];
 
                 return $this;
         }
@@ -458,6 +467,12 @@ class App implements \ArrayAccess {
      */
     public function pathToUrl(string $path, bool $full = false): mixed {
 
+        $cacheKey = ($full ? '1:' : '0:').$path;
+
+        if (isset($this->pathToUrlCache[$cacheKey])) {
+            return $this->pathToUrlCache[$cacheKey];
+        }
+
         $url = false;
 
         if ($file = $this->path($path)) {
@@ -472,6 +487,8 @@ class App implements \ArrayAccess {
                 $site_url = \str_replace(\parse_url($this->registry['site_url'] ?? '', \PHP_URL_PATH) ?? '', '', $this->registry['site_url'] ?? '');
                 $url = \rtrim($site_url, '/').$url;
             }
+
+            $this->pathToUrlCache[$cacheKey] = $url;
         }
 
         return $url;
@@ -518,6 +535,7 @@ class App implements \ArrayAccess {
         }
 
         $this->events[$event][] = ['fn' => $callback, 'prio' => $priority];
+        unset($this->eventCache[$event]);
 
         return $this;
     }
@@ -542,22 +560,30 @@ class App implements \ArrayAccess {
             return $this;
         }
 
-        $queue = new \SplPriorityQueue();
+        if (!isset($this->eventCache[$event])) {
+            $listeners = \array_keys($this->events[$event]);
 
-        foreach ($this->events[$event] as $index => $action) {
-            $queue->insert($index, $action['prio']);
+            \usort($listeners, function($a, $b) use($event) {
+
+                $prioA = $this->events[$event][$a]['prio'];
+                $prioB = $this->events[$event][$b]['prio'];
+
+                if ($prioA === $prioB) {
+                    return $b <=> $a;
+                }
+
+                return $prioB <=> $prioA;
+            });
+
+            $this->eventCache[$event] = $listeners;
         }
 
-        $queue->top();
-
-        while ($queue->valid()) {
-            $index = $queue->current();
+        foreach ($this->eventCache[$event] as $index) {
             if (\is_callable($this->events[$event][$index]['fn'])) {
                 if (\call_user_func_array($this->events[$event][$index]['fn'], $params) === false) {
                     break; // stop Propagation
                 }
             }
-            $queue->next();
         }
 
         return $this;
@@ -792,7 +818,7 @@ class App implements \ArrayAccess {
 
         $this->bind("/{$clean}/*", function() use($self, $class, $clean) {
 
-            $parts  = \explode('/', \trim(\preg_replace("#$clean#", "", $self->request->route,1),'/'));
+            $parts  = \explode('/', \trim(\substr($self->request->route, \strlen("/{$clean}")), '/'));
             $action = $parts[0] ?? "index";
             $params = \count($parts) > 1 ? \array_slice($parts, 1):[];
 
@@ -817,7 +843,7 @@ class App implements \ArrayAccess {
 
         $this->bind('/'.$clean.'/*', function() use($self, $namespace, $clean) {
 
-            $parts      = \explode('/', \trim(\preg_replace("#$clean#","",$self["route"],1),'/'));
+            $parts      = \explode('/', \trim(\substr($self["route"], \strlen('/'.$clean)), '/'));
             $class      = $namespace.'\\'.$parts[0];
             $action     = $parts[1] ?? "index";
             $params     = \count($parts)>2 ? \array_slice($parts, 2):[];
