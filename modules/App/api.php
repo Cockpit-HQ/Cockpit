@@ -56,7 +56,9 @@ $this->bind('/api/*', function($params) {
     // is jwt token?
     } elseif ($token != 'public' && preg_match('/^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]*$/', $token)) {
 
-            // todo
+            // JWT token validation is not yet implemented — reject to prevent auth bypass
+            $this->response->status = 401;
+            return ['error' => 'JWT authentication is not supported'];
 
     } else {
 
