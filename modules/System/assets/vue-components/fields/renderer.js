@@ -65,6 +65,11 @@ export let FieldRenderer = {
         modelValue() {
             this.val = this.modelValue;
             this.update();
+        },
+        fieldItem(val) {
+            if (val) {
+                this.$nextTick(() => this.focusFieldItem());
+            }
         }
     },
 
@@ -171,6 +176,34 @@ export let FieldRenderer = {
             this.fieldItem = null;
         },
 
+        focusFieldItem() {
+
+            const dialog = document.querySelector(`kiss-dialog[data-field-render-uid="${this.uid}"]`);
+
+            if (!dialog) return;
+
+            const input = dialog.querySelector('input, textarea, select, [contenteditable]');
+
+            if (input) input.focus();
+        },
+
+        onFieldItemKeyup(evt) {
+
+            const tag = evt.target.tagName;
+
+            // buttons/links already trigger their own action on enter, don't also save
+            if (tag === 'BUTTON' || tag === 'A') {
+                return;
+            }
+
+            // let textareas / contenteditable areas keep their own newline behaviour
+            if (tag === 'TEXTAREA' || evt.target.isContentEditable) {
+                return;
+            }
+
+            this.saveFieldItem();
+        },
+
         removeFieldItem(list, index) {
             list.splice(index, 1);
         },
@@ -241,7 +274,7 @@ export let FieldRenderer = {
 
         <teleport to="body">
             <kiss-dialog open="true" size="large" :data-field-render-uid="uid" v-if="fieldItem">
-                <kiss-content class="animated fadeInUp faster">
+                <kiss-content class="animated fadeInUp faster" @keyup.enter="onFieldItemKeyup">
 
                     <div class="kiss-flex kiss-flex-middle">
                         <div>
