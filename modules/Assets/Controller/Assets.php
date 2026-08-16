@@ -192,7 +192,7 @@ class Assets extends App {
         $this->helper('session')->close();
         $this->hasValidCsrfToken(true);
 
-        if (!$this->isAllowed('assets/upload')) {
+        if (!$this->isAllowed('assets/upload') || !$this->isAllowed('assets/edit')) {
             return $this->stop(['error' => 'Upload not allowed'], 401);
         }
 
