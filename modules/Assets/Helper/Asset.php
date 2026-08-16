@@ -224,8 +224,8 @@ class Asset extends \Lime\Helper {
         if ($mime === 'jpg') $mime = 'jpeg';
 
         if ($mime && \in_array($mime, ['avif', 'gif', 'jpeg', 'png', 'webp', 'bmp'])) {
-            $ext = $mime;
-            $mime = "image/{$ext}";
+            $ext = ($mime === 'jpeg') ? 'jpg' : $mime;
+            $mime = "image/{$mime}";
         } else {
             $mime = null;
         }
@@ -297,7 +297,8 @@ class Asset extends \Lime\Helper {
         }
 
         if ($base64) {
-            return "data:image/{$ext};base64,".\base64_encode($this->app->fileStorage->read($thumbpath));
+            $dataMime = $mime ?: "image/{$ext}";
+            return "data:{$dataMime};base64,".\base64_encode($this->app->fileStorage->read($thumbpath));
         }
 
         return $asPath ? $thumbpath : $this->app->fileStorage->getURL($thumbpath);
