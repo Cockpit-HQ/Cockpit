@@ -68,7 +68,7 @@ export let FieldRenderer = {
         },
         fieldItem(val) {
             if (val) {
-                this.focusFieldItem();
+                this.$nextTick(() => this.focusFieldItem());
             }
         }
     },
