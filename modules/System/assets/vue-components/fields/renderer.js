@@ -228,7 +228,8 @@ export let FieldRenderer = {
         onFieldItemKeydown(evt) {
 
             // ignore Enter that commits an IME (CJK/etc) composition
-            if (evt.isComposing) {
+            // keyCode 229 is a legacy fallback for engines where isComposing is unset on keydown
+            if (evt.isComposing || evt.keyCode === 229) {
                 return;
             }
 
