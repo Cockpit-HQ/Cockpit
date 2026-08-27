@@ -65,6 +65,11 @@ export let FieldRenderer = {
         modelValue() {
             this.val = this.modelValue;
             this.update();
+        },
+        fieldItem(val) {
+            if (val) {
+                this.$nextTick(() => this.focusFieldItem());
+            }
         }
     },
 
@@ -171,6 +176,85 @@ export let FieldRenderer = {
             this.fieldItem = null;
         },
 
+        getFocusableFieldItemInput(dialog) {
+
+            const candidates = dialog.querySelectorAll('input, textarea, select, [contenteditable]');
+
+            for (const el of candidates) {
+
+                if (el.disabled) {
+                    continue;
+                }
+
+                if (el.hasAttribute('contenteditable') && el.getAttribute('contenteditable') === 'false') {
+                    continue;
+                }
+
+                // skip offscreen / not-yet-sized controls, e.g. CodeMirror's hidden measuring textarea
+                if (el.offsetWidth < 10 || el.offsetHeight < 10) {
+                    continue;
+                }
+
+                return el;
+            }
+
+            return null;
+        },
+
+        focusFieldItem(attempt = 0) {
+
+            const dialog = document.querySelector(`kiss-dialog[data-field-render-uid="${this.uid}"]`);
+
+            if (!dialog) {
+                return;
+            }
+
+            const input = this.getFocusableFieldItemInput(dialog);
+
+            if (input) {
+                input.focus();
+                return;
+            }
+
+            // the nested field-renderer's own fieldTypes is resolved asynchronously,
+            // so its input may not exist in the DOM yet — poll a bounded number of frames
+            if (attempt >= 60) {
+                return;
+            }
+
+            requestAnimationFrame(() => this.focusFieldItem(attempt + 1));
+        },
+
+        onFieldItemKeydown(evt) {
+
+            // ignore Enter that commits an IME (CJK/etc) composition
+            // keyCode 229 is a legacy fallback for engines where isComposing is unset on keydown
+            if (evt.isComposing || evt.keyCode === 229) {
+                return;
+            }
+
+            // another widget on the same element (e.g. app-tags) already handled this
+            // keydown and called preventDefault() - don't also save/close the dialog
+            if (evt.defaultPrevented) {
+                return;
+            }
+
+            const tag = evt.target.tagName;
+
+            // buttons/links already trigger their own action on enter, don't also save
+            if (tag === 'BUTTON' || tag === 'A') {
+                return;
+            }
+
+            // let textareas / contenteditable areas keep their own newline behaviour
+            if (tag === 'TEXTAREA' || evt.target.isContentEditable) {
+                return;
+            }
+
+            evt.preventDefault();
+            this.saveFieldItem();
+        },
+
         removeFieldItem(list, index) {
             list.splice(index, 1);
         },
@@ -241,7 +325,7 @@ export let FieldRenderer = {
 
         <teleport to="body">
             <kiss-dialog open="true" size="large" :data-field-render-uid="uid" v-if="fieldItem">
-                <kiss-content class="animated fadeInUp faster">
+                <kiss-content class="animated fadeInUp faster" @keydown.enter="onFieldItemKeydown">
 
                     <div class="kiss-flex kiss-flex-middle">
                         <div>
