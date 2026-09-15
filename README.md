@@ -46,6 +46,13 @@ docker run -d \
 # Access at http://localhost:8080/install
 ```
 
+You can also deploy Cockpit with one click using the official [Easypanel](https://easypanel.io) template:
+
+[![Deploy on Easypanel][easypanel-btn]][easypanel-deploy]
+
+[easypanel-btn]: https://easypanel.io/img/deploy-on-easypanel-40.svg
+[easypanel-deploy]: https://easypanel.io/templates/cockpit
+
 ### Start Building
 
 Once installed, create content models through the admin UI or via API:
