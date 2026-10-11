@@ -1,4 +1,6 @@
-import { FieldTypes } from "../../js/settings.js"
+// same versioned url as App.utils.import('system:assets/js/settings.js'), so all consumers share one FieldTypes instance
+// (resolved relative to this module, so it doesn't depend on App._paths being initialized yet)
+const { FieldTypes } = await import(`${new URL('../../js/settings.js', import.meta.url).href}?v=${App.version}`);
 
 let instanceCount = 0;
 

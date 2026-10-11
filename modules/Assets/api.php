@@ -196,6 +196,22 @@ $this->on('restApi.config', function($restApi) {
 
     /**
      * @OA\Get(
+     *     path="/assets/presets",
+     *     tags={"assets"},
+     *     @OA\Response(response="200", description="Available image presets", @OA\JsonContent())
+     * )
+     */
+
+    // must be registered before /assets/{id}, which would otherwise match "presets"
+    $restApi->addEndPoint('/assets/presets', [
+
+        'GET' => function($_, $app) {
+            return $app->module('assets')->presets();
+        }
+    ]);
+
+    /**
+     * @OA\Get(
      *     path="/assets/{id}",
      *     tags={"assets"},
      *     @OA\Parameter(
@@ -366,21 +382,6 @@ $this->on('restApi.config', function($restApi) {
             }
 
             return $app->fileStorage->getURL($imgPath);
-        }
-    ]);
-
-    /**
-     * @OA\Get(
-     *     path="/assets/presets",
-     *     tags={"assets"},
-     *     @OA\Response(response="200", description="Available image presets", @OA\JsonContent())
-     * )
-     */
-
-    $restApi->addEndPoint('/assets/presets', [
-
-        'GET' => function($_, $app) {
-            return $app->module('assets')->presets();
         }
     ]);
 });

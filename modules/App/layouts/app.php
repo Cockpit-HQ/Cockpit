@@ -258,8 +258,6 @@
         </kiss-content>
     </kiss-offcanvas>
 
-    <?php $this->trigger('app.layout.footer') ?>
-
     <script type="module">
 
         Object.assign(App, {

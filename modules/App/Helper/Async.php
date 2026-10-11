@@ -20,9 +20,12 @@ class Async extends \Lime\Helper {
 
     public $phpPath = null;
 
+    protected ?bool $execAvailable = null;
+
     protected function initialize() {
 
-        $this->phpPath = $this->app->retrieve('aysnc/php', 'php');
+        // 'aysnc/php' is the legacy (misspelled) config key, kept for backwards compatibility
+        $this->phpPath = $this->app->retrieve('async/php', 'php');
 
         if ($this->phpPath === 'php') {
             $this->phpPath = (new PhpExecutableFinder())->find();
@@ -182,13 +185,18 @@ extract(".\var_export($params, true).");
      */
     protected function isExecAvailable() {
 
-        if (!$this->phpPath || \in_array(\strtolower(\ini_get('safe_mode')), ['on', '1'], true) || (!\function_exists('exec'))) {
-            return false;
+        // memoized: the check spawns a `php -v` process
+        if ($this->execAvailable !== null) {
+            return $this->execAvailable;
         }
 
-        $disabled_functions = \explode(',', \ini_get('disable_functions'));
+        if (!$this->phpPath || \in_array(\strtolower(\ini_get('safe_mode')), ['on', '1'], true) || (!\function_exists('exec'))) {
+            return $this->execAvailable = false;
+        }
 
-        return !\in_array('exec', $disabled_functions) && \strlen(\trim(\exec($this->phpPath.' -v')));
+        $disabled_functions = \array_map('trim', \explode(',', \ini_get('disable_functions')));
+
+        return $this->execAvailable = (!\in_array('exec', $disabled_functions) && \strlen(\trim(\exec($this->phpPath.' -v'))) > 0);
     }
 
     /**

@@ -374,12 +374,17 @@ class Cockpit {
                 }
 
                 $contents = $app->helper('utils')->var_export($export, true);
-                file_put_contents($cacheFile, "<?php\n return {$contents};");
+                $tmpFile = "{$cacheFile}.".uniqid('', true).'.tmp';
+
+                // write + rename, so concurrent requests never include a partially written file
+                if (@file_put_contents($tmpFile, "<?php\n return {$contents};") === false || !@rename($tmpFile, $cacheFile)) {
+                    @unlink($tmpFile);
+                }
             }
 
-            $cache = include($cacheFile);
+            $cache = file_exists($cacheFile) ? include($cacheFile) : null;
 
-            if (APP_VERSION !== $cache['version'] || $cache['env'] !== $envDir) {
+            if (!is_array($cache) || APP_VERSION !== $cache['version'] || $cache['env'] !== $envDir) {
                 @unlink($cacheFile);
                 $app->loadModules($modulesPaths);
             } else {

@@ -67,15 +67,15 @@ export default {
             let link = document.createElement('link');
             link.type = 'text/css';
             link.rel = 'stylesheet';
+
+            // load fires after the sheet (incl. @imports) is applied; errors resolve too, as before
+            link.onload = link.onerror = function () {
+                resolve(url);
+            };
+
             link.href = (/^(\/\/|http)/.test(url) ? url : App.base(url)) + '?v=' + App.version;
 
             document.getElementsByTagName('head')[0].appendChild(link);
-
-            let img = document.createElement('img');
-            img.onerror = function () {
-                resolve(url);
-            };
-            img.src = link.href + '?v=' + App.version;
         });
     },
 

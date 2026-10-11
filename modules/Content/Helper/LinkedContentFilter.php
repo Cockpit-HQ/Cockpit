@@ -167,10 +167,10 @@ class LinkedContentFilter extends \Lime\Helper {
                 return [];
             }
 
+            // no limit: a capped id list would silently drop matching items
             $items = $this->app->dataStorage->find($collection, [
                 'filter' => $filter,
                 'fields' => ['_id' => 1],
-                'limit' => 500, // put a reasonable limit
             ])->toArray();
 
             return \array_column($items, '_id');
