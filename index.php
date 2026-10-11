@@ -18,7 +18,9 @@ $APP_DOCUMENT_ROOT = realpath($_SERVER['DOCUMENT_ROOT'] ?? __DIR__);
 
 # make sure that $_SERVER['DOCUMENT_ROOT'] is set correctly
 if (!str_starts_with($APP_DIR, $APP_DOCUMENT_ROOT) && isset($_SERVER['SCRIPT_NAME'])) {
-    $APP_DOCUMENT_ROOT = str_replace(dirname($_SERVER['SCRIPT_NAME']), '', $APP_DIR);
+    // strip the script's url dir only as trailing part of the app dir
+    $APP_SCRIPT_DIR = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\');
+    $APP_DOCUMENT_ROOT = str_ends_with($APP_DIR, $APP_SCRIPT_DIR) ? substr($APP_DIR, 0, strlen($APP_DIR) - strlen($APP_SCRIPT_DIR)) : $APP_DIR;
 }
 
 // Support php cli-server: e.g. php -S localhost:8080 index.php
@@ -87,7 +89,7 @@ if (PHP_SAPI == 'cli-server') {
 
 } else {
 
-    $APP_BASE        = trim(str_replace($APP_DOCUMENT_ROOT, '', $APP_DIR), DIRECTORY_SEPARATOR);
+    $APP_BASE        = trim(str_starts_with($APP_DIR, $APP_DOCUMENT_ROOT) ? substr($APP_DIR, strlen($APP_DOCUMENT_ROOT)) : $APP_DIR, DIRECTORY_SEPARATOR);
     $APP_BASE_URL    = strlen($APP_BASE) ? "/{$APP_BASE}": $APP_BASE;
     $APP_BASE_ROUTE  = $APP_BASE_URL;
     $APP_ROUTE       = preg_replace('#'.preg_quote($APP_BASE_URL, '#').'#', '', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), 1);
@@ -104,7 +106,7 @@ if ($APP_ROUTE && str_starts_with($APP_ROUTE, '/:')) {
 
     if (file_exists($spaceDir)) {
         $APP_ROUTE = '/'.trim(implode('/', array_slice($parts, 2)), '/');
-        $APP_BASE_URL .= str_replace(__DIR__, '', APP_SPACES_DIR)."/{$space}";
+        $APP_BASE_URL .= (str_starts_with(APP_SPACES_DIR, __DIR__) ? substr(APP_SPACES_DIR, strlen(__DIR__)) : APP_SPACES_DIR)."/{$space}";
         $APP_BASE_ROUTE .= "/:{$space}";
         $APP_SPACE_DIR = $spaceDir;
         $APP_SPACE = $space;

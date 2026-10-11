@@ -127,12 +127,20 @@
     </div>
     <div class="wrapper content">
 
-        <span class="file"><?=str_replace(APP_DIR, '', $error['file']);?></span>
+        <?php
+            // strip APP_DIR only as leading path prefix
+            $relPath = function($path) {
+                $path = str_replace(DIRECTORY_SEPARATOR, '/', (string) $path);
+                return str_starts_with($path, APP_DIR.'/') ? substr($path, strlen(APP_DIR)) : $path;
+            };
+        ?>
+
+        <span class="file"><?=$relPath($error['file']);?></span>
 
         <div class="code">
             <pre><?php
 
-                $file   = file(str_starts_with($error['file'], APP_DIR) ? $error['file'] : APP_DIR.$error['file']);
+                $file   = file(is_file(APP_DIR.$error['file']) ? APP_DIR.$error['file'] : $error['file']);
                 $offset = 6;
                 $line   = $error['line'] ? $error['line'] - 1 : 0;
                 $start  = isset($file[$line-1]) ? $line - 1 : $line;
@@ -177,7 +185,7 @@
             <?php foreach ($error['trace'] as $idx => $trace): ?>
             <debug-trace>
                 <div><strong class="badge"><?=$idx?></strong></div>
-                <div style="flex-grow:1"><?=str_replace(APP_DIR, '', $trace['file']);?><span class="muted">:<?=$trace['line'];?></span></div>
+                <div style="flex-grow:1"><?=$relPath($trace['file'] ?? '');?><span class="muted">:<?=$trace['line'];?></span></div>
                 <div></div>
             </debug-trace>
             <?php endforeach; ?>

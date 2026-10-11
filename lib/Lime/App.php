@@ -478,13 +478,26 @@ class App implements \ArrayAccess {
         if ($file = $this->path($path)) {
 
             $file = \str_replace(DIRECTORY_SEPARATOR, '/', $file);
-            $root = \str_replace(DIRECTORY_SEPARATOR, '/', $this->registry['docs_root']);
+            $root = \rtrim(\str_replace(DIRECTORY_SEPARATOR, '/', (string) $this->registry['docs_root']), '/');
 
-            $url = '/'.\ltrim(str_replace($root, '', $file), '/');
+            // strip docs root only as leading path segment(s), e.g. root /app must not touch /app/assets/app.js
+            if ($file === $root || \str_starts_with($file, $root.'/')) {
+                $file = \substr($file, \strlen($root));
+            }
+
+            $url = '/'.\ltrim($file, '/');
             $url = \implode('/', \array_map('rawurlencode', \explode('/', $url)));
 
             if ($full) {
-                $site_url = \str_replace(\parse_url($this->registry['site_url'] ?? '', \PHP_URL_PATH) ?? '', '', $this->registry['site_url'] ?? '');
+
+                $site_url = $this->registry['site_url'] ?? '';
+                $site_path = \parse_url($site_url, \PHP_URL_PATH);
+
+                // strip site url path only at the end, e.g. https://app.example.com/app -> https://app.example.com
+                if ($site_path && \str_ends_with($site_url, $site_path)) {
+                    $site_url = \substr($site_url, 0, -\strlen($site_path));
+                }
+
                 $url = \rtrim($site_url, '/').$url;
             }
 

@@ -296,10 +296,12 @@ class Cockpit {
                     return;
                 }
 
+                $file = str_replace(DIRECTORY_SEPARATOR, '/', $exception->getFile());
+
                 $error = [
                     'time' => date('d-M-Y H:i:s'),
                     'message' => $exception->getMessage(),
-                    'file' => str_replace(APP_DIR, '', str_replace(DIRECTORY_SEPARATOR, '/', $exception->getFile())),
+                    'file' => str_starts_with($file, APP_DIR.'/') ? substr($file, strlen(APP_DIR)) : $file,
                     'line' => $exception->getLine(),
                     'trace' => array_slice($exception->getTrace(), 0, 4),
                 ];
