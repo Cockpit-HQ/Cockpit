@@ -75,6 +75,11 @@ $this->bind('/api/*', function($params) {
     // set api user
     $this->helper('auth')->setUser($apiUser, false);
 
+    // simple response cache ?rspc=1 (only after successful authentication, keyed by the api user)
+    if ($this->helper('rspc')->handle($this->request, ['token' => $token, 'user' => $apiUser])) {
+        return $this->response->body;
+    }
+
     //graphql query
     if ($params[':splat'][0] == 'gql') {
 

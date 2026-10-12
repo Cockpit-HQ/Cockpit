@@ -45,11 +45,6 @@ $this->on('app.api.request', function($request) {
         }
     }
 
-    // simple response cache ?rspc=1
-    if ($this->helper('rspc')->handle($request)) {
-        return false;
-    }
-
     // api rate limiter
     if ($this->retrieve('api.security.ratelimit')) {
         $this->helpers['apiRateLimiter'] = 'App\\Helper\\ApiRateLimiter';
@@ -59,6 +54,11 @@ $this->on('app.api.request', function($request) {
     include(__DIR__.'/api.php');
 
 }, 1000);
+
+// invalidate response cache (?rspc=1) on content changes
+$this->on(['content.item.save', 'content.remove.before', 'content.update.model', 'content.remove.model'], function() {
+    $this->helper('rspc')->invalidate();
+});
 
 $this->on('app.user.disguise', function(array &$user) {
     unset($user['password'], $user['apiKey'], $user['_reset_token']);

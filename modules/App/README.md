@@ -144,17 +144,16 @@ $sections = $app->helper('menus')->sections();
 ```
 
 ### ResponseCache
-Response caching for improved API performance.
+Opt-in API response caching via `?rspc=1` (or `?rspc=<ttl in seconds>`). Cached responses are only served after the request has been authenticated and are keyed by method, params and API user. All entries are invalidated on content changes.
 
 ```php
-// Check if response is cached
-$cached = $app->helper('responseCache')->get($key);
+// Vary cached responses on additional request data (e.g. custom headers), in a module/addon bootstrap
+$app->on('app.response.cache.vary', function(array &$vary, $request) {
+    $vary['myaddon'] = $request->headers['X-Myaddon-Context'] ?? null;
+});
 
-// Cache a response
-$app->helper('responseCache')->set($key, $data, $ttl = 300);
-
-// Clear cache
-$app->helper('responseCache')->clear($pattern = null);
+// Invalidate all cached responses
+$app->helper('rspc')->invalidate();
 ```
 
 ### Theme
@@ -476,6 +475,7 @@ The App module triggers various events for extensibility:
 - `restApi.config` - Configure REST API endpoints
 - `graphql.config` - Configure GraphQL schema
 - `app.i18n.load` - i18n translations loaded
+- `app.response.cache.vary` - Add request data a cached API response (`?rspc=1`) depends on
 
 ## Usage Examples
 

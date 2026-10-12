@@ -914,8 +914,8 @@ class App implements \ArrayAccess {
         }
 
         $this->response = new Response();
-        $this->trigger('before');
 
+        // register before triggering 'before', so stop() calls in 'before' listeners get flushed
         if ($flush) {
 
             $this->on('app:request:stop', function() {
@@ -931,6 +931,8 @@ class App implements \ArrayAccess {
         }
 
         try {
+
+            $this->trigger('before');
 
             if (!$this->request->stopped) {
 

@@ -18,17 +18,22 @@ class ResponseCache extends \Lime\Helper {
     /**
      * Handle the response caching.
      *
+     * Must only be called after the request has been authenticated.
+     *
      * @param \Lime\Request $request The request object.
-     * @return void
+     * @param array $context The resolved auth context (e.g. token, user) the response depends on.
+     * @return bool True if the response was served from cache.
      */
-    public function handle($request) {
+    public function handle($request, array $context = []): bool {
 
         if (!$request->param('rspc')) {
-            return;
+            return false;
         }
 
-        if (!$this->getCache($request)) {
-            $this->cache($request);
+        $key = $this->getKey($request, $context);
+
+        if (!$this->getCache($request, $key)) {
+            $this->cache($request, $key);
             return false;
         }
 
@@ -36,97 +41,139 @@ class ResponseCache extends \Lime\Helper {
     }
 
     /**
-     * Cache the response.
+     * Invalidate all cached responses.
      *
-     * @param \Lime\Request $request The request object.
      * @return void
      */
-    protected function cache($request) {
-
-        $cacheHandler = $this->cacheHandler;
-
-        $this->app->on('after', function() use($request, $cacheHandler) {
-
-            if ($request->stopped || $this->response->status != 200) {
-                return;
-            }
-
-            $this->response->headers['Last-Modified'] = $cacheHandler->cache($request, $this->response);
-
-        }, -2000);
+    public function invalidate() {
+        $this->app->memory->set('rspc:gen', \uniqid('', true));
     }
 
     /**
-     * Get the cached response.
+     * Build the cache key for a request.
      *
      * @param \Lime\Request $request The request object.
-     * @return array|null The cached response data or null if not found.
+     * @param array $context The resolved auth context.
+     * @return string The cache key.
      */
-    protected function getCache($request) {
+    protected function getKey($request, array $context = []): string {
 
-        $cache = $this->cacheHandler->getCache($request);
+        // let modules/addons add request data the response depends on (e.g. custom headers)
+        $vary = [];
 
-        if ($cache) {
+        $this->app->trigger('app.response.cache.vary', [&$vary, $request]);
 
-            if (isset($request->server['HTTP_IF_MODIFIED_SINCE'])) {
-                $response = new \Lime\Response();
-                $response->status = 304;
-                $response->body = \Lime\Response::$statusCodes[304];
-                $response->flush();
-                $this->app->stop();
-            }
+        $hash = \md5(\serialize([
+            $request->method,
+            $request->request,
+            $context,
+            $vary,
+            $this->app->memory->get('rspc:gen'),
+        ]));
 
-            $this->app->on('before', function() use($cache) {
-
-                if (!isset($this->response)) {
-                    return;
-                }
-
-                $this->response->headers['APP_RSP_CACHE'] = 'true';
-                $this->response->headers['APP_RSP_EOL'] = $cache['eol'];
-
-                $this->response->mime = $cache['mime'] ?? 'text/html';
-                $this->response->body = $cache['contents'];
-
-                $this->trigger('app.response.cache.after');
-
-                $this->stop();
-            });
-
-            return true;
-        }
-
-        return false;
+        return \trim("{$request->route}/{$hash}", '/');
     }
-}
 
-class ResponseCacheFileHandler extends \Lime\AppAware {
+    /**
+     * Cache the response.
+     *
+     * @param \Lime\Request $request The request object.
+     * @param string $key The cache key.
+     * @return void
+     */
+    protected function cache($request, string $key) {
 
-    public function cache($request, $response) {
-
-        $hash = \trim($request->route.'/'.\md5(\serialize($request->request)), '/').'.php';
+        $cacheHandler = $this->cacheHandler;
         $ttl = $this->app->retrieve('response/cache/duration', 60);
 
         if (\is_numeric($request->param('rspc')) && $request->param('rspc') > 1) {
             $ttl = \intval($request->param('rspc'));
         }
 
-        $created = \gmdate("D, d M Y H:i:s", \time()) . " GMT";
+        if ($ttl < 1) {
+            return;
+        }
 
-        $this->app->fileStorage->write("cache://rspc/{$hash}", '<?php return '.\var_export([
-            'created' => $created,
-            'mime' => $response->mime,
-            'eol' => (\time() + $ttl),
-            'contents' => \is_object($response->body) ? \json_decode(\json_encode($response->body), true) : $response->body
-        ], true ).';');
+        $this->app->on('after', function() use($request, $key, $ttl, $cacheHandler) {
 
-        return $created;
+            if ($request->stopped || $this->response->status != 200) {
+                return;
+            }
+
+            $contents = $this->response->body;
+            $mime = $this->response->mime;
+
+            // store the raw response string
+            if (\is_array($contents) || \is_object($contents)) {
+                $contents = \json_encode($contents);
+                $mime = 'json';
+            }
+
+            if (!\is_string($contents)) {
+                return;
+            }
+
+            $created = \gmdate("D, d M Y H:i:s", \time()) . " GMT";
+
+            $cacheHandler->cache($key, [
+                'created' => $created,
+                'mime' => $mime,
+                'eol' => (\time() + $ttl),
+                'contents' => $contents
+            ], $ttl);
+
+            $this->response->headers['Last-Modified'] = $created;
+
+        }, -2000);
     }
 
-    public function getCache($request) {
+    /**
+     * Apply the cached response (if any) to the app response.
+     *
+     * @param \Lime\Request $request The request object.
+     * @param string $key The cache key.
+     * @return bool True if a cached response was found.
+     */
+    protected function getCache($request, string $key): bool {
 
-        $hash = \trim($request->route.'/'.\md5(\serialize($request->request)), '/').'.php';
-        $file = $this->app->path("#cache:rspc/{$hash}");
+        $cache = $this->cacheHandler->getCache($key);
+
+        if (!$cache) {
+            return false;
+        }
+
+        $response = $this->app->response;
+
+        $response->headers['APP_RSP_CACHE'] = 'true';
+        $response->headers['APP_RSP_EOL'] = $cache['eol'];
+        $response->headers['Last-Modified'] = $cache['created'];
+
+        $since = \strtotime($request->server['HTTP_IF_MODIFIED_SINCE'] ?? '');
+
+        if ($since && $since >= \strtotime($cache['created'])) {
+            $response->status = 304;
+            $response->body = '';
+            return true;
+        }
+
+        $response->mime = $cache['mime'] ?? 'text/html';
+        $response->body = $cache['contents'];
+
+        $this->app->trigger('app.response.cache.after');
+
+        return true;
+    }
+}
+
+class ResponseCacheFileHandler extends \Lime\AppAware {
+
+    public function cache(string $key, array $data, int $ttl) {
+        $this->app->fileStorage->write("cache://rspc/{$key}.php", '<?php return '.\var_export($data, true).';');
+    }
+
+    public function getCache(string $key) {
+
+        $file = $this->app->path("#cache:rspc/{$key}.php");
         $cache = null;
 
         if ($file) {
@@ -145,32 +192,13 @@ class ResponseCacheFileHandler extends \Lime\AppAware {
 
 class ResponseCacheMemoryeHandler extends \Lime\AppAware {
 
-    public function cache($request, $response) {
-
-        $hash = \trim($request->route.'/'.\md5(\serialize($request->request)), '/');
-        $key = "rspc:{$hash}";
-        $ttl = $this->app->retrieve('response/cache/duration', 60);
-
-        if (\is_numeric($request->param('rspc')) && $request->param('rspc') > 1) {
-            $ttl = \intval($request->param('rspc'));
-        }
-
-        $created = \gmdate("D, d M Y H:i:s", \time()) . " GMT";
-
-        $this->app->memory->set($key, [
-            'created' => $created,
-            'mime' => $response->mime,
-            'eol' => (\time() + $ttl),
-            'contents' => \is_object($response->body) ? \json_decode(\json_encode($response->body), true) : $response->body
-        ]);
-
-        return $created;
+    public function cache(string $key, array $data, int $ttl) {
+        $this->app->memory->setex("rspc:{$key}", $ttl, $data);
     }
 
-    public function getCache($request) {
+    public function getCache(string $key) {
 
-        $hash = \trim($request->route.'/'.\md5(\serialize($request->request)), '/');
-        $key = "rspc:{$hash}";
+        $key = "rspc:{$key}";
         $cache = $this->app->memory->get($key);
 
         if ($cache) {
