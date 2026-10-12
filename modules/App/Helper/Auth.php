@@ -5,6 +5,7 @@ namespace App\Helper;
 class Auth extends \Lime\Helper {
 
     public string $sessionKey = 'app.auth.user';
+    protected const DUMMY_PASSWORD_HASH = '$2y$10$e0NR1Z5J8Q6z1F7G9K8eOe5J8Q6z1F7G9K8eOe5J8Q6z1F7G9K8eO';
 
     /**
      * Authenticate a user.
@@ -12,29 +13,42 @@ class Auth extends \Lime\Helper {
      * @param array $data The user data.
      * @return mixed The authenticated user data or false on failure.
      */
-    public function authenticate(array $data): mixed {
+   
+    /**
+     * Get the authenticated user data.
+     *
+     * @param string|null $prop The property to retrieve.
+     * @param mixed $default The default value to return if the property is not set.
+     * @return mixed The user data or the default value.
+     */
 
-        $data = \array_merge([
-            'user'     => '',
-            'email'    => '',
-            'password' => ''
-        ], $data);
 
-        if (!$data['password']) return false;
 
-        $filter = ['active' => true];
+    public function authenticate(array $data): mixed
+{
+    $data = \array_merge([
+        'user'     => '',
+        'email'    => '',
+        'password' => '',
+    ], $data);
 
-        if ($data['email']) {
-            $filter['email'] = $data['email'];
-        } else {
-            $filter['user'] = $data['user'];
-        }
+    if (!$data['password']) {
+        return false;
+    }
 
-        $user = $this->app->dataStorage->findOne('system/users', $filter);
+    $filter = ['active' => true];
 
-        if ($user && (\password_verify($data['password'], $user['password']))){
+    if ($data['email']) {
+        $filter['email'] = $data['email'];
+    } else {
+        $filter['user'] = $data['user'];
+    }
 
-            $user = \array_merge($data, (array)$user);
+    $user = $this->app->dataStorage->findOne('system/users', $filter);
+
+    if ($user) {
+        if (\password_verify($data['password'], $user['password'])) {
+            $user = \array_merge($data, (array) $user);
 
             unset($user['password']);
 
@@ -43,16 +57,17 @@ class Auth extends \Lime\Helper {
             return $user;
         }
 
-        return false;
+        return false; // 1 bcrypt already done
     }
 
-    /**
-     * Get the authenticated user data.
-     *
-     * @param string|null $prop The property to retrieve.
-     * @param mixed $default The default value to return if the property is not set.
-     * @return mixed The user data or the default value.
-     */
+    // User doesn't exist: do 1 dummy bcrypt
+    \password_verify($data['password'], self::DUMMY_PASSWORD_HASH);
+
+    return false;
+}
+
+
+    
     public function getUser(?string $prop = null, mixed $default = null): mixed {
 
         $user = $this->app->retrieve($this->sessionKey);
