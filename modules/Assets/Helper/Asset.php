@@ -78,6 +78,9 @@ class Asset extends \Lime\Helper {
             'smartcrop' => null
         ], $options);
 
+        [$mime, $ext] = $this->normalizeImageMime($options['mime']);
+        $options['mime'] = $mime;
+
         \extract($options);
 
         if (!$width && !$height) {
@@ -88,7 +91,7 @@ class Asset extends \Lime\Helper {
             return ['error' => 'Missing src parameter'];
         }
 
-        $hash = $mime ? \md5(\json_encode($options))."_{$quality}_{$mode}.{$mime}" : null;
+        $hash = $mime ? \md5(\json_encode($options))."_{$quality}_{$mode}.{$ext}" : null;
 
         if (!$rebuild && $mime) {
 
@@ -97,7 +100,7 @@ class Asset extends \Lime\Helper {
             if ($this->app->fileStorage->fileExists($thumbpath)) {
 
                 if ($base64) {
-                    return "data:image/{$mime};base64,".\base64_encode($this->app->fileStorage->read($thumbpath));
+                    return "data:{$mime};base64,".\base64_encode($this->app->fileStorage->read($thumbpath));
                 }
 
                 return $asPath ? $thumbpath : $this->app->fileStorage->getURL($thumbpath);
@@ -122,6 +125,32 @@ class Asset extends \Lime\Helper {
 
         return $this->imageByAsset($options, $asPath, $hash);
 
+    }
+
+    /**
+     * Normalize a user-supplied mime/extension option into a canonical
+     * [mime, extension] pair, e.g. 'jpeg', 'jpg' and 'image/jpeg' all
+     * normalize to ['image/jpeg', 'jpg']. Must run before any cache hash
+     * is built from the mime option so the hash and the output filename
+     * always agree.
+     *
+     * @param string|null $mime
+     * @return array{0: string|null, 1: string|null}
+     */
+    protected function normalizeImageMime(?string $mime): array {
+
+        if (!$mime) return [null, null];
+
+        if (\substr($mime, 0, 6) == 'image/') $mime = \substr($mime, 6);
+        if ($mime === 'jpg') $mime = 'jpeg';
+
+        if (!\in_array($mime, ['avif', 'gif', 'jpeg', 'png', 'webp', 'bmp'])) {
+            return [null, null];
+        }
+
+        $ext = ($mime === 'jpeg') ? 'jpg' : $mime;
+
+        return ["image/{$mime}", $ext];
     }
 
     protected function imageByAsset(array $options = [], bool $asPath = false, ?string $hash = null) {
@@ -220,12 +249,11 @@ class Asset extends \Lime\Helper {
             $mode = 'thumbnail';
         }
 
-        if ($mime && \substr($mime, 0, 6) == 'image/') $mime = \substr($mime, 6);
-        if ($mime === 'jpg') $mime = 'jpeg';
+        [$normalizedMime, $normalizedExt] = $this->normalizeImageMime($mime);
 
-        if ($mime && \in_array($mime, ['avif', 'gif', 'jpeg', 'png', 'webp', 'bmp'])) {
-            $ext = $mime;
-            $mime = "image/{$ext}";
+        if ($normalizedMime) {
+            $mime = $normalizedMime;
+            $ext = $normalizedExt;
         } else {
             $mime = null;
         }
@@ -297,7 +325,8 @@ class Asset extends \Lime\Helper {
         }
 
         if ($base64) {
-            return "data:image/{$ext};base64,".\base64_encode($this->app->fileStorage->read($thumbpath));
+            $dataMime = $mime ?: ($ext === 'jpg' ? 'image/jpeg' : "image/{$ext}");
+            return "data:{$dataMime};base64,".\base64_encode($this->app->fileStorage->read($thumbpath));
         }
 
         return $asPath ? $thumbpath : $this->app->fileStorage->getURL($thumbpath);
