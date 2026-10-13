@@ -10,6 +10,7 @@ define('APP_CLI', true);
 require __DIR__.'/bootstrap.php';
 
 use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
@@ -37,7 +38,7 @@ define('APP_SPACE', $APP_SPACE ?? false);
 
 class CockpitConsoleApp extends Application {
 
-    protected function getDefaultInputDefinition() {
+    protected function getDefaultInputDefinition(): InputDefinition {
 
         $definition = parent::getDefaultInputDefinition();
 

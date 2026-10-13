@@ -2,14 +2,15 @@
 
 namespace Content\Command\Field;
 
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Output\OutputInterface;
 
+#[AsCommand(name: 'content:field:remove')]
 class Remove extends Command {
 
-    protected static $defaultName = 'content:field:remove';
     protected $app = null;
 
     public function __construct(\Lime\App $app) {

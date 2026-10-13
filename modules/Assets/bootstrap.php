@@ -274,7 +274,10 @@ $this->module('assets')->extend([
                             $img = new SimpleImageLib($file);
                             $img->bestFit(100, 100)->toFile($tmppath);
 
-                            $asset['colors'] = \ColorThief\ColorThief::getPalette($tmppath, 5);
+                            // RGB quantization keeps palettes consistent with assets processed by color-thief v2
+                            $colorThief = new \ColorThief\ColorThief(colorSpace: \ColorThief\ColorSpace::Rgb);
+
+                            $asset['colors'] = $colorThief->getPalette($tmppath, 5)->toHex('#');
                             $asset['thumbhash'] = implode('-', Thumbhash::fromFile($tmppath));
 
                             unlink($tmppath);
@@ -282,10 +285,6 @@ $this->module('assets')->extend([
                         } catch (\Exception $e) {
                             $asset['colors'] = [];
                             $asset['thumbhash'] = null;
-                        }
-
-                        foreach ($asset['colors'] as &$color) {
-                            $color = sprintf("#%02x%02x%02x", $color[0], $color[1], $color[2]);
                         }
                     }
                 }

@@ -29,6 +29,7 @@ use MongoDB\InsertManyResult;
 
 use function array_is_list;
 use function is_bool;
+use function MongoDB\create_namespace;
 use function MongoDB\is_document;
 use function sprintf;
 
@@ -44,6 +45,8 @@ final class InsertMany
     private array $documents;
 
     private array $options;
+
+    private string $namespace;
 
     /**
      * Constructs an insert command.
@@ -75,8 +78,10 @@ final class InsertMany
      * @param array              $options        Command options
      * @throws InvalidArgumentException for parameter/option parsing errors
      */
-    public function __construct(private string $databaseName, private string $collectionName, array $documents, array $options = [])
+    public function __construct(string $databaseName, string $collectionName, array $documents, array $options = [])
     {
+        $this->namespace = create_namespace($databaseName, $collectionName);
+
         $options += ['ordered' => true];
 
         if (isset($options['bypassDocumentValidation']) && ! is_bool($options['bypassDocumentValidation'])) {
@@ -131,7 +136,7 @@ final class InsertMany
             $insertedIds[$i] = $bulk->insert($document);
         }
 
-        $writeResult = $server->executeBulkWrite($this->databaseName . '.' . $this->collectionName, $bulk, $this->createExecuteOptions());
+        $writeResult = $server->executeBulkWrite($this->namespace, $bulk, $this->createExecuteOptions());
 
         return new InsertManyResult($writeResult, $insertedIds);
     }

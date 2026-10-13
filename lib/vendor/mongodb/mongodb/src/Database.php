@@ -51,21 +51,22 @@ use MongoDB\Operation\ModifyCollection;
 use MongoDB\Operation\RenameCollection;
 use MongoDB\Operation\Watch;
 use stdClass;
+use Stringable;
 use Throwable;
 
 use function is_array;
 use function is_bool;
+use function str_contains;
 use function strlen;
 
-class Database
+/** @psalm-no-seal-properties */
+class Database implements Stringable
 {
     private const DEFAULT_TYPE_MAP = [
         'array' => BSONArray::class,
         'document' => BSONDocument::class,
         'root' => BSONDocument::class,
     ];
-
-    private const WIRE_VERSION_FOR_READ_CONCERN_WITH_WRITE_STAGE = 8;
 
     /** @psalm-var Encoder<array|stdClass|Document|PackedArray, mixed> */
     private readonly Encoder $builderEncoder;
@@ -112,7 +113,7 @@ class Database
      */
     public function __construct(private Manager $manager, private string $databaseName, array $options = [])
     {
-        if (strlen($databaseName) < 1) {
+        if (strlen($databaseName) < 1 || str_contains($databaseName, '.') || str_contains($databaseName, "\0")) {
             throw new InvalidArgumentException('$databaseName is invalid: ' . $databaseName);
         }
 
@@ -228,8 +229,7 @@ class Database
          */
         if (
             ! isset($options['readConcern']) &&
-            ! is_in_transaction($options) &&
-            ( ! $hasWriteStage || server_supports_feature($server, self::WIRE_VERSION_FOR_READ_CONCERN_WITH_WRITE_STAGE))
+            ! is_in_transaction($options)
         ) {
             $options['readConcern'] = $this->readConcern;
         }
@@ -276,7 +276,7 @@ class Database
      * collection.
      *
      * @see CreateCollection::__construct() for supported options
-     * @see https://github.com/mongodb/specifications/blob/master/source/client-side-encryption/client-side-encryption.rst#create-collection-helper
+     * @see https://github.com/mongodb/specifications/blob/master/source/client-side-encryption/client-side-encryption.md#create-collection-helper
      * @see https://www.mongodb.com/docs/manual/core/queryable-encryption/fundamentals/manage-collections/
      * @throws UnsupportedException if options are not supported by the selected server
      * @throws InvalidArgumentException for parameter/option parsing errors
@@ -424,6 +424,25 @@ class Database
     }
 
     /**
+     * Returns a GridFS bucket instance.
+     *
+     * @see Bucket::__construct() for supported options
+     * @param array $options Bucket constructor options
+     * @throws InvalidArgumentException for parameter/option parsing errors
+     */
+    public function getGridFSBucket(array $options = []): Bucket
+    {
+        $options += [
+            'readConcern' => $this->readConcern,
+            'readPreference' => $this->readPreference,
+            'typeMap' => $this->typeMap,
+            'writeConcern' => $this->writeConcern,
+        ];
+
+        return new Bucket($this->manager, $this->databaseName, $options);
+    }
+
+    /**
      * Return the Manager.
      */
     public function getManager(): Manager
@@ -540,9 +559,7 @@ class Database
      */
     public function renameCollection(string $fromCollectionName, string $toCollectionName, ?string $toDatabaseName = null, array $options = []): void
     {
-        if (! isset($toDatabaseName)) {
-            $toDatabaseName = $this->databaseName;
-        }
+        $toDatabaseName ??= $this->databaseName;
 
         $server = select_server_for_write($this->manager, $options);
 
@@ -577,14 +594,7 @@ class Database
      */
     public function selectGridFSBucket(array $options = []): Bucket
     {
-        $options += [
-            'readConcern' => $this->readConcern,
-            'readPreference' => $this->readPreference,
-            'typeMap' => $this->typeMap,
-            'writeConcern' => $this->writeConcern,
-        ];
-
-        return new Bucket($this->manager, $this->databaseName, $options);
+        return $this->getGridFSBucket($options);
     }
 
     /**

@@ -39,6 +39,7 @@ use function array_intersect_key;
 use function array_key_exists;
 use function assert;
 use function explode;
+use function fclose;
 use function fopen;
 use function get_resource_type;
 use function in_array;
@@ -210,10 +211,9 @@ class Bucket
      */
     public function delete(mixed $id): void
     {
-        $file = $this->collectionWrapper->findFileById($id);
-        $this->collectionWrapper->deleteFileAndChunksById($id);
+        $deletedCount = $this->collectionWrapper->deleteFileAndChunksById($id);
 
-        if ($file === null) {
+        if ($deletedCount === 0) {
             throw FileNotFoundException::byId($id, $this->getFilesNamespace());
         }
     }
@@ -653,13 +653,18 @@ class Bucket
 
         $destination = $this->openUploadStream($filename, $options);
 
-        if (@stream_copy_to_stream($source, $destination) === false) {
-            $destinationUri = $this->createPathForFile($this->getRawFileDocumentForStream($destination));
+        try {
+            if (@stream_copy_to_stream($source, $destination) === false) {
+                $destinationUri = $this->createPathForFile($this->getRawFileDocumentForStream($destination));
 
-            throw StreamException::uploadFailed($filename, $source, $destinationUri);
+                throw StreamException::uploadFailed($filename, $source, $destinationUri);
+            }
+
+            return $this->getFileIdForStream($destination);
+        } finally {
+            // Closing flushes the last chunk and writes the file document, so do not rely on garbage collection.
+            fclose($destination);
         }
-
-        return $this->getFileIdForStream($destination);
     }
 
     /**

@@ -69,6 +69,7 @@ use MongoDB\Operation\UpdateOne;
 use MongoDB\Operation\UpdateSearchIndex;
 use MongoDB\Operation\Watch;
 use stdClass;
+use Stringable;
 
 use function array_diff_key;
 use function array_intersect_key;
@@ -76,17 +77,53 @@ use function array_key_exists;
 use function current;
 use function is_array;
 use function is_bool;
+use function str_contains;
 use function strlen;
 
-class Collection
+/**
+ * @psalm-import-type OperationShape from BulkWrite
+ * @psalm-type SearchIndexShape = array{
+ *     analyzer?: string,
+ *     analyzers?: list<array{
+ *         name: string,
+ *         charFilters?: list<array{type: 'icuNormalize'|'persian'}|array{type: 'htmlStrip', ignoredTags?: list<string>}|array{type: 'mapping', mappings?: array<string, string>}>,
+ *         tokenizer: array{type: string},
+ *         tokenFilters?: list<array{type: string, ...}>,
+ *     }>,
+ *     searchAnalyzer?: string,
+ *     mappings: array{
+ *         dynamic?: bool,
+ *         fields?: array<string,
+ *             array{type: 'boolean'|'date'|'dateFacet'|'objectId'|'stringFacet'|'uuid'} |
+ *             array{type: 'autocomplete', analyzer?: string, maxGrams?: int, minGrams?: int, tokenization?: 'edgeGram'|'rightEdgeGram'|'nGram', foldDiacritics?: bool, similarity?: array{type: 'bm25'|'boolean'|'stableTfl'}} |
+ *             array{type: 'document'|'embeddedDocuments', dynamic?: bool, fields: array<string, array<mixed>>} |
+ *             array{type: 'geo', indexShapes?: bool} |
+ *             array{type: 'number'|'numberFacet', representation?: 'int64'|'double', indexIntegers?: bool, indexDoubles?: bool} |
+ *             array{type: 'token', normalizer?: 'lowercase'|'none'} |
+ *             array{type: 'string', analyzer?: string, searchAnalyzer?: string, indexOptions?: 'docs'|'freqs'|'positions'|'offsets', store?: bool, ignoreAbove?: int, multi?: array<string, array<string, mixed>>, norms?: 'include'|'omit', similarity?: array{type: 'bm25'|'boolean'|'stableTfl'}} |
+ *             list<array{type: string, ...}>
+ *         >,
+ *     },
+ *     storedSource?: bool|array{include: list<string>}|array{exclude: list<string>},
+ *     synonyms?: list<array{analyzer: string, name: string, source?: array{collection: string}}>,
+ * }
+ * @psalm-type VectorSearchIndexShape = array{
+ *     fields: list<
+ *         array{type: 'vector', path: string, numDimensions: int, similarity: 'euclidean'|'cosine'|'dotProduct', quantization?: 'none'|'scalar'|'binary', indexingMethod?: 'flat'|'hnsw', hnswOptions?: array{maxEdges?: int, numEdgeCandidates?: int}} |
+ *         array{type: 'autoEmbed', modality: 'text', path: string, model: string, numDimensions?: int, quantization?: 'float'|'scalar'|'binary'|'binaryNoRescore', similarity?: 'euclidean'|'cosine'|'dotProduct', indexingMethod?: 'flat'|'hnsw', hnswOptions?: array{maxEdges?: int, numEdgeCandidates?: int}} |
+ *         array{type: 'filter', path: string}
+ *     >,
+ *     storedSource?: bool|array{include: list<string>}|array{exclude: list<string>},
+ * }
+ * @psalm-type SearchIndexSpecShape = array{definition: SearchIndexShape|VectorSearchIndexShape|object, name?: string, type?: string}
+ */
+class Collection implements Stringable
 {
     private const DEFAULT_TYPE_MAP = [
         'array' => BSONArray::class,
         'document' => BSONDocument::class,
         'root' => BSONDocument::class,
     ];
-
-    private const WIRE_VERSION_FOR_READ_CONCERN_WITH_WRITE_STAGE = 8;
 
     /** @psalm-var Encoder<array|stdClass|Document|PackedArray, mixed> */
     private readonly Encoder $builderEncoder;
@@ -138,11 +175,11 @@ class Collection
      */
     public function __construct(private Manager $manager, private string $databaseName, private string $collectionName, array $options = [])
     {
-        if (strlen($databaseName) < 1) {
+        if (strlen($databaseName) < 1 || str_contains($databaseName, '.') || str_contains($databaseName, "\0")) {
             throw new InvalidArgumentException('$databaseName is invalid: ' . $databaseName);
         }
 
-        if (strlen($collectionName) < 1) {
+        if (strlen($collectionName) < 1 || str_contains($collectionName, "\0")) {
             throw new InvalidArgumentException('$collectionName is invalid: ' . $collectionName);
         }
 
@@ -235,23 +272,16 @@ class Collection
         $hasWriteStage = is_last_pipeline_operator_write($pipeline);
 
         $options = $this->inheritReadPreference($options);
-
-        $server = $hasWriteStage
-            ? select_server_for_aggregate_write_stage($this->manager, $options)
-            : select_server($this->manager, $options);
-
-        /* MongoDB 4.2 and later supports a read concern when an $out stage is
-         * being used, but earlier versions do not.
-         */
-        if (! $hasWriteStage || server_supports_feature($server, self::WIRE_VERSION_FOR_READ_CONCERN_WITH_WRITE_STAGE)) {
-            $options = $this->inheritReadConcern($options);
-        }
-
+        $options = $this->inheritReadConcern($options);
         $options = $this->inheritCodecOrTypeMap($options);
 
         if ($hasWriteStage) {
             $options = $this->inheritWriteOptions($options);
         }
+
+        $server = $hasWriteStage
+            ? select_server_for_aggregate_write_stage($this->manager, $options)
+            : select_server($this->manager, $options);
 
         $operation = new Aggregate($this->databaseName, $this->collectionName, $pipeline, $options);
 
@@ -261,12 +291,13 @@ class Collection
     /**
      * Executes multiple write operations.
      *
-     * @see BulkWrite::__construct() for supported options
-     * @param array[] $operations List of write operations
-     * @param array   $options    Command options
+     * @param list<array{deleteMany: list<array|object>}|array{deleteOne: list<array|object>}|array{insertOne: list<array|object>}|array{replaceOne: list<array|object>}|array{updateMany: list<array|object>}|array{updateOne: list<array|object>}> $operations List of write operations
+     * @psalm-param list<OperationShape> $operations List of write operations
+     * @param array                                                                                                                                                                                                                                  $options    Command options
      * @throws UnsupportedException if options are not supported by the selected server
      * @throws InvalidArgumentException for parameter/option parsing errors
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
+     * @see BulkWrite::__construct() for supported options
      */
     public function bulkWrite(array $operations, array $options = []): BulkWriteResult
     {
@@ -386,8 +417,8 @@ class Collection
      * Only available when used against a 7.0+ Atlas cluster.
      *
      * @see https://www.mongodb.com/docs/manual/reference/command/createSearchIndexes/
-     * @see https://mongodb.com/docs/manual/reference/method/db.collection.createSearchIndex/
-     * @param array|object                                         $definition Atlas Search index mapping definition
+     * @see https://www.mongodb.com/docs/manual/reference/method/db.collection.createSearchIndex/
+     * @param SearchIndexShape|VectorSearchIndexShape|object       $definition Atlas Search index mapping definition
      * @param array{comment?: mixed, name?: string, type?: string} $options    Index and command options
      * @return string The name of the created search index
      * @throws UnsupportedException if options are not supported by the selected server
@@ -402,7 +433,9 @@ class Collection
         /** @psalm-var array{comment?: mixed} */
         $operationOptions = array_diff_key($options, $indexOptionKeys);
 
-        $names = $this->createSearchIndexes([['definition' => $definition] + $indexOptions], $operationOptions);
+        /** @psalm-var list<SearchIndexSpecShape> */
+        $indexes = [['definition' => $definition] + $indexOptions];
+        $names = $this->createSearchIndexes($indexes, $operationOptions);
 
         return current($names);
     }
@@ -424,8 +457,8 @@ class Collection
      *
      * @see https://www.mongodb.com/docs/manual/reference/command/createSearchIndexes/
      * @see https://mongodb.com/docs/manual/reference/method/db.collection.createSearchIndex/
-     * @param list<array{definition: array|object, name?: string, type?: string}> $indexes List of search index specifications
-     * @param array{comment?: mixed}                                              $options Command options
+     * @param list<SearchIndexSpecShape> $indexes List of search index specifications
+     * @param array{comment?: mixed}     $options Command options
      * @return string[] The names of the created search indexes
      * @throws UnsupportedException if options are not supported by the selected server
      * @throws InvalidArgumentException for parameter/option parsing errors
@@ -753,6 +786,7 @@ class Collection
     public function findOneAndUpdate(array|object $filter, array|object $update, array $options = []): array|object|null
     {
         $filter = $this->builderEncoder->encodeIfSupported($filter);
+        $update = $this->builderEncoder->encodeIfSupported($update);
         $options = $this->inheritWriteOptions($options);
         $options = $this->inheritCodecOrTypeMap($options);
 
@@ -930,9 +964,7 @@ class Collection
      */
     public function rename(string $toCollectionName, ?string $toDatabaseName = null, array $options = []): void
     {
-        if (! isset($toDatabaseName)) {
-            $toDatabaseName = $this->databaseName;
-        }
+        $toDatabaseName ??= $this->databaseName;
 
         $options = $this->inheritWriteOptions($options);
 
@@ -1014,9 +1046,9 @@ class Collection
      * Update a single Atlas Search index in the collection.
      * Only available when used against a 7.0+ Atlas cluster.
      *
-     * @param string                 $name       Search index name
-     * @param array|object           $definition Atlas Search index definition
-     * @param array{comment?: mixed} $options    Command options
+     * @param string                                         $name       Search index name
+     * @param SearchIndexShape|VectorSearchIndexShape|object $definition Atlas Search index definition
+     * @param array{comment?: mixed}                         $options    Command options
      * @throws UnsupportedException if options are not supported by the selected server
      * @throws InvalidArgumentException for parameter parsing errors
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
@@ -1154,10 +1186,8 @@ class Collection
     private function inheritWriteOptions(array $options): array
     {
         // WriteConcern may not change within a transaction
-        if (! is_in_transaction($options)) {
-            if (! isset($options['writeConcern'])) {
-                $options['writeConcern'] = $this->writeConcern;
-            }
+        if (! isset($options['writeConcern']) && ! is_in_transaction($options)) {
+            $options['writeConcern'] = $this->writeConcern;
         }
 
         return $options;

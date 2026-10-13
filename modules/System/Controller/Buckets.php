@@ -267,10 +267,6 @@ class Buckets extends App {
             }
         }
 
-        if ($finfo) {
-            \finfo_close($finfo);
-        }
-
         return \json_encode(['uploaded' => $uploaded, 'failed' => $failed]);
     }
 

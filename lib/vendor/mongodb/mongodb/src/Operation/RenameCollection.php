@@ -26,6 +26,7 @@ use MongoDB\Exception\InvalidArgumentException;
 use MongoDB\Exception\UnsupportedException;
 
 use function is_bool;
+use function MongoDB\create_namespace;
 
 /**
  * Operation for the renameCollection command.
@@ -81,8 +82,8 @@ final class RenameCollection
             throw InvalidArgumentException::invalidType('"dropTarget" option', $this->options['dropTarget'], 'boolean');
         }
 
-        $this->fromNamespace = $fromDatabaseName . '.' . $fromCollectionName;
-        $this->toNamespace = $toDatabaseName . '.' . $toCollectionName;
+        $this->fromNamespace = create_namespace($fromDatabaseName, $fromCollectionName);
+        $this->toNamespace = create_namespace($toDatabaseName, $toCollectionName);
     }
 
     /**

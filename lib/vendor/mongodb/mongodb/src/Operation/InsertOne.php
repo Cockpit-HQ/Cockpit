@@ -28,6 +28,7 @@ use MongoDB\Exception\UnsupportedException;
 use MongoDB\InsertOneResult;
 
 use function is_bool;
+use function MongoDB\create_namespace;
 use function MongoDB\is_document;
 
 /**
@@ -39,6 +40,8 @@ use function MongoDB\is_document;
 final class InsertOne
 {
     private array|object $document;
+
+    private string $namespace;
 
     /**
      * Constructs an insert command.
@@ -65,8 +68,10 @@ final class InsertOne
      * @param array        $options        Command options
      * @throws InvalidArgumentException for parameter/option parsing errors
      */
-    public function __construct(private string $databaseName, private string $collectionName, array|object $document, private array $options = [])
+    public function __construct(string $databaseName, string $collectionName, array|object $document, private array $options = [])
     {
+        $this->namespace = create_namespace($databaseName, $collectionName);
+
         if (isset($this->options['bypassDocumentValidation']) && ! is_bool($this->options['bypassDocumentValidation'])) {
             throw InvalidArgumentException::invalidType('"bypassDocumentValidation" option', $this->options['bypassDocumentValidation'], 'boolean');
         }
@@ -111,7 +116,7 @@ final class InsertOne
 
         $insertedId = $bulk->insert($this->document);
 
-        $writeResult = $server->executeBulkWrite($this->databaseName . '.' . $this->collectionName, $bulk, $this->createExecuteOptions());
+        $writeResult = $server->executeBulkWrite($this->namespace, $bulk, $this->createExecuteOptions());
 
         return new InsertOneResult($writeResult, $insertedId);
     }

@@ -196,7 +196,7 @@ if (!$this->app->helper('csrf')->isValid('token_name', $token)) {
 1. Read and understand (addons|modules)/*/README.md for detailed module documentation
 2. Follow existing patterns in the codebase
 3. Test changes with the development server
-4. Clear caches after configuration changes: `./tower app:routes:cache:clear`
+4. Clear caches after configuration changes: `./tower app:cache:flush`
 
 ### Common Tasks
 

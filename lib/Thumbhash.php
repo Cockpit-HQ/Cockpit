@@ -95,18 +95,14 @@ class Thumbhash {
         $transparent = imagecolorallocatealpha($resized, 0, 0, 0, 127);
 
         if ($transparent === false) {
-            imagedestroy($resized);
             throw new \RuntimeException('Unable to preserve alpha channel while resizing image');
         }
 
         imagefilledrectangle($resized, 0, 0, $targetWidth, $targetHeight, $transparent);
 
         if (!imagecopyresampled($resized, $image, 0, 0, 0, 0, $targetWidth, $targetHeight, $width, $height)) {
-            imagedestroy($resized);
             throw new \RuntimeException('Unable to resample image for ThumbHash encoding');
         }
-
-        imagedestroy($image);
 
         $width = $targetWidth;
         $height = $targetHeight;
@@ -128,31 +124,27 @@ class Thumbhash {
             throw new \InvalidArgumentException("Invalid or unsupported image file: {$file}");
         }
 
-        try {
-            $width = imagesx($image);
-            $height = imagesy($image);
+        $width = imagesx($image);
+        $height = imagesy($image);
 
-            self::assertPositiveDimensions($width, $height, 'Image');
+        self::assertPositiveDimensions($width, $height, 'Image');
 
-            $image = self::resizeImageToFit($image, $width, $height);
+        $image = self::resizeImageToFit($image, $width, $height);
 
-            $pixels = [];
-            for ($y = 0; $y < $height; $y++) {
-                for ($x = 0; $x < $width; $x++) {
-                    $color_index = imagecolorat($image, $x, $y);
-                    $color = imagecolorsforindex($image, $color_index);
-                    $alpha = 255 - ceil($color['alpha'] * (255 / 127)); // GD only supports 7-bit alpha channel
-                    $pixels[] = $color['red'];
-                    $pixels[] = $color['green'];
-                    $pixels[] = $color['blue'];
-                    $pixels[] = $alpha;
-                }
+        $pixels = [];
+        for ($y = 0; $y < $height; $y++) {
+            for ($x = 0; $x < $width; $x++) {
+                $color_index = imagecolorat($image, $x, $y);
+                $color = imagecolorsforindex($image, $color_index);
+                $alpha = 255 - ceil($color['alpha'] * (255 / 127)); // GD only supports 7-bit alpha channel
+                $pixels[] = $color['red'];
+                $pixels[] = $color['green'];
+                $pixels[] = $color['blue'];
+                $pixels[] = $alpha;
             }
-
-            return self::RGBAToHash($width, $height, $pixels);
-        } finally {
-            imagedestroy($image);
         }
+
+        return self::RGBAToHash($width, $height, $pixels);
     }
 
     /**

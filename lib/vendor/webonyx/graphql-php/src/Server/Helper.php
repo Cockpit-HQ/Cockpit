@@ -123,7 +123,12 @@ class Helper
         if ($method === 'POST') {
             if (isset($bodyParams[0])) {
                 $operations = [];
-                foreach ($bodyParams as $entry) {
+                foreach ($bodyParams as $key => $entry) {
+                    if (! is_array($entry)) {
+                        $notArray = Utils::printSafeJson($entry);
+                        throw new RequestError("Expected batch entry {$key} to be an object, got: {$notArray}");
+                    }
+
                     $operations[] = OperationParams::create($entry);
                 }
 
@@ -201,7 +206,7 @@ class Helper
         $result = $this->promiseToExecuteOperation($promiseAdapter, $config, $op);
 
         if ($promiseAdapter instanceof SyncPromiseAdapter) {
-            $result = $promiseAdapter->wait($result);
+            return $promiseAdapter->wait($result);
         }
 
         return $result;
@@ -233,7 +238,7 @@ class Helper
 
         // Wait for promised results when using sync promises
         if ($promiseAdapter instanceof SyncPromiseAdapter) {
-            $result = $promiseAdapter->wait($result);
+            return $promiseAdapter->wait($result);
         }
 
         return $result;
@@ -384,7 +389,7 @@ class Helper
         $rootValue = $config->getRootValue();
 
         if (is_callable($rootValue)) {
-            $rootValue = $rootValue($params, $doc, $operationType);
+            return $rootValue($params, $doc, $operationType);
         }
 
         return $rootValue;
@@ -400,7 +405,7 @@ class Helper
         $context = $config->getContext();
 
         if (is_callable($context)) {
-            $context = $context($params, $doc, $operationType);
+            return $context($params, $doc, $operationType);
         }
 
         return $context;
