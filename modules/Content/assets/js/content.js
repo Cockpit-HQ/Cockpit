@@ -33,5 +33,5 @@ App.utils.$interpolate.fns.$content = function(link, display) {
 
     if (!link || !link._model || !link._id) return '';
 
-    return `<display-content class="kiss-display-inline-block" model="${link._model}" id="${link._id}" display="${display}"></display-content>`;
+    return `<display-content class="kiss-display-inline-block" model="${App.utils.escape(link._model)}" id="${App.utils.escape(link._id)}" display="${App.utils.escape(display || '')}"></display-content>`;
 };

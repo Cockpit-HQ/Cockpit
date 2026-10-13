@@ -166,12 +166,12 @@ export default {
             let output = [];
 
             if (images.length) {
-                output.push(`<display-image src="${images[0]}" w="40" h="25"></display-image>`);
+                output.push(`<display-image src="${App.utils.escape(images[0])}" w="40" h="25"></display-image>`);
             }
 
             if (linkedContent.length) {
                 linkedContent.forEach(val => {
-                    output.push(`<display-content id="${val._id}" model="${val._model}" display="${val.display || ''}"></display-content>`);
+                    output.push(`<display-content id="${App.utils.escape(val._id)}" model="${App.utils.escape(val._model)}" display="${App.utils.escape(val.display || '')}"></display-content>`);
                 });
             }
 

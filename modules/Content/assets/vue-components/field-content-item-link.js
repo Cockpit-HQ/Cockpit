@@ -67,7 +67,7 @@ export default {
                 return 'n/a'
             }
 
-            return `<display-content class="kiss-display-inline-block" model="${field.opts.link}" id="${value._id}" display="${field.opts.display || ''}"><app-loader class="kiss-display-inline-block" size="small" mode="dots"></app-loader></display-content>`;
+            return `<display-content class="kiss-display-inline-block" model="${App.utils.escape(field.opts.link)}" id="${App.utils.escape(value._id)}" display="${App.utils.escape(field.opts.display || '')}"><app-loader class="kiss-display-inline-block" size="small" mode="dots"></app-loader></display-content>`;
         }
     },
 
@@ -136,7 +136,7 @@ export default {
         },
 
         getDisplay() {
-            return `<display-content class="kiss-display-inline-block" model="${this.model.name}" id="${this.val._id}" display="${this.display || ''}"><app-loader class="kiss-display-inline-block" size="small" mode="dots"></app-loader></display-content>`;
+            return `<display-content class="kiss-display-inline-block" model="${App.utils.escape(this.model.name)}" id="${App.utils.escape(this.val._id)}" display="${App.utils.escape(this.display || '')}"><app-loader class="kiss-display-inline-block" size="small" mode="dots"></app-loader></display-content>`;
         },
 
         update() {
