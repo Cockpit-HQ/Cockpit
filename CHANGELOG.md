@@ -1,5 +1,12 @@
 # Release Notes
 
+## Unreleased
+
+- Upgrade TipTap to v3.32.1
+- Fix richtext field emitting an update (marking items as modified) when content is loaded
+- Fix linkifyjs "already initialized" warnings with multiple richtext editors and custom link schemes (e.g. `assets://`) being dropped when an editor is closed
+- Make richtext field configurable: `disable` features (removed from the schema incl. shortcuts and pasted content), allowed `headings` levels, custom `blockStyles` saved as class or custom tag, configurable `bubbleMenu` and `floatingMenu`, field settings form
+
 ## 2.14.1 (2026-08-26)
 
 - Refactor session state management and event stream handling in admin module

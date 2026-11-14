@@ -1,17 +1,17 @@
-import EditorActions from './editor-actions.js';
+import ActionButtons from './components/action-buttons.js';
 
 export default {
-    data() {
 
-        let actions = new EditorActions(this.editor);
-
-        return {
-            actions: actions
-        }
+    components: {
+        ActionButtons
     },
 
     props: {
         editor: {
+            type: Object,
+            default: null
+        },
+        actions: {
             type: Object,
             default: null
         },
@@ -27,45 +27,14 @@ export default {
 
     computed: {
         groups() {
-            let groups = [];
-
-            if (!this.toolbar) return false;
-
-            this.toolbar.split(' | ').forEach(item => {
-
-                let group = [];
-
-                item.split(' ').forEach(itm => {
-
-                    itm = itm.trim();
-
-                    if (!itm || !this.actions.actions[itm]) return;
-                    group.push(itm);
-                });
-
-                if (group.length) groups.push(group);
-            });
-
-            return groups.length ? groups : false;
-        }
-    },
-
-    methods: {
-        isActive(action) {
-            return this.actions.isActive(action);
-        },
-        call(action) {
-            this.actions.call(action);
+            return this.actions.groups(this.toolbar);
         }
     },
 
     template: /*html*/`
-        <div class="kiss-margin-small kiss-flex" gap="small" v-if="groups">
+        <div class="kiss-margin-small kiss-flex" gap="small" v-if="groups.length || (editor.state.selection.empty && editor.isActive('table'))">
             <div class="kiss-button-group" v-for="group in groups">
-                <button type="button" class="kiss-button kiss-button-small" :class="{'kiss-button-primary': isActive(action)}" :title="t(actions.actions[action].title || '')" @click="call(action)" v-for="action in group">
-                    <component v-if="actions.action(action).component" :is="actions.action(action).component" :editor="editor" />
-                    <icon v-else>{{ actions.action(action).icon }}</icon>
-                </button>
+                <action-buttons :editor="editor" :actions="actions" :names="group" />
             </div>
             <div class="kiss-flex-1"></div>
             <div :id="euid+'-submenu'">
