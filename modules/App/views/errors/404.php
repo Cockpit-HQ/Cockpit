@@ -36,6 +36,10 @@
 
         <p class="kiss-margin kiss-color-muted"><?=t('Requested resource is not available')?></p>
 
+        <p class="kiss-margin">
+            <a href="<?=$this->route('/')?>"><?=t('Back to start page')?></a>
+        </p>
+
     </kiss-container>
 
 </body>
