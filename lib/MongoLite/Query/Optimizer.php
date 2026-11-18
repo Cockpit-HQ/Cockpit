@@ -150,25 +150,35 @@ class Optimizer {
 
                 case '$in':
                     if (!\is_array($opValue)) return null;
-                    $list = \array_map([$this, 'quote'], $opValue);
-                    if (empty($list)) {
-                        $conditions[] = "0"; // Nothing in list matches nothing
-                    } else {
+                    // SQL `x IN (NULL, ...)` never matches NULL, so null (null or missing field) is checked on its own
+                    $hasNull = \in_array(null, $opValue, true);
+                    $list = \array_map([$this, 'quote'], \array_values(\array_filter($opValue, fn($v) => $v !== null)));
+                    $parts = [];
+                    if (!empty($list)) {
                         $inList = \implode(', ', $list);
                         // Match scalar IN list OR any array element IN list
-                        $conditions[] = "({$extracted} IN ({$inList}) OR EXISTS (SELECT 1 FROM json_each(document, '{$path}') WHERE value IN ({$inList})))";
+                        $parts[] = "({$extracted} IN ({$inList}) OR EXISTS (SELECT 1 FROM json_each(document, '{$path}') WHERE value IN ({$inList})))";
                     }
+                    if ($hasNull) {
+                        $parts[] = "{$extracted} IS NULL";
+                    }
+                    $conditions[] = empty($parts) ? "0" : "(" . \implode(' OR ', $parts) . ")"; // Nothing in list matches nothing
                     break;
 
                 case '$nin':
                     if (!\is_array($opValue)) return null;
-                    $list = \array_map([$this, 'quote'], $opValue);
-                    if (empty($list)) {
-                        $conditions[] = "1"; // Nothing to exclude
-                    } else {
+                    // SQL `x NOT IN (NULL, ...)` is never true, so null is excluded on its own
+                    $hasNull = \in_array(null, $opValue, true);
+                    $list = \array_map([$this, 'quote'], \array_values(\array_filter($opValue, fn($v) => $v !== null)));
+                    $parts = [];
+                    if (!empty($list)) {
                         $inList = \implode(', ', $list);
-                        $conditions[] = "({$extracted} NOT IN ({$inList}) OR {$extracted} IS NULL) AND NOT EXISTS (SELECT 1 FROM json_each(document, '{$path}') WHERE value IN ({$inList}))";
+                        $parts[] = "(({$extracted} NOT IN ({$inList}) OR {$extracted} IS NULL) AND NOT EXISTS (SELECT 1 FROM json_each(document, '{$path}') WHERE value IN ({$inList})))";
                     }
+                    if ($hasNull) {
+                        $parts[] = "{$extracted} IS NOT NULL";
+                    }
+                    $conditions[] = empty($parts) ? "1" : \implode(' AND ', $parts); // Nothing to exclude
                     break;
 
                 case '$exists':
