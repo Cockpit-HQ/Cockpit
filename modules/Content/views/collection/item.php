@@ -311,11 +311,11 @@ if (count($locales) == 1) {
                         this.item = Object.assign(this.item, item);
                         this.resetDirtyState();
                         this.saving = false;
-                        App.ui.notify('Data updated!');
+                        App.ui.notify(App.i18n.get('Data updated!'));
 
                     }).catch(rsp => {
                         this.saving = false;
-                        App.ui.notify(rsp.error || 'Saving failed!', 'error');
+                        App.ui.notify(rsp.error || App.i18n.get('Saving failed!'), 'error');
                     });
                 },
 

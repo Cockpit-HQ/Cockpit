@@ -223,14 +223,14 @@
                             this.saving = false;
 
                             if (this.isUpdate) {
-                                App.ui.notify('Model updated!');
+                                App.ui.notify(App.i18n.get('Model updated!'));
                             } else {
-                                App.ui.notify('Model created!');
+                                App.ui.notify(App.i18n.get('Model created!'));
                                 this.isUpdate = true;
                             }
                         }).catch(res => {
                             this.saving = false;
-                            App.ui.notify(res.error || 'Saving failed!', 'error');
+                            App.ui.notify(res.error || App.i18n.get('Saving failed!'), 'error');
                         });
 
                     },
