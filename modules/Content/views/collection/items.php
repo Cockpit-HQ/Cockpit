@@ -602,7 +602,7 @@
                             this.fixTableContainerWidth();
 
                         }).catch(rsp => {
-                            App.ui.notify(rsp.error || 'Loading failed!', 'error');
+                            App.ui.notify(rsp.error || App.i18n.get('Loading failed!'), 'error');
                         }).finally(() => {
                             this.loading = false;
                         });
@@ -626,9 +626,9 @@
                                 ids: [item._id]
                             }).then(res => {
                                 this.load(this.page == 1 ? 1 : (this.items.length - 1 ? this.page : this.page - 1));
-                                App.ui.notify('Item removed!');
+                                App.ui.notify(App.i18n.get('Item removed!'));
                             }).catch((res) => {
-                                App.ui.notify(res.error || 'Removing failed!', 'error');
+                                App.ui.notify(res.error || App.i18n.get('Removing failed!'), 'error');
                             });
                         });
                     },
@@ -655,7 +655,7 @@
                                 ids: this.selected
                             }).then(res => {
                                 this.load(this.page == 1 ? 1 : (this.items.length - this.selected.length ? this.page : this.page - 1));
-                                App.ui.notify('Items removed!');
+                                App.ui.notify(App.i18n.get('Items removed!'));
                             });
                         });
                     },
@@ -672,7 +672,7 @@
                             state
                         }).then(res => {
                             this.load(this.page == 1 ? 1 : (this.items.length - this.selected.length ? this.page : this.page - 1));
-                            App.ui.notify('State updated!');
+                            App.ui.notify(App.i18n.get('State updated!'));
                         });
 
                     },
@@ -757,9 +757,9 @@
                             }).then(res => {
                                 delete this.views[this.selectedView];
                                 this.selectView(null);
-                                App.ui.notify('View removed!');
+                                App.ui.notify(App.i18n.get('View removed!'));
                             }).catch(() => {
-                                App.ui.notify('Removing view failed!', 'error');
+                                App.ui.notify(App.i18n.get('Removing view failed!'), 'error');
                             });
                         });
                     },
@@ -778,9 +778,9 @@
 
                         this.$request('/content/collection/saveView', {view:data}).then(rsp => {
                             this.views[this.selectedView] = rsp.view;
-                            App.ui.notify('View updated!', 'info');
+                            App.ui.notify(App.i18n.get('View updated!'), 'info');
                         }).catch(res => {
-                            App.ui.notify(res.error || 'Updating view failed!', 'error');
+                            App.ui.notify(res.error || App.i18n.get('Updating view failed!'), 'error');
                         });
                     },
 

@@ -169,7 +169,7 @@
                             this.loading = false;
                         }).catch(res => {
                             this.loading = false;
-                            App.ui.notify(res.error || 'Loading failed!', 'error');
+                            App.ui.notify(res.error || App.i18n.get('Loading failed!'), 'error');
                         });
                     },
 
@@ -191,7 +191,7 @@
                             this.loading = false;
                         }).catch(res => {
                             this.loading = false;
-                            App.ui.notify(res.error || 'Loading failed!', 'error');
+                            App.ui.notify(res.error || App.i18n.get('Loading failed!'), 'error');
                         });
                     },
 
@@ -201,7 +201,7 @@
                             this.$request(`/content/tree/remove/${this.model.name}`, {item}).then(res => {
                                 this.items.splice(this.items.indexOf(item), 1);
                             }).catch(res => {
-                                App.ui.notify(res.error || 'Item removing failed!', 'error');
+                                App.ui.notify(res.error || App.i18n.get('Item removing failed!'), 'error');
                             });
                         });
                     },
