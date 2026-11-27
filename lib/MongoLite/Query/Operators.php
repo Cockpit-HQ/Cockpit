@@ -20,8 +20,18 @@ class Operators {
      * @return bool Whether the condition is satisfied
      */
     public static function evaluate(string $operator, mixed $fieldValue, mixed $conditionValue): bool {
-        if ($fieldValue === null && $operator !== '$exists') {
-            return false;
+        if ($fieldValue === null) {
+            // A missing or null field is "not equal" to any value other than null, as in MongoDB
+            switch ($operator) {
+                case '$exists':
+                    break;
+                case '$ne':
+                    return $conditionValue !== null;
+                case '$nin':
+                    return \is_array($conditionValue) && !\in_array(null, $conditionValue, true);
+                default:
+                    return false;
+            }
         }
 
         switch ($operator) {
